@@ -1,0 +1,178 @@
+From bug-gnu-emacs-request@prep.ai.mit.edu Wed Mar 29 21:59:18 1989
+Received: by life.ai.mit.edu; Wed, 29 Mar 89 18:13:55 EST
+Return-Path: <mcvax!stl.stc.co.uk!andrew@uunet.uu.net>
+Received: from prep.ai.mit.edu by life.ai.mit.edu; Wed, 29 Mar 89 18:13:02 EST
+Received: from uunet.UU.NET by prep.ai.mit.edu; Wed, 29 Mar 89 17:49:01 EST
+Received: from mcvax.UUCP by uunet.UU.NET (5.61/1.14) with UUCP 
+	id AA27373; Wed, 29 Mar 89 18:12:37 -0500
+Received: by mcvax.cwi.nl via EUnet; Thu, 30 Mar 89 01:03:42 +0200 (MET)
+Received: from stl.stc.co.uk by kestrel.Ukc.AC.UK   with UUCP  id aa04085;
+          29 Mar 89 20:23 BST
+From: Andrew Macpherson <mcvax!stl.stc.co.uk!andrew@uunet.uu.net>
+Date: Wed, 29 Mar 89 19:14:43 GMT
+Message-Id: <1839.8903291914@acer.stl.stc.co.uk>
+Received: from acer.stl.stc.co.uk by acer.stl.stc.co.uk
+	(4.12/UK-1.4(stc)); Wed, 29 Mar 89 19:14:43 GMT
+Phone: (+44) 279 29531 ext2423
+Telex: 81151 stl hw g
+From bug-gnu-emacs-request@prep.ai.mit.edu Wed Mar 29 16:40:58 1989
+Received: by life.ai.mit.edu; Wed, 29 Mar 89 12:13:46 EST
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Received: from prep.ai.mit.edu by life.ai.mit.edu; Wed, 29 Mar 89 12:12:31 EST
+Received: from TUT.CIS.OHIO-STATE.EDU by prep.ai.mit.edu; Wed, 29 Mar 89 11:48:38 EST
+Received: by tut.cis.ohio-state.edu (5.59/3.890314)
+	id AA01642; Wed, 29 Mar 89 11:51:59 EST
+Received: from USENET by tut.cis.ohio-state.edu with netnews
+	for info-gnu-emacs@prep.ai.mit.edu (info-gnu-emacs@prep.ai.mit.edu)
+	(contact usenet@tut.cis.ohio-state.edu if you have questions)
+Date: 29 Mar 89 15:24:00 GMT
+From: mailrus!ulowell!apollo!weissman@cis.ohio-state.edu  (Mark Weissman)
+Organization: Apollo Computer, Chelmsford, Mass.
+Subject: Package for ZMACS functionality with GNU Emacs and Common Lisp
+Message-Id: <42509442.12972@apollo.COM>
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+Status: RO
+Package for ZMACS functionality with GNU Emacs and Common Lisp
+
+This Interface includes functions to provide many features found on
+a lisp machine and many other useful features.  It was designed for
+working with DOMAIN/CommonLISP on APOLLO workstations although it 
+should not be a major job to port it to other systems.  This should
+also work with other LUCID Common Lisp systems under X windows.
+
+This may be ftp'd from prep.ai.mit.edu.
+The file is emacs/apollo_emacs_support.tar.Z .
+
+Mark Weissman
+weissman@apollo.com
+
+Many features in this package are useful even if you are not working
+with Common Lisp.
+
+Completion menus are now mouse sensitive, command history and
+yanking has been defined for minibuffer eval-expression, shell modes,
+inferior-lisp mode and yanked symbols can now be specified as only 
+those matching some pattern.
+
+Many of the functions that work with emacs lisp have also been made
+to work with inferior-lisp as well as adding other features for non-lisp
+users.  Where possible, all new functions for working with inferior-lisp
+have been extended to work with emacs lisp and vice versa.
+
+Incremental Compilation for inferior lisp and emacs lisp is available.
+For common lisp, forms will be compiled in proper packages.
+
+Inferior shell command completion exists for inferior-lisp and unix shells.
+
+Real Attribute Lists for Mode, Package, Base, IBase, Readtable, Syntax etc.
+can be used with inferior lisp.
+
+Sectionized buffers and querying of inferior lisp process can be used to 
+find source code for definitions.
+
+Inferior lisp maintains command history so previous forms can be yanked
+to current input line.
+
+Many commands exist for querrying about inferior lisp forms.
+
+List Notifications can be used to look at past messages.
+
+Commands exist for operating on only changed lisp definitions.
+
+The following is a list of most commands available from this environment:
+
+MOUSE COMMANDS:
+  apollo:mouse-move-mark
+  apollo:mouse-find-source-code ;; Click on lisp symbol to find source code
+  apollo:mouse-click-right      ;; Context sensitive mouse key
+  apollo:mouse-find-file        ;; Click on path to edit a file
+  apollo:grab-thing-click-right 
+  apollo:list-modifications-click-right
+ATTRIBUTE LIST COMMANDS: 
+  parse-attribute-list
+  update-attribute-list
+  common-lisp-mode
+  set-syntax
+  set-mode
+  set-package
+PARENTHESIS AND COMMENT COMMANDS:
+  close-definition
+  find-unbalanced-parentheses
+  uncomment-out-region
+  comment-out-region
+SECTION AND FIND-SOURCE-CODE COMMANDS:
+  sectionize-buffer
+  find-file-no-sectionize
+  list-sections
+  apollo:key-find-source-code ;; Locate source code by querrying lisp
+FILE EVALUATION AND COMPILATION COMMANDS:
+  compile-file
+  load-file
+  load-compile-file
+EVALUATION AND COMPILATION COMMANDS:
+  evaluate-buffer
+  compile-buffer
+  apollo:evaluate-last-sexp
+  apollo:lisp-send-defun
+  apollo:lisp-compile-defun
+  evaluate-region
+  evaluate-region-hack
+  compile-region
+COMMON LISP EVALUATION:
+  evaluate-common-lisp
+  evaluate-and-replace-into-buffer
+  evaluate-into-buffer
+CHANGED DEFINTION COMMANDS:
+  list-modifications
+  edit-next-definition
+CHANGED DEFINITION COMMANDS:
+  list-buffer-changed-definitions
+  evaluate-buffer-changed-definitions
+  compile-buffer-changed-definitions
+  edit-buffer-changed-definitions
+  list-changed-definitions
+  evaluate-changed-definitions
+  compile-changed-definitions
+  edit-changed-definitions
+CALLERS COMMANDS:
+  edit-callers
+  next-caller
+  list-callers
+  who-calls
+DESCRIPTION COMMANDS:
+  disassemble-lisp-code
+  quick-arglist
+  macro-expand-expression
+  where-is-symbol
+  describe-variable-at-point
+  describe-function-at-point
+  show-lisp-documentation
+  apropos-symbol-at-point
+  what-package
+INFERIOR SHELL COMMANDS:
+  csh
+  sh
+INFERIOR LISP COMMANDS:
+  lisp
+YANK HISTORY COMMANDS:
+  apollo:yank
+  apollo:yank-command
+  yank-prev-command
+  yank-prefix-command
+  apollo:yank-pop
+COMPLETION COMMANDS:
+  apollo:shell-complete-symbol
+  apollo:lisp-complete-symbol
+MISCELANEOUS COMMANDS:
+  list-notifications
+  delete-all-font-info
+  apollo:switch-to-buffer
+  fix-man-output
+  grep-to-temp-buffer
+  insert-date
+  pagify-lisp-buffer
+  print-buffer-apollo
+  print-region-apollo
+  apollo:beginning-of-line
+

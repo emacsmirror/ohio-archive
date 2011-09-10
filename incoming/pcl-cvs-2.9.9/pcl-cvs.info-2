@@ -1,0 +1,714 @@
+This is pcl-cvs.info, produced by Makeinfo version 3.12f from
+pcl-cvs.texi.
+
+START-INFO-DIR-ENTRY
+* Pcl-cvs:(pcl-cvs).	Emacs front-end to CVS
+END-INFO-DIR-ENTRY
+
+   Copyright (C) 1991-2000  Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+and this permission notice may be included in translations approved by
+the Free Software Foundation instead of in the original English.
+
+
+File: pcl-cvs.info,  Node: Future enhancements,  Next: Bugs,  Prev: XEmacs Customization,  Up: Top
+
+Future enhancements
+*******************
+
+   Pcl-cvs is still under development and needs a number of
+enhancements to be called complete.  Below is my current wish-list for
+future releases of pcl-cvs.  Please, let me know which of these
+features you want most.  They are listed below in approximately the
+order that I currently think I will implement them in.
+
+   * Log mode.  When this mode is finished you will be able to move
+     around (using `n' and `p') between the revisions of a file, mark
+     two of them, and run a diff between them.  You will be able to
+     hide branches (similar to the way you can hide sub-paragraphs in
+     outline-mode) and do merges between revisions.  Other ideas about
+     this are welcome.
+
+   * Dired support.  I have an experimental `dired-cvs.el' that works
+     together with CVS 1.2.  Unfortunately I wrote it on top of a
+     non-standard `dired.el', so it must be rewritten.
+
+   * Pcl-cvs is not at all clever about what it should do when `cvs
+     update' runs a program (due to the `-u' option in the `modules'
+     file -- see `cvs(5)').  The current release uses a regexp to
+     search for the end.  At the very least that regexp should be
+     configured for different modules.  Tell me if you have any idea
+     about what is the right thing to do.  In a perfect world the
+     program should also be allowed to print to `stderr' without
+     causing pcl-cvs to crash.
+
+   If you miss something in this wish-list, let me know!  I don't
+promise that I will write it, but I will at least try to coordinate the
+efforts of making a good Emacs front end to CVS.  For information about
+how to reach me, see *Note Bugs::.
+
+   So far, I have written most of pcl-cvs in my all-to-rare spare time.
+If you want pcl-cvs to be developed faster you can write a contract with
+Signum Support to do the extension.  You can reach Signum Support by
+email to `info@signum.se' or via mail to Signum Support AB, Box 2044,
+S-580 02 Linkoping, Sweden. Phone: +46 (0) 13 - 21 46 00. Fax: +46 (0)
+13 - 21 47 00.
+
+
+File: pcl-cvs.info,  Node: Bugs,  Next: Copying,  Prev: Future enhancements,  Up: Top
+
+Bugs (known and unknown)
+************************
+
+   If you find a bug or misfeature, don't hesitate to tell us!  Send
+email to `pcl-cvs@cyclic.com'.  We prefer discussing one thing at a
+time.  If you find several unrelated bugs, please report them
+separately.  That way our bug-tracking software will work better.  If
+you report several problems in a single email we might miss one or two
+of them.  If you are running pcl-cvs under XEmacs, you should also send
+a copy of bug reports to `xemacs-beta@xemacs.org'.
+
+   If you have ideas for improvements, or if you have written some
+extensions to this package, we would like to hear from you.  We hope
+that you find this package useful!
+
+   Below is a partial list of currently known problems with pcl-cvs
+version 2.0.
+
+Unexpected output from CVS
+     Unexpected output from CVS may confuse pcl-cvs.  It will create
+     warning messages in the *cvs* buffer alerting you to any parse
+     errors.  If you get these messages, please send a bug report to
+     the email addresses listed above.  Include the contents of the
+     *cvs* buffer, the output of the CVS process (which should be found
+     in the *cvs-tmp* emacs buffer), and the versions of emacs, pcl-cvs
+     and CVS you are using.
+
+
+File: pcl-cvs.info,  Node: Copying,  Next: Function and Variable Index,  Prev: Bugs,  Up: Top
+
+GNU GENERAL PUBLIC LICENSE
+**************************
+
+                         Version 2, June 1991
+
+     Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+     675 Mass Ave, Cambridge, MA 02139, USA
+     
+     Everyone is permitted to copy and distribute verbatim copies
+     of this license document, but changing it is not allowed.
+
+Preamble
+========
+
+   The licenses for most software are designed to take away your
+freedom to share and change it.  By contrast, the GNU General Public
+License is intended to guarantee your freedom to share and change free
+software--to make sure the software is free for all its users.  This
+General Public License applies to most of the Free Software
+Foundation's software and to any other program whose authors commit to
+using it.  (Some other Free Software Foundation software is covered by
+the GNU Library General Public License instead.)  You can apply it to
+your programs, too.
+
+   When we speak of free software, we are referring to freedom, not
+price.  Our General Public Licenses are designed to make sure that you
+have the freedom to distribute copies of free software (and charge for
+this service if you wish), that you receive source code or can get it
+if you want it, that you can change the software or use pieces of it in
+new free programs; and that you know you can do these things.
+
+   To protect your rights, we need to make restrictions that forbid
+anyone to deny you these rights or to ask you to surrender the rights.
+These restrictions translate to certain responsibilities for you if you
+distribute copies of the software, or if you modify it.
+
+   For example, if you distribute copies of such a program, whether
+gratis or for a fee, you must give the recipients all the rights that
+you have.  You must make sure that they, too, receive or can get the
+source code.  And you must show them these terms so they know their
+rights.
+
+   We protect your rights with two steps: (1) copyright the software,
+and (2) offer you this license which gives you legal permission to copy,
+distribute and/or modify the software.
+
+   Also, for each author's protection and ours, we want to make certain
+that everyone understands that there is no warranty for this free
+software.  If the software is modified by someone else and passed on, we
+want its recipients to know that what they have is not the original, so
+that any problems introduced by others will not reflect on the original
+authors' reputations.
+
+   Finally, any free program is threatened constantly by software
+patents.  We wish to avoid the danger that redistributors of a free
+program will individually obtain patent licenses, in effect making the
+program proprietary.  To prevent this, we have made it clear that any
+patent must be licensed for everyone's free use or not licensed at all.
+
+   The precise terms and conditions for copying, distribution and
+modification follow.
+
+    TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+
+  1. This License applies to any program or other work which contains a
+     notice placed by the copyright holder saying it may be distributed
+     under the terms of this General Public License.  The "Program",
+     below, refers to any such program or work, and a "work based on
+     the Program" means either the Program or any derivative work under
+     copyright law: that is to say, a work containing the Program or a
+     portion of it, either verbatim or with modifications and/or
+     translated into another language.  (Hereinafter, translation is
+     included without limitation in the term "modification".)  Each
+     licensee is addressed as "you".
+
+     Activities other than copying, distribution and modification are
+     not covered by this License; they are outside its scope.  The act
+     of running the Program is not restricted, and the output from the
+     Program is covered only if its contents constitute a work based on
+     the Program (independent of having been made by running the
+     Program).  Whether that is true depends on what the Program does.
+
+  2. You may copy and distribute verbatim copies of the Program's
+     source code as you receive it, in any medium, provided that you
+     conspicuously and appropriately publish on each copy an appropriate
+     copyright notice and disclaimer of warranty; keep intact all the
+     notices that refer to this License and to the absence of any
+     warranty; and give any other recipients of the Program a copy of
+     this License along with the Program.
+
+     You may charge a fee for the physical act of transferring a copy,
+     and you may at your option offer warranty protection in exchange
+     for a fee.
+
+  3. You may modify your copy or copies of the Program or any portion
+     of it, thus forming a work based on the Program, and copy and
+     distribute such modifications or work under the terms of Section 1
+     above, provided that you also meet all of these conditions:
+
+       a. You must cause the modified files to carry prominent notices
+          stating that you changed the files and the date of any change.
+
+       b. You must cause any work that you distribute or publish, that
+          in whole or in part contains or is derived from the Program
+          or any part thereof, to be licensed as a whole at no charge
+          to all third parties under the terms of this License.
+
+       c. If the modified program normally reads commands interactively
+          when run, you must cause it, when started running for such
+          interactive use in the most ordinary way, to print or display
+          an announcement including an appropriate copyright notice and
+          a notice that there is no warranty (or else, saying that you
+          provide a warranty) and that users may redistribute the
+          program under these conditions, and telling the user how to
+          view a copy of this License.  (Exception: if the Program
+          itself is interactive but does not normally print such an
+          announcement, your work based on the Program is not required
+          to print an announcement.)
+
+     These requirements apply to the modified work as a whole.  If
+     identifiable sections of that work are not derived from the
+     Program, and can be reasonably considered independent and separate
+     works in themselves, then this License, and its terms, do not
+     apply to those sections when you distribute them as separate
+     works.  But when you distribute the same sections as part of a
+     whole which is a work based on the Program, the distribution of
+     the whole must be on the terms of this License, whose permissions
+     for other licensees extend to the entire whole, and thus to each
+     and every part regardless of who wrote it.
+
+     Thus, it is not the intent of this section to claim rights or
+     contest your rights to work written entirely by you; rather, the
+     intent is to exercise the right to control the distribution of
+     derivative or collective works based on the Program.
+
+     In addition, mere aggregation of another work not based on the
+     Program with the Program (or with a work based on the Program) on
+     a volume of a storage or distribution medium does not bring the
+     other work under the scope of this License.
+
+  4. You may copy and distribute the Program (or a work based on it,
+     under Section 2) in object code or executable form under the terms
+     of Sections 1 and 2 above provided that you also do one of the
+     following:
+
+       a. Accompany it with the complete corresponding machine-readable
+          source code, which must be distributed under the terms of
+          Sections 1 and 2 above on a medium customarily used for
+          software interchange; or,
+
+       b. Accompany it with a written offer, valid for at least three
+          years, to give any third party, for a charge no more than your
+          cost of physically performing source distribution, a complete
+          machine-readable copy of the corresponding source code, to be
+          distributed under the terms of Sections 1 and 2 above on a
+          medium customarily used for software interchange; or,
+
+       c. Accompany it with the information you received as to the offer
+          to distribute corresponding source code.  (This alternative is
+          allowed only for noncommercial distribution and only if you
+          received the program in object code or executable form with
+          such an offer, in accord with Subsection b above.)
+
+     The source code for a work means the preferred form of the work for
+     making modifications to it.  For an executable work, complete
+     source code means all the source code for all modules it contains,
+     plus any associated interface definition files, plus the scripts
+     used to control compilation and installation of the executable.
+     However, as a special exception, the source code distributed need
+     not include anything that is normally distributed (in either
+     source or binary form) with the major components (compiler,
+     kernel, and so on) of the operating system on which the executable
+     runs, unless that component itself accompanies the executable.
+
+     If distribution of executable or object code is made by offering
+     access to copy from a designated place, then offering equivalent
+     access to copy the source code from the same place counts as
+     distribution of the source code, even though third parties are not
+     compelled to copy the source along with the object code.
+
+  5. You may not copy, modify, sublicense, or distribute the Program
+     except as expressly provided under this License.  Any attempt
+     otherwise to copy, modify, sublicense or distribute the Program is
+     void, and will automatically terminate your rights under this
+     License.  However, parties who have received copies, or rights,
+     from you under this License will not have their licenses
+     terminated so long as such parties remain in full compliance.
+
+  6. You are not required to accept this License, since you have not
+     signed it.  However, nothing else grants you permission to modify
+     or distribute the Program or its derivative works.  These actions
+     are prohibited by law if you do not accept this License.
+     Therefore, by modifying or distributing the Program (or any work
+     based on the Program), you indicate your acceptance of this
+     License to do so, and all its terms and conditions for copying,
+     distributing or modifying the Program or works based on it.
+
+  7. Each time you redistribute the Program (or any work based on the
+     Program), the recipient automatically receives a license from the
+     original licensor to copy, distribute or modify the Program
+     subject to these terms and conditions.  You may not impose any
+     further restrictions on the recipients' exercise of the rights
+     granted herein.  You are not responsible for enforcing compliance
+     by third parties to this License.
+
+  8. If, as a consequence of a court judgment or allegation of patent
+     infringement or for any other reason (not limited to patent
+     issues), conditions are imposed on you (whether by court order,
+     agreement or otherwise) that contradict the conditions of this
+     License, they do not excuse you from the conditions of this
+     License.  If you cannot distribute so as to satisfy simultaneously
+     your obligations under this License and any other pertinent
+     obligations, then as a consequence you may not distribute the
+     Program at all.  For example, if a patent license would not permit
+     royalty-free redistribution of the Program by all those who
+     receive copies directly or indirectly through you, then the only
+     way you could satisfy both it and this License would be to refrain
+     entirely from distribution of the Program.
+
+     If any portion of this section is held invalid or unenforceable
+     under any particular circumstance, the balance of the section is
+     intended to apply and the section as a whole is intended to apply
+     in other circumstances.
+
+     It is not the purpose of this section to induce you to infringe any
+     patents or other property right claims or to contest validity of
+     any such claims; this section has the sole purpose of protecting
+     the integrity of the free software distribution system, which is
+     implemented by public license practices.  Many people have made
+     generous contributions to the wide range of software distributed
+     through that system in reliance on consistent application of that
+     system; it is up to the author/donor to decide if he or she is
+     willing to distribute software through any other system and a
+     licensee cannot impose that choice.
+
+     This section is intended to make thoroughly clear what is believed
+     to be a consequence of the rest of this License.
+
+  9. If the distribution and/or use of the Program is restricted in
+     certain countries either by patents or by copyrighted interfaces,
+     the original copyright holder who places the Program under this
+     License may add an explicit geographical distribution limitation
+     excluding those countries, so that distribution is permitted only
+     in or among countries not thus excluded.  In such case, this
+     License incorporates the limitation as if written in the body of
+     this License.
+
+ 10. The Free Software Foundation may publish revised and/or new
+     versions of the General Public License from time to time.  Such
+     new versions will be similar in spirit to the present version, but
+     may differ in detail to address new problems or concerns.
+
+     Each version is given a distinguishing version number.  If the
+     Program specifies a version number of this License which applies
+     to it and "any later version", you have the option of following
+     the terms and conditions either of that version or of any later
+     version published by the Free Software Foundation.  If the Program
+     does not specify a version number of this License, you may choose
+     any version ever published by the Free Software Foundation.
+
+ 11. If you wish to incorporate parts of the Program into other free
+     programs whose distribution conditions are different, write to the
+     author to ask for permission.  For software which is copyrighted
+     by the Free Software Foundation, write to the Free Software
+     Foundation; we sometimes make exceptions for this.  Our decision
+     will be guided by the two goals of preserving the free status of
+     all derivatives of our free software and of promoting the sharing
+     and reuse of software generally.
+
+                                NO WARRANTY
+
+ 12. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO
+     WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE
+     LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT
+     HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT
+     WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT
+     NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
+     FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS TO THE
+     QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE
+     PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY
+     SERVICING, REPAIR OR CORRECTION.
+
+ 13. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN
+     WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY
+     MODIFY AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE
+     LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL,
+     INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR
+     INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF
+     DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU
+     OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY
+     OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN
+     ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+                      END OF TERMS AND CONDITIONS
+
+Appendix: How to Apply These Terms to Your New Programs
+=======================================================
+
+   If you develop a new program, and you want it to be of the greatest
+possible use to the public, the best way to achieve this is to make it
+free software which everyone can redistribute and change under these
+terms.
+
+   To do so, attach the following notices to the program.  It is safest
+to attach them to the start of each source file to most effectively
+convey the exclusion of warranty; and each file should have at least
+the "copyright" line and a pointer to where the full notice is found.
+
+     ONE LINE TO GIVE THE PROGRAM'S NAME AND A BRIEF IDEA OF WHAT IT DOES.
+     Copyright (C) YYYY  NAME OF AUTHOR
+     
+     This program is free software; you can redistribute it and/or modify
+     it under the terms of the GNU General Public License as published by
+     the Free Software Foundation; either version 2 of the License, or
+     (at your option) any later version.
+     
+     This program is distributed in the hope that it will be useful,
+     but WITHOUT ANY WARRANTY; without even the implied warranty of
+     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+     GNU General Public License for more details.
+     
+     You should have received a copy of the GNU General Public License
+     along with this program; if not, write to the Free Software
+     Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+   Also add information on how to contact you by electronic and paper
+mail.
+
+   If the program is interactive, make it output a short notice like
+this when it starts in an interactive mode:
+
+     Gnomovision version 69, Copyright (C) 19YY NAME OF AUTHOR
+     Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+     This is free software, and you are welcome to redistribute it
+     under certain conditions; type `show c' for details.
+
+   The hypothetical commands `show w' and `show c' should show the
+appropriate parts of the General Public License.  Of course, the
+commands you use may be called something other than `show w' and `show
+c'; they could even be mouse-clicks or menu items--whatever suits your
+program.
+
+   You should also get your employer (if you work as a programmer) or
+your school, if any, to sign a "copyright disclaimer" for the program,
+if necessary.  Here is a sample; alter the names:
+
+     Yoyodyne, Inc., hereby disclaims all copyright interest in the program
+     `Gnomovision' (which makes passes at compilers) written by James Hacker.
+     
+     SIGNATURE OF TY COON, 1 April 1989
+     Ty Coon, President of Vice
+
+   This General Public License does not permit incorporating your
+program into proprietary programs.  If your program is a subroutine
+library, you may consider it more useful to permit linking proprietary
+applications with the library.  If this is what you want to do, use the
+GNU Library General Public License instead of this License.
+
+
+File: pcl-cvs.info,  Node: Function and Variable Index,  Next: Concept Index,  Prev: Copying,  Up: Top
+
+Function and Variable Index
+***************************
+
+* Menu:
+
+* cookie-next-cookie:                    Movement commands.
+* cookie-previous-cookie:                Movement commands.
+* cvs-add-flags (variable):              Customization.
+* cvs-auto-remove-handled-directories (variable): Customization.
+* cvs-auto-remove-handled (variable):    Customization.
+* cvs-auto-revert-after-commit (variable): Committing changes.
+* cvs-auto-revert (variable):            Customization.
+* cvs-changelog-full-paragraphs (variable): Customization.
+* cvs-checkout:                          Entering pcl-cvs.
+* cvs-checkout-cmd-flags (variable):     Customization.
+* cvs-commit-buffer-require-final-newline (variable): Customization.
+* cvs-commit-flags (variable):           Customization.
+* cvs-cvsroot (variable):                Customization.
+* cvs-default-ignore-marks (variable):   Customization.
+* cvs-diff-flags (variable):             Customization.
+* cvs-diff-ignore-marks (variable) <1>:  Customization.
+* cvs-diff-ignore-marks (variable):      Viewing differences.
+* cvs-erase-input-buffer (variable) <1>: Customization.
+* cvs-erase-input-buffer (variable):     Committing changes.
+* cvs-examine <1>:                       Updating the directory.
+* cvs-examine:                           Entering pcl-cvs.
+* cvs-filename-face (face):              XEmacs Customization.
+* cvs-handled-face (face):               XEmacs Customization.
+* cvs-header-face (face):                XEmacs Customization.
+* cvs-help:                              Miscellaneous commands.
+* cvs-log-flags (variable):              Customization.
+* cvs-marked-face (face):                XEmacs Customization.
+* cvs-mode-acknowledge:                  Removing handled entries.
+* cvs-mode-add:                          Adding and removing files.
+* cvs-mode-add-change-log-entry-other-window: Editing files.
+* cvs-mode-byte-compile-files:           Miscellaneous commands.
+* cvs-mode-changelog-commit:             Committing changes.
+* cvs-mode-commit:                       Committing changes.
+* cvs-mode-delete-lock <1>:              Miscellaneous commands.
+* cvs-mode-delete-lock:                  Entering pcl-cvs.
+* cvs-mode-diff:                         Viewing differences.
+* cvs-mode-diff-backup:                  Viewing differences.
+* cvs-mode-diff-head:                    Viewing differences.
+* cvs-mode-diff-vendor:                  Viewing differences.
+* cvs-mode-find-file:                    Editing files.
+* cvs-mode-find-file-other-window:       Editing files.
+* cvs-mode-idiff:                        Invoking Ediff.
+* cvs-mode-ignore <1>:                   Ignoring files.
+* cvs-mode-ignore:                       Removing handled entries.
+* cvs-mode-imerge:                       Invoking Ediff.
+* cvs-mode-log:                          Getting info about files.
+* cvs-mode-mark:                         Marking files.
+* cvs-mode-mark-all-files:               Marking files.
+* cvs-mode-mark-matching-files:          Marking files.
+* cvs-mode-quit:                         Miscellaneous commands.
+* cvs-mode-remove-file:                  Adding and removing files.
+* cvs-mode-remove-handled:               Removing handled entries.
+* cvs-mode-status:                       Getting info about files.
+* cvs-mode-tag:                          Tagging files.
+* cvs-mode-toggle-marks:                 Marking files.
+* cvs-mode-undo-local-changes:           Undoing changes.
+* cvs-mode-unmark:                       Marking files.
+* cvs-mode-unmark-all-files:             Marking files.
+* cvs-mode-unmark-up:                    Marking files.
+* cvs-mode-untag:                        Tagging files.
+* cvs-mode-update:                       Updating files.
+* cvs-need-action-face (face):           XEmacs Customization.
+* cvs-remove-flags (variable):           Customization.
+* cvs-rtag:                              Tagging files.
+* cvs-rtag-flags (variable):             Customization.
+* cvs-sort-ignore-file (variable):       Customization.
+* cvs-status <1>:                        Updating the directory.
+* cvs-status:                            Entering pcl-cvs.
+* cvs-status-cmd-flags (variable):       Customization.
+* cvs-status-flags (variable):           Customization.
+* cvs-tag-flags (variable):              Customization.
+* cvs-undo-flags (variable):             Customization.
+* cvs-unknown-face (face):               XEmacs Customization.
+* cvs-update <1>:                        Updating the directory.
+* cvs-update:                            Entering pcl-cvs.
+* cvs-update-flags (variable):           Customization.
+* cvs-update-optional-flags (variable):  Customization.
+* cvs-update-prog-output-skip-regexp (variable): Customization.
+
+
+File: pcl-cvs.info,  Node: Concept Index,  Next: Key Index,  Prev: Function and Variable Index,  Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* About pcl-cvs:                         About pcl-cvs.
+* Active files:                          Selected files.
+* Added (file status):                   File status.
+* Adding files:                          Adding and removing files.
+* Archives:                              Archives.
+* Author, how to reach:                  Bugs.
+* Authors:                               Contributors.
+* Automatically inserting newline:       Customization.
+* Automatically remove handled files:    Customization.
+* Automatically sorting .cvsignore:      Customization.
+* Buffer contents:                       Buffer contents.
+* Bugs, how to report them:              Bugs.
+* Bugs, known:                           Bugs.
+* Byte compilation:                      Miscellaneous commands.
+* Ci:                                    Committing changes.
+* Commit buffer:                         Committing changes.
+* Commit message, inserting newline:     Customization.
+* Committing changes:                    Committing changes.
+* Conflict (file status):                File status.
+* Conflicts, how to resolve them:        Viewing differences.
+* Conflicts, resolving:                  Invoking Ediff.
+* Context diff, how to get:              Customization.
+* Contributors:                          Contributors.
+* Customization:                         Customization.
+* .cvsignore file, sorting:              Customization.
+* Deleting files:                        Adding and removing files.
+* Diff:                                  Viewing differences.
+* Dired:                                 Editing files.
+* Ediff <1>:                             Invoking Ediff.
+* Ediff:                                 Viewing differences.
+* Edit buffer:                           Committing changes.
+* Editing files:                         Editing files.
+* Email archives:                        Archives.
+* Email to the author:                   Bugs.
+* Enhancements:                          Future enhancements.
+* Erasing commit message:                Committing changes.
+* Erasing the input buffer:              Customization.
+* Example run:                           Getting started.
+* Expunging uninteresting entries:       Removing handled entries.
+* FAQ:                                   Bugs.
+* File selection:                        Selected files.
+* File status:                           File status.
+* Finding files:                         Editing files.
+* Flush changes:                         Undoing changes.
+* Ftp-sites:                             Archives.
+* Generating a typeset manual:           Typeset manual installation.
+* Generating the on-line manual:         On-line manual installation.
+* Getting pcl-cvs:                       Archives.
+* Getting rid of lock files:             Miscellaneous commands.
+* Getting rid of uninteresting lines:    Removing handled entries.
+* Getting status:                        Getting info about files.
+* Getting the *cvs* buffer:              Entering pcl-cvs.
+* Handled lines, removing them:          Removing handled entries.
+* Help:                                  Miscellaneous commands.
+* Info-file (how to generate):           On-line manual installation.
+* Installation:                          Installation.
+* Installation of elisp files:           Pcl-cvs installation.
+* Installation of on-line manual:        On-line manual installation.
+* Installation of typeset manual:        Typeset manual installation.
+* Introduction:                          Getting started.
+* Invoking dired:                        Editing files.
+* Invoking ediff <1>:                    Invoking Ediff.
+* Invoking ediff:                        Viewing differences.
+* Known bugs:                            Bugs.
+* Loading files:                         Editing files.
+* Lock files:                            Miscellaneous commands.
+* Log (RCS/cvs command):                 Getting info about files.
+* Manual installation (on-line):         On-line manual installation.
+* Manual installation (typeset):         Typeset manual installation.
+* Marked files:                          Selected files.
+* Marking files:                         Marking files.
+* Merged (file status):                  File status.
+* Modified (file status):                File status.
+* Modules file (-u option):              Customization.
+* Movement Commands:                     Movement commands.
+* On-line manual (how to generate):      On-line manual installation.
+* Patched (file status):                 File status.
+* Printing a manual:                     Typeset manual installation.
+* Problems, list of common:              Bugs.
+* Putting files under CVS control:       Adding and removing files.
+* Quitting:                              Miscellaneous commands.
+* Recompiling elisp files:               Miscellaneous commands.
+* Removed by you, changed in repository (file status): File status.
+* Removed (file status):                 File status.
+* Removing files:                        Adding and removing files.
+* Removing uninteresting (processed) lines: Removing handled entries.
+* Reporting bugs and ideas:              Bugs.
+* Require final newline:                 Customization.
+* Resolving conflicts:                   Invoking Ediff.
+* Resurrecting files:                    Adding and removing files.
+* Reverting buffers after commit <1>:    Customization.
+* Reverting buffers after commit:        Committing changes.
+* Selected files:                        Selected files.
+* Selecting files (commands to mark files): Marking files.
+* Sites:                                 Archives.
+* Sorting the .cvsignore file:           Customization.
+* Status (cvs command):                  Getting info about files.
+* Tagging files:                         Tagging files.
+* TeX - generating a typeset manual:     Typeset manual installation.
+* Undo changes:                          Undoing changes.
+* Unidiff, how to get:                   Customization.
+* Uninteresting entries, getting rid of them: Removing handled entries.
+* Unknown (file status):                 File status.
+* -u option in modules file:             Customization.
+* Updated (file status):                 File status.
+* Update program (-u option in modules file): Customization.
+* Updating files:                        Updating files.
+* Variables, list of all:                Customization.
+* Viewing differences <1>:               Invoking Ediff.
+* Viewing differences:                   Viewing differences.
+* XEmacs installation:                   XEmacs installation.
+
+
+File: pcl-cvs.info,  Node: Key Index,  Prev: Concept Index,  Up: Top
+
+Key Index
+*********
+
+* Menu:
+
+* a - add a file:                        Adding and removing files.
+* A - add ChangeLog entry:               Editing files.
+* c - commit files:                      Committing changes.
+* C - commit files with ChangeLog message: Committing changes.
+* C-k - remove selected entries:         Removing handled entries.
+* C-n - Move down one file:              Movement commands.
+* C-p - Move up one file:                Movement commands.
+* DEL - unmark previous file:            Marking files.
+* dh - diff against head of repository:  Viewing differences.
+* d= - run cvs diff:                     Viewing differences.
+* dv - diff against vendor branch:       Viewing differences.
+* e - invoke ediff:                      Invoking Ediff.
+* ESC DEL - unmark all files:            Marking files.
+* f - find file or directory:            Editing files.
+* ? - help:                              Miscellaneous commands.
+* h - help:                              Miscellaneous commands.
+* i - ignoring files:                    Ignoring files.
+* l - run cvs log:                       Getting info about files.
+* % - mark files matching regexp:        Marking files.
+* m - marking a file:                    Marking files.
+* M - marking all files:                 Marking files.
+* M-t - repository tag files:            Tagging files.
+* n - Move down one file:                Movement commands.
+* o - find file in other window:         Editing files.
+* O - update files:                      Updating files.
+* p - Move up one file:                  Movement commands.
+* q - quit pcl-cvs:                      Miscellaneous commands.
+* r - remove a file:                     Adding and removing files.
+* = - run cvs diff:                      Viewing differences.
+* SPC - Move down one file:              Movement commands.
+* s - run cvs status:                    Getting info about files.
+* t - tag files:                         Tagging files.
+* T - toggle marks:                      Marking files.
+* U - undo changes:                      Undoing changes.
+* u - unmark a file:                     Marking files.
+* x - remove processed entries:          Removing handled entries.
+
+

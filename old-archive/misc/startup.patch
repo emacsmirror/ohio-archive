@@ -1,0 +1,172 @@
+From: warsaw@rtg.cme.nist.gov (Barry A. Warsaw)
+Newsgroups: comp.emacs,gnu.emacs
+Subject: Mods to startup.el for GNU emacs 18.55
+Message-ID: <1586@durer.cme.nbs.gov>
+Date: 5 Sep 89 18:59:00 GMT
+Lines: 165
+
+
+I've made a few changes to emacs/lisp/startup.el which gives you a bit
+more flexibility in starting emacs up.  I include a context diff
+suitable for patch below.  Here's a summary of what the changes give you:
+
+1) Back in August '89, Lynn Slater posted some code that will let you
+define command line switches to emacs.  Here's the description that
+came with the code:
+
+======================================================================
+From: indetech!lrs@ai.mit.edu (Lynn Slater)
+Newsgroups: gnu.emacs
+Subject: Settable command line arguments
+Date: 2 Aug 89 15:18:00 GMT
+Distribution: gnu
+Organization: GNUs Not Usenet
+
+The following changes to startup.el allow hooks to define new command line
+arguments without rebuilding emacs.  Example:
+
+ emacs -batch -l dbiogen -data DBIO.eld -verify -status -describe -autogen DBIO
+
+The load of dbiogen defines hooks that recognizes all those successive
+arguments which would not be otherwise recognized.
+
+To define a hook, load code such as the following:
+  (setq command-line-hooks (cons 'do-object-data command-line-hooks))
+  (defun do-object-data ()
+    (if (string= argi "-data")
+	(let ((datafile (car command-line-args-left)))
+	  (setq command-line-args-left (cdr command-line-args-left))
+	  (object-data datafile)
+	  )))
+
+
+I regret that I cannot construct meaningful diffs of startup.el.
+======================================================================
+
+Well, I *have* been able to construct meaningful diffs which
+incorporate Lynn's mods.  Thanks Lynn, for some neat stuff.
+
+2) One of the things that always bugged me about emacs was that I had
+to rebuild the binary whenever I made a change that affected the site
+wide emacs environment.  For example, say I wanted to change the
+load-path site wide, or put some new autoloads in that everyone could
+use, or change the gnus nntp server name.  I always had to hack
+site-init.el, re-byte-compile that file, then rebuild emacs.  Sure, I
+know about default.el, but that gets loaded in *after* a user's .emacs
+file.  I wanted something that gets loaded in *before* your ~/.emacs,
+that I could change whenever I wanted and not have to rebuild emacs to
+propogate the changes.  That way, users could utilize site wide stuff
+in their .emacs file.
+
+So anyway, I put a simple hack into startup.el which will load a
+library dynamically on startup, *before* command-line switches (see
+above) and *before* ~/.emacs.  The library is called
+"emacs-site{.el,.elc}" by default, though if the variable
+`site-startup-file' is bound, its value is used as the startup file.
+The startup file must be on the compiled load path to be found.  Also,
+since `load' is used, you don't need to put the {.el,.elc} suffix on
+the value of site-startup-file.
+
+Startup load order is now: 1) emacs-site.elc, 2) ~/.emacs, 3) command
+line switches.  A switch "-s" as the first command line argument
+inhibits loading of emacs-site.elc.
+
+I've also looked at what things are better put in site-init and what
+things are better put in emacs-site and right now I'm thinking that
+all key bindings, load-path changes, and autoloads should go in
+emacs-site while all pure storage loads (and binding of
+site-startup-file) should go in site-init.  You may find a better
+scheme.  I set up load-path in paths.h-dist to be the minimal path
+needed to build emacs, then set my "production" load-path in
+emacs-site.  This seems to work well.  Anyway, enough babble, the
+diffs follow.  Enjoy.
+
+-Barry
+
+NAME: Barry A. Warsaw                USMAIL: National Institute of Standards
+TELE: (301) 975-3460                         and Technology (formerly NBS)
+UUCP: {...}!uunet!cme-durer!warsaw           Rm. B-124, Bldg. 220
+ARPA: warsaw@cme.nist.gov                    Gaithersburg, MD 20899
+
+
+
+--cut here-------------------------------------------------------
+*** startup.el.orig	Wed Aug 30 16:37:27 1989
+--- startup.el	Fri Sep  1 18:20:18 1989
+***************
+*** 48,51 ****
+--- 48,65 ----
+  ; -kill			kill (exit) emacs
+  
++ ;; the following changes/additions have been made to allow site
++ ;; configurable command line arguments.  These mods were distributed
++ ;; by lrs@ai.mit.edu (Lynn Slater) and installed by
++ ;; warsaw@cme.nist.gov (Barry Warsaw) on 30-Aug-1989.
++ 
++ (defvar command-line-hooks nil    ;; lrs 7/31/89
++   "*A list of functions to call to process every unrecognized entry on
++ the command line.  Each function should access the dynamically bound
++ variables argi (the current argument) and command-line-args-left (the
++ remaining arguments) . The function should return non-nil only if it
++ recognizes and processes argi. In this case, the function may consume
++ successive arguments by trimming command-line-args-left (via setq).")
++ 
++ 
+  (setq top-level '(normal-top-level))
+  
+***************
+*** 94,97 ****
+--- 108,122 ----
+  	(init (if noninteractive nil (user-login-name)))
+  	(done nil))
++     ;; load a site-wide "emacs-site" file BEFORE loading user's .emacs file
++     ;; this way we can make site wide changes to environment without having
++     ;; to always rebuild emacs.   1-Sep-1989 baw, warsaw@cme.nist.gov
++     ;; load order: "emacs-site", ~/.emacs, command lines
++     (if (string= (car args) "-s")
++ 	(setq args (cdr args))
++       (load (if (and (boundp 'site-startup-file)
++ 		     site-startup-file)
++ 		site-startup-file
++ 	      "emacs-site")
++ 	    t t))
+      ;; If user has not done su, use current $HOME to find .emacs.
+      (and init (string= init (user-real-login-name))
+***************
+*** 222,228 ****
+  		((string-match "^\\+[0-9]+\\'" argi)
+  		 (setq line (string-to-int argi)))
+  		(t
+! 		 (find-file (expand-file-name argi dir))
+! 		 (or (zerop line)
+! 		     (goto-line line))
+! 		 (setq line 0))))))))
+--- 247,274 ----
+  		((string-match "^\\+[0-9]+\\'" argi)
+  		 (setq line (string-to-int argi)))
++ 
++ ;; modifications made to distribution startup.el as per mods supplied by
++ ;; Lynn Slater (see top of file)
++ ;; 30-Aug-1989 baw
++ ;;
++ ;;		(t
++ ;;		 (find-file (expand-file-name argi dir))
++ ;;		 (or (zerop line)
++ ;;		     (goto-line line))
++ ;;		 (setq line 0))))))))
++ 
+  		(t
+! 		 ;; We have almost exhausted our options. See if the
+! 		 ;; user has made any other command-line options available
+! 		 (let ((hooks command-line-hooks);; lrs 7/31/89
+! 		       (did-hook nil))
+! 		   (while (and hooks (not (and (funcall (car hooks))
+! 					       (setq did-hook t))))
+! 		     (setq hooks (cdr hooks)))
+! 		   (if (not did-hook)
+! 		       ;; Ok, give up and presume that the argument
+! 		       ;; is a file name
+! 		       (find-file (expand-file-name argi dir))
+! 		     (or (zerop line)
+! 			 (goto-line line))
+! 		     (setq line 0))))))))))

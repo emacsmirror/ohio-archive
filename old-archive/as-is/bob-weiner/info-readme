@@ -1,0 +1,127 @@
+From apple!bloom-beacon!tut.cis.ohio-state.edu!ukma!uflorida!novavax!weiner@bbn.com Fri May 19 14:35:28 1989
+To: unix-emacs@bbn.com
+Date: 28 Apr 89 06:10:42 GMT
+From: Bob Weiner <apple!bloom-beacon!tut.cis.ohio-state.edu!ukma!uflorida!novavax!weiner@bbn.com>
+Sender: arpa-unix-emacs-request@bbn.com
+Subject: info-README, command reference (menu) extensions to Info
+Organization: Nova University, Fort Lauderdale, FL
+Source-Info:  From (or Sender) name not authenticated.
+
+
+  Tutorial and Reference for Info File Format 'Command Reference' Extensions
+
+		       Copyright (C) 1989  Bob Weiner
+			       Motorola, Inc.
+			      Applied Research
+
+     May be copied and redistributed under the same terms as GNU Emacs.
+
+				  04/28/89
+
+
+There are two extensions to the GNU Info file format syntax that I have created
+in order to provide the following two types of functions:
+
+ 1) The ability to execute code embedded within a node without actually
+    visiting the node by selecting a reference to the node.
+
+ 2) The ability to have multiple references within a node that execute a named
+    function defined within the node, but that do not visit any nodes.  In
+    fact, no nodes exist for such references.  The Info file validation program
+    will signal errors if any such nodes do exist.
+
+A node reference may be either a menu entry or a cross-reference.  Reference
+names of type 1 are immediately preceded by an '!' character.  Those of type
+two are immediately preceded by an '@' character.  These represent the only
+syntactic changes to the Info file structure, but the new capabilities they
+allow are very powerful.
+
+Note that these initial characters denote reference types, they are not part of
+the reference name (the reference name is the same as the node name to be
+visited, when one exists).
+
+Standard Info References
+************************
+
+* Menu:
+   .
+   .
+   .
+* Description of Ref:		Ref Name:
+* Description of Ref:		Ref Name.
+* Ref Name::
+
+
+* Note:  Description of Note:  Ref Name.
+* Note:  Ref Name::.
+* Note:  Ref Name:.	; Invalid Note format, 2 colons required here
+
+
+<Ref Name> =  ['(' <PATHNAME> ')']<NODE NAME>
+<NODE NAME> = any characters but ":,.\n", case insensitive
+
+
+
+'@' References
+**************
+
+The code embedded in nodes with '@' references always is of the form:
+
+    (setq Info-cmd-menu-expression
+	     '(lambda (ref-name) <EXPRESSION>))
+
+<EXPRESSION> often is a single command invocation that takes one variable
+argument, ref-name.  For example:
+
+    (shell-command ref-name)
+
+would be a valid expression that would be evaluated whenever an '@' reference
+within this node is selected.   It makes a shell call to execute the shell
+command given by the ref-name selected.
+
+'Info-cmd-menu-expression' is a special variable used by the Info function that
+visits node names.  When it encounters an '@' reference, it calls the function
+specified by this variable with a single argument, namely the current reference
+name.
+
+Here is an example of the full text inserted at the end of an Info node which
+is a command menu consisting of '@' references each of whose name is a UNIX
+command:
+
+^L
+execute: (setq Info-cmd-menu-expression
+	       '(lambda (ref-name) (cmd-menus-manual-entry ref-name)))
+
+Note that a '^L' character followed by a newline and then by the string
+"execute:" must precede the actual expression.  This expression sets the
+special variable whose value is the function to call when any of the '@' menu
+entries are selected.  (Note that not all menu entries need be of this type.
+Some could be standard references and other '!' references.  You can mix and
+match freely.)  Selecting one of the '@' references invokes the
+'cmd-menus-manual-entry' function which happens to display the appropriate UNIX
+manual page in a separate Emacs window.
+
+With that little bit of code, you now have a menu-based interface to the entire
+UNIX manual system!
+
+
+'!' References
+**************
+
+These references are more general and closer to the standard Info node
+references.  The only difference is that rather than visiting the referenced
+nodes, they execute the code attached to the nodes.
+
+Note that any node can have code attached to it.  When the node is visited, the
+code is executed.  Of course, the text of the node is also displayed.  This is
+not what one wants when building command menus designed solely to execute Emacs
+or operating system commands, hence the need for the '!' syntactic extension.
+The same node may be referenced both with the '!' syntax and without, the
+latter will visit node and execute its associated code.
+
+
+-- 
+Bob Weiner, Motorola, Inc.,   USENET:  ...!gatech!uflorida!novavax!weiner
+(407) 738-2087
+
+

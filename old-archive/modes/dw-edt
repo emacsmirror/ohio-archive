@@ -1,0 +1,957 @@
+From: wickham@decwet.enet.dec.com (Charlie Wickham, DECWest Engr.)
+Newsgroups: gnu.emacs.bug
+Subject: improved EDT emulation and keypad support for x11term.c
+Message-ID: <8907181803.AA18784@decwrl.dec.com>
+Date: 18 Jul 89 15:03:00 GMT
+Distribution: gnu
+Organization: GNUs Not Usenet
+Lines: 948
+
+Hi....
+
+Here is a new, more faithful version of an emulated EDT. Development
+was based on the original EDT released with GNU. This version works
+with 18.52 and 18.53. We added code to x11term.c to support the LK201
+keypad and its google of keys.
+
+There are 3 parts: stuff for your .emacs, the lisp code, and context diffs
+for x11term.c to support the keypad keys. The diffs are for 18.52. The
+parts are separated by lines of `='. The last two patches in the diff fix a
+problem with decwindows on VMS: VMS DWs really wants the formal parameter
+to XOpenDisplay to be NULL (zero and not a pointer to a null string). This
+fix works on both ultrix and vms.
+
+No documentation is available; we should probably write a texinfo
+file, but don't hold your breath. :-)
+
+Sorry if this is the wrong account to send new features to; I
+couldn't figure out if I should have sent this directly to Stallman or
+to the bugs address. oh well....
+
+charlie
+internet: wickham@decwet.enet.dec.com
+=====================================================
+; Init file for GNU Emacs
+;
+(load "dw-edt" )         ;** Comment out of you don't want our edt-mode
+;
+; vt200 keypad stuff
+;
+(defun vt200-app-keypad-on ()
+   "Send the escape sequence to turn Vt200 application keypad on."
+   (interactive)
+   (send-string-to-terminal "\e>")
+)
+
+(defun vt200-app-keypad-off ()
+   "Send the escape sequence to turn Vt200 application keypad off."
+   (interactive)
+   (send-string-to-terminal "\e=")
+)
+;
+; Other hooks
+(setq suspend-hook ; this gets executed on ^z-like suspend
+   (function (lambda ()
+      ;+ add code here to be executed when suspending
+      (vt200-app-keypad-on)
+      ;
+      (message "Emacs Suspending!")
+      (not (sit-for 0)))))
+
+(setq suspend-resume-hook ; this gets executed when resuming from ^z
+   (function (lambda ()
+      ;+ add code here to be executed when resuming
+      (vt200-app-keypad-off)
+      ;
+      (message (concat "Current default directory is " default-directory))
+      (not (sit-for 0)))))
+
+
+; This hook is where you set up changes you want on startup
+;
+(setq term-setup-hook		   ;!!
+   (function (lambda ()		   ;!!
+      (vt200-app-keypad-off)       ;!! makes Keypad give ESC seq's vs numbers
+      (enable-arrow-keys)          ;** Enable arrow keys 
+      (edt-emulation-on)           ;** Enables EDT-like bindings
+      (vms-screen-editing-keys-on) ;** Enables VMS-like ^a,^b,^e,^u etc.
+      )))                          ;!!
+=========================================================
+;; dw-edt.el
+;; modified version of GNU Emacs emacs_library:[lisp]edt.el
+;; David W. Snow 10/28/88
+;; Benn Schreiber 12/16/88
+;;
+;; David W. Snow 1/31/89 moved items from .emacs to here to
+;; simplify users getting started on Emacs, also made arrow and edit
+;; keys look more like TPU than EDT also changed the PF3 search function
+;; from isearch to somthing that looks more like EDT.
+;; Since the gold-grey keys have a bug I currently have the grey-find
+;; key bound to isearch. Added "two" & "one" commands like TPU
+;; Added TPU-like "include" to include a file.
+;;
+;; F20 is bound to toggle VMS Line Editing Keys ^a,^e,^u,^w etc.
+;; between VMS usage and emacs usage,
+;;
+;; David W. Snow 2/6/89
+;; Changed Gold-3 to be quote, which is similar to EDT's specins
+;;
+;; R. Kim Peterson 2/20/89 changed gold left and right arrows to be indentation
+;;
+;; R. Kim Peterson 2/3/89 changed operation of word operations to more closely 
+mimic edt.
+;; Note: word operations do not use argument-count.
+;; Changed undelete char, word, and line to maintain current position.
+;;
+   (setq dws-edt "0.33") ; version 
+;
+;
+;;---------------------------------------------------------------
+;; Copyright (C) 1986 Free Software Foundation, Inc.
+;;  It started from public domain code by Mike Clarkson
+;;  but has been greatly altered.
+
+;; This file is part of GNU Emacs.
+
+;; GNU Emacs is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY.  No author or distributor
+;; accepts responsibility to anyone for the consequences of using it
+;; or for whether it serves any particular purpose or works at all,
+;; unless he says so in writing.  Refer to the GNU Emacs General Public
+;; License for full details.
+
+;; Everyone is granted permission to copy, modify and redistribute
+;; GNU Emacs, but only under the conditions described in the
+;; GNU Emacs General Public License.   A copy of this license is
+;; supposed to have been given to you along with GNU Emacs so you
+;; can know your rights and responsibilities.  It should be in a
+;; file named COPYING.  Among other things, the copyright notice
+;; and this notice must be preserved on all copies.
+;;
+;; Bug with GOLD EDT keypad fixed by temp hack to use LK201 codes --- dws
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Several changes made to make GOLD function keys work, and the
+;; keypad to look more like EDT or TPU in EDT mode.
+;; New functions added include:
+;;       (toggle-screen-width) Which switches from 80 to 132 column and back
+;;       (delete-to-bol) Which acts like DEC's ^u
+;;       (vms-screen-editing-keys-on) for ^a^b^e^u^w^l
+;;       (exit-emacs) more like exit in TPU/EDT
+;;       (toggle-overwrite-mode) toggle between insert/overstrike mode
+;;       (insert-ff) insert a form feed
+;;
+
+(require 'keypad)
+
+(defvar edt-last-deleted-lines ""
+  "Last text deleted by an EDT emulation line-delete command.")
+(defvar edt-last-deleted-words ""
+  "Last text deleted by an EDT emulation word-delete command.")
+(defvar edt-last-deleted-chars ""
+  "Last text deleted by an EDT emulation character-delete command.")
+(defvar edt-search-string ""
+  "Last string searched for by edt-like search command.")
+
+(defun forward-to-word (num)
+  "Move to next word-beginning."
+  (interactive "p")
+  (if (or (char-equal (char-syntax (following-char)) ?w) (char-equal 
+(char-syntax (following-char)) ?_))
+    (forward-word 2)
+    (forward-word 1))
+  (forward-word -1))
+
+(defun backward-to-word (num)
+  "Move back to word-beginning."
+  (interactive "p")
+  (if (and
+       (or (char-equal (char-syntax (preceding-char)) ?w) (char-equal 
+(char-syntax (preceding-char)) ?_))
+       (or (char-equal (char-syntax (following-char)) ?w) (char-equal 
+(char-syntax (following-char)) ?_)))
+      (progn (forward-word 1)(forward-word -1))
+      (progn (forward-word 1)(forward-word -2))))
+
+(defun delete-current-word (num)
+  "Delete one or specified number of words after point.
+They are saved for the EDT undelete-words command."
+  (interactive "p")
+  (let ((beg (point)))
+    (forward-to-word num)
+    (setq edt-last-deleted-words
+	  (buffer-substring beg (point)))
+    (delete-region beg (point))))
+
+(defun delete-previous-word (num)
+  "Delete one or specified number of words before point.
+They are saved for the EDT undelete-words command."
+  (interactive "p")
+  (let ((beg (point)))
+    (backward-to-word num)
+    (setq edt-last-deleted-words
+	  (buffer-substring (point) beg))
+    (delete-region beg (point))))
+
+(defun undelete-words ()
+  "Yank words deleted by last EDT word-deletion command and position at 
+beginning."
+  (interactive)
+  (let ((beg (point)))
+  (insert edt-last-deleted-words)
+  (goto-char beg)))
+
+(defun edt-like-search (string)
+  "EDT-like prompt and search."
+  (interactive "sSearch for: ")
+  (setq edt-search-string string)
+  (if (string= edt-direction-string " ADVANCE")
+      (search-forward edt-search-string)
+  ;else
+      (search-backward edt-search-string)
+  )
+)
+
+(defun two ()
+ "TPU-like split window"
+ (interactive)
+ (split-window-vertically)
+ (setq edt-window-string " MANY")
+)
+
+(defun one ()
+ "TPU-like one window"
+ (interactive)
+ (delete-other-windows)
+ (setq edt-window-string " ONE")
+)
+
+(defun toggle-window ()
+  "TPU-like window toggling mechanism"
+  (interactive)
+  (if (string= edt-window-string " ONE")
+       (split-window-vertically)
+  ;else
+       (delete-other-windows)
+  )
+  (if (string= edt-window-string " ONE")
+       (setq edt-window-string " MANY")
+  ;else
+       (setq edt-window-string " ONE")
+  )
+)
+
+(defun include (file)
+ "TPU-like include file"
+ (interactive "fInclude file:")
+ (insert-file file)
+)
+
+(defun edt-like-research ()
+  "EDT-like prompt and search, to repeat the search."
+  (interactive)
+  (if (string= edt-direction-string " ADVANCE")
+      (search-forward edt-search-string)
+  ;else
+      (search-backward edt-search-string)
+  )
+)
+
+(defun delete-current-line (num)
+  "Delete one or specified number of lines after point.
+This includes the newline character at the end of each line.
+They are saved for the EDT undelete-lines command."
+  (interactive "p")
+  (let ((beg (point)))
+    (forward-line num)
+    (if (not (eq (preceding-char) ?\n))
+	(insert "\n"))
+    (setq edt-last-deleted-lines
+	  (buffer-substring beg (point)))
+    (delete-region beg (point))))
+
+(defun delete-to-eol (num)
+  "Delete text up to end of line.
+With argument, delete up to to Nth line-end past point.
+They are saved for the EDT undelete-lines command."
+  (interactive "p")
+  (let ((beg (point)))
+    (forward-char 1)
+    (end-of-line num)
+    (setq edt-last-deleted-lines
+	  (buffer-substring beg (point)))
+    (delete-region beg (point))))
+
+(defun delete-current-char (num)
+  "Delete one or specified number of characters after point.
+They are saved for the EDT undelete-chars command."
+  (interactive "p")
+  (setq edt-last-deleted-chars
+	(buffer-substring (point) (min (point-max) (+ (point) num))))
+  (delete-region (point) (min (point-max) (+ (point) num))))
+
+(defun delete-previous-char (num)
+  "Delete one or specified number of characters before point.
+They are saved for the EDT undelete-chars command."
+  (interactive "p")
+  (setq edt-last-deleted-chars
+	(buffer-substring (max (point-min) (- (point) num)) (point)))
+  (delete-region (max (point-min) (- (point) num)) (point)))
+
+(defun undelete-lines ()
+  "Yank lines deleted by last EDT line-deletion command."
+  (interactive)
+  (let ((beg (point)))
+    (insert edt-last-deleted-lines)
+    (goto-char beg)))
+
+(defun undelete-chars ()
+  "Yank characters deleted by last EDT character-deletion command."
+  (interactive)
+  (let ((beg (point)))
+    (insert edt-last-deleted-chars)
+    (goto-char beg)))
+
+(defun next-end-of-line (num)
+  "Move to end of line; if at end, move to end of next line.
+Accepts a prefix argument for the number of lines to move."
+  (interactive "p")
+  (forward-char)
+  (end-of-line num))
+
+(defun previous-end-of-line (num)
+  "Move EOL upward.
+Accepts a prefix argument for the number of lines to move."
+  (interactive "p")
+  (end-of-line (- 1 num)))
+
+(defun backward-line (num)
+  "Move point to start of previous line.
+Prefix argument serves as repeat-count."
+  (interactive "p")
+  (forward-line (- num)))
+
+(defun scroll-window-down (num)
+  "Scroll the display down a window-full.
+Accepts a prefix argument for the number of window-fulls to scroll."
+  (interactive "p")
+  (scroll-down (- (* (window-height) num) 2)))
+
+(defun scroll-window-up (num)
+  "Scroll the display up a window-full.
+Accepts a prefix argument for the number of window-fulls to scroll."
+  (interactive "p")
+  (scroll-up (- (* (window-height) num) 2)))
+
+(defun next-paragraph (num)
+  "Move to beginning of the next indented paragraph.
+Accepts a prefix argument for the number of paragraphs."
+  (interactive "p")
+  (while (> num 0)
+    (next-line 1)
+    (forward-paragraph)
+    (previous-line 1)
+    (if (eolp) (next-line 1))
+    (setq num (1- num))))
+
+(defun previous-paragraph (num)
+  "Move to beginning of previous indented paragraph.
+Accepts a prefix argument for the number of paragraphs."
+  (interactive "p")
+  (while (> num 0)
+    (backward-paragraph)
+    (previous-line 1)
+    (if (eolp) (next-line 1))
+    (setq num (1- num))))
+
+(defun move-to-beginning ()
+  "Move cursor to the beginning of buffer, but don't set the mark."
+  (interactive)
+  (goto-char (point-min)))
+
+(defun move-to-end ()
+  "Move cursor to the end of buffer, but don't set the mark."
+  (interactive)
+  (goto-char (point-max)))
+
+(defun goto-percent (perc)
+  "Move point to ARG percentage of the buffer."
+  (interactive "NGoto-percentage: ")
+  (if (or (> perc 100) (< perc 0))
+      (error "Percentage %d out of range 0 < percent < 100" perc)
+    (goto-char (/ (* (point-max) perc) 100))))
+
+(defun update-mode-line ()
+  "Make sure mode-line in the current buffer reflects all changes."
+  (set-buffer-modified-p (buffer-modified-p))
+  (sit-for 0))
+
+(defun advance-direction ()
+  "Set EDT Advance mode so keypad commands move forward."
+  (interactive)
+  (setq edt-direction-string " ADVANCE")
+;  I search has been replaced by an edt-like search
+;  (define-key function-keymap "\eOR" 'isearch-forward) ; PF3
+;  (global-set-key  "\eOP\eOR" 'isearch-forward)        ; Gold "PF3"
+  (define-key function-keymap "8" 'scroll-window-up)   ; "8"
+  (define-key function-keymap "7" 'next-paragraph)     ; "7"
+  (define-key function-keymap "1" 'forward-to-word)    ; "1"
+  (define-key function-keymap "2" 'next-end-of-line)   ; "2"
+  (define-key function-keymap "3" 'forward-char)       ; "3"
+  (define-key function-keymap "0" 'forward-line)       ; "0"
+  (define-key function-keymap "f" 'isearch-forward)    ; Find
+  (update-mode-line))
+
+(defun backup-direction ()
+  "Set EDT Backup mode so keypad commands move backward."
+  (interactive)
+  (setq edt-direction-string " BACKUP")
+;  I search has been replaced by an edt-like search
+;  (define-key function-keymap "\eOR" 'isearch-backward); PF3
+;  (global-set-key  "\eOP\eOR" 'isearch-backward)       ; Gold "PF3"
+  (define-key function-keymap "8" 'scroll-window-down) ; "8"
+  (define-key function-keymap "7" 'backward-page)      ; "7"
+  (define-key function-keymap "1" 'backward-to-word)   ; "1"
+  (define-key function-keymap "2" 'previous-end-of-line); "2"
+  (define-key function-keymap "3" 'backward-char)      ; "3"
+  (define-key function-keymap "0" 'backward-line)      ; "0"
+  (define-key function-keymap "f" 'isearch-backward)   ; Find
+  (update-mode-line))
+
+(defun beginning-of-window ()
+  "Home cursor to top of window."
+  (interactive)
+  (move-to-window-line 0))
+
+(defun line-to-bottom-of-window ()
+  "Move the current line to the top of the window."
+  (interactive)
+  (recenter -1))
+
+(defun line-to-top-of-window ()
+  "Move the current line to the top of the window."
+  (interactive)
+  (recenter 0))
+
+(defun case-flip-character (num)
+  "Change the case of the character under the cursor.
+Accepts a prefix argument of the number of characters to invert."
+  (interactive "p")
+  (while (> num 0)
+    (funcall (if (<= ?a (following-char))
+		 'upcase-region 'downcase-region)
+	     (point) (1+ (point)))
+    (forward-char 1)
+    (setq num (1- num))))
+
+(defun indent-or-fill-region ()
+  "Fill region in text modes, indent region in programming language modes."
+  (interactive)
+  (if (string= paragraph-start "^$\\|^")
+      (indent-region (point) (mark) nil)
+    (fill-region (point) (mark))))
+
+(defun indent-positive ()
+  "Indent region by four in all modes."
+  (interactive)
+  (if (> (point) (mark))
+      (indent-rigidly (mark) (point) 4)
+    (indent-rigidly (point) (mark) 4)))
+
+(defun indent-negative ()
+  "Indent region by negative four in all modes."
+  (interactive)
+  (if (> (point) (mark))
+      (indent-rigidly (mark) (point) -4)
+    (indent-rigidly (point) (mark) -4)))
+
+(defun mark-section-wisely ()
+  "Mark the section in a manner consistent with the major-mode.
+Uses mark-defun for emacs-lisp, lisp,
+mark-c-function for C,
+and mark-paragraph for other modes."
+  (interactive)
+  (cond  ((eq major-mode 'emacs-lisp-mode)
+	  (mark-defun))
+	 ((eq major-mode 'lisp-mode)
+	  (mark-defun))
+	 ((eq major-mode 'c-mode)
+	  (mark-c-function))
+	 (t (mark-paragraph))))
+
+(defun exit-or-kill( )
+   "An exit from both recursive and regular modes."
+   (interactive)
+  (if (not (eq (recursion-depth) 0))
+    (exit-recursive-edit)
+  ;else
+    (save-buffers-kill-emacs)
+  )
+)
+
+(defun quit-emacs ()
+   "Exits Emacs by saving buffers and exiting cleanly."
+   (interactive)
+   (exit-or-kill))
+
+
+(defun toggle-screen-width ()
+  "Switch a VT200 (and maybe a VT100) between 80 and 132 columns"
+  (interactive)
+  (if (= (screen-width) 80)
+      (progn (send-string-to-terminal "\e[?3h")
+	     (set-screen-width 132))
+    (send-string-to-terminal "\e[?3l")
+    (set-screen-width 80))
+  (message "Terminal width is now %s." (screen-width)))
+
+(defun delete-to-bol (num)
+  "Delete text up to beginning of line.
+With argument, delete up to to Nth line-end past point.
+They are saved for the EDT undelete-lines command."
+  (interactive "p")
+  (let ((beg (point)))
+;    (forward-char 1)
+    (beginning-of-line num)
+    (setq edt-last-deleted-lines
+	  (buffer-substring beg (point)))
+    (delete-region beg (point))))
+
+(defun toggle-overwrite-mode ()
+   "Switches in and out of overwrite mode"
+   (interactive)
+   (if overwrite-mode
+       (overwrite-mode 0)
+       (overwrite-mode 1)))
+
+(defun insert-ff ()
+   "Inserts a form feed"
+   (interactive)
+   (insert "\f"))
+; 
+; Save the state of old VMS keys
+;
+   (setq edt-mode-old-c-a (lookup-key global-map "\C-a"))
+   (setq edt-mode-old-c-e (lookup-key global-map "\C-e"))
+   (setq edt-mode-old-c-h (lookup-key global-map "\C-h"))
+   (setq edt-mode-old-c-l (lookup-key global-map "\C-l"))
+   (setq edt-mode-old-c-u (lookup-key global-map "\C-u"))
+   (setq edt-mode-old-c-w (lookup-key global-map "\C-w"))
+
+(defun vms-screen-editing-keys-off ()
+    "Returns the key bindings back to original, before
+vms-screen-editing-keys-on was done."
+    (interactive)
+    (global-set-key "\C-a" edt-mode-old-c-a)
+    (global-set-key "\C-b" edt-mode-old-c-b)
+    (global-set-key "\C-e" edt-mode-old-c-e)
+    (global-set-key "\C-h" edt-mode-old-c-h)
+    (global-set-key "\C-l" edt-mode-old-c-l)
+    (global-set-key "\C-u" edt-mode-old-c-u)
+    (global-set-key "\C-w" edt-mode-old-c-w)
+    (global-set-key "\e[34~" 'vms-screen-editing-keys-on) ; F20
+    (message "VMS  line editing keys are now off!")(sit-for 0)
+)
+
+(defun vms-screen-editing-keys-on ()
+   "Turns on the VMS editing keys ^a,^e,^h,^l,^u,^w Etc. 
+and remaps the old binding to GOLD and the old key"
+   (interactive)
+   ;
+   (global-set-key "\eOP\C-a" (lookup-key global-map "\C-a")) ; ^a to Gold ^a
+   (global-set-key "\C-a" 'toggle-overwrite-mode)             ; ^a
+   ;
+   (setq edt-mode-old-c-b (lookup-key global-map "\C-b"))
+   (global-set-key "\C-b" 'repeat-complex-command)            ; ^b
+   ;
+   (global-set-key "\eOP\C-e" (lookup-key global-map "\C-e")) ; ^e to Gold ^e
+   (global-set-key "\C-e" 'end-of-line)                       ; ^e
+   ;
+   ;  Don't want to mess up help
+;   (global-set-key "\eOP\C-h" (lookup-key global-map "\C-h")) ; ^h to Gold ^h
+;   (global-set-key "\C-h" 'beginning-of-line)                 ; ^h
+   ;
+   (global-set-key "\C-l" (lookup-key global-map "\C-l"))     ; ^l to Gold ^l
+   (global-set-key "\C-l" 'insert-ff)                         ; ^l
+   ;
+   (global-set-key "\eOP\C-u" (lookup-key global-map "\C-u")) ; ^u to Gold ^u
+   (global-set-key "\C-u" 'delete-to-bol)                     ; ^u
+   ;
+   (global-set-key "\C-w" (lookup-key global-map "\C-w"))     ; ^w to Gold ^w
+   (global-set-key "\C-w" 'redraw-display)                    ; ^w
+   ;   
+   (global-set-key "\e[34~" 'vms-screen-editing-keys-off) ; F20
+   (message "VMS  line editing keys are now on!")(sit-for 0)
+   )   
+
+
+;;; Key Bindings
+(defun edt-emulation-on ()
+  "Begin emulating DEC's EDT editor.
+Certain keys are rebound; including nearly all keypad keys.
+Use \\[edt-emulation-off] to undo all rebindings except the keypad keys.
+Note that this function does not work if called directly from the .emacs file.
+Instead, the .emacs file should do (setq term-setup-hook 'edt-emulation-on)
+Then this function will be called at the time when it will work."
+  (interactive)
+  (advance-direction)
+  (setq edt-window-string " ONE")
+  (edt-bind-gold-keypad)	;Must do this *after* $TERM.el is loaded
+  (setq edt-mode-old-c-\\ (lookup-key global-map "\C-\\"))
+  (global-set-key "\C-\\" 'quoted-insert)
+  (setq edt-mode-old-delete (lookup-key global-map "\177"))
+  (global-set-key "\177" 'delete-previous-char)      ;"Delete"
+  (setq edt-mode-old-lisp-delete (lookup-key emacs-lisp-mode-map "\177"))
+  (define-key emacs-lisp-mode-map "\177" 'delete-previous-char) ;"Delete"
+  (define-key lisp-mode-map "\177" 'delete-previous-char) ;"Delete"
+  (setq edt-mode-old-linefeed (lookup-key global-map "\C-j"))
+  (global-set-key "\C-j" 'delete-previous-word)           ;"LineFeed"
+  (define-key esc-map "?" 'apropos))                      ;"<ESC>?"
+
+(defun edt-emulation-off ()
+  "Return from EDT emulation to normal Emacs key bindings.
+The keys redefined by \\[edt-emulation-on] are given their old definitions."
+  (interactive)
+  (setq edt-direction-string nil)
+  (setq edt-window-string nil)
+  (global-set-key "\C-\\" edt-mode-old-c-\\)
+  (global-set-key "\177" edt-mode-old-delete)		;"Delete"
+  (define-key emacs-lisp-mode-map "\177" edt-mode-old-lisp-delete) ;"Delete"
+  (define-key lisp-mode-map "\177" edt-mode-old-lisp-delete) ;"Delete"
+  (global-set-key "\C-j" edt-mode-old-linefeed))           ;"LineFeed"
+
+(define-key function-keymap "u" 'previous-line)		;Up arrow
+(define-key function-keymap "d" 'next-line)		;down arrow
+(define-key function-keymap "l" 'backward-char)		;left arrow
+(define-key function-keymap "r" 'forward-char)		;right arrow
+(define-key function-keymap "h" 'beginning-of-window)	;home
+;
+(define-key function-keymap "I" 'yank)                  ; Insert Here
+(define-key function-keymap "k" 'kill-region)           ; Remove
+(define-key function-keymap "s" 'set-mark-command)      ; Select
+(define-key function-keymap "P" 'scroll-window-down)    ; Prev Screen
+(define-key function-keymap "N" 'scroll-window-up)      ; Next Screen
+;
+;(define-key function-keymap "\C-f" ');F6
+;(define-key function-keymap "\C-g" ');F7
+;(define-key function-keymap "\C-h" ');F8
+;(define-key function-keymap "\C-i" ');F9
+(define-key function-keymap "\C-j" 'exit-or-kill)           ; F10 (exit)
+(define-key function-keymap "\C-l" 'beginning-of-line)	    ; F12 (backspace)
+(define-key function-keymap "\C-m" 'delete-previous-word)   ; F13 (linefeed) 
+(define-key function-keymap "\C-n" 'tab-to-tab-stop)        ; F14
+
+(define-key function-keymap "?" 'help-for-help)	            ; help
+(define-key help-map "\e28~"  'help-for-help)
+(define-key function-keymap "\C-q" 'other-window)           ; F17
+(define-key function-keymap "\C-r" 'goto-line)              ; F18
+(define-key function-keymap "\C-s" 'switch-to-buffer)       ; F19
+;(define-key function-keymap "\C-t" 'toggle-window)         ; F20
+(define-key function-keymap "x" 'execute-extended-command)  ; DO
+
+; keys (8,7,1,2,3,0,find) handled in advacnce and back
+(define-key function-keymap "\C-b" 'describe-key)	;PF2
+(define-key function-keymap "\C-c" 'edt-like-research)  ;PF3
+(define-key function-keymap "\C-d" 'delete-current-line);PF4
+(define-key function-keymap "9" 'append-to-buffer)	;9 keypad key, etc.
+(define-key function-keymap "-" 'delete-current-word)
+(define-key function-keymap "4" 'advance-direction)
+(define-key function-keymap "5" 'backup-direction)
+(define-key function-keymap "6" 'kill-region)
+(define-key function-keymap "," 'delete-current-char)
+(define-key function-keymap "." 'set-mark-command)
+(define-key function-keymap "e" 'newline)		; enter key
+(define-key function-keymap "\C-a" 'GOLD-prefix)	;PF1 ("gold")
+
+(setq GOLD-map (make-keymap))
+(fset 'GOLD-prefix GOLD-map)
+
+(defvar GOLD-map nil
+   "GOLD-map maps the function keys on the VT100 keyboard preceeded
+by the PF1 key.  GOLD is the ASCII the 7-bit escape sequence <ESC>OP.")
+
+(defun define-keypad-key (keymap function-keymap-slot definition)
+  (let ((function-key-sequence (function-key-sequence function-keymap-slot)))
+    (if function-key-sequence
+	(define-key keymap function-key-sequence definition))))
+
+;;Bind GOLD/Keyboard keys
+
+(define-key GOLD-map "\C-g"  'keyboard-quit)            ; just for safety
+(define-key GOLD-map "\177" 'delete-window)             ;"Delete"
+(define-key GOLD-map "\C-m" 'newline-and-indent)        ;"Return"
+(define-key GOLD-map " " 'undo)				;"Spacebar"
+(define-key GOLD-map "%" 'goto-percent)                 ; "%"
+(define-key GOLD-map "=" 'goto-line)                    ; "="
+(define-key GOLD-map "`" 'what-line)                    ; "`"
+(define-key GOLD-map "]" 'toggle-screen-width)          ; "]"
+;(define-key GOLD-map "\C-\\" 'split-window-vertically) ; "Control-\"
+
+; GOLD letter combinations:
+(define-key GOLD-map "b" 'buffer-menu)                  ; "b"
+(define-key GOLD-map "B" 'buffer-menu)                  ; "B"
+(define-key GOLD-map "d" 'delete-window)                ; "d"
+(define-key GOLD-map "D" 'delete-window)                ; "D"
+(define-key GOLD-map "e" 'compile)                      ; "e"
+(define-key GOLD-map "E" 'compile)                      ; "E"
+(define-key GOLD-map "f" 'find-file)                    ; "f"
+(define-key GOLD-map "F" 'find-file)                    ; "F"
+(define-key GOLD-map "i" 'insert-file)                  ; "i"
+(define-key GOLD-map "I" 'insert-file)                  ; "I"
+(define-key GOLD-map "l" 'goto-line)                    ; "l"
+(define-key GOLD-map "L" 'goto-line)                    ; "L"
+(define-key GOLD-map "m" 'save-some-buffers)		; "m"
+(define-key GOLD-map "M" 'save-some-buffers)		; "m"
+(define-key GOLD-map "n" 'next-error)                           ; "n"
+(define-key GOLD-map "N" 'next-error)                           ; "N"
+(define-key GOLD-map "o" 'switch-to-buffer-other-window)        ; "o"
+(define-key GOLD-map "O" 'switch-to-buffer-other-window)        ; "O"
+(define-key GOLD-map "r" 'query-replace)                        ; "r"
+(define-key GOLD-map "R" 'query-replace)                        ; "R"
+(define-key GOLD-map "s" 'save-buffer)                          ; "s"
+(define-key GOLD-map "S" 'save-buffer)                          ; "S"
+(define-key GOLD-map "v" 'find-file-other-window)               ; "v"
+(define-key GOLD-map "V" 'find-file-other-window)               ; "V"
+(define-key GOLD-map "w" 'write-file)                           ; "w"
+(define-key GOLD-map "W" 'write-file)                   ; "W"
+;(define-key GOLD-map "z" 'shrink-window)                 ; "z"
+;(define-key GOLD-map "Z" 'shrink-window)                 ; "z"
+
+;Bind GOLD/Keypad keys
+(defun edt-bind-gold-keypad ()
+  "Define GOLD EDT function on keypad"
+  (interactive)
+  (global-set-key  "\eOP\eOA" 'line-to-top-of-window)   ; "up-arrow"
+  (global-set-key  "\eOP\eOB" 'line-to-bottom-of-window); "down-arrow"
+  (global-set-key  "\eOP\eOD" 'indent-negative)         ; "left-arrow"
+  (global-set-key  "\eOP\eOC" 'indent-positive)         ; "right-arrow"
+  (global-set-key  "\eOP\eOQ" 'describe-function)	; "PF2"
+  (global-set-key  "\eOP\eOR" 'edt-like-search)         ; "PF3"
+  (global-set-key  "\eOP\eOS" 'undelete-lines)          ; "PF4"
+  (global-set-key  "\eOP\eOp" 'open-line)               ; "0"
+  (global-set-key  "\eOP\eOq" 'case-flip-character)     ; "1"
+  (global-set-key  "\eOP\eOr" 'delete-to-eol)           ; "2"
+  (global-set-key  "\eOP\eOs" 'quote)                   ; "3"
+  (global-set-key  "\eOP\eOt" 'move-to-end)             ; "4"
+  (global-set-key  "\eOP\eOu" 'move-to-beginning)       ; "5"
+  (global-set-key  "\eOP\eOv" 'yank)	                ; "6"
+  (global-set-key  "\eOP\eOw" 'execute-extended-command); "7"
+  (global-set-key  "\eOP\eOx" 'indent-or-fill-region)   ; "8"
+  (global-set-key  "\eOP\eOy" 'replace-regexp)          ; "9"
+  (global-set-key  "\eOP\eOm" 'undelete-words)          ; "-"
+  (global-set-key  "\eOP\eOl" 'undelete-chars)          ; ","
+  (global-set-key  "\eOP\eOn" 'keyboard-quit)           ; "." ;almost a reset
+  (global-set-key  "\eOP\eOM" 'query-replace)           ;"ENTER"
+  )
+;; Make direction of motion show in mode line
+;; while EDT emulation is turned on.
+;; Note that the keypad is always turned on when in Emacs.
+(or (assq 'edt-direction-string minor-mode-alist)
+    (setq minor-mode-alist (cons '(edt-direction-string edt-direction-string)
+				 minor-mode-alist)))
+=============================================================
+    
+*** x11term.c.orig	Sat Feb  4 14:06:53 1989
+--- x11term.c	Tue Jun 20 08:32:48 1989
+***************
+*** 1203,1208
+  		return("-1");
+  	}
+  }
+  #endif /* not sun */
+  	
+  internal_socket_read(bufp, numchars)
+
+--- 1203,1254 -----
+  		return("-1");
+  	}
+  }
++ /* dws 2/7/89 */
++ char *stringKeypadVal(keycode)
++ 	KeySym keycode;
++ {
++ 	switch (keycode) {
++ 	case XK_KP_Enter:
++ 		return("M");
++ 	case XK_KP_F1:
++ 		return("P");
++ 	case XK_KP_F2:
++ 		return("Q");
++ 	case XK_KP_F3:
++ 		return("R");
++ 	case XK_KP_F4:
++ 		return("S");
++ 	case XK_KP_Separator:
++ 		return("l");
++ 	case XK_KP_Subtract:
++ 		return("m");
++ 	case XK_KP_Decimal:
++ 		return("n");
++ 	case XK_KP_0:
++ 		return("p");
++ 	case XK_KP_1:
++ 		return("q");
++ 	case XK_KP_2:
++ 		return("r");
++ 	case XK_KP_3:
++ 		return("s");
++ 	case XK_KP_4:
++ 		return("t");
++ 	case XK_KP_5:
++ 		return("u");
++ 	case XK_KP_6:
++ 		return("v");
++ 	case XK_KP_7:
++ 		return("w");
++ 	case XK_KP_8:
++ 		return("x");
++ 	case XK_KP_9:
++ 		return("y");
++ 	default:
++ 		return ("-1");
++ 	}
++ }
++ /* end dws 2/7/89 */
+  #endif /* not sun */
+  
+  internal_socket_read(bufp, numchars)
+***************
+*** 1204,1210
+  	}
+  }
+  #endif /* not sun */
+! 	
+  internal_socket_read(bufp, numchars)
+  	register unsigned char *bufp;
+  	register int numchars;
+
+--- 1250,1256 -----
+  }
+  /* end dws 2/7/89 */
+  #endif /* not sun */
+! 
+  internal_socket_read(bufp, numchars)
+  	register unsigned char *bufp;
+  	register int numchars;
+***************
+*** 1337,1342
+  #endif /* sun */
+  	nbytes = strlen(mapping_buf);
+        }
+        else {
+  	switch (keysym) {
+  	case XK_Left:
+
+--- 1383,1393 -----
+  #endif /* sun */
+  	nbytes = strlen(mapping_buf);
+        }
++ 		else if (IsPFKey(keysym) || IsKeypadKey(keysym)) {
++ 		    strcpy(mapping_buf,"\033O");
++ 		    strcat(mapping_buf,stringKeypadVal(keysym));
++ 		    nbytes = strlen(mapping_buf);
++ 		}
+        else {
+  	switch (keysym) {
+  	      case XK_Left:
+***************
+*** 1339,1345
+        }
+        else {
+  	switch (keysym) {
+! 	case XK_Left:
+  	  strcpy(mapping_buf,"\002");
+  	  nbytes = 1;
+  	  break;
+
+--- 1390,1426 -----
+  		}
+        else {
+  	switch (keysym) {
+! 	      case XK_Left:
+! 		strcpy(mapping_buf,"\033[D");
+! 		nbytes = 3;
+! 		break;
+! 	      case XK_Right:
+! 		strcpy(mapping_buf,"\033[C");
+! 		nbytes = 3;
+! 		break;
+! 	      case XK_Up:
+! 		strcpy(mapping_buf,"\033[A");
+! 		nbytes = 3;
+! 		break;
+! 	      case XK_Down:
+! 		strcpy(mapping_buf,"\033[B");
+! 		nbytes = 3;
+! 		break;
+! 	      case XK_Prior:
+! 		strcpy(mapping_buf,"\033[5~");
+! 		nbytes = 4;
+! 		break;
+! 	      case XK_Next:
+! 		strcpy(mapping_buf,"\033[6~");
+! 		nbytes = 4;
+! 		break;
+! 	      case DXK_Remove:
+! 		strcpy(mapping_buf,"\033[3~");
+! 		nbytes = 4;
+! 		break;
+! 	    } /* switch */
+! /* dws 2/6/89 end of keypad stuff */
+! /* case XK_Left:
+  	  strcpy(mapping_buf,"\002");
+  	  nbytes = 1;
+  	  break;
+***************
+*** 1356,1361
+  	  nbytes = 1;
+  	  break;
+  	}
+        }
+        if (nbytes) {
+  	if (event.xkey.state & Mod1Mask)
+
+--- 1437,1443 -----
+  	  nbytes = 1;
+  	  break;
+  	}
++ */
+        }
+        if (nbytes) {
+  	if (event.xkey.state & Mod1Mask)
+***************
+*** 1493,1499
+  	int  ix;
+  	
+  
+! 	vardisplay = (alternate_display ? alternate_display : "");
+  	if (!vardisplay) {
+  		fprintf (stderr, "DISPLAY environment variable must be set\n");
+  		exit (-200);
+
+--- 1575,1582 -----
+  	int  ix;
+  	
+  
+! 	vardisplay = (alternate_display ? alternate_display : 0);
+! /*
+  	if (!vardisplay) {
+  		fprintf (stderr, "DISPLAY environment variable must be set\n");
+  		exit (-200);
+***************
+*** 1498,1503
+  		fprintf (stderr, "DISPLAY environment variable must be set\n");
+  		exit (-200);
+  	}
+  
+  	XXdisplay = XOpenDisplay (vardisplay);
+  	if (XXdisplay == (Display *) 0) {
+
+--- 1581,1587 -----
+  		fprintf (stderr, "DISPLAY environment variable must be set\n");
+  		exit (-200);
+  	}
++ */
+  
+  	XXdisplay = XOpenDisplay (vardisplay);
+  	if (XXdisplay == (Display *) 0) {

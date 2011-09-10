@@ -1,0 +1,577 @@
+This is the NEWS file for pcl-cvs, an Elisp front-end to CVS. -*- text -*-
+
+Changes from 2.9.7:
+
+* The raw CVS messages that appear in *cvs* sometimes now use the
+  `cvs-msg-face' so you can play with their appearance.
+
+* The Copyright has been transfered to the FSF and the copyright message
+  has been (finally) removed.
+
+* Hooked into after-save-hook to change the entry of a file to MODIFIED as
+  soon as you save it.  It's not 100% correct since the "new" content might
+  be the same as the one in the repository (f.ex. you manually reverted
+  changes), but it's usually convenient.
+
+* integration with VC is yet a little more better.
+
+* cvs-mode-commit (bound to `c') now takes a C-u prefix to tell it whether
+  or not to erase+init (i.e. setup) the *cvs-commit* buffer.  By default `c'
+  doesn't do the setup and `C-u c' does, but this can be inverted by setting
+  cvs-edit-setup-invert.  cvs-mode-commit-setup (bound to `C') always does
+  the setup.  By default the setup includes cvs-edit-insert-changelog
+  (mirroring the old `C' behavior), but this can be changed with the
+  cvs-edit-hook.
+
+* cvs-mode-find-file now also assumes the role of the late cvs-mouse-find-file.
+
+* The menu has been simplified.  Most notably mark and unmark have disappeared
+  since you can just click on the status word (modified/added/...) instead.
+
+* cvs-buffer-name-alist's setting for "message" has been changed to accommodate
+  for the new interaction between PCL-CVS and cvs-edit.  This shouldn't impact
+  anyone except for people who have changed their cvs-buffer-name-alist.
+
+* cvs-erase-input-buffer has disappeared.
+
+* The messages indicating conflicts of "mode" are turned into `Conflict'
+  and are differentiated by their subtype:
+  - a locally modified file removed in the repo is marked `modified'.
+  - a locally removed file modified in the repo is marked `removed'.
+  - a locally added file added in the repo is marked `added'.
+  It's not perfect but is a little cleaner than before (where it was just
+  `Conflict' + message).
+
+* cvs-edit-add-to-changelog can be used to add the current log message
+  to a ChangeLog file.  It's the opposite of cvs-edit-insert-changelog
+  and is also rather crude (it's a simple wrapper around
+  vc-comment-to-change-log).
+
+* cvs-edit-insert-cvs-template can be used (on cvs-edit-hook typically)
+  to insert CVS' CVS/Template file (specified via CVSROOT/rcsinfo).
+  It's very crude and probably doesn't work for non-C/S CVS.
+
+* cvs-edit-hook replaces cvs-edit-mode-hook.
+
+* You can now set `cvs-edit-keep-buffer' to t if you prefer the *cvs-commit*
+  buffer to stay around instead of being hidden after `cvs-edit-done'.
+
+* cvs-edit-use-vc-log has been removed.  You can't use cvs-edit without VC
+  any more.
+
+* cvs-edit.el has no dependence on PCL-CVS any more.  You could even use it as
+  a replacement for VC-Log if you want (with a little bit of VC hacking).
+
+Changes from 2.9.6:
+
+* the prefix key handling is a bit more consistent with the flags handling:
+  a negative argument is now used to force querying and setting the value.
+  At the same time, the boundaries have been changed, so that it now works like
+  this:
+	N    = select N'th default (as before)
+	-N   = query and set N'th default (used to be N+4)
+	N+10 = query, set and select permanently (used to be N+8)
+
+* pcl-cvs should now always ensure that at least one directory entry
+  (the `.') is always displayed, no matter what auto-remove is used.
+  Also there are two new auto-remove settings: 'delayed and 'status.
+  'delayed auto-removes entries just before running the next command.
+  'status only auto-removes entries after cvs-(mode-)status.
+
+* C-u C-u M-x cvs-(examine|status|update) forces the creation of a new
+  *cvs* buffer, even if there's already another one showing the same directory.
+
+* cvs-mode-kill-buffers.  Should kill all buffers created from this *cvs*.
+
+* improved several cosmetics details.  The cursor should more often do the
+  right thing and windows should disappear better when needed.  Hopefully.
+
+* cvs-mode-revert-to-rev.  This doesn't use `update -p >file' but
+  `update -j BASE -j rev' instead.  The advantage is that it seemlessly
+  works on several files at a time (even directories).  The disadvantage is
+  that it hits a cvs bug ("BASE" is not interpreted correctly) and has to
+  workaround it by creating a temporary tag.  I.e. if something bad happens,
+  you might end up with temporary tags lying around :-(
+  It can be called by providing a prefix argument to cvs-mode-undo.
+
+* diff-mode disappeared.  It's now a separate package, considerably improved
+  and available from ftp://rum.cs.yale.edu/pub/monnier/misc/diff-mode.el.
+  We wish him good luck in his new life.
+
+* cvs-reread-cvsrc.  It's not bound to any key (I never use such a thing).
+
+* cvs-log-mode.  It just provides font-lock patterns and some navigation
+  commands.  All the main cvs commands are available via cvs-minor-mode
+  of course.  The commands apply to the "current" file which is determined by
+  the position of the cursor, but such context-sensitivity is not implemented
+  for revisions.
+
+* cvs-edit-show-files (C-c C-f) does what you expect.
+  And cvs-edit-done now lists the files to be committed and
+  requests confirmation.
+
+* the installation has somewhat changed:  the setup code is not copied
+  to the site-start.el any more.  Instead pcl-cvs-startup.el is installed
+  just like the other files and the site-start.el loads it.
+  I'm afraid that means that you'll have to manually update your site-start.el
+
+* name-space cleanup.
+* old bugs fixed, new bugs added.
+
+Changes from 2.9.5:
+
+* the menubar code has been simplified.  This might not work as well
+  on older XEmacsen.  Also the cvs-mode-motion-highlight-line has been
+  dropped.  Scream if you want it back in.
+
+* a new command cvs-more-idiff-other allows to run idiff on two different
+  files.  Ideally it should be possible to idiff between two files from two
+  different *cvs* buffers, but not just now.
+
+* more commands understand the `b' prefix (cvs-mode-examine, cvs-checkout).
+  Furthermore, `cvs-mode-update' now uses `-j' rather than `-r' with the branch
+  prefix. A secondary `B' branch prefix has been introduced.  It is only
+  active when the primary prefix is active.  It is used by cvs-mode-diff
+  and cvs-mode-update.
+
+* all the cvs-edit stuff has moved to cvs-edit.el.
+  cvs-mode-changelog-commit is now deprecated in favor of either manually
+  calling `cvs-edit-insert-changelog' or by adding that same command to your
+  cvs-edit-mode-hook.  If VC is loaded, cvs-edit now takes advantage of VC's
+  comment ring.  Furthermore a new hook cvs-edit-done-hook allows you now
+  to run some code just before commit for anything like cleaningup the format,
+  enforcing conventions, synchronizing with your bugtrackingsystem, ...
+  A cvs-edit-files function is provided so that those hooks can know what
+  files are about to be committed.  If you write such a hook I'd like to hear
+  from you.
+
+* The command's flags have also been improved with multiple defaults.
+  A positive numeric argument selects the corresponding default, while a
+  negative one queries to change this default. C-u C-u behaves as before
+  while is similar to a negative zero argument (but those don't exist).
+  This way you can have `s' run status and `1s' run `status -v'.
+  The cvs-<foo>-flags variables have been considerably changed and setting
+  them in your .emacs is not recommended any more (it should still mostly
+  work, tho).  Also the default from the 4th up are shared among all commands.
+  This can be changed with `cvs-shared-(start|flags)'.
+
+* `cvs-commit-prompt-buffer' disappeared.  Use `cvs-buffer-name-alist'
+  instead.
+
+* digits can again be used as numeric arguments, which is very handy for
+  selecting among several defaults.
+
+* The C-x v binding was moved to C-x c but is configurable with
+  `cvs-minor-mode-prefix' and it is automatically available via the
+  cvs-minor-mode in any *cvs-<foo>* buffer.
+
+* cvs-mode-find-file can now jump to the `active' area of the file (if
+  it is locally modified).  This `cvs-find-file-and-jump' is set by default.
+
+* prefix keys have been unified/improved:  `b', `M-f' and `T' are now using the
+  same code.  This code provides for 4 different defaults and for persistent
+  settings: `C-1 b' will chose the default nb 1, while `C-u C-u b' will set
+  the branch prefix persistently for the following commandS until it is reset
+  by toggling it back to the inactive state with `b'.  Changing the default
+  is currently done with `C-5 b' (to change the default nb 1).  This is
+  likely to be changed to `C-- C-1 b' instead.
+
+* integrated a derivative of cvstree.el (many thanks to "Masatake YAMATO"
+  <masata-y@is.aist-nara.ac.jp>).  It is now called cvs-status.el and is
+  used as the major mode for cvs-mode-status' output.  The trees are not
+  automatically drawn, but only upon request:  press `t' or `C-u t' or
+  `T' to rewrite the tags-lists into trees (assuming you passed "-v").
+  There is also `cvs-mode-tree', but it is incomplete (I intent for it
+  to present a merged view of a single tree representing the tags of all
+  the files).  All cvs-mode operations can be done from cvs-status-mode
+  and they operate on the currently pointed-to file as well as on the currently
+  pointed-to tag (an active mark can be used to specify a second file
+  and a second tag).
+
+* the backup file loaded for imerge sessions is now put in the correct major
+  mode.  It used to be put in nroff-mode (it is still put in nroff-mode at
+  first, but fixed later).
+
+* pcl-cvs-startup.el is now partly auto-generated.
+  That means it's uglier.
+
+Changes from 2.9.4:
+
+* any cvs-mode command can now be called from any "related" buffer
+  (i.e. a buffer whose `cvs-buffer' variable points to a *cvs* buffer).
+  This allowed me to bind the cvs-mode-map to C-x v in cvs-edit-mode
+  so that you can conveniently call cvs commands from the commit buffer.
+  I don't know if C-x v was a good idea, so I'm open to improvements.
+
+* cvs-edit-mode is now a derived mode of text-mode.  I originally wanted
+  to make it derive from vc-log-mode, but I expect that too many people
+  will complain.  It would have a few advantages, though (such as the
+  M-n and M-p to get at older log messages).
+
+* all temporary prefixes like toggle, `b' and M-f now display their activation
+  in the modeline.
+
+* cvs-mode-tag has been reverted to only work on directories.
+  this can be overriden by either the M-f `cvs-mode-force-command' which
+  overrides any similar restriction on the next command, or by setting
+  cvs-force-dir-tag to nil.
+
+* cvs-auto-remove-directories can now also take the value 'empty.
+
+* `Need Remove' is renamed `Missing', more factual and shorter.
+
+* the `command running' message has been finally reworked:  there should
+  be less jitter, less junk and more information.  As a side effect, this
+  also solved the `cvs-mode-unmark at end of buffer' problem.
+
+* revision buffers have their major-mode correctly setup.
+
+* cvs-mode-insert uses `cvs status' to initialize the new entry.
+
+* *cvs-info* is used to display status and log output.  This has the added
+  benefit of allowing cvs-mode-{status,log} to be executed during a
+  cvs-mode-examine.
+
+* a few name changes:
+  cvs-mode-undo-local-changes -> cvs-mode-undo
+  cvs-diff-buffer-name -> cvs-buffer-name-alist
+
+* C-c C-c now kills the underlying cvs process.
+
+* the notion of default action has been dropped.  This is completely
+  redundant with the status of the file itself and only served to waste
+  precious screen real-estate.
+
+* ediff can now also be run on files which have not been merged
+  from within pcl-cvs.  This is currently achieved simply by using
+  VC's vc-resolve-conflict.
+
+* the branch-prefix now also applies to cvs-mode-log and cvs-find-file
+  and cvs-mode-idiff. its use on find-file allows to conveniently look at any
+  revision of a file in order (for example) to revert a file to an earlier
+  version.
+
+* cvs-mode-untag has been added.
+
+Changes from 2.9.2 to 2.9.4:
+
+* tagging should finally work.
+
+* fixes for NT and for Emacs 19.34.
+
+* tag completion for `b' and for `de'.
+
+* there is a new prefix key `b' used to make the following command
+  operate on a specified version.  `C-u b' queries for a new version
+  while `b' justs sets the prefix for the next command.  Currently only
+  cvs-mode-diff and cvs-mode-update use this prefix.
+
+* cvs-parse-ignored-messages can be used to keep a list of regexps
+  of messages that pcl-cvs should ignore.  This is mostly useful for
+  CVS messages that pcl-cvs still doesn't know about or for messages
+  coming from other programs exec'd by CVS such as ssh.
+
+* cvs-update, cvs-examine and cvs-status now always request a directory.
+  This reverts the behavior to what it was long ago.  If you want a quicker
+  way to run it on the current directory, use `g', `M-e', `M-u' or `M-s'.
+
+Changes from 2.9 to 2.9.2:
+
+* various fixes
+
+* A new binding `g' is used to ask a refresh of the buffer.
+  It actually does a cvs-examine.
+
+* the `running cvs' message is now deleted when the process exits.
+
+* the hack that calls cvs-examine when you open a */CVS directory has
+  been tuned:  it only does it when there is an Entries file in the CVS
+  directory (should hopefully prevent pathological cases where you have
+  a normal directory called `CVS').  Furthermore, it only has that neat
+  behavior if you pass a simple prefix-argument to the command you use
+  to open the directory (such as C-x C-f).  This last point can be customized
+  with the cvs-dired-use-hook variable:  you can go back to the previous
+  behavior (more intrusive and with the twist that providing the prefix-arg
+  then turns off the hack) or completely inhibit this nasty intrusion
+  in your nice Emacs habits.
+
+* cvs-edit-mode now calls cvs-edit-mode-hook.
+  the hook's value defaults to the value of vc-log-mode-hook.
+
+* cvs-mode-examine on a directory now cleans the previous contents of
+  the dir so as to avoid keeping outdated entries.
+
+* changed the default faces not to use `bold' everywhere any more.
+
+Changes from 2.5 to 2.9:
+
+* Interaction between VC and pcl-cvs is much improved.
+  pcl-cvs-hooks now hooks into the heart of VC (vc-do-command) where it
+  gets a chance to parse cvs' output on VC-executed cvs commands.  This
+  allows pcl-cvs to keep its buffers uptodate in the face of VC actions.
+  Note: `vc-register' uses `cvs add' which might end up being a
+  `cvs -q add' if you have -q in your .cvsrc, in which case pcl-cvs
+  doesn't get enough info to notice that the file was added:  don't put
+  `-q' in your .cvsrc file if this misfeature bothers you (a workaround
+  is not really difficult to write up, but it's too ad-hoc, flakey and/or
+  intrusive).
+
+Changes from 2.0.90 to 2.5:
+
+* You can now add any file to the display with cvs-mode-insert (bound to `I').
+  This allows you to then cvs-mode-add an ignored file, for instance.
+
+* clicking (mouse-2) on the status of an entry will toggle its mark.
+  local keymaps are used for each field, so you can set your bindings the way
+  you like them.  The maps are `cvs-{filename,dirname,action,status}-map'
+  and can be set from `pcl-cvs-load-hook'.
+
+* `revert-buffer' in the *cvs* buffer reruns cvs-examine.
+
+* doing cvs-mode-add on a directory currently labelled as `unknown' will
+  do the right thing now (it used to leave the display unchanged).
+
+* You don't need to always enter a description when adding files:
+  just set cvs-add-default-message to some default string.  You'll still
+  be able to enter a description by providing a prefix argument.
+
+* reworked the ediff/emerge support. `de' is now bound to cvs-mode-idiff
+  while `dE' is bound to cvs-mode-imerge.  They will do an
+  interactive diff resp merge using either ediff or emerge, depending on
+  `cvs-idiff-imerge-handlers'.  Also imerge should now do the right thing
+  more often: if you do an cvs-update with flags `-jbranch' it will fetch
+  the right files.
+
+* arguments can now contain strange characters.
+  If you want to pass three args where the middle one contains spaces, use:
+	arg1 "this is arg2" arg3
+  The quoting rules between double quotes are the usual emacs rules.
+  Note that `a"b"c' will be taken as three arguments, but don't rely on that.
+
+Changes from 2.0b2 to 2.0.90:
+
+* The important variables have been cutom-ized.
+
+* It doesn't use any /tmp files any more.
+
+* several simultaneous *cvs* buffers.
+
+* only one `cvs' command is executed across multiple directories.
+  This may not always work for cvs < 1.10 but you can change it.
+
+* highlighting and menu support (a la font-lock).
+
+* cvs-mode-<cmd> are now run in the background
+  and most of them pass through the parser for "reliable" update of the display
+
+* font-lock support for diff output.
+
+* all the -other-window have disappeared since cvs-examine and friends uses
+  `pop-to-buffer'.  Just set the pop-up-frame/pop-up-window according to your
+  preferences.
+
+* `cvs-redo' (previously bound to `g') has disappeared.
+  Rerunning cvs-<cmd> will default to the current directory (unless you use a
+  prefix arg).
+
+* cvs-mode-diff-cvs has been renamed cvs-mode-diff
+
+* keybindings have been changed (ouch).  M-e is cvs-examine, M-s is
+  cvs-status, M-u is cvs-update.
+
+* all the cvs-mode-set-<foo>-flag have been replaced by a single
+  cvs-set-mode-flag which will ask which flag you want to change.
+  It is bound to `F'.
+
+* Pcl-cvs will now read your .cvsrc file to set the default value of flags.
+  Note that this comes with support for `cvs-cvs-flags' which tells what flags
+  to pass to cvs before the command.  The default is inherited from .cvsrc by
+  adding `-f' (to override .cvsrc) and removing `-q' or `-Q' (if present) 
+  which would prevent cvs from outputiing crucially useful (to pcl-cvs)
+  information.
+
+* cvs-auto-remove-handled-directories has been renamed to
+  cvs-auto-remove-directories which can either be t or 'handled.
+
+* most of the work for commit has been moved from cvs-mode-commit to
+  cvs-edit-done:  the flags request, the extraction of marked files, ...
+  You can even do several commits from the same cvs-edit buffer without doing
+  a cvs-mode-commit in-between (mostly useful if you set `cvs-allow-dir-commit')
+
+* Updated and Patched are now subtypes of Up-to-date, while Merged is a subtype
+  of Modified.  Commited and Added are also subtypes (of Up-to-date).
+  This subtype is displayed (if present) instead of the head-revision (the two
+  infos share the same place in the buffer, and it seems there's little (if
+  any) overlap).
+
+* `co' and `ci' have been replaced by a short text describing some kind of
+  `default' action.  `ci' is more or less replaced by `com(mit)' while `co'
+  is replaced by `upd(ate)'.  A new alternative is `udo' which stands for undo.
+
+* made lots of the `after cvs execution' processing more uniform (the
+  auto-revert was only done after commit, ...)
+
+* cvs-auto-revert-after-commit is renamed to cvs-auto-revert.
+
+* pcl-cvs-hooks.el allows to hook pcl-cvs into other packages (using `advice').
+  There is a hook for dired which allows to run `cvs-examine' (or `cvs-status'
+  if you prefer) instead of dired whenever you open a .../CVS directory.
+  Another hook slightly improves uniquify's behavior in the case of multiple
+  cvs buffers.
+  While yet another hook instructs VC to call diff-mode on *vc-diff* buffers.
+
+User-visible changes in pcl-cvs from 1.05 to 2.0b2:
+
+* Pcl-cvs now requires GNU emacs version 19.xx or newer.
+
+* Pcl-cvs has been tested with CVS version 1.9.
+
+* Pcl-cvs no longer *needs* to know about all the possible messages from
+  CVS, though some functionality may be limited if it fails to parse
+  some messages.  The old bug-report generator is gone.
+
+* There's a new display mode invoked by cvs-status (or
+  cvs-status-other-window).  Like cvs-examine it doesn't cause the
+  current working directory to be modified.  Unlike cvs-examine it
+  always shows all the files in the current directory.  Unfortunately it
+  always runs "cvs status -l ." when working with versions of CVS prior
+  to 1.10 due to the limited information in the output of "cvs status".
+
+* There are new commands cvs-mode-diff-head and cvs-mode-diff-vendor
+  that do essentially what you'd expect them to do.
+
+* The default interface to cvs-mode-diff-* functions has been mapped to
+  a prefix key 'd'.  The default cvs-mode-diff-cvs command is also now
+  mapped to the '=' key.
+
+* A user-settable variable controls whether the various cvs-mode-diff-*
+  commands will generate a unique buffer, or use the *cvs-tmp* buffer.
+
+* There are new commands cvs-mode-tag and cvs-mode-rtag.
+
+* There are new commands cvs-checkout and cvs-checkout-other-window.
+
+* Support for managing ChangeLog files, including extraction of default
+  commit message contents, has been added.
+
+* Updates to the hooks for the ediff and emerge modes have been
+  incorporated (but have not yet been tested to any degree).
+
+* It is now possible to set (or change) some of the default flags passed
+  to various CVS commands.  See cvs-update-optional-flags,
+  cvs-status-flags, cvs-log-flags, cvs-diff-flags, cvs-tag-flags,
+  cvs-rtag-flags and their corresponding cvs-set-*-flags functions.
+
+
+User-visible changes in pcl-cvs from 1.04 to 1.05:
+
+* Elib is no longer distributed with pcl-cvs.  You must get Elib
+  separately, for instance from ftp.lysator.liu.se in pub/emacs.
+
+* The Lucid Emacs support works again.
+
+* A new function, cvs-change-cvsroot, can be used to interactively
+  switch between CVS repositories.
+
+* The mode line in the *cvs* buffer now indicates when a "cvs update"
+  is running.
+
+* The .cvsignore file is automatically sorted alphabetically (to
+  reduce the risk of conflicts when two people add different files
+  simultaneously). This behaviour can be turned off with
+  cvs-sort-ignore-file.
+
+* A trailing newline is always added in commit log messages.  This
+  behaviour can be turned off with
+  cvs-commit-buffer-require-final-newline.
+
+* This version of pcl-cvs should work together with RCVS.  I have not
+  tested this myself, though.
+
+* Plus some bug fixes.  (Note that the version of cookie.el that is
+  distributed with pcl-cvs 1.04 contains errors that affects pcl-cvs.
+  You should get Elib 0.07).
+
+
+User-visible changes in pcl-cvs from 1.03 to 1.04:
+
+* Support for Emerge.  Hitting "e" on a file that is Modified, Merged
+  or in Conflict will start Emerge, an interactive file merger written
+  in Emacs Lisp.  This requires Emerge version 4.  Emerge is not
+  included in this package.  If you can't find it anywhere else, you
+  can get in from ftp.lysator.liu.se in pub/emacs.  This package makes
+  it a lot easier to resolve conflicts.
+
+* Emacs will now automatically revert your buffers when the CVS
+  commands pcl-cvs issues causes the file to change.  This automatic
+  revert never occurs if the buffer contents did not agree with the
+  file prior to the command.
+
+* If you are running Lucid GNU Emacs, you will get some fonts and
+  mouse support.  This was contributed from people at Lucid.
+
+* The variable cvs-cvsroot can be used to select the location if the
+  repository.  You no longer need to exit Emacs, setenv CVSROOT, and
+  start a new Emacs if you work with multiple repositories.
+
+* The "q" key can be used to hide the *cvs* buffer.
+
+* The name of the commands in the *cvs* have changed. If it was called
+  cvs-foo, it will now be called cvs-mode-foo.  See the ChangeLog
+  entry from Tue Aug  4 03:02:25 1992 for a complete list of changes.
+
+* The variable cvs-cvs-diff-flags is no longer used.  Instead,
+  cvs-diff-flags is always used.
+
+* Plus a lot of bug fixes.
+
+
+User-visible changes in pcl-cvs from 1.02 to 1.03:
+
+* Output from CVS to stdout and stderr is separated and parsed
+  independently.  In that way pcl-cvs should work regardless of
+  whether stdout is buffered or line-buffered.  Pcl-cvs should now
+  work with CVS 1.3 without modifications on hosts such as
+  DECstations.
+
+* Pcl-cvs now fully supports RCS version 5.6 as well as 5.5.
+
+* New functions:
+
+    + cvs-undo-local-changes ("U") - Undo all your modifications
+				     to a file and get the newest
+				     version from the repository.
+    + cvs-update-other-window	   - Similar to cvs-update.
+    + cvs-byte-compile-files       - Byte compile the selected files.
+
+* cvs-update now displays the *cvs* buffer, which initially contains a
+  small message ("Running `cvs update' in /foo/bar/gazonk/...") until
+  the update is ready.  The *cvs* buffer no longer pops up when the
+  update is ready.  It often failed to pop up, due to race conditions
+  that are very hard to solve (and I doubt that they were at all
+  solvable).
+
+* cvs-unmark-all-files is moved from "U" to "ESC DEL" to be
+  "compatible" with dired.
+
+* cvs-diff ("d") and cvs-diff-backup ("b") can be configured to work
+  on only the file the cursor is positioned on, and ignore any marked
+  files.  A prefix argument toggles this.
+
+* Only one `cvs update' can be run at a time.  (It was previously
+  possible to start more than one simultaneously, but pcl-cvs could
+  not really handle more than one.)
+
+* Some rudimentary support for programs that CVS runs at update (due
+  to the -u switch in the modules file).
+
+* Pcl-cvs now automatically generates a bug report if it can't parse
+  the output from CVS.
+
+* The *cvs* buffer is read-only.
+
+* Pcl-cvs now creates temporary files in $TMPDIR if that environment
+  variable is set (otherwise it uses /tmp).
+
+
+#ident @(#)v2_9_9:NEWS,v 1.21 2000/03/05 21:32:20 monnier Exp

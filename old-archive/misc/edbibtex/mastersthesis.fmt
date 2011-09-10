@@ -1,0 +1,21 @@
+***************************** MASTERTHESIS *****************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+        Title: \title
+       School: \school
+         Year: \year
+................................................................Optional
+         Type: \type
+      Address: \address
+        Month: \month
+         Note: \note
+          Key: \key
+     Crossref: \crossref
+.................................................................Ignored
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+***************************** MASTERTHESIS *****************************

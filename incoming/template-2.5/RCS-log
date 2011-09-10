@@ -1,0 +1,58 @@
+
+RCS file:        RCS/template.el,v;   Working file:    template.el
+head:            2.5
+locks:           d029492: 2.5;  strict
+access list:   
+symbolic names:
+comment leader:  "; "
+total revisions: 10;    selected revisions: 5
+description:
+----------------------------
+revision 2.5        locked by: d029492;       
+date: 2000/06/08 16:55:54;  author: d029492;  state: Exp;  lines added/del: 705/273
+ * For MS-Windows: bug fixes and Emacs/XEmacs bug workarounds.
+ * Commenting support for languages with non-empty `comment-end' and languages
+   with "mixed" comments like C++/Java.  Make M-x fill-paragraph and friends
+   not to "fill" separators in C/C++/Java comments.
+ * Changed value of `template-default-directories', new user option.
+ * Provide conditional and repetitive/recursive expansions.
+ * Give semantics for negative value of `template-max-column' as relative to
+   `fill-column', change default value to -1.
+ * New expansion forms (>>>FILE_SANS<<<) and (>>>LITERAL<<<).
+ * Emacs/XEmacs bug workaround.
+ * Define key bindings [C-x C-=] and [C-x C-;] for Emacs, too.
+ * Minor changes.
+----------------------------
+revision 2.4        
+date: 99/01/25 11:14:13;  author: wedler;  state: Exp;  lines added/del: 911/259
+Repeating changes 2.2 to 2.3...
+
+ * Install package with `(template-initialize)'.
+ * No auto-initialization.  One-file version, i.e., no template-site.el.
+ * Package has been customized (Emacs->Data->Template).
+ * Changes in predefined expansion forms.  Keys in expansion forms are now
+   mnemonic identifiers (with aliases from old one-letter keys to them).
+ * Auto updating functionality, e.g., for file headers, timestamps.
+ * Commands and menu for template creation (menu: XEmacs only).
+ * Auto templates works with Emacs, ffap-1.10+ and ff-paths.
+ * Bug fixes.  Minor changes.
+----------------------------
+revision 2.3        
+date: 99/01/12 14:35:33;  author: wedler;  state: Exp;  lines added/del: 226/137
+ * Auto updating functionality.
+ * Changes in predefined expansion forms.
+ * Auto updating works with Emacs and ffap-1.10.
+ * Bug fixes.  Minor changes.
+----------------------------
+revision 2.2        
+date: 98/12/14 14:59:24;  author: wedler;  state: Exp;  lines added/del: 40/17
+ * Templates can also be used with `C-x C-f'.
+ * New predefined expansion form (>>>V<<<) for UTC date/time.
+ * Minor improvements.
+----------------------------
+revision 2.1        
+date: 98/03/03 17:56:41;  author: wedler;  state: Exp;  lines added/del: 769/513
+ * First announced version.
+ * Works with Emacs.
+ * Code and docstring cleanup.
+=============================================================================

@@ -1,0 +1,35 @@
+#!/bin/sh
+#
+# Script to generate an active file for GNUS mail reading for Rich Kaul.
+# Builds a shadow active file which represents personal mail under
+# $1 plus a symlinks to the real news area.
+
+dir=$1
+shift
+active=$dir/active
+nactive=/usr/lib/news/active
+if [ $#argv -lt 1 ]; then
+	echo make-active: usage: make-active directory subdirs...
+	exit 87
+fi
+
+# Find directories and their associated .first and .last files.  Then
+# take base dirnames, change to newsgroup name format, and build the
+# mail-based active file out of it all.
+
+cd $dir
+list=$*
+cp /dev/null $active
+for i in $list ; do
+	first=`cat $i/.first`
+	first=${first:=0}
+	last=`cat $i/.last`
+	last=${last:=0}
+	nlist=`echo $i | tr / .`
+	echo $nlist $last $first n >> $active
+done
+
+# Now add the whole canonical active file,
+cat $nactive >> $active
+
+exit 0

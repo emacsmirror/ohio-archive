@@ -1,0 +1,28 @@
+;; Object ede-proj-project
+;; EDE project file.
+(ede-proj-project "ede-proj-project"
+  :name "EDE"
+  :version "0.6"
+  :file "Project.ede"
+  :targets (list   (ede-proj-target-aux "aux"
+    :name "aux"
+    :path ""
+    :source '("NEWS" "README" "TODO")
+    )
+   (ede-proj-target-makefile-info "ede.info"
+    :name "ede.info"
+    :path ""
+    :source '("ede.texi" "ede-projects.texi" "ede-targets.texi")
+    :mainmenu "ede.texi"
+    )
+   (ede-proj-target-lisp "ede"
+    :name "ede"
+    :path ""
+    :source '("ede.el" "ede-proj.el" "ede-speedbar.el" "project-am.el" "ede-pmake.el" "ede-pconf.el" "ede-dired.el")
+    :load-path '("~/lisp/eieio" "~/lisp/speedbar")
+    :requirements '("ede" "ede-proj" "ede-pmake" "project-am" "ede-speedbar")
+    )
+   )
+  :makefile-type 'Makefile
+  :configuration-variables 'nil
+  )

@@ -1,0 +1,94 @@
+#!/bin/csh -f
+#
+# Configuration.
+umask 077
+set path=(/usr/local/bin /usr/ucb /bin /usr/bin /etc /usr/etc)
+set dir=/n/dinosaur/0/karl/Memos
+set tmp=/usr/tmp/karl-$$
+#
+# Save the mail momentarily, and set a Lines: count in it.
+cat - > $tmp
+set totlen=`wc -l < $tmp`
+set lines=(`sed '1,/^$/d' < $tmp | wc -l`)
+@ headerlen = $totlen - $lines
+ed - $tmp << EOF >& /dev/null
+$headerlen
+i
+Lines: $lines
+.
+w
+q
+EOF
+#
+# Deduce headers appropriately.
+set nonomatch
+set from=(`head -1 $tmp`)
+if ($#from < 2) then
+	echo Bogus mail: From_ line has $#from items.
+	sed -e 's/^/|/' < $tmp | sed -e '/^$/,$d'
+	exit 23
+endif
+set from=(`echo "$from[2]" | sed -e 's/@.*//' -e 's/\(.*\)!\(.*\)/\2/'`)
+if ("$from" =~ *-[Rr][Ee][Qq][Uu][Ee][Ss][Tt]*) then
+	# Mailing list stuff.
+	switch ("$from")
+		case firearms-request:
+			set subdir=list/firearms
+			breaksw
+		case firearms-politics-request:
+			set subdir=list/firearms/politics
+			breaksw
+		default:
+			set subdir=list/general
+			breaksw
+	endsw
+else if ("$from" =~ *[Mm][Aa][Ii][Ll][Ee][Rr]-[Dd][Aa][Ee][Mm][Oo][Nn]*) then
+	# BEWARE: Some (bad) csh's can't cope with the preceding regexp.
+	# Mailer-Daemon bounces.
+	set subdir=mailer-daemon
+else
+	# Personal mail
+	if ((-e $dir/personal/"$from") && (-d $dir/personal/"$from")) then
+		set subdir=personal/"$from"
+	else
+		set subdir=personal/general
+	endif
+endif
+unset nonomatch
+#
+# Now save the mail appropriately.
+#
+# Lock.
+set keyf=$dir/$subdir/KEY
+set seqfile=$dir/$subdir/.last
+set success=no
+@ retry = 0
+while (($retry < 10) && ($success == no))
+	rm $keyf
+	if ($status == 0) then
+		# The key was there when we wanted it.
+		set success=yes
+	else
+		# The key was not there - someone else
+		# had already taken it.  Wait and retry.
+		sleep 10
+		@ retry ++
+	endif
+end
+#
+# If we fall out to here without success, we failed 10 times to
+# get the key.  Result: Who cares?  We'll go forward anyway,
+# and re-assert the key when we're done.
+#
+# Get next filenumber.
+set seq=(`cat $seqfile`)
+@ seq ++
+echo $seq > $seqfile
+#
+# Unlock and save.
+touch $keyf
+sed -e '1s/^From /UNIX-From: /' < $tmp > $dir/"$subdir"/$seq
+#
+# Clean up and exit.
+rm -f $tmp
+exit 0

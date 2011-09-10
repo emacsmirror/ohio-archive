@@ -1,0 +1,1452 @@
+\input texinfo.tex     @c -*- Mode: Texinfo -*- 
+@comment %** start of header ------------------------------ update Last Change
+@headings doubleafter
+@setfilename atavachron.info
+@settitle The Atavachron 1.1
+@footnotestyle end
+@c @setchapternewpage off
+@comment %** start of header
+
+@ignore
+ c atavachron.texi -- texinfo source for info on atavachron.el
+ c Copyright (C) 1992 by Marcus Speh <marcus@x4u.desy.de>
+ c and James Hetrick <hetrick@phys.uva.nl>
+ c 
+ c Authors         : Marcus Speh and James Hetrick
+ c Created On      : Mon Jan  4 15:54:02 NFT 1993
+ c Last Modified By: Jim Hetrick
+ c Last Modified On: Tue Jan 19 11:48:34 1993
+ c Update count    : 18
+ c Status          : Unknown, Use with caution!
+ c 
+ c $Id: atavachron.texi,v 1.2 1993/01/19 10:53:48 hetrick Exp $
+ c
+ c $Log: atavachron.texi,v $
+ c Revision 1.2  1993/01/19  10:53:48  hetrick
+ c Fixed inforef pointers to buffer-menu and insert-buffer
+ c Cosmetic surgery of "pronunciation of Atavachron"
+ c
+ c Revision 1.6  93/01/15  21:30:04  marcus
+ c Corrected errors for makeinfo 
+ c
+ c Revision 1.1  1993/01/13  21:53:12  hetrick
+ c Initial revision
+ c
+ c
+@end ignore
+
+@ifinfo
+@node Top, Copying Conditions, (dir), (dir)
+@top 
+@center The Atavachron
+@sp 1
+@center by James E. Hetrick <hetrick@@phys.uva.nl>
+@cindex James Hetrick <hetrick@@phys.uva.nl>
+@cindex GNU Emacs editor
+@cindex @file{atavachron.el}
+@cindex Marcus Speh <marcus@@x4u.desy.de>
+@sp 1
+
+The @strong{Atavachron} is an interface to the @dfn{Astro/Math/Physics}
+preprint archives from within the GNU Emacs editor. It gives the user a
+simple set of commands to get, store, process, and list papers with
+minimal effort.
+
+This Texinfo file is current to Version 1.1 and was compiled
+          by James Hetrick and Marcus Speh.
+
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+@end ignore
+@end ifinfo
+
+@titlepage
+@sp3
+@center @titlefont{The Atavachron}
+@center {for Pre-Prints}
+@sp1
+@center version 1.1
+@sp3
+@center by James E. Hetrick <hetrick@@phys.uva.nl>
+@sp2
+
+The @strong{Atavachron} is an interface to
+the @dfn{Astro/Math/Physics} preprint archives from within the GNU Emacs
+editor. It gives the user a simple set of commands to get, store,
+process, and list papers with minimal effort.
+@sp10
+@center This @TeX{}info documentation was compiled
+@center by James Hetrick and Marcus Speh <marcus@@x4u.desy.de>
+@page
+@vskip 0pt plus 1filll
+@cindex Copyright
+Copyright @copyright{} 1992 James E. Hetrick, Marcus Speh, and Free
+Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+@cindex Last change
+@c ************************** LAST CHANGE *****************************
+@*Last change: 1/19/93.
+@c ********************************************************************
+@end titlepage
+
+@menu
+* Copying Conditions::  
+* General Description::  
+* Configuration::  
+* Batteries Not Included::  
+* Functions::    
+* Paper Formats::  
+* Example Sessions::  
+* Things To Come::  
+* Index::        
+
+ --- The Detailed Node Listing ---
+
+Configuration
+
+* Example .emacs File::  
+* atv-main-ftp-site::  
+* atv-download-dir::  
+* atv-uufiles-dir::  
+* atv-prompt-filename::  
+* atv-interesting-file::  
+* atv-auto-tex-paper::  
+* atv-no-csh::   
+
+Batteries Not Included
+
+* ange-ftp.el::  
+* zcat.el::      
+* .netrc::       
+* .dvipsrc::     
+
+Functions
+
+* Getting Papers::  
+* Storing Papers::  
+* Processing Functions::  
+* Title Listings and Abstracts::  
+* Utilities::    
+@end menu
+
+@node Copying Conditions, General Description, Top, Top
+@chapter Copying Conditions
+@cindex Free Software Foundation
+@cindex GNU General Public License
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation.
+
+This program is distributed in the hope that it will be useful,
+but @strong{without any warranty}; without even the implied warranty of
+@strong{merchantability} or @strong{fitness for a particular purpose}.  
+See the GNU General Public License for more details.
+
+A copy of the GNU General Public License can be obtained from
+@example
+Free Software Foundation, Inc., 
+675 Mass Ave,
+Cambridge, MA 02139, USA.
+@end example
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+@section Obtaining This Package
+@cindex Obtaining the @strong{Atavachron} Package
+
+At the time of writing (January 1993), the @file{atavachron} package is
+intended to be placed in the @file{macros} directory of the supported
+archives. Thus it should hopefully be accessible by February 1993
+through anonymous ftp or by electronic mail from your favorite preprint
+site.
+
+Copies will be submitted to @kbd{prep.ai.mit.edu} and
+@kbd{archive.cis.ohio-state.edu} for permenant archiving, and
+announcements will be made to the relevant Newsgroups
+(@kbd{gnu.emacs.source} and @kbd{sci.phys}, at least).
+
+Of course, the latest version can always be obtained from the author
+directly at the address given in @pxref{General Description}.
+
+@node General Description, Configuration, Copying Conditions, Top
+@chapter General Description
+@cindex General Description
+
+The @strong{Atavachron} (pronounced: 
+@ifinfo 
+a . TAV'. a . kron)
+@end ifinfo
+@iftex 
+@tex a $\cdot$ {\bf tav}$^\prime \cdot$ a $\cdot$ kron) @end tex
+@end iftex
+is an intelligent interface or
+"Front End" to the scientific preprint archives from
+within emacs. The preprint archives supported are only those running
+Paul Ginsparg's (<ginsparg@@qfwfq.lanl.gov>) Preprint Bulletin Board
+software. At present the supported archives are:
+@cindex Supported Archives
+
+@kbd{alg-geom:} Algebraic Geometry
+
+@kbd{astro-ph:} Astrophysics
+
+@kbd{cond-mat:} Condensed Matter Physics
+
+@kbd{funct-an:} Functional Analysis
+
+@kbd{gr-qc:   } General Relativity and Quantum Cosmology   
+
+@kbd{hep-lat: } High Energy Physics --- Lattice
+
+@kbd{hep-ph:  } High Energy Physics --- Phenomenology
+
+@kbd{hep-th:  } High Energy Physics --- Theory
+
+@kbd{lc-om:   } Liquid Crystals
+
+@kbd{math-ph: } Mathematical Physics (at babbage.sissa.it)
+
+@kbd{nucl-th: } Nuclear Theory
+
+@cindex Bulletin Board Software
+Should you wish to add another archive please contact the author (via
+@kbd{atavachron-mail} if you like @pxref{Utilities}). Supporting other
+disciplines which use @TeX{} as their main typesetting format would be
+very simple and rewarding.
+
+@cindex Mini-buffer
+The @strong{Atavachron} gives its user a simple set of commands to get,
+store, process, and list papers which can be called from the
+@kbd{mini-buffer} (the bottom most, one line window in Emacs used for
+command input and message output). The key strokes: @kbd{M-x} invoke
+Emacs functions; on most keyboards, @kbd{M} is @kbd{ESC}. The package is
+easily loaded via your @file{.emacs} file (@pxref{Configuration}) and
+then provides several functions which can be called at any time.
+
+The @strong{Atavachron}'s user functions are listed here and described
+below (@pxref{Functions}):
+
+@example
+get-paper
+get-paper-from-data
+store-paper
+store-paper-from-data
+process-paper
+slice-and-dice
+shell-paper
+get-listing-from-data
+store-listing-from-data
+get-abstract
+get-abstract-from-data
+interesting
+atavachron-mail
+@end example   
+
+You must go through @ref{Configuration}, and @ref{Batteries Not
+Included}, and set things appropriately for your system.  The variables
+to be set govern such things as where papers gotten with @kbd{get-paper}
+are put, whether they are renamed, and the address of your default
+archive.
+
+Note that the documentation here is meant to be somewhat pedagogical
+for new users to Emacs. If you are such a user, your comments on the
+accessibility of this manual would be most appreciated.
+
+@file{atavachron.el} requires @file{ange-ftp.el} for retrieving files
+across the network. In addition there are auxiliary files used by
+the @strong{Atavachron} which greatly enhance its abilities. The
+purpose of these files is described in @ref{Batteries Not Included}.
+
+If you find bugs, please report them; this is very easy with the
+function @samp{atavachron-mail}. You're welcome to use this function for
+other correspondence as well (@xref{Utilities}).
+
+@subsubheading Why "Atavachron"?
+@cindex Star Trek
+@cindex Atavachron
+
+This package was originally named @file{pp-tools.el} in its development
+stage, when a previously existing "pp-tools" package turned up in a 
+network search. Thus the name had to be changed.
+
+The name @strong{Atavachron} comes from the original @dfn{Star Trek}
+series, in the episode "All Our Yesterdays". Kirk, Spock, and McCoy beam
+down to a planet with this wonderful library. Library users place disks
+into viewers which show images from periods of the planet's past. The
+library also has a portal through which users can travel backwards in
+time (for various reasons which probably included research).
+
+All the disk viewers are interfaced to a machine called the
+@strong{Atavachron} which senses which disk the user was viewing and
+configures the portal such that when the user steps through, he passes
+into the corresponding period of time.
+
+Due to the similarities in functionality between the present package
+and the 23rd century's archive interface (at least to the imaginative
+mind), the name @strong{Atavachron} seemed appropriate.
+
+@subsubheading Acknowledgements
+@cindex Ginsparg, Paul <ginsparg@@qfwfq.lanl.gov>
+@cindex Kilcup, Greg <kilcup@@pacific.mps.ohio-state.edu>
+@cindex Speh, Marcus <marcus@@x4u.desy.de>
+@cindex Bakker, Bas <bas@@phys.uva.nl>
+
+Many thanks to Paul Ginsparg, Greg Kilcup, Marcus Speh, and Bas de
+Bakker for ongoing discussions, suggestions, and beta tests.
+
+@cindex Texinfo
+The text for the first edition of this document was taken from the 
+text description distributed with version 1.3 of @file{pp-tools}
+and set into Texinfo by Marcus Speh (If you don't have Texinfo, you can
+obtain it from @kbd{prep.ai.mit.edu} via anonymous FTP).
+
+The change over to the @strong{Atavachron} package version 1.1 
+and documentation of subsequent additions to the source has been
+mostly done by Jim Hetrick.
+
+@subsubheading Author's address:
+@cindex Author's Address
+
+@example
+James E. Hetrick            Institute for Theoretical Physics
+hetrick@@phys.uva.nl                     -\|/-
+University of Amsterdam
+Valckenierstraat 65, 1018 XE Amsterdam
+Telephone: +31 20 525 5772     Fax: +31 20 525 5788
+@end example
+
+@node Configuration, Batteries Not Included, General Description, Top
+@chapter Configuration
+@cindex Configuration
+
+This node describes the variables which configure the
+@strong{Atavachron} within Emacs. @dfn{Configuring} means setting
+environment variables for Emacs.  These definitions are usually put into
+Emacs' initialization file @file{.emacs}. If you want to try them out,
+you may use any buffer in @samp{Emacs-lisp} mode, then use @kbd{(M-x)
+eval-buffer}, but remember that @file{atavachron.el} should really be
+reloaded everytime you change the configuration.
+
+@cindex Emacs Variables
+For users new to Emacs, there are two types of variables used below.
+Strings, which must be enclosed by "'s, are used for directories, archive
+sites, and so forth. The other kind is a logical variable which
+is either @dfn{t} (true or ON) or @dfn{nil} (false or OFF). Logical
+variables are @strong{not} enclosed in quotations.
+
+@menu
+* Example .emacs File::  
+* atv-main-ftp-site::  
+* atv-download-dir::  
+* atv-uufiles-dir::  
+* atv-prompt-filename::  
+* atv-interesting-file::  
+* atv-auto-tex-paper::  
+* atv-no-csh::   
+@end menu
+
+@node Example .emacs File, atv-main-ftp-site,  , Configuration
+@section Example @file{.emacs} File
+@cindex Loading @file{atavachron.el}
+@cindex Example @file{.emacs} File
+
+Below is an example @file{.emacs} file which loads @file{atavachron.el}
+and the batteries, then sets the @kbd{atv-}variables to their defaults. 
+@strong{Please} go through each variable and set it according to your
+own directory structure and preferences.
+
+Regarding @file{ange-ftp.el}, the simplest method of loading has been
+given here, for the case in which it has not been loaded previously in
+your @file{.emacs} file. If it is loaded previously be sure to delete
+the @kbd{(load-library '"ange-ftp")} line here, so as not to load it
+twice. Since @file{atavachron.el} contains the @code{require
+'ange-ftp}, users of more advanced auto-loading techniques may keep
+their mechanisms intact.
+
+Although not discussed here, any @strong{Atavachron} function can be
+bound to a key sequence or mouse button action. Such bindings should go
+here as well. See the Emacs manual on key rebinding and the
+documentation of your mouse interface for more details.
+
+@example
+; ====================.emacs stuff ========================
+
+(load-library '"ange-ftp")  ;see ange-ftp docs for more details
+(setq ange-ftp-generate-anonymous-password t) ; sends email address
+                                              ; for password
+(load-library '"zcat")
+(load-library '"atavachron")
+
+(setq atv-main-ftp-site "/anonymous\@@babbage.sissa.it:") ;Europeans
+;;(setq atv-main-ftp-site "/anonymous\@@xxx.lanl.gov:")  ;N+S Americans
+
+(setq atv-download-dir "~/tex/preprints/")   ;default download directory 
+(setq atv-uufiles-dir "~/tex/preprints/")    ;default place for uu output
+(setq atv-prompt-filename t)              ;prompt to rename paper locally
+(setq atv-interesting-file "~/interesting.atv") ;file for interesting abs.
+(setq atv-auto-tex-paper nil)     ;run tex on paper grabbed automatically
+(setq atv-auto-tex-command 'TeX-buffer)        ;command to run on buffer
+(setq atv-no-csh nil)                     ;set to t if you don't have csh
+
+; ==========================================================
+@end example
+
+@node atv-main-ftp-site, atv-download-dir, Example .emacs File, Configuration
+@comment  node-name,  next,  previous,  up
+@section @samp{atv-main-ftp-site}
+@cindex @kbd{atv-main-ftp-site}
+
+@example
+; ====================.emacs stuff =======================
+ (setq atv-main-ftp-site "/anonymous\@@babbage\.sissa\.it:"); Europeans
+;; (setq atv-main-ftp-site "/anonymous\@@xxx\.lanl\.gov:")  ; N+S Americans
+; ======================================================== ; Others chose one
+@end example
+
+Uncomment one of these as your main archive. Branches not supported at
+@samp{xxx.lanl.gov}, such as @dfn{cond-mat}, are retrieved from
+@samp{babbage.sissa.it}. Papers on @dfn{hep-lat}, @dfn{alg-geom}, etc.
+which are not mirrored at the above two sites are automatically gotten
+>from their respective archives at present.
+
+@node atv-download-dir, atv-uufiles-dir, atv-main-ftp-site, Configuration
+@comment  node-name,  next,  previous,  up
+@section @samp{atv-download-dir}
+@cindex @kbd{atv-download-dir}
+
+@example
+; ====================.emacs stuff =======================
+(setq atv-download-dir "~/tex/preprints/")    ;default download directory 
+(setq atv-uufiles-dir "~/tex/preprints/")     ;default place for uu output
+; ========================================================
+@end example
+
+This is your local download workspace. Upon "getting" a paper, the
+default directory is reset to @samp{atv-download-dir} so that saves put
+files there. In addition tarred papers (archived and compressed as
+.tar.Z files), and script papers (papers which are shell scripts to be
+executed) are processed in this directory so that any files unpacked end
+up there.
+
+@cindex Local Branch Directories
+If you have branch
+directories  @dfn{hep-th}, @dfn{hep-lat}, @dfn{astro-ph}, etc. 
+below @samp{atv-download-dir},
+papers, when saved, will automatically be put there, sorted by
+branch. For example, your @samp{atv-download-dir} is set to 
+@file{~/tex/preprints/} and you have the subdirs 
+@file{~/tex/preprints/hep-th/} and
+@file{~/tex/preprints/cond-mat/}. Then getting @dfn{hep-th/91120013}
+will put the file in 
+@file{tex/preprints/hep-th/}. Getting 
+@dfn{cond-mat/920106} will put it in 
+@file{tex/preprints/cond-mat/}. If these subdirs do not exist below 
+@file{tex/preprints/}, both papers would be put in @file{tex/preprints/}.
+The recognition of branched subdirectories is mainly provided for very 
+heavy or library related use. 
+
+@cindex TEXINPUTS Environment Variable
+Be sure to put this directory (and branches) in your @var{TEXINPUTS}
+environment variable so that tex can get at your newly gotten files.
+
+@node atv-uufiles-dir, atv-prompt-filename, atv-download-dir, Configuration
+@comment  node-name,  next,  previous,  up
+@section @samp{atv-uufiles-dir}
+@cindex @kbd{atv-uufiles-dir}
+@cindex @kbd{dvips}
+
+This is where uuencoded files will be unpacked. It should usually be the
+same as @samp{atv-download-dir}, unless you have a good reason to put the
+figures elsewhere [your @dfn{dvi ---> ps} processor can't get at them in
+@samp{atv-download-dir}, for instance. (in which case you should get
+@samp{dvips})]. If it's the same as @samp{atv-download-dir}, it will
+adjust itself to the branched subdirectory structure following
+@samp{atv-download-dir}.
+
+@node atv-prompt-filename, atv-interesting-file, atv-uufiles-dir, Configuration
+@comment  node-name,  next,  previous,  up
+@section @samp{atv-prompt-filename}
+@cindex @kbd{atv-prompt-filename}
+
+@example
+; ====================.emacs stuff =======================
+(setq atv-prompt-filename t)        ; prompt to rename paper locally
+; ========================================================
+@end example
+
+This one toggles prompting for a local name for the grabbed paper or 
+listing. When @dfn{t} (true), you are prompted to name the incoming archive
+file which is then appended with @file{.tex}. 
+Hitting return at the prompt will accept the default given in parenthesis.
+If @dfn{nil} the paper is named by its paper number.
+
+@node atv-interesting-file, atv-auto-tex-paper, atv-prompt-filename, Configuration
+@comment  node-name,  next,  previous,  up
+@section @samp{atv-interesting-file}
+@cindex @kbd{atv-interesting-file}
+
+@example
+; ===========================================
+(setq atv-interesting-file "~/interesting.atv")  ; file for interesting
+; ===========================================  ; abstracts.
+@end example
+
+The default file to which abstracts stored with @kbd{interesting} function
+are appended (@pxref{Utilities}). You are prompted for a file name to
+append the interesting abstract to, and offered @samp{atv-interesting-file}
+as the default. 
+
+I find it useful to put this file in a directory other than
+@samp{atv-download-dir} since I regularly clean @samp{atv-download-dir}
+with @kbd{rm *}.
+
+@node atv-auto-tex-paper, atv-no-csh, atv-interesting-file, Configuration
+@comment  node-name,  next,  previous,  up
+@section @samp{atv-auto-tex-paper}
+@cindex atv-auto-tex-paper
+@cindex Auto-Previewing
+
+@example
+; ====================.emacs stuff =======================
+(setq atv-auto-tex-paper nil)    ; run tex on paper grabbed automatically
+(setq atv-auto-tex-command 'TeX-buffer)  ; command to run on buffer
+; ========================================================
+@end example
+
+Setting @samp{atv-auto-tex-paper} to @dfn{t},
+automatically starts the tex processor as given by the function
+@samp{atv-auto-tex-command} on the paper once it's loaded into a local
+buffer, provided no shell command signal is found. The default is that
+auto-texxing is @var{OFF}.
+
+Note that adding auto-previewing is quite simple as well (e-mail for
+details), and will impress your friends if the paper texs, but is not
+really all that useful since many papers don't pass the texxing stage, as
+you probably know! As this changes, and authors submit standardized
+@TeX{}, auto-tex/preview could become useful.
+
+@cindex Primary File
+Originally provided as extra frill, these variables can actually be a
+powerful expansion slot. You can supply any function you like for
+@samp{atv-auto-tex-command}, in particular your own custom ones.
+Thus after processing all auxillary files and getting the primary
+@TeX{} file, @samp{atv-auto-tex-command} provides a final hook
+to execute custom processing. 
+
+@node atv-no-csh,  , atv-auto-tex-paper, Configuration
+@comment  node-name,  next,  previous,  up
+@section @samp{atv-no-csh}
+@cindex @kbd{atv-no-csh}
+
+@example
+; ====================.emacs stuff =======================
+(setq atv-no-csh nil)            ; set to t if you don't have csh
+; ========================================================
+@end example
+
+Setting this variable to @dfn{t} will replace the @samp{/bin/csh} in the
+grabbed uufile to @samp{/bin/sh}, making it possible to unpack the
+figure files even if you don't have @samp{csh} on your machine. If you
+use this feature, please read the copyright @ref{Copying Conditions}
+now, especially where it says:
+
+"This program is distributed in the hope that it will be useful,
+but @strong{without any warranty}..."
+
+@node Batteries Not Included, Functions, Configuration, Top
+@chapter Batteries Not Included
+
+Here we discuss the other files needed or recommended for smooth
+operation of @file{atavachron.el}. The only one absolutely required is
+@file{ange-ftp.el}, however you'll have to decipher a compressed
+binary file if you get a month old paper without @file{zcat.el}. The
+files @file{.netrc} and @file{.dvipsrc} eliminate the seams at the
+connections to the network and @TeX{}.
+
+Loading the elisp (@kbd{.el}) files in your @file{.emacs} file
+is discussed in @ref{Configuration}.
+
+@menu
+* ange-ftp.el::  
+* zcat.el::      
+* .netrc::       
+* .dvipsrc::     
+@end menu
+
+@node ange-ftp.el, zcat.el,  , Batteries Not Included
+@comment  node-name,  next,  previous,  up
+@section @file{ange-ftp.el}
+@cindex archive.cis.ohio-state.edu:.../ange-ftp
+@cindex Norman, Andy 
+
+@bullet{} This file is available via anonymous FTP from
+@samp{archive.cis.ohio-state.edu} in directory 
+@file{/pub/gnu/emacs/elisp-archive/packages/}.
+
+@file{atavachron.el} requires Andy Norman's essential ftp interface
+@file{ange-ftp.el} to do the remote file teleportation
+If you don't have this loaded in your @file{.emacs} file, you must get
+it. Check locally if you have it (perhaps in
+@file{/usr/local/emacs/lisp} or there abouts?), or convince your
+system administrator to install it (or do it yourself).
+
+@node zcat.el, .netrc, ange-ftp.el, Batteries Not Included
+@comment  node-name,  next,  previous,  up
+@section @file{zcat.el}
+@cindex Gough, Graham
+
+@bullet{} This file is included in the @file{atavachron} distribution package.
+
+Another file needed is Graham Gough's @file{zcat.el} which
+uncompresses @file{.Z} files on the fly. This makes loading older
+papers which are compressed at the archive transparent. Since it's
+short it's included with the distribution package of @file{atavachron}. 
+
+@node .netrc, .dvipsrc, zcat.el, Batteries Not Included
+@comment  node-name,  next,  previous,  up
+@section @file{.netrc}
+
+@bullet{} You can easily write your own @file{.netrc} file, see example below.
+
+Ange-ftp will work much smoother if you keep a @file{.netrc} file in
+your home directory, thus bypassing the need to send the @dfn{anonymous}
+login and email address when ftping into the archive. Simply clip out
+the following and name it @file{~/.netrc}. Remember to put your email
+address in for you@@where.you.are).
+
+@subsubheading sample @file{.netrc}
+
+@example
+#   --------------------.netrc sample -----------------------
+machine ftp.scri.fsu.edu login anonymous password you@@where.you.are
+machine xxx.lanl.gov login anonymous password you@@where.you.are
+machine babbage.sissa.it login anonymous password you@@where.you.are
+machine publications.math.duke.edu login anonymous password you@@where.you.are
+machine alcom-p.cwru.edu login anonymous password you@@where.you.are
+#   ---------------------------------------------------------
+@end example
+
+Furthermore, it must be a protected file. Run: 
+@samp{chmod go-rwx .netrc} on it once it has been created.
+
+@node .dvipsrc,  , .netrc, Batteries Not Included
+@comment  node-name,  next,  previous,  up
+@section @file{.dvipsrc}
+
+@bullet{} You can easily write your own @file{.dvipsrc} file, see example below.
+
+Finally, if you use @file{dvips} as your @dfn{.dvi ---> .ps}
+processor, put your @samp{atv-download-dir} and @samp{atv-uufiles-dir} 
+(@pxref{Configuration}) in its path by keeping
+a @file{.dvipsrc} file in your home directory with the following lines:
+
+@subsubheading sample @file{.dvipsrc}
+
+@example
+# -------------------.dvipsrc sample ---------------------
+S ~/tex/preprints:
+H ~/tex/preprints:
+W "reading your .dvipsrc file"
+# --------------------------------------------------------
+@end example
+
+The trailing @kbd{:}'s above add the default paths to the path list.
+A line beginning with @samp{W} echos the following string.
+
+Having @samp{atv-download-dir} and @samp{atv-uufiles-dir} in both your
+@samp{dvips} path and your @var{TEXINPUTS} environment variable (or
+whatever the path to @TeX{} input and style files is named on your
+local machine) allows @samp{dvips} and @TeX{} to access your new figure
+files. 
+
+
+For more info, see your man pages on @TeX{} and @samp{dvips} or your system 
+administrator, whichever is friendlier.
+
+@node Functions, Paper Formats, Batteries Not Included, Top
+@chapter Functions
+@cindex Functions
+
+This section describes the functions available to the user for
+interacting with the archive. In addition three example sessions are
+displayed in @ref{Example Sessions}, where the reader can get a quick
+feel for the operation of the @strong{Atavachron} on different types of
+papers.
+
+@menu
+* Getting Papers::  
+* Storing Papers::  
+* Processing Functions::  
+* Title Listings and Abstracts::  
+* Utilities::    
+@end menu
+
+@node Getting Papers, Storing Papers,  , Functions
+@comment  node-name,  next,  previous,  up
+@section Getting Papers
+@cindex Getting Papers
+
+The following functions get an archive paper to an Emacs buffer (or
+buffers if it is distributed in several files). After the paper is in a
+local buffer, action appropriate to the format of the paper is taken.
+For instance, a tar file is uncompressed and unpacked, or uu encoded
+files are decoded, as described below in @ref{Paper Formats}.
+
+@iftex
+@example
+@bullet{} Function: (M-x)  get-paper    
+@end example
+@end iftex
+
+@ifinfo
+* Function: get-paper
+@end ifinfo
+@cindex @kbd{get-paper}
+@cindex Reading abstracts in Mail
+
+When reading an abstract listing in emacs, either in one of the mail
+readers or as a previously saved file (output by Unix Mail perhaps),
+placing the point (cursor) anywhere in the abstract of choice (after the
+line beginning with @samp{Paper}), and typing: @kbd{M-x get-paper}
+automatically opens an ftp socket into the right archive (via
+@file{ange-ftp.el}), transfers the paper, uncompresses it if necessary
+(via @file{zcat.el}), and loads it into a @samp{tex-mode} buffer for
+[La]@TeX{}ing, previewing, and printing by the usual @samp{tex-mode}
+facilities.
+
+First though, the @strong{Atavachron} performs a number of tests to
+determine the format in which the paper is stored at the archive. These
+steps are also performed by @samp{process-paper} if it is called on a
+stored paper (See @ref{Processing Functions}, @ref{Storing Papers}.)
+Once its format is determined, appropriate action is taken based on the
+configuration variables (@pxref{Configuration}). The description of the
+paper formats supported in the present version (1.1) is given below (see
+@pxref{Paper Formats}).
+
+If @samp{atv-prompt-filename} is @dfn{t} (true), one is prompted to give
+a local name to the incoming paper, and the paper is renamed
+@file{localname.ext}, where @file{.ext} depends on the format of the
+paper.
+
+The buffer(s) containing the paper are marked as changed
+so that you will be prompted to save it if you try to delete it.
+
+@iftex
+@example
+@bullet{} Function: (M-x)  get-paper-from-data
+@end example
+@end iftex
+
+@ifinfo
+* Function: get-paper-from-data
+@end ifinfo
+@cindex @kbd{get-paper-from-data}
+
+This function works exactly like @kbd{get-paper} except that it promps the 
+user to input the paper's data in the usual format:
+@example
+cond-mat/9212003
+hep-lat/9212005
+etc.
+@end example
+
+@node Storing Papers, Processing Functions, Getting Papers, Functions
+@comment  node-name,  next,  previous,  up
+@section Storing Papers
+@cindex Storing Papers
+@cindex @kbd{store-paper}
+@cindex @kbd{store-paper-from-data}
+
+@iftex
+@example
+@bullet{} Function: (M-x)  store-paper
+@bullet{} Function: (M-x)  store-paper-from-data
+@end example
+@end iftex
+
+@ifinfo
+* Function: store-paper
+
+* Function: store-paper-from-data
+@end ifinfo
+
+@samp{Store-paper}, and @samp{store-paper-from-data}, work the same as 
+@samp{get-paper} and @samp{get-paper-from-data},
+except that the paper is stored directly to the user's
+default download directory (@pxref{Configuration}) for later
+processing. This is convenient when reading the abstracts remotely (on
+the weekend from home, say) when one wants to save processing and
+printing the tex file for later, or so that the file can be further
+downloaded via modem. (@pxref{Example Sessions})
+@cindex Modem File Transfer
+
+@node Processing Functions, Title Listings and Abstracts, Storing Papers, Functions
+@comment  node-name,  next,  previous,  up
+@section Processing Functions
+@cindex Processing Functions
+
+Three functions are presently provided for operating on preprint files
+individually. These are stand alone versions of functions which are
+called by @kbd{get-paper} and are useful for processing stored papers
+or individual buffers of a multifile paper. 
+
+In addition, the descriptions of the Emacs functions @kbd{buffer-menu}
+and @kbd{insert-buffer} are included for completeness; they are quite
+useful when a retrieved paper consists of several files which must be
+processed.
+
+@page
+@subsection Stand Alone Internal Functions
+
+@iftex
+@example
+@bullet{} Function: (M-x)  process-paper
+@end example
+@end iftex
+
+@ifinfo
+* Function: process-paper
+@end ifinfo
+@cindex @kbd{process-paper}
+
+Use this function on a paper that has been stored locally with
+@kbd{store-paper} (@pxref{Storing Papers}) to invoke the functions which
+determine the paper's format (@pxref{Paper Formats}) and execute
+processing accordingly. 
+
+For example, you have stored a particular paper with the local name
+@file{jones} earlier. @kbd{process-paper} will ask for the file name
+to be processed, @file{jones} in this case, then examine this file
+(or files) in @samp{atv-download-dir} to determine its format. Having
+deduced this it takes appropriate action such as stripping appended
+PostScript figures, executing shell scripts, etc. For more details
+see @xref{Paper Formats}, and @ref{Example Sessions}. 
+
+@iftex
+@example
+@bullet{} Function: (M-x)  slice-and-dice
+@end example
+@end iftex
+
+@ifinfo
+* Function: slice-and-dice
+@end ifinfo
+@cindex @kbd{slice-and-dice}
+
+@kbd{slice-and-dice} extracts appended PostScript figures from a file
+which is loaded in the current buffer. It will search for each occurance
+of @code{"^%!"} and strip the region between this line and the next
+@code{"^%!"} or the end of file. For each such region it pauses for the
+filename to be given to the figure, offering a default (in parenthesis)
+gathered from the comment area preceeding the PostScript signal.
+
+@iftex
+@example
+@bullet{} Function: (M-x)  shell-paper
+@end example
+@end iftex
+
+@ifinfo
+* Function: shell-paper
+@end ifinfo
+@cindex @kbd{shell-paper}
+
+This function is the one called when the retrieved paper is found to
+contain the regexp @code{"^#![ \t]*\\(.*/bin/.*\\)$"}. Everything below
+and including this line is extracted to a file @file{localname.sh} which
+is then executed by Emacs with @kbd{shell-command "(match)
+localname.sh"}, where (match) is the executable shell name and path
+extracted from the file. Thus a variety of shells are supported,
+includng for instance, @dfn{Perl} scripts. A file @file{localname.rpt}
+is made which catches any standard output of the execution.
+
+You can use this function on any buffer containing a non-interactive
+shell script, like a shar file sent to you in the mail. 
+@kbd{shell-paper} strips the header and executes the shar file without
+leaving mail. Remember that the script is executed in
+@kbd{atv-download-dir}.
+
+@subsection Operating on Several Buffers in Emacs
+@cindex Paper in Multiple Files
+@cindex Several Buffers
+@cindex @kbd{buffer-menu}
+
+@ifinfo
+ * Command: buffer-menu
+@end ifinfo
+
+See: @inforef{Several Buffers, Manipulating Several Buffers in Emacs, emacs}.
+
+@ifinfo
+  The "buffer-menu" facility is like a "Dired for buffers"; it allows
+you to request operations on various Emacs buffers by editing an Emacs
+buffer containing a list of them.  You can save buffers, kill them
+(here called "deleting" them, for consistency with Dired), or display
+them.
+@end ifinfo
+
+
+
+@iftex
+@cindex buffer-menu
+@example
+@bullet{} Function: (M-x)  buffer-menu
+@end example
+
+     Begin editing a buffer listing all Emacs buffers.
+
+  The "buffer-menu" facility is like a "Dired for buffers"; it allows
+you to request operations on various Emacs buffers by editing an Emacs
+buffer containing a list of them.  You can save buffers, kill them
+(here called "deleting" them, for consistency with Dired), or display
+them.
+
+  The command @kbd{buffer-menu} writes a list of all Emacs buffers into
+the buffer @file{*Buffer List*}, and selects that buffer in Buffer Menu
+mode.  The buffer is read-only, and can only be changed through the special
+commands described in this section.  Most of these commands are graphic
+characters.  The usual Emacs cursor motion commands can be used in the
+@file{*Buffer List*} buffer.  The following special commands apply to the
+buffer described on the current line.
+
+@table @kbd
+@item d
+Request to delete (kill) the buffer, then move down.  The request
+shows as a @kbd{D} on the line, before the buffer name.  Requested
+deletions take place when the @kbd{x} command is used.
+
+@item k  
+Synonym for @kbd{d}.
+
+@item C-d  
+Like @kbd{d} but move up afterwards instead of down.
+
+@item s  
+Request to save the buffer. The request shows as an @kbd{S} on the
+line. Requested saves take place when the @kbd{x} command is used.
+You may request both saving and deletion for the same buffer.
+
+@item ~ 
+Mark buffer "unmodified". The command @kbd{~} does this immediately when
+typed.
+
+@item x 
+Perform previously requested deletions and saves.
+
+@item u 
+Remove any request made for the current line, and move down.
+
+@item DEL 
+Move to previous line and remove any request made for that line.
+@end table
+
+  All the commands that put in or remove flags to request later operations
+also move down a line, and accept a numeric argument as a repeat count,
+unless otherwise specified.
+
+  There are also special commands to use the buffer list to select another
+buffer, and to specify one or more other buffers for display in additional
+windows.
+
+@table @kbd
+@item 1 
+Select the buffer in a full-screen window.  This command takes effect
+immediately.
+
+@item 2 
+Immediately set up two windows, with this buffer in one, and the
+previously selected buffer (aside from the buffer `*Buffer List*')
+in the other.
+
+@item f 
+Immediately select the buffer in place of the @file{*Buffer List*} buffer.
+
+@item o 
+Immediately select the buffer in another window as if by @kbd{C-x 4 b},
+leaving @file{*Buffer List*} visible.
+
+@item q 
+Immediately select this buffer, and also display in other windows any
+buffers previously flagged with the @kbd{m} command.  If there are no
+such buffers, this command is equivalent to @kbd{1}.
+
+@item m 
+Flag this buffer to be displayed in another window if the @kbd{q}
+command is used.  The request shows as a @kbd{>} at the beginning of
+the line. The same buffer may not have both a delete request and a
+display request.
+@end table
+
+  All that @file{buffer-menu} does directly is create and select a suitable
+buffer, and turn on Buffer Menu mode.  Everything else described above is
+implemented by the special commands provided in Buffer Menu mode.  One
+consequence of this is that you can switch from the @file{*Buffer List*}
+buffer to another Emacs buffer, and edit there.  You can reselect the
+@file{buffer-menu} buffer later, to perform the operations already
+requested, or you can kill it, or pay no further attention to it.
+
+  The only difference between @file{buffer-menu} and @file{list-buffers} is
+that @file{buffer-menu} selects the @file{*Buffer List*} buffer and
+@file{list-buffers} does not.  If you run @file{list-buffers} (that is,
+type @kbd{C-x C-b}) and select the buffer list manually, you can use all of
+the commands described here.
+@end iftex
+
+Also the command @kbd{insert-buffer} is very useful for concatenating
+buffers of multifile papers.
+
+@ifinfo
+ * Command: insert-buffer FROM-BUFFER-OR-NAME
+@end ifinfo
+@cindex @kbd{insert-buffer}
+
+See: @inforef{Commands for Insertion, Inserting Whole Buffers, elisp}.
+
+@iftex
+@example
+@bullet{} Function: (M-x)  insert-buffer FROM-BUFFER-OR-NAME
+@end example
+
+     This function inserts the entire contents of FROM-BUFFER-OR-NAME
+     (which must exist) into the current buffer after point.  It
+     leaves the mark after the inserted text.  The value is
+     unpredictable.
+
+@end iftex
+
+@page
+@node Title Listings and Abstracts, Utilities, Processing Functions, Functions
+@comment  node-name,  next,  previous,  up
+@section Title Listings and Abstracts
+@cindex Title Listings and Abstracts
+
+@iftex
+@example
+@bullet{} Function: (M-x)  get-listing-from-data
+@bullet{} Function: (M-x)  store-listing-from-data
+@end example
+@end iftex
+
+@ifinfo
+* Function: get-listing-from-data
+
+* Function: store-listing-from-data
+@end ifinfo
+@cindex @kbd{get-listing-from-data}
+@cindex @kbd{store-listing-from-data}
+
+@samp{get-listing-from-data} and @samp{store-listing-from-data}
+work the same way, except on title listings. They prompt the user
+for the listing in the usual format: 
+@samp{hep-th/9204}, then @dfn{get} (to a buffer),
+or @dfn{store} (to a file) the given month's listing. 
+
+Note that if the listing is gotten with @kbd{get-listing-from-data} into
+a buffer, then @kbd{get-paper} will work in that buffer as in the daily
+abstract list. Simply put the cursor on the paper of interest (@strong{after}
+the line beginning with @dfn{Paper:} and type 
+@kbd{(M-x:) get-paper}.
+
+@iftex
+@example
+@bullet{} Function: (M-x)  get-abstract
+@bullet{} Function: (M-x)  get-abstract-from-data
+@end example
+@end iftex
+
+@ifinfo
+* Function: get-abstract
+
+* Function: get-abstract-from-data
+@end ifinfo
+@cindex @kbd{get-abstract}
+@cindex @kbd{get-abstract-from-data}
+
+These two functions get abstracts to a new window and are useful
+in two situations mainly: use @kbd{get-abstract} when reading
+a monthly title listing where just the titles are given, to
+get the paper's abstract. @kbd{get-abstract-from-data} is handy
+to view the abstract of a reference for which you have the archive
+number.
+
+@node Utilities,  , Title Listings and Abstracts, Functions
+@comment  node-name,  next,  previous,  up
+@section Utilities
+@cindex Utilities
+
+@iftex
+@example
+@bullet{} Function: (M-x)  interesting
+@end example
+@end iftex
+
+@ifinfo
+* Function: interesting
+@end ifinfo
+@cindex @kbd{interesting}
+
+This function is a tool for saving interesting abstracts to a file
+which can then be examined sometime later. It is used to avoid
+having to save the entire Mail abstract posting, and then later
+sifting through all abstracts. It can also be used to save abstracts
+to different files according to subject, etc.
+
+When the point is placed in an abstract, type @kbd{M-x: interesting}.
+You are presented with the prompt to save the abstract to the
+default interesting file,
+@example
+>>> Append to? (interesting.atv): 
+@end example
+
+@kbd{[RETURN]} saves to the default, set by @samp{atv-interesting-file}
+(@pxref{atv-interesting-file}), or you may enter another filename.
+
+@cindex @kbd{atavachron-mail}
+@iftex
+@example
+@bullet{} Function: (M-x)  atavachron-mail
+@end example
+@end iftex
+
+@ifinfo
+* Function: atavachron-mail
+@end ifinfo
+
+This handy function allows you to easily send a bug report, comment, or
+question to the author. It opens a mail buffer addressed to me (@dfn{Jim
+Hetrick)} and dumps the current values of all @strong{Atavachron}
+variables, which can be used to reconstruct your situation. Please
+feel free to use this function any time you would like to contact me
+with questions, suggestions, or other correspondence.
+
+@node Paper Formats, Example Sessions, Functions, Top
+@comment  node-name,  next,  previous,  up
+@chapter Paper Formats
+@cindex Paper Formats
+
+The paper formats presently supported by the @strong{Atavachron} version
+@file{1.1} are listed here with a brief desription of the action 
+taken for each (see @ref{Processing Functions}, for more). The paper's format
+is determined by listing all files which match the paper's number
+in the correct branch directory at the archive.
+
+@section Single @TeX{} File
+@cindex Since @TeX{} file
+
+If the paper is a single file and no @dfn{PostScript} signal or shell
+commands are found, the paper is renamed @file{localname.tex} upon
+transfer to a local buffer, and @samp{tex-mode} is loaded. It is then
+ready for processing via the usual @samp{tex-mode} facilities,
+
+@example
+@bullet{} @kbd{C-c C-b} for [La]@TeX{}ing, 
+@bullet{} @kbd{C-c C-p} for printing, 
+@end example
+
+or any other local tex or @samp{auc-tex} features, such as previewing.
+If @samp{atv-auto-tex-paper} is @dfn{t}, [La]@TeX{} is automatically 
+started at this point. 
+
+@section Single @TeX{} File with Appended @dfn{PostScript} Figures
+@cindex Appended PostScript
+
+A single paper file is first checked for any appended @dfn{PostScript}
+figures, which are then surgically removed to @file{.ps} files at the
+user's request (@pxref{Processing Functions}). The whole file is first
+saved though, with extension @file{.tpl}. The @file{slice-and-dice}
+function (which removes the figures) tries to find a name for the figure
+file from the comments near the top of the @dfn{PostScript} header.
+
+With the advent of the bulletin board macro @samp{uufiles} to package 
+figures, data files, or other auxiliary files, the occurance of 
+@dfn{all-in-one} papers will hopefully deminish.
+
+@section Shell Script
+@cindex Shell Scripts
+
+After checking for @dfn{PostScript} signs, the @strong{Atavachron}
+checks for shell commands, in particular for @code{"#!.*/bin/"}. If this
+string is found, the region below @code{#!.*/bin/} is saved to a file
+@file{localname.sh} which is then executed (@pxref{Processing
+Functions}). A report of the execution (including any terminal output
+made by the script) is made and named @file{localname.rpt}.
+
+@section Tar File
+@cindex Tar Files
+
+If the archive paper is a tarfile, it is renamed @file{localname.tar.Z}
+and, upon confirmation, unpacked in @samp{atv-download-dir}. A report of
+any output during the unpacking process is presented in the buffer
+@file{localname.rpt} which is then searched for a unique @TeX{} file.
+If found this file is loaded to a buffer.
+
+@section Multiple Archive Files for a Paper
+@cindex Multiple Files
+@cindex UUfiles
+@cindex Files Made by Macro @kbd{uufiles}
+
+@bullet{} UUENCODED Auxillary Files (Figures, Data, etc.)
+@cindex UUfiles
+
+When the @strong{Atavachron} finds multiple files for a given paper, it
+first checks for the extention @file{.2} and if found, assumes
+sequential integer extensions for all files. The paper files
+@file{localname.2} through @file{localname.N} are copied and checked as
+to whether they are @strong{uuencoded} files produced by Paul Ginsparg's
+preprint bulliten board macro @file{uufiles}. If so, they are
+@strong{uudecoded}, ie.  their contents is unpacked in
+@samp{atv-uufiles-dir}. The figure files should then be accessible to
+@TeX{} and @samp{dvips} via the paths specified in the environment
+variable @var{TEXINPUTS} and in the file @file{.dvipsrc} (see
+@pxref{.dvipsrc}). If @samp{csh} is not available on your machine, you
+can set @samp{atv-no-csh} to @dfn{t} (@pxref{Configuration}) and still
+unpack the uufiles.
+
+A file named @file{localnameN.rpt} is produced in
+@samp{atv-uufiles-dir} for each auxillary file, which records the
+output of the command @samp{tar -xvf -} when unpacking (each of the N)
+uufiles. This file is then a manifest of figures/files included with
+this paper.
+
+@bullet{} NON-UUENCODED Files
+
+If the extra archive files are not found to be @strong{uufiles}, or
+they do not have sequential integer extensions, they are simply copied
+to separate Emacs buffers to be processed by hand. To facilitate this,
+@kbd{list-buffers} is called which lists all the buffers of the current
+session in @dfn{buffer-menu-mode} which makes working with several
+buffers much easier (@pxref{Processing Functions}).
+
+@cindex Primary File
+Finally, @file{localname.1} is transfered and treated as the primary
+file of the paper. Thus it is assumed to be a @TeX{} document (although
+tests for @dfn{PostScript} and shell commands are automatically done),
+and will either make use of the decoded uufiles, or hopefully contain
+instructions for manually processing the set of files displayed by
+@kbd{list-buffers}.
+
+@section Multiple Non-Integer Extensions 
+@cindex Non-Integer Extensions
+
+If multiple files with non-integer extensions are found or if the
+@strong{Atavachron} is confused about the nature of the files on the
+remote archive, the files are stored directly on the user's system
+in @samp{atv-download-dir}; these files will in general require
+conscious processing.
+
+@node Example Sessions, Things To Come, Paper Formats, Top
+@comment  node-name,  next,  previous,  up
+@chapter Example Sessions
+@cindex Example Sessions
+
+This section shows some sample sessions of what should happen when
+getting specific papers of various formats. These are intended to
+illustrate the most common formats and certainly do not exaust the
+permutations of papers and functions. Below, @kbd{>>>} means that the
+following prompt or message appears in the mini-buffer.
+
+@section Example:  Single @TeX{} File
+@cindex Single TeX file: Example
+
+The point is located in the abstract of Witten's paper
+@dfn{hep-th/9204083}. If @samp{atv-prompt-filename} is @dfn{t}, doing
+@example
+M-x get-paper
+@end example
+
+asks:
+@example
+>>>   Local name for paper? [.tex appended] (9204083): 
+@end example
+
+Typing @dfn{witten}, renames this paper to @file{witten.tex}, while
+simply hitting @kbd{[RETURN]}, preserves it's archive name and adds
+@file{.tex} yielding the buffer @file{9204083.tex}. Note that as an
+older paper it is compressed at the archive, so @file{9204083.Z} is
+transferred and uncompressed on the fly.
+
+The file is gotten to a new window in @samp{tex-mode}. Now typing
+@kbd{C-c C-b} (@dfn{Control and c} then @dfn{Control and b}),
+invokes @TeX{} on the file, and @kbd{C-c C-p} prints it.
+
+Thus in four simple of keystrokes, after reading the abstract in the
+mail, the paper is in the printer bin. This could even be reduced to a
+mouse click and the print command.
+
+@section Example:  @TeX{} File with Appended @dfn{PostScript}
+@cindex Appended PostScript: Example
+
+Reading a reference to the paper @dfn{hep-lat/9212017} we type:
+@example
+M-x get-paper-from-data
+@end example
+
+the @strong{Atavachron} asks:
+@example
+>>>   Local name for paper? [.tex appended] (9212017): 
+@end example
+
+We hit @kbd{[RETURN]} to accept the default name @samp{9212017}
+and the paper is retrieved. 
+We are notified of appended @dfn{PostScript} figures
+@example
+>>>   Looks like there are appended PostScript figures...
+@end example
+
+then asked by the @strong{Atavachron}
+@example
+>>>   Shall I surgically remove the figures? (y or n)
+@end example
+
+Entering @kbd{y} gets the reply "@samp{Entering slice and dice
+mode...}". First a backup is made called @file{9212017.tpl}.
+Then, upon demarking the first figure, the @strong{Atavachron} asks
+@example
+>>>   Name for figure file below this point? (bumpy-operator.ps): 
+@end example
+
+Hitting @kbd{[RETURN]} accepts the default name @file{bumpy-operator.ps}
+which was found in the nearby comments. The @dfn{PostScript}
+figure @file{bumpy-operator.ps} is extracted; this process is repeated
+four times extracting each of the four appended figures. On the
+last figure the @strong{Atavachron} asks:
+@example
+>>>   Name for figure file below this point? (* NONE FOUND *): 
+@end example
+
+Note the @samp{* NONE FOUND *}; this is because of a typing error in the 
+original paper file where the figure is labeled @dfn{binning-error.p},
+and the @dfn{.ps} search fails. In this case @file{binning-error.ps}
+(or some other name) @strong{must} be entered at the above prompt by hand.
+
+@dfn{Slice and dice} mode is now complete and the @TeX{} portion
+of the original paper is returned, ready for @samp{tex-mode} processing.
+In addition, a report of the figure extraction is made in the file
+@file{9212017.figs}:
+
+@example
+ * -\|/- The Atavachron  (1.1) * 
+Below are the PostScript figures extracted from: 9212017.tex
+-----------------------------------------------
+bumpy-operator.ps
+interpolation.ps
+surface-energy.ps
+binning-error.ps
+@end example
+
+@section Example:  Storing and Processing a Paper (with @strong{uuencoded} Figures)
+@cindex Storing Paper: Example
+@cindex Processing Paper: Example
+@cindex UUfiles: Example
+
+While logged in from home, you read the abstract of Distler's
+paper @dfn{hep-th/9212062}. You type:
+@example
+M-x store-paper
+@end example
+
+with the point in the abstract. The @strong{Atavachron} asks the usual:
+@example
+>>>   Local name for paper? (9212062): 
+@end example
+
+to which you enter @kbd{distler}. Two files are retrieved
+with the message: @samp{Use "process-paper" on "distler" at 
+your convenience..."}
+
+The next morning you find the files @file{distler.1} and
+@file{distler.2} stored in your @samp{atv-download-dir}, thus you enter
+Emacs and do @kbd{M-x process-paper}. The response is
+@example
+>>>   Name of stored paper? [without suffix]: 
+@end example
+
+You enter @file{distler} and the @strong{Atavachron} begins to process
+the paper. Since there are multiple files to this paper, the
+@strong{Atavachron} checks for @strong{uuencoded} figures. Finding them,
+it unpacks the figures into the @samp{atv-uufiles-dir} where @TeX{} and
+@file{dvips} can get at them. Finally it returns the @TeX{} file of the
+paper in @file{tex-mode} and a manifest @file{distler2.rpt} of the
+uudecoding:
+
+@page
+@example
+ * -\|/- The Atavachron  (1.1) * 
+This is the output of: sh hep-th/9212062.2
+Below should be a manifest of the enclosed files:
+------------------------------------------------
+x grapha.eps, 3080 bytes, 7 media blocks.
+x graphb.eps, 3080 bytes, 7 media blocks.
+x fig.pro, 3089 bytes, 7 media blocks.
+@end example
+
+@node Things To Come, Index, Example Sessions, Top
+@chapter Things To Come
+@cindex Wish List
+@cindex Things to Come
+
+@itemize @bullet
+@item
+The first thing that should be done is clean the code a bit.
+@strong{The Atavachron} grew out of a 20 line @kbd{(defun get-paper ())} to
+teach myself some Lisp, into the present package by Lamarkian evolution.
+Certainly there are more efficient forms of various functions, and many
+of the large modules could be broken down into reasonable blocks.  Along
+these lines is a redefinition of the package as a "semi-major
+mode" of some kind, instead of a non-linear collection of functions.
+
+@item
+Improved error trapping; as @kbd{atavachron-mail} comes in, these will be
+fixed. At present @strong{The Atavachron} will crash if you don't give an
+expected response, say @kbd{[RETURN]} when it really needs a string
+input, however these seem to just abort without fatalities.
+
+@item
+At present the macro directories at the archives are ignored, meaning
+you have to get macros via the usual routes of mail or ftp.  A nice
+feature would be macro (ie. @kbd{\input} and @kbd{\document@{@}})
+checking, by which @strong{The Atavachron} would search the gotten
+[La]@TeX{} file for all auxillary files and macro packages needed, check
+the path for these, then report and get the missing macros.
+
+@item
+@cindex Auto-Previewing
+Finally, more consistent [La]@TeX{} in preprint submissions will make
+possible the assumption that the preprint will actually pass the texxing
+stage, thereby making auto-previewing (at the click of the mouse on an
+abstract), and similar futuristic fantasies possible. This should be
+provided soon, along with auto-printing, as hook functions for
+@samp{atv-auto-tex-command} which sense the exit of the @TeX{}
+shell, and determine if it is safe to send the results to the printer.
+
+@end itemize
+
+@node Index,  , Things To Come, Top
+@unnumbered Concept Index
+
+@printindex cp
+
+@page
+@contents
+
+@bye
+
+
+
+

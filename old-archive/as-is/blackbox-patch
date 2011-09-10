@@ -1,0 +1,54 @@
+Date: 27 Jun 87 02:14:33 GMT
+From: Pat Lashley <Holmes.UUCP!pml@EDDIE.MIT.EDU>
+Subject: blackbox.el
+Message-Id: <8706270214.AA08710@Holmes.case.com>
+Sender: unix-emacs-request@BBN.COM
+To: unix-emacs@BBN.COM
+
+The following changes to blackbox.el will prevent the placement of
+balls outside the board area due to `(random)' returning a negative
+number.
+
+diff -c4 blackbox.el~ blackbox.el
+*** blackbox.el~        Fri Jun 26 00:33:22 1987
+--- blackbox.el Fri Jun 26 18:54:24 1987
+***************
+*** 51,65 ****
+    (setq bb-detour-count 0)
+    (bb-insert-board)
+    (bb-goto (cons bb-x bb-y)))
+  
+  (defun bb-init-board (num-balls)
+    (random t)
+    (let (board pos)
+      (while (>= (setq num-balls (1- num-balls)) 0)
+        (while
+          (progn
+!           (setq pos (cons (% (random) 8) (% (random) 8)))
+            (bb-member pos board)))
+        (setq board (cons pos board)))
+      board))
+  
+--- 51,72 ----
+    (setq bb-detour-count 0)
+    (bb-insert-board)
+    (bb-goto (cons bb-x bb-y)))
+  
++ (defun abs-random ()
++   "Return a non-negative random number"
++   (let ((num (random)))
++     (if (< num 0)
++       (- num)
++       num)))
++ 
+  (defun bb-init-board (num-balls)
+    (random t)
+    (let (board pos)
+      (while (>= (setq num-balls (1- num-balls)) 0)
+        (while
+          (progn
+!           (setq pos (cons (% (abs-random) 8) (% (abs-random) 8)))
+            (bb-member pos board)))
+        (setq board (cons pos board)))
+      board))
+  

@@ -1,0 +1,217 @@
+What's New in Version 2.3
+-------------------------
+
+  - The resource completion/help has been extended to include the WCL
+    resources and the constraint resources.
+
+  - dm-xmr.el -- A set of Dmacros for XMR mode, which replaces the
+    abbreviation stuff.
+
+  - The display name is made optional -- it is looked up from DISPLAY.
+
+  - Uncommenting region removes only the first `!'.
+
+  - xmr-database.sh has been fixed not to generate such long lines.
+
+  - Fixed a bug in the hierarchy parsing function that ignored the
+    `wcPopups' links.
+
+  - New features have been added:
+
+    - to indent the current resource set or a region containing resource
+      sets.
+
+    - to rename the current object.
+
+    - to search an object by name.
+
+    - to aid in navigating the widget hierarchy -- parent, child, next
+      sibling, or previous sibling.
+
+
+Please send your comments or bug reports to ik@ctt.bellcore.com.
+
+
+Archive Information
+-------------------
+
+Archive site: archive.cis.ohio-state.edu
+XMR mode:     /pub/gnu/emacs/elisp-archive/modes/xmr.tar.Z
+Dmacro:       /pub/gnu/emacs/elisp-archive/packages/dmacro.tar.Z
+
+
+General Usage
+-------------
+
+XMR mode is an emacs extension that is useful for editing X/Motif/WCL
+resource files. Basically, it helps you to edit large resource files
+which can become tedious and repetitive. It also provides an on-line
+assistance by keeping track of the valid resources for each widget
+class and providing access to the on-line documentation for each
+widget class. XMR mode supports a limited amount of run-time
+integration as well; however, used in conjunction with other emacs
+features (e.g. compile, tags, etc.) you can easily create a fully
+integrated environment.
+
+The prescribed organization of the resource file is as follows:
+
+  - Each widget's resource specifications must be grouped contiguously
+    without any intervening blank lines. From here on, I'll refer to
+    these resources collectively as the widget's resource set.
+
+  - Each resource set must be separated by at least 1 blank line.
+
+The package consists of the following files:
+
+    README	     this file
+    dm-xmr.el	     Dmacros for XMR mode
+    man.el	     emacs interface to man (modified for XMR mode)
+    xmr-database.el  contains widget specific information
+    xmr-database.sh  generates xmr-database.el
+    xmr-mode.el	     XMR mode extension to emacs
+
+In order to load and use it, add something like the following lines to
+your .emacs file:
+
+    (setq load-path (cons "directory-containing-xmr-mode-stuff" load-path))
+    (setq auto-mode-alist (cons '("\\.ad$" . xmr-mode) auto-mode-alist))
+    (autoload 'xmr-mode "xmr-mode")
+
+Summary of each major feature is as follows.
+
+1. Dmacros and name completion. XMR mode contains a predefined set of
+Dmacros for interactively specifying each widget class. (If you don't
+know what the Dmacro package is, see below.)
+
+For example, suppose you want to specify a resource set for the push
+button widget. When, you type Ctrl-c-d (by default), you'll be
+prompted for a widget class (Actually a Dmacro, but there is a Dmacro
+for each widget class). Type a `?' to see what widget classes are
+available. Then, type `push followed by RETURN and the following line
+will be inserted:
+
+    *<name>.wcClassName:	XmPushButton
+
+You'll then be prompted for the widget's name. Type in `testButton'
+and you'll get:
+
+    *testButton.wcClassName:	XmPushButton
+
+By typing Ctrl-J (by default) at the end of the line, you'll get:
+
+    *testButton.wcClassName:	XmPushButton
+    *testButton
+
+Now you can continue to specify the widget's resource, and when you
+are at the end of each line, instead of pressing RETURN, type Ctrl-J.
+
+In addition to the Motif widget classes, there are Dmacros for other
+high-level UI component such as the radio box, generic dialog box,
+file menu, etc. So, for example, if you choose the "filemenu" Dmacro,
+you'll see the resources which define a file menu and its children.
+
+2. On-line help. XMR mode knows about which resources, including the
+inherited resources and the constraint resources, are valid for each
+widget class. Thus, when you're editing a widget's resource set, you
+can query for the valid resources, provided that you've specified the
+widget's class. In WCL (1.0x), this is done by specifying the resource
+`wcClass', `wcClassName', or `wcConstructor'. If you are editing
+non-WCL resource files, you can still get this help by including one
+of these resources in the widget specification. (The resource manager
+should simply ignore this entry. If not, just comment it out.)
+
+For example, suppose you were't quite sure what resources were
+available for the push button above:
+
+    *testButton.wcClassName:	XmPushButton
+    *testButton.
+
+Typing Ctrl-c-h (by default) will list the valid resources;
+Ctrl-c-Ctrl-h will list the valid resources, including the inherited
+ones. Depending on whether the button's parent is a constraint widget
+or not, you may or may not see constraint resources.
+
+You have access to the on-line Motif man pages, provided that the man
+pages have been installed on your system. When you enter the command
+to bring up a man page, it prompts you for a widget class, which
+defaults to the widget's class that you are currently editing.
+
+In the above example, typing Ctrl-c-m and then RETURN will bring up
+the man page for XmPushButton in another buffer.
+
+3. Run-time integration. In order to run the application, you need not
+leave the buffer containing the resource file. You just issue a
+command and the application that you've specified will be run, which
+is Mri by default.
+
+4. Automatic indentation. When you're about to specify the resource
+value, typing the tab key will automatically indent so that the point
+will be beneath the previous line's resource value.
+
+In addition, there are commands to format a resource set or a region
+containing resource sets, in such a way that all resource values get
+aligned (by default at column 40). The latter two commands are
+especially useful after inserting a Dmacro, which may not indent the
+resource values.
+
+5. Navigation aid. XMR mode gives you the ability to quickly navigate
+around the widget hierarchy. When you're editing a resource set, you
+can jump to the widget's parent, its Nth child, or its next or
+previous sibling in the hierarchy.
+
+6. Miscellaneous. You can comment out a region of resource
+specification or uncommand a commented region of resource
+specification. Also, if you are editing a WCL resource file, you can
+have the widget hierarchy displayed in another buffer. This is useful
+if you want to see the actual widget hierarchy, which is often hard to
+tell from just looking at the user interface. This feature may be
+extended in the future so that you can use the displayed widget
+hierarchy to navigate around.
+
+
+What Dmacro is
+--------------
+
+[
+  Name:        Dynamcic Macro
+  Author:      Wayne Mesard, WMesard@Oracle.com
+
+  Dynamic Macro ("DM") is a facility for inserting structured text in
+  Emacs.  In addition to straight textual substitution (already available
+  through Emacs' Abbrev mode) DM will insert time- and date-stamps, your
+  name and user-id, the current file name, a file's contents, the results
+  of a shell command and anything else you can think of.  It can prompt
+  the user for strings.  It can also position the cursor within the
+  expanded text, and indent the expansion in whatever way is appropriate
+  to the current major mode.  DM will also allow you to bind dmacros to
+  keys and automatically insert dmacros in new files.
+]
+
+
+Extending XMR mode
+------------------
+
+You can extend XMR mode in the following ways:
+
+  - adding help information for other widget classes
+  - modifying XMR mode to work with other widget sets
+
+[ to be continued ... ]
+
+
+Acknowledgements
+----------------
+
+Thanks to the following people's code/ideas:
+
+    Gary Levine		Perl code (to be) used by xmr-database.sh
+    Ernst Lippe		code to comment/uncomment region
+    Eric Rose		man.el
+    Andrew Wason	listres suggestion
+    Larry Williamson	suggestions for improvement
+
+
+Local Variables:
+mode: indented-text
+eval: (progn (auto-fill-mode 1) (set-fill-column 70))
+End:

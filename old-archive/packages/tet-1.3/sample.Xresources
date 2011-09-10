@@ -1,0 +1,27 @@
+!
+!  .Xresources - TWH - 3/21/97
+!
+! Emacs X Resources
+!   Fonts see:  xfontsel, xfd, and xlsfonts.
+!   Colors see: showrgb, xcmap
+!
+! Note: .Xresources merges with system defaults.
+!       .Xdefaults replaces system defaults.
+!
+emacs*background:	gray80
+emacs*foreground:	NavyBlue
+!emacs*background:	white smoke
+!emacs*foreground:	turquoise
+emacs*font:		-misc-fixed-bold-r-normal--15-140-75-75-c-90-iso8859-1
+!emacs*font:		9x15
+! 3 looks like Motif
+emacs*shadowWidth:	3
+emacs*curses:		on
+emacs*cursorColor:	red
+emacs*jumpScroll:	on
+emacs*saveLines:	1000
+emacs*scrollBar:	True
+emacs*scrollKey:	on
+emacs*borderColor:	black
+emacs*borderWidth:	1
+emacs*windowTitle:	"(`/etc/hostname`)"

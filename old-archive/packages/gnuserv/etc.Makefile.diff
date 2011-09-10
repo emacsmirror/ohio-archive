@@ -1,0 +1,53 @@
+*** dist-18.55/etc/Makefile~	Tue Apr 18 00:34:45 1989
+--- dist-18.55/etc/Makefile	Fri Jun 30 16:34:04 1989
+***************
+*** 6,17 ****
+  
+  EXECUTABLES = test-distrib etags ctags loadst make-docfile \
+     digest-doc sorted-doc movemail cvtmail fakemail yow env \
+!    server emacsclient
+  
+  all: ${EXECUTABLES}
+  
+  distclean:
+! 	-rm -f ${EXECUTABLES} *~ \#* DOC* core
+  
+  # This justs verifies that the non-ASCII characters
+  # in the file `testfile' have no been clobbered by
+--- 6,17 ----
+  
+  EXECUTABLES = test-distrib etags ctags loadst make-docfile \
+     digest-doc sorted-doc movemail cvtmail fakemail yow env \
+!    server emacsclient gnuserv gnudoit gnuclient
+  
+  all: ${EXECUTABLES}
+  
+  distclean:
+! 	-rm -f ${EXECUTABLES} *~ \#* DOC* core gnuslib.o
+  
+  # This justs verifies that the non-ASCII characters
+  # in the file `testfile' have no been clobbered by
+***************
+*** 66,71 ****
+--- 66,86 ----
+  
+  emacsclient: emacsclient.c ../src/config.h
+  	$(CC) -o emacsclient ${CFLAGS} emacsclient.c $(LOADLIBES)
++ 
++ # ange's gnuserv stuff
++ #
++ gnuclient: gnuserv.h gnuslib.o gnuclient.c ../src/config.h
++ 	$(CC) -o gnuclient ${CFLAGS} gnuclient.c gnuslib.o $(LOADLIBES)
++ 
++ gnuserv: gnuserv.h gnuslib.o gnuserv.c ../src/config.h
++ 	$(CC) -o gnuserv ${CFLAGS} gnuserv.c gnuslib.o $(LOADLIBES)
++ 
++ gnudoit: gnuserv.h gnuslib.o gnudoit.c ../src/config.h
++ 	$(CC) -o gnudoit ${CFLAGS} gnudoit.c gnuslib.o $(LOADLIBES)
++ 
++ gnuslib.o: gnuserv.h gnuslib.c ../src/config.h
++ 	$(CC) -c ${CFLAGS} gnuslib.c
++ 
+  
+  # This one is NOT included in EXECUTABLES.
+  # See ../src/ymakefile.

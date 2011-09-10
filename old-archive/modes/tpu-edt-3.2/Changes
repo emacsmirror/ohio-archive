@@ -1,0 +1,107 @@
+			  Changes to TPU-edt
+
+
+** Version 3.1 --> Version 3.2
+
+   o Repaired quoted-insert (^V) so it obeys overstrike mode.
+
+   o Added autoload cookies to tpu-extras.el.
+
+   o Repaired screen size code in tpu-mapper.el.
+
+   o Removed ^F mapping.
+
+
+** Version 3.0 --> Version 3.1
+
+   o In preparation for inclusion in the EMACS distribution
+
+      - Added autoload directives.
+      - Assigned copyright to FSF.
+      - Updated the copying permission notices.
+      - Added tpu-edt as an alias for tpu-edt-mode.
+      - Changed tpu-version to report version instead of revision.
+
+    o Renamed files per GNU EMACS specification
+
+      - tpu-edt-doc.el      -->  tpu-doc.el
+      - tpu-edt-extras.el   -->  tpu-extras.el
+      - tpu-edt-history.el  -->  tpu-recall.el
+      - tpu-edt-mapper.el   -->  tpu-mapper.el
+
+   o Fixed the change case function to work with 8-bit characters.
+
+   o Fixed the special insert function to work properly in overstrike mode.
+
+
+** Version 2.0 --> Version 3.0
+
+   o Added emacs version 19 support, including 
+
+      - predicates on emacs versions.
+      - use of new force-mode-line-update in tpu-update-mode-line.
+      - tpu-mark and tpu-set-mark functions to cope with the new emacs 19
+        mark function.
+      - minibuffer-local-ns-map for Lucid emacs (a hack) since Lucid doesn't
+        have this map.
+      - a check before defining keys in repeat-complex-command-map, since
+        emacs 19 doesn't have this map.
+
+   o Added emacs version 19 history recall support, including 
+
+      - regexp and string history variables.
+      - tpu-{next,previous}-history-element functions.
+      - tpu-string-prompt function used by tpu-add-at-{b,e}ol.
+      - tpu-arrow-history routine to map history recall to arrows.
+      - modifications to tpu-edt-history so it runs only in emacs version 18.
+
+   o Added X-windows support for emacs version 19, including
+
+      - tpu-edt-mapper.el - a program to create TPU-edt X-windows key map.
+      - tpu-load-xkeys, a function to load x key definitions.
+      - modifications to tpu-help to recognize X return and enter keys.
+      - mark-hooks to update the mode line when the mark is set using the
+        mouse.
+
+   o Added new key mapping:  Gold-^F --> set-visited-file-name.
+
+   o Repaired the ^e (end-of-line) function to work properly in free
+     cursor mode.
+
+
+** Release 1 --> Version 2.0
+
+   o Renamed functions use/cancel-tpu to tpu-edt-on/off.  tpu-edt-mode is
+     also an alias for tpu-edt-on.  Turning off TPU-edt actually works now.
+
+   o Enabled switching between TPU-edt and Emacs control keys.  This function
+     is bound to Gold-^T.
+
+   o Modified CUT and APPEND to work like STORE-TEXT if given a repeat count.
+
+   o Modified ADD-AT-BOL/EOL functions to work on regions, or the entire
+     buffer if no region is marked.
+
+   o Added tpu-pan-columns variable to control how far tpu-pan-left/right
+     scroll.  The default value is 16 columns, which maintains the old
+     behavior.
+
+   o Added optional history recall on strings, file names, and commands.
+     SEARCH, REPLACE, GET, INCLUDE, DO, and ADD-AT-BOL/EOL all keep a
+     history of strings.
+
+   o Added optional scroll margin and free cursor mode support.
+
+   o Added optional functions that send various VTxxx terminal control codes
+     to the terminal where emacs is running.  The functions affect screen
+     width and keypad modes.
+
+   o Removed some non-TPU/edt cruft - sure hope it won't be missed!
+
+   o General reformatting and clean up, including renaming functions so all
+     start with "tpu-" (thus avoiding conflicts with other packages) and
+     conforming to new elisp header standards.
+
+   o Killed a few obscure bugs and cleaned up some questionable logic.
+
+   o Modified code in preparation for Emacs version 19.

@@ -1,0 +1,68 @@
+News in 9.9
+===========
+
+   * Bug fix in JLATEX recognition.  Patch by Tsutomu OKUMURA
+     <oku@nml.t.u-tokyo.ac.jp>.
+
+   * Bug fix in foils package sypport.  Suggested by Bernt
+     Guldbrandtsen <bernt@jupiter.ansci.iastate.edu>.
+
+   * Made `make install-contrib' compile the contributed lisp files.
+     Suggested by Nils Ackermann <Nils.Ackermann@math.uni-giessen.de>.
+
+   * In `texinfo-mode', `C-c C-f C-d' now deletes the current font,
+     while `C-u C-c C-f KEY' changes it.  `@dfn' moved to `C-c C-f d'.
+     Suggested by Christoph Wedler <wedler@fmi.uni-passau.de>.
+
+   * Fixed some custom types.  Patch by Markus Rost
+     <markus.rost@mathematik.uni-regensburg.de>.
+
+   * Support loading byte compiled files, even if `TeX-byte-compile' is
+     nil.  Patch by Christoph Wedler  <wedler@fmi.uni-passau.de>.
+
+   * The command to replace a LaTeX2e font should work more reliably
+     now.  Patch by Christoph Wedler  <wedler@fmi.uni-passau.de>.
+
+   * Minor XEmacs packaging changes.  Patch by Christoph Wedler
+     <wedler@fmi.uni-passau.de>.
+
+   * `TeX-file-recurse' now accepts an integer value, max depth of
+     recursion.  Patch by Alastair Burt  <burt@dfki.bde>.
+
+   * Simple imenu support for LaTeX.
+
+   * Workaround for 20.3 bugs.
+
+   * The `Spell' command now works on all open buffers in the document.
+     Patch by Jason Stewart <jasons@cs.unm.edu>.
+
+   * `C-c C-m' now puts content of region inside first empty brackets
+     in the macro, if any.  Patch by Peter Thiemann <pjt@cs.nott.ac.uk>.
+
+   * Update of `natbib.el' style file by Carsten Dominik
+     <dominik@strw.LeidenUniv.nl>.
+
+   * Much better detection of TeX math mode.  Patch by Carsten Dominik
+     <dominik@strw.LeidenUniv.nl>.
+
+   * New `%n' escape in `TeX-command-list' for entering the current
+     line number.  Suggested by "Lee, Sang-Min"
+     <smagus@acorn.snu.ac.kr>.
+
+   * Doc fixes in manual.  Patch by Gustavo Chaves
+     <gustavo@cpqd.com.br>.
+
+   * Better reftex support for sections.  Patch by Carsten Dominik
+     <dominik@strw.LeidenUniv.nl>.
+
+   * Bug fixes in math card.  Reported by "Ron Smith"
+     <rsmith@eel.ufl.edu>.
+
+   * Better multifile support.  Patch by Soren Dayton
+     <csdayton@cs.uchicago.edu>.
+
+   * Don't expand abbreviations when `abbrev-mode' is nil.  Suggested
+     by Alastair Burt <alastair.burt@dfki.de>.
+
+   * `direntry' support in manual, by SL Baur <steve@altair.xemacs.org>.
+

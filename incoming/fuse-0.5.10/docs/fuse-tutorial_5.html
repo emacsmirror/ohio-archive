@@ -1,0 +1,271 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse-tutorial.texi on 28 July 1998 -->
+
+<TITLE>FUSE Tutorial - Running Feffit</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_4.html">previous</A>, <A HREF="fuse-tutorial_6.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC16" HREF="fuse-tutorial_toc.html#TOC16">Running Feffit</A></H1>
+
+<P>
+FEFFIT is the program covered by @fuse{} which has the most
+complicated input files.  Consequently, the most interesting and
+powerful features of @fuse{} are designed explicitly for the FEFFIT
+input file.
+
+</P>
+<P>
+Before starting in on creating the input file for FEFFIT, I want to
+define an important term -- the <EM>path paragraph</EM>.  In FEFFIT
+each scattering path is described by one or more <EM>path
+parameters</EM>.  The path parameters are a set of keyword that tell
+FEFFIT how to calculate the contribution from a given scattering
+path.  They have a common syntax.  Each path parameter must be on its
+own line and the parameter itself must be the first word on the line.
+The second word on the line is an integer index identifying the path.
+The rest of the line is devoted to the value of the parameter.  In
+FEFFIT there are no further syntactic requirements<A NAME="DOCF4" HREF="fuse-tutorial_foot.html#FOOT4">(4)</A>.  Specifically, they can appear in any
+order in the input file and FEFFIT will happily process them.
+
+</P>
+<P>
+@fuse{} adds an additional syntax requirement to the FEFFIT input
+file.  @fuse{} requires that all path parameters used to describe a given
+scattering path be contiguous in the file and that the <CODE>path</CODE> (or
+<CODE>feff</CODE>, they are synonyms) path parameter be the first first listed
+in the contiguous group.  These groupings of path parameetrs are
+separated by one or more lines containing only white space or comment
+characters.  White space in FEFFIT is defined as spaces or tabs and
+comment characters are any of <CODE>%</CODE>, <CODE>!</CODE>, <CODE>#</CODE>, or (at the
+beginning of a line) <CODE>*</CODE>.  This grouping beginning with the
+<CODE>path</CODE> path parameter and ending with a line of white space or
+comment characters is called a <EM>path paragraph</EM>.  @fuse{} has
+numerous functions for operating on path paragraphs.  If you prefer to
+organize your input file by parameters rather than by paragraphs, the
+you will probably not find @fuse{} very helpful.
+
+</P>
+
+
+
+<H2><A NAME="SEC17" HREF="fuse-tutorial_toc.html#TOC17">Creating the FEFFIT Input File</A></H2>
+
+<P>
+Writing a new input file for FEFFIT can be very tedious, time
+consuming, and error prone.  To my mind, a task that is as inherently
+repititious as constructing a brand new FEFFIT input file begs for
+automation.  @fuse{} to the rescue.
+
+</P>
+<P>
+<A NAME="IDX74"></A>
+Start by creating a new file.  Use <CODE>C-x f</CODE> to tell Emacs to create
+a new file.  When it asks for the file name, answer with
+<TT>`feffit.inp'</TT>.  Note that the mode line now reads <CODE>Feffit</CODE> and
+there is a <CODE>Feffit</CODE> menu in the menu bar.  The first thing you need
+to do is set the paths to the data, FEFF, and output files by
+hitting <KBD>C-c C-d a</KBD> or selecting <CODE>&#62;&#62; Set all three paths</CODE> from
+the <CODE>Input - Set variables</CODE> menu.  Set them to <TT>`data/'</TT>,
+<TT>`feff/'</TT>, and <TT>`fits/'</TT> resprectively.
+Don't skip this step!  Correctly
+setting these file paths will save you an <EM>enormous</EM> amount of
+typing in a few minutes.
+
+</P>
+<P>
+<A NAME="IDX75"></A>
+<A NAME="IDX76"></A>
+Now type <KBD>C-c C-f f</KBD> or select <CODE>files.dat</CODE> from the
+<CODE>Feffit - Examine output from Feff</CODE> menu.  This will display
+<TT>`files.dat'</TT>, one of the output files from the FEFF run.
+Notice that this file actually bears a resemblence to a
+<TT>`feffit.inp'</TT> file.  It contains a list of the file names that are
+needed as the values of the <CODE>path</CODE> path parameters and it shows
+some relevant information about each of those path files.  Now type
+<KBD>M-C-`</KBD> to return to the <TT>`feffit.inp'</TT> file.
+
+</P>
+<P>
+Now comes some wizardry.  Type <KBD>C-c C-t f</KBD> or select <CODE>Make
+feffit.inp from files.dat</CODE> from the <CODE>Feffit - Templates</CODE> menu.
+(You can also hit the templates icon in the toolbar, but the behavior of
+that button may not make sense to you yet.)  You will be asked in the
+minibuffer for the name of the <TT>`files.dat'</TT> file.  The initial guess
+will be correct since you set the path to the FEFF files.  Just hit
+<KBD>ret</KBD>.  @fuse{} will display the contents of <TT>`files.dat'</TT> file
+and ask you a slightly cryptic question about the <CODE>minimum
+amplitude.</CODE>  Just hit <CODE>!</CODE> and <KBD>ret</KBD>.  After working for a few
+second, the <TT>`files.dat'</TT> file is transformed into a skeleton for a
+FEFFIT input file.  Wow!
+<A NAME="IDX77"></A>
+
+</P>
+<P>
+The first several lines are title lines containing the header
+information from the <TT>`files.dat'</TT> file.  Then templates for global
+and local variables were inserted into the input file.  Note that the
+hotspot markers have been placed in the templates.  The remaining lines
+are path paragraphs formed from the lines in <TT>`files.dat'</TT>.  Note
+that the path to the <TT>`feffnnnn.dat'</TT> files was inserted in each path
+paragraph.  The small chore of setting that path a few minutes ago has
+saved you a huge amount of dull typing.  Yay!  You actually have some
+control over how many lines from <TT>`files.dat'</TT> are written out as
+path paragraphs.  The minimum amplitude question was giving you the
+option of discarding small paths by specifying an amplitude cutoff.
+Other questions would have given you options to discard paths beyond a
+certain length or containing too many legs.  By hitting <CODE>!</CODE>, you
+told @fuse{} to use defaults for these three cutoffs, that is not to
+discard any files.  Later on, you may want to play with this function to
+see how these filters behave.
+
+</P>
+<P>
+Now fill out the header templates so that they look like Figure 8.
+
+</P>
+<P>
+<STRONG>Figure 8:</STRONG> The headers of the FEFFIT input file
+<P>
+<img src="feffit-head.jpg" alt="**image file feffit-head.jpg**">
+<P>
+
+</P>
+
+
+<H2><A NAME="SEC18" HREF="fuse-tutorial_toc.html#TOC18">Finishing the FEFFIT Input File</A></H2>
+
+<P>
+<A NAME="IDX78"></A>
+Copper metal is a fairly simple fitting problem.  It is cubic, so all of
+the changes bond lengths can be parameterized in terms of a volume
+lattice expansion constant, @greekletter{alpha}.  A single Debye
+temperature, @thetad{}, will be a good enough approximation for the
+@sigsqr{} values.  We will also need an @ezero{} and @amp{}.  Delete the
+line that says <CODE>% insert sets and guesses here</CODE> and type in the
+following
+
+<PRE>
+guess   amp     0.9
+guess   e0      0.0
+guess   thetad  300
+guess   alpha   0.0
+</PRE>
+
+<P>
+There are two ways we could procede from here.  Using the fitting model
+I described in the last paragraph, it would suffice to set the
+<CODE>s02</CODE>, <CODE>e0</CODE>, <CODE>delr</CODE>, and <CODE>sigma2</CODE> path parameters as
+parameters in a zeroth path paragraph.  Alternatively, we could
+explicitly set each of those parameters in each paragraph. Since this is
+a tutorial, let's do two of them as zeroth path parameters and two of
+them in each paragraph.
+
+</P>
+<P>
+<A NAME="IDX79"></A>
+<A NAME="IDX80"></A>
+Type <KBD>C-c C-t z</KBD> or select <CODE>Zeroth path template</CODE> from the
+<CODE>Feffit - templates</CODE> menu.  Fill this template in with the
+appropriate guessed parameters.  It should look like this:
+
+<PRE>
+s02     0       amp
+e0      0       e0
+</PRE>
+
+<P>
+This will set make the best fit values of the variables
+<CODE>amp</CODE> and <CODE>e0</CODE> the @amp{} and @ezero{} values for each path.
+
+</P>
+<P>
+<A NAME="IDX81"></A>
+Now we need to add <CODE>delr</CODE> and <CODE>sigma2</CODE> path parameters in each
+path.  @fuse{} provides an elegant shortcut for this onerous editing
+task.  Hit <KBD>C-c C-v a</KBD> or select <CODE>Add parameter to all
+paragraphs</CODE> from the <CODE>Feffit - Paragraph manipulation</CODE> menu.  When
+asked <TT>`Which parameter?'</TT>, answer with <TT>`delr'</TT>.  Then when asked
+<TT>`Default value for delr?'</TT>, answer with <TT>`alpha*reff'</TT>.  This
+information is filled into every paragraph with the correct indexing.
+Now execute that function again again, this time answering the questions
+with <TT>`sigma2'</TT> and <TT>`debye(temp, thetad)'</TT>.  Beats editing by
+hand!
+
+</P>
+<P>
+<A NAME="IDX82"></A>
+<A NAME="IDX83"></A>
+We are almost done.  The <CODE>debye</CODE> function require the sample
+temperature.  For the data in this tutorial the temperature is 10 K, so
+put
+
+<PRE>
+set	temp	10
+</PRE>
+
+<P>
+after the guess parameters.  To get the correct temperature
+dependence of the @sigsqr{} terms it is necessary to consider the
+so-called McMaster correction which is necessary since @greek{chi,k} was
+normalized to the edge step in AUTOBK.  Hit <KBD>C-c C-s m</KBD> or
+select <CODE>Insert McMaster corrections</CODE> from the <CODE>Feffit</CODE> menu.
+Answer yes to the question about setting <CODE>sigmm</CODE>.  This function
+reads the value for the McMaster @sigsqr{} correction from the
+<TT>`feff.inp'</TT> file and inserts its value in the <TT>`feffit.inp'</TT>
+file.  It also adds this to the @sigsqr{} for each path.
+
+</P>
+<P>
+When you are finished, each path paragraph will look like rather like this
+
+<PRE>
+path    1       feff/feff0001.dat
+id      1       amp=100.000, deg=12.000, nleg=2, r_eff=2.5527
+delr    1       alpha*reff
+sigma2  1       debye(temp, thetad) + sigmm
+</PRE>
+
+<P>
+There should be 25 paragraphs.  Now save the input file and
+run FEFFIT.
+
+</P>
+
+
+
+<H2><A NAME="SEC19" HREF="fuse-tutorial_toc.html#TOC19">Examining the Output of FEFFIT</A></H2>
+
+<P>
+<A NAME="IDX84"></A>
+<A NAME="IDX85"></A>
+<A NAME="IDX86"></A>
+<A NAME="IDX87"></A>
+<A NAME="IDX88"></A>
+You can plot the results of the fit in <I>k</I>-space, <I>R</I>-space,
+or back-transformed <I>k</I>-space using <KBD>C-c C-p k</KBD>, <KBD>C-c C-p
+r</KBD>, and <KBD>C-c C-p q</KBD>, respectively.  There are toolbar icons and menu
+entries for each of these plot options as well.  You can examine the log
+and prm files using <KBD>C-c C-f l</KBD> and <KBD>C-c C-f r</KBD>.
+
+</P>
+<P>
+<A NAME="IDX89"></A>
+<A NAME="IDX90"></A>
+@fuse{} has a convenient mechanism for updating the guess parameters
+with their best fit values.  Move the screen cursor to the line
+containing one of the guesses and hit <KBD>C-c C-s g</KBD>.  @fuse{} fetches
+the best fit value and the error bar from the log file and replaces the
+initial guess.  <KBD>C-c C-s b</KBD> replaces all of the initial guesses in
+the file with their best fit values from the log file.
+
+</P>
+
+<P><HR><P>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_4.html">previous</A>, <A HREF="fuse-tutorial_6.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+</BODY>
+</HTML>

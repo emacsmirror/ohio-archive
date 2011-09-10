@@ -1,0 +1,1121 @@
+From raveling@venera.isi.edu Tue Jul 24 12:41:12 1990
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Date: 22 Jun 89 20:08:15 GMT
+From: raveling@venera.isi.edu  (Paul Raveling)
+Organization: USC-Information Sciences Institute
+Subject: Input remapping
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+
+
+
+	Several messages to follow represent a set of changes for
+	X11 keystroke and mouse function remapping that are in use
+	at ISI on HP 9000 workstations.  Most changes are generic,
+	but one elisp file supplies key bindings tailored specifically
+	for HP keyboards.
+
+	This package of related changes is broadly separable into
+	three parts:
+
+	    --	Changes to x11fns.c and x11term.c support rebinding
+		the X11 mapping from keysyms to strings.
+
+	    --  Two elisp files set up default bindings for keys
+		and mouse buttons.  Two associated text files
+		provide summary information on these bindings.
+
+	    --  Minor mods to a couple existing elisp files
+		control loading either the default mappings
+		or user-provided setup files.
+
+	This set of changes is fairly large, so it's serialized in
+	8 messages following this one.  Each message contains brief notes
+	at the beginning, followed by either diff listings or the complete
+	text of a file.  Differences are relative to the distributed source
+	for GNU emacs version 18.54.
+
+
+	Individual components to follow are:
+
+
+	1.  Changes to src/x11fns.c, adding x-rebind-keysym function
+
+	2.  Changes to src/x11term.c, with two minor changes to
+	    keystroke decoding and two added functions to handle
+	    name translation for keysyms not named in X11R3.
+
+	3.  Complete contents of etc/HP_mouse.text:  Summary documentation
+	    on default mouse button bindings
+
+	4.  Complete contents of etc/HP_keys.text:  Summary documentation
+	    on default bindings for non-ascii keys
+
+	5.  Changes to lisp/startup.el, to change the order of
+	    loading default.el and .emacs
+
+	6.  Changes to lisp/term/bobcat.el, to load separate mouse
+	    and keyboard setup files from either the lisp/term directory
+	    or from the user's home directory
+
+	7.  Complete contents of lisp/term/default_keymap.el
+
+	8.  Differences between lisp/x-mouse.el and lisp/term/default_mouse.el
+
+
+----------------
+Paul Raveling
+Raveling@isi.edu
+
+
+From raveling@venera.isi.edu Tue Jul 24 12:43:46 1990
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Date: 22 Jun 89 20:09:53 GMT
+From: raveling@venera.isi.edu  (Paul Raveling)
+Organization: USC-Information Sciences Institute
+Subject: Input remapping, Part 1 of 8:	x11fns.c
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+
+
+	HP/ISI input remapping files:  Part 1 of 8
+
+	These are differences relative to the original src/x11fns.c
+	in GNU emacs version 18.54.
+
+	Changes are to add function x-rebind-keysym, which allows
+	changing the keysym-to-string binding for X11 keyboard input.
+
+
+------------------------------  Cut  Here  --------------------------------
+24a25,26
+> /*	Modified by Paul Raveling @ ISI to add keysym rebinding		*/
+> 
+110a113,256
+> extern	char	*keysymtostring ();	/*  In x11term.c	*/
+> extern	KeySym	 stringtokeysym ();	/*  In x11term.c	*/
+> 
+> /*	Alternative modifier lists;	*/
+> 
+> static	KeySym	noshifts[2]	= {0, 0};
+> static	KeySym	shiftshifts[2]	= {XK_Shift_L, XK_Shift_R};
+> static	KeySym	ctlshifts[2]	= {XK_Control_L, XK_Control_R};
+> static	KeySym	metashifts[2]	= {XK_Meta_L, XK_Meta_R};
+> 
+> 
+> 
+> 
+> /*------------------	x-rebind-keysym	-------------------*/
+> 
+> DEFUN ("x-rebind-keysym", Fx_rebind_keysym, Sx_rebind_keysym, 3, 3,
+> "sKey to rebind (KeySym, without \"XK_\"):  \n\
+> sShift key ([nil], None, Shift, Ctl, Meta):  \n\
+> sNew string bound to key:  ",
+> "Rebind KEYSYM, with SHIFT-KEY, to NEWSTRING.\n\
+>     KEYSYM is the key's name as given in /usr/include/X11/keysymdef.h,\n\
+> 	but without the \"XK_\" prefix.\n\
+>     SHIFT-KEY is nil, \"NONE\", \"SHIFT\", \"CTL\", or \"META\";\n\
+> 	nil selects all combinations of shift keys.\n\
+>     NEWSTRING is an arbitrary string of keystrokes.\n\
+> \n")
+> 
+>   (keysym, shift_key, newstring)
+>      register Lisp_Object keysym;
+>      register Lisp_Object shift_key;
+>      register Lisp_Object newstring;
+> {
+> 	char	*keysymstring, *shiftstring, *mapstring;
+> 	int	 keysymslen,    shiftslen,    mapslen;
+> 	KeySym	 target_key;
+> 	KeySym	*modlist;
+> 	int	 num_mods;
+> 
+> 	int	 i;
+> 	char	*cp;
+> 
+> 
+> 
+> 	CHECK_STRING (keysym, 1);
+> 	if (!NULL (shift_key))
+> 	   CHECK_STRING (shift_key,2);
+> 	CHECK_STRING (newstring, 3);
+> 
+> #define	setstring(src,dst,len) { \
+> 	len = XSTRING (src) -> size; \
+> 	dst = (char *) xmalloc (len+1); \
+> 	bcopy (XSTRING (src) -> data, dst, len); \
+> 	dst[len] = 0; }
+> 
+> 	setstring (keysym,	keysymstring,	keysymslen)
+> 	if ( !NULL (shift_key) )
+> 	   setstring (shift_key,shiftstring,	shiftslen)
+> 	else
+> 	   shiftslen = 0;
+> 	setstring (newstring,	mapstring,	mapslen)
+> 
+> 
+> 
+> 	/*------------------------------*/
+> 	/*	Identify key to remap	*/
+> 	/*------------------------------*/
+> 
+> 	target_key = stringtokeysym ( keysymstring );
+> 
+> 	if ( target_key == 0 )
+> 	   {
+> 	   error ("Keysym \"%s\" is not defined", keysymstring);
+> 	   return Qnil;
+> 	   }
+> 
+> 
+> 
+> 	/*----------------------------------------------*/
+> 	/*	Identify modifier list(s) to use	*/
+> 	/*----------------------------------------------*/
+> 
+> 	if ( shiftslen != 0 )
+> 	   {
+> 	   cp = shiftstring;
+> 	   i  = shiftslen;
+> 	   while ( i-- > 0 )		/*  Fold string to upper case	*/
+> 		 {
+> 	         if ((*cp >= 'a') && (*cp <= 'z'))
+> 		    *cp -= 'a' - 'A';
+> 		 ++ cp;
+> 		 }
+> 	   }
+> 
+> 	if ( shiftslen == 0 )
+> 	   num_mods = -1;
+> 	else if ( strcmp (shiftstring, "NONE") == 0 )
+> 		{
+> 		modlist  = noshifts;
+> 		num_mods = 0;
+> 		}
+> 	else if ( strcmp (shiftstring, "SHIFT") == 0 )
+> 		{
+> 		modlist  = shiftshifts;
+> 		num_mods = 2;
+> 		}
+> 	else if ( strcmp (shiftstring, "CTL") == 0 )
+> 		{
+> 		modlist  = ctlshifts;
+> 		num_mods = 2;
+> 		}
+> 	else if ( strcmp (shiftstring, "META") == 0 )
+> 		{
+> 		modlist  = metashifts;
+> 		num_mods = 2;
+> 		}
+> 	else
+> 		{
+> 		error ( "Shift key \"%s\" not recognized", shiftstring );
+> 		return Qnil;
+> 		}
+> 
+> 
+> 	/*----------------------*/
+> 	/*	Map the key	*/
+> 	/*----------------------*/
+> 
+> 	if ( num_mods != -1 )
+> 	   XRebindKeysym ( XXdisplay, target_key, modlist, num_mods,
+> 				mapstring, mapslen );
+> 	else
+> 	   {
+> 	   XRebindKeysym ( XXdisplay, target_key, noshifts, 0,
+> 				mapstring, mapslen );
+> 	   XRebindKeysym ( XXdisplay, target_key, shiftshifts, 2,
+> 				mapstring, mapslen );
+> 	   XRebindKeysym ( XXdisplay, target_key, ctlshifts, 2,
+> 				mapstring, mapslen );
+> 	   XRebindKeysym ( XXdisplay, target_key, metashifts, 2,
+> 				mapstring, mapslen );
+> 	   }
+> 
+> 	return Qt;
+> }
+> 
+847a994
+>   defsubr (&Sx_rebind_keysym);
+
+
+From raveling@venera.isi.edu Tue Jul 24 12:43:37 1990
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Date: 22 Jun 89 20:11:49 GMT
+From: raveling@venera.isi.edu  (Paul Raveling)
+Organization: USC-Information Sciences Institute
+Subject: Input remapping, Part 2 of 8:  x11term.c
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+
+
+	HP/ISI input remapping files:  Part 2 of 8
+
+	These are differences relative to the original src/x11term.c
+	in GNU emacs version 18.54.
+
+	Changes are:
+
+	1.  Add routines keysymtostring and symtokeysym.  These
+	    are functionally equivalent to XKeysymToString and
+	    XStringToKeysym, but they account for several unnamed
+	    keysyms which the X11R3 HP display server generates but
+	    which are not named.
+
+	2.  Expand the size of mapping_buf; 20 characters proved
+	    a bit too restrictive.
+
+	3.  Delete code for looking up special cases to remap after
+	    calling XLookupString.  ALL equivalent mapping is now
+	    done by using elisp setup code to call x-rebind-keysym,
+	    and letting X11 map to the appropriate string.
+
+	****  Warning  ****
+
+	This is a minimal change.  It doesn't attempt to keep emacs
+	from interpreting shift keys; if you rebind a shifted key
+	to M-x something, emacs will probably generate shift-M-x something.
+
+	--------
+
+	    Since it may not be obvious from the diff listing, the
+	    context of the last 2 changes are:
+
+	...
+		    case KeyPress:
+		      nbytes = XLookupString (&event,
+** Modified (byte count):		      mapping_buf, 120, &keysym,
+					      &status);
+** Added:	#if 0	/*	No longer needed	*/
+		      /* Someday this will be unnecessary as we will
+			 be able to use XRebindKeysym so XLookupString
+			 will have already given us the string we want. */
+	...
+			case XK_Down:
+			  strcpy(mapping_buf,"\016");
+			  nbytes = 1;
+			  break;
+			}
+		      }
+** Added:	#endif	/*  No longer needed	*/
+		      if (nbytes) {
+	...
+
+
+
+------------------------------  Cut  Here  --------------------------------
+24a25,26
+> /*	Modified to use keysym-to-string mapping, Paul Raveling/ISI	*/
+> 
+224a227,289
+> /*
+> 	Functions like XKeysymToString and XStringToKeysym
+> 	but with added knowledge of HP-specific keysyms:
+> */
+> 
+> char	*keysymtostring ( keysym )
+> 
+> 	KeySym	 keysym;
+> 
+> {
+> 	char	*keystring;
+> 
+> keystring = XKeysymToString ( keysym );
+> if ( keystring != 0 )
+>    return keystring;
+> 
+> /*	Identify an HP-specific keysym	*/
+> 
+> switch ( keysym )
+> 	{
+> 	case 0x1000FF74:	return "Tab_backward";
+> 	case 0x1000FF6C:	return "Reset";
+> 	case 0x1000FF6D:	return "System";
+> 	case 0x1000FF6E:	return "User";
+> 	case 0x1000FF6F:	return "Clear_line";
+> 	case 0x1000FF70:	return "Insert_line";
+> 	case 0x1000FF71:	return "Delete_line";
+> 	case 0x1000FF72:	return "Insert_char";
+> 	case 0x1000FF73:	return "Delete_char";
+> 	case 0x1000FF75:	return "KP_Tab_backward";
+> 	default:		return 0;
+> 	}
+> }
+> 
+> 
+> KeySym	 stringtokeysym ( keystring )
+> 
+> 	char	*keystring;
+> 
+> {
+> 	KeySym	keysym;
+> 
+> keysym = XStringToKeysym ( keystring );
+> if ( keysym != NoSymbol )
+>    return keysym;
+> 
+> /*	Identify an HP-specific keysym	*/
+> 
+> if ( strcmp(keystring, "Tab_backward") == 0 )	return 0x1000FF74;
+> if ( strcmp(keystring, "Reset") == 0 )		return 0x1000FF6C;
+> if ( strcmp(keystring, "System") == 0 )		return 0x1000FF6D;
+> if ( strcmp(keystring, "User") == 0 )		return 0x1000FF6E;
+> if ( strcmp(keystring, "Clear_line") == 0 )	return 0x1000FF6F;
+> if ( strcmp(keystring, "Insert_line") == 0 )	return 0x1000FF70;
+> if ( strcmp(keystring, "Delete_line") == 0 )	return 0x1000FF71;
+> if ( strcmp(keystring, "Insert_char") == 0 )	return 0x1000FF72;
+> if ( strcmp(keystring, "Delete_char") == 0 )	return 0x1000FF73;
+> if ( strcmp(keystring, "KP_Tab_backward") == 0 )return 0x1000FF75;
+> 
+> return NoSymbol;
+> }
+> 
+> 
+1214c1279
+<   char mapping_buf[20];
+---
+>   char mapping_buf[120];
+1323c1388
+< 			      mapping_buf, 20, &keysym,
+---
+> 			      mapping_buf, 120, &keysym,
+1324a1390
+> #if 0	/*	No longer needed	*/
+1358a1425
+> #endif	/*  No longer needed	*/
+
+
+From raveling@venera.isi.edu Tue Jul 24 12:42:22 1990
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Date: 22 Jun 89 20:13:25 GMT
+From: raveling@venera.isi.edu  (Paul Raveling)
+Organization: USC-Information Sciences Institute
+Subject: Input remapping, Part 3 of 8:  HP_mouse.text
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+
+
+	HP/ISI input remapping files:  Part 3 of 8
+
+	This is the complete content of etc/HP_mouse.text.
+	The "M-x mouse" command views this file to provide
+	brief documentation on mouse button bindings.
+
+------------------------------  Cut  Here  --------------------------------
+
+
+		    Default Mouse Button Functions
+		 for gemacs 18.54 on HP Workstations
+
+
+
+
+	All mouse keys move the gemacs character cursor
+	to the character marked by the X11 cursor when
+	the mouse key is released.
+
+	Button			Function
+	------			--------
+
+	Left
+		Click:		Mark X11 cursor location,
+		Drag:		Mark region, copy to cut buffer
+	Middle			Insert from cut buffer @ X11 cursor
+	Right
+		Click:		Mark X11 cursor location & center it
+		Drag:		Delete region, save in cut buffer
+
+
+	    Unshifted mouse keys operate on the editor's private cut buffer;
+	    Shifted mouse keys operate on X11's (public) cut buffer
+
+	    "Editor's private cut buffer" is actually an X'ish name
+	    for the emacs kill ring;  another way to retrieve this
+	    text is with the ^Y key, or "yank" command.
+
+
+From raveling@venera.isi.edu Tue Jul 24 12:43:17 1990
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Date: 22 Jun 89 20:14:59 GMT
+From: raveling@venera.isi.edu  (Paul Raveling)
+Organization: USC-Information Sciences Institute
+Subject: Input remapping, Part 4 of 8:  HP_keys.text
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+
+
+	HP/ISI input remapping files:  Part 4 of 8
+
+	This is the complete content of etc/HP_keys.text.
+	The "M-x keys" command views this file to provide
+	brief documentation on keyboard bindings.
+
+------------------------------  Cut  Here  --------------------------------
+
+
+		      Default Function Key Usage
+		 for gemacs 18.54 on HP Workstations
+
+
+
+    Special Keys at left of main key cluster
+    ----------------------------------------
+
+	Tab		Tab forward
+	ESC		Ascii escape character  [escape from search]
+	DEL		Delete preceding character
+	Enter		Edit another file		(asks for filename)
+	Print		Insert contents of a file	(asks for filename)
+
+	(DEL is shift-ESC; Print is shift-Enter; shift is ignored for Tab)
+
+
+    Special Keys at right of main key cluster
+    -----------------------------------------
+
+	Backspace	Delete preceding character
+	Insert line	Split current line into 2 lines at current character
+	Delete line	Delete current line
+	Insert char	Switch between insert & overwrite editing modes
+	Delete char	Delete current character
+	\  [arrow pointing up and left]:
+	    unshifted	Go to beginning of buffer
+	    shifted	Go to end of buffer
+	Prev		Go back to previous "page"
+	Next		Go forward to next "page"
+	Select		Go back to marked location	(swap Point and Mark)
+	Arrows		Move in direction indicated
+
+
+
+    Keys in row above main key cluster
+    ----------------------------------
+
+	Break		Save		(Write buffer contents to its file)
+	Reset		Revert		(Reload buffer from its file)
+	Stop		Exit gemacs
+
+	f1		Execute keyboard macro (saved keystrokes)
+	f2		Start/Stop saving keystrokes as keyboard macro
+	f3		Switch to next buffer		(rotate buffer list)
+	f4		Switch to previous buffer	(swap top 2 buffers)
+	Menu		Display and edit buffer list
+	System		Display and edit directory	(dired)
+	User		Display and edit mail		(rmail)
+	f5		Display only the current buffer
+	f6		Replace all ocurrences of a text string
+	f7		Search backward for a text string
+	f8		Search forward  for a text string
+
+	Clear line	Clear current line
+	Clear display	Clear entire buffer
+
+
+	(Reset is shift-Break; User is shift-Menu)
+
+
+
+    Unlabelled keys above numeric keypad
+    ------------------------------------
+
+	#1 (@ left)	Apropos:  Look for information
+	#2		Describe function of a key
+	#3		List all key definitions
+	#4 (@ right)	Describe a gemacs function
+
+
+    Numeric keypad, large keys
+    --------------------------
+
+	0		Undo preceding editing operation
+	Tab		Go to line	(asks for line number)
+	shift Tab	Report current line number
+
+
+    Numeric keypad, small keys
+    --------------------------
+
+	*		Select text mode
+	/		Select indented text mode
+	+		Select outline mode
+	-		Select fundamental mode
+
+	7		Select C mode
+	8		Select LISP mode
+	9		Select EMACS-LISP mode
+	Enter		Select LISP interaction mode
+
+	4		Select LaTeX mode
+	5		Select plain TeX mode
+	6		Select Scribe mode
+	,		Select nroff mode
+
+	1		Save region between Mark and current character
+	2		Save & delete region between Mark & current character
+	3		Insert saved region
+	.		Set Mark at current character
+
+
+From raveling@venera.isi.edu Tue Jul 24 12:43:00 1990
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Date: 22 Jun 89 20:16:39 GMT
+From: raveling@venera.isi.edu  (Paul Raveling)
+Organization: USC-Information Sciences Institute
+Subject: Input remapping, Part 5 of 8:  startup.el
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+
+
+	HP/ISI input remapping files:  Part 5 of 8
+
+	These are differences relative to the original lisp/startup.el
+	in GNU emacs version 18.54.
+
+	The only change is to load lisp/default.el or lisp/default.elc
+	before, rather than after, loading ~/.emacs.  In the HP build
+	tree, lisp/default.elc is defined as a symbolic link to
+	"./term/bobcat.elc" for terminal-specific setup.
+
+	BTW, either the emacs documentation or the original startup.el
+	may have a discrepancy.  My recollection is that the documents
+	& comments say it loads "default" only if .emacs doesn't exist.
+	In fact it always checked first for .emacs, then checked for
+	default, but would always load whatever files existed among
+	this pair.
+
+
+------------------------------  Cut  Here  --------------------------------
+111c111,117
+<     ;; Load user's init file, or load default one.
+---
+> ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+>     ;;		ISI version:  Always load "default" BEFORE .emacs,
+>     ;;		provided "default" exists.
+> 
+>     (load "default" t t)
+> 
+>     ;; Load user's init file, if one exists, AFTER loading default
+124c130,131
+< 			 (load "default" t t)))))
+---
+> 			 ))))
+> ;	Was:		 (load "default" t t)))))
+
+
+From raveling@venera.isi.edu Tue Jul 24 12:42:46 1990
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Date: 22 Jun 89 20:18:29 GMT
+From: raveling@venera.isi.edu  (Paul Raveling)
+Organization: USC-Information Sciences Institute
+Subject: Input remapping, Part 6 of 8:  bobcat.el
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+
+
+	HP/ISI input remapping files:  Part 6 of 8
+
+	These are differences relative to the original lisp/term/bobcat.el
+	in GNU emacs version 18.54.
+
+	Changes were to choose and load keyboard and mouse customization
+	either from the user's home directory or from the lisp/term
+	directory.  This provides a way for ambitious users to supply
+	whatever setup they please in place of the standard setup.
+
+	Motivation for this comes from the fact that the standard
+	setup files are big enough to be slow to load.  This also
+	makes it desirable to use byte-compiled files for the
+	standard defaults.
+
+
+------------------------------  Cut  Here  --------------------------------
+11a12,22
+> 
+> 
+> ;	Local standard customization for X11  (Paul Raveling/ISI):
+> 
+> (if (file-exists-p "~/.emacs_kbd")
+>     (load "~/.emacs_kbd")
+>     (load "term/default_kbd"))
+> 
+> (if (file-exists-p "~/.emacs_mouse")
+>     (load "~/.emacs_mouse")
+>     (load "term/default_mouse"))
+
+
+From raveling@venera.isi.edu Tue Jul 24 12:42:04 1990
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Date: 22 Jun 89 20:19:39 GMT
+From: raveling@venera.isi.edu  (Paul Raveling)
+Organization: USC-Information Sciences Institute
+Subject: Input remapping, Part 7 of 8:  default_keymap.el
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+
+
+	HP/ISI input remapping files:  Part 7 of 8
+
+	This is a complete copy of lisp/term/default_keymap.el, the
+	default HP-specific keyboard setup.  It contains four parts:
+
+	1.  A copy of bobcat.el's logic to swap contro-H and ascii del.
+	    It's an artifact of history -- at one time I was expecting
+	    to replace bobcat.el with this.
+
+	2.  A run of x-rebind-keysym invocations to bind a string of the
+	    form "^X^Ykeyname" to each "non-ascii" keysym.  "keyname"
+	    is normally the string that X11 associates with each keysym.
+	    The exceptions marked by '****' comments prevent emacs from
+	    interpreting one keysym as a prefix for another.
+
+	3.  A few functions are defined for use in the last part.
+
+	4.  A run of global-set-key functions defines what each key does.
+
+
+	It's also possible to just use x-rebind-keysym to map to
+	"standard" emacs commands.  However, there are a few pitfalls
+	involving shift keys (as noted in connection with x11term.c),
+	and using this technique on the first go-around produced a
+	VERY cryptic elisp file that proved hard to maintain before
+	its prototype was finished!
+
+
+------------------------------  Cut  Here  --------------------------------
+;;
+;;	HP function key rebindings for X11
+;;	4-25-89		Paul Raveling
+;;
+
+;;	The next section, which swaps control-H and ascii del, is
+;;	a verbatim copy of the original term/bobcat.el.  All other
+;;	definitions and logic is
+
+;;; HP terminals usually encourage using ^H as the rubout character
+
+(let ((the-table (make-string 128 0)))
+  (let ((i 0))
+    (while (< i 128)
+      (aset the-table i i)
+      (setq i (1+ i))))
+  ;; Swap ^H and DEL
+  (aset the-table ?\177 ?\^h)
+  (aset the-table ?\^h ?\177)
+  (setq keyboard-translate-table the-table))
+
+
+
+;;;;	Bind keysyms to escape sequences consistent with
+;;;;	the distributed version of emacs
+
+(x-rebind-keysym "Left"		nil	"Left")
+(x-rebind-keysym "Right"	nil	"Right")	;  Arrow
+(x-rebind-keysym "Up"		nil	"Up")	;  Keys
+(x-rebind-keysym "Down"		nil	"Down")
+
+(x-rebind-keysym "F1"		nil	"F1")
+(x-rebind-keysym "F2"		nil	"F2")
+(x-rebind-keysym "F3"		nil	"F3")
+(x-rebind-keysym "F4"		nil	"F4")
+(x-rebind-keysym "F5"		nil	"F5")
+(x-rebind-keysym "F6"		nil	"F6")
+(x-rebind-keysym "F7"		nil	"F7")
+(x-rebind-keysym "F8"		nil	"F8")
+(x-rebind-keysym "F9"		nil	"F9")
+(x-rebind-keysym "F10"		nil	"F10")
+(x-rebind-keysym "F11"		nil	"F11")
+(x-rebind-keysym "F12"		nil	"F12")
+(x-rebind-keysym "F13"		nil	"F13")
+(x-rebind-keysym "F14"		nil	"F14")
+(x-rebind-keysym "F15"		nil	"F15")
+(x-rebind-keysym "Help"		nil	"Help")
+(x-rebind-keysym "F16"		nil	"F16")
+(x-rebind-keysym "Menu"		nil	"Menu")
+(x-rebind-keysym "F17"		nil	"F17")
+(x-rebind-keysym "F18"		nil	"F18")
+(x-rebind-keysym "F19"		nil	"F19")
+(x-rebind-keysym "F20"		nil	"F20")
+
+(x-rebind-keysym "Find"		nil	"Find")
+(x-rebind-keysym "Insert"	nil	"Insert")
+;;(x-rebind-keysym "Delete"	nil	"Delete_DEL")
+(x-rebind-keysym "Select"	nil	"Select")
+(x-rebind-keysym "Prior"	nil	"Prior")
+(x-rebind-keysym "Next"		nil	"Next")
+
+
+;;;;	Bind keysyms unused by distributed version of emacs
+;;;;	but used on HP keyboards to escape sequences
+
+(x-rebind-keysym "Tab"		nil	"Tab")
+(x-rebind-keysym "Tab_backward"	nil	"backward_Tab")	; ****
+(x-rebind-keysym "Execute"	nil	"Enter")	; Actually, enter
+(x-rebind-keysym "Print"	nil	"Print")
+(x-rebind-keysym "Break"	nil	"Break")
+(x-rebind-keysym "Reset"	nil	"Reset")
+(x-rebind-keysym "Cancel"	nil	"Cancel")
+(x-rebind-keysym "System"	nil	"System")
+(x-rebind-keysym "User"		nil	"User")
+(x-rebind-keysym "Clear_line"	nil	"Clear_line")
+(x-rebind-keysym "Clear"	nil	"Clear_display")	; ****
+(x-rebind-keysym "Insert_line"	nil	"Insert_line")
+(x-rebind-keysym "Delete_line"	nil	"Delete_line")
+(x-rebind-keysym "Insert_char"	nil	"Insert_char")
+(x-rebind-keysym "Delete_char"	nil	"Delete_char")
+(x-rebind-keysym "Home"		"none"	"Home")
+(x-rebind-keysym "Home"		"shift"	"Shift_Home")
+(x-rebind-keysym "KP_F1"	nil	"KP_F1")
+(x-rebind-keysym "KP_F2"	nil	"KP_F2")
+(x-rebind-keysym "KP_F3"	nil	"KP_F3")
+(x-rebind-keysym "KP_F4"	nil	"KP_F4")
+(x-rebind-keysym "KP_Multiply"	nil	"KP_Multiply")
+(x-rebind-keysym "KP_Divide"	nil	"KP_Divide")
+(x-rebind-keysym "KP_Add"	nil	"KP_Add")
+(x-rebind-keysym "KP_Subtract"	nil	"KP_Subtract")
+(x-rebind-keysym "KP_7"		nil	"KP_7")
+(x-rebind-keysym "KP_8"		nil	"KP_8")
+(x-rebind-keysym "KP_9"		nil	"KP_9")
+(x-rebind-keysym "KP_Enter"	nil	"KP_Enter")
+(x-rebind-keysym "KP_4"		nil	"KP_4")
+(x-rebind-keysym "KP_5"		nil	"KP_5")
+(x-rebind-keysym "KP_6"		nil	"KP_6")
+(x-rebind-keysym "KP_Separator"	nil	"KP_Separator")
+(x-rebind-keysym "KP_1"		nil	"KP_1")
+(x-rebind-keysym "KP_2"		nil	"KP_2")
+(x-rebind-keysym "KP_3"		nil	"KP_3")
+(x-rebind-keysym "KP_Tab"	"none"	"KP_Tab")
+(x-rebind-keysym "KP_Tab_backward" "shift" "KP_backward_Tab") ; ****
+(x-rebind-keysym "KP_0"		nil	"KP_0")
+(x-rebind-keysym "KP_Decimal"	nil	"KP_Decimal")
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;	Simple non-standard functions to support key bindings	     ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun delete-this-line ()
+  "Delete current line, save as kill"
+	(interactive)
+	(let (curcol dot1)
+	(setq curcol (current-column))
+	(forward-line 0)
+	(setq dot1 (dot))
+	(forward-line 1)
+	(kill-region dot1 (dot))
+	(move-to-column curcol)))
+
+(defun clear-this-line ()
+  "Delete contents of current line, save as kill"
+	(interactive)
+	(forward-line 0)
+	(kill-line))
+
+(defun clear-entire-buffer ()
+  "Delete contents of entire buffer, save as kill"
+	(interactive)
+	(mark-whole-buffer)
+	(kill-region 1 (region-end)))
+
+(defun switch-to-prev-buffer ()
+  "Switch to previous buffer:  Like switch-to-buffer, but without interaction"
+	(interactive)
+	(switch-to-buffer (other-buffer (current-buffer))))
+
+(defun start-end-kbd-macro ()
+  "Start/stop capturing keystrokes for keyboard macro"
+	(interactive)
+	(if defining-kbd-macro
+		(end-kbd-macro)
+		(start-kbd-macro nil)))
+
+(defun keys ()
+  "Describe default HP key functions"
+  (interactive)
+  (view-file "/usr/local/gemacs-18.54/etc/HP_keys.text"))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;	Map specific escape sequences	   ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(global-unset-key "\e[")		; Unmap escape-left-bracket
+
+
+;	Function key row along top of main cluster
+
+(global-set-key	"Break" 'save-buffer)	; Break:  Save buffer
+(global-set-key	"Reset" 'revert-buffer)	; Reset:  Revert buffer
+(global-set-key	"Cancel" 'save-buffers-kill-emacs) ; Stop:  Exit gracefully
+
+(global-set-key	"F1" 'call-last-kbd-macro)	; f1:	Execute macro
+(global-set-key	"F2" 'start-end-kbd-macro)	; f2:   Start/end macro def
+(global-set-key	"F3" 'bury-buffer)		; f3:	Switch to next buffer
+(global-set-key	"F4" 'switch-to-prev-buffer); f4:	Switch to prev buffer
+(global-set-key	"Menu" 'list-buffers)	; Menu: Buffer menu
+(global-set-key	"System" 'dired)		; System: 'Edit' directory
+(global-set-key	"User" 'rmail)		; User: 'Edit' mail
+(global-set-key	"F5" 'delete-other-windows)	; f5: 	Edit just 1 buffer
+(global-set-key	"F6" 'replace-string)	; f6: 	Replace string
+
+;;	If not for searches recognizing ^s & ^r when parsing pattern:
+;(global-set-key "F7" 'isearch-backward)	; f7:	Search backward
+;(global-set-key "F8" 'isearch-forward)	; f8:	Search forward
+;;	But instead:
+(x-rebind-keysym "F7"		nil	"")	; f7:	Search backward
+(x-rebind-keysym "F8"		nil	"")	; f8:	Search forward
+
+(global-set-key	"Clear_line" 'clear-this-line) ; Clear line:  Clear line
+(global-set-key	"Clear_display" 'clear-entire-buffer); Clear display:  Clear buffer
+
+
+
+;	Special purpose keys in main key cluster
+
+;;;(global-set-key	"Tab" 'backward-kill-word)	; Tab:  Delete word backward
+;;;(global-set-key	"backward_Tab" 'kill-word)	; Shift-Tab:  Del word forward
+(global-set-key	"Tab" 'tab-to-tab-stop)	; Tab:  Tab forward
+(global-set-key	"backward_Tab" 'tab-to-tab-stop)	; Shift-Tab:  Same
+;;(global-set-key	"Delete_DEL" 'keyboard-quit); DEL:  Abort command
+(global-set-key	"Enter" 'find-file)		; Enter:  Find file
+(global-set-key	"Print" 'insert-file)	; Print:  Insert file
+
+(global-set-key	"Insert_line" 'open-line)	; Insert line:  Split line
+(global-set-key	"Delete_line" 'delete-this-line) ; Delete line:  Del line
+(global-set-key	"Insert_char" 'overwrite-mode); Insert char:  Toggle ovrwrt
+(global-set-key	"Delete_char" 'delete-char)	; Delete char:  Delete char
+(global-set-key	"Home" 'beginning-of-buffer); Home:  Go to start of buffer
+(global-set-key	"Shift_Home" 'end-of-buffer); Shift Home:  Go to end of buf
+(global-set-key	"Select"  'exchange-point-and-mark)	; Select:  Retreat!
+(global-set-key	"Prior"  'scroll-down)	; Prev:  Scroll back 1 page
+(global-set-key	"Next"  'scroll-up)		; Next:  Scroll fwd 1 page
+
+(global-set-key "Left"  'backward-char)	; Left arrow:  Move left
+(global-set-key "Right"  'forward-char)	; Left arrow:  Move left
+(global-set-key "Up"  'previous-line)	; Left arrow:  Move left
+(global-set-key "Down"  'next-line)		; Left arrow:  Move left
+
+
+
+;	Keypad cluster
+
+
+;	Unmarked function keys on top row:
+
+(global-set-key	"KP_F1" 'apropos)		; Keypad F1:  Apropos
+(global-set-key	"KP_F2" 'describe-key)	; Keypad F2:  Describe key
+(global-set-key	"KP_F3" 'describe-bindings)	; Keypad F3:  Describe keys
+(global-set-key	"KP_F4" 'describe-function)	; Keypad F4:  Describe function
+
+
+;	Big keys:
+
+(global-set-key	"KP_Tab" 'goto-line)	; Keypad Tab:	Go to line [#]
+(global-set-key	"KP_backward_Tab" 'what-line); Shift KP Tab:  Report line #
+(global-set-key	"KP_0" 'undo)		; Keypad 0:  Undo
+
+;	Little keys:  Mode settings
+
+(global-set-key	"KP_Multiply"	'text-mode)
+(global-set-key	"KP_Divide"		'indented-text-mode)
+(global-set-key	"KP_Add"		'outline-mode)
+(global-set-key	"KP_Subtract"	'fundamental-mode)
+
+(global-set-key	"KP_7"		'c-mode)
+(global-set-key	"KP_8"		'lisp-mode)
+(global-set-key	"KP_9"		'emacs-lisp-mode)
+(global-set-key	"KP_Enter"		'lisp-interaction-mode)
+
+(global-set-key	"KP_4"		'latex-mode)
+(global-set-key	"KP_5"		'plain-tex-mode)
+(global-set-key	"KP_6"		'scribe-mode)
+(global-set-key	"KP_Separator"	'nroff-mode)
+
+(global-set-key	"KP_1"		'copy-region-as-kill)
+(global-set-key	"KP_2"		'kill-region)
+(global-set-key	"KP_3"		'yank)
+(global-set-key	"KP_Decimal"	'set-mark-command)
+
+
+From raveling@venera.isi.edu Tue Jul 24 12:43:55 1990
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Date: 22 Jun 89 20:21:19 GMT
+From: raveling@venera.isi.edu  (Paul Raveling)
+Organization: USC-Information Sciences Institute
+Subject: Input remapping, Part 8 of 8:  default_mouse.el
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+
+
+	HP/ISI input remapping files:  Part 8 of 8
+
+	These are differences between lisp/x-mouse.el and
+	lisp/term/default_mouse.el in GNU emacs version 18.54.
+
+	Changes are different a different set of functions for the
+	mouse buttons, motivated to some extent by the change in
+	"standard" X11 mouse button bindings for cut/paste functions.
+
+	Adding the recenter function on a right-button-click was
+	an unrelated change that's proved outrageously convenient.
+	Another convenience feature is availability of both 
+	destructive and non-destructive region extraction.
+
+
+------------------------------  Cut  Here  --------------------------------
+0a1,6
+> 
+> ;;	term/default_mouse:el:
+> 
+> ;;	This is a variant of x-mouse.el customized by Paul Raveling,
+> ;;	USC-ISI, for different mouse button functionality.
+> 
+264,270c270
+< (define-key mouse-map x-button-c-s-left 'x-buffer-menu)
+< (define-key mouse-map x-button-c-s-middle 'x-help)
+< (define-key mouse-map x-button-c-s-right 'x-mouse-keep-one-window)
+< (define-key mouse-map x-button-s-middle 'x-cut-text)
+< (define-key mouse-map x-button-s-right 'x-paste-text)
+< (define-key mouse-map x-button-c-middle 'x-cut-and-wipe-text)
+< (define-key mouse-map x-button-c-right 'x-mouse-select-and-split)
+---
+> ;;	Deleted from original version:
+272,279c272,397
+< (if (= window-system-version 10)
+<     (progn
+<       (define-key mouse-map x-button-right 'x-mouse-select)
+<       (define-key mouse-map x-button-left 'x-mouse-set-mark)
+<       (define-key mouse-map x-button-middle 'x-mouse-set-point))
+<   (define-key mouse-map x-button-right 'x-cut-text)
+<   (define-key mouse-map x-button-left 'x-mouse-set-point)
+<   (define-key mouse-map x-button-middle 'x-paste-text))
+---
+> ;;(define-key mouse-map x-button-c-s-left 'x-buffer-menu)
+> ;;(define-key mouse-map x-button-c-s-middle 'x-help)
+> ;;(define-key mouse-map x-button-c-s-right 'x-mouse-keep-one-window)
+> ;;(define-key mouse-map x-button-s-middle 'x-cut-text)
+> ;;(define-key mouse-map x-button-s-right 'x-paste-text)
+> ;;(define-key mouse-map x-button-c-middle 'x-cut-and-wipe-text)
+> ;;(define-key mouse-map x-button-c-right 'x-mouse-select-and-split)
+> 
+> ;;(if (= window-system-version 10)
+> ;;    (progn
+> ;;      (define-key mouse-map x-button-right 'x-mouse-select)
+> ;;      (define-key mouse-map x-button-left 'x-mouse-set-mark)
+> ;;      (define-key mouse-map x-button-middle 'x-mouse-set-point))
+> ;;  (define-key mouse-map x-button-right 'x-cut-text)
+> ;;  (define-key mouse-map x-button-left 'x-mouse-set-point)
+> ;;  (define-key mouse-map x-button-middle 'x-paste-text))
+> 
+> 
+> ;;	Added to replace deleted bindings:
+> 
+> 
+> (defvar x-mouse-last-pos (list -1 -1) "position of the last mouse down event")
+> (defvar x-mouse-last-dot 0 "Value of dot BEFORE the last mouse down event")
+> 
+> 
+> (defun x-mouse-mark (arg)
+>   (setq x-mouse-last-dot (dot))
+>   (if (x-mouse-set-point arg)
+>       (progn
+> 	(setq x-mouse-last-pos arg))))
+> 
+> (defun x-mouse-markcenter (arg)
+>   (setq x-mouse-last-dot (dot))
+>   (if (x-mouse-set-point arg)
+>       (progn
+> 	(setq x-mouse-last-pos arg)))
+>   (recenter arg))
+> 
+> 
+> (defun x-mouse-copy (arg)
+>   (if (equal x-mouse-last-pos arg)
+>       (set-mark x-mouse-last-dot)
+>       (let ((odot (dot)))
+> 	(if (x-mouse-set-point arg)
+> 	    (copy-region-as-kill odot (dot))))))
+> 
+> (defun x-mouse-delete (arg)
+>   (if (equal x-mouse-last-pos arg)
+>       (progn (set-mark x-mouse-last-dot) (recenter arg))
+>       (let ((odot (dot)))
+> 	(if (x-mouse-set-point arg)
+> 	    (kill-region odot (dot))))))
+> 
+> (defun x-mouse-delete-insert (arg)
+>   (if (equal x-mouse-last-pos arg)
+>       (yank)
+>       (let ((odot (dot)))
+> 	(if (x-mouse-set-point arg)
+> 	    (kill-region odot (dot))))))
+> 
+> (defun x-mouse-insert (arg)
+>   (if (x-mouse-set-point arg)
+>       (yank)))
+> 
+> 
+> 
+> (defun x-mouse-cut (arg)
+>   (let ((odot (dot)))
+>     (if (x-mouse-set-point arg)
+> 	(x-store-cut-buffer (buffer-substring odot (dot))))))
+> 
+> (defun x-mouse-delcut (arg)
+>   (if (equal x-mouse-last-pos arg)
+>       (progn (set-mark x-mouse-last-dot) (recenter arg))
+>       (let ((odot (dot)))
+> 	(if (x-mouse-set-point arg)
+> 	    (progn
+> 		(x-store-cut-buffer (buffer-substring odot (dot)))
+> 		(delete-region odot (dot)))))))
+> 
+> (defun x-mouse-insert-cut (arg)
+>   (if (x-mouse-set-point arg)
+>       (insert (x-get-cut-buffer))))
+> 
+> (defun mouse ()
+>   "Describe default mouse button functions"
+>   (interactive)
+>   (view-file "/usr/local/gemacs-18.54/etc/HP_mouse.text"))
+> 
+> 
+> ;;			Mouse Key Functions
+> 
+> ;;	All mouse keys move the gemacs character cursor
+> ;;	to the character marked by the X11 cursor when
+> ;;	the mouse key is released.
+> 
+> ;;	Button			Function
+> ;;	------			--------
+> 
+> ;;	Left
+> ;;		Click:		Mark X11 cursor location,
+> ;;		Drag:		Mark region, copy to cut buffer
+> ;;	Middle			Insert from cut buffer @ X11 cursor
+> ;;	Right
+> ;;		Click:		Mark X11 cursor location & center it
+> ;;		Drag:		Delete region, save in cut buffer
+> 
+> 
+> ;;	    Unshifted mouse keys operate on the editor's private cut buffer;
+> ;;	    Shifted mouse keys operate on X11's (public) cut buffer
+> 
+> 
+> 
+> (define-key mouse-map x-button-left 'x-mouse-mark)
+> (define-key mouse-map x-button-left-up 'x-mouse-copy)
+> (define-key mouse-map x-button-middle 'null)
+> (define-key mouse-map x-button-middle-up 'x-mouse-insert)
+> (define-key mouse-map x-button-right 'x-mouse-mark)
+> (define-key mouse-map x-button-right-up 'x-mouse-delete)
+> 
+> (define-key mouse-map x-button-s-left 'x-mouse-mark)
+> (define-key mouse-map x-button-s-left-up 'x-mouse-cut)
+> (define-key mouse-map x-button-s-middle 'null)
+> (define-key mouse-map x-button-s-middle-up 'x-mouse-insert-cut)
+> (define-key mouse-map x-button-s-right 'x-mouse-mark)
+> (define-key mouse-map x-button-s-right-up 'x-mouse-delcut)
+
+

@@ -1,0 +1,29 @@
+To: unix-emacs@bbn.com
+Date: 25 Jan 89 15:09:57 GMT
+From: Richard Hess <cimshop!rhess@uunet.uu.net>
+Subject: [ BugFix ] reading netnews in GNU... [ an enhanced version of rnews ]
+
+
+  :-*
+
+  I've just uncovered a bug in my "enhanced" (?) rnews code. The code in
+news-select-messages() doesn't work correctly when it encounters a missing
+article.  Replace the first line in the following diff with the second and
+news-select-messages will function correctly.
+
+549c549
+< 	  (news-next-message news-motion-arg)
+---
+> 	  (news-select-message (+ news-motion-arg arg))
+
+  Murphy's Law strikes again.... :-)
+
+Dick...
+
+-------------------------------------------------------------------------------
+WHO:	Richard Hess			BELL:	[415] 940-1400 [ext.342]
+TITLE:	Project Manager			CORP:	Consilium
+      [ User Interface Services ]	SNAIL:	1945 Charleston Road
+UUCP:	...!uunet!cimshop!rhess			Mountain View, CA 94043
+-------------------------------------------------------------------------------
+

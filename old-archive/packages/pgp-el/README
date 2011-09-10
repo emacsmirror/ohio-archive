@@ -1,0 +1,121 @@
+This directory contains pgp.el, a GNU Emacs interface for PGP
+versions 2.2 and higher.
+
+	NEW for this release:
+
+	Menus (in v.19/Lucid/Xemacs, anyway)
+	Simplified installation
+	Bug reporting
+
+pgp.el is the main module.  It contains interface functions to
+connect MH and rmail to PGP.
+
+pgp-bbdb.el contains bits that connect pgp to bbdb.el.  BBDB
+enables me to keep track, within Emacs, of what keys are known
+on you PGP keyring, outside of Emacs.  This makes it practical
+to do a number of checks I could not otherwise do, and therefore
+to provide a number of features automatically and silently that
+I must otherwise ask about, or show you the PGP output for
+approval.  Many of these bits will not compile unless you are
+already using bbdb, so they have been moved into this separate
+file.
+
+The subdirectory ancillary/ contains pieces you may have
+already.  If so, you don't need these copies (and generally
+speaking, the one you have is probably newer and better than the
+one included here).  If you do not have any of these, copy it
+from ancillary/ into your usual lisp directory and byte-compile
+it.
+
+ancillary/advice.el is a version for Emacs v.18.  Use this
+version if you haven't got one already; if you have it (notably,
+v.19), yours is probably better.
+
+ancillary/passwd.el provides a secure means of prompting for a
+password.  It was developed by Jamie Zawinski while he was at
+Lucid.
+
+ancillary/reporter.el is a generic bug reporting facility
+developed by Barry Warsaw.  You need it for the function
+report-pgp-el-bug, which sends me email about problems you're
+having, including lots of internal details that'll help me
+figure out the problem (I hope).  Please feel free to encrypt
+such mail to my key (which is also included).
+
+Note also that pgp.el can use timer.el, a facility new for GNU
+Emacs v.19.  If your Emacs doesn't have timer.el, one popular
+convenience feature, passphrase caching, will be disabled.  See
+the comments in pgp.el for details.
+
+Installation:
+
+	Byte compile pgp.el, and whichever things in ancillary
+	you need.
+
+	Move the .elc files to wherever you normally keep elisp
+	files.
+
+Byte compilations messages you can ignore:
+    While compiling pgp-create-read-menu-bar in file pgp.el: 
+      ** reference to free variable current-menubar
+    While compiling pgp-create-write-menu-bar:
+      ** reference to free variable current-menubar
+    While compiling pgp-rmail-mode-hook:
+      ** reference to free variable rmail-mode-map
+      ** reference to free variable mail-mode-map
+    While compiling the end of the data:
+      ** The following functions are not known to be defined: 
+	rmail-edit-current-message, rmail-cease-edit, mail-send-and-exit,
+	set-buffer-menubar, add-menu
+
+
+The integrity of this distribution can be checked in several
+ways:
+
+Detached signature files are present for the important files,
+and the usual procedures may be followed to check these.  These
+signatures are made by me, using my key.  My pubkey is available
+at all the key servers and Four11 - sorry, no finger access, I'm
+behind a firewall.  My pubkey is also included here, along with
+that of Gray Watson, the other principal author.  But of course
+you should be, if anything, *more* suspicious of a key that
+comes along with the software than you are of one you get from a
+keyserver!
+
+A more convenient way is to use the md5sum program available in the
+contrib/ directory of all recent PGP distributions.  This program
+computes or checks the same MD5 sum of the file as PGP uses for its
+normal signing functions.  MD5 sum lists for the important files are
+included in this directory signed both by me and by Betsi, a
+certification service provided by Bellcore.  If you have either my key
+or Betsi's, you can check the integrity of one of these lists, and
+then check the integrity of the other files with md5sum.  For example:
+
+	% pgp pgp-el.md5
+	...
+	Good signature from user "Jack Repenning <jackr@dblues.engr.sgi.com>"
+	...
+	% md5sum -cv pgp-el.md5
+	./pgp.el       OK
+	./authors.key  OK
+	./README       OK
+	./ancillary/advice.el OK
+	./ancillary/passwd.el OK
+	./ancillary/README    OK
+
+If I'm not already in your trust web, your most secure way of
+verifying this distribution is through the Betsi MD5 sum list.
+By signing the sums list, Betsi certifies that the sum file
+presented here really was delivered to Betsi signed by my key;
+Betsi takes moderately secure measures to be sure that I do
+exist, and that the key it thinks is mine really is.  While this
+is not quite as good as actually certifying the copy of my key
+you receive here, it's definitely better than nothing.  You can
+learn more about Betsi from their Web home page:
+
+	   http://info.bellcore.com/BETSI/betsi.html
+
+
+Jack Repenning                M/S 1-875     jackr@engr.sgi.com
+Silicon Graphics, Inc.         x3-3027      Off:(415) 390-3027
+Visual Magic Division                       Fax:(415) 390-6056

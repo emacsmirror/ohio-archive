@@ -1,0 +1,785 @@
+From friedman  Sat Aug  3 19:54:19 1996
+Status: RO
+X-VM-v5-Data: ([nil nil nil nil nil nil nil nil nil]
+	[nil "Sat" "3" "Aug" "1996" "21:33:05" "-0500" "Mandar Mirashi" "mandar@kiowa.wildstar.net" nil nil nil "^From:" nil nil "08" nil nil nil nil]
+	nil)
+Received: from churchy.gnu.ai.mit.edu by albert.gnu.ai.mit.edu (8.6.12/8.6.12GNU) with ESMTP id WAA14799 for <\friedman@albert.gnu.ai.mit.edu>; Sat, 3 Aug 1996 22:33:34 -0400
+Received: from kiowa.wildstar.net by churchy.gnu.ai.mit.edu (8.6.12/8.6.12GNU) with ESMTP id WAA16533 for <friedman@gnu.ai.mit.edu>; Sat, 3 Aug 1996 22:33:30 -0400
+Received: (from mandar@localhost) by kiowa.wildstar.net (8.6.12/8.6.9) id VAA28442 for friedman@gnu.ai.mit.edu; Sat, 3 Aug 1996 21:33:05 -0500
+Message-Id: <199608040233.VAA28442@kiowa.wildstar.net>
+From: Mandar Mirashi <mandar@kiowa.wildstar.net>
+To: friedman@gnu.ai.mit.edu
+Subject: Undernet IRC protocol changes
+Date: Sat, 3 Aug 1996 21:33:05 -0500
+
+Hello there,
+
+     This mail is being sent to all IRC client coders, announcing some
+changes in the server-client protocol on the Undernet IRC network. An
+RFC supplementing RFC1459 is in the works (it's unclear when this will
+be released however). In the meanwhile, I'll try to update you with any
+significant changes/features/bugs that affect clients.
+
+1) the /list command.
+======================
+
+   The default action of the /list command (to list all channels) has
+   been disabled since it was found to consume a lot of CPU on IRC
+   servers (with hundreds of clients listing thousands of channels).
+   Changes include a _required_ paramater to LIST. 
+
+*** Usage on ircII:  /QUOTE LIST parameters
+*** Where parameters is a space or comma seperated list of one or more of:
+***  <max_users    ; Show all channels with less then max_users.
+***  >min_users    ; Show all channels with more then min_users.
+***  C<max_minutes ; Channels that exist less then max_minutes.
+***  C>min_minutes ; Channels that exist more then min_minutes.
+***  T<max_minutes ; Channels with a topic last set less then max_minutes
+  ago.
+***  T>min_minutes ; Channels with a topic last set more then min_minutes
+  ago.
+*** Example:  LIST <3,>1,C<10,T>0  ; 2 users, younger then 10 min., topic
+  set.
+
+   We suggest incorporating this change directly into your client so that
+   a /quote is no longer needed (i.e. a direct message to the server).
+
+
+2) PONG replies
+================
+
+   To counter source routing/ip-spoofing, Undernet IRC servers send a PING
+   command to the client followed by a random key. The client is expected
+   to respond with this key as a parameter to PONG. e.g.
+     server -> client      PING :23472820203484
+     client to server      PONG :23472820203484
+
+   ircII and mirc are two clients that already follow this. I'm not sure
+   about other clients.
+
+3) Other Undernet changes
+=========================
+ 
+   A list of all Undernet server numerics are included in the server source.
+
+   ftp://ftp.undernet.org/irc/servers/current
+
+   Significant changes over the past few years, affecting clients, include: 
+   /stats w replies, /stats g replies, /silence replies, channel topic 
+   information replies, user signon time reply, channel
+   creation time reply, etc. I've attached the file for your convenience.
+   Please check if your client responds to these numeric replies. 
+
+   I also suggest adding the /map and /silence commands to your clients 
+   (/silence cuts off flooding at the server level: syntax: 
+      /silence +user@host   or  /silence nick
+   /silence -user@host     or  /silence -nick     to delete a silenced entry.
+   /map returns the current routing map of irc servers).
+
+   There's also a patch removing /away from the server (this functionality 
+   belongs to the client) in its review stages. You may wish to implement 
+   a mechanism that simulates /away on your client without using the server
+   message, to prepare for this possible future change.
+
+New versions
+=============
+
+    If you release new versions of your clients, please upload them to
+    /incoming on ftp.undernet.org and drop me a note. I'll move them to 
+    the correct location asap. We're mirrored on ftp2-4.undernet.org. I'd
+    really appreciate it if you could take a moment and verify that the latest
+    version of your client is out there. Thanks.
+    
+
+Feedback
+========
+
+    To stay in touch with Undernet IRC protocol changes / server code
+    patches, you're welcome to join the Undernet coder committee mailing
+    list. Simply drop  a mail to majordomo@undernet.org with 
+    "subscribe coder-com" in the body.
+
+
+
+			Thanks and if you have any other questions about
+making your client Undernet compatible, please don't hesitate to mail
+coder-com@undernet.org. Sincerely,
+
+
+						Mandar Mirashi (Mmmm)
+
+Attached are numeric.h    and the latest Undernet IRC server list (which
+you may wish to include with your next client release - it is also available
+at  http://www.comco.com/dougmc/irc-stats/server-lists    )
+
+
+----- numeric.h ------- cut here ------
+
+/************************************************************************
+ *   IRC - Internet Relay Chat, include/numeric.h
+ *   Copyright (C) 1990 Jarkko Oikarinen
+ *
+ *   This program is free software; you can redistribute it and/or modify
+ *   it under the terms of the GNU General Public License as published by
+ *   the Free Software Foundation; either version 1, or (at your option)
+ *   any later version.
+ *
+ *   This program is distributed in the hope that it will be useful,
+ *   but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *   GNU General Public License for more details.
+ *
+ *   You should have received a copy of the GNU General Public License
+ *   along with this program; if not, write to the Free Software
+ *   Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ */
+
+
+
+/*
+ * Reserve numerics 000-099 for server-client connections where the client
+ * is local to the server. If any server is passed a numeric in this range
+ * from another server then it is remapped to 100-199. -avalon
+ */
+#define	RPL_WELCOME          001
+#define	RPL_YOURHOST         002
+#define	RPL_CREATED          003
+#define	RPL_MYINFO           004
+#define RPL_MAP              005
+#define RPL_MAPMORE          006
+#define RPL_MAPEND           007
+
+/*
+ * Errors are in the range from 400-599 currently and are grouped by what
+ * commands they come from.
+ */
+#define ERR_NOSUCHNICK       401
+#define ERR_NOSUCHSERVER     402
+#define ERR_NOSUCHCHANNEL    403
+#define ERR_CANNOTSENDTOCHAN 404
+#define ERR_TOOMANYCHANNELS  405
+#define ERR_WASNOSUCHNICK    406
+#define ERR_TOOMANYTARGETS   407
+#define ERR_NOSUCHSERVICE    408
+#define	ERR_NOORIGIN         409
+
+#define ERR_NORECIPIENT      411
+#define ERR_NOTEXTTOSEND     412
+#define ERR_NOTOPLEVEL       413
+#define ERR_WILDTOPLEVEL     414
+
+#define ERR_UNKNOWNCOMMAND   421
+#define	ERR_NOMOTD           422
+#define	ERR_NOADMININFO      423
+#define	ERR_FILEERROR        424
+
+#define ERR_NONICKNAMEGIVEN  431
+#define ERR_ERRONEUSNICKNAME 432
+#define ERR_NICKNAMEINUSE    433
+#define ERR_SERVICENAMEINUSE 434
+#define ERR_SERVICECONFUSED  435
+#define	ERR_NICKCOLLISION    436
+#define ERR_BANNICKCHANGE    437
+#define ERR_NICKTOOFAST      438
+
+#define ERR_USERNOTINCHANNEL 441
+#define ERR_NOTONCHANNEL     442
+#define	ERR_USERONCHANNEL    443
+#define ERR_NOLOGIN          444
+#define	ERR_SUMMONDISABLED   445
+#define ERR_USERSDISABLED    446
+
+#define ERR_NOTREGISTERED    451
+
+#define ERR_NEEDMOREPARAMS   461
+#define ERR_ALREADYREGISTRED 462
+#define ERR_NOPERMFORHOST    463
+#define ERR_PASSWDMISMATCH   464
+#define ERR_YOUREBANNEDCREEP 465
+#define ERR_YOUWILLBEBANNED  466
+#define	ERR_KEYSET           467
+
+#define ERR_CHANNELISFULL    471
+#define ERR_UNKNOWNMODE      472
+#define ERR_INVITEONLYCHAN   473
+#define ERR_BANNEDFROMCHAN   474
+#define	ERR_BADCHANNELKEY    475
+#define	ERR_BADCHANMASK      476
+#define ERR_BANLISTFULL      478
+
+#define ERR_NOPRIVILEGES     481
+#define ERR_CHANOPRIVSNEEDED 482
+#define	ERR_CANTKILLSERVER   483
+#define ERR_ISCHANSERVICE    484
+
+#define ERR_NOOPERHOST       491
+#define ERR_NOSERVICEHOST    492
+
+#define ERR_UMODEUNKNOWNFLAG 501
+#define ERR_USERSDONTMATCH   502
+
+#define ERR_SILELISTFULL     511
+
+#define ERR_NOSUCHGLINE      512
+
+/*
+ * Numberic replies from server commands.
+ * These are currently in the range 200-399.
+ */
+#define	RPL_NONE             300
+#define RPL_AWAY             301
+#define RPL_USERHOST         302
+#define RPL_ISON             303
+#define RPL_TEXT             304
+#define	RPL_UNAWAY           305
+#define	RPL_NOWAWAY          306
+
+#define RPL_WHOISUSER        311
+#define RPL_WHOISSERVER      312
+#define RPL_WHOISOPERATOR    313
+
+#define RPL_WHOWASUSER       314
+/* rpl_endofwho below (315) */
+#define	RPL_ENDOFWHOWAS      369
+
+#define RPL_WHOISCHANOP      316 /* redundant and not needed but reserved */
+#define RPL_WHOISIDLE        317
+
+#define RPL_ENDOFWHOIS       318
+#define RPL_WHOISCHANNELS    319
+
+#define RPL_LISTSTART        321
+#define RPL_LIST             322
+#define RPL_LISTEND          323
+#define RPL_CHANNELMODEIS    324
+#define RPL_CREATIONTIME     329
+
+#define RPL_NOTOPIC          331
+#define RPL_TOPIC            332
+#define RPL_TOPICWHOTIME     333
+#define RPL_LISTUSAGE        334
+
+#define RPL_INVITING         341
+#define	RPL_SUMMONING        342
+
+#define RPL_VERSION          351
+
+#define RPL_WHOREPLY         352
+#define RPL_ENDOFWHO         315
+#define RPL_NAMREPLY         353
+#define RPL_ENDOFNAMES       366
+
+#define RPL_KILLDONE         361
+#define	RPL_CLOSING          362
+#define RPL_CLOSEEND         363
+#define RPL_LINKS            364
+#define RPL_ENDOFLINKS       365
+/* rpl_endofnames above (366) */
+#define RPL_BANLIST          367
+#define RPL_ENDOFBANLIST     368
+/* rpl_endofwhowas above (369) */
+
+#define	RPL_INFO             371
+#define	RPL_MOTD             372
+#define	RPL_INFOSTART        373
+#define	RPL_ENDOFINFO        374
+#define	RPL_MOTDSTART        375
+#define	RPL_ENDOFMOTD        376
+
+#define RPL_YOUREOPER        381
+#define RPL_REHASHING        382
+#define RPL_YOURESERVICE     383
+#define RPL_MYPORTIS         384
+#define RPL_NOTOPERANYMORE   385
+
+#define RPL_TIME             391
+#define	RPL_USERSSTART       392
+#define	RPL_USERS            393
+#define	RPL_ENDOFUSERS       394
+#define	RPL_NOUSERS          395
+
+#define RPL_TRACELINK        200
+#define RPL_TRACECONNECTING  201
+#define RPL_TRACEHANDSHAKE   202
+#define RPL_TRACEUNKNOWN     203
+#define RPL_TRACEOPERATOR    204
+#define RPL_TRACEUSER        205
+#define RPL_TRACESERVER      206
+#define RPL_TRACESERVICE     207
+#define RPL_TRACENEWTYPE     208
+#define RPL_TRACECLASS       209
+
+#define RPL_STATSLINKINFO    211
+#define RPL_STATSCOMMANDS    212
+#define RPL_STATSCLINE       213
+#define RPL_STATSNLINE       214
+#define RPL_STATSILINE       215
+#define RPL_STATSKLINE       216
+#define RPL_STATSQLINE       217
+#define RPL_STATSYLINE       218
+#define RPL_ENDOFSTATS       219
+
+#define RPL_UMODEIS          221
+
+#define RPL_SERVICEINFO      231
+#define RPL_ENDOFSERVICES    232
+#define	RPL_SERVICE          233
+#define RPL_SERVLIST         234
+#define RPL_SERVLISTEND      235
+
+#define	RPL_STATSLLINE       241
+#define	RPL_STATSUPTIME      242
+#define	RPL_STATSOLINE       243
+#define	RPL_STATSHLINE       244
+#define	RPL_STATSSLINE       245
+#define RPL_STATSTLINE       246
+#define RPL_STATSGLINE       247
+#define RPL_STATSULINE       248	
+#define	RPL_STATSDEBUG	     249
+#define RPL_STATSCONN        250
+
+#define	RPL_LUSERCLIENT      251
+#define RPL_LUSEROP          252
+#define	RPL_LUSERUNKNOWN     253
+#define	RPL_LUSERCHANNELS    254
+#define	RPL_LUSERME          255
+#define	RPL_ADMINME          256
+#define	RPL_ADMINLOC1        257
+#define	RPL_ADMINLOC2        258
+#define	RPL_ADMINEMAIL       259
+
+#define	RPL_TRACELOG         261
+#define	RPL_TRACEPING        262
+
+#define RPL_SILELIST         271
+#define RPL_ENDOFSILELIST    272
+
+#define RPL_STATSDLINE       275
+
+#define RPL_GLIST            280
+#define RPL_ENDOFGLIST       281
+
+
+----- Undernet IRC server list ------- cut here ------
+
+         ALIAS                     IP ADDRESS       HOSTNAME
+
+   vancouver.bc.ca.undernet.org    199.60.229.15  irc.direct.ca
+     toronto.on.ca.undernet.org   199.166.230.99  oceanus.magic.ca
+    montreal.qu.ca.undernet.org     132.207.4.32  step.polymtl.ca
+
+        caen.fr.eu.undernet.org    193.49.200.16  ns.ensicaen.ismra.fr
+  luxembourg.lu.eu.undernet.org   194.177.56.140  hydra.eo.lu
+   amsterdam.nl.eu.undernet.org      130.37.24.9  veer.cs.vu.nl
+      diemen.nl.eu.undernet.org     145.220.3.40  irc.pi.net
+       lulea.se.eu.undernet.org    130.240.16.36  buddy.ludd.luth.se
+   ljubljana.si.eu.undernet.org       193.2.1.35  ro.zrsss.si
+      london.uk.eu.undernet.org   193.119.122.98  telebsd.aladdin.co.uk
+
+       auckland.nz.undernet.org     202.14.100.6  iconz1.iconz.co.nz
+
+     phoenix.az.us.undernet.org    204.62.193.83  home.amug.org
+    sandiego.ca.us.undernet.org     207.110.0.52  irc.connectnet.com
+     sanjose.ca.us.undernet.org     192.160.13.8  jitter.rahul.net
+  washington.dc.us.undernet.org   152.163.173.25  irc01.irc.aol.com
+     atlanta.ga.us.undernet.org      198.79.64.1  serve.org
+     chicago.il.us.undernet.org    198.49.174.36  tau.wwa.com
+   chicago-1.il.us.undernet.org     199.0.154.14  raptor.ais.net
+   manhattan.ks.us.undernet.org     129.130.8.23  lynk.ksu.ksu.edu
+      lowell.ma.us.undernet.org   206.15.106.129  chatter-s2.nis.newscorp.com
+   ann-arbor.mi.us.undernet.org    192.131.22.80  irc.cic.net
+ springfield.mo.us.undernet.org    204.71.96.187  spica.getonthe.net
+     stlouis.mo.us.undernet.org   205.216.202.17  ultra.i1.net
+    norman-r.ok.us.undernet.org     unresolvable  unknown                       
+         okc.ok.us.undernet.org   206.103.114.11  apache.wildstar.com
+  pittsburgh.pa.us.undernet.org   192.231.221.38  uirc.lm.com
+      austin.tx.us.undernet.org    128.83.199.50  zilker.mc.utexas.edu
+      dallas.tx.us.undernet.org    204.75.137.18  external.csac.net
+  blacksburg.va.us.undernet.org   128.173.40.203  blacksburg.va.us.undernet.org
+  monticello.ar.us.undernet.org   206.156.164.142 irc.seark.net
+
+
+Note: Most Undernet IRC servers listen on ports 6661-6669.
+
+      The alias us.undernet.org is a roundrobin that picks a US server at
+      random (for first time users who aren't sure which server to connect to).
+      The same applies to eu.undernet.org (europe). The use of the undernet.org
+      alias over the actual hostname is highly recommended (when servers
+      cease to exist, the alias will still function since we point it to
+      a working server).
+       
+
+From friedman  Mon Sep 30 13:45:21 1996
+Status: RO
+X-VM-v5-Data: ([nil nil nil nil nil nil nil nil nil]
+	[nil nil nil nil nil nil nil nil nil nil nil nil "^From:" nil nil nil nil nil nil nil]
+	nil)
+Received: from gnu-life.ai.mit.edu by albert.gnu.ai.mit.edu (8.6.12/8.6.12GNU) with ESMTP id OAA20824 for <friedman@albert.gnu.ai.mit.edu>; Mon, 30 Sep 1996 14:42:45 -0400
+Received: from kiowa.wildstar.net by gnu-life.ai.mit.edu (8.6.12/8.6.12GNU) with ESMTP id OAA05844 for <friedman@prep.ai.mit.edu>; Mon, 30 Sep 1996 14:42:43 -0400
+Received: (from mandar@localhost) by kiowa.wildstar.net (8.7.5/8.7.3) id NAA30763 for friedman@prep.ai.mit.edu; Mon, 30 Sep 1996 13:42:25 -0500
+Message-Id: <199609301842.NAA30763@kiowa.wildstar.net>
+From: Mandar Mirashi <mandar@kiowa.wildstar.net>
+To: friedman@prep.ai.mit.edu
+Subject: IRC client coders update
+Date: Mon, 30 Sep 1996 13:42:25 -0500
+
+Heya,
+
+  Some other random thoughts that might apply to all IRC clients:
+
+* Ports - It would be nice if client coders allow for the specification
+  of alternate ports to automatically connect on, if the connect to
+  the default port fails. Most servers listen to ports in the range
+  6660-6669. It has grown incredibly difficult to connect on the
+  default port 6667 on big servers.
+
+* Extensions - As much as some may dislike it, I believe the next "wave"
+  of chat clients to hit the net are those that include VRML/audio/video
+  communication. There are several independent web sites or proprietary
+  developers who provide this, but none of them are integrated into IRC
+  clients. You may wish to investigate means of doing this with your clients.
+
+* For those developing GUI clients, one idea would be to have an addressbook
+  which includes name, associated GIF file, associated URL, etc. Then
+  you could auto-attach a thumbnail gif to the nick, as it scrolls over
+  a channel. The nick itself could be "clickable" if a URL field is
+  specified, which would make your default browser jump to that location.
+
+* irc-url spec - I haven't updated it for a while. It can be found at:
+   ftp://ftp.ietf.org/internet-drafts/draft-mirashi-url-irc-01.txt
+  and the mailing list can be subscribed to, by sending mail to 
+  majordomo@wildstar.net with "subscribe irl-url" in the body.
+
+* Nospoof patch - I hope everyone has updated their client (if it needed it)
+  to work with the PING/PONG and other Undernet ircd changes I'd sent earlier. 
+
+			That's all for now..thanks
+
+							Mmmm
+
+From pp@swip.net  Thu Feb  6 01:45:10 1997
+Status: RO
+X-VM-v5-Data: ([nil nil nil nil nil nil nil nil nil]
+	["1405" "" "6" "Feb" "1997" "10:31:44" "+0100" "Per Persson" "pp@swip.net" nil "49" "CTCP discussion list." "^From:" nil nil "02" nil nil nil nil]
+	nil)
+Return-Path: <pp@swip.net>
+Received: from gnu.ai.mit.edu (friedman@localhost [127.0.0.1])
+          by piglet.splode.com (8.8.4/8.8.4) with ESMTP
+	  id BAA00765 for <friedman>; Thu, 6 Feb 1997 01:45:10 -0800
+Received: from churchy.gnu.ai.mit.edu by albert.gnu.ai.mit.edu (8.6.12/8.6.12GNU) with ESMTP id EAA20224 for <zenirc-dev@gnu.ai.mit.edu>; Thu, 6 Feb 1997 04:33:35 -0500
+Received: from mn6.swip.net by churchy.gnu.ai.mit.edu (8.6.12/4.0) with ESMTP
+	id <EAA10861@churchy.gnu.ai.mit.edu>; Thu, 6 Feb 1997 04:31:35 -0500
+Received: from doc.swip.net (workstation1.swip.net [130.244.254.1]) 
+          by mn6.swip.net (8.8.2/8.8.2) with SMTP 
+          id KAA04961 for <zenirc-dev@gnu.ai.mit.edu>; 
+          Thu, 6 Feb 1997 10:31:31 +0100 (MET)
+Received: by doc.swip.net (SMI-8.6/SMI-SVR4)
+	id KAA26012; Thu, 6 Feb 1997 10:31:44 +0100
+Sender: pp@doc.swip.net
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+Message-ID: <x7hgjqs2kf.fsf@swip.net>
+X-Mailer: Red Gnus v0.84/Emacs 19.34
+From: Per Persson <pp@swip.net>
+To: zenirc-dev@gnu.ai.mit.edu
+Subject: CTCP discussion list.
+Date: 06 Feb 1997 10:31:44 +0100
+Lines: 49
+
+This might be of interest to you. There's a discussion going and I'm
+pretty sure that the list-maintainer (Lindsay) has an archive of all
+mails going through the list.
+
+--pp
+
+Forwarded-By: Darren Reed <avalon@coombs.anu.edu.au>
+
+From: Mike McLagan <mmclagan@invlogic.com>
+Message-Id: <199702030750.CAA29332@linux.invlogic.com>
+Subject: Referenced CTCP Standards Group
+To: ircd@the-project.org (IRC Development Mailing List)
+Date: Mon, 3 Feb 1997 02:50:10 -0500 (EST)
+Cc: operlist@the-project.org (IRC Operators List)
+
+-----BEGIN PGP SIGNED MESSAGE-----
+
+Hi,
+
+   I made reference today in my emails to a CTCP standards group.  This is
+based from a number of client coders, and has turned into an email list and
+an Internet Draft document (formerly called a Draft RFC).  The list is hosted
+by Zircon author Lindsay Marshall.
+
+   To join the list send "subscribe ctcp your name" to:
+
+   listproc%catless@newcastle.ac.uk.
+
+   If you want to see the current draft, you can send me a private email
+message, or visit my company's web site at:
+
+   http://www.invlogic.com/irc/ctcp.html
+
+   Mike was here...
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.3a
+Charset: noconv
+
+iQB1AwUBMvWYsnFj8kDikEM5AQEVAgL/QH6laNKG/H9c+b4JiSD9MNEj98JtAcB5
+6sHzuP4NtvX87GdYlJh98qwaww/I5IxhgNWt3ydOWMV6c99dzv2GqyZG4f+xUNK+
+8dQ/na2e9f06MLVn/tzg73RYmMAqtQf/
+=qyeR
+-----END PGP SIGNATURE-----
+
+
+
+
+------- End of forwarded message -------
+
+From mandar@cherokee.wildstar.net  Wed Feb 26 19:15:07 1997
+Status: RO
+X-VM-v5-Data: ([nil nil nil nil nil nil nil nil nil]
+	["8071" "Wed" "26" "Feb" "1997" "21:12:52" "-0600" "Mandar Mirashi" "mandar@cherokee.wildstar.net" nil "227" "IRC client coders update #6" "^From:" nil nil "02" nil "IRC client coders update #6" nil nil nil]
+	nil)
+Return-Path: <mandar@cherokee.wildstar.net>
+Received: from gnu.ai.mit.edu (friedman@localhost [127.0.0.1])
+	by piglet.splode.com (8.8.5/8.8.5) with ESMTP id TAA20384
+	for <friedman>; Wed, 26 Feb 1997 19:15:03 -0800
+Received: from gnu-life.ai.mit.edu by albert.gnu.ai.mit.edu (8.6.12/8.6.12GNU) with ESMTP id WAA28651 for <friedman@albert.gnu.ai.mit.edu>; Wed, 26 Feb 1997 22:12:58 -0500
+Received: from cherokee.wildstar.net by gnu-life.ai.mit.edu (8.8.5/8.6.12GNU) with ESMTP id WAA14032 for <friedman@prep.ai.mit.edu>; Wed, 26 Feb 1997 22:10:40 -0500 (EST)
+Received: (from mandar@localhost) by cherokee.wildstar.net (8.8.3/8.6.9) id VAA29997 for friedman@prep.ai.mit.edu; Wed, 26 Feb 1997 21:12:52 -0600
+Message-Id: <199702270312.VAA29997@cherokee.wildstar.net>
+From: Mandar Mirashi <mandar@cherokee.wildstar.net>
+To: friedman@prep.ai.mit.edu
+Subject: IRC client coders update #6
+Date: Wed, 26 Feb 1997 21:12:52 -0600
+
+Heya,
+
+    Here's some information re: the next upcoming release of the Undernet
+server code - u2.10 (still in beta). Please mail coder-com@undernet.org
+directly if you have any concerns. 
+
+    The other thing I wanted to check was if you'd be interested in joining 
+a mailing list open ONLY to client coders, to discuss client issues (the
+"colour" issue being an egregious example). I'd be more than willing to
+set one up. You can mail me at mandar@wildstar.net re: this.
+
+Thanks
+
+Mmmm
+
+Mandar Mirashi            
+Maintainer: ftp.undernet.org, Undernet IRC FAQ.
+ftp://rtfm.mit.edu/pub/usenet/alt.irc.undernet
+For IRC help/Undernet information, check out http://www.undernet.org 
+
+---
+>From carlo@runaway.xs4all.nl Wed Feb 26 21:03:23 1997
+Date: Wed, 26 Feb 1997 01:11:01 +0100 (MET)
+From: Carlo Wood <carlo@runaway.xs4all.nl>
+Reply-To: coder-com@undernet.org
+To: coder committee <coder-com@mail.undernet.org>
+Subject: [C-Com] Server NOtice numerics
+
+Hiya,
+
+can someone asap pass this info to the client coders ?!!
+
+A new numeric 249:
+
+Example:
+
+4.undernet.org 249 nick :Servernotice mask: 12287 (0x2fff)
+
+Where the number 12287 is a bit-or-ed mask with the meaning:
+
+#define SNO_OLDSNO      0x1     /* unsorted old messages */
+#define SNO_SERVKILL    0x2     /* server kills (nick collisions) */
+#define SNO_OPERKILL    0x4     /* oper kills */
+#define SNO_HACK2       0x8     /* desyncs */
+#define SNO_HACK3       0x10    /* temporary desyncs */
+#define SNO_UNAUTH      0x20    /* unauthorized connections */
+#define SNO_TCPCOMMON   0x40    /* common TCP or socket errors */
+#define SNO_TOOMANY     0x80    /* too many connections */
+#define SNO_HACK4       0x100   /* Uworld actions on channels */
+#define SNO_GLINE       0x200   /* glines */
+#define SNO_NETWORK     0x400   /* net join/break, etc */
+#define SNO_IPMISMATCH  0x800   /* IP mismatches */
+#define SNO_OLDREALOP   0x1000  /* old oper-only messages */
+#define SNO_CONNEXIT    0x2000  /* client connect/exit (ugh) */
+
+One can set this way a more specific filter for server notices:
+
+/MODE nick +s 3847
+
+Or add (set) an EXTRA bit:
+
+/MODE nick +s 128
+
+Note the extra numeric parameter (space seperated from the umodes).
+
+This would also work:
+
+/MODE mynick +iswd 853
+
+
+
+/MODE nick -s 64
+
+Unsets bits (/MODE nick -s 96  unsets both 64 and 32).
+
+This will be added to undernet server version 2.10.
+The new numeric will be returned every time you set a new mask, or
+when you ask you umode with '/MODE nick' and the mask is unequal
+the default mask. The default mask is unfortunately subject to
+change, but currently 1540 (0x604).
+Doing /MODE nick +s, will NOT give the 249 numeric, but set the
+mask to the default mask.
+
+Run
+
+PS
+
+If client coders absolutely want to know what the default mask is
+I suggest they use this string: MODE <nick> +ss 2147483648
+This currently gives (ircII):
+--> MODE Run4 -s
+*** Mode change "-s" for user Run4 by Run4
+--> MODE Run4 +ss 2147483648
+*** Mode change "+s" for user Run4 by Run4
+249 Servernotice mask:  1540 (0x604)
+
+PS2
+
+Unofficial ;), one can also do: /MODE nick +s -4 , to uset bit '4',
+and even /MODE nick -s -4, to SET bit '4'.
+
+--
+ ircd development:  http://www.xs4all.nl/~carlo17/ircd-dev 
+>From carlo@runaway.xs4all.nl Wed Feb 26 21:03:58 1997
+Date: Wed, 26 Feb 1997 21:28:29 +0100 (MET)
+From: Carlo Wood <carlo@runaway.xs4all.nl>
+Reply-To: coder-com@undernet.org
+To: coder-com@undernet.org
+Cc: ircii-epic@concentric.net
+Subject: Re: [C-Com] client-coder feedback
+
+-----BEGIN PGP SIGNED MESSAGE-----
+
+Well, first of all - BECAUSE the server isn't released and tested yet
+this might change all a few times more :), so don't rush your implementation.
+
+Most important changes ALREADY are:
+
+- - There will be a NEW numeric (249 was already used I learned).
+- - The trick with +ss <large number> will NOT work, you can use
+  +ss +<large number> now (note the extra '+').
+
+I see no problem in attaching the digits to the s.. thus:
+
+/MODE Run +s29382
+
+It just doesn't look as well... and users might type a space intuitively.
+There is no problem with MY ircII (-2.8.2) client and multiple umode params...
+
+We DID have a long discussion about this yes, because initially we wanted
+to use server-notice-channels. But that sucks for multi-window clients like
+mIRC (without patches), so we ended up by making a new user mode.
+It seems likely that more then 31 server-notice-"channels" will be needed
+yes, in which case a decimal number is bad thing to do.
+I'm open for a quick discussion on a new interface.
+
+Run
+
+PS Please forward this to other client-coders again :)
+   Is there a list of addresses I could use ?
+
+
+| ------- Forwarded Message
+| 
+| Received: from SOUTH-STATION-ANNEX.MIT.EDU by po9.MIT.EDU (5.61/4.7) id AA06626; Wed, 26 Feb 97 00:17:20 EST
+| Received: from listopher.concentric.net by MIT.EDU with SMTP
+| 	id AA10334; Wed, 26 Feb 97 00:17:18 EST
+| Received: (from majordom@localhost) 
+| 	by listopher.concentric.net (8.8.3/8.8.3) 
+| 	id AAA18002; Wed, 26 Feb 1997 00:14:09 -0500 (EST)
+| Message-Id: <199702260512.XAA00381@brain.acronet.net>
+| To: ircii-epic@concentric.net
+| From: jnelson@acronet.net
+| Subject: Re: Ircii-epic: New Undernet feature 
+| In-Reply-To: Your message of "Tue, 25 Feb 1997 19:49:37 EST."
+|              <9702260049.AA12854@starkiller.MIT.EDU> 
+| Date: Tue, 25 Feb 1997 23:12:45 -0600
+| Sender: owner-ircii-epic@concentric.net
+| Precedence: bulk
+| 
+| 
+| (Specifically to Kev, in general to everyone on the list...)
+| Forward this to anyone you think is interested in my opinion...
+| 
+| 
+| >One can set this way a more specific filter for server notices:
+| 
+| [user mode +s takes an argument now]
+| 
+| 
+| Please note the importance of this:  This proposal would stipulate
+| the first user mode that is to take an argument.  While this is not
+| (neccesarily) against the spirit of modes, i would make an educated
+| guess that ircII is not the only client in the world that optimizes
+| its handling of user modes with the assumption that arguments are not
+| present.
+| 
+| The reason why this is significant is not because of the specific use
+| of the argument, but rather that current clients will have to be retro
+| fitted with code that will be able to handle arguments on user modes,
+| and the fact that since you are overloading a current user mode, you
+| are introducing a gratuitous incompatability which makes the job of a
+| client coder all that much harder becuase now ill have to special case
+| the undernet 2.10 server for this exceptional behavior.  It is very fair
+| to say that this is <not> an insignificant change.
+| 
+| While i will probably support this before its all said and done, I want
+| to make sure that I tell you that I HOPE you thought about this and ruled
+| out all other reasonable solutions other than having user modes take
+| arguments.  I dont expect this to change, and thats the way it is:
+| I do appreciate your giving far advance notice instead of just releasing
+| the code and then griping that current clients dont support it correctly.
+| (ala efnet 2.9)
+| 
+| This will certainly not be supported or retrofitted on any already
+| released EPIC client (eg, epic3), but probably will eventually be supported
+| in the EPIC4 development cycle.  I cannot give you any assurances when.
+| Please re-assure me that you will always have less than 32 flags for this
+| new user mode. 
+| 
+| Jeremy
+| 
+| ------- End of Forwarded Message
+| 
+| 
+| -- 
+| Kevin L. Mitchell
+| ----------------------------------------------------------
+| kev@undernet.org     kev@wildstar.net      klmitch@mit.edu
+|     PGP keys:  http://web.mit.edu/klmitch/www/pgp.html
+|         Home Page: http://web.mit.edu/klmitch/www/
+
+- -- 
+ carlo@runaway.xs4all.nl, Run @ IRC.
+
+ ircd development:  http://www.xs4all.nl/~carlo17/ircd-dev 
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.3i
+Charset: noconv
+
+iQCVAwUBMxSc6m/Sxh1iSsrVAQFyhwQAqwywucW2iJ6vfcngjM2rRr71tUskM0L6
+pfRe+k7nnU3090urxes5oaJdGR+3w/8sA526d4I6RLHgz156gZX06vPimRMmNteB
+eZOzbU2C01hOBIHJFdtsv+NHTrYrt9+bs5dHEwLW1MXig4girAsHW0NZ9NBPUpLU
+VpXOAE+6Vpk=
+=Iu1Y
+-----END PGP SIGNATURE-----
+

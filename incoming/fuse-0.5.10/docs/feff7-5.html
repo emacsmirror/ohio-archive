@@ -1,0 +1,65 @@
+<HTML>
+<HEAD>
+<TITLE>Feff : Run Control Options</TITLE>
+</HEAD>
+<BODY>
+<A HREF="feff7-4.html">Previous</A>
+<A HREF="feff7-6.html">Next</A>
+<A HREF="feff7.html#toc5">Table of Contents</A>
+<HR>
+<H2><A NAME="s5">5. Run Control Options</A></H2>
+
+
+
+<P>In addition to the CONTROL card and the FEFF options in feff.inp, some
+parameters in the files read by the various modules can be changed.
+For example, you can create your own paths by editing paths.dat and
+change explicit Debye-Waller factors in the final result by editing
+list.dat. </P>
+<P>Users may edit the some files as a quick and sometimes convenient way
+to prepare a given run.  It is easiest to use an existing file as a
+template -- these files are read by a computer program that is fussy
+about what it receives. </P>
+<P>The files that can be used in this way are paths.dat and list.dat. </P>
+
+
+<H2><A NAME="ss5.1">5.1 Paths.dat</A></H2>
+
+<P>You can modify a path, or even invent new ones.  For example, you could
+make a path to determine the effect of a focusing atom on a distant
+scatterer. Whatever index you enter for the path will be used in the
+filename given to the feffnnnn.dat file; i.e., for the choice, index =
+845,  the exafs parameters will appear in feff0845.dat. </P>
+<P>A handy way to add a single scattering path of length R is to make a
+2-leg path with the central atom at (0, 0, 0) and the scatterer at
+(R, 0, 0). </P>
+<P>GENFMT will need the positions, unique potentials, and character tags
+for each atom in the path.  The angles and leg lengths are printed out
+for your information, and you can omit them when creating your own
+paths by hand.  The label lines in the file are required (there is code
+that skips them, and if they're missing, you'll get wrong results). </P>
+
+
+
+<H2><A NAME="ss5.2">5.2 list.dat</A></H2>
+
+<P>This is the list of files that ff2chi uses to calculate chi.  It
+includes the paths written by module
+GENFMT, curved wave importance factors, and user-defined Debye-Waller
+factors.  If you want to set Debye-Waller factors for individual paths,
+you may edit this file to set them.  FF2CHI will sum the Debye-Waller
+factors in this file with the correlated Debye
+model sig2 and the global sig2, if present.  You may also delete
+paths from this file if you want to
+combine some particular set of paths.  (CAUTION: Save the original, or you'll
+have to re-run GENFMT!) </P>
+
+
+
+
+<HR>
+<A HREF="feff7-4.html">Previous</A>
+<A HREF="feff7-6.html">Next</A>
+<A HREF="feff7.html#toc5">Table of Contents</A>
+</BODY>
+</HTML>

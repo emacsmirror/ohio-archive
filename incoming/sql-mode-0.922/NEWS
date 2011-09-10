@@ -1,0 +1,747 @@
+
+	     SQL Mode Version 0.922 (beta) Release Notes
+
+
+A lot of code was re-written with an eye on performance for this
+release of SQL Mode.  Some new features were added as well, and of
+course a large number of bugs were fixed.  Additionally, there is
+more support for FSF Emacs, but it's not nearly 100% yet.
+
+What's new in SQL Mode:
+
+  o new evaluation methods
+	The evaluation code has been re-written with an emphasis on
+	speed and flexibility.  You can now specify if you want your
+	evaluations to be done in the forground (synchronously) or in
+	the background (asynchronously).  The value of the variable
+	`sql-evaluation-method' controls this.  You can set this
+	variable from the menubar by selecting the item
+	`Options-->Evaluation Method'.  The value of this variable
+	will affect the keybindings M-i and C-c C-e, as well as the
+	"GO" button from the toolbar.  If you want to do most of your
+	evaluations in the foreground, but occasionally run a
+	background query, you can invoke the command
+	`sql-evaluate-buffer-asynchronous' directly (bound to the M-e
+	key by default).
+
+  o stay logged into the dataserver
+	By setting the value of the variable `sql-stay-logged-in' to a
+	non-nil value (or by selecting the menu item
+	`Options-->Dataserver Connection-->Stay Logged In') you can
+	keep an open connection to the dataserver to do your queries.
+	This increases the performance of almost all aspects of SQL
+	Mode dramatically, as you remove the overhead of invoking a
+	new isql process, and logging in each time you invoke a query.
+
+  o associated evaluation buffers for sql-mode buffers
+	If you edit a file in sql-mode, you can now send conents of
+	that file to a sql-batch-mode buffer for evaluation.  You can
+	specify the batch mode buffer to perform the evaluations by
+	selecting "SQL-->Set Evaluation Buffer" from the menu bar.
+	Once an evaluation buffer has been set, you can send it the
+	contents of the whole buffer with `sql-mode-evaluate-buffer'
+	(bound to M-i), `sql-mode-evaluate-region', and
+	`sql-mode-evaluate-statement'.  The function
+	`sql-mode-evaluate-statement' will operate on the current
+	block of SQL code, in between the preceeding "go" and up to and
+	including the next "go".
+
+  o history local to batch buffer
+	Now that history is local to the batch buffer, you should
+	never another unlinked history again.  M-p and M-n should
+	always keep the batch buffer and the results buffer in sync.
+	If you have a need for going back through the batch buffer's
+	history without disturbing the results buffer, give the
+	commands a prefix argument: C-u M-p and C-u M-n.  
+
+  o history saving and loading
+	Your history can now be saved between emacs sessions.  Just
+	set the value of the variables `sql-save-history-on-exit' and
+	`sql-always-load-history' to t (you can do this from the Options
+	menu as well).  The history information is saved to files in the
+	~/.sql-history-dir directory.
+
+  o buffer information for sql-mode buffers
+	C-c h i will now display useful information in sql-mode
+	buffers (as well as sql-batch-mode and sql-results-mode
+	buffers) including the name of the associated evaluation
+	buffer, if any.
+
+  o menu aliases for associations
+	The variable sql-association-alist now accepts a third
+	element, the menu alias to use for this association.  Now you
+	can specify the string to appear in the popup and top-level
+	menus for associations.  An example:
+
+	(setq sql-association-alist
+	      '(("-" ("HEADING A" "" ""))
+	        ("-" ("----" "" ""))
+		("A1" ("SERVER1" "USER1" "PASS1" "DB1") "ALIAS1")
+		("A2" ("SERVER2" "USER2" "PASS2" "DB2") "ALIAS2")
+	        ("-" ("----" "" ""))
+		("-" ("HEADING B") "" "")
+	        ("-" ("----" "" ""))
+		("B3" ("SERVER3" "USER3" "PASS3" "DB3") "ALIAS3")
+		("B4" ("SERVER4" "USER4" "PASS4" "DB4") "ALIAS4")))
+
+	In this example, the strings in the menubar and popup menus
+	would be ALIAS1, ALIAS2, etc.
+
+  o buffer-modified-p now supported
+	The two characters towards the left of the modeline that
+	indicated whether a buffer has been modified or not are now
+	functional in sql-batch-mode and sql-results-mode buffers.
+
+  o other performance enhancements
+	All of the functions that queried the dataserver for
+	completion were written in a very sub-optimal way.  That code
+	has been re-written and sped up by a factor of at least 2.
+
+	The functions sql-paste, sql-insert-row, and sql-delete-row
+	were extremely slow for wide rows.  This has been corrected.
+
+  o sql-top-ten-help
+	Top Ten toolbar buttons will now have informative help strings
+	displayed in the echo area.  You need to re-save your Top Ten
+	items and re-start XEmacs for the change to take effect.
+
+  o fake BCP of multiple rows
+	You can now do a bcp out of a single row or multiple rows from
+	the results buffer.  Highlight the row(s) you wish to copy out
+	of the the results buffer and type M-x sql-fake-bcp-out (or
+	simply select it from the menu bar).
+
+What's changed:
+
+  o sql-risky-searches now defaults to t
+	This variable determines the strictness of searching for
+	where clauses when performing updates.  If a where statement
+	is commented out, for instance, it should not "count".
+	Similarly if an update statement is commented out, there should
+	be no need to search for a where clause.
+
+	In earlier versions of XEmacs there was a bug in the function
+	buffer-syntactic-context.  I have not been able to reliably
+	reproduce this bug in current versions of XEmacs, and setting
+	the value of this variable to t will suppress the hacks that
+	prevent the bug from rearing it's ugly head.  If set to a
+	non-nil value, it is possible that sql code that should be
+	warned against will not.  This becomes a large bug as users
+	get more comfortable with their updates, relying on the
+	warnings.")  In earlier versions of XEmacs, there was a bug
+	that caused
+	
+
+  o enhanced completion
+	You can now complete based on column values.  If you type
+	"select * from foo where bar = [TAB]" it will complete to
+	all of the values for bar in foo.  Because there are potentially
+	a large number of possibilities for values, only the first 1000
+	values are returned.  This is, of course, configurabe.
+
+	Completion is available for users.  If you type "sp_helpuser [TAB]"
+	SQL Mode will offer completion based on the users in the database.
+
+	Completion is available for operators.
+
+	Completion works after "sp_helpdb", completing to the list of
+	databases.
+
+	Table alias completion is now supported for column names.  For
+	instance, if you type:
+
+		select * from foo a, bar b where b.[TAB]
+
+	It will complete to all of the columns in table "bar".
+	
+  o sql-magic-yank-under-point
+	This function is now bound to button2 in sql-results-mode
+	buffers, and it is much smarter.  Quotes go around values that
+	need it (if the table has been completed and is in the cache),
+	and column names and operators are inserted as necessary.
+
+  o sql-get-rows-affected doesn't modify buffer contents
+	When you execute an update statement, the "begin tran" and
+	"rollback tran" statements aren't inserted in the buffer, so
+	you nolonger see the contents of the buffer flicker.
+
+  o process status in modeline
+	If you selected the "stay logged into dataserver" option, the
+	status of the child process is displayed in the modeline.
+
+  o history item in modeline
+	Now that histories can be saved between emacs sessions, the
+	number of saved history elements becomes more important.  The
+	current and total number of history items are now displayed
+	in the modeline.
+
+Bug Fixes:
+
+  o removed NULL from sql-keyword-regexp
+	It was causing some completion mishaps.
+
+  o results buffers font-lock bug fixed
+	If you had a single or double quote in a data field, it would
+	cause the rest of the text in sql-results-mode buffers to be
+	highlighted in the font-lock-string-face.  This has been
+	corrected.
+
+
+	     SQL Mode Version 0.921 (beta) Release Notes
+
+
+This version of SQL Mode contains a plethora of bug fixes, some code to
+make it easier to use for novices, and of course the obligatory slew of
+new features.  New functionality that has been added includes better
+data manipulation functions, and increased performance through cache
+saving between emacs sessions.
+
+
+What's new in SQL Mode:
+
+  o cache saving and loading
+	Completion is a nice feature, but the most common complaint from
+	people who don't use it is that it's too slow.  Now it is possible
+	(and in fact the default) to save the cached data between Emacs
+	sessions.  When you exit SQL Mode (by killing the buffer or exiting
+	Emacs) the cached data is saved to disk in the directory
+	~/.sql-cache-dir (you can, of course, tell SQL Mode to save it
+	somewhere else).  The next time you start SQL Mode it will load the
+	cache file, and you won't have to wait for completions.
+
+	The one drawback to this scheme is when ddls change, or new tables,
+	stored procedures, or databases are added.  The solution in these
+	cases is to clear the cached data.  There are menu items under the
+	Actions menu that enable you to clear all the cached data, or any
+	specific cache that you like.
+
+	The cache data is saved in a file that is based on the current
+	server and database in the ~/.sql-cache-dir directory.
+
+  o delayed completion
+	As more and more functions require table names or column names
+	as arguments, there was a growing need for "delayed"
+	completion.  If SQL Mode prompts you for a table or column
+	name, you will be able to type immediately if you don't need
+	completion.  If you do wish to see a completion list, then hit
+	TAB or SPACE, at which point SQL Mode will go to the server to
+	get the information it needs (if it isn't cached already).
+
+	Along with saving the cache data, this feature should serve to make
+	completion more pleasant and more useful.
+
+  o delete, cut, copy, and paste functionality
+	Results buffers now have some added functionality to help move
+	data around.  If you wish to delete a row from the database, simply
+	type k on the row you wish to delete.  Deleting multiple rows is
+	as simple as highlighting the rows and hitting w.  The expected
+	functionality for delete, cut, copy, and paste all have a database
+	slant to them when invoked in the results buffer, but are bound to
+	keys that should make them easy to use.  Additionally, there are
+	new toolbar buttons to make these functions easy to use.
+
+	There is a special SQL Mode clipboard for storing data between cut,
+	copy, and paste operations.
+
+  o sql-delete-row, sql-delete-region
+	Deletes the row that point is on, or all rows in the region.  The
+	data is *not* copied to the clipboard.
+
+  o sql-cut-row, sql-cut-region
+	Deletes the row that point is on, or all rows in the region.  The
+	data *is* copied to the clipboard.
+
+  o sql-copy-row, sql-copy-region
+	Copies the row that point is on, or all rows in the region, to the
+	clipboard.  Does not do any database manipulation.
+
+  o sql-paste
+	Pastes the data from the clipboard into the batch buffer by way of
+	an insert statement.
+
+  o preferred evaluation method
+	If you find yourself doing sql-evaluate-buffer-asynchronous more
+	often than it's synchronous counterpart, there is a variable that
+	will control the behavior of the "GO" button.  Set the variable
+	sql-preferred-evaluation-method to either 'foreground or 'background.
+
+  o new hook variable sql-init-hook
+	This hook is run with no args when SQL Mode initializes.
+
+  o a top-ten toolbar
+	A row of ten buttons will appear as a toolbar on the left hand side
+	of the frame if you have any items in your top ten list.  This is,
+	of course, configurable.  To turn it on or off, look in the Options
+	menu.  It should default to on if you have any of your top ten list
+	slots filled.
+
+  o immediate execution of top-ten items
+	When you save a top-ten item, you will be prompted as to whether
+	this item should be immediately executed after insertion.  If you
+	answer "y", then when that top-ten item is inserted (via C-cN) or
+	the menubar or the top-ten toolbar, it will be immediately
+	executed.  This functionality makes the "sp_who" and "sp_lock"
+	buttons obsolete.
+
+  o top-ten mnemonics
+	You can now associate a mnemonic with a top-ten item to make it
+	easier to remember.
+
+  o new function: sql-bcp-row-out
+	This fakes a bcp out of the database, but what it really does is
+	to parse the results buffer and put a "|" between columns and then
+	write the result to a file.  If all goes well, you should be able to
+	then bcp this file into another database as if it was a real bcp file.
+	This makes it easy to copy out just one row.
+
+  o results mode toolbar
+	Now the results mode buffer has it's own toolbar containing the
+	various data manipulation functions (like sql-copy, sql-cut etc.).
+
+  o sql-evaluate-buffer-asynchronous bug fix
+	This function now removes the "use DATABASE" and trailing "go" from
+	buffers.
+
+  o frame management
+	You can now specify if you want SQL Mode to create new frames when
+	you invoke sql-batch-mode, sql-interactive-mode or sql-results-mode.
+	These frames are dedicated to those functions in the sense that when
+	you exit SQL Mode the frame will be destroyed.
+
+	The variables to set are sql-batch-in-new-frame,
+	sql-interactive-in-new-frame, and sql-results-in-new-frame.  These
+	are also selectable from the Options menubar.
+
+  o load-path error detection
+	If SQL Mode can't find the files it needs in your load-path, it will
+	now detect that situation and prompt the user for possible courses of
+	action.
+
+What's changed:
+
+  o new files
+	A lot of functionality has been broken out into smaller files to
+	speed loading.  Now some functions will only be loaded if they are
+	invoked.  This is accomplished through the autoload mechanism.
+
+  o top-ten now saves point
+	The position of the cursor is now saved when you save a top-ten item.
+	
+  o sql-comment-line
+	This function will now toggle the comments of a region if the region
+	is active.  If the region is not active, it behaves as it did before.
+
+  o new big-menu interface
+	The SQL Mode big menus have been changed so that you can easily
+	access the standard emacs menu.  There is an "XEmacs" button on the
+	menubar that will switch to the standard menu, which will contain
+	one extra button (you guessed it) a "SQL" button which will take you
+	back to the SQL Mode menubar.  Since you now have easy access to the
+	whole standard menubar, some elements of the SQL Mode menu have been
+	removed (like "Exit Emacs" and the "Buffers" menu).  Because of this
+	new interface, big menus are now the default (you can, of course,
+	go back to the old way with a simple option selection).
+
+  o sql-bcp-switches
+	This variable has been changed to fix what some would consider a bug.
+	There should be no user-level impact.
+
+  o sql-current-buffer-info now shows caches and cache sizes
+	This is intended to help with cache management, since you can now
+	save and retrieve cached data.
+
+  o completion
+	Now works for columns after a "group by" construct.  Additionally,
+	if you have the following text:
+
+		select   from tableA
+		       ^
+
+	You can complete column names where the caret is.  You of course
+	have to have the table name already typed, so this form of
+	completion is somewhat limited.
+
+  o new toolbar
+	Some buttons were removed in deference to the top-ten list since
+	it is much more powerful.  New buttons were added for cut, copy,
+	paste, delete, insert and update functions.
+
+  o all references to "screen" changed to "frame"
+	With XEmacs version 19.12, all the *screen functions have been
+	renamed to match the equivalent FSF Emacs functions.  Now SQL Mode
+	uses this new "frame" terminology.
+
+  o removed the sql-loaded variable
+	It was pretty useless.
+
+Mailing lists:
+
+  o discussion
+	sql-mode-discuss@atlantic2.sbi.com will be a mailing list for any
+	sql-mode discussion.  This will take a while to get going as the
+	number of users increases.  To get on this list (or on the beta
+	testers list), send a request to sql-mode-request@atlantic2.sbi.com.
+
+  o beta testers list
+	The people who want to beta test the software before release 1.000
+	(which is coming "soon").  Please let me know if you want each version
+	mailed to you via email, or if you plan on using anonymous ftp to
+	get the latest beta versions (in which case you'll just get an
+	announcement similar to this one in the mail).
+
+  o help address
+	sql-mode-help@atlantic2.sbi.com is the new address that bug reports,
+	enhancement requests, and general questions should be sent to.
+
+FTP site:
+
+  o inside Salomon
+	If you are in the sbi.com domain, you can use anonymous ftp to get the
+	latest version.  It is on atlantic2 in the directory /pub.
+	The file sql-mode-v0.921.tar.Z contains all of the files that make up
+	the SQL Mode distribution.
+
+  o outside Salomon
+	SQL Mode is now available via anonymous ftp from cs.uiuc.edu.  The
+	complete path is:
+	
+		cs.uiuc.edu:/pub/xemacs/contrib/sql-mode.tar.gz
+
+------------------------------------------------------------------------------
+
+	     SQL Mode Version 0.919 (beta) Release Notes
+
+
+Version 0.919 contains mostly bug fixes, with a few additional features.
+XEmacs 19.12 is now fully supported, and the support for FSF Emacs has
+grown to the point where it's usable.
+
+
+*****************************************************************************
+*			   IMPORTANT NOTE:                                  *
+*****************************************************************************
+*                                                                           *
+* In order to make SQL Mode more consistent with other packages, I had to   *
+* make one large user-level change.  SQL Mode no longer initializes itself   *
+* when it loads, so now you have to do it in your .emacs file.  Add the     *
+* following line to the _end_ of your .emacs or else SQL Mode won't work    *
+* at all.                                                                   *
+*                                                                           *
+* (sql-initialize)                                                           *
+*                                                                           *
+*****************************************************************************
+
+
+What's new in SQL Mode:
+
+  o new menu hierarchy
+	The menus for launching SQL Mode can now be found under the Apps
+	menu in XEmacs version 19.12.
+
+  o type to update
+	If you perform a simple query on a table like:
+	
+		select * from table1 where column1 = value1
+
+	You can then type directly into the results buffer to change the data
+	in a particular row, and SQL Mode will determine what has changed,
+	and perform the appropriate update.
+
+	See the help on the functions sql-edit-row and sql-update-row for
+	more details.
+
+	WARNING: SQL Mode relies on the alignment of the columns, so you
+	have to be very careful when typing, and additionally the columns
+	have to be lined up to begin with, otherwise you will lose.
+
+  o asynchronous buffer evaluation
+	Buffer evaluation can now be done in the background.  The function
+	sql-evaluate-buffer-asynchronous is bound to M-e by default.  After
+	evaluating a buffer in the background, you should be able to continue
+	to use XEmacs normally.  The variable sql-finished-query-options
+	determines how SQL Mode will notify you when the evaluation completes.
+
+	NOTE: If your query is output-intensive, you probably still won't be
+	able to use XEmacs fully until the query finished, because XEmacs
+	will be busy putting the output in the results buffers.
+
+  o sql-finished-query-options
+	This variable controls how SQL Mode notifies the user when a background
+	evaluation finishes.  It is a list of symbols, with possible values
+	'ding, 'open, 'raise, and 'rows.  See the help on the variable for
+	more details.
+
+  o type information
+	SQL Mode now caches column type information, so that sql-insert-row
+	(and some other functions) can insert " characters where appropriate.
+
+  o completion in sql-interactive-mode buffers
+	Table, column, stored procedure, and database completion now work
+	in sql-interactive-mode buffers as well.
+
+  o database completion
+	The command sql-set-database now offers completion for all the
+	available databases.  In addition, if you type "use [TAB]" in a
+	sql-interactive-mode buffer, the list of databases will be shown
+	for completion.
+
+  o sql-stay-in-batch-buffer variable
+	Set this variable to 't' if you want the cursor to stay in the
+	sql-batch-mode buffer after evaluation.
+
+  o sql-reposition-windows
+	This function repositions and repaints the results buffer.  It is bound
+	to C-L by default.  C-l is still bound to sql-recenter.
+
+What's changed:
+
+  o the variable sql-results-hook has been changed to sql-results-mode-hook.
+	I hope this doesn't break too many user's customizations, but it's
+	a simple fix if it does.
+
+  o better FSF Emacs support
+	A few more things will now work in FSF Emacs, but not nearly 100%.
+
+  o history functions
+	All the history functions now work from results buffers as well as
+	batch buffers.
+
+  o enhanced printing
+	The function sql-print-buffer will now determine if "tiled" printing
+	is necessary.  There is also enscript support if you have the package
+	enscript.el.
+
+
+------------------------------------------------------------------------------
+
+	     SQL Mode Version 0.918 (beta) Release Notes
+
+
+This is hopefully one of the last beta releases.  I'd really like to clean
+things up and release version 1.0.  To this end, I'm asking everyone to please
+report any bugs or inconsistencies that you notice with this release, so I
+can fix them and finally get this thing out the door.
+
+There are only a couple of new enhancements that I plan before 1.0, which you
+can take a look at below.
+
+What's new in SQL Mode:
+
+  o new files
+	There are now 10 files in the sql-mode distribution: sql-mode.el,
+	sql-toolbar.el, sql-toolbar-compat.el, sql-icons.el,
+	sql-icons-compat.el, SQL-MODE-README, NEWS (this file), README,
+	sql_mode0.9b.xbm, and Refcard.ps.  They are all either new or have
+	undergone changes since the last version (except for the file
+	sql_mode0.9b.xbm).  Make sure to re-install the SQL-MODE-README
+	file to get updated help.
+
+	You will not need the sql-toolbar-* files or the sql-icons-* files
+	if you do not plan on using toolbars (see below).
+
+	You will not need the *-compat.el files if you are running XEmacs
+	version 19.12 or later.
+
+  o big menubar
+	There is a large menubar for sql-batch-mode that will help new
+	users learn how to use SQL Mode, and will help experienced users
+	learn about what's new in SQL Mode.
+
+	You can use the large menus by selecting "Use Big Menus" from
+	the Options menu.  This setting will be saved if you invoke
+	"Save Current Options".
+
+	The big menubar makes a lot of (previously unknown) features in
+	SQL Mode easily available.  I suggest that you try this out, if
+	only temporarily in order to see what SQL Mode can do.
+
+  o toolbar
+	SQL Mode now has it's own toolbar.  This is based on a package
+	called toolbar.el, but has some fundamental differences.  The
+	toolbars are now buffer-local, and based on your major-mode.
+	There is a sql-batch-mode toolbar included with the distribution
+	(in the file sql-toolbar.el).  To turn on a toolbar in
+	sql-batch-mode, simply select the Display Toolbar option from the
+	Options menu.  Unfortunately, due to its limitations, toolbars
+	will not work in FSF Emacs.
+
+	Please note that if you already use toolbar.el, the behavior will
+	change.  I'm sorry to say that there's no way the two behaviors
+	can co-exist, since toolbar.el uses a global toolbar, and SQL Mode
+	uses a major-mode specific one.
+
+	IMPORTANT NOTE: Toolbars are nothing more than a kludge in xemacs
+	version 19.11.  The package toolbar.el tries to "fake" a toolbar,
+	but it is only that: a fake (no offense to Andy Piper, the author).
+	If you really want to use toolbars in SQL Mode, you have to upgrade
+	your xemacs to version 19.12 (which is not released at the time of
+	this writing).  In version 19.12 "real" toolbars are supported,
+	and SQL Mode makes full use of them.  In 19.11, they very quickly
+	become a hassle if you use xemacs for anything other than SQL Mode.
+
+  o FSF Emacs support
+	SQL Mode will now run under FSF Emacs version 19.28 (it has not
+	been tested with previous versions of FSF Emacs).  It has slightly
+	limited behavior due to the limitations in FSF Emacs.
+
+	If someone who is more experienced with FSF Emacs would like to
+	contribute to the port, I'm sure that more of the features in
+	SQL Mode could be made to work without much difficulty.
+
+  o sql-insert-row
+	An interactive function that guides you through an insert into
+	a table.
+
+  o bcp support
+	SQL Mode now supports the functions sql-bcp-out and sql-bcp-in.
+	Try them, they're really easy to use.
+
+  o loading of stored procedures
+	sql-load-sp is a new function that will load a stored procedure.
+	There are options for configuring it as you need, but by default
+	the stored procedure file is run through the C preprocessor,
+	loaded into the current buffer, and then sent to the SQL server.
+
+  o previous matching history
+	Have you ever though to yourself: "Where's that update command
+	that I ran about 30 queries ago?" Well, now you'll be able to
+	find it more easily with the function sql-previous-matching-history
+	(bound to M-m by default).  In this case do:
+
+		M-m update RET
+
+  o split window horizontally
+	sql-split-window-horizontally makes it possible in results buffer
+	to "lock" one area of the window while scrolling another.  Let's
+	say for instance that you want to always view the first column
+	of a table, but you want to scroll the rest of it horizontally.
+	Position point right after the first column, and type 's' to
+	split the window, and then you can scroll the right half as
+	necessary.  Typing 'u' will unsplit the window.  When the windows
+	are split, 'w' will widen a window, and 'n' will narrow it.
+
+  o word yanking
+	Holding the shift key and clicking on the middle mouse button in a 
+	results buffer will yank the word under point up into the batch-mode
+	buffer.  This makes it easy to create queries based on results shown
+	in the results buffer.
+
+	Similarly, holding the control key and clicking the middle mouse
+	button will yank the word under point and insert spaces, commas,
+	or a 'select' keyword as appropriate.  This function could easily
+	be improved to make query generation as easy as point and click.
+
+What's changed:
+
+  o searching
+	In sql-results-mode, searching now scrolls horizontally as you type
+	the search string, making the current match always visible.  The
+	previous behavior was that it would only scroll horizontally once
+	the search was terminated.
+
+  o enhanced completion
+	Column completion now works after commas, as in:
+
+		update table-a set column-b = "foo", colu<TAB>
+
+	Button3 is now context-sensitive.  It will pop up a completion
+	list if the mouse is over a completable word.  It still pops up the
+	appropriate association menu otherwise.
+
+  o mouse based completion
+	When SQL Mode pops up a completions buffer, you can now click on
+	the middle mouse button on a word in the completions buffer to
+	select a particular completion.
+
+  o better font-lock'ing
+	Font lock support has been enhanced to correctly font-lock keywords.
+	Also, there is a bug fix to sql-guess-display-type, which attempts
+	to determine if you are running on a color display, and if you use
+	a light or dark background.
+
+  o help
+	The help system has been updated with more information and better
+	formatting.  You will need to re-install the SQL-MODE-README file
+	in order to take advantage of these changes.  The help system will
+	be significantly changed again before version 1.0 when the info
+	manual is finished (see below).
+
+  o refcard
+	The refcard has been updated to reflect the new functionality
+	in SQL Mode.
+
+  o next/previous error functions
+	These functions were fixed so that they work properly when browsing
+	through the history.
+
+What's coming before version 1.0:
+
+  o An info file
+	This is already in the works, but not complete.  If you would like
+	to help with this, please let me know.
+
+  o Indentation
+	Anyone have a grammar handy for SQL code?
+
+  o Background evaluation
+	Running your queries in the background so you can still use emacs.
+	This is probably the single most frequent request I get, but also
+	one of the most difficult to implement properly.
+
+------------------------------------------------------------------------------
+
+As the number of users of (and requests for) SQL Mode increases, I've started
+to automate some of the processes involved with the package.  Here are the
+release notes that accompany version 0.915.
+
+What's new in version 0.915 (beta):
+
+  o new files
+	There are now 4 files in the sql-mode distribution: sql-mode.el,
+	SQL-MODE-README, sql_mode0.9b.xbm, and Refcard.ps.
+  o help
+	A SQL Mode specific help system.  It's on C-c h.  You will need to
+	copy the file SQL-MODE-README file into the directory specified by
+	the variable `data-directory' to make this work fully.
+  o refcard
+	A postscript reference card for new users (Refcard.ps).
+  o sql_mode0.9b.xbm bitmap file.  An X bitmap file that I use when
+	iconifying a sql-mode screen (using the package frame-icon.el).
+  o next/previous error functions
+	sql-next-error parses the results buffer and takes you to the
+	line of SQL code that generated the error.  Bound to C-c n.
+	sql-previous-error is bound to C-c p.  Note: this does not work
+	well if you have more than one "batch" of commands that generate
+	errors.
+  o top ten list
+	A method to save and recall up to 10 commonly used SQL commands.
+	C-c t to save the current buffer to a top ten slot, C-c N (where
+	0 <= N <= 9) to recall the Nth top ten query.
+  o reading interfaces file
+	The interfaces file is read and parsed to that server completion
+	is more complete.
+  o sql-set-sybase
+	A way to interactively set the SYBASE environment variable without
+	having to re-start xemacs (with thanks to Mike Cambel).
+  o evaluate-buffer hook
+	A new hook that is run just after the buffer is evaluated in
+	sql-batch-mode.
+  o column name completion bug fix
+	Fixed a bug that prevented some columns from being "seen" (again,
+	thanks to Mike Cambel).
+  o sql-drag-display bug fix
+	Dragging the results window (with SHIFT + button1) now works with
+	'floating' headers.
+  o floating headers in the history bug fix
+	When you went backwards in the history, 'floating' headers didn't
+	work right (until now).
+  o sql-insert-gos and sql-insert-semi-colons functions
+	For converting batch commands into scripts.
+  o scroll-in-place requirement
+	Now SQL Mode is reliant on scroll-in-place.el.  If you don't have
+	this package, let me know and I'll send it to you.
+
+With all the new functionality in 0.915, there's bound to be a few bugs
+(otherwise it wouldn't be beta, right?).  I'll try to fix them as soon as
+possible and release point releases.
+

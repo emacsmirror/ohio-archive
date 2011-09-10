@@ -1,0 +1,36 @@
+Archive submissions should be mailed to elisp-archive@cis.ohio-state.edu
+if they consist of a single file.  Mailed submissions are automatically
+saved and periodically archived.  The incoming directory is no longer
+available for submissions at the request of Ohio State.
+
+Messages regarding problems with the archive, such as missing files or
+files that won't decompress, should also be sent to this address.
+
+Submissions consisting of multiple files should not be mailed.  Instead
+a mail message with the LCD archive entry (see the GUIDELINES file) should
+be mailed to the archive address with a location from which the tarred and
+compressed files can be ftped.  If you cannot provide the files through
+anonymous ftp, we will arrange a drop location in private mail.
+
+Entries in the LCD (Lisp Code Directory) for packages that are maintained
+at other locations are also welcomed and encouraged.
+
+NEWS FLASHES:
+=============
+Mon Jul 19 15:54 1993
+
+A recent change in the OSU ftpd is making the default permissions of
+newly archived files unreadable via anonymous ftp.  To counter this
+problem we have set up a cron job that every hour on the hour to
+correct any bogus permissions.  If you run across a file that you
+cannot read, wait for the next cron job to run, then try again.
+
+
+-- Dave Brennan
+
+----------------------------------------------------------------------
+
+Dave Brennan (brennan@gnu.ai.mit.edu)
+Dave Sill    (de5@ornl.gov)
+
+Elisp Archive Maintainers

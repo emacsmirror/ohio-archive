@@ -1,0 +1,40 @@
+************
+File TUG0:[KGALLAGH.EMACS.ETC]TERMCAP.DAT-DIST;1
+  464   d0|vt100-132|vt125-132|dec vt100 with 132 columns:\
+  465   	:co#132:tc=vt100:
+  466   d0|vt100|vt100-am|vt100-80|vt125|vt125-80|dec vt100:\
+  467   	:cr=^M:bl=^G:le=^H:do=\ED:ho=\E[H:\
+******
+File TUG0:[KGALLAGH.EMACS.ETC]TERMCAP.DAT;1
+  464   # Added vt101, vt102, vt131. -- kg 5/91
+  465   d0|vt100-132|vt101-132|vt102-132|vt125-132|vt131-132|dec vt100 with 132 columns:\
+  466   	:co#132:tc=vt100:
+  467   d0|vt100|vt100-am|vt100-80|vt101|vt101-80|vt102|vt102-80|vt125|vt125-80|vt131|vt131-80|dec vt100:\
+  468   	:cr=^M:bl=^G:le=^H:do=\ED:ho=\E[H:\
+************
+************
+File TUG0:[KGALLAGH.EMACS.ETC]TERMCAP.DAT-DIST;1
+  551   d0|vt200-80|vt200|VT 200 with 80 columns, on VMS:\
+  552   	:AL=\E[%dL:DC=\E[%dP:DL=\E[%dM:DO=\E[%dB:IC=\E[%d@:\
+******
+File TUG0:[KGALLAGH.EMACS.ETC]TERMCAP.DAT;1
+  552   # Added vt300, kg.
+  553   d0|vt200-80|vt200|vt300-80|vt300|VT 200 with 80 columns, on VMS:\
+  554   	:AL=\E[%dL:DC=\E[%dP:DL=\E[%dM:DO=\E[%dB:IC=\E[%d@:\
+************
+************
+File TUG0:[KGALLAGH.EMACS.ETC]TERMCAP.DAT-DIST;1
+  563   d0|vt200-132|VT 200 with 132 columns, on VMS:\
+  564   	:co#132:tc=vt200-80:
+******
+File TUG0:[KGALLAGH.EMACS.ETC]TERMCAP.DAT;1
+  565   d0|vt200-132|vt300-132|VT 200 with 132 columns, on VMS:\
+  566   	:co#132:tc=vt200-80:
+************
+
+Number of difference sections found: 3
+Number of difference records found: 7
+
+DIFFERENCES /IGNORE=()/MERGED=1/OUTPUT=TUG0:[KGALLAGH.EMACS.ETC]TERMCAP.DIFF;1-
+    TUG0:[KGALLAGH.EMACS.ETC]TERMCAP.DAT-DIST;1-
+    TUG0:[KGALLAGH.EMACS.ETC]TERMCAP.DAT;1

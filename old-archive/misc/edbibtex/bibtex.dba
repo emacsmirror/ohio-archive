@@ -1,0 +1,79 @@
+;; This is version 0.21 of BibTeX.dba, as of May 3, 1993.
+ 
+;; Copyright (C) 1993, Michael Burschik.
+ 
+;; For documentation please see the file `edbibtex.texinfo', which
+;; you should have got along with this one.
+ 
+
+ 
+;; This file is intended to be used with GNU Emacs.
+ 
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY.  No author or distributor
+;; accepts responsibility to anyone for the consequences of using it
+;; or for whether it serves any particular purpose or works at all,
+;; unless he says so in writing.  Refer to the GNU Emacs General Public
+;; License for full details.
+ 
+;; Everyone is granted permission to copy, modify and redistribute
+;; this file, but only under the conditions described in the
+;; GNU Emacs General Public License.   A copy of this license is
+;; supposed to have been given to you along with GNU Emacs so you
+;; can know your rights and responsibilities.  It should be in a
+;; file named COPYING.  Among other things, the copyright notice
+;; and this notice must be preserved on all copies.
+ 
+
+ 
+;; Require the necessary package (i.e. "edbibtex.el")
+(require 'edbibtex)
+ 
+;;;;;;;;;;;;;;;;;;;;;;;
+;; Edbibtex Features ;;
+;;;;;;;;;;;;;;;;;;;;;;;
+ 
+;; turn string expansion off
+(setq BibTeX-expand-strings nil)
+ 
+;; turn entry type dependent format selection on
+(setq BibTeX-multiple-format t)
+ 
+;; set the default format (change its name here, if you would
+;; like to rename the default format file)
+(setq BibTeX-default-format '("GENERIC" . "generic.fmt"))
+ 
+;; turn automatic default format selection on
+(setq BibTeX-use-default-format t)
+ 
+ 
+;;;;;;;;;;;;;;;;;;
+;; EDB Features ;;
+;;;;;;;;;;;;;;;;;;
+ 
+;; Default Field Type
+(setq db-default-field-type 'nil-or-string)
+ 
+;; Fieldnames
+(database-set-fieldnames-to-list
+ database (BibTeX-get-fields BibTeX-field-alist))
+ 
+;; Separating
+(sepinfo-set-sep-function
+ (database-record-sepinfo database) 'BibTeX-delimit-record)
+ 
+;; Reading
+(database-set-read-record-from-region database 'BibTeX-rrfr)
+ 
+;; Writing
+(database-set-write-region-from-record database 'BibTeX-wrfr)
+ 
+;; Display
+(setq dbf-before-display-record-function 'BibTeX-set-format-from-data)
+ 
+(setq dbf-alternate-format-names
+      (cons BibTeX-default-format
+	    (BibTeX-get-alternate-formats BibTeX-entry-type-alist)))
+ 
+ 
+(setq dbf-after-record-change-function 'BibTeX-validate-hook)

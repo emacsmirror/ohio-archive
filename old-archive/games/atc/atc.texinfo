@@ -1,0 +1,439 @@
+\input texinfo            @c -*-texinfo-*-
+@comment %**start of header (This is for running Texinfo on a region.)
+@setfilename atc
+@settitle Air Traffic Control version 1.0
+@comment %**end of header (This is for running Texinfo on a region.)
+
+@ifinfo
+This file documents `Air Traffic Control' a game translated into Emacs
+Lisp by Neil Jerram.
+
+I am unaware of any copyright surrounding the original game.  In so far
+as any existing copyright is not contradicted, this translation is
+
+Copyright @copyright{} 1992 Neil Jerram.
+
+Permission is granted to copy, share and modify this program according
+to the terms of the GNU General Public License.  There is ABSOLUTELY NO
+WARRANTY accompanying this program --- use it at your own risk.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+section entitled ``General Public License'' is included exactly as in
+the original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this
+one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the section entitled ``General Public License'' may be
+included in a translation approved by the author instead of in the
+original English.
+@end ifinfo
+
+@titlepage
+@sp 10
+@center @titlefont{Air Traffic Control}
+@sp 2
+@center An Emacs Lisp translation of an old TRS-80 game
+@sp 2
+@center Neil Jerram
+
+@comment The following two commands start the copyright page.
+@page
+@vskip 0pt plus 1filll
+
+I am unaware of any copyright surrounding the original game.  In so far
+as any existing copyright is not contradicted, this translation is
+
+Copyright @copyright{} 1993 Neil Jerram.
+
+Permission is granted to copy, share and modify this program according
+to the terms of the GNU General Public License.  There is ABSOLUTELY NO
+WARRANTY accompanying this program --- use it at your own risk.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+sections entitled ``Distribution'' and ``General Public License'' are
+included exactly as in the original, and provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the sections entitled ``Distribution'' and ``General Public
+License'' may be included in a translation approved by the author instead
+of in the original English.
+@end titlepage
+
+@node Top, General Public License, (dir), (dir)    
+@comment  node-name,  next,  previous,  up
+
++---------------------+
+| AIR TRAFFIC CONTROL |
++---------------------+
+
+Air Traffic Control represents a simple challenge --- to guide a number
+of aeroplanes in or out of their respective airports, to or from their
+desired destinations.
+
+@menu
+* General Public License::	How you may copy and distribute this game.
+* History::			The pedigree of the game.
+* Installation::		Setting up the game on your system.
+* Firing Up::			To start playing ATC.
+* Rules::			The rules of the game.
+* Control::			Commands available for controlling planes.
+* Options::			Bits you can tweak to make it easier or harder.
+@end menu
+
+@node General Public License, History, Top, Top
+@include gpl.texinfo
+
+@node History, Installation, General Public License, Top    
+@comment  node-name,  next,  previous,  up
+
+@section History
+
+I first played Air Traffic Control, or ATC for short, on a TRS-80 in
+1981.  Whether or not the present incarnation is a faithful
+representation of the original, I can't say, as my memory isn't that
+good, but I think that the basic ideas are the same.  ATC might be
+considered rather a tame game in these days of blood-stained GUIs and
+tracker balls, but it can still generate some tense moments when the
+concentration reaches its limit and the eyes can no longer look at so
+many different places at once.
+
+For the record, this is my second translation of the game; the first was
+into a dialect of BASIC for the BBC microcomputer.  The great attraction
+of Emacs Lisp as a programming environment, however, is that it offers
+not only a stable language but also a consistent visual interface, over
+a very large range of machines; so it is in this, Emacs Lisp,
+translation that I hope ATC will find some success.
+
+@node Installation, Firing Up, History, Top
+@comment  node-name,  next,  previous,  up
+
+@section Installing ATC
+
+In order for Emacs to be able to run ATC, it must know where to find the
+file containing the Emacs Lisp program which defines the game.  Unless
+the name of this file has for some reason been changed, it is called
+@file{atc.el}.
+
+If you have a standard location in which you put all Emacs Lisp files
+which didn't come with the Emacs distribution --- which might for
+example be called @file{/usr/local/emacs/lisp/local} --- the easiest
+option would be to add @file{atc.el} to those files.  Then, assuming
+that this location is one of those mentioned in the Emacs Lisp variable
+@code{load-path}, you would load the ATC program into Emacs by typing
+@kbd{M-x load-library @key{RET} atc @key{RET}}.  To have this done
+automatically every time you start up Emacs, insert the line
+
+@example
+(load "atc")
+@end example
+
+in your @file{.emacs} file.
+
+If there is no such standard location on your system, or if it is
+difficult for you to get access to it, then you must keep @file{atc.el}
+in your own file-space.  You could load in the program every time you
+want to use it by typing @kbd{M-x load-file @key{RET}} followed by the
+pathname of @file{atc.el}.  Or you could do this automatically whenever
+you start Emacs by typing something like
+
+@example
+(load "/home/neil/emacs-lisp/atc.el")
+@end example
+
+in your @file{.emacs} file.  Or you could arrange to load in ATC
+automatically when you need it, like this:
+
+@example
+(autoload 'atc "/home/neil/emacs-lisp/atc.el"
+   "Play Air Traffic Control." t)
+@end example
+
+(again, in your @file{.emacs} file).  This last method avoids using
+Emacs' memory unnecessarily as the program will only be loaded in when
+and if you want to play the game.
+
+@node Firing Up, Rules, Installation, Top   
+@comment  node-name,  next,  previous,  up
+
+@section Firing Up and Suspending ATC
+
+To start playing ATC, type @kbd{M-x atc @key{RET}}.
+
+If something distracts your attention while you're in the middle of a
+game, or someone walks into the room who ought not to know that you're
+playing games, you can suspend ATC and resume playing the same game
+later on.
+
+To suspend ATC rapidly during a game, hit @key{ESC}: the game will stop
+and Emacs will replace the ATC buffer with whatever you were working on
+previously.  This is the quick-change-to-avoid-detection option.
+
+To suspend ATC in a less panic-stricken way, type @kbd{C-z}: the game
+will be suspended but will remain visible in its window on the screen.
+This option is for those who like a little breather in mid-game or who
+have just had a thought that can't wait.  Emacs will ask if you want to
+resume immediately (i.e. without doing any other Emacs work first): type
+@kbd{y} or @kbd{n}.
+
+Whichever way you suspend, the game position will be saved and Emacs
+will remember that a game of ATC is in progress (until you shut down
+Emacs completely, that is).  Then the next time you type @kbd{M-x atc},
+Emacs will ask if you want to resume playing the game you started
+earlier.  If you don't, type @kbd{n} and the board will be swept clean
+and a new game prepared.  If you do, type @kbd{y} and carry on.
+
+Note: during the game the only keys that will evoke a response are
+@key{ESC}, @kbd{C-z}, @kbd{C-g} and the keys described below for
+controlling the aeroplanes; no other Emacs commands will work.  But the
+normal situation is restored as soon as the game ends or is suspended:
+@key{ESC} will revert to being the escape prefix and @kbd{C-z} will
+invoke @code{suspend-emacs} if you are not running under a window
+system.
+
+@node Rules, Control, Firing Up, Top
+@comment  node-name,  next,  previous,  up
+
+@section Rules of the Game
+
+You have control over a region of air-space.  Inside your region are
+situated two airports, one of them (@kbd{#}) almost dead centre and the
+other (@kbd{*}) a little way up towards the north-north-east.  The
+perimeter of your air-space is divided into 10 areas, called 0/1, 1/2,
+2/3 and so on up to 9/0.
+
+During the game a number of aeroplanes will fly into your air-space from
+afar, wanting to land at one of your two airports.  As a consequence of
+the prevailing wind directions, aeroplanes destined for airport # should
+always land in a westerly direction, while those destined for airport *
+should land in the north-west direction.  Any attempt to land in an
+incorrect direction will probably do serious damage to the airport
+buildings and the plane.
+
+Other aeroplanes will request take-off from one of your airports to a
+place outside your air-space.  According to the direction of their
+ultimate destination, these aeroplanes are designated to leave via one
+of the 10 areas around the perimeter.  A plane which leaves through the
+wrong area will not crash, but it will waste a lot of time and money.
+When a plane leaves your air-space it must have reached altitude 5 ---
+this is a general requirement for aeroplanes in uncontrolled air-space.
+
+Finally, there will be a few aeroplanes acting as shuttles between the
+two airports, which take off at # and land at *, or vice versa.
+
+You should not allow an aeroplane to leave your airspace if it is
+intending to land at your airports.  Neither should you land a plane
+which is destined to leave your air-space.  An aeroplane wanting to land
+must not do so at the wrong airport.
+
+If you direct an aeroplane to reduce its altitude to zero anywhere other
+than at an airport, it will of course crash.  And if two aeroplanes are
+made simultaneously to occupy the same map location and have the same
+altitude, there will be a collision in mid-air.
+
+Finally, the number of aeroplanes awaiting take-off at any one time
+should not exceed five.
+
+Any of these undesirable events will signal the end of the game.  These
+are the rules --- now read on to discover how to play by them...
+
+@node Control, Options, Rules, Top
+@comment  node-name,  next,  previous,  up
+
+@section Controlling the Aeroplanes
+
+All commands in ATC are two or three characters long.  The first
+character specifies the plane for which the command is intended, which
+is a letter of the alphabet between @kbd{A} and @kbd{Z}.  The second
+indicates the action being requested.  The third, when a numerical
+argument is appropriate to the command, is a number between 0 and 9.
+
+The command being composed at any time is shown in the top left corner
+of the screen after the exclamation mark.  Typing @key{DEL} at any time
+will remove any partly written command that is there so that you can
+start a new command afresh.
+
+As an example of giving a command, suppose you want to direct aeroplane
+F to turn left through 180 degrees.  First you press @kbd{F} to specify
+the plane, and the top line will display:
+
+@example
+! F
+@end example
+
+Then press @kbd{L} to indicate that the command is for a turn to the
+left --- the top line of the screen now looks like:
+
+@example
+! FL
+@end example
+
+No command has yet been executed because turning left requires a
+numerical argument to say how much to turn.  In this case you would
+finally press @kbd{4}.  The command is then transmitted to the aeroplane
+which will begin to respond in its next moves, and the command line is
+blanked out ready for the next directive.  Were you to have changed your
+mind halfway through the command, and you had decided that the turn
+should be to the right rather than to the left, the whole sequence of
+key presses would have been @kbd{F L @key{DEL} F R 4}.
+
+The following subsections describe in more detail ATC's rather limited
+(but sufficient) command set.  The available action letters are:
+@kbd{A}, to change altitude, @kbd{L}, to turn left, @kbd{R}, to turn
+right, and @kbd{?}, to give information about the aeroplane's provenance
+and destination. @refill 
+
+@menu
+* A::			Change altitude.
+* L::			Turn to the left.
+* R::			Turn to the right.
+* ?::			Give information about the plane's itinerary.
+@end menu
+
+@node A, L, Control, Control    
+@comment  node-name,  next,  previous,  up
+
+@subsection Changing Altitude
+
+There are four reasons why you may need to change an aeroplane's
+altitude: to land, to take off, to achieve the required altitude 5 in
+open air-space, and to avoid a mid-air collision.
+
+The numerical argument of the A command is a target altitude: after a
+directive is given the aeroplane will require one move to prepare for
+the change, and will then change its altitude by +1 or -1 every move
+until the target altitude is reached.
+
+When a plane is landing, the giving of the command to change altitude to
+zero must be carefully timed so that zero altitude is reached precisely
+as the aeroplane moves into the airport.  If the timing is wrong by even
+one move, the plane will crash-land.
+
+To make a plane take off, instruct it to increase its altitude to 1.
+Once this command has been given, others may follow, for example to make
+a turn or to climb to higher altitude; before this command is given, the
+aeroplane can do nothing.
+
+@node L, R, A, Control
+
+@subsection Turning Left
+
+To instruct an aeroplane to turn left, type the plane's letter, then
+@kbd{L}, and then a number between 0 and 9.  An aeroplane can change its
+direction by 45 degrees every time it moves, and the numeric argument
+that you type represents the number of 45 degree turns you want it to
+execute.  Aeroplanes require a move to prepare for the turn they are
+about to make.  Here is an example of turning left, showing how an
+aeroplane moves if it is initially heading North at location 0 when the
+command @kbd{xL5} (where @kbd{x} is the letter of the aeroplane) is
+given:
+
+@example
+. . . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . . . . . . . . . . . . .
+. . . . . . . . . 3 2 . . . . . . . . . .
+. . . . . . . . 4 . . 1 . . . . . . . . .
+. . . . . . . . 5 . . 0 . . . . . . . . .
+. . . . . . . . . 6 . . . . . . . . . . .
+. . . . . . . . . . 7 . . . . . . . . . .
+. . . . . . . . . . . 8 . . . . . . . . .
+. . . . . . . . . . . . 9 . . . . . . . .
+. . . . . . . . . . . . . . . . . . . . .
+@end example
+
+If a turning command is given while a previous one is still being
+executed, the previous one is interrupted and replaced immediately by
+the new command.  Thus the command @kbd{xL0} can be used to break off a
+turn half-way through.  For example, if such a command had been given
+when the aeroplane above was in position 4, the plane would have moved
+to 5 and then continued towards the South.
+
+@node R, ?, L, Control
+
+@subsection Turning Right
+
+To instruct an aeroplane to turn right, type the plane's letter, then
+@kbd{R}, and then a number between 0 and 9.  An aeroplane can change its
+direction by 45 degrees every time it moves, and the numeric argument
+that you type represents the number of 45 degree turns you want it to
+execute.  Aeroplanes require a move to prepare for the turn they are
+about to make.
+
+Turning right works in exactly the same way as turning left.
+@xref{Turning Left}, for a detailed example.
+
+@node ?, , R, Control
+
+@subsection Requesting Information
+
+To find out where an aeroplane has come from and where it wants to go,
+type the plane's letter and @kbd{?}.  A message will appear in the
+minibuffer of the form:
+
+@example
+Aeroplane A: from area 8/9 to airport #.
+@end example
+
+This is intended to be self-explanatory.  If it isn't, please send me a
+bug report.  Information may be requested when an aeroplane is currently
+moving on the screen or when it is in the list awaiting take off.
+
+@node Options, , Control, Top
+
+@section Options for Customisation
+
+You can make ATC more difficult or more easy by changing the values of
+the following Emacs Lisp variables.
+
+@table @code
+@item atc-nb-planes
+The total number of aeroplanes in the game.  For a shorter game, set
+this variable to 10, and you will only have to manage planes A to J.
+
+@item atc-initial-delay
+A measure of the time delay between subsequent plane movements.
+Increase the value of this variable to slow the game down generally.
+
+@item atc-acceleration
+If this variable is non-zero, the time delay between movements will be
+decreased by @code{atc-acceleration} every movement, so the game
+gradually speeds up.
+
+@item atc-%-airports
+It is usually harder to land at airports than to exit via some area
+around the perimeter.  This variable controls how often airports are
+selected as provenances/destinations rather than areas.  If you set this
+variable to 100 then all the aeroplanes will want to fly from one
+airport to the other!
+
+@item atc-mean-separation
+A measure of the mean number of plane movements between one new plane
+appearing (either on screen or in the take off list) and the next one.
+@end table
+
+The procedure for changing one of these variable's values (say
+@code{atc-acceleration}) is:
+
+@example
+@kbd{M-x set-variable @key{RET} atc-acceleration @key{RET} 4 @key{RET}}
+@end example
+
+Changes are not possible while the game is active.  You can make a
+change before starting a game of ATC (but after the Lisp has been
+initially loaded), or you can suspend ATC (@pxref{Firing Up, Suspending
+ATC}), change one of the variables, and then resume play. @refill

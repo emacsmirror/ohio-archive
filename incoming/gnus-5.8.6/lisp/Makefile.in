@@ -1,0 +1,66 @@
+datadir = @datadir@
+lispdir = @lispdir@
+prefix = @prefix@
+srcdir = @srcdir@
+subdir = lisp
+top_srcdir = @top_srcdir@
+
+EMACS = @EMACS@
+FLAGS = -batch -q -no-site-file -l $(srcdir)/dgnushack.el
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+SHELL = /bin/sh
+VPATH = @srcdir@
+
+all total:
+	rm -f *.elc
+	srcdir=$(srcdir) $(EMACS) $(FLAGS) -f dgnushack-compile
+
+warn:
+	rm -f *.elc
+	srcdir=$(srcdir) $(EMACS) $(FLAGS) --eval '(dgnushack-compile t)' 2>&1 | egrep -v "variable G|inhibit-point-motion-hooks|coding-system|temp-results|variable gnus|variable nn|scroll-in-place|deactivate-mark|filladapt-mode|byte-code-function-p|print-quoted|ps-right-header|ps-left-header|article-inhibit|print-escape|ssl-program-arguments|message-log-max"
+
+# The "clever" rule is unsafe, since redefined macros are loaded from
+# .elc files, and not the .el file.
+clever some:
+	srcdir=$(srcdir) $(EMACS) $(FLAGS) -f dgnushack-compile
+
+install: clever
+	rm -f dgnushack.elc
+	$(SHELL) $(top_srcdir)/mkinstalldirs $(lispdir)
+	for p in *.elc; do \
+	  echo " $(INSTALL_DATA) $$p $(lispdir)/$$p"; \
+	  $(INSTALL_DATA) $$p $(lispdir)/$$p; \
+	done
+
+tags:
+	etags *.el
+
+separately:
+	rm -f *.elc ; for i in *.el; do $(EMACS) $(FLAGS) -f batch-byte-compile $$i; done
+
+pot:
+	xpot -drgnus -r`cat ./version` *.el > rgnus.pot
+
+gnus-load.el:
+	echo ";;; gnus-load.el --- automatically extracted custom dependencies" > gnus-load.el
+	echo ";;" >> gnus-load.el
+	echo ";;; Code:" >> gnus-load.el
+	echo >> gnus-load.el
+	$(EMACS)  $(FLAGS) -l ./dgnushack.el -l cus-edit.el *.el \
+		-f custom-make-dependencies >> gnus-load.el
+	echo >> gnus-load.el
+	echo "(provide 'gnus-load)" >> gnus-load.el
+	echo >> gnus-load.el
+	echo ";;; gnus-load.el ends here" >> gnus-load.el
+
+distclean:
+	rm -f *.orig *.rej *.elc *~ Makefile
+
+Makefile: $(srcdir)/Makefile.in ../config.status
+	cd .. \
+	  && CONFIG_FILES=$(subdir)/$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

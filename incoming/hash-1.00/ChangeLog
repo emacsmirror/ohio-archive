@@ -1,0 +1,4 @@
+1999-03-02  Nelson H. F. Beebe  <beebe@math.utah.edu>
+
+	* Release version 1.00 of the GNU Emacs Lisp dynamic hash table
+	library. 

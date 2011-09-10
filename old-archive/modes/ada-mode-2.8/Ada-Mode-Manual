@@ -1,0 +1,877 @@
+
+
+
+
+
+
+
+
+
+
+
+		     ADA PROGRAMMING USING EMACS
+		     ===========================
+
+			    User's Manual
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			       Author:
+
+			   Markus Heritsch
+	      <Markus.Heritsch@studbox.uni-stuttgart.de>
+			       
+		      under the supervision of:
+			      Rolf Ebert
+			 <ebert@inf.enst.fr>
+				 and
+			   Franco Gasperoni
+			<gasperon@inf.enst.fr>
+
+		     Computer Science Department
+			      ENST Paris
+
+
+
+
+
+
+
+
+
+			     October 1994
+
+
+Table of Contents
+=================
+
+1 Introduction to Emacs
+
+	1.1 What is Emacs ?
+
+	1.2 The Emacs Tutorial
+
+2 Summary of the Ada-Mode Features
+
+3 Installation
+
+	3.1 Required Files
+
+	3.2 How to Install
+		3.2.1 The File .emacs
+		3.2.2 The *.el Files
+
+4 How to Use
+
+	4. 1 Automatic Smart Indentation
+
+	4. 2 Formatting Parameter Lists
+
+	4. 3 Moving Through Ada Code
+
+	4. 4 Comment Handling
+
+	4. 5 Using Cross Reference Information (of GNATF)
+
+	4. 6 Automatic Casing
+
+	4. 7 Statement Templates
+
+	4. 8 Compilation
+
+	4. 9 Switching Between Spec And Body
+
+	4.10 Index Menu of Procedures/Functions
+
+	4.11 Automatic Highlighting
+
+	4.12 Calling External Pretty Printer
+
+	4.13 Filling Comment Paragraphs
+
+5 How to Configure
+
+	5.1 User Options in ADA-MODE.EL
+
+	5.2 User Options in ADA-XREF.EL
+
+	5.3 User Options in COMPILE.EL
+
+	5.4 User Options in FIND-FILE.EL
+
+	5.5 User Options in IMENU.EL
+
+	5.6 User Options in FONT-LOCK.EL
+
+6 How to Get Further Information
+
+
+1 Introduction to Emacs
+=======================
+
+1.1 What is Emacs ?
+-------------------
+
+First of all, Emacs is an editor. But it is much more than that, you
+can do almost everything with Emacs that you do with a computer. For
+example send and read mail, use it as a calendar and a diary, write
+text, edit and compile programs, manage files and even play games.
+
+If you use it as an editor, you always have many features especially
+for what you are editing. See chapter 2 for the special features when
+programming in Ada.
+
+
+1.2 The Emacs Tutorial
+----------------------
+
+To get started with Emacs, use the Emacs Tutorial to learn about the
+basic commands in an interactive fashion.
+You can run the tutorial by menu (Help /Tutorial) or by Keystroke
+(C-h t). 
+
+
+2 Summary of Features
+=====================
+
+The current Emacs environment for programming in Ada offers the
+following features:
+
+	- automatic smart indentation according to Ada syntax
+
+	- formatting of parameter lists
+
+	- functions for easy and quick stepping through Ada code
+
+	- functions for a comfortable comment handling
+
+	- getting cross reference information for identifiers
+
+	- automatic completion of identifiers
+
+	- automatic casing of identifiers and keywords
+
+	- insertion of statement templates
+
+	- compilation and stepping through error messages
+
+	- switching between spec and body files
+
+	- displaying an index menu of procedures/functions
+	  and move point to the chosen one
+
+	- automatic highlighting of the various entities in Ada code
+
+	- calling an external pretty printer program from within Emacs
+
+	- filling comment paragraphs like filling normal text
+
+	- easy to use for beginners by pull-down menus
+
+	- user-configurable by many user-option variables
+
+
+3 Installation
+==============
+
+3.1 Required Files
+------------------
+
+Assuming that the GNU Emacs distribution, Version 19 or higher, is
+correctly installed, you need the following files:
+
+	- .emacs        Your personal initialization file for Emacs.
+			It has to contain the commands to load the
+			following packages when Emacs starts, if you
+			want to use their features. And it can contain
+			user-specific configurations.
+
+	- ada-mode.el   The main file for the Ada-Mode.
+			It contains the functions for indentation,
+			formatting of parameter lists, stepping
+			through code, comment handling and automatic
+			casing.
+
+	- ada-stmt.el   Contains the statement templates feature.
+
+	- skeleton.el   Contains support functions for ada-stmt.el .
+			This is a modified version of the skeleton.el
+			that comes with the Emacs distribution.
+			It allows the choice between beeing prompted
+			for certain values or insertion of pseudo-
+			code.
+
+	- ada-xref.el   The functions to use the output of GNATF for
+			declaration-lookup and completion of
+			identifiers.
+
+	- compile.el    Support to run compiler from inside Emacs and
+			step comfortably through error messages.
+			Slightly modified version of the compile.el
+			that comes with the Emacs distribution.
+
+	- find-file.el  Functions to switch between spec and body file
+			of a package.
+
+	- imenu.el      Functions to create an index menu of all
+			function/procedure declarations to jump
+			quickly to the chosen one.
+
+	- font-lock.el	Contains the highlighting support. It is a
+			modified version of the font-lock.el that
+			came with the last Emacs distribution and will
+			be part of the next one.
+
+	- font-regexps.el  A collection of regular expressions to use
+			in font-lock.el .
+
+	- make-regexps.el  Some support functions to build complicated
+			regular expressions. Also used by font-lock.el .
+
+
+3.2 How to Install
+------------------
+
+3.2.1 The File .emacs
+---------------------
+
+The file .emacs has to be in your HOME directory.
+When Emacs starts, it first executes this file.
+
+It should at least have the following contents:
+
+  ;;; .emacs example for using ada-mode.el and additional packages
+
+  ;; include the directory HOME/elisp in the load-path
+  (setq load-path (cons (expand-file-name
+	  	         "~/elisp")
+		         load-path))
+
+  ;; load Ada-Mode
+  (load "ada-mode")
+
+  ;; make Emacs enter Ada-Mode when loading Ada source file
+  (setq auto-mode-alist (cons '("\\.ad[abs]$" . ada-mode)
+			      auto-mode-alist))
+
+  ;; load find-file.el and do settings for the use with Ada
+  (require 'find-file)
+  (add-hook 'ada-mode-hook 
+	    '(lambda ()
+	       (setq ff-other-file-alist ada-other-file-alist)
+	       (setq ff-search-directories ada-search-directories)))
+  (define-key global-map [C-mouse-2] 'ff-mouse-find-other-file)
+  (define-key global-map [S-C-mouse-2] 'ff-mouse-find-other-file-other-window)
+  (define-key global-map "\C-co" 'ff-find-other-file)
+
+  ;; load package compile.el
+  (load "compile")
+
+  ;; settings to display region in reverse font
+  (cond (window-system
+         (setq transient-mark-mode t)
+         (set-face-background 'region "black")
+         (set-face-foreground 'region "white")))
+
+  ;; settings to use font-lock.el
+  (eval-after-load "font-lock" '(load "font-regexps"))
+  (autoload 'make-regexp "make-regexp"
+    "Return a regexp to match a string item in STRINGS.")
+  (add-hook 'ada-mode-hook 
+	    'font-lock-mode)
+  (setq font-lock-maximum-size (* 500 1024))
+
+  ;; set keybinding for imenu.el
+  (define-key global-map [S-mouse-2] 'imenu)
+  (define-key ada-mode-map "\C-ci" 'imenu)
+
+  ;;; end of .emacs example
+
+You can add your own variable definitions, functions, keybindings,
+etc. to make Emacs fit your special needs. Please refer to the Emacs
+manual or Emacs Info Mode for further information (see chapter 6).
+Especially, you can include your own defaults for the user-options of
+Ada-Mode. 
+ 
+
+3.2.2 The *.el Files
+--------------------
+
+Create a directory HOME/elisp and put the *.el files inside (you could 
+put them almost everywhere else, but the examples in this manual
+assume the files to be there).
+
+
+4 How to Use
+============
+
+For almost every command there exist two ways to execute it:
+
+	1) by pull down menu
+	2) by keystroke(s)
+
+In Emacs version 19.26.1 or higher, the corresponding keystrokes
+appear beside the command in the pull down menus. Some commands behave
+slightly different if called by mouse menu or by keystroke, but only
+optically, not functionally.
+
+The following paragraphs give a short overview of all commands and how
+to execute them.
+
+
+4.1 Automatic Smart Indentation
+-------------------------------
+
+You can write the code however you want, indentation will almost
+always be correct if you use LFD (Control-j) to insert newlines. You
+only have to insert these newlines at the correct places, then the
+code gets moved according to the syntax. This may sometimes even help
+you (as a beginner) to check the syntax of your code.
+If you have code that is not indented correctly for any reason, you
+can indent each single line by moving point on this line and then
+press TAB. Or you can mark a region to indent all the marked lines -
+but this function might take a long time !
+Since Ada syntax in not easy to handle, indentation might not (yet) be
+always correct. When you find a bug, that is not yet known (see
+section KNWOWN BUGS/BUGREPORTS at the beginning of the code), please
+send a description including a short example to <ada-mode@inf.enst.fr>.
+See also 'KNOWN BUGS' in ada-mode.el and the other files.
+
+Commands:    Menu /option:	 Meaning:
+LFD                              insert newline and indent both lines
+TAB      Ada /indent curr. line  indent current line
+C-c C-l	 Ada /ind. l. in region  indent all lines in region
+C-c t S 			 enter # of columns for indentation
+
+
+4.2 Formatting Parameter Lists
+------------------------------
+
+You can write the parameter list almost however you want, you only
+have to care about the correct syntax - THIS IS EXTREMELY IMPORTANT !
+And do NOT include ANY comment inside the list.
+Then move point on the parameter list and format it by a simple
+command.
+If it produces a weird result (because of incorrect syntax or presence
+of comments) use UNDO, correct the syntax or (re)move the comment and
+try again.
+
+Commands:    Menu /option:	 Meaning:
+C-c C-f  Ada  /format para. list format parameter list
+C-x u    Edit /Undo              undo last command(s)
+
+
+4.3 Moving Through Ada Code
+---------------------------
+
+There are six easy to use but very powerful commands to move point
+through ada code. 
+
+Commands:    Menu /option:	 Meaning:
+M-e      Ada /next procedure     move point to next func/proc/task       
+M-a      Ada /previous procedure move point to previous func/proc/task   
+M-C-e    Ada /next package       move point to next package      
+M-C-a    Ada /previous package   move point to previous package  
+C-c C-a  Ada /goto start         move point to matching start of 'end'
+C-c C-e  Ada /goto end           move point to end of current block
+
+
+4.4 Comment Handling
+--------------------
+
+By default, comment lines get indented like Ada code. There are a few
+additional functions to handle comments.
+
+Commands:    Menu /option:	 Meaning:
+M-;        -                     start a comment in default column
+M-j        -                     continue comment on next line
+C-c ;    Ada /comment   region	 comment region
+C-c :	 Ada /uncomment region	 uncomment region
+
+
+4.5 Using Cross Reference Information (of GNATF)
+------------------------------------------------
+
+The Ada Mode can be used in conjunction with the output of the Cross
+Reference Tool GNATF that comes with the GNAT Ada compiler to navigate
+through Ada sources and have automatic identifier completion (much
+like file completion in Emacs). For these features to work you need
+the cross reference information generated by Gnatf.
+When you select an identifier (an entity) to see its declaration, one
+of three things may happen:
+
+	1. if the Xref info of the current buffer does not exist, you
+	   are asked if you want gnatf -x5 (this is recommended if you 
+	   want to use the other Xref functions described here, but
+	   you can choose other switches at the prompt if you really
+	   know what you are doing) to be invoked from within Emacs to
+	   create it and we proceed as in 2. below
+
+	2. if the Xref info is there and is up to date, then Emacs has
+	   the correct knowledge of the entity's declaration and opens
+	   a window to show it
+
+	3. if the Xref info is there but is stale, then Emacs will try
+	   to guess (and it will tell you) which declaration it
+	   is. This works fairly well but can be fooled by
+	   overloading.
+
+If errors occur during the execution of Gnatf, you can easily jump to
+the error's location using the 'next-error' function (see also 4.8).
+
+Commands:    Menu /option:	  Meaning:
+C-c C-x	 Xref /Gnatf current	  execute GNATF on the current file
+M-TAB	 Xref /complete identif.  automatic identifier completion
+C-c C-d	 Xref /goto declaration   move point do declaration of iden-
+      or S-mouse-1 on identifier  tifier in another window
+C-c `    Xref /next error	  step through error locations
+
+
+4.6 Automatic Casing
+--------------------
+
+Casing of identifiers and keywords is automatically performed while
+typing if the functions are activated (see chapter 5).
+You can also adjust the region or even the whole buffer - but these
+functions take their time ...
+
+Commands:    Menu /option:	  Meaning:
+C-c C-r	 Ada /adjust case region  adjust case in the region
+C-c C-b	 Ada /adjust case buffer  adjust case in the whole buffer
+
+
+4.7 Statement Templates
+-----------------------
+
+For most Ada statements there exist templates. You can insert the
+whole statement by a simple command. You can choose if you want to be
+prompted for some values or if they get inserted as pseudo code.
+This feature is very useful for Ada apprentice programmers.
+
+Commands:    Menu /option:	 Meaning:
+C-c t p	 Statements /toggle: ... Toggle: prompting or insert pseudo
+C-c t b  Statements / ...        exception Block
+C-c t c  ...                     case
+C-c t d                          declare Block
+C-c t e                          else
+C-c t f                          for Loop
+C-c t h                          Header
+C-c t i                          if
+C-c t k                          package Body
+C-c t l                          loop
+C-c t t                          task Body
+C-c t w                          while Loop
+C-c t u				 use
+C-c t x                          exit
+C-c t C-a                        array
+C-c t C-e                        elsif
+C-c t C-f                        function Spec
+C-c t C-k                        package Spec
+C-c t C-p                        procedure Spec
+C-c t C-r                        record
+C-c t C-s                        subtype
+C-c t C-t                        task Spec
+C-c t C-u			 with
+C-c t C-v                        private
+C-c t C-w                        when
+C-c t C-x                        exception
+C-c t C-y                        type
+
+
+4.8 Compilation
+---------------
+
+You can execute your usual compile command from within Emacs without
+retyping it.
+You can then step through the error messages and point automatically
+moves to where the errors were found.
+Additional information: see paragraph 'Compilation' in the Emacs
+Manual or Emacs Info Mode.
+
+Commands:    Menu /option:	 Meaning:
+C-c C-c	 Ada /compile            Execute compile command
+C-c `    Ada /next error         Step through error locations
+
+
+4.9 Switching Between Spec and Body
+-----------------------------------
+
+If you are working on the Spec file of a package you can easily
+switch to the Body and vice versa. If point is on a line containing a
+'with' statement, the buffer containing this unit gets displayed.
+
+Commands:    Menu /option:	 Meaning:
+C-c C-o	 Ada /other f. other w.  switch to other file in another window
+C-c o	 Ada /other file	 switch to other file in same window
+
+
+4.10 Index Menu of Procedures/Functions
+---------------------------------------
+
+You can display a choice menu with all procedure/function/task
+declarations in the file. Then choose an item by mouse click or by
+completing it in the minibuffer to get point positioned on this
+declaration.
+
+Commands:    Menu /option:	 Meaning:
+C-c i	 Ada /imenu              display index menu
+      or S-mouse-2
+
+
+4.11 Automatic Highlighting
+---------------------------
+
+As set up in the .emacs example in paragraph 3.2.1, highlighting is
+performed automatically when loading Ada source files and then on the
+fly while typing. Highlighting takes its time, so files larger than
+0.5 MB do not get highlighted - this is controlled by the user option 
+'font-lock-maximum-size' in font-lock.el (see paragraph 5.6).
+
+Commands:
+no commands available (or necessary)
+
+
+4.12 Calling External Pretty Printer
+-----------------------------------
+
+To beautify a whole listing, it is sometimes useful to use an external
+pretty printer program. As there exist several of them, you can choose
+your favorite one by changing the user option
+	ada-external-pretty-print-program   (default: 'aimap')
+to its name (the file name is added automatically). You can then
+execute this command from within Ada-Mode. The pretty printer will use
+a temporary copy of the current buffer (in the directory specified by
+ada-pretty-printer-tmp-directory) to do its work. When this is done,
+you have to confirm the changes.
+
+Commands:    Menu /option:	   Meaning:
+C-c C-p	 Ada /pretty print buffer  call external pretty printer to
+				   beautify the whole buffer	
+
+
+4.13 Filling Comment Paragraphs
+-------------------------------
+
+You can fill a comment paragraph in three ways: a simple fill, justify
+each line as well and justify and append a postfix to each line as
+well.
+You can choose the prefix (usually "-- ") and the postfix by setting
+the user options 'ada-fill-comment-prefix' or 'ada-fill-comment-postfix'. 
+
+ada-fill-comment-paragraph-postfix prompts you for the new postfix
+string you might want to add to the lines (with contents of
+ada-fill-comment-postfix already inserted in the minibuffer) and for
+an already existing postfix that has to be removed temporary to make
+the fill-paragraph function work.  So you could use this function also
+to simply remove an existing postfix that you don't want any more by
+giving the empty string as the new postfix. The two other functions
+don't prompt for anything.
+
+As these functions also take care of correct indentation of comments
+(if you enabled that feature by ada-indent-comment-as-code, otherwise
+the whole paragraph gets always indented as its first line) and have
+to delete the prefix temporary to re-insert it later, they are a
+little bit slow - but surely much faster than doing it yourself.
+
+Commands:    Menu /option:	  Meaning:
+M-q	 Ada /Fill Comment P.	  ada-fill-comment-paragraph
+M-Q	 Ada /Justify Comment P.  ada-fill-comment-paragraph-justify
+M-C-q	 Ada /Postfix Comment P.  ada-fill-comment-paragraph-postfix
+
+
+5 How to Configure
+==================
+
+There are many user-configurable variables to control the behavior of
+various functions. All these variables have a default value. You can
+find this default value and a documentary string along with the
+variable definition in the code. The definitions always have the
+following form:
+
+	(defvar variable default_value
+	  "*Documentation String")
+
+The * indicates that 'variable' is user-configurable.
+
+You can change the value of this variable permanently by putting the
+following in your .emacs, after the command to load the file where
+'variable' is defined:
+
+	(setq variable new_value)
+
+In the following paragraphs, you find all existing user configurable
+variables (also called 'user options').
+
+
+5.1 User Options in ADA-MODE.EL
+-------------------------------
+
+Options to configure indentation:
+
+(defvar ada-indent 3
+  "*Defines the size of Ada indentation.")
+
+(defvar ada-broken-indent 2
+  "*# of columns to indent the continuation of a broken line.")
+
+(defvar ada-label-indent -4
+  "*# of columns to indent a label.")
+
+(defvar ada-stmt-end-indent 0
+  "*# of columns to indent a statement end keyword in a separate line.
+Examples are 'is', 'loop', 'record', ...")
+
+(defvar ada-when-indent 3
+  "*Defines the indentation for 'when' relative to 'exception' or 'case'.")
+
+(defvar ada-indent-record-rel-type 3
+  "*Defines the indentation for 'record' relative to 'type' or 'use'.")
+
+(defvar ada-indent-comment-as-code t
+  "*If non-nil, comment-lines get indented as ada-code.")
+
+(defvar ada-indent-is-separate t
+  "*If non-nil, 'is separate' or 'is abstract' on a separate line are indented.")
+
+(defvar ada-indent-to-open-paren t
+  "*If non-nil, following lines get indented according to the innermost open parenthesis.")
+
+(defvar ada-search-paren-line-count-limit 5
+  "*Search that many non-blank non-comment lines for an open parenthesis.
+Values higher than about 5 horribly slow down the indenting.")
+
+
+Other user options:
+
+(defvar ada-tab-policy 'indent-auto
+  "*Control behaviour of the TAB key.
+Must be one of 'indent-rigidly, 'indent-auto, 'indent-and-tab, 'gei, 'indent-af 
+or 'always-tab.
+'indent-rigidly : always adds ada-indent blanks at the beginning of the line.
+'indent-auto    : correct indentation relative to the Ada syntax.
+'indent-and-tab : 
+'gei            : use David K}gedal's Generic Indentation Engine.
+'indent-af      : use Gary E. Barnes' ada-format.el
+'always-tab     : do indent-relative.")
+ 
+(defvar ada-move-to-declaration nil
+  "*If non-nil, ada-move-to-start moves point to the subprog-declaration, not to 'begin'.")
+
+(defvar ada-spec-suffix ".ads"
+  "*Suffix of Ada specification files.")
+
+(defvar ada-body-suffix ".adb"
+  "*Suffix of Ada body files.")
+
+(defvar ada-language-version 'ada94
+  "*Do we program in 'ada83 or 'ada94?")
+
+(defvar ada-case-keyword 'downcase-word
+  "*downcase-word, upcase-word, ada-loose-case-word or capitalize-word
+to adjust ada keywords case.")
+
+(defvar ada-case-identifier 'ada-loose-case-word
+  "*downcase-word, upcase-word, ada-loose-case-word or capitalize-word
+to adjust ada identifier case.")
+
+Note: 'ada-loose-case-word only changes the first letter and the letter
+----- following '_' in a symbol to upper case, but does not change any
+      other letter. This is useful for identifiers like 'IRQ_Handler'.
+
+(defvar ada-auto-case t
+  "*Non-nil automatically changes casing of preceeding word while typing.
+Casing is done according to ada-case-keyword and ada-case-identifier.")
+
+(defvar ada-mode-hook nil
+  "*List of functions to call when ada mode is invoked.
+This is a good place to add Ada environment specific bindings.")
+
+(defvar ada-external-pretty-print-program "aimap"
+  "*External pretty printer to call from within Ada-Mode.")
+
+(defvar ada-pretty-print-tmp-directory "/tmp/"
+  "*Directory to store the temporary file for the Ada pretty printer.")
+
+(defvar ada-fill-comment-prefix "-- "
+  "*This is inserted in the first columns when filling a comment paragraph.")
+
+(defvar ada-fill-comment-postfix " --"
+  "*This is inserted at the end of each line when filling a comment paragraph
+with ada-fill-comment-paragraph postfix.")
+
+
+5.2 User Options in ADA-XREF.EL
+-------------------------------
+
+(defvar ada-xref-complete-casing 'ada-loose-case-word
+  "*Defines casing function for completion of identifiers.
+Must be one of 'capitalize-word, 'ada-loose-case-word, 'downcase-word or
+'upcase-word.")
+
+(defvar ada-xref-always-gnatf nil
+  "*If non-nil, Gnatf is called automatically if necessary
+when user executes an Xref command.")
+
+
+5.3 User Options in COMPILE.EL
+------------------------------
+
+(defvar compilation-insert-name t
+  "*If non-nil the name of the current file gets initially inserted in
+minibuffer.") 
+
+
+5.4 User Options in FIND-FILE.EL
+--------------------------------
+
+(defvar ff-case-fold-search nil
+  "Non-nil means ignore cases in matches (see case-fold-search).
+If you have extensions in different cases, you will want this to be
+nil.") 
+
+(defvar ff-always-in-other-window nil
+  "If non-nil, always open the other file in another window, unless an 
+argument is given to ff-find-other-file.")
+
+(defvar ff-always-try-to-create t
+  "If non-nil, always attempt to create the other file if it was not
+found.") 
+
+(defvar ff-quiet-mode nil
+  "If non-nil, traces which directories are being searched.")
+
+(defvar ada-other-file-alist
+  '(
+    ("\\.ads$" (".adb")) ;; Ada specs and bodies
+    ("\\.adb$" (".ads")) ;; GNAT filename conventions
+    )
+  "Alist of extensions to find given the current file's extension.
+
+This list should contain the most used extensions before the others,
+since the search algorithm searches sequentially through each
+directory specified in ada-search-directories. If a file is not found,
+a new one is created with the first matching extension
+(.adb yields .ads). ")
+
+(defvar ff-other-file-alist cc-other-file-alist
+  "*Alist of extensions to find given the current file's extension.
+
+This list should contain the most used extensions before the others,
+since the search algorithm searches sequentially through each
+directory specified in ff-search-directories. If a file is not found,
+a new one is created with the first matching extension 
+(.cc yields .hh). 
+This alist should be set by the major-mode.")
+
+Note: This is the default - it has to be changed for Ada in your
+----- .emacs (see .emacs example in paragraph 3.2.1).
+
+
+(defvar ada-search-directories
+  '("." "/usr/adainclude" "/usr/local/adainclude"))
+
+(defvar ff-search-directories cc-search-directories
+  "List of directories to search for a specific file.
+
+This list is searched through with each extension specified in
+ff-other-file-alist that matches this file's extension. So the
+longer the list, the longer it'll take to realise that a file
+may not exist.
+
+Environment variables can be inserted between slashes ('/').
+They will be replaced by their definition. If a variable does
+not exist, it will (silently) be replaced with an empty string.
+
+The stars are _not_ wildcards: they are searched for together with
+the preceding slash. The star represents all the subdirectories except 
+'..', and each of these subdirectories will be searched in turn.
+")
+
+Note: This is the default - it has to be changed for Ada in your
+----- .emacs (see .emacs example in paragraph 3.2.1).
+
+
+5.5 User Options in IMENU.EL
+----------------------------
+
+(defvar imenu-always-use-completion-buffer-p nil
+  "*Set this to non-nil for displaying the index in a completion
+buffer. 
+Non-nil means always display the index in a completion buffer.
+Nil means display the index as a mouse menu when the mouse was
+used to invoke `imenu'.")
+
+(defvar imenu-sort-function nil
+  "*The function to use for sorting the index mouse-menu.
+Affects only the mouse index menu.
+Set this to nil if you don't want any sorting (faster).
+The items in the menu are then presented in the order they were found 
+in the buffer.
+Set it to `imenu--sort-by-name' if you want alphabetic sorting.
+The function should take two arguments and return T if the first
+element should come before the second.  The arguments are cons cells; 
+(NAME . POSITION).  Look at `imenu--sort-by-name' for an example.")
+
+(defvar imenu-max-items 25
+  "*Maximum number of elements in an index mouse-menu.")
+
+(defvar imenu-scanning-message "Scanning buffer for index. (%3d%%)"
+  "*Progress message during the index scanning of the buffer.
+If non NIL, user gets a message during the scanning of the buffer.
+Relevant only if the mode-specific function that creates the buffer
+index use `imenu-progress-message'.")
+
+(defvar imenu-space-replacement "^"
+  "*The replacement string for spaces in index names.
+Used when presenting the index in a completion-buffer to make the
+names work as tokens.")
+
+(defvar imenu-level-separator ":"
+  "*The separator between index names of different levels.
+Used for making mouse-menu titles and for flattening nested indexes
+with name concatenation.")
+
+(defvar imenu-submenu-name-format "%s..."
+  "*The format for making a submenu name.")
+
+5.6 User Options in FONT-LOCK.EL
+--------------------------------
+
+(defvar font-lock-maximum-size (* 100 1024)
+  "*If non-nil, the maximum size for buffers.
+Only buffers less than are fontified when Font Lock mode is turned on.
+If nil, means size is irrelevant.")
+
+(defvar font-lock-keywords-case-fold-search nil
+  "*Non-nil means the patterns in `font-lock-keywords' are case-insensitive.")
+
+(defvar font-lock-syntax-table nil
+  "*Non-nil means use this syntax table for fontifying.
+If this is nil, the major mode's syntax table is used.")
+
+(defvar font-lock-verbose t
+  "*Non-nil means `font-lock-fontify-buffer' should print status messages.")
+
+
+6 How to Get Further Information
+================================
+
+Emacs has a lot of online documentation. Have a look at the 'Help'
+menu, especially the 'Info' feature is very interesting: It provides
+the whole documentation that is available for Emacs as a hypertext
+system. A simple mouse click on the keywords in bold and you will get
+further information on that topic.
+
+You can also get a summary of the commands available in Ada-Mode by
+executing Help /Describe Mode or C-h m when in Ada-Mode.

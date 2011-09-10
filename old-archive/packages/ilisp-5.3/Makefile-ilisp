@@ -1,0 +1,360 @@
+# 
+# $Id: Makefile-ilisp,v 1.20 1993/06/29 06:13:12 ivan Rel $
+#
+
+use_message:
+	@echo "You must specify a target." 
+	@echo "emacs_18:"
+	@echo "	Basic ilisp for emacs 18."
+	@echo "emacs_18_epoch: "
+	@echo "	emacs_18 with epoch_pop stuff."
+	@echo "emacs_18_menu:"
+	@echo "	ilisp_emacs_18 with ilisp-menu."
+	@echo "emacs_19:"
+	@echo "	ilisp for FSF or Lucid emacs-19."
+
+#################### CONFIGURATION SECTION ####################
+## Specify only one of the following.
+
+#YOUR_EMACS	= lemacs 
+#YOUR_EMACS	= fsf-19 
+#YOUR_EMACS	= emacs 
+
+## Uncomment following def if you are compiling for emacs-18 and don't
+## dump out the new byte-compiler with emacs.
+
+#YOUR_EMACS_PRE_LOADS	= -l bytecomp.elc
+
+################# END OF CONFIGURATION SECTION #################
+## Compilation directives
+#
+EMACS_PRE_LOADS = -l comint.elc -l compat.elc -l bc-warn.el
+EMACS	= ${YOUR_EMACS} -batch ${YOUR_EMACS_PRE_LOADS} ${EMACS_PRE_LOADS} 
+EFLAGS	= -f batch-byte-compile 
+
+.SUFFIXES:
+.SUFFIXES: .el .elc
+
+.el.elc:
+	${EMACS} ${EFLAGS} $<
+
+## This way we can handle warnings from the makefile and not in each
+## separate file.  
+
+EMACS_ALLOW_FREE_VAR	= ${EMACS} -l bc-free.el
+EMACS_ALLOW_UNRES	= ${EMACS} -l bc-unres.el
+EMACS_NO_WARN     	= ${EMACS} -l bc-nowarn.el
+
+## Project Components
+#
+DIALECT_OBJS =  ilisp-acl.elc ilisp-cmu.elc \
+		ilisp-kcl.elc ilisp-luc.elc ilisp-sch.elc
+
+ILISP_BASIC_OBJS = \
+	ilisp-bug.elc compat.elc ilisp-inp.elc ilisp-def.elc \
+	ilisp-ind.elc ilisp-mov.elc ilisp-key.elc ilisp-doc.elc \
+	ilisp-mod.elc ilisp-prn.elc ilisp-el.elc ilisp-sym.elc \
+	ilisp-low.elc ilisp-hi.elc ilisp-out.elc ilisp-prc.elc \
+	ilisp-val.elc ilisp-rng.elc ilisp-utl.elc ilisp-hnd.elc \
+	ilisp-kil.elc ilisp-snd.elc ilisp-cmt.elc ilisp-cmp.elc \
+	ilisp-xfr.elc popper.elc comint-ipc.elc ilisp-ext.elc \
+	ilisp-src.elc ilisp-bat.elc bridge.elc ilisp-dia.elc \
+	symlink-fix.elc completer.elc \
+	ilisp-cl.elc ${DIALECT_OBJS} 
+
+ILISP_EPOCH_OBJS 	= epoch-pop.elc
+ILISP_MENU_OBJS 	= ilisp-menu.elc
+
+EMACS_18_OBJS	= \
+	comint.elc ${ILISP_BASIC_OBJS}  
+
+EMACS_19_OBJS   = ${ILISP_BASIC_OBJS}
+
+emacs_18_epoch: ${EMACS_18_OBJS} ${ILISP_EPOCH_OBJS}
+	@echo "Done"
+
+emacs_18_menu: ${EMACS_18_OBJS} ${ILISP_MENU_OBJS}
+	@echo "Done"
+
+emacs_18: ${EMACS_18_OBJS}
+	@echo "Done"
+
+emacs_19: ${EMACS_19_OBJS}
+	@echo "Done"
+
+## Loaded via autoload
+ilisp-bug.elc: ilisp-prc.elc ilisp-val.elc comint-ipc.elc ilisp-mov.elc \
+	ilisp-bug.el
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-prc.elc -l ilisp-val.elc -l comint-ipc.elc \
+	-l ilisp-mov.elc \
+	${EFLAGS} ilisp-bug.el
+
+comint.el:
+	mv old-comint/comint.el .
+
+comint.elc: comint.el
+	${YOUR_EMACS} -batch -l bc-nowarn.el -f batch-byte-compile \
+	comint.el
+
+symlink-fix.elc: symlink-fix.el
+	${YOUR_EMACS} -batch -l bc-nowarn.el -f batch-byte-compile \
+	symlink-fix.el
+
+## Req from ilisp.el
+compat.elc: compat.el
+	${YOUR_EMACS} -batch -l bc-nowarn.el -l comint.elc \
+	-f batch-byte-compile compat.el
+
+## Req from ilisp.el
+ilisp-inp.elc: compat.elc ilisp-def.elc ilisp-inp.el 
+	${EMACS} -l ilisp-def.elc ${EFLAGS} ilisp-inp.el
+
+## Req from ilisp.el
+ilisp-def.elc:  ilisp-def.el
+	${YOUR_EMACS} -batch -l bc-free.el \
+	-f batch-byte-compile ilisp-def.el
+
+## Req from ilisp.el
+ilisp-ind.elc: ilisp-inp.elc ilisp-prc.elc \
+	ilisp-ind.el 
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-inp.elc \
+	${EFLAGS} ilisp-ind.el
+
+## Req from ilisp.el
+ilisp-mov.elc: ilisp-prn.elc ilisp-inp.elc ilisp-ind.elc ilisp-mov.el 
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-inp.elc -l ilisp-prn.elc \
+	-l ilisp-ind.elc \
+	${EFLAGS} ilisp-mov.el
+
+## Req from ilisp.el
+ilisp-key.elc: ilisp-def.elc compat.elc \
+	ilisp-key.el
+	${EMACS_NO_WARN} -l ilisp-def.elc -l lisp.elc \
+	${EFLAGS} ilisp-key.el
+
+## Req from ilisp.el
+ilisp-doc.elc: ilisp-def.elc compat.elc \
+	ilisp-doc.el
+	${EMACS}  -l ilisp-def.elc \
+	${EFLAGS} ilisp-doc.el
+
+## Req from ilisp.el
+ilisp-mod.elc: ilisp-doc.elc comint-ipc.elc ilisp-def.elc ilisp-el.elc \
+	ilisp-el.elc ilisp-out.elc ilisp-prc.elc ilisp-key.elc ilisp-dia.elc \
+	ilisp-mod.el
+	${EMACS_ALLOW_FREE_VAR}  \
+	-l ilisp-def.elc -l ilisp-doc.elc -l comint-ipc.elc -l ilisp-dia.elc \
+	-l ilisp-el.elc  -l ilisp-out.elc -l ilisp-prc.elc -l ilisp-key.elc \
+	${EFLAGS} ilisp-mod.el
+
+## Req from ilisp.el
+ilisp-prn.elc:	compat.elc comint-ipc.elc ilisp-def.elc ilisp-prn.el
+	${EMACS}  \
+	-l ilisp-def.elc \
+	${EFLAGS} ilisp-prn.el
+
+## Req from ilisp.el
+ilisp-el.elc: ilisp-el.el
+	${YOUR_EMACS} -batch -l bc-warn.el -f batch-byte-compile ilisp-el.el
+
+## Req from ilisp.el
+ilisp-sym.elc: ilisp-sym.el
+	${YOUR_EMACS} -batch -l bc-warn.el -f batch-byte-compile ilisp-sym.el
+
+## Req from ilisp.el
+ilisp-low.elc:  ilisp-mov.elc \
+	ilisp-low.el
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-mov.elc \
+	${EFLAGS} ilisp-low.el
+
+## Req from ilisp.el
+ilisp-hi.elc: ilisp-low.elc \
+	ilisp-val.elc ilisp-sym.elc ilisp-snd.elc ilisp-out.elc \
+	ilisp-cmp.elc ilisp-kil.elc ilisp-xfr.elc ilisp-utl.elc ilisp-ext.elc \
+	ilisp-hi.el
+	${EMACS_ALLOW_FREE_VAR}  \
+	-l ilisp-def.elc -l ilisp-low.elc -l ilisp-prn.elc \
+	-l ilisp-val.elc -l ilisp-sym.elc -l comint-ipc.elc \
+	-l ilisp-snd.elc -l ilisp-out.elc -l ilisp-cmp.elc \
+	-l ilisp-prc.elc -l ilisp-kil.elc -l popper.elc \
+	-l ilisp-xfr.elc -l ilisp-utl.elc -l ilisp-ext.elc \
+	${EFLAGS} ilisp-hi.el
+
+## Req from ilisp.el
+ilisp-out.elc: popper.elc ilisp-prc.elc \
+	comint-ipc.elc ilisp-val.elc \
+	ilisp-out.el 
+	${EMACS_ALLOW_UNRES}  \
+	-l ilisp-def.elc -l popper.elc -l ilisp-prc.elc -l comint-ipc.el \
+	-l ilisp-val.elc \
+	${EFLAGS} ilisp-out.el
+
+## Req from ilisp.el
+ilisp-prc.elc: ilisp-def.elc compat.elc ilisp-el.elc ilisp-prc.el
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-el.elc \
+	${EFLAGS} ilisp-prc.el
+
+## Req from ilisp.el
+ilisp-val.elc: ilisp-prc.elc \
+	ilisp-val.el
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-prc.elc \
+	${EFLAGS} ilisp-val.el
+
+## Req from ilisp.el
+ilisp-rng.elc: ilisp-def.elc compat.elc \
+	ilisp-rng.el
+	${EMACS_ALLOW_FREE_VAR}  \
+	-l ilisp-def.elc \
+	${EFLAGS} ilisp-rng.el
+
+## Req from ilisp.el
+ilisp-utl.elc: ilisp-def.elc compat.elc ilisp-prc.elc comint-ipc.elc \
+	ilisp-utl.el
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-prc.elc -l comint-ipc.elc \
+	${EFLAGS} ilisp-utl.el
+
+## Req from ilisp.el
+ilisp-hnd.elc: ilisp-def.elc compat.elc comint-ipc.elc popper.elc \
+	ilisp-out.elc \
+	ilisp-hnd.el 
+	${EMACS}  \
+	-l ilisp-def.elc -l comint-ipc.elc -l popper.elc -l ilisp-out.elc \
+	${EFLAGS} ilisp-hnd.el
+
+## Req from ilisp.el
+ilisp-kil.elc: ilisp-def.elc compat.elc comint-ipc.elc ilisp-val.elc \
+	ilisp-prc.elc ilisp-val.elc \
+	ilisp-kil.el
+	${EMACS}  \
+	-l ilisp-def.elc -l comint-ipc.elc -l ilisp-val.elc \
+	-l ilisp-prc.elc \
+	${EFLAGS} ilisp-kil.el
+
+## Req from ilisp.el
+ilisp-snd.elc: ilisp-def.elc compat.elc ilisp-prc.elc comint-ipc.elc \
+	ilisp-val.elc ilisp-out.elc ilisp-mov.elc ilisp-rng.elc \
+	ilisp-sym.elc ilisp-utl.elc ilisp-kil.elc ilisp-el.elc \
+	ilisp-low.elc ilisp-hnd.elc ilisp-ext.elc \
+	ilisp-snd.el 
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-prc.elc -l comint-ipc.elc \
+	-l ilisp-val.elc -l ilisp-out.elc -l ilisp-mov.elc \
+	-l ilisp-rng.elc -l ilisp-sym.elc -l ilisp-utl.elc \
+	-l ilisp-kil.elc -l ilisp-el.elc  -l ilisp-low.elc \
+	-l ilisp-hnd.elc -l ilisp-ext.elc \
+	${EFLAGS} ilisp-snd.el
+
+## Req from ilisp.el
+ilisp-cmt.elc: compat.elc comint-ipc.elc ilisp-def.elc ilisp-mov.elc \
+	ilisp-val.elc ilisp-prc.elc ilisp-inp.elc \
+	ilisp-cmt.el 
+	${EMACS}  \
+	-l ilisp-def.elc -l comint-ipc.elc -l ilisp-mov.elc \
+	-l ilisp-val.elc -l ilisp-prc.elc -l ilisp-inp.elc \
+	${EFLAGS} ilisp-cmt.el
+
+## Req from ilisp.el
+ilisp-cmp.elc: compat.elc ilisp-def.elc	ilisp-val.elc ilisp-sym.elc \
+	ilisp-snd.elc ilisp-out.elc ilisp-prn.elc ilisp-utl.elc \
+	completer.elc \
+	ilisp-cmp.el 
+	${EMACS} \
+	-l ilisp-def.elc -l ilisp-sym.elc -l ilisp-snd.elc \
+	-l ilisp-out.elc -l ilisp-val.elc -l ilisp-prn.elc \
+	-l ilisp-utl.elc -l completer.elc \
+	${EFLAGS} ilisp-cmp.el
+
+## Req from ilisp.el
+ilisp-xfr.elc: bridge.elc comint-ipc.elc ilisp-cmt.elc ilisp-val.elc \
+	ilisp-ext.elc ilisp-prc.elc \
+	ilisp-xfr.el 
+	${EMACS_ALLOW_FREE_VAR}  \
+	-l ilisp-def.elc -l comint-ipc.elc -l bridge.elc   \
+	-l ilisp-val.elc -l ilisp-ext.elc -l ilisp-prc.elc \
+	-l ilisp-cmt.elc \
+	${EFLAGS} ilisp-xfr.el
+
+## Req from ilisp.el
+popper.elc: compat.elc popper.el
+	${EMACS} ${EFLAGS} popper.el
+
+## Req from ilisp.el
+comint-ipc.elc: popper.elc
+	${EMACS_ALLOW_FREE_VAR}  \
+	-l popper.elc \
+	${EFLAGS} comint-ipc.el
+
+## Req from ilisp.el
+ilisp-ext.elc: comint-ipc.elc symlink-fix.elc ilisp-mov.elc ilisp-ind.elc \
+	ilisp-prn.elc symlink-fix.elc \
+	ilisp-ext.el 
+	${EMACS}  \
+	-l comint.elc -l compat.elc -l comint-ipc.elc -l ilisp-ind.elc \
+	-l symlink-fix.elc -l ilisp-def.elc -l ilisp-mov.elc \
+	-l ilisp-prn.elc \
+	${EFLAGS} ilisp-ext.el
+
+## Autoloaded
+ilisp-src.elc: compat.elc ilisp-def.elc symlink-fix.elc ilisp-val.elc \
+	ilisp-snd.elc ilisp-hi.elc ilisp-sym.elc ilisp-utl.elc ilisp-low.elc \
+	ilisp-cmp.elc \
+	ilisp-src.el
+	${EMACS}  \
+	-l symlink-fix.elc -l ilisp-def.elc -l ilisp-val.elc -l ilisp-snd.elc \
+	-l ilisp-hi.elc -l ilisp-sym.elc -l ilisp-utl.elc -l ilisp-low.elc \
+	-l ilisp-cmp.elc \
+	${EFLAGS} ilisp-src.el
+
+## Autoloaded
+ilisp-bat.elc: popper.elc ilisp-el.elc ilisp-def.elc comint-ipc.elc \
+	ilisp-prc.elc ilisp-mov.elc ilisp-low.elc \
+	ilisp-bat.el
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-el.elc -l popper.elc -l comint-ipc.elc \
+	-l ilisp-prc.elc -l ilisp-mov.elc -l ilisp-low.elc \
+	${EFLAGS} ilisp-bat.el
+
+## Req from ilisp.el
+bridge.elc: 
+	${EMACS}  ${EFLAGS} bridge.el
+
+## Req from ilisp.el
+ilisp-dia.elc: ilisp-def.elc ilisp-el.elc compat.elc comint-ipc.elc \
+	ilisp-cmp.elc \
+	ilisp-dia.el
+	${EMACS_ALLOW_UNRES}  \
+	-l ilisp-def.elc -l ilisp-el.elc -l comint-ipc.elc -l ilisp-cmp.elc \
+	${EFLAGS} ilisp-dia.el
+
+
+## ilisp-el.elc must precede ilisp-dia.elc in load list.
+#
+ilisp-cl.elc: ilisp-def.elc compat.elc ilisp-dia.elc comint-ipc.elc \
+	ilisp-snd.elc ilisp-el.elc
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-el.elc -l ilisp-dia.elc -l comint-ipc.elc \
+	-l ilisp-snd.elc \
+	${EFLAGS} $*.el
+
+${DIALECT_OBJS}: ilisp-def.elc compat.elc ilisp-dia.elc comint-ipc.elc \
+	ilisp-el.elc ilisp-snd.elc ilisp-cl.elc
+	${EMACS}  \
+	-l ilisp-def.elc -l ilisp-el.elc -l ilisp-dia.elc -l comint-ipc.elc \
+	-l ilisp-snd.elc -l ilisp-cl.elc \
+	${EFLAGS} $*.el
+
+tags:
+	etags *.el
+
+ALWAYS:
+
+clean: ALWAYS
+	/bin/rm -f *.elc 
+

@@ -1,0 +1,44 @@
+#! /bin/sh -f
+
+mathdir=/usr-local/henry/Tape
+
+machdir=`/bin/arch`
+
+if [ $machdir = sun3 ]; then
+	machdir=sun3.`$mathdir/common/foption`
+fi
+
+PATH=$PATH:$mathdir/common/Utilities:$mathdir/$machdir/Utilities:\
+$mathdir/$machdir/MathTalk
+export PATH
+
+case "$1" in
+-crc)
+	if tty -s; then
+		stty raw -tandem -echo
+	fi
+	lastproc=leftcrc
+	shift
+	;;
+*)
+	if tty -s; then
+		stty -raw tandem cbreak -echo
+	fi
+	lastproc=rightend
+	;;
+esac
+
+# should be conditional on something
+lastproc="-core emacsfrontend"
+
+twoway -e -nowait $mathdir/$machdir/mathexe -remote -run \
+	'$Path = Join[
+		$Path,
+		{
+			"~",
+			"'$mathdir/common'",
+			"'$mathdir/common/Packages'"
+		}
+	]; Get["init.m"]' "$@" \| control \| $lastproc
+
+stty -raw tandem -cbreak echo

@@ -1,0 +1,462 @@
+\input texinfo @c -*-texinfo-*-
+@comment %**start of header (This is for running Texinfo on a region.)
+@setfilename ../../info/config
+@settitle Config interface
+@iftex
+@finalout
+@end iftex
+@setchapternewpage odd
+@c      @smallbook
+@comment %**end of header (This is for running Texinfo on a region.)
+
+@tex
+\overfullrule=0pt %\global\baselineskip 30pt % For printing in double
+spaces
+@end tex
+
+@ifinfo
+This software and documentation were written while I, Brian Marick,
+was an employee of Gould Computer Systems.  They have been placed in
+the public domain. They were extensively rewritten at the University
+of Illinois.
+
+@end ifinfo
+
+@titlepage
+@sp 6
+@center @titlefont{Generic Config Documentation}
+@sp 1
+@center July 1989
+@sp 5
+@center Brian Marick
+@page
+
+@end titlepage
+@page
+
+@node Top, Setup,, (DIR)
+
+Config *******************
+
+Config is an Emacs interface to both SCCS and RCS.  Config is
+extensible; it's reasonably easy to add other version control systems.
+
+@end ifinfo
+@menu
+* Setup::			What config is; how to set it up.
+* Command Summary::		The different commands.
+* Variables::			The different variables.
+* Dired Interface::		Interface when in Dired-Mode.
+* Buffer Menu Interface::	Interface when using the Buffer Menu
+* Systems::			Version control systems supported
+* Bugs::			Known bugs.
+* Customizing::			Adding new version control interfaces.
+@end menu
+
+Config is a part of Lynx, hypertext on-the-cheap for Emacs.  It's been
+split out because people who don't want Lynx may want it.  For more
+information about Lynx, see @xref{(lynx)}.
+
+Bugs in config should be mailed to Brian Marick (currently
+marick@@cs.uiuc.edu or marick@@urbana.mcd.mot.com).  Please include
+the results of @kbd{M-x config-version} in your report.
+
+@node Setup, Command Summary, Top, Top
+@unnumbered Setup
+Config is three things.  First, it is a generic version control
+interface.  Second, it is glue that hooks the generic interface to
+SCCS and RCS.  Third, it is support for gluing in other version
+control systems (which are typically wrappers around SCCS or RCS).
+
+Config assumes that there's an @dfn{archive directory} that contains
+old versions of your files.  Read-only copies of the most recent
+versions are kept in a separate @dfn{working directory}.  You change a
+file by @dfn{checking it out} into the working directory, editing it
+there, and then @dfn{checking it back in} to the archive.@refill
+
+The assumption that read-only versions of the files are always
+available is not a strong one.  The Config commands will work even if
+only the archives exist, but some will be less convenient.
+
+To set up config, do the following to your @file{.emacs} initialization file:
+@enumerate
+
+@item
+Include the Lynx library in your load-path variable.
+@example
+
+(setq load-path
+      (cons "/usr/localtools/contrib/GNU/emacs/custom/lynx/lisp/"
+	    load-path))
+
+@end example
+or load Config explicitly from your @file{.emacs} file:
+@example
+   (load "/usr/localtools/contrib/GNU/emacs/custom/lynx/lisp/config.elc")
+@end example
+
+(Of course, pathnames on your system are very likely different.)
+
+@item
+Choose your configuration system and set the @code{*config-type*}
+variable in your .emacs file:
+@example
+
+	(setq *config-type* 'RCS)
+
+@end example
+The allowed values are given in @xref{Systems}.
+@end enumerate
+@node Command Summary, Minor Commands, Setup, Top
+@unnumbered Major Commands
+
+Because Config is a part of Lynx, which has its own way of doing
+things, there aren't key bindings for Lynx commands.  Feel free to add
+them.  
+
+@table @kbd
+@item M-x config-out @key{RET} @file{file} @key{RET}
+Check out a file for editing.
+@item M-x config-undo-out @key{RET} @file{file} @key{RET}
+Undo the previous checkout.
+@item M-x config-in @key{RET} @file{file} @key{RET}
+Deposit a new file in the archive.
+@item M-x config-all-in @key{RET} @file{directory} @key{RET}
+Check in all the checked-out files in @file{directory}.
+@item M-x config-buffers-in @key{RET}
+Check in all the checked-out files currently being edited.
+@item M-x config-dir-in @key{RET} @file{directory} @key{RET}
+Check in all the files in @file{directory}.
+@item M-x config-kill-checkin @key{RET}
+Stop a checkin.
+@item M-x config-log @key{RET} @file{file} @key{RET}
+Show the archive log.
+@item M-x config-show-out @key{RET} @file{directory} @key{RET}
+Show which files are checked out.
+@item M-x config-diff @key{RET} @file{file} @key{RET}
+Show differences between the file and the latest archive version.
+@end table
+
+@code{config-out} checks out an editable version of its @file{file}
+argument.  A corresponding archive file must exist.  The file must not
+already be checked out.  If the file is in an Emacs buffer, it must
+not be modified.  Most version control systems won't check out onto a
+writable file, but that's left up to them.
+
+After the checkout, you'll be visiting the file, which will be
+writable.
+
+Like all Config commands that call the underlying version control
+system, @code{config-out} does not check for errors.  Instead, a
+"results buffer" is popped up.  You should look at the results buffer
+to make sure the command succeeded.
+
+@code{config-undo-out} undoes the effects of a @code{config-out}: The
+file is reverted to the version in the archive file and is made
+read-only. Any changes made to the file are lost.
+
+@code{config-in} allows you to check in a file.  If you're editing the
+file, it's saved to disk before being checked in.
+
+@code{config-in} displays two buffers.  One shows the differences between
+the checked-out version of the file and the most recent version in the
+archive. You should type comments (for the archive log) in the other
+buffer.  When finished, type @key{C-c} @key{C-c} to continue with the checkin.
+
+If you were visiting the file before checkin, you'll still be in it
+after checkin, except that the file will be in synch with the archive
+copy and will be read-only.
+
+The archive need not exist to check in the file.  You'll be prompted
+for its creation.
+
+@code{config-all-in} calls @code{config-in} on every checked-out file
+in a directory.  For each file after the first, you'll be asked if you
+want to reuse the previous log message.  The buffer showing
+differences is shown before that question is asked.@refill
+
+@code{config-buffers-in} is the same as @code{config-all-in}, except
+that it checks in all checked-out files currently being edited.
+
+@code{config-all-in} and @code{config-buffers-in} will never create
+new archive files.  To check in a lot of files for the first time, use
+@code{config-dir-in}.  @code{config-dir-in} calls @code{config-in} on
+many of the files in a directory.  Because this function is often used
+to check in files for the first time, you're given the option of
+automatically reusing the first log message for all files.  If not,
+you'll be asked about reuse as each file is checked in.@refill
+
+@code{config-dir-in} normally does not check in these kinds of files:
+@enumerate
+@item
+Directories.
+@item
+Backup and auto-save files.
+@item
+C object files (ending in .o)
+@item
+Library files (ending in .a)
+@item
+Compressed files (ending in .Z or .z)
+@item
+Compiled elisp files (ending in .elc)
+@item
+Files with archive files that are not checked out for editing.
+@end enumerate
+
+Exception: If the file has an archive file, and is checked out for
+editing, it will be checked in regardless of its name.
+
+@code{config-kill-checkin} undoes the effects of @code{config-in},
+@code{config-all-in}, or @code{config-dir-in}.  For @code{config-in},
+it's just a convenience; all it does is delete the buffer where the
+archive log message is to be typed in, something you could as easily
+do yourself.  For the others, it also undoes the recursive edits they
+establish.@refill
+
+@code{config-log} displays the archive log for the given @file{file}.
+
+@code{config-show-out} pops up a buffer showing the names of the
+checked-out files in the given working @file{directory}.
+
+@code{config-diff} pops up a buffer showing the differences between
+@file{file} and the most recent version in the archive.
+
+@node Minor Commands, Variables, Command Summary, Top
+@unnumbered Minor Commands
+
+@table @kbd
+@item M-x config-out-p @key{RET} @file{file} @key{RET}
+Is the file checked out for editing?
+@item M-x config-archive-p @key{RET} @file{file} @key{RET}
+Does the file have an archive file?
+@item M-x config-archive @key{RET} @file{file} @key{RET}
+The name the archive file would have.
+@item M-x config-maybe-make-archive-dir @key{RET} @file{file} @key{RET}
+Make a directory for the archive file, if none exists.
+@item M-x config-assert-compiled @key{RET} @file{file} @key{RET}
+Cause an error if the file doesn't look like it's been compiled.
+@item M-x config-version @key{RET}
+Show what version of config this is.
+@end table
+
+@code{config-out-p} prints a message that tells you whether the given
+file is checked out for editing from an existing archive.  If no
+archive exists, or if the file is not checked out for editing,
+@code{config-out-p} will say "File is not checked out".  You can use
+@code{config-archive-p} to tell which was the cause.
+
+@code{config-archive-p} prints a message that tells you whether the
+given file has an archive file.
+
+@code{config-archive} prints the name of the archive file for
+@file{file}.  The archive file may not actually exist; use
+@code{config-archive-p} to tell.
+
+@code{config-maybe-make-archive-dir} checks whether an archive
+directory for @file{file} exists.  If not, it will, on request, try to
+make the directory.
+
+@code{config-assert-compiled} checks whether the file with its
+extension replaced by @code{extension} is newer than the file itself.
+For example,
+@example
+
+	M-x config-assert-compiled @key{RET} foo.c @key{RET} .o @key{RET}
+
+@end example
+will signal an error if @file{foo.o} is older than @file{foo.c}
+or if @file{foo.o} doesn't exist.  This function is more usefully
+called from other functions than from the keyboard.
+
+@node Variables, Dired Interface, Command Summary, Top
+@unnumbered Variables
+
+@table @kbd
+@item @code{*config-type*}
+Identify underlying version control system.
+@item @code{*config-dired-interface*}
+Tell whether new commands should be added to Dired mode.
+@item @code{*config-buffmenu-interface*}
+Tell whether new commands should be added to the Buffer Menu.
+@item @code{*config-comment-register*}
+Identify register in which to save the last log message.
+@item @code{*config-filename-filter-list*}
+Functions used to filter lists of files.
+@item @code{*config-verbose-commands*}
+@end table
+
+@code{*config-type*} tells Config the underlying version control
+system.  Currently, the two choices are @code{RCS} and @code{SCCS}.
+See @xref{Systems}.@refill
+
+If @code{*config-dired-interface*} is true, Dired mode will have some
+additional commands.  It is true by default.  See @xref{Dired
+Interface} for more.@refill
+
+If @code{*config-buffmenu-interface*} is true, the Buffer Menu will
+have some additional commands.  It is true by default.  See
+@xref{Bufer Menu Interface} for more.@refill
+
+@code{*config-comment-register*} is a character that names a register.
+The last comment is stored in that register, where it can be
+recalled with @kbd{C-x g} (@code{insert-register}).  @refill
+
+@code{*config-filename-filter-list*} is a list of functions used by
+@code{config-dir-in} to enforce its rules about which files it will
+check in.  Each function is passed a list of filenames and returns a
+possibly shorter list.  That result list is given to the next
+function.  You can modify @code{*config-filename-filter-list*} to
+tailor @code{config-dir-in} to your liking.
+
+@code{*config-verbose-commands*} controls whether commands typed to
+the underlying version control system are shown in the results buffer.
+It is normally @code{t}, as the information doesn't hurt.
+
+@node Dired Interface, Buffer Menu Interface, Variables, Top
+@unnumbered The DIRED Interface
+
+If @code{*config-dired-interface*} is @code{t}, additional commands
+are available in Dired-mode:
+
+@table @kbd
+@item @key{l}
+Calls @code{config-log} to show the archive log.
+@item @key{D}
+Calls @code{config-diff} to show differences.
+@item @key{I}
+Calls @code{config-in} to check in the file on the current line.
+@item @key{O}
+Calls @code{config-out} to check out the file on the current line.
+@item @key{<}
+Flags a file for checkin.
+@item @key{>}
+Also flags a file for checkin.
+@item @key{A}
+Flags all checked-out files for checkin.
+@item @key{X}
+Checks in all flagged files.
+@end table
+
+The @key{>}, @key{<}, and @key{X} commands work like the Dired file
+deletion commands.  You can flag a file for checkin with either
+@key{<} or @key{>}, use @key{u} to clear the flag, and use @key{X}
+(not @key{x}) to execute the checkin.  As with @code{config-all-in},
+you'll be asked if you want to reuse log messages.@refill
+
+It's often useful to use @key{A} to flag all checked-out files for
+checkin, then use @key{u} to remove the flag from those files you want
+to leave checked out.
+
+The @key{<} command takes a prefix count argument.  One way to check
+in most of the files in a directory is to flag them all with a command like
+@example
+
+@key{M-30} @key{<}
+
+@end example
+undo the files you don't want checked in, and then execute the
+checkin.  For convenience, the @key{<} flags aren't removed until
+you've approved the list of files to be checked in.
+
+
+(Note:  Chris Liebman's dired-rcs provided some of the code for the dired
+interface.)
+
+@node Buffer Menu Interface, Systems, Dired Interface, Top
+@unnumbered The Buffer Menu Interface
+
+If @code{*config-buffmenu-interface*} is @code{t}, the Buffer Menu has
+some additional commands.  These commands are the same as the
+additional Dired-mode commands.
+
+@table @kbd
+@item @key{l}
+Calls @code{config-log} to show the archive log.
+@item @key{D}
+Calls @code{config-diff} to show differences.
+@item @key{I}
+Calls @code{config-in} to check in the file on the current line.
+@item @key{O}
+Calls @code{config-out} to check out the file on the current line.
+@item @key{<}
+Flags a file for checkin.
+@item @key{>}
+Also flags a file for checkin.
+@item @key{A}
+Flags all checked-out files for checkin.
+@item @key{X}
+Checks in all flagged files.
+@end table
+
+You can flag a file for checkin with either @key{<} or @key{>}, use
+@key{u} to clear the flag, and use @key{X} (not @key{x}) to execute
+the checkin.  As with @code{config-all-in}, you'll be asked if you
+want to reuse log messages.  Unlike Dired-mode, the file is flagged
+with @key{I}, not @key{<} (because the Buffer Menu uses @key{>} for a
+different purpose). @refill
+
+It's often useful to use @key{A} to flag all checked-out files for
+checkin, then use @key{u} to remove the flag from those files you want
+to leave checked out.
+
+@node Systems, Bugs, Dired Interface, Top
+@unnumbered Systems
+
+Config currently supports two version control systems, @code{RCS} and
+@code{SCCS}.  Which one is in effect depends on the value of
+@code{*config-type*}.@refill
+
+@code{RCS}:  If the @file{file} is in directory @file{dir}, @code{RCS}
+expects to find the archive file in @file{dir/RCS}.@refill
+
+@code{SCCS}:  If the @file{file} is in directory @file{dir}, @code{SCCS}
+expects to find the archive file in @file{dir/SCCS}.@refill
+
+@node Bugs, Customizing, Systems, Top
+@unnumbered Bugs
+
+@enumerate
+@item
+There's a bug in the dired interface:  when you check a file in or
+out, its mode will almost certainly change.  This change will not be
+reflected in the Dired buffer.
+@item
+Window management is converging on something reasonable, but is not
+yet ideal.  You should always see the buffers you need to see when you
+need to see them, but there are a few cases when the display changes
+for no good reason (harmless, but annoying).  (Example:
+@code{config-dir-in} with the default file filters asks two questions
+and the display changes between them.)@refill
+@end enumerate
+
+@node Customizing, Top, Bugs, Top
+@unnumbered Customizing
+
+To customize Config, you must
+@enumerate
+@item
+Add a new @code{*config-type*} value.
+@item 
+Config uses a number of internal generic functions.  For example, one
+is @code{checkout-command}.  It builds a string which, when passed to
+the shell, checks out a file.  Each different @code{*config-type*}
+specializes the set of generic functions.  For example, when
+@code{*config-type*} is @code{RCS}, @code{checkout-command} calls
+@code{RCS-checkout-command}.@refill
+
+The generic functions are defined in a section of the source beginning
+with 
+
+@example
+;===%%SF%% generics (Start)  ===
+@end example
+
+To see how specializations are defined, look at the section beginning
+
+@example
+;   ===%%SF%% generics/SCCS (Start)  ===
+@end example
+
+@end enumerate
+

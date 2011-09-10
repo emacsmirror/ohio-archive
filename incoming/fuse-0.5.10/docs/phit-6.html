@@ -1,0 +1,87 @@
+<HTML>
+<HEAD>
+<TITLE>Phit: Goodness of Fit and Uncertainty in Variables</TITLE>
+</HEAD>
+<BODY>
+<A HREF="phit-5.html">Previous</A>
+<A HREF="phit-7.html">Next</A>
+<A HREF="phit.html#toc6">Table of Contents</A>
+<HR>
+<H2><A NAME="s6">6. Goodness of Fit and Uncertainty in Variables</A></H2>
+
+<P>This topic is discussed in detail in Chapter 5 of Matt
+Newville's <SF>Feffit</SF> document.  For good literature
+references see <I>Data Reduction and Error Analysis for the
+Physical Sciences</I> by Philip R. Bevington and <I>Numerical
+Recipes</I> by Press, <I>et al.</I>  Rather than rehashing what is
+said in those places, I will only point out differences between the
+error analysis in <SF>Feffit</SF> and <SF>Phit</SF>. </P>
+<P>The most important difference is that the summations for chi-square
+and the R-factor are over both the real and imaginary parts in
+<SF>Feffit</SF>.  Since <SF>Phit</SF> deals strictly
+with real valued data, these summations are only over real values.
+Thus, the R-factor is defined as the sum of the squares of the
+residuals divided by the sum of squares of the data.  (See Eq. 5.7 in
+the <SF>Feffit</SF> document.) </P>
+<P>In the <SF>Feffit</SF> document, the measurement uncertainty is
+referred to as epsilon.  Here I have been calling it sigma.  Ok.  In
+<SF>Feffit</SF> the uncertainty is estimated from a part of the
+Fourier transformed signal that is spectrally distinct from the
+analyzed part of the data.  <SF>Phit</SF> cannot use any such
+tricks.  If the measurement uncertainty at each point is somehow
+already known, then it can be input into the program as part of the
+data file.  This requires using the keyword <CODE>sigma</CODE>.
+Alternatively, a single value for sigma can be entered in the input
+file with the keyword <CODE>sigdat</CODE>.  If no information about
+sigma is provided by the user, then <SF>Phit</SF> will use the
+standard deviation of the residuals as the value of sigma.  The
+residuals are the differences at each point between the data and the
+sum of functions evaluated at the best fit values of the
+parameters. </P>
+<P>Using the standard deviation of the residuals as the value of sigma
+assures that the value of chi-square for any fit will be nearly 1.
+This is true even in the case of a fit that is obviously poor by
+visual inspection.  If this option for evaluating sigma is used,
+chi-square is not a valid criteria for ascertaining the quality of the
+fit.  The R factor, however, is independent of the choice of sigma and
+should be a good criteria for judging a fit. </P>
+<P>The merit of using a value of sigma that assures unit chi-square is
+that the error bars on the variables will be correctly normalized.  If
+the fit is of acceptable quality, than the error bars reported in the
+log file will be those for a variable that is normally distributed
+about its best-fit value. </P>
+<P>Since there is no signal processing involved in <SF>Phit</SF>, there
+is no way to evaluate the number of independent measurements in the
+data.  The standard assumption in this situation is that each input
+data point is an independent measurement.  Chi-square is normalized
+under this assumption.  <SF>Phit</SF> assumes the number of
+independent points is the number of data points falling within the
+fitting ranges minus the number of guess values. </P>
+<P>Whatever evaluation of sigma is used, chi-square is calculated from
+the residual at each point weighted by the appropriate value of sigma,
+as in Eq. 5.2 of the <SF>Feffit</SF> document.  This value of
+chi-square is then used in calculating error bars and correlations
+between variables.  The normalized chi-square reported in
+<CODE>phit.log</CODE> is this chi-square divided by the number of
+independent points. </P>
+<P>The error bars on the guess values are calculated assuming the fitting
+function is normally distributed about the best-fit values.  With this
+assumption, the error bars reported are one-sigma values for the
+variation in the guessed variables.  Error bars for the evaluation of
+set expressions are also reported in <CODE>phit.log</CODE>.  These are
+propagated numerically from the error bars in the guessed variables
+and include the correlation terms.  See page ?? in Bevington's book
+for the details of this calculation.  Error bars are reported neither
+for set expressions that are independent of guessed variables nor for
+set expressions that depend on the x-axis.  </P>
+<P>Please read Chapter 5 of the <SF>Feffit</SF> document carefully.  It
+is a good discussion of the issues of non-linear minimization and
+provides information on interpreting the results of the error analysis
+performed by <SF>Phit</SF>. </P>
+
+<HR>
+<A HREF="phit-5.html">Previous</A>
+<A HREF="phit-7.html">Next</A>
+<A HREF="phit.html#toc6">Table of Contents</A>
+</BODY>
+</HTML>

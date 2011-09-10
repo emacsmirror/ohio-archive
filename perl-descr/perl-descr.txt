@@ -1,0 +1,262 @@
+# @(#)@ perl-descr.txt 1.5 - describe-perl-symbol [text]
+!=	Numeric inequality.
+!~	Search pattern, substitution, or translation (negated).
+$!	If used in a numeric context, yields the current value of errno. If used in a string context, yields the corresponding error string.
+$"	The separator which joins elements of arrays interpolated in strings.
+$#	The output format for printed numbers. Initial value is %.20g.
+$$	The process number of the perl running this script. Altered (in the child process) by fork().
+$%	The current page number of the currently selected output channel.
+$&	The string matched by the last pattern match.
+$'	The string following what was matched by the last pattern match.
+$(	The real gid of this process.
+$)	The effective gid of this process.
+$*	Set to 1 to do multiline matching within a string, 0 to assume strings contain a single line. Default is 0.
+$+	The last bracket matched by the last search pattern.
+$,	The output field separator for the print operator.
+$-	The number of lines left on the page.
+$.	The current input line number of the last filehandle that was read.
+$/	The input record separator, newline by default.
+$0	The name of the file containing the perl script being executed.
+$1..$9	Contains the subpattern from the corresponding set of parentheses in the last pattern matched.
+$:	The set of characters after which a string may be broken to fill continuation fields (starting with ^) in a format.
+$;	The subscript separator for multi-dimensional array emulation. Default is "\034".
+$<	The real uid of this process.
+$=	The page length of the current output channel. Default is 60 lines.
+$>	The effective uid of this process.
+$?	The status returned by the last backtick (``) command, pipe close or system operator.
+$@	The perl error message from the last eval or do @var{EXPR} command.
+$[	The index of the first element in an array, and of the first character in a substring. Default is 0.
+$\	The output record separator for the print operator.
+$]	The perl version string as displayed with perl -v.
+$^	The name of the current top-of-page format.
+$_	The default input and pattern-searching space.
+$`	The string preceding what was matched by the last pattern match.
+$|	If set to nonzero, forces a flush after every write or print on the currently selected output channel. Default is 0. The following variables are always local to the current block:
+$~	The name of the current report format.
+%	Modulo division.
+%ENV	Contains the current environment.
+%SIG	Used to set signal handlers for various signals.
+&	Bitwise and.	&& Logical and.
+&&	Logical and.
+*	Multiplication.	** Exponentiation,
+**	Exponentiation.
++	Addition.	++ Auto-increment
+++	Auto-increment (magical on strings).
+,	Comma operator.
+-	Subtraction.	-- Auto-decrement.
+--	Auto-decrement.
+-B	File is a non-text (binary) file.
+-O	File is owned by real uid.
+-R	File is readable by real uid.
+-S	File is a socket .
+-T	File is a text file.
+-W	File is writable by real uid.
+-X	File is executable by real uid.
+-b	File is a block special file.
+-c	File is a character special file.
+-d	File is a directory.
+-e	File exists .
+-f	File is a plain file.
+-g	File has setgid bit set.
+-k	File has sticky bit set.
+-l	File is a symbolic link.
+-o	File is owned by effective uid.
+-p	File is a named pipe (FIFO).
+-r	File is readable by effective uid.
+-s	File has non-zero size.
+-t	Tests if filehandle (STDIN by default) is opened to a tty.
+-u	File has setuid bit set.
+-w	File is writable by effective uid.
+-x	File is executable by effective uid.
+-z	File has zero size.
+.	Concatenate strings.	..	Alternation, also range operator.
+..	Alternation, also range operator.
+/	Division.	/PATTERN/io	Pattern match
+/PATTERN/io
+<	Numeric less than.	<<	Bitwise shift left.
+<<	Bitwise shift left.
+<=	Numeric less than or equal to.
+==	Numeric equality.	=~	Search pattern, substitution, or translation.=~	Search pattern, substitution, or translation.
+>	Numeric greater than.	>=	Numeric greater than or equal to.
+>=	Numeric greater than or equal to.	>>	Bitwise shift right.
+>>	Bitwise shift right.
+? :	Alternation (if-then-else) operator.	?PATTERN?	Backwards pattern match
+@ARGV	Contains the command line arguments for the script (not including the command name). See $0 for the command name.
+@INC	Contains the list of places to look for perl scripts to be evaluated by the do EXPR command.
+@_	Parameter array for subroutines. Also used by split if not in array context.
+^	Bitwise exclusive or.
+accept(NEWSOCKET,GENERICSOCKET)
+atan2(X,Y)
+bind(SOCKET,NAME)
+binmode(FILEHANDLE)
+chdir(EXPR)
+chmod(LIST)
+chop[(LIST|VAR)]
+chown(LIST)
+chroot(FILENAME)
+close(FILEHANDLE)
+closedir(DIRHANDLE)
+connect(SOCKET,NAME)
+cos(EXPR)
+crypt(PLAINTEXT,SALT)
+dbmclose(ASSOC_ARRAY)
+dbmopen(ASSOC,DBNAME,MODE)
+defined(EXPR)
+delete($ASSOC{KEY})
+die(LIST)
+do(EXPR|SUBR([LIST]))
+do { ... } while|until EXPR	executes at least once
+dump(LABEL)
+each(ASSOC_ARRAY)
+endgrent
+endhostent
+endnetent
+endprotoent
+endpwent
+endservent
+eof[([FILEHANDLE])]
+eq	String equality.
+eval(EXPR)
+exec(LIST)
+exit(EXPR)
+exp(EXPR)
+fcntl(FILEHANDLE,FUNCTION,SCALAR)
+fileno(FILEHANDLE)
+flock(FILEHANDLE,OPERATION)
+for (EXPR;EXPR;EXPR) { ... }
+foreach [VAR] (@ARRAY) { ... }
+fork
+ge	String greater than or equal.
+getc[(FILEHANDLE)]
+getgrent
+getgrgid(GID)
+getgrnam(NAME)
+gethostbyaddr(ADDR,ADDRTYPE)
+gethostbyname(NAME)
+gethostent
+getlogin
+getnetbyaddr(ADDR,ADDRTYPE)
+getnetbyname(NAME)
+getnetent
+getpeername(SOCKET)
+getpgrp(PID)
+getppid
+getpriority(WHICH,WHO)
+getprotobyname(NAME)
+getprotobynumber(NUMBER)
+getprotoent
+getpwent
+getpwnam(NAME)
+getpwuid(UID)
+getservbyname(NAME,PROTO)
+getservbyport(PORT,PROTO)
+getservent
+getsockname(SOCKET)
+getsockopt(SOCKET,LEVEL,OPTNAME)
+gmtime(EXPR)
+goto(LABEL)
+grep(EXPR,LIST)
+gt	String greater than.
+hex(EXPR)
+if (EXPR) { ... } [ elsif (EXPR) { ... } ... ] [ else { ... } ] or EXPR if EXPR
+index(STR,SUBSTR)
+int(EXPR)
+ioctl(FILEHANDLE,FUNCTION,SCALAR)
+join(EXPR,LIST)
+keys(ASSOC_ARRAY)
+kill(LIST)
+last[(LABEL)]
+le	String less than or equal.
+length(EXPR)
+link(OLDFILE,NEWFILE)
+listen(SOCKET,QUEUESIZE)
+local(LIST)
+localtime(EXPR)
+log(EXPR)
+lstat(EXPR|FILEHANDLE|VAR)
+lt	String less than.
+m/PATTERN/io
+mkdir(FILENAME,MODE)
+ne	String inequality.
+next[(LABEL)]
+oct(EXPR)
+open(FILEHANDLE[,EXPR])
+opendir(DIRHANDLE,EXPR)
+ord(EXPR)
+pack(TEMPLATE,LIST)
+pipe(READHANDLE,WRITEHANDLE)
+pop(ARRAY)
+print[(FILEHANDLE [LIST])]
+printf([FILEHANDLE] LIST)
+push(ARRAY,LIST)
+q/STRING/
+qq/STRING/
+rand[(EXPR)]
+read(FILEHANDLE,SCALAR,LENGTH)
+readdir(DIRHANDLE)
+readlink(EXPR)
+recv(SOCKET,SCALAR,LEN,FLAGS)
+redo[(LABEL)]
+rename(OLDNAME,NEWNAME)
+reset[(EXPR)]
+return(LIST)
+reverse(LIST)
+rewinddir(DIRHANDLE)
+rindex(STR,SUBSTR)
+rmdir(FILENAME)
+s/PATTERN/REPLACEMENT/gieo
+seek(FILEHANDLE,POSITION,WHENCE)
+seekdir(DIRHANDLE,POS)
+select(FILEHANDLE | RBITS,WBITS,EBITS,TIMEOUT)
+send(SOCKET,MSG,FLAGS[,TO])
+setgrent
+sethostent(STAYOPEN)
+setnetent(STAYOPEN)
+setpgrp(PID,PGRP)
+setpriority(WHICH,WHO,PRIORITY)
+setprotoent(STAYOPEN)
+setpwent
+setservent(STAYOPEN)
+setsockopt(SOCKET,LEVEL,OPTNAME,OPTVAL)
+shift[(ARRAY)]
+shutdown(SOCKET,HOW)
+sin(EXPR)
+sleep[(EXPR)]
+socket(SOCKET,DOMAIN,TYPE,PROTOCOL)
+socketpair(SOCKET1,SOCKET2,DOMAIN,TYPE,PROTOCOL)
+sort([SUBROUTINE] LIST)
+splice(ARRAY,OFFSET[,LENGTH[,LIST]])
+split[(/PATTERN/[,EXPR[,LIMIT]])]
+sprintf(FORMAT,LIST)
+sqrt(EXPR)
+srand(EXPR)
+stat(EXPR|FILEHANDLE|VAR)
+study[(SCALAR)]
+substr(EXPR,OFFSET,LEN)
+symlink(OLDFILE,NEWFILE)
+syscall(LIST)
+system(LIST)
+tell[(FILEHANDLE)]
+telldir(DIRHANDLE)
+time
+times
+tr/SEARCHLIST/REPLACEMENTLIST/
+umask[(EXPR)]
+undef[(EXPR)]
+unless (EXPR) { ... } [ else { ... } ] or EXPR unless EXPR
+unlink(LIST)
+unpack(TEMPLATE,EXPR)
+unshift(ARRAY,LIST)
+until (EXPR) { ... } or EXPR until EXPR
+utime(LIST)
+values(ASSOC_ARRAY)
+vec(EXPR,OFFSET,BITS)
+wait
+wantarray
+warn(LIST)
+while  (EXPR) { ... } or EXPR while EXPR
+write[(EXPR|FILEHANDLE)]
+x	Repeat string.
+y/SEARCHLIST/REPLACEMENTLIST/
+|	Bitwise or.	||	Logical or.
+||	Logical or.

@@ -1,0 +1,142 @@
+README for cc-mode Version 4.282
+Barry A. Warsaw <cc-mode-help@merlin.cnri.reston.va.us>
+1996/02/21 23:14:42
+
+NOTE: All XEmacs distributions since 19.11, and Emacs distributions
+since 19.30 come with cc-mode.  As of this writing, XEmacs 19.14 and
+Emacs 19.31 are both in beta testing, to be released soon.  Both come
+pre-configured to use this version of cc-mode so you should not need
+to do anything special.
+
+If you are using an older XEmacs or Emacs, consider upgrading.
+
+The rest of this file contains a node from the cc-mode texinfo online
+manual.
+
+The MANIFEST file contains a description of all the files you should
+have gotten with this distribution.
+
+-------------------- snip snip --------------------
+File: cc-mode.info,  Node: Getting Connected,  Next: New Indentation Engine,  Prev: Introduction,  Up: Top
+
+Getting Connected
+*****************
+
+   `cc-mode.el' works well with the 2 main branches of Emacs 19: XEmacs
+and the Emacs 19 maintained by the FSF.  FSF's Emacs 19 users will want
+to use Emacs version 19.21 or better, XEmacs users will want 19.6 or
+better.  Earlier versions of these Emacsen have deficiencies and/or
+bugs which will adversely affect the performance and usability of
+`cc-mode'.
+
+   Similarly if you use the `cc-mode-18.el' compatibility file,
+`cc-mode.el' will work with Emacs 18, but only moderately well.  A word
+of warning though, *Emacs 18 lacks some fundamental functionality and
+that ultimately means using Emacs 18 is a losing battle*.  Hence
+`cc-mode' under Emacs 18 is no longer supported and it is highly
+recommended that you upgrade to Emacs 19.  If you use `cc-mode' under
+Emacs 18, you're on your own.  With `cc-mode' version 5, Emacs 18
+support will be dropped altogether.
+
+   Note that XEmacs 19.13 already comes with the latest `cc-mode'
+version 4 preconfigured for your use.  You should be able to safely skip
+the rest of the setup information in this chapter.  XEmacs 19.11 and
+19.12 ships older versions of `cc-mode', so those users will want to
+continue reading to learn how to upgrade to the latest `cc-mode'
+version 4 (see *See Getting the latest cc-mode release::).
+
+   The first thing you will want to do is put `cc-mode.el' somewhere on
+your `load-path' so Emacs can find it.  Do a `C-h v load-path RET' to
+see all the directories Emacs looks at when loading a file.  If none of
+these directories are appropriate, create a new directory and add it to
+your `load-path':
+
+*[in the shell]*
+
+     % cd
+     % mkdir mylisp
+     % mv cc-mode.el mylisp
+     % cd mylisp
+
+*[in your .emacs file add]*
+
+     (setq load-path (cons "~/mylisp" load-path))
+
+   Next you want to "byte compile" `cc-mode.el'.  The mode uses a lot
+of macros so if you don't byte compile it, things will be unbearably
+slow.  *You can ignore all byte-compiler warnings!*  They are the
+result of the supporting different versions of Emacs, and none of the
+warnings have any effect on operation. Let me say this again: *You
+really can ignore all byte-compiler warnings!*
+
+   Here's what to do to byte-compile the file [in emacs]:
+
+     M-x byte-compile-file RET ~/mylisp/cc-mode.el RET
+
+   If you are running XEmacs 19.11 or 19.12, you can simply add the
+following to your `.emacs' file in order to upgrade to the latest
+version of `cc-mode':
+
+     (load "cc-mode")
+
+   Users of FSF's Emacs 19, Emacs 18, or of the older Lucid Emacs will
+probably be running an Emacs that has BOCM `c-mode.el' and possible
+`c++-mode.el' pre-dumped.  If your Emacs is dumped with either of these
+files you first need to make Emacs "forget" about those older modes.
+
+   If you can do a `C-h v c-mode-map RET' without getting an error, you
+need to add these lines at the top of your `.emacs' file:
+
+     (fmakunbound 'c-mode)
+     (makunbound  'c-mode-map)
+     (fmakunbound 'c++-mode)
+     (makunbound  'c++-mode-map)
+     (makunbound  'c-style-alist)
+
+   After those lines you will want to add the following autoloads to
+your `.emacs' file so that `cc-mode' gets loaded at the right time:
+
+     (autoload 'c++-mode  "cc-mode" "C++ Editing Mode" t)
+     (autoload 'c-mode    "cc-mode" "C Editing Mode" t)
+     (autoload 'objc-mode "cc-mode" "Objective-C Editing Mode" t)
+
+   Alternatively, if you want to make sure `cc-mode' is loaded when
+Emacs starts up, you could use this line instead of the three autoloads
+above:
+
+     (require 'cc-mode)
+
+   Next, you will want to set up Emacs so that it edits C files in
+`c-mode', C++ files in `c++-mode', and Objective-C files in
+`objc-mode'. All users should add the following to their `.emacs' file.
+Note that this assumes you'll be editing `.h' and `.c' files as C,
+`.hh', `.cc', `.H', and `.C' files as C++, and `.m' files as
+Objective-C. YMMV:
+
+     (setq auto-mode-alist
+       (append
+         '(("\\.C$"  . c++-mode)
+           ("\\.H$"  . c++-mode)
+           ("\\.cc$" . c++-mode)
+           ("\\.hh$" . c++-mode)
+           ("\\.c$"  . c-mode)
+           ("\\.h$"  . c-mode)
+           ("\\.m$"  . objc-mode)
+          ) auto-mode-alist))
+
+   You may already have some or all of these settings on your
+`auto-mode-alist', but it won't hurt to put them on there again.
+
+   That's all you need - I know, I know, it sounds like a lot `:-)',
+but after you've done all this, you should only need to quit and restart
+Emacs.  The next time you visit a C, C++, or Objective-C file you should
+be using `cc-mode'.  You can check this easily by hitting `M-x
+c-version RET' in the `c-mode', `c++-mode', or `objc-mode' buffer.  You
+should see this message in the echo area:
+
+     Using `cc-mode' version 4.241.
+
+* Menu:
+
+* Syntactic Analysis::
+* Indentation Calculation::

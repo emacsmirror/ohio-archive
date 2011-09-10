@@ -1,0 +1,3 @@
+#! /bin/sh
+
+	emacs -batch -l `pwd`/dun-main -f batch-dungeon

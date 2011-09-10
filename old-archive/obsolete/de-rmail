@@ -1,0 +1,103 @@
+From: nate@hobbes.intel.com (Nate Hess)
+Newsgroups: gnu.emacs
+Subject: Re: BABYL to unix mail format converter?
+Message-ID: <738@mipos3.intel.com>
+Date: 17 Aug 89 05:10:55 GMT
+References: <31142@cornell.UUCP>
+Reply-To: woodstock@hobbes.intel.com (Nate Hess)
+Organization: Intel Corporation, Santa Clara, CA
+Lines: 92
+
+In article <31142@cornell.UUCP>, patrick@cs (Pat Stephenson) writes:
+>I like the look of VM, but I've got a bunch of stuff stored in BABYL format.
+>Anybody got a function for converting these files back to standard format?
+
+Yes, VM is really nice.
+
+I've helped all the people in my group switch over to VM from RMAIL, and
+so wrote a script to do the conversion of BABYL to Unix mail file
+format.  Here they are; they're slow and kludgy, but they get the job
+done.  Note that you'll have to change the path in "de-rmailify"
+appropriately.
+
+
+-------------------- Shell script, "de-rmailify" ----------
+#!/bin/csh
+#
+if ( $#argv != 1 ) then
+	echo "Usage: de-rmailify rmail-file-name"
+	exit
+endif
+/usr/local/bin/emacs -batch $1 -l ~nate/gnu/de-rmailify.el -kill
+-------------------- Shell script, "de-rmailify" ----------
+
+-------------------- Emacs Lisp, "de-rmailify.el" ----------
+;;;
+;;; Author:  Nathan Hess  (woodstock@hobbes.intel.com)
+;;;
+;;
+;; This is from /usr/local/gnu/emacs/lisp/files.el
+;; We want to redefine this command so that write-region is quiet.
+;;
+(defun append-to-file (start end filename)
+  "Append the contents of the region to the end of file FILENAME.
+When called from a function, expects three arguments,
+START, END and FILENAME.  START and END are buffer positions
+saying what text to write."
+  (interactive "r\nFAppend to file: ")
+  (write-region start end filename t 'quiet))
+
+(let ((file-to-be-converted (buffer-file-name))
+      (message-count 0)
+      (rmail-delete-after-output t)
+      (unix-style-file-name (concat (buffer-file-name) ".mail")))
+  (kill-buffer (current-buffer))
+  (rmail file-to-be-converted)
+  (rmail-show-message 1)
+  (while (not (rmail-output unix-style-file-name))
+    (setq message-count (1+ message-count)))
+  (rmail-quit))
+-------------------- Emacs Lisp, "de-rmailify.el" ----------
+
+
+
+So, for example, I typed
+
+	de-rmailify RMAIL
+
+and I got an empty RMAIL BABYL file, an RMAIL~ that was the old RMAIL,
+and an RMAIL.mail which I then renamed to INBOX or mbox.
+
+I then encountered the more hairy problem of converting users's
+"~/mail/*" BABYL folders to Unix mail file format.  One user had a mail
+directory that was four levels deep, with BABYL files at each level.  So
+I hacked this together, which converted each BABYL file in the specified
+directory in the same manner as above.  Doing appropriate deletions from
+dired and then renaming all the *.mail files did the trick.
+
+
+-------------------- Shell script, "de-rmailify-directory" ----------
+#!/bin/csh
+#
+if ( $#argv != 1 ) then
+	echo "Usage: de-rmailify-directory directory-name"
+	exit
+endif
+
+find $1 -type f -print > /tmp/rmail-names$$
+
+cd $1
+foreach foo ( `cat /tmp/rmail-names$$` )
+	grep ^BABYL $foo >& /dev/null && /usr/local/bin/emacs -batch $foo -l ~nate/gnu/de-rmailify.el -kill
+end
+-------------------- Shell script, "de-rmailify-directory" ----------
+
+
+Hope this proves useful,
+--woodstock
+-- 
+	   "What I like is when you're looking and thinking and looking
+	   and thinking...and suddenly you wake up."   - Hobbes
+
+woodstock@hobbes.intel.com   ...!{decwrl|hplabs!oliveb}!intelca!mipos3!nate 
+

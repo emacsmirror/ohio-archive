@@ -1,0 +1,92 @@
+From: josh@viewlog.UUCP (Josh Marantz)
+Newsgroups: comp.emacs
+Subject: Jnews: Yet Another News Reading Package for Emacs
+Date: 26 Apr 90 17:04:36 GMT
+Organization: Viewlogic Systems Inc., Marlboro, MA
+
+Original Documentation by Josh Marantz
+
+I'm sure people have had it up to their modelines with news packages,
+but you may really like this one.  Why?  Because its small, fast, and
+fairly powerful given its small set of features.  We've been using
+it here at Viewlogic for a while, and it definitely makes wading through
+reems of high-volume newsgroups much quicker.
+
+It is used on newsgroups like Dired is used on files.  In fact, for
+"select newsgroup mode", it uses Dired on the directory ~/jnews, which
+contains one file for each newsgroup you read.  You select which
+newsgroup you want by editing the file for it (e.g.
+~/jnews/comp.emacs).  The file is maintained with the first line as
+-*-jnews-*-, so it goes into jnews-mode when you edit the file.
+
+When editing a jnews file, each message is displayed on one line,
+indicating date, author, subject, number of lines, and message number.
+You move the cursor to a message, and hit "e" to see it, hit
+Carriage-Return to bypass it while marking it as read, and hit "*" to
+mark it as unread, even if you've seen it.  Expired messages are
+marked with '#', unread messages are marked with '*'.  Hitting tab
+gets you to the next unexpired message.  Hitting 'x' gets rid of all
+expired messages.  Hitting 'q' kills the buffer.
+
+Help is available with '?' and 'h'.
+
+The news-package works with a small elisp file and a small auxiliary C
+program.  The C program is not linked into Emacs.  It's run with call-process.
+It's used to build the summary file, which can be done faster in C than
+in Elisp because the C program doesn't have to scan the whole message,
+just the first few lines.
+
+Jnews will probably not work with nntp.  Jnews assumes you have your news
+in a directory tree, off of /usr/spool/news.  A small Elisp modification
+would allow it to pass an alternate news-root to the jnews C program.
+
+You must do "mkdir ~/jnews" manually before running jnews.
+
+Anyway, I apologize for not doing a super packaging job, but people around
+here have been urging me to publicize this, so maybe you'll think its
+worth it.  Here's some global bindings for your .emacs, followed by
+jnews.c and jnews.el.  Enjoy!
+
+Addendum by Kim Letkeman
+
+I have added some functionality to jnews.el and a script that will
+take your .newsrc and create the summary files in your jnews
+directory. It is still very small and fast and is somewhat more
+convenient now to use and especially to get started. Kudos to Josh for
+a nice idea and a nice implementation.
+
+My changes to jnews.el are:
+
+- when quitting either an article or a summary, the user is
+  popped back to the buffer at the previous level. If there
+  are no more articles, the user is popped all the way from
+  the last article to the top level.
+
+- hooked up the ability to save an article into a file or a
+  mail message, much like RNEWS.
+
+- hooked up the stuff to allow mailing a message, following up
+  to usenet, or posting a new message.
+
+- changed jnews-goto-unread to pop right into the article which
+  saves typing and time.
+
+To install and run jnews:
+
+- compile jnews.c and put "jnews" in a directory on your path. 
+  "cc -o jnews jnews.c"
+
+- byte compile jnews.el and put jnews.elc in your local lisp
+  directory
+
+- create ~/jnews, cd to it, and execute newsrc_to_jnews which 
+  will create your jnews summary files
+
+- add the following 2 lines to your .emacs file (and bind keys to 
+  the commands if you so choose.)
+
+(autoload 'jnews "jnews" "Read usenet news" t)
+(autoload 'jnews-add-newsgroup "jnews" "Add new usenet newsgroup" t)
+
+Kim
+	

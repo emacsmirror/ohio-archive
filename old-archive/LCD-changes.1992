@@ -1,0 +1,459 @@
+This file documents the recent changes and updates to the Emacs lisp
+archive on archive.cis.ohio-state.edu.  Unfortunately the the changes
+aren't dated and might be in a hard to read format.  I'm working on it
+though...  If you find this useful, let me know and I'll give fixing
+it up a higher priority.  My eventual plan is to post it as a monthly
+report to comp.emacs.sources.
+
+                                       Dave Brennan (brennan@hal.com)
+
+NEW FILES IN THE ARCHIVE:
+-------------------------
+
+bookmark  (version unknown)  92-02-18
+  T. V. Raman, <raman@cs.cornell.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/bookmark.el.Z
+  Bookmark position in a file so you may return to where you left off.
+buffer-exists  (Version 0.0)  92-03-08
+  Terrence Brannon, <brannon@jove.cs.caltech.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/buffer-exists.el.Z
+  invoke to check if a buffer is currently in emacs memory before creating
+twirl  (Version 1.0)  92-03-07
+  Terrence Brannon, <brannon@jove.cs.caltech.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/twirl.el.Z
+  this will twirl the cursor until you hit C-g
+maintain-lcd  (Version 2.13)  92-03-23
+  David Brennan, <brennan@hal.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/maintain-lcd.el.Z
+  Useful functions for LCD maintaince work
+isearch-mode  (Version 1.0)  92-03-14
+  Daniel LaLiberte, <liberte@cs.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/isearch-mode.el
+  A minor mode replacement for isearch.el.
+info-dg  (Version 1.05)  92-03-08
+  Dave Gillespie, <daveg@synaptics.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/info.el.Z
+  Info reader with many enhancements; replaces standard info.el.
+custom-print  (Version 1.0)  92-03-17
+  Daniel LaLiberte, <liberte@cs.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/custom-print.el.Z
+  Handle print-level, print-circle and more.
+xmr  (version unknown)  92-03-12
+  Ik Su Yoo, <ik@ctt.bellcore.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/xmr.tar.Z
+  Mode for WCL (X/Motif) resource files.
+new-backquote  (version unknown)  92-03-26
+  Rick Sladkey, <jrs@world.std.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/new-backquote.el.Z
+  New, improved version of the backquote macro.
+randomize  (version unknown)  92-03-26
+  Mark Buda, <hermit@dastari.uucp>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/randomize.el.Z
+  Randomize a rectangle or region by replacing letters and numbers randomly.
+screens  (Version 1.3)  92-04-07
+  Heikki T. Suopanki, <suopanki@stekt.oulu.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/screens.el.Z
+  Save and restore multiple window configurations within Emacs.
+buf-sel  (version unknown)  92-03-25
+  Tomn Horsley, <thorsley@ssd.csd.harris.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/buf-sel.el.Z
+  Interactive buffer-list in the minibuffer.
+occam-mode  (version unknown)  89-09
+  Jesper Larsson Traff, <>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/occam-mode.el.Z
+  OCCAM programing mode.
+setf  (version unknown)  92-04-22
+  Miles Bader, <miles@cogsci.ed.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/setf.tar.Z
+  Complete implementation of setf and friends including let-binding optimizer.
+highlite  (Version 0.42)  92-04-22
+  David Brennan, <brennan@hal.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/epoch/highlite.el.Z
+  Higher level highliting support for Epoch
+c++-mode  (Version 2.2)  92-04-24
+  Barry A. Warsaw, <c++-mode-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/c++-mode.el.Z
+  Mode for editing C++ code (was Detlefs' c++-mode.el)
+evi  (Version 0.98.1)  05-01-92
+  Jeffrey R. Lewis, <jlewis@cse.ogi.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/evi.el.Z
+  Emulate Vi - an even better vi emulator
+modula3  (version unknown)  92-04-17
+  Eric Muller, <muller@src.dec.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/modula3.el.Z
+  Modula-3 mode.
+speak  (Version 1.0)  92-02-13
+  Dave Brennan, <brennan@hal.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/speak.el.Z
+  Make Emacs speak on Sun Sparc (requires Brown U. speak package)
+capslock  (Version 1.0)  92-05-15
+  Eberhard Mattes, <mattes@azu.informatik.uni-stuttgart.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/capslock.el.Z
+  Reverse Shift state for letter keys
+gnus-speedups  (Version 1.2: stable)  92-05-18
+  Felix Lee, <flee@cs.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/gnus-speedups.Z
+  Simple performance enhancements for GNUS
+folding  (Version 1.0)  92-05-21
+  Jamie Lokier, <u90jl@ecs.ox.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/folding.el.Z
+  A folding-editor-like minor mode.
+x-sb-mouse  (Version $Revision: 1.0 $)  92-03-28
+  Sullivan Beck, <beck@qtp.ufl.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/x-sb-mouse.el.Z
+  Better mouse support for X.  Allows vertical/horizontal resizing.
+md4  (Version 1.1)  ?
+  Johan Vromans, <jv@mh.nl>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/md4.el.Z
+  MD4 support for GNUS
+enscript  (Version 1.1)  92-06-05
+  Graham Gough, <graham@cs.man.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/enscript.el.Z
+  Version of lpr.el for use with enscript.
+comint-isearch  (Version Version 1.0)  92-04-10
+  Terry Glanfield, <tg.southern@rxuk.xerox.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/comint-isearch.el.Z
+  Command line incremental searching for comint.
+objective-C-mode  (Version 3.02)  91-11-28
+  Kenneth Persson, <benneth@eb.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/objective-C-mode.el.Z
+  Major mode for editing Objective-C programs.
+allout  (Version V 2.1)  07-05-92
+  Ken Manheimer, <klm@cme.nist.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/allout.el.Z
+  A more thorough outline-mode
+massive-backup  (Version 1.00)  92-07-04
+  Terry Brannon, <brannon@jove.cs.caltech.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/massive-backup.el.Z
+  Automatically tar and copy directories to remote machines
+complete  (Version 92-06-30)  1.04
+  Dave Gillespie, <daveg@csvax.caltech.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/complete-1.04.el.Z
+  Partial completion mechanism for GNU Emacs.
+profile  (Version 1.0)  92-02-07
+  Boaz Ben-Zvi, <boaz@lcd.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/profile.el.Z
+  Program to generate run time measurements of elisp functions.
+cmacexp2  (Version 1.0)  92-07-17
+  Francesco Potorti`, <pot@cnuce.cnr.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/cmacexp.el.Z
+  cmacexp.el with corrections and improvements
+fort-clean  (Version 3.26)  92-07-12
+  Lawrence R. Dodd, <dodd@mycenae.cchem.berkeley.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/fort-clean.el.Z
+  code for cleaning and stylizing fortran code
+docstring  (Version 1.0)  25-07-92
+  Michael D. Ernst, <mernst@theory.lcs.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/docstring.el.Z
+  Keep documentation consistent with Elisp code by substituting doc strings.
+love22  (Version 1.0)  90-10-18
+  Michael D. Ernst, <mernst@theory.lcs.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/love22.el.Z
+  Support for writing and recognizing text in the style of Love 22.
+env  (version unknown)  92-07-15
+  Noah Friedman, <friedman@gnu.ai.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/env.el.Z
+  putenv and getenv functions for accessing process-environment.
+archie  (Version 2.0)  92-04-22
+  Sanjay R. Mathur, <mathur@nas.nasa.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/archie.el.Z
+  A mock-interface to the archie program.
+simple-line-numbers  (version unknown)  92-09-17
+  ?, <?>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/simp-lnum.el.Z
+  Simple line number in the mode line.
+unique-hooks  (version unknown)  92-09-23
+  Rod Whitby, <rwhitby@research.canon.oz.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/unique-hooks.el.Z
+  Prepend, postpend and delete unique hook functions.
+syntax-decode  (version unknown)  92-09-23
+  Rod Whitby, <rwhitby@research.canon.oz.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/syntax-decode.el.Z
+  Decode comment characteristics from the syntax table.
+linenumbers  (Version 1.0)  92-09-23
+  Ajay Shekhawat, <ajay@cs.Buffalo.EDU>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/linenumbers.el
+  Continuous display of current line number in the status line
+GTbuf-men  (Version 1.8)  92-09-29
+  Bill Benedetto and Tom Wurgler, <wurgler@zippysun.math.uakron.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/GTbuf-men.el.Z
+  more dired-like buffer menu 
+mime-compose  (Version 1.16)  1992-11-06
+  Marc Andreessen, <marca@ncsa.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mime-compose.el.Z
+  MIME-compliant message generation utilities.
+dos-mode  (Version 1.9)  92/10/03
+  Andy Norman, <ange@hplb.hpl.hp.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/dos-mode.el.Z
+  MSDOS minor mode for GNU Emacs
+counter  (Version 1.4)  92/11/12
+  Rod Whitby, <rwhitby@research.canon.oz.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/counter.el.Z
+  Provides a counter for use in keyboard macros
+shadow-files  (Version version 1.2)  11/23/92
+  Boris Goldowsky, <boris@prodigal.psych.rochester.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/shadow-files.el.Z
+  Helps you keep identical copies of files on multiple hosts.
+context  (version unknown)  92-11-16
+  David Neves, <neves@ils.nwu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/context.el.Z
+  Save some context between editing sessions.
+html-mode  (Version 1.22)  1992-11-23
+  Marc Andreessen, <marca@ncsa.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/html-mode.el.Z
+  Major mode for editing HTML hypertext files.
+hippie-expand  (version unknown)  92-11-05
+  Anders Holst, <aho@sans.kth.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/hippie-expand.el.Z
+  Try to do text completion using multiple methods.
+sable  (Version 1.0)  19-11-09
+  Saumen Dutta, <skdutta@ucs.att.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/sable.el.Z
+  Front end code for using Sable from GNU Emacs
+clean-buffers  (version unknown)  92-11-12
+  Michael A. Petonic, <petonic@hal.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/clean-buffers.el.Z
+  Buffer list cleanup stuff.
+hexlify-buffer  (version unknown)  92-11-12
+  Francesco Potorti`, <pot@cnuce.cnr.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/hexlify-buffer.el.Z
+  Convert a binary buffer to hexl format.
+tagring  (version unknown)  92-11-12
+  Barry N. Nelson, <barryn@world.std.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tagring.el.Z
+  Remember and undo searches with find-tag.
+sh-mode  (version unknown)  92-11-15
+  Thomas W. Strong, Jr., <strong+@cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/sh-mode.el.Z
+  Beginning of an sh mode.
+csh-mode  (version unknown)  92-11-15
+  Thomas W. Strong, Jr., <strong+@cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/csh-mode.el.Z
+  C-Shell mode.
+mipsdbx.el  (version unknown)  92-11-16
+  Egil Pedersen, <egilp@ulrik.uio.no>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/mipsdbx.el.el.Z
+  Run MIPS dbx under Emacs.
+nnspool  (version unknown)  92-11-17
+  Scott Ballantyne, <sdb@ssr.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/nnspool.el.Z
+  Spool access using NNTP for GNU Emacs.
+24-hour-time  (version unknown)  92-11-18
+  Johan Vromans, <jv@mh.nl>
+  Archived in: /pub/gnu/emacs/elisp-archive/patches/24-hour-time.el.Z
+  Adds 24 time display capability to time.el.
+auto-carbon  (version unknown)  92-11-04
+  Kevin Broadey, <kevin@edscom.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/auto-carbon.el.Z
+  Automatically write buffer contents to "carbon copy" file on saves.
+auto-template  (Version 1.0)  92-11-02
+  Kevin Broadey, <kevin@edscom.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/auto-template.el.Z
+  Auto insert templates with macro replacement based on file extension.
+c*-mode  (version unknown)  92-11-23
+  Erik Bailey, <ebail@ctp.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/c*-mode.el.Z
+  C* (Connection Manchine C) mode.
+gnus-hier  (version unknown)  92-11-21
+  Jim Kingdon, <kingdon@east-wind.ORG>
+  Archived in: /pub/gnu/emacs/elisp-archive/patches/gnus-hier.el.Z
+  Patches to make GNUS a hierarchical newsreader.
+rmail-reply-cc  (version unknown)  92-11-20
+  Lee Short, <short@asf.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rmail-reply-cc.el.Z
+  Automatically CC the author of replies to GNU Emacs rmail messages.
+maillist  (version unknown)  92-11-20
+  Lee Short, <short@asf.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/maillist.el.Z
+  Mailing list utilities.
+ebuttons  (version unknown)  92-11-18
+  Terry Jones, <terry@santafe.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/ebuttons.el.Z
+  X11 interface to issue commands to an Emacs session.
+show-bufs  (Version 1.3)  92-11-30
+  Wayne Mesard, <wmesard@cs.stanford.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/as-is/show-bufs.el.Z
+  Put some or all buffers in equally-sized windows
+hscroll  (Version 1.1)  92-11-11
+  Wayne Mesard, <wmesard@cs.stanford.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/hscroll.el.Z
+  Minor mode to automatically scroll horizontally
+bibtex+++  (Version version 1.2)  92-04-01
+  Aaron Larson, <alarson@src.honeywell.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/bibtex+++.el.Z
+  Support for maintaining BibTeX format bibliography databases
+GTbuf-men  (Version 1.25)  1992-12-13
+  Tom Wurgler, Bill Benedetto, <wurgler@gentire.com and benedett@gentire.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/GTbuf-men.el.Z
+  More dired-like buffer men 
+wicos  (Version 1.41)  92-09-28
+  Heikki T. Suopanki, <suopanki@phoenix.oulu.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/wicos.el.Z
+  Save and restore multiple window configurations within Emacs.
+c-style  (Version Version: 2.1)  92-02-27
+  Daniel LaLiberte, <liberte@cs.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/as-is/c-src-doc.el.Z
+  sets c-style control variables
+mode-line  (Version 2.50)  1992-12-19
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mode-line.el.Z
+  Code for including abbreviated file paths in mode line
+tar-mode  (Version 1.26)  93-01-15
+  Jamie Zawinski, <jwz@lucid.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/tar-mode.el.Z
+  Simple editing of tar files from GNU Emacs
+crypt++  (Version 2.7)  93-01-24
+  Lawrence R. Dodd, <dodd@roebling.poly.edy>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+atc  (Version 1.0)  1993-01-28
+  Neil Jerram, <nj104@cus.cam.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/atc.tar.Z
+  Air Traffic Control
+zephyr  (Version 2.0)  1993-01-25
+  Scott Draves, <spot@cs.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/zephyr.tar.Z
+  Interface to the Zephyr message system.
+timezone  (Version 1.4)  93-01-26
+  Masanobu UMEDA, <umerin@mse.kyutech.ac.jp>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/timezone.el.Z
+  Timezone package for GNU Emacs
+rmailsort  (Version 1.4)  1993-01-26
+  Masanobu UMEDA, <umerin@mse.kyutech.ac.jp>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rmailsort.el.Z
+  Rmail: sort messages.
+dump-my-emacs  (version unknown)  1993-01-16
+  Juergen Nickelsen, <nickel@cs.tu-berlin.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/dump-my-emacs.el.Z
+  Interactive Emacs dump function.
+my-mail-aliases  (version unknown)  93-01-20
+  Dale DePriest, <daled@cadence.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/my-mail-aliases.el.Z
+  Expand aliases in outgoung mail headers.
+summarize-ls-lR  (version unknown)  1993-01-24
+  Karl Fogel, <kfogel@occs.cs.oberlin.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/summarize-ls-lR.el.Z
+  Prune useful information for an ls -lR listing.
+region-key  (Version version 1.0)  93-01-18
+  Aaron Larson, <alarson@src.honeywell.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/region-key.el.Z
+  Region specific modes for emacs.
+function-keys  (Version 1.3)  1992-10-28
+  Rod Whitby, <rwhitby@research.canon.oz.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/function-keys.el.Z
+  Provides define-function-key for Epoch and X Emacs.
+flow-ctrl  (Version 2.1)  93-02-06
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/flow-ctrl.el.Z
+  Flow control adjustments to remap C-s and C-q.
+vt200-esc-fix  (Version 1.1)  93-02-06
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/vt200-esc-fix.el.Z
+  Put ESC key in convenient reach on VT220.
+screen  (version unknown)  1991
+  Kyle E. Jones, <kyle@uunet.uu.net>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/screen.el.Z
+  Tools to configure your GNU Emacs windows.
+---- next new entry ----
+
+
+UPDATED	FILES IN THE ARCHIVE:
+-----------------------------
+
+ftp+  (Version 0.6)  92-02-20
+  Terrence Brannon, <brannon@jove.cs.caltech.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/ftp+.el.Z
+  FTP interface with database of ftpable software. Multiple connects at once.
+hilit  (version unknown)  92-03-05
+  Paul Nakada, <pnakada@us.oracle.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/epoch/hilit.el.Z
+  Highlight regions of buffers with different colors.
+bibtex-mode+  (Version version 1.0)  92-04-01
+  Marc Shapiro, <shapiro@corto.inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/bibtex-mode+.el.Z
+  Support for maintaining BibTeX format bibliography databases
+edb  (Version 0.21)  92-05-09
+  Michael Ernst, <mernst@theory.lcs.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/edb.tar.Z
+  Flexible, customizable database program for Emacs
+gnus-speedups  (Version 1.4)  92-05-27
+  Felix Lee, <flee@cs.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/gnus-speedups.Z
+  Simple performance enhancements for GNUS
+hilit  (Version v1.3)  92-04-02
+  Paul Nakada, <pnakada@us.oracle.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/epoch/hilit.el.Z
+  Mode switched highlighting of regions of buffers with colors and fonts.
+latexinfo-structure  (Version 1.4)  92-01-23
+  Richard Caley, <R.Caley@ed.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/latexinfo-structure.el.Z
+  Make latexinfo node and menu entries automatically
+c++-mode  (Version 2.118)  92-06-19
+  Barry A. Warsaw, <c++-mode-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/c++-mode.el.Z
+  Mode for editing C++ code (was Detlefs' c++-mode.el)
+c++-mode  (Version 2.124)  92-06-30
+  Barry A. Warsaw, <c++-mode-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/c++-mode.el.Z
+  Mode for editing C++ code (was Detlefs' c++-mode.el)
+md4  (Version 1.5)  92-06-16
+  Johan Vromans, <jv@mh.nl>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/md4.el.Z
+  MD4 support for GNUS
+info-dg  (Version 1.04)  92-03-04
+  Dave Gillespie, <daveg@synaptics.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/info.el.Z
+  Info reader with many enhancements; replaces standard info.el.
+complete  (Version 92-06-30)  1.04
+  Dave Gillespie, <daveg@csvax.caltech.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/complete-1.04.el.Z
+  Partial completion mechanism for GNU Emacs.
+fort-clean  (Version 3.33)  92-07-23
+  Lawrence R. Dodd, <dodd@mycenae.cchem.berkeley.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/fort-clean.el.Z
+  code for cleaning and stylizing fortran code
+cmacexp2  (Version 1.2)  92-09-15
+  Francesco Potorti`, <pot@cnuce.cnr.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/cmacexp.el.Z
+  cmacexp.el with corrections and improvements
+hebrew  (Version $Revision: 1.4 $)  92-08-22
+  Joseph Friedman, <yossi@DEShaw.COM>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/hebrew.tar.Z
+  Support for editing Hebrew files in Emacs.
+gnus-speedups  (Version 1.6: stable)  1992-13-11
+  Felix Lee, <flee@cs.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/gnus-speedups.el.Z
+  Simple performance enhancements for GNUS
+mime-compose  (Version 1.47)  1992-11-21
+  Marc Andreessen, <marca@ncsa.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mime-compose.el.Z
+  MIME-compliant message generation utilities.
+syntax-decode  (Version 1.13)  1992-11-22
+  Rod Whitby, <rwhitby@research.canon.oz.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/syntax-decode.el.Z
+  Decode comment characteristics from the syntax table.
+fort-clean  (Version 3.41)  92-11-14
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/fort-clean.el.Z
+  Code for cleaning and stylizing fortran code
+rep-region  (version unknown)  92-04-02
+  Bob Weiner, <rsw@cs.brown.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/rep-region.el.Z
+  Replace things in region only.
+hippie-expand  (Version Version 1.0)  93-01-04
+  Anders Holst, <aho@sans.kth.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/hippie-expand.el.Z
+  Expand text trying various ways to find its expansion.
+c++-mode  (Version Revision: 2.261.1.1)  1993-01-25
+  Barry A. Warsaw, <c++-mode-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/c++-mode.el.Z
+  Mode for editing C++, and ANSI/K&R C code (was Detlefs' c++-mode.el)
+c++-mode  (Version 2.261.1.2)  1993-01-29
+  Barry A. Warsaw, <c++-mode-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/c++-mode.el.Z
+  Mode for editing C++, and ANSI/K&R C code (was Detlefs' c++-mode.el)
+show-bufs  (Version 1.3)  92-11-30
+  Wayne Mesard, <wmesard@cs.stanford.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/as-is/show-bufs.el.Z
+  Put some or all buffers in equally-sized windows
+---- next updated entry ----

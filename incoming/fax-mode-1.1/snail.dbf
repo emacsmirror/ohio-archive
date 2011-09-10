@@ -1,0 +1,16 @@
+              \label
+----------------------------------------------------------------
+Organization: \organization
+Department:   \department
+
+Address:      \first-name \family-name
+              \street
+              \zip-code \location
+              \country
+
+Phone:        \phone
+Fax:          \fax
+E-Mail:       \e-mail
+----------------------------------------------------------------
+Comment:
+\comment

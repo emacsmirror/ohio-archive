@@ -1,0 +1,87 @@
+This is bbdb.info, produced by Makeinfo version 3.12h from bbdb.texinfo.
+
+   This file documents the Insidious Big Brother Database
+
+   This is edition $Revision: 1.20 $ of the BBDB User Manual for BBDB
+version 2.00.03.
+
+   Copyright (c) 1991-1994 Jamie Zawinski <jwz@netscape.com> Copyright
+(c) 1997-1998 Matt Simmons <simmonmt@acm.org>
+
+
+Indirect:
+bbdb.info-1: 339
+bbdb.info-2: 47833
+bbdb.info-3: 90952
+
+Tag Table:
+(Indirect)
+Node: Top339
+Node: Installation1974
+Node: General Prerequisites2738
+Ref: General Prerequisites-Footnote-15016
+Node: Normal User5169
+Node: XEmacs Package9734
+Node: Initial Configuration12779
+Ref: Initial Configuration-Footnote-116376
+Ref: Initial Configuration-Footnote-216458
+Ref: Initial Configuration-Footnote-316594
+Node: Gnus Prep16847
+Node: MH-E Prep17567
+Node: RMAIL Prep18159
+Node: Sendmail Prep18762
+Node: VM Prep19230
+Node: Message Prep19773
+Node: Reportmail Prep20352
+Node: Supercite Prep20974
+Node: Web Browser Prep23762
+Node: The BBDB24506
+Node: Database Fields25179
+Node: Basic Searching30874
+Node: Advanced Searching32072
+Node: Manual Record Addition33719
+Node: BBDB Mode34186
+Node: Interfaces44897
+Node: Mail Reading Interfaces46768
+Node: News Reading Interfaces47421
+Node: Mail Sending Interfaces47833
+Node: Reader-specific Features51173
+Node: Gnus Features51595
+Node: Gnus Scoring52156
+Node: Gnus Summary Buffer53411
+Ref: Gnus Summary Buffer-Footnote-158063
+Node: GNUS Subject List58446
+Node: VM Features60118
+Node: VM Message Summary60424
+Node: Other Packages61087
+Node: Using Message Mode61629
+Node: Using Reportmail61943
+Node: Using Supercite63163
+Node: Using Web Browsers64128
+Node: Options65181
+Node: Customization Parameters65703
+Node: Customization Hooks76897
+Node: Predefined Hooks82832
+Node: Utilities90109
+Node: bbdb-ftp90547
+Node: bbdb-print90952
+Node: bbdb-snarf98262
+Ref: bbdb-snarf-Footnote-199086
+Node: bbdb-srv99207
+Ref: bbdb-srv-Footnote-1103385
+Node: Internals103462
+Node: Mailing Lists112317
+Node: Changes113086
+Node: Major Changes113356
+Node: Other Changes114948
+Node: The Latest Version115442
+Node: The Future116020
+Node: Known Bugs116328
+Node: TODO List118106
+Node: EOL Statements123319
+Node: Thanks124367
+Node: _125521
+Node: Concept Index126112
+Node: Variable Index130372
+
+End Tag Table

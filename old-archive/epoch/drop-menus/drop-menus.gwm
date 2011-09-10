@@ -1,0 +1,167 @@
+; DECORATIONS FOR EPOCH
+; =====================
+
+;;File: epoch.gwm -- window decorations for epoch
+;;Heritage: simple-win.gwm
+
+;;Author: Brian L. Kahn   blk@security.mitre.org 
+;;Not for sale or resale, distribution unlimited
+
+
+;; the Dmenu: function creates a named drop-down menu with N items
+;; arguments are the GWM name, menu name string, and a list of items
+;; each item has an item name string and a GWM or elisp command
+;;  Dmenu.exec is an example of a GWM command
+;;  elisp commands are in quotes, and are sent to the window
+
+
+(Dmenu: Dmenu.exec
+    '("exec" 
+      (("execute cut buffer" (execute-string (+ "(? " cut-buffer ")")))
+       )))
+
+
+(Dmenu: Dmenu.db
+   '("db" 
+     (("toggle debug" "(setq debug-on-error (not debug-on-error))")
+      ("debug on" "(setq debug-on-error t)")
+      ("debug off" "(setq debug-on-error f)")
+      )))
+
+(Dmenu: Dmenu.files
+   '("files"
+     (("open files" "(buffer-menu-sized)")
+      ("directory" "(dired default-directory)")
+      ("elisp lib" "(dired (expand-file-name "~/lib/emacs"))")
+      )))
+
+(Dmenu: Dmenu.buffers 
+   '("buffers"
+     (("other buffer" "(switch-to-buffer (other-buffer))")
+      ("*scratch* buffer" "(switch-to-buffer \"*scratch*\")")
+      ("-" (bell))
+      ("kill buffer" "(kill-buffer (current-buffer))")
+      )))
+
+(Dmenu: Dmenu.windows 
+   '("windows"
+     (("one window" "(delete-other-windows)")
+      ("split screen" "(split-window-vertically)")
+      )))
+
+(Dmenu: Dmenu.screens 
+   '("screens"
+     (("new screen" "(epoch:create-screen-offset 18)")
+      ("delete screen" "(delete-screen)")
+      ("name screen" "(epoch::icon-name (buffer-name))")
+      )))
+
+(Dmenu: Dmenu.fonts
+   '("fonts"
+     (("screen-14" "(progn (font \"screen.r.14\") (redraw-display))")
+      ("screen-11" "(progn (font \"screen.r.11\") (redraw-display))")
+      ("screen-7" "(progn (font \"screen.r.7\") (redraw-display))")
+      ("serif-16" "(progn (font \"serif.r.16\") (redraw-display))")
+      ("misc-15" "(progn (font \"-misc*medium*-15-*\") (redraw-display))")
+      ("misc-15-bold" "(progn (font \"-misc*bold*-15-*\") (redraw-display))")
+      ("misc-20-bold" "(progn (font \"-misc*bold*-20-*\") (redraw-display))")
+      ("courier-20" "(progn (font \"-*-courier-medium-r-*-20-*\") (redraw-display))")
+      )))
+
+(Dmenu: Dmenu.mail 
+   '("mail"
+     (("read mail" "(mh-rmail)")
+      ("send mail" "(mh-smail)")
+      )))
+
+(Dmenu: Dmenu.info
+    '("info" (("info & help" "(info)"))))
+
+(Dmenu: Dmenu.news
+    '("news" (("usenet news" "(gnus)"))))
+
+(Dmenu: Dmenu.shell
+    '("shell" (("csh" "(progn (csh) (end-of-buffer))"))))
+
+(Dmenu: Dmenu.space
+    '(" " 
+      (("redisplay" "(redraw-display)")
+       )))
+
+
+
+
+;; a little box with the hostname in it
+(: Dmenu.HOST
+   '(with (background black foreground white fsm ())
+	  (plug-make (label-make hostname widget.font))))
+
+;; an empty white box, for use as a separator
+(: Dmenu.BOX
+   '(with (background black foreground white fsm ())
+	  (plug-make (label-make "  " widget.font))))
+
+
+
+
+
+;; A menu bar is made from a list of drop-down menus, like this:
+;; (window-make (widget:Dmenubar-make Dmenu.epoch-menus) () () () () ))
+
+(: Dmenu.epoch-menus
+   (list 
+    Dmenu.db
+    Dmenu.fonts
+    Dmenu.exec
+    Dmenu.space
+    Dmenu.files
+    Dmenu.buffers
+    Dmenu.windows
+    Dmenu.screens
+    Dmenu.space
+    Dmenu.mail
+    Dmenu.info
+    Dmenu.news
+    Dmenu.shell
+    Dmenu.db
+    ))
+
+
+
+
+
+
+;; File:  style.gwm -- window styles for epoch, santt
+
+;;Author: Brian L. Kahn
+;;Not for sale or resale, distribution unlimited
+
+
+(df style:epoch ()
+    (window-make (widget:Dmenubar-make Dmenu.epoch-menus)
+		 widget:scrollbar-make () () () ))
+
+
+
+(df style:minibuf ()
+    (window-make ()()()()()))
+
+(df style:pop ()
+    (window-make ()()()()()))
+
+
+
+(df style:select ()
+    '(or (# (atom (or (get-x-property "style")
+		      (window-client-name)))
+	    (list 'epoch (style:epoch)
+		  'minibuf (style:minibuf)
+		  'pop (style:pop)
+		  ))
+	 (style:epoch))
+    )
+
+
+
+(set-window Epoch style:select)
+

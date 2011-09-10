@@ -1,0 +1,7 @@
+Crystallographic data for matallic copper
+------------------------------------------
+Lattice constant = 3.61 angstroms
+Space group: FCC  (equivalent to F M 3 M)
+unique atom position at (0,0,0)
+fourth shell distance @ 5.38815, so
+	set rmax to at least 6.5

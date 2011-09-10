@@ -1,0 +1,60 @@
+This is Info file atoms.info, produced by Makeinfo-1.63 from the input
+file /tmp/sgml2info644tmp2.
+
+   \input texinfo
+
+
+Indirect:
+atoms.info-1: 119
+atoms.info-2: 48765
+atoms.info-3: 97667
+
+Tag Table:
+(Indirect)
+Node: Top119
+Node: Overview592
+Node: Keywords4519
+Node: General Format4801
+Node: List of Keywords6131
+Node: Explanations of Keywords8417
+Node: Specifying Site Tags and the Central Atom18224
+Node: Basis List v- Atom List21332
+Node: Dopants24220
+Node: Geom-dat26288
+Node: Space Groups27824
+Node: Notation Conventions28226
+Node: Unique Crystallographic Positions30660
+Node: Specially Recognized Lattice Types32232
+Node: Bravais Lattice Conventions34003
+Node: Low Symmetry Space Groups35278
+Node: Rhombohedral Space Groups38595
+Node: Multiple Origins and the Shift Keyword39688
+Node: Absorption Calculation and Experimental Corrections43492
+Node: Absorption Calculation44618
+Node: McMaster Correction45935
+Node: I0 Correction-47530
+Node: Self-Absorption Correction-48765
+Node: A Worked Example50291
+Node: Program Notes56257
+Node: Acknowledgments56628
+Node: Comments on the Fortran Code58000
+Node: What is new since version 2-4261472
+Node: Naming Conventions63077
+Node: Obtaining New Copies of Feff or of the UWXAFS Analysis63833
+Node: Bibliography64861
+Node: About this document-66610
+Node: Appendix A - Denoting Space Groups67382
+Node: A Quick Review of Crystallography68661
+Node: Decoding the Hermann-Maguin Notation73368
+Node: Decoding the Schoenflies Notation77743
+Node: The Hermann-Maguin Notation80065
+Node: Notation for the Standard Settings80369
+Node: Nonstandard Notations83822
+Node: The Schoenflies Notation93188
+Node: Appendix B - 40 Example Input Files96528
+Node: Pure Elements97667
+Node: Common Lattice Types101794
+Node: Binary and Trinary Compounds104875
+Node: High Temperature Superconductors-113087
+
+End Tag Table

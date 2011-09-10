@@ -1,0 +1,328 @@
+
+			   rexx-mode  V1.0
+			   ~~~~~~~~~~~~~~~
+				   
+		Copyright (C) 1993 by Anders Lindgren.
+				   
+	      This file is NOT part of GNU Emacs (yet).
+				   
+				   
+				   
+			     DISTRIBUTION
+
+	rexx-mode is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published 
+	by the Free Software Foundation; either version 1, or (at your 
+	option) any later version.
+
+	GNU Emacs is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public
+	License along with GNU Emacs; see the file COPYING.  If not,
+	write to the Free Software Foundation, 675 Mass Ave, Cambridge,
+	MA 02139, USA.
+
+
+				AUTHOR
+		  Anders Lindgren, d91ali@csd.uu.se
+				   
+		       Abbrevationtable due to:
+		Johan Bergkvist, nv91-jbe@nada.kth.se
+
+
+			     INTRODUCTION
+
+	The rexx-mode is a package contains an edit mode for the
+	REXX language, called rexx-mode, and a source level debugging
+	mode, called rexx-debug (or rxdb-mode for short) for the
+	GNU Emacs editor.
+
+	The following files is part of the distribution:
+
+	rexx-mode.doc		This file
+	rexx-mode.el		The elisp code for rexx-mode.
+	rexx-debug.el		The elisp code for the debugger.
+	comint.el		General purpose process communication
+					module by Olin Shivers.
+	*.elc			Byte-compiled versions of the above.
+	
+	readme.amiga		Some details concerning a bug in
+				the Amigaport V1.26 of GNUEmacs.
+	rxnq/rxnq		A hack to fix the above mentioned bug.
+	rxnq/rxnq.c		Sourcecode in C for rxnq.
+	
+
+			    HOW TO INSTALL
+
+	In order to use the rexx mode and the debugger they have
+	to be loaded into Emacs. This can manually be done
+	by M-x load-library RET rexx-mode RET. Although this
+	is rather cumbersome. A better way is to autoload them,
+	i.e. emacs loads them when they are needed.
+
+	Emacs can also recognize certain types of files and
+	start the correct mode accordigly.
+
+	The script below will recognize .rexx, .elx, .ncomm and .cpr
+	files as REXX-files. If you would like others to be recognized,
+	create additional (cons ...) lines. Please insert the script
+	to your ~/.emacs file.
+
+	See also the parts on custimation below.
+
+	--- cut here --- cut here --- cut here --- cut here ---
+
+(autoload 'rexx-mode  "rexx-mode"  "REXX mode" t)
+(autoload 'rexx-debug "rexx-debug" "REXX source level debugger" t)
+(setq auto-mode-alist
+      (append
+       (list (cons "\\.rexx$"  'rexx-mode)
+	     (cons "\\.elx$"   'rexx-mode)
+	     (cons "\\.ncomm$" 'rexx-mode)
+	     (cons "\\.cpr$"   'rexx-mode)
+	     )
+       auto-mode-alist))
+
+	--- cut here --- cut here --- cut here --- cut here ---
+
+
+			      EDIT MODE
+
+	The edit mode knows the indentations rules which applies to
+	REXX programs, and tries to indent the lines accoringly. It is
+	capable of recognizing DO-blocks, SELECT-blocks, IF-THEN-ELSE
+	statements etc. It also recognizes comments and strings.
+
+	To indent the line, execute the funciton rexx-indent-command,
+	which is normally bound to TAB. It indents line line (or
+	inserts a TAB depending on the cursor position and the
+	variable rexx-tab-always-indent.)
+
+	The standard GNU Emacs commands, such as indent-region 
+	work properly in rexx-mode.
+
+
+		      CUSTOMIZATION OF REXX-MODE
+
+	rexx-mode follows the Emacs tradition of being as customizable
+	as possible. The following variables directs the indentation:
+
+	rexx-indent:
+		The basic indentation for do-blocks.
+
+	rexx-end-indent: 
+		The relative offset of the "end" statement.
+		0 places it in the same column as the statements of
+		the block. Setting it to the same value as
+		rexx-indent places the "end" under the do-line.
+
+	rexx-cont-indent:
+		The indention for lines following "then", 
+		"else" and "," (continued) lines.
+
+	rexx-tab-always-indent:
+		Non-nil means TAB in REXX mode should always reindent
+		the current line, regardless of where in the line the
+		point is when the TAB command is used.
+
+	
+
+	The variable rexx-indent set the basic indentation. Setting
+	it to 4 results in the following indentation:
+
+		DO
+		    SAY 'foo'
+		    ...
+
+	while setting it to 8 (which is the default) results in:
+
+		DO
+			SAY 'foo'
+			...
+
+	The variable rexx-cont-indent indents IF-THEN-ELSE statements
+	and continued lines. It is strongly recomended to set it
+	to the same value as rexx-indent.
+
+	The rexx-end-indent controls the placement of the END. If it
+	contains 0 the end is placed in the same column as the block,
+	for example:
+
+		DO
+			SAY 'foo'
+			END
+
+	A positive value will move it to the left, by setting it to the
+	same value as rexx-indent the end is aligned with the DO, as
+	shown below:
+
+		DO
+			SAY 'foo'
+		END
+
+
+	The return key ought to be redefined to either 
+	rexx-newline-and-indent, or rexx-indent-newline-indent.
+	The latter is prefered if the indentation has been configurated
+	to place the END under the corresponding DO or SELECT-statement.
+	It indents the current line before creating a new. If a non-
+	standard indentation is wanted, press C-q RET TAB to create
+	a new line without indentating the current.
+
+	The "normal" newline-and-indent command is not recomended since
+	it doesn't expand abbrevs.
+
+
+			     ABBREV MODE
+
+	The editing mode contains an abbrevation table consisting of
+	all the keywords of REXX. When active it will automatically
+	convert all keywords into upper case when typed. 
+
+	Abbrev-mode is turned on by M-x abbrev-mode, or by calling
+	(abbrev-mode 1) from lisp, for example from a hook.
+
+
+			      DEBUG MODE
+
+	The debug mode is a simple fontend to the normal rexx debugger
+	Currently, the ONLY thing it does is to parse the output
+	for line-numbers. If one is found, an arrow is placed on the
+	corresponding line in the window containing the source.
+
+	The rexx-debug mode is called by the function rexx-debug, which
+	is bound to C-c C-c in rexx-mode. It will prompt you for
+	the name of the file (press return to use the current buffer)
+	and the arguments to send to the script.
+
+	The debug-mode is built using comint.el by Olin Shivers which
+	contains full history and other command line features.
+
+	The following keys can be used in rexx-debug mode.
+
+	m-p                	Cycle backwards in input history.
+	m-n                    	Cycle forwards.
+	m-s        		Previous similar input.
+	c-m-r     		Search backwards in input history.
+	return			Send input to REXX.
+	c-a                     Beginning of line; skip prompt.    
+	c-d          		Delete char unless at end of buff. 
+	c-l			Refresh
+	c-c c-u               	Kill input.
+	c-c c-w               	Backward kill word.
+	c-c c-c 	      	Interrupt subjob.
+	c-c c-z               	Stop subjob.
+	c-c c-\               	Quit subjob.
+	c-c c-o               	Delete last batch of process output.
+	c-c c-r               	Show last batch of process output.
+
+	Suggestions of additions to this mode is appreciated.
+
+
+		   CUSTOMIZATION OF THE DEBUG MODE
+
+	The rexx-debug mode contains the following variable:
+
+	rxdb-command-name
+		The name of the REXX interpretator in the current system.
+
+
+				HOOKS
+
+	The normal way to configureate a mode under Emacs is to create
+	a so called hook, which is called when a mode is started. This
+	is way better then to setq all varaibles on startup. For example,
+	you never have to look up the name of the keymap, use 
+	local-set-key instead. Hooks is normally placed in ~/.emacs,
+	or in other files loaded at startup.
+
+
+	The following hooks are called:
+
+	rexx-mode-hook    on entry to rexx-mode.
+
+	rxdb-mode-hook	  when entering rexx-debug mode (rxdb-mode).
+	
+	comint-mode-hook  is also called before the above, as it is by
+			  all modes which uses comint. (i.e. Don't put
+			  any REXX-specific stuff here.)
+
+
+	A hook looks like:
+
+	(setq some-hook '(lambda ()
+			   ;; statements to be executed when mode started.
+			   ))
+	
+	[ Technically, the variable some-hook is assigned to a nameless
+	function, indicated by the (lambda () ...), which is executed when
+	the mode is stared. ]
+
+
+	Example 1:
+	(setq rexx-mode-hook '(lambda ()
+			(setq rexx-indent 4)
+			(setq rexx-end-indent 4)
+			(setq rexx-cont-indent 4)
+			(local-set-key "\C-m" 'rexx-indent-newline-indent)
+			(abbrev-mode 1)
+			))
+
+	will make the END aligned with the DO/SELECT. It will indent
+	blocks and IF-statenents four steps and make sure that the END
+	jumps into the correct position when RETURN is pressed. Finaly 
+	it will use the abbrev table to convert all REXX keywords into
+	upper case.
+
+	
+	Example 2:
+	(setq rxdb-mode-hook '(lambda ()
+			(setq rxdb-command-name "/usr/local/bin/rexx")
+			))
+
+	is quite useable is UNIX environments.
+
+
+			 KNOWN BUGS/PROBLEMS
+
+	-- Nested comments aren't supported. This is because the standard
+	Emacs parsing functions are used. A new can be written in elisp but
+	I don't belive it will be efficient enough.
+
+
+	-- The Amigaport V1.26 of GNUEmacs has a annoying bug; it quotes
+	all arguments to commands, therefore RX can't be called directly.
+
+	A workaround is to specify rexx-command-name to "rxnq", which
+	is a small (264 bytes!) command (i.e. hack) which strips the quotes
+	and calls RX. To do this, place the following line into the
+	rxdb-mode-hook is the s:.emacs file:
+
+		(setq rxdb-command-name "rxnq")
+
+	And place rxnq in the loadpath.
+
+
+			     FINAL WORDS
+
+	I would like to thank Bo Liljegren and Johan Bergkvist, both
+	members of Swedish User Group of Amiga (SUGA). A special
+	thank is also given to Malin, who has put up with me while
+	writing this, and other programs.
+
+	Suggestions, new ideas and (positive) criticism are highly
+	appreciated. Please email them to:
+
+		d91ali@csd.uu.se
+
+	or snail mail them to:
+
+		Anders Lindgren
+		Kantorsg. 2-331
+		754 24 Uppsala
+		Sverige
+
+					/Anders Lindgren, 93-03-20

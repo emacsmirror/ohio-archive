@@ -1,0 +1,371 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse-tutorial.texi on 28 July 1998 -->
+
+<TITLE>FUSE Tutorial - Introduction</TITLE>
+</HEAD>
+<BODY>
+Go to the first, previous, <A HREF="fuse-tutorial_2.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+<P><HR><P>
+
+<P>
+@macro fuse{}
+{@sf FUSE}
+@ifnottex
+FUSE
+
+</P>
+
+<P>
+@macro greek{x,y}
+@ifnottex
+\x\(\y\)
+
+</P>
+
+<P>
+@macro greekletter{x}
+@ifnottex
+\x\
+
+</P>
+
+<P>
+@macro greeknot {x,y}
+@ifnottex
+\x\_0(\y\)
+
+</P>
+
+<P>
+@macro ezero{}
+@ifnottex
+E_0
+
+</P>
+
+<P>
+@macro thetad{}
+@ifnottex
+theta_D
+
+</P>
+
+<P>
+@macro sigsqr{}
+@ifnottex
+sigma^2
+
+</P>
+
+<P>
+@macro amp{}
+@ifnottex
+s0^2
+
+</P>
+
+<P>
+@direntry
+* FUSE Tutorial: (fuse-tutorial).   Tutorial for FUSE
+
+</P>
+
+
+<PRE>
+The author of {@sf FUSE}, Bruce Ravel, can be reached at:<BR>
+Ceramics Division, Room 329
+National Institute of Standards and Technology
+Gaithersburg, MD 20899<BR>
+<a href="mailto:&#60;ravel@phys.washington.edu&#62;">&#60;ravel@phys.washington.edu&#62;</a><BR>
+The latest version of {@sf FUSE} can always be found at
+@url{http://feff.phys.washington.edu/~ravel/fuse/}
+</PRE>
+
+<P>
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+</P>
+<P>
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+</P>
+<P>
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice must be stated in a translation
+approved by the author.
+
+</P>
+<P>
+Copyright (C) 1998 Bruce Ravel <a href="mailto:&#60;ravel@phys.washington.edu&#62;">&#60;ravel@phys.washington.edu&#62;</a><BR>
+Updated 27 July, 1998
+
+</P>
+
+
+
+<H1><A NAME="SEC1" HREF="fuse-tutorial_toc.html#TOC1">Introduction</A></H1>
+
+<P>
+In this tutorial, I will lead you step by step through the analysis of
+some copper data.  Along the way, we will explore many of the features
+of @fuse{}.  In this tutorial I assume that you, the reader, are
+familiar with the physics of EXAFS and the principles of EXAFS analysis.
+I also assume that you are familiar with FEFF and the UWXAFS
+programs, although you certainly do not have to be an expert in their
+use.  In fact, working through this tutorial is a good way to explore
+some of the features of those programs.  I make some effort in this
+tutorial to accomodate the Emacs novice.  It is possible that a reader
+may have been drawn to @fuse{} despite not being a convert to the
+religion of Emacs.<A NAME="DOCF1" HREF="fuse-tutorial_foot.html#FOOT1">(1)</A>  For that
+reader, I try to offer enough guidance that she can get through the
+entire tutorial without having to know too many magic Emacs key
+sequences.
+
+</P>
+
+
+
+<H2><A NAME="SEC2" HREF="fuse-tutorial_toc.html#TOC2">Using Emacs</A></H2>
+
+<P>
+<A NAME="IDX1"></A>
+As an aid to the Emacs-non-expert, I will explain some of the notation
+that I will use in the pages to come.  Many tasks in Emacs (using
+@fuse{} or performing any other editing chore) involce the use of
+modifier keys.  When you read something like <KBD>C-c</KBD>, that means to
+hold down the <KBD>ctrl</KBD> key while hitting the <KBD>c</KBD> character.
+<KBD>C-c C-r r</KBD> then means to hit <KBD>ctrl</KBD> and <KBD>c</KBD> followed by
+<KBD>ctrl</KBD> and <KBD>r</KBD> followed by <KBD>r</KBD>.  In Emacs jargon <KBD>M-</KBD> is
+read as <CODE>Meta</CODE> and, on most keyboards, refers either to the
+<KBD>alt</KBD> or <KBD>esc</KBD> key.  These two can be used interchangably,
+however these two keys typically behave somewhat differently.  When you
+read <KBD>M-n</KBD> that means <EM>either</EM> to hit the <KBD>alt</KBD> and <KBD>n</KBD>
+keys at the same time <EM>or</EM> to hit the <KBD>esc</KBD> key followed by the
+<KBD>n</KBD> key.  <KBD>S-</KBD> is interpretted the same as <KBD>C-</KBD> except that
+it means to hold the <KBD>shift</KBD> while hitting the following character.
+In a few cases, a key sequence may involve more than one modifier.
+<KBD>M-C-`</KBD> means to hit <KBD>`</KBD> (that is the backtick or open quote
+character) while holding down both <KBD>alt</KBD> and <KBD>ctrl</KBD>.
+
+</P>
+<P>
+<A NAME="IDX2"></A>
+I will assume that you are using a three-button mouse or a mouse capable
+of three-button emulation.  Throughout this document I will refer to the
+mouse buttons as <CODE>mouse-1</CODE>, <CODE>mouse-2</CODE>, and <CODE>mouse-3</CODE>.
+typically <CODE>mouse-1</CODE> is the left button, <CODE>mouse-2</CODE> is the
+middle, and <CODE>mouse-3</CODE> is the right.  Sometimes this arrangement is
+altered to suit the preferences of the user.
+
+</P>
+<P>
+<A NAME="IDX3"></A>
+<A NAME="IDX4"></A>
+<A NAME="IDX5"></A>
+Most of the interactivity of Emacs occurs either via pop-up windows or
+through the minibuffer.  Pop-up windows usually have text, buttons, and
+menus which are fairly self-explanatory.  The minibuffer is that strip
+at the bottom of the Emacs frame below the mode line.  That space is
+reserved for displaying messages and for interaction with the user.
+Many of the functions in @fuse{} use this space for one of those
+purposes.  The phrase <EM>minibuffer</EM> is used to refer to that space
+when Emacs is interacting with the user and the phrase <EM>echo area</EM>
+is used to describe it when it is displaying a message
+non-interactively.  I will use both terms in this document.
+
+</P>
+
+<P>
+There are four ways of making Emacs execute a command or function.
+
+<UL>
+
+<LI>
+
+<STRONG>Explicit invocation</STRONG>: This is done by hitting <KBD>M-x</KBD>
+then typing the entire name of the function or command at the prompt
+which appears in the minibuffer.  This method is guaranteed to work in
+all but the most perverse situations, but is not how the user typically
+interacts with Emacs.
+<A NAME="IDX6"></A>
+
+<LI>
+
+<STRONG>Key sequences</STRONG>: This is the fastest way of executing commands
+while editing text because it does not require moving your hands from
+the keyboard.  Virtually every command in @fuse{} has a key sequence.
+Key sequences are the keystrokes discussed above involving the
+<KBD>ctrl</KBD>, <KBD>alt</KBD>, and normal character keys.
+<A NAME="IDX7"></A>
+
+<LI>
+
+<STRONG>Menu selection</STRONG>: At the top of the Emacs frame is a menubar with
+pull down menus.  These behave in the same manner as pull down menus in
+other programs and on other systems.  Click <CODE>mouse-1</CODE> on the menu
+label and a menu will open.  Click on an item in the menu and that
+function will execute or click on a submenu, usually denoted by a
+right-pointing triangle, and that submenu will open.  Sometimes a menu
+item will be displayed in grey stipple.  This means that option is not
+currently selectable.  In Emacs, the key sequence bound to same function
+as a menu item is usually written in the right column of the pull down
+menu.  The menus are great for searching for a certain function and also
+serve to teach you the key sequences for the functions you use often.
+<A NAME="IDX8"></A>
+
+<LI>
+
+<STRONG>Toolbar selection</STRONG>: One of the ways XEmacs differs from the
+Emacs written by the Free Software Foundation is that it can display
+images within the frame.  It therefor offers a iconic toolbar.  @fuse{}
+binds several of the most commonly used functions to a toolbar that
+typically is displayed on the left side of the frame.  Click
+<CODE>mouse-1</CODE> on a toolbar icon to execute the function bound to it.  A
+short description of the function appears in the echo area whenever the
+mouse is over the toolbar icon.
+<A NAME="IDX9"></A>
+
+</UL>
+
+<P>
+@ifnotinfo
+
+</P>
+<P>
+If you have a Emacs open in front of you, click <CODE>mouse-1</CODE> on
+the <CODE>Input</CODE> menu.  The contents of this menu are shown in Figure 1.
+This menu and its submenus will be referred to throughout this tutorial.
+If you click any mouse button anywhere else on your screen, the menu
+will disappear without anything selected.
+
+</P>
+
+
+
+<H2><A NAME="SEC3" HREF="fuse-tutorial_toc.html#TOC3">Starting an Analysis Problem with FUSE</A></H2>
+
+<P>
+In the <CODE>example</CODE> subdirectory of the @fuse{} distribution are two
+files related to this tutorial.  (1) <TT>`cu10k.dat'</TT> contains copper
+<VAR>K</VAR> edge transmission data on a pure copper foil.  (2) <TT>`copper'</TT>
+contains crystallographic data for metallic copper.
+
+</P>
+<P>
+Both analysis of data and the use of @fuse{} are facilitated by
+practical and consistent use of th directory structure and disk space
+where you do you work.  Throughout this example I will refer to files
+foudn in certain locations.  These examples reflect my own preference
+for how to organize the many files generated by the various programs
+used to analyze the data.  Although I encourage you to come up with
+practices for managing files with which you are comfortable, I suggest
+that you follow my lead during this example and experiment once you are
+more familiar with @fuse{}.
+
+</P>
+<P>
+Remember that the the <CODE>Buffers</CODE> menu or the key sequences <KBD>C-x
+b</KBD> or <KBD>C-x C-b</KBD> can be used to switch between different buffers.  A
+file is saved by hitting <KBD>C-x C-s</KBD> or selecting the save function
+from the <CODE>Files</CODE> menu.  A new file is opened by hitting <KBD>C-x f</KBD>
+or selecting <CODE>Open...</CODE> from the <CODE>Files</CODE> menu.  Finally, you
+can quit Emacs by hitting <KBD>C-x C-c</KBD> or <CODE>Exit Emacs</CODE> from the
+<CODE>Files</CODE> menu.
+
+</P>
+<P>
+@ifnotinfo
+<P>
+<STRONG>Figure 1:</STRONG> INPUT mode pull-down menu
+<P>
+<img src="menu-input.jpg" alt="**image file menu-input.jpg**">
+<P>
+
+</P>
+
+<P>
+Before launching into using @fuse{}, let's set up some workspace.  I am
+writing this assuming you are parked at a command line in a terminal
+emulator, but these disk management chores could just as easily be done
+with a file manager such as The Midnight Commander or tkDesk or with the
+<CODE>dired</CODE> package in Emacs.  On my computer, I have a directory where
+I do all of my analysis which is called, appropriately enough,
+<TT>`analysis/'</TT>.  Find a place where you want to do the analysis chore
+in this tutorial and <KBD>cd</KBD> to that directory.  Now make a directory
+to hold your analysis of the copper data by issuing the command
+
+<PRE>
+    &#62; mkdir Cu
+</PRE>
+
+<P>
+Now <KBD>cd</KBD> to the <TT>`Cu/'</TT> directory.  This will be our base of
+operations for the remainder of this tutorial.
+
+</P>
+<P>
+I like to be tidy and place common kinds of files in their own
+subdirectories.  in the <TT>`Cu/'</TT> directory, issue this command
+
+<PRE>
+    &#62; mkdir data feff fits
+</PRE>
+
+<P>
+This will make three subdirectories for holding the differnt kinds of
+files that will be generated throughout this tutorial.
+
+</P>
+<P>
+Now, using the <KBD>cp</KBD> command, copy the file <TT>`cu10k.dat'</TT> from the
+@fuse{} distribution into the <TT>`data/'</TT> subdirectory and copy the
+<TT>`copper'</TT> file into the <TT>`feff/'</TT> subdirectory.
+
+</P>
+<P>
+Ready for some analysis?
+
+</P>
+
+
+
+<H2><A NAME="SEC4" HREF="fuse-tutorial_toc.html#TOC4">A Few Notes About this Document</A></H2>
+
+<P>
+This document was prepared using the GNU Texinfo system.  This allows me
+to generate documentation in info, printed, or html format from a single
+source.  The info, postscript, and html versions of this document can be
+found in the <TT>`docs/'</TT> subdirectory of the @fuse{} distribution.
+
+</P>
+<P>
+The images in this document are screen shots of an XEmacs session on my
+computer.  I use Linux 2.0.32, XEmacs 20.4, and the FVWM2 window
+manager.  Some of the text in shots of actual input files is a bit hard
+to read in the printed manual.  This is because of the greyscale
+representation of the syntax colorization of the text.  It may be fuzzy
+in the printed manual, but it looks great on the screen!
+
+</P>
+<P>
+Although all of my screen shots are of an XEmacs session, @fuse{} works
+just as well with FSF Emacs as with XEmacs.  The only difference
+significant to this tutorial is the presence of the toolbar in the
+XEmacs frame.  Since all functionality bound to the XEmacs toolbar is
+also bound to pull-down menus, this tutorial proceeds identically for
+both flavors of Emacs.
+
+</P>
+
+<P><HR><P>
+Go to the first, previous, <A HREF="fuse-tutorial_2.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+</BODY>
+</HTML>

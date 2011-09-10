@@ -1,0 +1,26 @@
+;; demo for forms-mode	-*-emacs-lisp-*-
+;;
+;; This demo visits your passwd file.
+;; using the old fashioned double file format of forms-mode (necessary 
+;; in some cases, such as this).
+;; 3-Jan-92 -FER
+
+;; use yp if present
+(or (file-exists-p (setq forms-file "/var/yp/src/passwd"))
+    (setq forms-file "/etc/passwd"))
+
+(setq forms-read-only t)		; to make sure
+(setq forms-field-sep ":")
+(setq forms-number-of-fields 7)
+
+;  NAME         LABEL           FIELD  DFLT      SIZE  LINE-SIZE
+;         VISIBLE                           NEWLINE-P  
+(setq forms-format-list '(
+   (header t "====== Visiting " forms-file " ======" nil nil nil t nil)
+   (a      t  "User : "	        1      nil   t   20    nil)
+   (b      t "   Uid: "	        3      nil   t   10    nil)
+   (c      t "   Gid: " 	4      nil   t   10    nil)
+   (d      t "Name : "          5      nil   2   30    nil)
+   (e      t "Home : "          6      nil   t   20    nil)
+   (f      t "Shell: "          7      nil   t   20    2)
+))

@@ -1,0 +1,95 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse-tutorial.texi on 28 July 1998 -->
+
+<TITLE>FUSE Tutorial - Plotting with Gnuplot</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_5.html">previous</A>, <A HREF="fuse-tutorial_7.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC20" HREF="fuse-tutorial_toc.html#TOC20">Plotting with Gnuplot</A></H1>
+
+<P>
+Several time throughout this tutorial, we plotted graphical output using
+the specialize and built-in plotting functions in @fuse{}.  In this
+chapter, I will describe how these functions work and how you can
+further interact with GNUPLOT from within Emacs.
+
+</P>
+<P>
+One of the files that ships with @fuse{} is <TT>`gnuplot.el'</TT> which
+defines <SAMP>`gnuplot mode'</SAMP> for Emacs.  <SAMP>`gnuplot mode'</SAMP> is an emacs
+major mode for creating gnuplot scripts and sending them to gnuplot.  In
+the <TT>`docs'</TT> directory of the @fuse{} distribution there is a
+reference card for <SAMP>`gnuplot mode'</SAMP> called <TT>`gpelcard.ps'</TT>.  This
+is a two page summary of the features of <SAMP>`gnuplot mode'</SAMP> in
+PostScript format.  You should refer to that for complete details about
+<SAMP>`gnuplot mode'</SAMP>.
+
+</P>
+<P>
+The basic idea behind <SAMP>`gnuplot mode'</SAMP> is that you can create a
+script for GNUPLOT in the <SAMP>`gnuplot mode'</SAMP> buffer and use
+functions to send parts or all of the script to a GNUPLOT process.
+The various plotting functions in @fuse{} work by reading the input file
+to determine the names of the files to plot<A NAME="DOCF5" HREF="fuse-tutorial_foot.html#FOOT5">(5)</A> and writes a script in the
+<SAMP>`gnuplot mode'</SAMP> buffer.  It then uses the function for sending the
+entire buffer to GNUPLOT to display the plot.
+
+</P>
+<P>
+For many common plotting chores during your analysis of EXAFS data, it
+quite suffices to simply use the functions offered by @fuse{}.  For
+looking at such common things as fit results and background removals,
+these functions work well.  The nice feature of the manner in which
+@fuse{} creates its graphical output is that it leaves you with a script
+that you can modify.  Often it is simple and quicker to modify one of
+the scripts written by @fuse{} than to create an entire script from
+scratch.
+
+</P>
+<P>
+<A NAME="IDX91"></A>
+<A NAME="IDX92"></A>
+<A NAME="IDX93"></A>
+<A NAME="IDX94"></A>
+<A NAME="IDX95"></A>
+<A NAME="IDX96"></A>
+<A NAME="IDX97"></A>
+<A NAME="IDX98"></A>
+<SAMP>`gnuplot mode'</SAMP> provides four functions for sending parts of scripts
+to <CODE>gnuplot</CODE>.  There are functions for sending the line currently
+occupied by the screen cursor (<KBD>C-c C-l</KBD>), a marked region (<KBD>C-c
+C-r</KBD>), or an entire buffer (<KBD>C-c C-b</KBD>).  There is also a function
+for sending an external file (<KBD>C-c C-f</KBD>) to GNUPLOT.  All four
+of these can be found in the <SAMP>`Gnuplot'</SAMP> menu.  The line, region, and
+buffer functions are also bound to the toolbar in XEmacs.
+
+</P>
+<P>
+<A NAME="IDX99"></A>
+<A NAME="IDX100"></A>
+<A NAME="IDX101"></A>
+@fuse{} maintains a history of scripts sent to GNUPLOT.  If you
+want to revisit an earlier plot, either one written by @fuse{} or one
+that you wrote and sent to GNUPLOT, you can navigate the script
+history.  <KBD>C-c C-p</KBD> steps backwards to previous scripts and <KBD>C-c
+C-n</KBD> steps forward to more recent scripts.  These twop commands are bound
+to the up and down arrows in the XEmacs toolbar for <SAMP>`gnuplot mode'</SAMP>.
+
+</P>
+<P>
+<SAMP>`gnuplot mode'</SAMP> also offers keyword completion, interaction with the
+GNUPLOT document, syntax colorization of GNUPLOT keywords, and
+direct interaction with the GNUPLOT process.  See the reference
+card for more details.
+
+</P>
+
+<P><HR><P>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_5.html">previous</A>, <A HREF="fuse-tutorial_7.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+</BODY>
+</HTML>

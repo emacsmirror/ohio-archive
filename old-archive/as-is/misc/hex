@@ -1,0 +1,39 @@
+From dasys1!treed@nyu.arpa Tue Jun 20 10:53:26 1989
+To: unix-emacs@BBN.COM
+Date: 1 Jun 89 05:35:06 GMT
+From: Timothy Reed <dasys1!treed@nyu.arpa>
+Sender: arpa-unix-emacs-request@BBN.COM
+Subject: reponses to gemacs binary editing mode
+Organization: Shearson Lehman Hutton
+Source-Info:  From (or Sender) name not authenticated.
+
+
+Subject: gemacs binary editing mode?
+
+The following are responses from my inquiry regarding editing 
+binary files and executables with emacs.
+
+Thanks for all the responses - the yunexus!mike's is the one I've used
+so far, tho' I plan on examining the hex dumpers soon.
+
+>From uunet!ernie.Berkeley.EDU!andy Mon May 29 14:55:38 1989
+Subject: No personal expe with this yet... (hex.el)
+
+HAve fun, please inform of any improv's you might make.
+Andrew
+
+/*
+ * Andrew kindly mailed me lisp source for hex.el version 1.0. which is
+ * pretty long. I will happily email it to any and all interested parties. 
+ * Please send email to ..!uunet!slcpi!treed or treed@shearson.com.
+ *
+ * thanks - tim
+ *
+ */
+
+name(Timothy Reed);
+phone(718-797-4634);
+UUCP(..!uunet!slcpi!treed | treed@shearson.com);
+Mail(300 Union St^MBkyn, NY^M11231);
+
+

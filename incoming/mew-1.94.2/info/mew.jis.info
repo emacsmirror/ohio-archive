@@ -1,0 +1,109 @@
+Info file: mew.jis.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `mew.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+
+INFO-DIR-SECTION Message User Agent
+START-INFO-DIR-ENTRY
+* Mew-J: (mew.jis.info).     Messaging in the Emacs World.
+END-INFO-DIR-ENTRY
+
+
+
+
+
+
+
+Indirect:
+mew.jis.info-1: 292
+mew.jis.info-2: 50483
+
+Tag table:
+(Indirect)
+Node: Top292
+Node: Overview1672
+Node: Start3677
+Node: Viewing5481
+Node: singlepart6262
+Node: multipart7299
+Node: pgp-viewing9730
+Node: folder12565
+Node: sum-write13900
+Node: features14686
+Node: sorting15706
+Node: illegal16997
+Node: Composing17892
+Node: header19068
+Node: cheader21409
+Node: addrbook23254
+Node: send26252
+Node: cite28303
+Node: mime-comp30499
+Node: charset-guess35583
+Node: reply37696
+Node: forward39092
+Node: pgp-shortcut39691
+Node: mark-b-comp44440
+Node: pgp-key46672
+Node: Marks47258
+Node: delete mark48006
+Node: refile mark49239
+Node: multi mark49766
+Node: review mark50483
+Node: unmark51099
+Node: mark level51417
+Node: Refile52049
+Node: by-folder52860
+Node: by-alist53826
+Node: by-thread55423
+Node: by-from-folder56040
+Node: by-from56975
+Node: by-newsgroups58186
+Node: by-default58460
+Node: guess-rule58768
+Node: auto-refile60304
+Node: Pick61998
+Node: condition62712
+Node: virtual63464
+Node: Quit64080
+Node: Customize64506
+Node: level-one64891
+Node: level-two66406
+Node: level-three67649
+Node: hooks68644
+Node: config70030
+Node: XEmacs72318
+Node: Convention72908
+Node: MIME74277
+Node: mime-ct74833
+Node: mime-cte75920
+Node: mime-multi76995
+Node: mime-header78688
+Node: Kanji79634
+Node: rfc82279925
+Node: mime-comes80948
+Node: canonical83221
+Node: Policy83876
+Node: History84388
+Node: mh-e84731
+Node: birth85562
+Node: pgp86412
+Node: im87155
+Node: netnews87617
+Node: Future87904
+Node: Avail88935
+Node: ftp89174
+Node: ml89420
+Node: Ack89997
+Node: Copyright91121
+Node: Author92145
+Node: Terminology93024
+Node: Bib93698
+Node: Variable Index96099
+
+End tag table

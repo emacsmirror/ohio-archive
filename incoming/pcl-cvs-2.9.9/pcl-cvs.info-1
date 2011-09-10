@@ -1,0 +1,1255 @@
+This is pcl-cvs.info, produced by Makeinfo version 3.12f from
+pcl-cvs.texi.
+
+START-INFO-DIR-ENTRY
+* Pcl-cvs:(pcl-cvs).	Emacs front-end to CVS
+END-INFO-DIR-ENTRY
+
+   Copyright (C) 1991-2000  Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+and this permission notice may be included in translations approved by
+the Free Software Foundation instead of in the original English.
+
+
+File: pcl-cvs.info,  Node: Top,  Next: Installation,  Prev: (dir),  Up: (dir)
+
+   This info manual describes pcl-cvs which is a GNU Emacs front-end to
+CVS.  It works with CVS version 1.9 and newer.  This manual is updated
+to release 2.5 of pcl-cvs.
+
+* Menu:
+
+* Installation::                How to install pcl-cvs on your system.
+* About pcl-cvs::               Authors and ftp sites.
+
+* Getting started::             An introduction with a walk-through example.
+* Buffer contents::             An explanation of the buffer contents.
+* Commands::                    All commands, grouped by type.
+
+* Customization::               How you can tailor pcl-cvs to suit your needs.
+* XEmacs Customization::        Additional tailoring under XEmacs.
+* Future enhancements::         Future enhancements of pcl-cvs.
+* Bugs::                        Bugs (known and unknown).
+* Copying::                     GNU General Public License
+* Function and Variable Index::  List of functions and variables.
+* Concept Index::               List of concepts.
+* Key Index::                   List of keystrokes.
+
+ --- The Detailed Node Listing ---
+
+Installation
+
+* Pcl-cvs installation::        How to install pcl-cvs on your system.
+* On-line manual installation::  How to install the on-line manual.
+* Typeset manual installation::  How to create typeset documentation
+                                 about pcl-cvs.
+
+About pcl-cvs
+
+* Contributors::                Contributors to pcl-cvs.
+* Archives::                    Where can I get a copy of Pcl-Cvs?
+
+Buffer contents
+
+* File status::                 The meaning of the second field.
+* Selected files::              How selection works.
+
+Commands
+
+* Setting flags::               Setting flags for CVS commands
+* Updating the directory::      Commands to update the local directory
+* Movement commands::           How to move up and down in the buffer
+* Marking files::               How to mark files that other commands
+                                will later operate on.
+* Committing changes::          Checking in your modifications to the
+                                CVS repository.
+* Editing files::               Loading files into Emacs.
+* Getting info about files::    Display the log and status of files.
+* Adding and removing files::   Adding and removing files
+* Undoing changes::             Undoing changes
+* Removing handled entries::    Uninteresting lines can easily be removed.
+* Ignoring files::              Telling CVS to ignore generated files.
+* Viewing differences::         Commands to `diff' different versions.
+* Invoking Ediff::              Running `ediff' from `*cvs*' buffer.
+* Miscellaneous commands::      Miscellaneous commands
+
+
+File: pcl-cvs.info,  Node: Installation,  Next: About pcl-cvs,  Prev: Top,  Up: Top
+
+Installation
+************
+
+   This section describes the installation of pcl-cvs, the GNU Emacs CVS
+front-end.  You should install not only the elisp files themselves, but
+also the on-line documentation so that your users will know how to use
+it.  You can create typeset documentation from the file `pcl-cvs.texi'
+as well as an on-line info file.  The following steps are also
+described in the file `INSTALL' in the source directory.
+
+   If you are running XEmacs 21.0 or later, pcl-cvs is available in
+pre-compiled package form.  Please skip ahead to *Note XEmacs
+installation::.
+
+* Menu:
+
+* Pcl-cvs installation::         How to install pcl-cvs on your system.
+* On-line manual installation::  How to install the on-line manual.
+* Typeset manual installation::  How to create typeset documentation
+                                 for pcl-cvs.
+* XEmacs installation::          How to install pcl-cvs for XEmacs.
+
+
+File: pcl-cvs.info,  Node: Pcl-cvs installation,  Next: On-line manual installation,  Prev: Installation,  Up: Installation
+
+Installation of the pcl-cvs program
+===================================
+
+  1. Edit the file `Makefile' to reflect the situation at your site.
+     The only things you have to change is the definition of `lispdir'
+     and `infodir'.  The elisp files will be copied to `lispdir', and
+     the info file to `infodir'.
+
+  2. This release of pcl-cvs requires parts of the Elib library,
+     version 1.0 or later.  Elib is available via anonymous ftp from
+     prep.ai.mit.edu in `pub/gnu/elib-1.0.tar.gz', and from a lot of
+     other sites that mirror prep.  Get Elib, and install it, before
+     proceeding.
+
+  3. Type `make install' in the source directory.  This will
+     byte-compile all `.el' files and copy both the `.el' and the
+     `.elc' into the directory you specified in step 1.  It will also
+     copy the info files (and add a corresponding entry to the info-dir
+     file if install-info can be found).
+
+     If you don't want to install the `.el' files but only the `.elc'
+     files (the byte-compiled files), you can type ``make install_elc''
+     instead of ``make install''.
+
+     If you only want to create the compiled elisp files, but don't
+     want to install them, you can type `make elcfiles' instead.  This
+     is what happens if you only type `make' without parameters.
+
+  4. Edit the file `site-start.el' in your emacs lisp directory (usually
+     `/usr/local/share/emacs/site-lisp' or something similar) and enter
+     the contents of the file `pcl-cvs-startup.el' into it.  It
+     contains a couple of `auto-load's that facilitates the use of
+     pcl-cvs.  Alternatively, you can just use ``make install_startup''.
+
+
+
+File: pcl-cvs.info,  Node: On-line manual installation,  Next: Typeset manual installation,  Prev: Pcl-cvs installation,  Up: Installation
+
+Installation of the on-line manual.
+===================================
+
+  1. Create the info file `pcl-cvs' from `pcl-cvs.texi' by typing `make
+     info'.  If you don't have the program `makeinfo' you can get it by
+     anonymous ftp from e.g. `ftp.gnu.ai.mit.edu' as
+     `pub/gnu/texinfo-2.14.tar.Z' (there might be a newer version there
+     when you read this), or you could use the pre-formatted info file
+     `pcl-cvs.info' that is included in the distribution (type `cp
+     pcl-cvs.info pcl-cvs').
+
+  2. Move the info file `pcl-cvs' to your standard info directory.
+     This might be called something like `/usr/local/info'.
+
+  3. Edit the file `dir' in the info directory and enter one line to
+     contain a pointer to the info file `pcl-cvs'.  The line can, for
+     instance, look like this:
+
+          * Pcl-cvs: (pcl-cvs).       An Emacs front-end to CVS.
+
+
+File: pcl-cvs.info,  Node: Typeset manual installation,  Next: XEmacs installation,  Prev: On-line manual installation,  Up: Installation
+
+How to make typeset documentation from pcl-cvs.texi
+===================================================
+
+   If you have TeX installed at your site, you can make a typeset manual
+from `pcl-cvs.texi'.
+
+  1. Run TeX by typing ``make pcl-cvs.dvi''.  You will not get the
+     indices unless you have the `texindex' program.
+
+  2. Convert the resulting device independent file `pcl-cvs.dvi' to a
+     form which your printer can output and print it.  If you have a
+     postscript printer there is a program, `dvi2ps', which does.  There
+     is also a program which comes together with TeX, `dvips', which
+     you can use.
+
+
+
+File: pcl-cvs.info,  Node: XEmacs installation,  Prev: Typeset manual installation,  Up: Installation
+
+Installing pcl-cvs for XEmacs.
+==============================
+
+   If you are running XEmacs 21.0 or later, pcl-cvs is available in
+pre-compiled package form.  Please refer to the XEmacs manual for
+instructions regarding package selection and installation.  Currently,
+the pcl-cvs package also requires you to have installed the xemacs-base,
+elib, and dired packages.
+
+   Once you have installed these packages (manually or using the
+interactive installer), you should check the values of a couple pcl-cvs
+variables and override the default values in the `site-start.el' file
+if necessary.  These variables are:
+
+`cvs-program'
+     This is the name or full path of the `cvs' executable to be used by
+     pcl-cvs.  If `cvs' will be automatically found on the user's PATH,
+     there is no need to change this.  Otherwise, you should set this
+     variable to the full path to your `cvs' program via
+
+          (setq cvs-program "/FULL/PATH/TO/cvs")
+
+     in the `site-start.el' file.
+
+`cvs-diff-program'
+     This is the name or full path of the `diff' executable to be used
+     by pcl-cvs.  If `diff' will be automatically found on the user's
+     PATH, there is no need to change this.  Otherwise, you should set
+     this variable to the full path to your `diff' program via
+
+          (setq cvs-diff-program "/FULL/PATH/TO/diff")
+
+     Note that there are some nasty bugs in the context diff variants
+     of some vendor versions, such as the one in SunOS-4.
+
+`cvs-bakprefix'
+     This should be set to the prefix that CVS prepends to files when
+     `rcsmerge'ing.  It is normally set to `".#"'.
+
+   Finally, if you have TeX, `texinfo', and `dvips' installed at your
+site, you can make a typeset manual from `pcl-cvs.texi':
+
+  1. Run TeX by typing ``texi2dvi pcl-cvs.texi''.  The file
+     `pcl-cvs.texi' can be found in your XEmacs package hierarchy in
+     the directory `man/pcl-cvs'.  You will not get the indices unless
+     you have the `texindex' program.
+
+  2. Convert the resulting device independent file `pcl-cvs.dvi' to a
+     form which your printer can print.  If you have a postscript
+     printer you can use the program `dvips'.
+
+
+
+File: pcl-cvs.info,  Node: About pcl-cvs,  Next: Getting started,  Prev: Installation,  Up: Top
+
+About pcl-cvs
+*************
+
+   Pcl-cvs is a front-end to CVS versions 1.9 and later.  It integrates
+the most frequently used CVS commands into an emacs interface.
+
+* Menu:
+
+* Contributors::                Contributors to pcl-cvs.
+* Archives::                    Where can I get a copy of Pcl-Cvs?
+
+
+File: pcl-cvs.info,  Node: Contributors,  Next: Archives,  Prev: About pcl-cvs,  Up: About pcl-cvs
+
+Contributors to pcl-cvs
+=======================
+
+   Contributions to the package are welcome.  I have limited time to
+work on this project, but I will gladly add any code that you
+contribute to me to this package (*note Bugs::.).
+
+   The following persons have made contributions to pcl-cvs.
+
+   * Brian Berliner wrote CVS, together with some other contributors.
+     Without his work on CVS this package would be useless...
+
+   * Per Cederqvist wrote most of the otherwise unattributed functions
+     in pcl-cvs as well as all documentation.
+
+   * Inge Wallin (`inge@lysator.liu.se') wrote the skeleton to
+     `pcl-cvs.texi', and gave useful comments on it.  He also wrote the
+     files `elib-node.el' and `compile-all.el'.  The file `cookie.el'
+     was inspired by Inge.
+
+   * Linus Tolke (`linus@lysator.liu.se') contributed useful comments
+     on both the functionality and the documentation.
+
+   * Jamie Zawinski (`jwz@jwz.com') contributed `pcl-cvs-lucid.el',
+     which was later renamed to `pcl-cvs-xemacs.el'.
+
+   * Leif Lonnblad contributed RCVS support.  (Since superceded by the
+     new remote CVS support.)
+
+   * Jim Blandy (`jimb@cyclic.com') contributed hooks to automatically
+     guess CVS log entries from ChangeLog contents; and initial support
+     of the new Cygnus / Cyclic remote CVS; as well as various sundry
+     bug fixes and cleanups.
+
+   * Jim Kingdon (`kingdon@cyclic.com') contributed lots of fixes to
+     the build and install procedure.
+
+   * Greg A. Woods (`woods@weird.com') contributed code to implement
+     the use of per-file diff buffers; and vendor join diffs with
+     emerge and ediff; as well as various and sundry bug fixes and
+     cleanups.
+
+   * Greg Klanderman (`greg.klanderman@alum.mit.edu') implemented
+     toggling of marked files; setting of CVS command flags via prefix
+     arguments; updated the XEmacs support; updated the manual; and
+     fixed numerous bugs.
+
+   * Stefan Monnier (`monnier@cs.yale.edu') added various other
+     features and introduced even more new bugs.
+
+   * Masatake YAMATO (`masata-y@is.aist-nara.ac.jp') graciously
+     contributed the cvstree code to display a tree of tags and that
+     later was superseded by the new cvs-status-mode.
+
+
+   Apart from these, a lot of people have send us suggestions, ideas,
+requests, bug reports and encouragement.  Thanks a lot!  Without you
+there would be no new releases of pcl-cvs.
+
+
+File: pcl-cvs.info,  Node: Archives,  Prev: Contributors,  Up: About pcl-cvs
+
+Where can I get pcl-cvs?
+========================
+
+   As of January 1996, the original author of pcl-cvs, Per Cederqvist,
+is no longer maintaining pcl-cvs and responsibility has been passed to
+the PCL-CVS Trust, see *Note Bugs::.
+
+   As of this writing, there are several versions of pcl-cvs available
+on the net.  First, there is the old pcl-cvs version 1.05 distributed
+with CVS and in widespread use.  Next, there is version 2.0b2,
+distributed by the new primary maintainer, Greg Woods.  It is available
+via anonymous ftp from `ftp.weird.com' in the directory `/pub/local'.
+Then there is an XEmacs version based on 2.0b2 available with XEmacs
+21.0 in packaged form (see `ftp.xemacs.org' in the directory
+`/pub/xemacs/packages').  Finally, there is the 2.0.xx version from
+Stefan Monnier available from
+`ftp://rum.cs.yale.edu/pub/monnier/pcl-cvs'.  Plans for merging these
+last three into a unified release are moving forward.  See also
+`http://www.cyclic.com' and in particular
+`http://www.cyclic.com/cvs/soft-pcl.html' for possibly more current
+information.
+
+   New releases will be announced to appropriate newsgroups.  If you
+send your email address to us at `pcl-cvs@cyclic.com' we will attempt to
+notify you of new releases.
+
+
+File: pcl-cvs.info,  Node: Getting started,  Next: Buffer contents,  Prev: About pcl-cvs,  Up: Top
+
+Getting started
+***************
+
+   This document assumes that you know what CVS is, and that you at
+least know the fundamental concepts of CVS.  If that is not the case you
+should read the man page for CVS.
+
+   Pcl-cvs is only useful once you have checked out a module.  So before
+you invoke it you must have a copy of a module somewhere in the file
+system.
+
+   You can invoke pcl-cvs by typing `M-x cvs-examine RET'.  If your
+emacs responds with `[No match]' your system administrator has not
+installed pcl-cvs properly.  Try `M-x load-library RET pcl-cvs RET'.
+If that also fails, talk to your system administrator.  If it succeeds
+you might put this line in your `.emacs' file so that you don't have to
+type the `load-library' command every time you wish to use pcl-cvs:
+
+     (autoload 'cvs-examine "pcl-cvs" nil t)
+
+   The function `cvs-examine' will ask for a directory.  The command
+`cvs -n update' will be run in that directory.  (It should contain
+files that have been checked out from a CVS archive.)  The output from
+`cvs' will be parsed and presented in a table in a buffer called
+`*cvs*'.  It might look something like this:
+
+     PCL-CVS release XXRELEASEXX.
+     
+     CVSROOT directory: /usr/CVSroot
+     Working directory: /users/ceder/FOO/test
+     
+     
+     In directory .:
+                Updated                bar
+                Updated                file.txt
+                Modified   ci          namechange
+                Updated                newer
+     
+     In directory sub:
+                Modified   ci          ChangeLog
+     
+     --------------------- End ---------------------
+
+   In this example, your repository is in `/usr/CVSroot' and CVS has
+been run in the directory `/users/ceder/FOO/test'.  The three files
+(`bar', `file.txt' and `newer') that are marked with `Updated' have
+been copied from the CVS repository to `/users/ceder/FOO/test/' since
+someone else has checked in newer versions of them.  Two files
+(`namechange' and `sub/ChangeLog') have been modified locally, and need
+to be checked in.
+
+   You can move the cursor up and down in the buffer with `C-n' and
+`C-p' or `n' and `p'.  If you press `c' on one of the `Modified' files
+that file will be checked in to the CVS repository. *Note Committing
+changes::.  You can press `x' to get rid of the "uninteresting" files
+that have only been `Updated' (and don't require any further action
+from you).
+
+   You can also easily get a `diff' between your modified file and the
+base version that you started from, and you can get the output from
+`cvs log' and `cvs status' on the listed files simply by pressing a key
+(*note Getting info about files::.).
+
+
+File: pcl-cvs.info,  Node: Buffer contents,  Next: Commands,  Prev: Getting started,  Up: Top
+
+Buffer contents
+***************
+
+   The display contains six columns, some of which are optional.  They
+contain, from left to right:
+
+   * Optionally, the head revision of the file.  This is the latest
+     version found in the repository.  It might also contain (instead
+     of the head revision) a sub status.
+
+   * An asterisk when the file is "marked" (*note Selected files::.).
+
+   * The status of the file.  *Note File status::, for more information.
+
+   * An optional marker indicating that some action needs to be taken on
+     the file.  This may be `com', indicating that the file needs to be
+     checked in, `upd', indicating that the file needs to be updated
+     from the repository, or `udo' if the changes should probably be
+     undone.
+
+   * Optionally, the base revision of the file.  This is the version
+     which the copy in your working directory is based upon.
+
+   * The file name.
+
+
+* Menu:
+
+* File status::                 The meaning of the second field.
+* Selected files::              How selection works.
+
+
+File: pcl-cvs.info,  Node: File status,  Next: Selected files,  Prev: Buffer contents,  Up: Buffer contents
+
+File status
+===========
+
+   The `file status' field can have the following values:
+
+`Modified'
+     The file is modified in  your  working  directory, and there was no
+     modification to the same file in the repository.  This status can
+     have the following sub status:
+
+    `Merged'
+          The file is modified in your working directory, and there were
+          modifications in the repository as well as in your copy, but
+          they were merged successfully, without conflict, in your
+          working directory.
+
+`Conflict'
+     A conflict was detected while trying to merge your changes to FILE
+     with changes from the source repository.  FILE (the copy in your
+     working directory) is now the output of the `rcsmerge' command on
+     the two versions; an unmodified copy of your file is also in your
+     working directory, with the name `.#FILE.VERSION', where VERSION
+     is the RCS revision that your modified file started from.  *Note
+     Viewing differences::, for more details.
+
+`Added'
+     The file has been added by you, but it still needs to be checked
+     in to the repository.
+
+`Removed'
+     The file has been removed by you, but it needs to be checked in to
+     the repository.  You can resurrect it by typing `a' (*note Adding
+     and removing files::.).
+
+`Unknown'
+     A file that was detected in your directory, but that neither
+     appears in the repository, nor is present on the list of files
+     that CVS should ignore.
+
+`Removed by you, changed in repository'
+     You have removed a file, and before you committed the removal
+     someone committed a change to that file.  You can use `a' to
+     resurrect the file (*note Adding and removing files::.).
+
+`Up-to-date'
+     The file is up to date with respect to the version in the
+     repository.  This status can have a sub status of:
+
+    `Commited'
+          The file was just committed by yourself.
+
+    `Added'
+          The file has been added by you (and has been checked into the
+          repository).
+
+    `Updated'
+          The file was brought up to date with respect to the
+          repository.  This is done for any file that exists in the
+          repository but not in your source, and for files that you
+          haven't changed but are not the most recent versions
+          available in the repository.
+
+    `Patched'
+          The file was brought up to date with respect to a remote
+          repository by way of fetching and applying a patch to the
+          file in your source.  This is done for any file that exists
+          in a remote repository and in your source; of which you
+          haven't changed locally but is not the most recent version
+          available in the remote repository.
+
+`Need-update'
+     Either a newer version than the one in your source is available in
+     the repository and you have not modified your checked out version,
+     or the file exists in the repository but not in your source.  Use
+     `cvs-mode-update' bound to `O' to update the file.
+
+`Need-merge'
+     You have modified the checked out version of the file, and a newer
+     version is available in the repository.  A merge will take place
+     when you run a `cvs update'.
+
+`Need-remove'
+     The file has been removed from your working directory but not yet
+     `cvs remove'd.
+
+`Unresolved-conflict'
+     There was an unresolved conflict when merging changes from the
+     repository into the file.
+
+
+File: pcl-cvs.info,  Node: Selected files,  Prev: File status,  Up: Buffer contents
+
+Selected files
+==============
+
+   Many of the commands work on the current set of "selected" files.
+
+   * If marks are not being ignored, and there are any files that are
+     marked, they constitute the set of selected files.
+
+   * Otherwise, if the cursor points to a file, that file is the
+     selected file.
+
+   * Otherwise, if the cursor points to a directory, all the files in
+     that directory that appear in the buffer are the selected files.
+
+   By default, marks are always in effect.  You may change this,
+however, by setting either of the variables `cvs-diff-ignore-marks' or
+`cvs-default-ignore-marks', which define whether marks are in effect by
+default for the diff commands and for the rest of the `*cvs*' buffer
+commands, respectively.  Both are `nil' by default.
+
+   In addition, you may use the command `cvs-mode-toggle-marks'
+normally bound to <T> to toggle the use of marks for the following
+command.
+
+   This scheme might seem a little complicated, but once one get used to
+it, it is quite powerful.
+
+   For commands to mark and unmark files, see *Note Marking files::.
+
+
+File: pcl-cvs.info,  Node: Commands,  Next: Customization,  Prev: Buffer contents,  Up: Top
+
+Commands
+********
+
+   The nodes in this menu contains explanations about all the commands
+that you can use in pcl-cvs.  They are grouped together by type.
+
+* Menu:
+
+* Setting flags::               Setting flags for CVS commands
+* Entering pcl-cvs::            Commands to invoke pcl-cvs
+* Updating the directory::      Commands to update the local directory
+* Movement commands::           How to move up and down in the buffer
+* Marking files::               How to mark files that other commands
+                                will later operate on.
+* Committing changes::          Checking in your modifications to the
+                                CVS repository.
+* Editing files::               Loading files into Emacs.
+* Getting info about files::    Display the log and status of files.
+* Adding and removing files::   Adding and removing files
+* Undoing changes::             Undoing changes
+* Removing handled entries::    Uninteresting lines can easily be removed.
+* Ignoring files::              Telling CVS to ignore generated files.
+* Viewing differences::         Commands to `diff' different versions.
+* Invoking Ediff::              Running `ediff' from `*cvs*' buffer.
+* Updating files::              Updating files that Need-update.
+* Tagging files::               Tagging files.
+* Miscellaneous commands::      Miscellaneous commands.
+
+
+File: pcl-cvs.info,  Node: Setting flags,  Next: Entering pcl-cvs,  Prev: Commands,  Up: Commands
+
+Setting flags for CVS commands
+==============================
+
+   This section describes the convention used by nearly all pcl-cvs
+commands for setting optional flags sent to CVS.  A single `C-u' prefix
+argument is used to cause the command to prompt for flags to be used
+for the current invocation of the command only.  Two `C-u' prefix
+arguments are used to prompt for flags which will be set permanently,
+for the current invocation and all that follow, until the flags are
+changed, or unless temporary flags are set which override them.
+
+   Perhaps an example or two is in order.  Say you are about to add a
+binary file to the repository, and want to specify the flags `-kb' to
+`cvs add'.  You can type `C-u a -kb RET', enter the description, and
+the file will be added.  Subsequent adds will use the previously
+prevailing flags, found in `cvs-add-flags'.
+
+   As a second example, say you are about to perform a diff and want to
+see the result in unified diff format, i.e. you'd like to pass the flag
+`-u' to both `cvs diff' and `diff'.  You'd also like all subsequent
+diffs to use this flag.  You can type `C-u C-u = -u RET' and the diff
+will be performed, and `cvs-diff-flags' will be set to `("-u")'.  You
+can of course override this flag for a single diff by using a single
+`C-u' prefix argument.
+
+   Additionally to this, some commands can take special prefix
+arguments.  These work as follows: when called with a `C-u' prefix, the
+user is prompted for a new value of the special prefix and the special
+prefix is activated for the next command.  When called without the `C-u'
+prefix, the special prefix is re-activated (with the same value as last
+time) for the next command.  The special prefixes are:
+
+`b'
+     Provide the next command with a branch (can be any version
+     specifier) to work on.
+
+
+File: pcl-cvs.info,  Node: Entering pcl-cvs,  Next: Updating the directory,  Prev: Setting flags,  Up: Commands
+
+Entering pcl-cvs
+================
+
+   Most commands in pcl-cvs require that you have a `*cvs*' buffer.
+The commands that you use to get one are listed below.  For each, a
+`cvs' process will be run, the output will be parsed by pcl-cvs, and
+the result will be printed in the `*cvs*' buffer (see *note Buffer
+contents::. for a description of the contents).
+
+`M-x cvs-update'
+     Run a `cvs update' command.  You will be asked for the directory
+     in which the `cvs update' will be run.
+
+`M-x cvs-examine'
+     Run a `cvs -n update' command.  This is identical to the previous
+     command, except that it will only check what needs to be done but
+     will not change anything.  You will be asked for the directory in
+     which the `cvs -n update' will be run.
+
+`M-x cvs-status'
+     Run a `cvs status' command.  You will be asked for the directory
+     in which the `cvs status' will be run.
+
+`M-x cvs-checkout'
+     Run a `cvs checkout' command.  You will be asked for the directory
+     in which the `cvs update' will be run and the module to be checked
+     out.
+
+   CVS uses lock files in the repository to ensure the integrity of the
+data files in the repository.  They might be left behind i.e. if a
+workstation crashes in the middle of a CVS operation.  CVS outputs a
+message when it is waiting for a lock file to go away.  Pcl-cvs will
+show the same message in the *cvs* buffer, together with instructions
+for deleting the lock files.  You should normally not have to delete
+them manually -- just wait a little while and the problem should fix
+itself.  But if the lock files do not disappear you can delete them
+with `M-x cvs-mode-delete-lock RET'.
+
+   By default, the commands above will descend recursively into
+subdirectories.  You can avoid that behavior by including `-l' in the
+flags for the command.  These flags can be set by giving a prefix
+argument to the command (e.g., by typing `C-u M-x cvs-update RET -l
+RET').
+
+
+File: pcl-cvs.info,  Node: Updating the directory,  Next: Movement commands,  Prev: Entering pcl-cvs,  Up: Commands
+
+Updating the `*cvs*' buffer
+===========================
+
+   The following commands can be used from within the `*cvs*' buffer to
+update the display:
+
+`M-u'
+     This will run `cvs update' and prompt for a new directory to
+     update.  This runs the command `cvs-update'.
+
+`M-e'
+     This will run `cvs -n update' and prompt for a new directory to
+     examine.  This runs the command `cvs-examine'.
+
+`M-s'
+     This will run `cvs status' and prompt for a new directory to
+     status.  This runs the command `cvs-status'.
+
+
+File: pcl-cvs.info,  Node: Movement commands,  Next: Marking files,  Prev: Updating the directory,  Up: Commands
+
+Movement Commands
+=================
+
+   You can use most normal Emacs commands to move forward and backward
+in the buffer.  Some keys are rebound to functions that take advantage
+of the fact that the buffer is a pcl-cvs buffer:
+
+`SPC'
+`C-n'
+`n'
+     These keys move the cursor one file forward, towards the end of the
+     buffer (`cookie-next-cookie').
+
+`C-p'
+`p'
+     These keys move one file backward, towards the beginning of the
+     buffer (`cookie-previous-cookie').
+
+
+File: pcl-cvs.info,  Node: Marking files,  Next: Committing changes,  Prev: Movement commands,  Up: Commands
+
+Marking files
+=============
+
+   Pcl-cvs works on a set of "selected files" (*note Selected files::.).
+You can mark and unmark files with these commands:
+
+`m'
+     This marks the file that the cursor is positioned on.  If the
+     cursor is positioned on a directory all files in that directory
+     will be marked.  (`cvs-mode-mark').
+
+`u'
+     Unmark the file that the cursor is positioned on. If the cursor is
+     on a directory, all files in that directory will be unmarked.
+     (`cvs-mode-unmark').
+
+`M'
+     Mark _all_ files in the buffer (`cvs-mode-mark-all-files').
+
+`<ESC> <DEL>'
+     Unmark _all_ files (`cvs-mode-unmark-all-files').
+
+`<DEL>'
+     Unmark the file on the previous line, and move point to that line
+     (`cvs-mode-unmark-up').
+
+`<%>'
+     Mark all files matching a regular expression
+     (`cvs-mode-mark-matching-files').
+
+`<T>'
+     Toggle use of marks for the next command (`cvs-mode-toggle-marks').
+
+
+File: pcl-cvs.info,  Node: Committing changes,  Next: Editing files,  Prev: Marking files,  Up: Commands
+
+Committing changes
+==================
+
+`c'
+     All files that have a "need to be checked in"-marker (*note Buffer
+     contents::.) can be checked in with the `c' command.  It checks in
+     all selected files (*note Selected files::.) (except those who
+     lack the "com"-marker - they are ignored).  Pressing `c' causes
+     `cvs-mode-commit' to be run.
+
+     When you press `c' you will get a buffer called
+     `*cvs-commit-message*'.  Enter the log message for the file(s) in
+     it.  When you are ready you should press `C-c C-c' to actually
+     commit the files (using `cvs-edit-done').
+
+     Normally the `*cvs-commit-message*' buffer will retain the log
+     message from the previous commit, but if the variable
+     `cvs-erase-input-buffer' is set to a non-`nil' value the buffer
+     will be erased.  Point and mark will always be located around the
+     entire buffer so that you can easily erase it with `C-w'
+     (`kill-region').
+
+     If you are editing the files in your emacs an automatic
+     `revert-buffer' will be performed.  (If the file contains `$Id$'
+     keywords `cvs commit' will write a new file with the new values
+     substituted.  The auto-revert makes sure that you get them into
+     your buffer).  The revert will not occur if you have modified your
+     buffer, or if `cvs-auto-revert' is set to `nil'.
+
+`C'
+     This is just like `cvs-mode-commit', except that it tries to
+     provide appropriate default log messages by looking at the
+     `ChangeLog's handling the files to be checked in.  The idea is to
+     write your ChangeLog entries first, and then use this command to
+     commit your changes.  Pressing `C' causes
+     `cvs-mode-changelog-commit' to be run.
+
+     To select default log text, pcl-cvs:
+        - finds the ChangeLogs for the files to be checked in;
+
+        - verifies that the top entry in the ChangeLog is on the
+          current date and by the current user; if not, no default text
+          is provided;
+
+        - searchs the ChangeLog entry for paragraphs containing the
+          names of the files being checked in; and finally
+
+        - uses those paragraphs as the default log text in the
+          `*cvs-commit-message*' buffer.
+
+     You can then commit the `ChangeLog' file once per day without any
+     log message.
+
+
+File: pcl-cvs.info,  Node: Editing files,  Next: Getting info about files,  Prev: Committing changes,  Up: Commands
+
+Editing files
+=============
+
+   There are currently three commands that can be used to find a file
+(that is, load it into a buffer and start editing it there).  These
+commands work on the line that the cursor is situated at.  They always
+ignore any marked files.
+
+`f'
+     Find the file that the cursor points to.  Run `dired' (*note
+     Dired: (Emacs)Dired.)  if the cursor points to a directory
+     (`cvs-mode-find-file').
+
+`o'
+     Like `f', but use another window
+     (`cvs-mode-find-file-other-window').
+
+`A'
+     Invoke `add-change-log-entry-other-window' to edit a `ChangeLog'
+     file.  The `ChangeLog' will be found in the directory or a parent
+     of the directory of the file the cursor points to.
+     (`cvs-mode-add-change-log-entry-other-window').
+
+
+File: pcl-cvs.info,  Node: Getting info about files,  Next: Adding and removing files,  Prev: Editing files,  Up: Commands
+
+Getting info about files
+========================
+
+   Both of the following commands can be customized.  *Note
+Customization::.
+
+`l'
+     Run `cvs log' on all selected files, and show the result in a
+     temporary buffer (`cvs-mode-log').
+
+`s'
+     Run `cvs status' on all selected files, and show the result in a
+     temporary buffer (`cvs-mode-status').
+
+
+File: pcl-cvs.info,  Node: Adding and removing files,  Next: Undoing changes,  Prev: Getting info about files,  Up: Commands
+
+Adding and removing files
+=========================
+
+   The following commands are available to make it easy to add and
+remove files from the CVS repository.
+
+`a'
+     Add all selected files.  This command can be used on `Unknown'
+     files (*note File status::.).  The status of the file will change
+     to `Added', and you will have to use `c' (`cvs-mode-commit', *note
+     Committing changes::.) to really add the file to the repository.
+
+     This command can also be used on `Removed' files (before you commit
+     them) to resurrect them.
+
+     Selected files that are neither `Unknown' nor `Removed' will be
+     ignored by this command.
+
+     The command that is run is `cvs-mode-add'.
+
+`r'
+     This command removes the selected files (after prompting for
+     confirmation).  The files are `rm'ed from your directory and
+     (unless the status was `Unknown'; *note File status::.) they will
+     also be `cvs remove'd.  If the files were `Unknown' they will
+     disappear from the buffer.  Otherwise their status will change to
+     `Removed', and you must use `c' (`cvs-mode-commit', *note
+     Committing changes::.) to commit the removal.
+
+     The command that is run is `cvs-mode-remove-file'.
+
+
+File: pcl-cvs.info,  Node: Undoing changes,  Next: Removing handled entries,  Prev: Adding and removing files,  Up: Commands
+
+Undoing changes
+===============
+
+`U'
+     If you have modified a file, and for some reason decide that you
+     don't want to keep the changes, you can undo them with this
+     command.  It works by removing your working copy of the file and
+     then getting the latest version from the repository
+     (`cvs-mode-undo-local-changes'.
+
+
+File: pcl-cvs.info,  Node: Removing handled entries,  Next: Ignoring files,  Prev: Undoing changes,  Up: Commands
+
+Removing handled entries
+========================
+
+`x'
+     This command allows you to remove all entries that you have
+     processed.  More specifically, the lines for `Up-to-date' files
+     (*note File status::. are removed from the buffer.  If a directory
+     becomes empty the heading for that directory is also removed.
+     This makes it easier to get an overview of what needs to be done.
+
+     The command is called `cvs-mode-remove-handled'.  If
+     `cvs-auto-remove-handled' is set to non-`nil' this will
+     automatically be performed after every commit.
+
+`C-k'
+     This command can be used for lines that `cvs-mode-remove-handled'
+     would not delete, but that you want to delete
+     (`cvs-mode-acknowledge').
+
+
+File: pcl-cvs.info,  Node: Ignoring files,  Next: Viewing differences,  Prev: Removing handled entries,  Up: Commands
+
+Ignoring files
+==============
+
+`i'
+     Arrange so that CVS will ignore the selected files.  The file
+     names are added to the `.cvsignore' file in the corresponding
+     directory.  If the `.cvsignore' doesn't exist it will be created.
+
+     The `.cvsignore' file should normally be added to the repository,
+     but you could ignore it also if you like it better that way.
+
+     This runs `cvs-mode-ignore'.
+
+
+File: pcl-cvs.info,  Node: Viewing differences,  Next: Invoking Ediff,  Prev: Ignoring files,  Up: Commands
+
+Viewing differences
+===================
+
+`='
+`d ='
+     Display a `cvs diff' between the selected files and the RCS version
+     that they are based on. (`cvs-mode-diff').
+
+`d b'
+     If CVS finds a conflict while merging two versions of a file
+     (during a `cvs update', *note Updating the directory::.) it will
+     save the original file in a file called `.#FILE.VERSION' where
+     FILE is the name of the file, and VERSION is the RCS version
+     number that your file was based on.
+
+     With the `b' command you can run a `diff' on the files
+     `.#FILE.VERSION' and `FILE'.  This command only works on files
+     that have status `Conflict' or `Merged'.  (`cvs-mode-diff-backup').
+
+`d h'
+     Display a `cvs diff' between the selected files and the head
+     revision in the repository. (`cvs-mode-diff-head').
+
+`d v'
+     Display a `cvs diff' between the selected files and the head
+     revision of the vendor branch in the repository.
+     (`cvs-mode-diff-vendor').
+
+   For all of the diffing commands, if `cvs-diff-ignore-marks' is set
+to a non-`nil' value or if the command `T' (`cvs-mode-toggle-marks') is
+given immediately preceding the command, any marked files will not be
+considered to be selected.
+
+   Also, you can get a context- or unified diff by setting
+`cvs-diff-flags'.  *Note Customization::, and also *Note Setting
+flags::.
+
+
+File: pcl-cvs.info,  Node: Invoking Ediff,  Next: Updating files,  Prev: Viewing differences,  Up: Commands
+
+Running ediff
+=============
+
+`e'
+     This command uses ediff (or emerge depending on
+     `cvs-idiff-imerge-handlers') to allow you to view diffs.  If a
+     prefix argument is give, pcl-cvs will prompt for a revision against
+     which the diff should be made, else the default will be to use the
+     BASE revision.
+
+`E'
+     This command use ediff (or emerge, see above) to allow you to do an
+     interactive 3-way merge.
+
+     *Note:*  When the file status is `Merged' or `Conflict', CVS has
+     already performed a merge.  The resulting file is not used in any
+     way if you use this command.  If you use the `q' command inside
+     `ediff' (to successfully terminate a merge) the file that CVS
+     created will be overwritten.
+
+
+File: pcl-cvs.info,  Node: Updating files,  Next: Tagging files,  Prev: Invoking Ediff,  Up: Commands
+
+Updating files
+==============
+
+`O'
+     Update all selected files with status `Need-update' by running
+     `cvs update' on them.  This command is only meaningful after `M-x
+     cvs-status' has been run. (`cvs-mode-update').
+
+
+File: pcl-cvs.info,  Node: Tagging files,  Next: Miscellaneous commands,  Prev: Updating files,  Up: Commands
+
+Tagging files
+=============
+
+`t'
+     Tag all selected files by running `cvs tag' on them.
+     (`cvs-mode-tag').  It's usually preferable to tag directories at a
+     time.  Rather than selecting all files (which too often doesn't
+     select all files but only the few that are displayed), clear the
+     selection with `M-DEL' (`cvs-mode-unmark-all-files'), position the
+     cursor on the directory you want to tag and hit `t'.
+
+
+File: pcl-cvs.info,  Node: Miscellaneous commands,  Prev: Tagging files,  Up: Commands
+
+Miscellaneous commands
+======================
+
+`M-x cvs-mode-byte-compile-files'
+     Byte compile all selected files that end in .el.
+
+`M-x cvs-mode-delete-lock'
+     This command deletes the lock files that the *cvs* buffer informs
+     you about.  You should normally never have to use this command
+     since CVS tries very carefully to always remove the lock files
+     itself.
+
+     You can only use this command when a message in the *cvs* buffer
+     tells you so.  You should wait a while before using this command
+     in case someone else is running a cvs command.
+
+`?'
+`h'
+     Show a summary of common command key bindings in the echo area.
+     (`cvs-help').
+
+`q'
+     Quit pcl-cvs, killing the *cvs* buffer. (`cvs-mode-quit').
+
+
+File: pcl-cvs.info,  Node: Customization,  Next: XEmacs Customization,  Prev: Commands,  Up: Top
+
+Customization
+*************
+
+   If you have an idea about any customization that would be handy but
+isn't present in this list, please tell me!  For info on how to reach
+me, see *Note Bugs::.
+
+`cvs-erase-input-buffer'
+     If set to anything other than `nil' the edit buffer will be erased
+     before you write the log message (*note Committing changes::.).
+
+`cvs-diff-flags'
+     A list of strings to pass as arguments to the `cvs diff' and
+     `diff' programs.  This is used by `cvs-mode-diff-cvs' and
+     `cvs-mode-diff-backup' (key `b', *note Viewing differences::.).  If
+     you prefer the Unidiff format you could add this line to your
+     `.emacs' file:
+
+          (setq cvs-diff-flags '("-u"))
+
+`cvs-default-ignore-marks'
+     If this variable is non-`nil' the non-diffing commands will not
+     consider marked files to be selected by default.  The command
+     `cvs-mode-toggle-marks' bound to `T' can be used to toggle the use
+     of marks for the following command.
+
+`cvs-diff-ignore-marks'
+     If this variable is non-`nil' the diffing commands will not
+     consider marked files to be selected by default.  The command
+     `cvs-mode-toggle-marks' bound to `T' can be used to toggle the use
+     of marks for the following command.
+
+`cvs-log-flags'
+     List of strings to send to `cvs log'.  Used by `cvs-mode-log' (key
+     `l', *note Getting info about files::.).
+
+`cvs-status-flags'
+     List of strings to send to `cvs status'.  Used by `cvs-mode-status'
+     (key `s', *note Getting info about files::.).
+
+`cvs-auto-remove-handled'
+     If this variable is set to any non-`nil' value
+     `cvs-mode-remove-handled' will be called every time you check in
+     files, after the check-in is ready.  *Note Removing handled
+     entries::.
+
+`cvs-auto-remove-handled-directories'
+     If this variable is set to any non-`nil' value, directories that do
+     not contain any files to be checked in will not be listed in the
+     `*cvs*' buffer.
+
+`cvs-auto-revert'
+     If this variable is set to any non-`nil' value any buffers you have
+     that visit a file that is committed will be automatically reverted.
+     This variable defaults to `t'. *Note Committing changes::.
+
+`cvs-update-prog-output-skip-regexp'
+     The `-u' flag in the `modules' file can be used to run a command
+     whenever a `cvs update' is performed (see cvs(5)).  This regexp is
+     used to search for the last line in that output.  It is normally
+     set to `"$"'.  That setting is only correct if the command outputs
+     nothing.  Note that pcl-cvs will get very confused if the command
+     outputs _anything_ to `stderr'.
+
+`cvs-cvsroot'
+     This variable can be set to override `CVSROOT'.  It should be a
+     string. If it is set then every time a cvs command is run it will
+     be called as `cvs -d CVS-CVSROOT...'  This can be useful if your
+     site has several repositories.
+
+`cvs-commit-buffer-require-final-newline'
+     When you enter a log message in the `*cvs-commit-message*' buffer
+     pcl-cvs will normally automatically insert a trailing newline,
+     unless there already is one.  This behavior can be controlled via
+     `cvs-commit-buffer-require-final-newline'.  If it is `t' (the
+     default behavior), a newline will always be appended.  If it is
+     `nil', newlines will never be appended.  Any other value causes
+     pcl-cvs to ask the user whenever there is no trailing newline in
+     the commit message buffer.
+
+`cvs-changelog-full-paragraphs'
+     If this variable is non-`nil', include full ChangeLog paragraphs in
+     the CVS log created by `cvs-mode-changelog-commit'.  This may be
+     set in the local variables section of a ChangeLog, to indicate the
+     policy for that ChangeLog.
+
+     A ChangeLog paragraph is a bunch of log text containing no blank
+     lines; a paragraph usually describes a set of changes with a
+     single purpose, but perhaps spanning several functions in several
+     files.  Changes in different paragraphs are unrelated.
+
+     You could argue that the CVS log entry for a file should contain
+     the full ChangeLog paragraph mentioning the change to the file,
+     even though it may mention other files, because that gives you the
+     full context you need to understand the change.  This is the
+     behavior you get when this variable is set to t, the default.
+
+     On the other hand, you could argue that the CVS log entry for a
+     change should contain only the text for the changes which occurred
+     in that file, because the CVS log is per-file.  This is the
+     behavior you get when this variable is set to nil.
+
+`cvs-sort-ignore-file'
+     If this variable is set to any non-`nil' value the `.cvsignore'
+     will always be sorted whenever you use `cvs-mode-ignore' to add a
+     file to it.  This option is on by default.
+
+`cvs-update-cmd-flags'
+     List of strings to send to `cvs update'.  Used by `cvs-update' and
+     `cvs-examine'.
+
+`cvs-status-cmd-flags'
+     List of strings to send to `cvs status'.  Used by `cvs-status'.
+
+`cvs-checkout-cmd-flags'
+     List of strings to send to `cvs checkout'.  Used by `cvs-checkout'.
+
+`cvs-add-flags'
+     List of strings to send to `cvs add'.  Used by `cvs-mode-add',
+     normally bound to `a'.
+
+`cvs-commit-flags'
+     List of strings to send to `cvs commit'.  Used by the commands
+     `cvs-mode-commit' and `cvs-mode-changelog-commit', normally bound
+     to `c' and `C', respectively.
+
+`cvs-remove-flags'
+     List of strings to send to `cvs remove'.  Used by
+     `cvs-mode-remove-file', normally bound to `r'.
+
+`cvs-undo-flags'
+     List of strings to send to `cvs update' after removing a locally
+     modified file.  Used by `cvs-mode-undo-local-changes', normally
+     bound to `U'.
+
+`cvs-update-flags'
+     List of strings to send to `cvs update'.  Used by
+     `cvs-mode-update', normally bound to `O' and used to update a file
+     after using `cvs-status'.
+
+`cvs-tag-flags'
+     List of strings to send to `cvs tag'.  Used by `cvs-mode-tag',
+     normally bound to `t'.
+
+`cvs-rtag-flags'
+     List of strings to send to `cvs rtag'.  Used by `cvs-mode-rtag',
+     normally bound to `M-t'.
+
+
+File: pcl-cvs.info,  Node: XEmacs Customization,  Next: Future enhancements,  Prev: Customization,  Up: Top
+
+XEmacs Customization
+********************
+
+   The emacs lisp file `pcl-cvs-xemacs.el' included with pcl-cvs adds a
+few extra features for XEmacs, including menus, mouse bindings, and
+fontification the the `*cvs*' buffer.  The faces defined for
+fontification are listed below:
+
+`cvs-header-face'
+     This face is used to highlight directory changes.
+
+`cvs-filename-face'
+     This face is used to highlight file names.
+
+`cvs-unknown-face'
+     This face is used to highlight the status of files which are
+     UNKNOWN.
+
+`cvs-handled-face'
+     This face is used to highlight the status of files which are
+     handled and need no further action.
+
+`cvs-need-action-face'
+     This face is used to highlight the status of files which still
+     need action.
+
+`cvs-marked-face'
+     This face is used to highlight the marked file indicator (`*').
+

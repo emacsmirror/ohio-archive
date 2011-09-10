@@ -1,0 +1,50 @@
+% We make @ signs act like letters, temporarily, to avoid conflict
+% between user names and internal control sequences of plain format.
+%\catcode`@=11
+
+\ifcase \@ptsize\relax 
+
+\voffset= -30pt
+\textheight 580pt 	% increase from 536pt
+\textwidth  450pt	% increase from 360pt
+\hoffset= -45pt		% compensate to keep centered
+\if@twoside 
+	\reversemarginpar	% I assume the binding side is the
+	\oddsidemargin 70pt 	% bigger margin, so reverse the
+	\evensidemargin 38pt 	% placement  of marginpars
+	\marginparwidth 40pt	% less of a margin to work with
+  \else \oddsidemargin 54pt \evensidemargin 54pt \marginparwidth 83pt 
+	\fi
+
+\or	% 11pt
+
+\voffset= -30pt
+\textheight 580pt 	% increase from 536pt
+\textwidth  450pt	% increase from 360pt
+\hoffset= -45pt		% compensate to keep centered
+\if@twoside 
+	\reversemarginpar	% I assume the binding side is the
+	\oddsidemargin 70pt 	% bigger margin, so reverse the
+	\evensidemargin 38pt 	% placement  of marginpars
+	\marginparwidth 40pt	% less of a margin to work with
+  \else \oddsidemargin 54pt \evensidemargin 54pt \marginparwidth 83pt 
+	\fi
+
+\or	% 12pt
+
+\voffset= -30pt
+\textheight 580pt 	% increase from 536pt
+\textwidth  450pt	% increase from 360pt
+\hoffset= -45pt		% compensate to keep centered
+\if@twoside 
+	\reversemarginpar	% I assume the binding side is the
+	\oddsidemargin 70pt 	% bigger margin, so reverse the
+	\evensidemargin 38pt 	% placement  of marginpars
+	\marginparwidth 40pt	% less of a margin to work with
+  \else \oddsidemargin 54pt \evensidemargin 54pt \marginparwidth 83pt 
+	\fi
+
+\fi
+
+%\catcode`@=12 % at signs are no longer letters
+

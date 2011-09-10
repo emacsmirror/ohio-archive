@@ -1,0 +1,632 @@
+This file documents version 2.5 of logo.el.
+
+Logo.el is written for GNU Emacs 20.2 or newer, running under X11.
+You will (of-course) need Berkeley Logo (*v4.6* or newer) installed on
+your system.
+
+It is *not* designed to be used with Xemacs, Gnu Emacs compiled
+without X support or Gnu Emacs started with -nw option. The last two
+will partly work, but I did not test it that way.
+
+
+============
+INSTALLATION
+============
+
+
+If you did "make logo-mode", and tutorial showed that logo-mode is
+installed successfully, you can skip 1 & 2 and continue reading 3.
+(Some parts of 3. will have been set by "make logo-mode", but not all.)
+
+
+Before trying to use logo mode, you *must* do following (1. & 2.):
+
+1.  	Copy logo.el to a directory on your load-path, (usually 
+/usr/share/emacs/site-lisp, or /usr/local/share/emacs/site-lisp) and
+byte-compile it. (Open logo.el with emacs, and choose from
+`Emacs-Lisp' pull-down menu `Byte-compile This File'.)  If you get
+error messages during compilation, you are probably running emacs
+older than 20.2. Upgrade!
+
+
+2. 	Add these forms to your .emacs file
+
+(setq auto-mode-alist
+      (cons '("\\.lgo?\\'" . logo-mode)
+            auto-mode-alist))
+(autoload 'logo-mode "logo")
+
+If you do not have .emacs file, create it. Without these forms, logo
+mode will *not* work.
+
+
+3.	All following forms are optional, but you will probably want to 
+add at least some of them.
+
+Before we dive into details, this is how my .emacs file looks:
+
+(global-set-key [backspace] 'backward-delete-char-untabify)
+(global-set-key [delete] 'delete-char)
+
+(setq auto-mode-alist
+      (cons '("\\.lgo?\\'" . logo-mode)
+	    auto-mode-alist))
+(autoload 'logo-mode "logo")
+(setq logo-term-columns 86)
+(setq logo-term-rows 32)
+(setq logo-setcursor-overwrite nil)
+(setq logo-unbalanced-distance 4096)
+
+These are the options that I find reasonable for standard use. The
+first two lines have nothing to do with logo-mode. I just like to know
+that my backspace key will be backspacing and delete key deleting,
+which is not always true with emacs. 
+
+
+Description of options for fine-tuning:
+
+Set this to change the size of the frame (window) for
+Logo-inferior-process buffer. If these forms are not present, the size
+is set to 80x24. (This will work properly only with ucblogo 4.7 or
+newer.)
+
+(setq logo-term-columns nn)
+(setq logo-term-rows mm)
+
+Where nn and mm is whatever makes you happy.
+
+
+By default logo-mode will indent continued lines in logo (edit) buffer
+when RET-urn key is pressed. To insert a newline without indenting use
+LFD (C-j) key. To reverse this behavior (reverse should probably be
+considered "normal" behavior), add this form.
+
+(setq logo-standard-indent t)
+
+
+By default logo-mode starts with syntax highlighting enabled. If you
+do not want it, set this:
+
+(setq logo-syntax-highlight nil)
+
+If you feel that the default syntax highlighting is slowing your system
+too much, set this:
+
+(setq logo-lazy-lock-mode t)
+
+
+By default logo-mode starts with novice command management enabled. If
+you don't want it set this:
+
+(setq logo-novice-management nil)
+
+
+By default logo-mode will start Logo process in setcursor mode. To
+change this permanently set:
+
+(setq logo-setcursor-start nil)
+
+
+Default text input mode in setcursor mode is set to overwrite. To
+change this permanently set:
+
+(setq logo-setcursor-overwrite nil)
+
+
+By default, the old text, after recalling the previous input in
+setcursor mode will be cleared to the end of the line. If that gets in
+your way, set this:
+
+(setq logo-setcursor-spaces-old n)
+
+where n is from 0 to any number. However, spaces are never pushed beyond
+end of the line. 
+
+
+By default two spaces are pushed ahead of end of the new input in
+setcursor mode. If that gets in your way, set this:
+
+(setq logo-setcursor-spaces-new n)
+
+where n is from 0 to any number. However, spaces are never pushed beyond
+end of the line.
+
+
+If emacs lags behind during indenting Logo procedures, or simply when
+hitting return key (you must be working on a *very* slow system to
+notice this last one), add this form.
+
+(setq logo-unbalanced-distance 4096)
+
+On a very slow machine go down to 2048. By default, this is set to
+8192, but it is doubtful that you will ever write a single implicitly
+continued logo line that will be 8K long.
+
+
+If you have installed ucblogo info files translated into another language,
+then set this:
+
+(setq logo-info-file-trans "/your-info-path/file-name.info")
+
+However, for this to work - somebody has to write translation first. To the
+best of my knowledge only Croatian translation exists. Therefore by default
+this is set to "/usr/local/info/ucbl-hr.info" . If you change this to another
+language you must also update the `Help' menu entry by setting this:
+
+(setq logo-info-trans "(De)")
+
+This "(De)" would be in case your translation is German, but you can use 
+longer words as well. By default this is set to "(Hr)". 
+If you don't care for this at all, set
+
+(setq logo-info-trans nil)
+
+With this set menu entry for translated manual will disappear.
+
+
+By default emacs enables changes to Logo language through
+Logo>>Language, and Logo>>Compiler menus. This has to do with .logo
+initialization file. If you do not want to use this facility, set
+this:
+
+(setq logo-load-language nil)
+
+
+Logo mode automatically sets the depth of setcursor input history menu
+to safe value for the display resolution it is running on. (20 entries
+for 640x480, 25 for 800x600 ...) To change this set following:
+
+(setq logo-dynamic-menu-depth n) 
+
+where n is any number (up to ... 48). However note that if you use
+larger number, (depending on your display resolution, and emacs font
+size) you may not be able to see nor use all menu entries.
+
+
+If you don't want me messing with your default emacs colors, then
+set this line:
+
+(setq dont-mess-with-logo-colors t)
+
+
+If you don't want parens matching on cursor movement, then set this line:
+
+(setq logo-flash-on-movement nil)
+
+
+If you want to change the delay after matching parentheses on cursor
+movement, set this to any number of seconds you wish:
+
+(setq logo-matching-delay-time seconds)
+
+Default delay is set to 2 seconds, but even a very long delay -- say,
+5 seconds would be OK, as you don't have to wait for it to
+complete. Delay will be reset if you move the cursor again.
+
+
+ 
+4.  	There are several other options settable in .emacs file, but they
+deal mostly with problem corrections. If I have done my work properly,
+and if you have installed ucblogo (release 4.6 or newer) as instructed
+in ucblogo README file, they will not be necessary.  Read logo.el file
+(first five pages) for the description of other options. (For instance
+if Emacs can't find Logo help files, debug menu doesn't work etc. ...)
+
+
+
+========================================
+USING BERKELEY LOGO WITH EMACS LOGO MODE
+========================================
+
+To start logo mode, open one Logo source file in emacs. As far as
+emacs is concerned Logo source file is the file that ends with .lg ,
+.lgo , or a file that has this `;;; -*- logo -*-' on a first line.
+
+Start ucblogo from a `Logo-start' menu. You can start Logo in `Other
+Frame', `Other Window', or `Same Window'. The *BEST* way is `Other
+Frame', and I definitely suggest using it. (The other two are given
+for archaic reasons only, and will cause window size problems if you
+use setcursor-mode.)  Due to availability of setcursor mode I insist
+on a minimum window (frame) size when logo starts -- 81x26 (that is if
+the usable size is left at 80x24). Therefore if you want to work with
+two windows, the frame must be at least 50 lines high. Do not change
+frame size of Inferior Logo buffer (by dragging corners with the
+mouse) if you intend to use setcursor mode, or Logo output will be
+garbled. On the other hand - stretching the height of Logo edit frame
+is perfectly OK.
+
+Choosing mode:
+==============
+There are three different modes for running Logo in emacs: terminal,
+emacs, and setcursor mode. Initially Logo starts in *setcursor* mode
+(that is, if you start Logo in `Other Frame' -- which is, once again,
+recommended). This is the only "Logo-centric" mode and differs
+substantially from standard comint-mode behavior. If "standard" is
+what you want switch to terminal or emacs modes (if Logo is started in
+`Other Window or Same Window' *terminal* mode is selected by
+default. To switch, open `Logo' pull-down menu, and then `Logo-term'
+sub-menu in Inferior Logo buffer.  There are just a few differences
+between the other two modes.  Scrolling in emacs mode is to the middle
+of the window, whereas in terminal mode you stay at the bottom of the
+window, once you get there. In emacs mode, there are no restrictions
+to the previous screens of Logo interaction. In terminal mode you can
+not access previous screens, after doing CLEARTEXT.  The following
+Terminal Access commands are available in these two modes: CLEARTEXT,
+SETMARGINS, and STANDOUT.
+
+If you intend to use SETCURSOR and CURSOR, you *must* switch to
+setcursor mode. Being able to use setcursor mode, depends on emacs
+setting the TERM variable for your system correctly. If it can't do
+that, you can try to force xterm or vt100 in .emacs .  If it still
+won't work, then you have to resort to `safe' or `raw' setting in
+.emacs, which should work for all systems. If you have used `safe',
+you loose setcursor mode, but CLEARTEXT and STANDOUT (some systems
+only) should still work. With `raw' setting none of the Terminal
+Access commands work, and you get the garbage printed out every time
+you try to use one. (This is not always true.) Instructions on how to
+do this (eg. set xterm in .emacs) can be found in comments in the first
+few pages of logo.el file.
+
+
+Editing and sending Logo source code:
+=====================================
+You write Logo code in Logo edit buffer. All standard emacs editing
+features are supported here. The notable difference from standard
+behavior is automatic indenting bound to RET (enter) key.  You can
+check special Logo editing features by pulling down `Logo-edit'
+menu. All functions that are bound to a key sequence will show that
+sequence as well. To see commands for sending source code (or parts of
+it) to Logo pull down `Logo-send' menu.  Choices that are shaded (in
+all of these menus) denote that this option is presently not
+available. For instance if `Send Region' is shaded it simply means
+that no region has been selected.
+
+You can have several source files opened, but only one Logo process
+buffer. That is the reason for all three choices on `Logo-start' menu
+being shaded after you have started Logo.
+
+Syntax highlighting is turned on by default (unless you have disabled
+it in .emacs file). However you can always turn it off/on with `Toggle
+Syntax Highlighting' choice in `Logo-edit' pull-down menu.
+
+Following syntax classes are highlighted:
+Comments - (red) text.
+Strings - (brown) text.
+Start and end of Logo procedure definition (TO .MACRO DEFINE .DEFMACRO
+END) - (blue) text.
+Variables (actually :var.name) - (yellow) text.
+
+Highlighting of beginning and end of Logo definitions is not so
+dependable as functions that mark procedure boundaries (used for code
+indenting and sending). TO, .MACRO, and END will not be highlighted if
+they are indented.
+
+For `adventurous' novices (meaning mostly Emacs novices) I have
+included novice command management feature. This simply tags
+potentially dangerous commands, and they are not executed
+immediately. Instead, emacs will pop a window with warning, and
+basic instructions what to do next. You can still execute the command
+if you decide so. If you find this disturbing (I do) then turn it off
+with Logo-edit>>Toggle Novice Management choice from menu-bar, or set
+it permanently in .emacs file.
+
+Interacting with Logo:
+======================
+To run and test your procedures switch to Inferior Logo buffer. If you
+have started Logo in `Same Window', to switch -- you have to use
+`C-c l'. Otherwise simply move the mouse pointer to Logo buffer.
+
+The usual goodies from Scheme (or Lisp modes) are present in Logo mode
+as well. You can step with `M-p' / `M-n' (C-up / C-down, should also
+work, if not trapped by your Window Manager) through the previous
+inputs to Logo in all modes, and edit these inputs as you wish. When
+finished with editing (input) simply hit Return key wherever you are
+in the input line. Emacs will correctly grab the whole input and send
+it to Logo. In setcursor mode, you can use S-down-mouse-2 (shift and
+press mouse-2) anywhere on the Inferior Logo window to pop-up the `List
+Input History' menu. Release mouse on any of the entries, and that
+input will be inserted on command line. (In other two modes use
+In/Out>>List Input History menu from the menu-bar.)
+
+To switch to different mode use pull-down sub-menu `Logo-term' (under
+the `Logo' menu). The mode you are in now is shaded. If all three are
+shaded, emacs "thinks" that Logo is busy. This may, or may not be
+true. If it is not, simply hit return once, and pull down the menu
+again.
+
+Several standard editing keys work "slightly" different in setcursor
+mode. First, the buffer is set to overwrite mode by default. You can
+change this with insert key, but next time that emacs gets control,
+(whenever you hit return) it will revert to overwrite mode. (You can
+permanently override that in .emacs file). Delete and Backspace keys
+work only within current command (input) line. Kill and yank (paste)
+commands work only on input line, by killing or yanking the whole
+input. Do not bother aiming with the mouse accurately. No matter where
+you are in setcursor buffer, mouse-2 will paste new input line,
+overwriting the old line. The old input is cleared, so don't try
+pasting two inputs hoping they will concatenate.  You can not tell
+emacs where is the end of input line, by positioning the point
+there. That is chosen automatically. (Actually this is not entirely
+true -- if emacs ever gets hopelessly confused about the position of
+logo-input-marker, you can set it manually with `C-@'.)  The whole
+purpose for this yanking (pasting) business is to transfer input lines
+from other applications running on your X display, therefore
+X-selection always takes precedence over emacs kill-ring. (To retrieve
+previous inputs from your current Logo/logo-mode session use `M-p'
+instead.)
+
+Probably the *most useful* key to remember in setcursor mode is
+`C-l'. This is not bound to `recenter' as in the rest of logo-mode
+buffers, but to `logo-find-input-end' which takes you back to the end
+of Logo command line (in case you had wondered off).
+
+To stop a "runaway" Logo hit `C-c C-c' in Inferior Logo buffer. If this
+doesn't work use one of the choices from from `Signals' pull-down menu
+in Inferior buffer. 
+`BREAK' (`C-c C-c') to which Logo should respond with "Stopping..."
+`QUIT' to which Logo should respond with "Pausing..."
+`KILL' to which emacs responds with "Process logo killed"
+Signals menu is not part of logo.el, so there are no Logo specific
+choices there - it is built into comint mode.
+
+You do not have to worry (as you should if using Logo without
+logo-mode) about saving your source files before you test any of
+them. Even if Logo crashes in Inferior Logo buffer (with a message
+like ... segmentation fault ...), your sources are still intact in
+Logo edit buffer. Simply restart Logo with `Logo-start' menu, and
+re-send your procedures to it with any of the choices on `Logo-send'
+pull-down menu.
+
+Workspace Management:
+=====================
+To choose procedures for tracing or stepping, use `Logo-debug'
+sub-menu under `Logo' pull-down menu in Inferior Logo buffer.  Debug
+buffer lists all names currently defined, and lets you select
+procedures (variables or properties) for tracing or stepping. Mouse
+bindings are as in XFM. Mouse-1 selects only the pointed name
+(de-selects everything else), mouse-2 toggles the selection for the
+name, mouse-3 selects pointed name, quits debug-buffer and sends all
+selected names to Logo. `q' key also quits debug-buffer and sends all
+selected names to Logo.  When you open `Trace...' or `Step...' menus,
+the names that were traced or stepped before will be highlighted (and
+placed in parentheses).
+
+The last entry under `Logo>>Logo-debug' menu is `Erase'. You can mark
+(with the same mechanism as for tracing); procedures, variables or
+plists for erasing. After `q' key is pressed, marked names will be
+erased from Logo workspace, and GC will run automatically. To check
+which is the buffer you're actually working with (trace, step or
+erase), as all three look alike -- read the buffer mode line. For
+erase buffer it will state: `(Fundamental Logo-ERASE View)' etc.
+
+Help system:
+============
+Logo-mode has a very simple help system.
+
+Help works in source buffers. Press mouse-3 on any valid Logo name,
+and the help file (for that procedure) will open. To exit hit `q'. If
+the help for the procedure doesn't exist, HELPCONTENTS file will be
+opened. There you can choose as many help files as you want (with
+mouse-3). Hit `q' in HELPCONTENTS to return to the source file. If you
+want to check HELPCONTENTS, either click mouse-3 on a word which is not
+defined in Logo, or use `Logo-help' sub-menu on emacs `Help' pull-down
+menu. This option is available only on Logo edit frame menu bar.
+
+To get better organized and more comprehensive help, browse through
+Logo User Manual by pulling down the `Help' menu and choosing from
+`Logo-help' sub-menu, `User Manual'. That will work if you have
+installed ucblogo.texi package (installed automatically with ucblogo
+5 or newer). For installation instructions see README file that
+comes with that package. To exit from Logo User Manual buffer hit `q'.
+
+To get help for logo-mode itself hit `C-h m' in any of emacs logo mode
+buffers.
+
+Although completion facilities are not part of the help system, you
+can regard them as such. Two types of completion are available in logo
+edit buffers. Completion for Logo keywords (actually standardly
+defined names of Logo primitive and library procedures) and completion
+for words that were already used in any of opened logo edit buffers.
+
+To perform completion for Logo keywords write a few starting letters
+and hit ESC TAB. This will open a window with a list of all possible
+Logo keyword completions. Click mouse-2 on the one you want, and your
+keyword will be completed in edit buffer.
+
+To perform completion on a word that is not standardly defined Logo
+name, write a few letters, and hit M-/ (Alt-/). If possible, emacs
+will complete the word with the word you have used before in this, or
+any other edit buffers currently opened. If there are more possible
+completions, cycle through them by repeatedly pressing M-/, until you
+find the one you want. The other way to accomplish the same result is
+to hit C-M-/ (Ctrl-Alt-/) and emacs will open a window with all
+available completions listed. Click mouse-2 on the one you want.
+
+Obvious *NOT To DOs* when running Logo in Logo mode:
+====================================================
+Entering `edit "whatever' in Inferior Logo buffer defeats the purpose
+of using Logo mode. Whatever you edit this way will be lost (unless you
+save it manually). You will not be able to use logo-mode editing
+features this way, even if your EDITOR environment variable is set to
+emacs. This will also block Logo -- no interaction from other
+logo-mode buffers will be possible.
+
+Entering `load "whatever' in Inferior Logo buffer is not the right way
+to do it. Use `Open Logo File...' choice from `Files>>Logo-mode Files'
+pull-down menu in Logo edit buffer. Emacs will pop-up a new frame
+(that is, if you started Logo with `Run Logo Other Frame') and drop it
+in a `Dired' mode, with default directory (the directory where the
+first source file resides) displayed. Then choose (mouse-2) the
+desired file. This way you can see both source files at the same
+time. To send this file to Logo, simply hit `C-c b'.  If you opened
+Logo source file that neither has the `.lg' extension, nor Logo
+mode-line as the first line, use `Files>>Logo-mode Files>>Convert to
+Logo-mode' choice from the pull-down menu. (Only files opened in
+fundamental mode can be converted.)
+
+If you started Logo with `Run Logo Same Window' choice, you can still
+have several source files opened. Switch between them with `C-c l' key
+using prefix. (If you have three files opened `C-u 1 C-c l' switches
+from Inferior Logo buffer to the newest source buffer, and `C-u 3 C-c
+l' switches to the oldest buffer -- or just use emacs `Buffers' menu
+to switch.)
+
+There is no need to use help, trace or step Logo commands
+manually. They can't hurt, but logo-mode provides interactive, mouse
+driven interface, which is easier to use.
+
+Do not define Logo procedures by typing them directly to Logo in
+Inferior Logo buffer. This will work OK, but you will not be able to
+change them later on. `M-p' will retrieve them line by line, and not
+as a whole definition. Instead, simply enter definitions in Logo edit
+buffer and send them over with `C-M-x'.
+
+If you have been using SETCURSOR command in setcursor mode, and
+Inferior Logo buffer is cluttered with old text, do *not* try to clear
+the buffer using emacs. Instead, use Logo to do the job -- enter `ct'
+(CLEARTEXT) command on Logo input line.
+
+Not so obvious *NOT To DOs*:
+============================
+Do not leave blank lines (spaces only) inside Logo string
+constants. Indenting and procedure sending functions in logo-mode depend
+on this. If you really need blank line in Logo string, you can use this: 
+
+make "foo "|abc
+||
+def|
+
+instead of this:
+
+make "foo "|abc
+
+def|
+
+As far as Logo is concerned, result is the same. Logo-mode, however will
+malfunction on the second.
+
+Although you can leave blank lines and comment lines (comments only)
+inside procedure definitions in Logo edit buffer, their use is
+restricted to areas between lines that are not continued, or are
+implicitly continued (Lisp style). Do not use blank lines between
+explicitly continued Logo lines (lines that end with `~'). Neither
+Logo, nor logo-mode function properly in these circumstances. You can
+use comment only lines between two explicitly continued Logo lines, but
+you must end them with `~'. However, you are on your own here -- in
+some cases Logo will reject those.
+
+This is what I was talking about:
+
+to worldtree
+
+;; comment
+make "world ~
+     tree "world ~
+     (list
+          
+          ;; comment
+          (tree "France leaves [Paris Dijon Avignon])
+          
+          ;; comment
+          (tree "China leaves [Beijing Shanghai Guangzhou Suzhou])
+          ...
+
+This works OK. However if you try to insert a comment line between
+
+make "world ~ 
+     tree "world ~
+
+lines, Logo will print error message when worldtree is run.
+
+
+Do not use names like `x\;y' `x\(y' `x| |y' `x|;|y' `x\\y' or some
+such for your procedures and variables. Although Logo will accept
+this, you will not be able to mark these names in Workspace Management
+(Debug) buffer. I have allowed some rather weird characters to
+accommodate Brian's match program, but that's as far as I'll go.
+
+
+Do not use yank (paste) facility to paste procedure definitions
+directly to Inferior Logo buffer -- this will not work (if in
+setcursor mode). Yank can be used only to paste the command line
+(input) directly to Logo. This probably sounds ambiguous, therefore
+one small example:
+
+Let's say that you have in another editor window (it can be another
+copy of emacs, or whatever) this procedure:
+
+to remove1 :e :l
+op filter [[x] [op or not equalp :e :x memberp :x ?rest]] :l
+end
+
+and you want to test it in current Logo/logo-mode session. If you yank
+it directly to Inferior Logo buffer, it will arrive as one line
+(setcursor mode), and Logo will not accept this as a procedure
+definition. Instead, yank it to Logo edit buffer, and use `C-M-x'
+to send it to Logo.
+
+On the other hand (once Logo has received the procedure definition),
+you can use yank to paste from other editor test inputs to procedure
+remove1. For instance, you can yank:
+`show remove1 2 [1 2 3 1 2 3 1 2 3]'
+directly to Inferior Logo buffer and hit return. Logo should respond
+by printing following:
+
+? show remove1 2 [1 2 3 1 2 3 1 2 3]            
+[1 2 3 1 2 3 1 3]
+?                                                                        
+
+This is an oversimplified example, but, there will be times (when
+testing tree recursive procedures - for instance) where the test input
+will be several lines long elaborately constructed tree list...
+
+
+Do *not* try to close Logo by clicking on X in the upper right corner
+of *logo* frame (or by using close option on the upper left corner of
+the *logo* frame). This will close that frame, and make Logo
+unaccessible to you, but it will *not* kill Logo. If you want to kill
+Logo, type `bye' in *logo* buffer.
+
+
+Not so obvious *To DOs*:
+========================
+One of the facilities built into logo-mode is automatic loading of
+.logo initialization file from your home directory - if it exists. The
+idea here is not so much to write additions to Logo library
+(although it can be used for that as well), but to alter the standard
+behavior of Logo interpreter.
+
+As an example of what can be done with initialization file, copy the
+included .logo (dot.logo) file to your home directory, (read the
+comments in that file first) and start Logo. Click on
+`Logo>>Language>>Ucblogo + .logo' menu, and emacs will load .logo
+extensions into Logo.
+
+The Compiler sub-menu on Logo pull-down menu in Inferior Logo buffer is
+.logo specific. What it does should be evident after reading comments
+in .logo file.
+
+
+If you are *not* interested in using ucblogo terminal access commands
+during your work, you might find it more comfortable to switch to
+terminal or emacs modes. You *must* stay in setcursor mode only if you
+intend using SETCURSOR or CURSOR.
+
+===============================
+COMMENTS BUG REPORTS AND To-DOs
+===============================
+
+Logo-mode is tested only on Intel machines running Linux and
+FreeBSD. I have no access to anything else. The original work started
+on emacs 19.34.1(b), but that version is no longer supported. 
+Logo-mode v2.3 will work only with emacs 20.2 and newer. Your safest
+bet is to upgrade to 20.4.
+
+Right now I have a lot "To-DO", but am willing to listen to
+"reasonable" suggestions.
+
+
+For more information, comments, or bug reports, send e-mail to
+<hblazevi@ri.tel.hr>
+
+ 

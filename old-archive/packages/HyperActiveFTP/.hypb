@@ -1,0 +1,737 @@
+
+"active-hyper.menu.main.otl"
+("Install_Locally" nil nil link-to-file ("./active-hyper.menu.install") "tb06@CCFS.Lehigh.EDU" "19930205:15:04:55" nil nil)
+
+"README.HyperActiveFTP"
+("Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main")) "tb06@EECS.Lehigh.EDU" "19920504:20:21:57" nil nil)
+
+"active-hyper.list.new"
+("Back_to_Top" nil nil eval-elisp ((find-file "active-hyper.list.big.otl")) "tb06@CC.Lehigh.EDU" "19920422:00:27:20" nil nil)
+
+"active-hyper.documentation"
+("Up_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main")) "tb06@CC.Lehigh.EDU" "19920416:10:26:37" nil nil)
+("Back_to_Credits" nil nil eval-elisp ((find-file "active-hyper.credits")) "tb06@CC.Lehigh.EDU" "19920416:10:26:06" nil nil)
+
+"README" 
+("Main_Ward_of_the_HyperActiveFTP_System" nil nil eval-elisp ((find-file "/anonymous@archive.cis.ohio-state.edu.:/pub/gnu/emacs/elisp-archive/packages/HyperActiveFTP/active-hyper.menu.main")) "tb06@CC.Lehigh.EDU" "19920418:22:01:39" nil nil)
+("Install_Locally" nil nil eval-elisp (
+ (progn
+   (find-file
+"/anonymous@archive.cis.ohio-state.edu.:/pub/gnu/emacs/elisp-archive/packages/HyperActiveFTP/active-hyper.Install.el")
+   (eval-current-buffer)
+   (find-file "active-hyper.menu.install")
+   (delete-other-windows)
+   (goto-char (point-min)))) "brannon@cs.caltech.edu"
+"19920415:18:06:45" nil nil)
+
+"active-hyper.menu.install" 
+("updated_files" nil nil eval-elisp ((active-hyper:update-files)) "brannon@cs.caltech.edu" "19920429:16:18:13" nil nil)
+("the_new_ftp_lists" nil nil eval-elisp ((active-hyper:get-new-lists)) "brannon@cs.caltech.edu" "19920429:16:13:09" nil nil)
+("Change_Default_Installation_Directory" nil nil eval-elisp ((active-hyper:change-default)) "brannon@cs.caltech.edu" "19920422:11:42:05" nil nil)
+("find-file_~/.emacs" nil nil eval-elisp ((find-file "~/.emacs")) "brannon@cs.caltech.edu" "19920418:23:06:34" nil nil)
+("Return_to_HyperActiveFTP_dired" nil nil eval-elisp ((dired "/anonymous@archive.cis.ohio-state.edu.:/pub/gnu/emacs/elisp-archive/packages/HyperActiveFTP")) "tb06@CC.Lehigh.EDU" "19920418:21:59:49" nil nil)
+
+("Load_in_the_Installation_Code:5" nil nil eval-elisp ((progn (find-file "active-hyper.Install.el") (eval-current-buffer) (kill-buffer (current-buffer)) (message "Loaded...continue."))) "tb06@CCFS.Lehigh.EDU" "19930205:15:10:27" nil nil)
+("Load_in_the_Installation_Code:4" nil nil eval-elisp ((load-file "/anonymous@archive.cis.ohio-state.edu:/pub/gnu/emacs/elisp-archive/packages/HyperActiveFTP/active-hyper.Install.el")) "tb06@CCFS.Lehigh.EDU" "19921204:14:56:10" "tb06" "19921204:14:57:43")
+
+("Load_in_the_Installation_Code:3" nil nil eval-elisp ((progn (find-file "/anonymous@archive.cis.ohio-state.edu:/pub/gnu/emacs/elisp-archive/packages/HyperActiveFTP") (eval-current-buffer) (kill-buffer))) "tb06@CCFS.Lehigh.EDU" "19921204:14:55:16" nil nil)
+
+("Load_in_the_Installation_Code:2" nil nil eval-elisp ((load-file "/anonymous@archive.cis.ohio.state.edu:/pub/gnu/emacs/elisp-archive/packages/HyperActiveFTP/active-hyper.Install.el")) "tb06@CCFS.Lehigh.EDU" "19921204:14:53:25" nil nil)
+("Load_in_the_Installation_Code" nil nil eval-elisp ((progn (find-file "/anonymous@archive.cis.ohio-state.edu:/pub/gnu/emacs/elisp-archive/packages/HyperActiveFTP/active-hyper.Install.el") (eval-current-buffer) (kill-buffer (current-buffer)) (message "Installation code loaded... go ahead to the next step."))) "brannon@cs.caltech.edu" "19920415:18:30:02" "tb06@CCFS.Lehigh.EDU" "19921204:14:42:39")
+eval-elisp (
+ (progn
+   (find-file
+"/anonymous@archive.cis.ohio-state.edu.:/pub/gnu/emacs/elisp-archive/packages/HyperActiveFTP/active-hyper.Install.el")
+   (eval-current-buffer)
+   (kill-buffer (current-buffer))
+   (message "Installation code loaded... go ahead to the next step.")
+)) "brannon@cs.caltech.edu" "19920415:18:30:02" nil nil)
+
+("Install_the_Latest_Version_of_HyperActiveFTP" nil nil eval-elisp ((active-hyper:local-install)) "brannon@cs.caltech.edu" "19920415:17:58:23" "paquette@.crim.ca" "19920508:03:22:35")
+((active-hyper:local-install)) "brannon@cs.caltech.edu"
+"19920415:17:58:23" nil nil) 
+("Make_Hyper-Installation_Directory" nil
+nil eval-elisp (
+ (progn
+   (message "Making directory ~/emacs/active-hyper")
+   (active-hyper:mkdir)
+   )) "brannon@cs.caltech.edu" "19920415:17:53:57" nil nil)
+
+"active-hyper.menu.main" 
+("Contribute_a_New_Site" nil nil eval-elisp ((progn (find-file "active-hyper.el") (eval-current-buffer) (active-hyper:update-big-list))) "tb06@CC.Lehigh.EDU" "19920422:00:42:38" nil nil)
+
+("Invoke_VM" nil nil eval-elisp ((vm)) "brannon@cs.caltech.edu" "19920416:10:20:32" nil nil)
+("Invoke_Gnus" nil nil eval-elisp ((gnus)) "brannon@cs.caltech.edu" "19920416:10:20:15" nil nil)
+("Edit_.emacs" nil nil link-to-file ("/ufs/students/brannon/.emacs") "brannon@cs.caltech.edu" "19920416:10:19:46" nil nil)
+("Dired" nil nil eval-elisp ((find-file ".dired")) "brannon@cs.caltech.edu" "19920416:09:52:32" nil nil)
+ (progn
+   (find-file
+"/anonymous@archive.cis.ohio-state.edu.:/pub/gnu/emacs/elisp-archive/packages/HyperActiveFTP/active-hyper.Install.el")
+   (eval-current-buffer)
+   (find-file "active-hyper.menu.install"))) "brannon@cs.caltech.edu"
+"19920415:18:06:45" nil nil)
+("changelog" nil nil
+eval-elisp ((view-file "active-hyper.Changelog")) "tb06@CC.Lehigh.EDU"
+"19920325:01:39:08" nil nil) 
+("Description" nil nil eval-elisp
+((find-file "active-hyper.credits")) "tb06@CC.Lehigh.EDU"
+"19920325:01:16:36" nil 
+nil)
+("Edit_active-hyper.el" nil nil link-to-file
+("./active-hyper.el") "tb06@CC.Lehigh.EDU" "19920325:00:30:03" nil
+nil) 
+("Big_FTP_Site_List" nil nil eval-elisp
+ (
+  (progn
+    (find-file "active-hyper.list.big.otl")
+    (delete-other-windows)
+    )) "tb06@CC.Lehigh.EDU" "19920324:19:36:55" nil nil)
+("Edit_ActiveHyperFTP.otl" nil nil link-to-file
+("./active-hyper.list.frq.otl") "tb06@CC.Lehigh.EDU"
+"19920324:15:20:09" nil nil)
+
+("Frequent_FTP_Sites" nil nil eval-elisp ((find-file
+"active-hyper.list.frq.otl")) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil) ("Edit_.hypb" nil nil eval-elisp
+((find-file ".hypb")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil
+nil) ("Edit_first.pcn" nil nil eval-elisp ((find-file
+"~/1992/warmup/first.pcn")) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil) ("Edit_second.pcn" nil nil eval-elisp
+((find-file "~/1992/warmup/second.pcn")) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil) ("Edit_emv.c" nil nil eval-elisp
+((find-file-other-window "~/1992/warmup/emv1.5/emv.c"))
+"brannon@cs.caltech.edu" "19920308:16:36:14" nil nil) ("Edit_.emacs"
+nil nil eval-elisp ((find-file "~/.emacs")) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil) ("Invoke_VM" nil nil eval-elisp ((vm))
+"brannon@cs.caltech.edu" "19920308:16:36:14" nil nil) ("Buffer_Menu"
+nil nil eval-elisp
+  ((buffer-menu nil)) "brannon@cs.caltech.edu" "19920308:16:36:14" nil
+nil) ("Invoke_Gnus" nil nil eval-elisp
+  (
+   (if (get-buffer "*Newsgroup*")
+       (progn
+	 (delete-other-windows)
+	 (switch-to-buffer "*Newsgroup*"))
+     (gnus))) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("cmushell:pcn" nil nil eval-elisp
+ (
+  (if (get-buffer "pcn")
+      (if (one-window-p t)
+	  (pop-to-buffer "pcn")
+	(progn
+	  (switch-to-buffer "pcn" t)
+	  (setq default-directory "~/1992/warmup")
+	  (goto-char (point-max))
+	  (previous-window (selected-window))))
+  (progn (cmushell)
+	 (rename-buffer "pcn")))) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil) 
+("cmushell:emv1.5" nil nil eval-elisp
+ (
+  (if (get-buffer "pcn")
+      (if (one-window-p t)
+	  (pop-to-buffer "pcn")
+	(progn
+	  (switch-to-buffer "pcn" t)
+	  (setq default-directory "~/1992/warmup")
+	  (goto-char (point-max))
+	  (previous-window (selected-window))))
+  (progn (cmushell)
+	 (rename-buffer "pcn")))) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil) 
+
+
+"active-hyper.usenet" ("List_of_Moderators" nil nil eval-elisp
+((view-file
+"/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/moderator-list/part1"))
+"tb06@CC.Lehigh.EDU" "19920325:16:33:08" nil nil)
+("List_of_Active_Newsgroups" nil nil eval-elisp ((view-file
+"anonymous@/pit-manager.mit.edu:/pub/usenet/news.answers/active-newsgroups/part1"))
+"tb06@CC.Lehigh.EDU" "19920325:16:32:37" nil nil)
+("Introduction_to_news.announce" nil nil eval-elisp ((view-file
+"/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/news-announce-intro/part1"))
+"tb06@CC.Lehigh.EDU" "19920325:16:31:53" nil nil)
+("How_to_Get_Information_about_Networks" nil nil eval-elisp
+((view-file
+"/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/network-info/part1"))
+"tb06@CC.Lehigh.EDU" "19920325:16:31:14" nil nil)
+("How_to_Create_a_New_Trial_Newsgroup" nil nil eval-elisp ((view-file
+"/anonymous@pit-manager.mit.edu:/pub/usenet/news.announce.newusers/How_to_Create_a_New_Trial_Newsgroup"))
+"tb06@CC.Lehigh.EDU" "19920325:16:30:42" nil nil)
+("How_to_Create_a_New_Newsgroup" nil nil eval-elisp ((view-file
+"/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/creating-newsgroups/part1"))
+"tb06@CC.Lehigh.EDU" "19920325:16:30:06" nil nil)
+("Alternative_Newsgroup_Hierarchies,_Part_I" nil nil eval-elisp
+((view-file
+"/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/alt-hierarchies/part1"))
+"tb06@CC.Lehigh.EDU" "19920325:16:28:01" nil nil)
+("Alternative_Newsgroup_Hierarchies,_Part_II" nil nil eval-elisp
+((view-file
+"/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/alt-hierarchies/part2"))
+"tb06@CC.Lehigh.EDU" "19920325:16:28:01" nil nil)
+
+"active-hyper.list.frq.otl" ("Top_of_File" nil nil eval-elisp
+("Return_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main")) "brannon@cs.caltech.edu" "19920416:09:39:21" nil nil)
+((goto-char (point-min))) "tb06@CC.Lehigh.EDU" "19920325:03:05:58" nil
+nil) ("Return_to_Top_Level" nil nil eval-elisp ((find-file
+"active-hyper.menu.main")) "tb06@CC.Lehigh.EDU" "19920325:01:47:19"
+nil nil)
+
+"active-hyper.list.big.otl"
+("Brand_New_HyperActive_Site_Listings" nil nil eval-elisp ((view-file "active-hyper.list.new")) "tb06@CC.Lehigh.EDU" "19920422:00:10:30" nil nil)
+("Smalltalk_FAQ" nil nil eval-elisp ((view-file "/anonymous@xcf.Berkeley.EDU:/misc/smalltalk/FAQ/FAQ.entire")) "tb06@CC.Lehigh.EDU" "19920418:22:59:30" nil nil)
+("Click_Here_to_Add_a_New_Site_to_this_List" nil nil eval-elisp ((progn (find-file "active-hyper.el") (eval-current-buffer) (kill-buffer (current-buffer)) (active-hyper:update-big-list))) "tb06@CC.Lehigh.EDU" "19920416:10:39:52" nil nil)
+("Return_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main")) "brannon@cs.caltech.edu" "19920416:09:40:23" nil nil)
+("Top_of_File" nil nil eval-elisp ((goto-char (point-min))) "brannon@cs.caltech.edu" "19920416:09:39:50" nil nil)
+("Frequent_FTP_Sites" nil nil eval-elisp ((find-file "active-hyper.list.frq.otl")) "brannon@cs.caltech.edu" "19920416:09:38:26" nil nil)
+("TeX/LaTeX_Frequently_Asked_Questions_Supplement" nil nil eval-elisp
+((view-file
+"/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/tex-faq-supplement"))
+"tb06@CC.Lehigh.EDU" "19920412:23:24:10" nil nil)
+("TeX/LaTeX_Frequently_Asked_Questions" nil nil eval-elisp ((view-file
+"/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/tex-faq"))
+"tb06@CC.Lehigh.EDU" "19920412:23:13:57" nil nil)
+("Tom_Czarnik's_FTP_List" nil nil eval-elisp
+(
+ (progn
+   (find-file "active-hyper.el")
+   (eval-current-buffer)
+   (active-hyper:view-compressed-file "/anonymous@gator.netcom.com:/pub/profile/list-sites.Z"))) "tb06@CC.Lehigh.EDU" "19920327:05:39:09" nil nil)
+("Perl_Frequently_Asked_Questions" nil nil eval-elisp ((view-file "/anonymous@sol.cs.ruu.nl:/NEWS.ANSWERS/perl-faq/faq")) "tb06@CC.Lehigh.EDU" "19920327:05:39:09" nil nil) 
+("Description" nil
+nil eval-elisp ((view-file
+"/anonymous@141.212.99.7:/oasis/announce.2")) "tb06@CC.Lehigh.EDU"
+"19920327:03:57:28" nil nil) 
+("New_Sites" nil nil eval-elisp
+((view-file (concat ah-install-directory "active-hyper.new.sites")))
+"brannon@cs.caltech.edu" "19920325:23:03:33" nil nil) 
+("Top_of_File"
+nil nil eval-elisp ((goto-char (point-min))) "tb06@CC.Lehigh.EDU"
+"19920325:02:04:52" nil nil) 
+("Frequent_FTP_Sites" nil nil
+link-to-file ("./active-hyper.frq.otl") "tb06@CC.Lehigh.EDU"
+"19920325:02:02:52" nil nil) 
+("Show_All_Fields_of_Entries" nil nil
+eval-elisp (
+ (progn
+   (set-buffer-modified-p nil)
+   (kill-buffer (current-buffer))
+   (delete-other-windows)
+   (find-file "active-hyper.list.big.otl"))) "tb06@CC.Lehigh.EDU"
+"19920325:00:58:23" nil nil) 
+("Extensive_Description_of_SymbMath" nil
+nil eval-elisp ((view-file
+"/anonymous@scam.berkeley.edu:tmp/active.symbmath"))
+"tb06@CC.Lehigh.EDU" "19920324:20:20:04" nil nil)
+("Describe_Kanji_Guess" nil nil eval-elisp ((view-file
+"/anonymous@scam.berkeley.edu:tmp/active.kanji")) "tb06@CC.Lehigh.EDU"
+"19920324:19:24:48" nil nil) 
+("Describe_the_Abstracts_Database" nil
+nil eval-elisp ((view-file
+"/anonymous@scam.berkeley.edu:tmp/active.math.abstracts.database"))
+"tb06@CC.Lehigh.EDU" "19920324:19:01:11" nil nil) 
+("Describe_psfig"
+nil nil eval-elisp ((view-file
+"/anonymous@scam.berkeley.edu:tmp/active.psfig")) "tb06@CC.Lehigh.EDU"
+"19920324:18:58:11" nil nil) 
+("Verbose_Description_of_TXL" nil nil eval-elisp ((view-file "/anonymous@scame.berkeley.edu:tmp/active.txl")) "tb06@CC.Lehigh.EDU" "19920324:18:49:18" nil nil) 
+("Describe_the_Programming_Language_J" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.j")) "tb06@CC.Lehigh.EDU" "19920324:18:46:47" nil nil)
+("Important_for_all_Biological_Scientists" nil nil eval-elisp ((view-file
+"/anonymous@scam.berkeley.edu:tmp/active.biological.scientists")) "tb06@CC.Lehigh.EDU" "19920324:18:41:35" nil nil)
+("Setup_of_bioftp.unibas.ch" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.bioftp.unibas.ch")) "tb06@CC.Lehigh.EDU" "19920324:18:38:08" nil nil)
+("Paragon_Information" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.paragon")) "tb06@CC.Lehigh.EDU" "19920324:18:34:52" nil nil) 
+("Describe_Netlib" nil nil eval-elisp ((view-file"/anonymous@scam.berkeley.edu:tmp/active.netlib")) "tb06@CC.Lehigh.EDU" "19920324:18:28:52" nil nil)
+("View_Definition_of_Mobal" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.mobal")) "tb06@CC.Lehigh.EDU" "19920324:17:58:19" nil nil)
+("Trantor_Directory_Index" nil nil eval-elisp ((view-file "/anonymous@trantor.harris-atd.com:README")) "tb06@CC.Lehigh.EDU" "19920324:16:15:55" nil nil) 
+("Return_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main"))) "tb06@CC.Lehigh.EDU" "19920324:07:07:03" nil nil)
+("Cut_Out_All_But_Topic_Headers" nil nil eval-elisp
+ (
+  (progn
+    (message "Displaying by topic...")
+    (active-hyper:display-topics)
+    (active-hyper:sort-buffer)
+    (active-hyper:outline-quickdoc)
+    (active-hyper:prevent-save)
+    (goto-char (point-max))
+    )) "tb06@CC.Lehigh.EDU" "19920324:06:57:22" nil nil)
+("master_index" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@ftp.uu.net:index/ls-lR.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:53:56" nil nil) 
+("by_time" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@gatekeeper.dec.com:Index-bytime.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:45:50" nil nil) 
+("by_name" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@gatekeeper.dec.com:Index-byname.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:45:50" nil nil)
+("a_300k_transfer" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@ftp.win.tue.nl:ls-lR.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:32:37" nil nil)
+("View_Database_of_Emacs_Lisp_Source_Code" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@archive.cis.ohio-state.edu.:pub/gnu/emacs/elisp-archive/LCD-datafile.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:22:11" nil nil)
+("View_all_files_archived_from_comp.sources.x" nil nil eval-elisp ((view-file "/anonymous@j.cc.purdue.edu:comp.sources.x/README")) "tb06@CC.Lehigh.EDU" "19920324:06:15:02" nil nil)
+("Guidelines_For_Posting_to_the_Archive" nil nil eval-elisp ((view-file "/anonymous@archive.cis.ohio-state.edu.:pub/gnu/emacs/elisp-archive/GUIDELINES")) "tb06@CC.Lehigh.EDU" "19920324:06:10:38" nil nil)
+("Terms_of_Using_GNU_Software" nil nil eval-elisp ((view-file "/anonymous@ftp.tue.win.nl:pub/gnu/COPYING-LIB")) "tb06@CC.Lehigh.EDU" "19920324:05:56:56" nil nil)
+("How_do_I_get_support_services_for_GNU_Software?" nil nil eval-elisp
+((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/SERVICE"))
+"tb06@CC.Lehigh.EDU" "19920324:05:54:47" nil nil)
+("Ordering_GNU_Software" nil nil eval-elisp ((view-file
+"/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/DISTRIB"))
+"tb06@CC.Lehigh.EDU" "19920324:05:53:19" nil nil)
+("What_Hardware_does_GNU_Software_Run_On?" nil nil eval-elisp
+((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/MACHINES"))
+"tb06@CC.Lehigh.EDU" "19920324:05:49:36" nil nil)
+("List_of_GNU_Software" nil nil eval-elisp ((view-file
+"/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/FTP")) "tb06@CC.Lehigh.EDU"
+"19920324:05:46:08" nil nil)
+"todo" nil nil link-to-file ("./active-hyper.todo")
+"tb06@CC.Lehigh.EDU" "19920325:01:35:55" nil nil)
+("Hyperactive_FTP_System" nil nil link-to-file ("active-hyper:credits")
+"tb06@CC.Lehigh.EDU" "19920325:01:16:36" nil nil)
+("Edit_active-hyper.el" nil nil link-to-file ("./active-hyper.el")
+"tb06@CC.Lehigh.EDU" "19920325:00:30:03" nil nil) ("Big_FTP_Site_List"
+nil nil eval-elisp
+ (
+  (progn
+    (find-file "active-hyper.list.big.otl"))
+    (delete-other-windows)
+    (toggle-read-only)))
+    
+	       "tb06@CC.Lehigh.EDU" "19920324:19:36:55" nil nil)
+("Edit_ActiveHyperFTP.otl" nil nil link-to-file
+("./active-hyper.list.frq.otl") "tb06@CC.Lehigh.EDU"
+"19920324:15:20:09" nil nil) ("Edit_wrolo.extras.el:2" nil nil
+link-to-file ("/home/PL118a/tb06/emacs/wrolo.extras.el")
+"tb06@CC.Lehigh.EDU" "19920324:16:02:06" nil nil)
+("Edit_wrolo.extras.el" nil nil link-to-file
+("/home/PL118a/tb06/emacs/wrolo.extras.el" 0) "tb06@CC.Lehigh.EDU"
+"19920324:07:37:59" nil nil) ("Malcom_X" nil nil link-to-mail ("Tue,
+10 Mar 92 19:59:05 PST" "/home/PL118a/tb06/mail/INBOX")
+"tb06@CC.Lehigh.EDU" "19920311:04:16:53" nil nil)
+
+
+("(Frequent_FTP_Sites)>_Jobs" nil nil link-to-mail ("Mar 10"
+"/home/PL118a/tb06/mail/INBOX") "tb06@CC.Lehigh.EDU"
+"19920311:03:46:54" nil nil)
+
+("Dired" nil nil eval-elisp ((find-file
+"~/emacs/active-hyper/.dired")) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil) ("Frequent_FTP_Sites" nil nil eval-elisp
+((find-file "~/emacs/active-hyper/active-hyper.list.frq.otl"))
+"brannon@cs.caltech.edu" "19920308:16:36:14" nil nil) ("Edit_.hypb"
+nil nil eval-elisp ((find-file "~/emacs/active-hyper/.hypb"))
+"brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_first.pcn" nil nil eval-elisp ((find-file
+"~/1992/warmup/first.pcn")) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil) ("Edit_second.pcn" nil nil eval-elisp
+((find-file "~/1992/warmup/second.pcn")) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil) ("Edit_emv.c" nil nil eval-elisp
+((find-file-other-window "~/1992/warmup/emv1.5/emv.c"))
+"brannon@cs.caltech.edu" "19920308:16:36:14" nil nil) ("Edit_.emacs"
+nil nil eval-elisp ((find-file ah-dot-emacs-file))
+"brannon@cs.caltech.edu" "19920308:16:36:14" nil nil) ("Invoke_VM" nil
+nil eval-elisp ((vm)) "brannon@cs.caltech.edu" "19920308:16:36:14" nil
+nil) ("Buffer_Menu" nil nil eval-elisp
+  ((buffer-menu nil)) "brannon@cs.caltech.edu" "19920308:16:36:14" nil
+nil) ("Invoke_Gnus" nil nil eval-elisp
+  (
+   (if (get-buffer "*Newsgroup*")
+       (progn
+	 (delete-other-windows)
+	 (switch-to-buffer "*Newsgroup*"))
+     (gnus))) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("cmushell:pcn" nil nil eval-elisp
+ (
+  (if (get-buffer "pcn")
+      (if (one-window-p t)
+	  (pop-to-buffer "pcn")
+	(progn
+	  (switch-to-buffer "pcn" t)
+	  (setq default-directory "~/1992/warmup")
+	  (goto-char (point-max))
+	  (previous-window (selected-window))))
+  (progn (cmushell)
+	 (rename-buffer "pcn")))) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil) ("cmushell:emv1.5" nil nil eval-elisp
+ (
+  (if (get-buffer "emv1.5")
+      (if (one-window-p t)
+	  (pop-to-buffer "emv1.5")
+	(progn
+	  (switch-to-buffer "emv1.5" t)
+	  (goto-char (point-max))))
+  (progn (cmushell)
+	 (rename-buffer "emv1.5")))) "brannon@cs.caltech.edu"
+"19920308:16:36:14" nil nil)
+
+"DEMO" ("glossary" nil nil link-to-Info-node ("(hypb.info)Glossary")
+"rsw@cs.brown.edu" "19911210:07:11:29" nil nil) (".login" nil nil
+link-to-file ("/u/rsw/.login") "rsw@cs.brown.edu" "19911126:05:01:08"
+"rsw" "19911213:19:12:02") ("tmp_directory" nil nil link-to-directory
+("/tmp") "rsw@cs.brown.edu" "19911126:04:03:37" nil nil)
+("Info-directory" nil nil eval-elisp ((message "Info-directory = %s"
+Info-directory)) "rsw@cs.brown.edu" "19911126:03:46:54" nil nil)
+("Info-directory-list" nil nil eval-elisp ((describe-variable (quote
+Info-directory-list))) "rsw@cs.brown.edu" "19911126:03:46:16" "rsw"
+"19911230:07:17:52") ("keyboard_macros" nil nil link-to-Info-node
+("(emacs)Keyboard Macros") "rsw@cs.brown.edu" "19911126:01:08:12" nil
+nil) ("factorial_alias" nil nil link-to-ebut ("./DEMO" "factorial")
+"rsw@cs.brown.edu" "19911126:00:54:30" "rsw" "19911126:00:56:10")
+("maximum_length" nil nil eval-elisp ((message "Max length of explicit
+button labels = %d characters." ebut:max-len)) "rsw@cs.brown.edu"
+"19911126:00:48:26" nil nil) ("shell_command" nil nil exec-shell-cmd
+("ls -l DEMO" nil nil) "rsw@cs.brown.edu" "19911126:00:42:32" "rsw"
+"19911213:19:07:43") ("keyboard_macro" nil nil exec-kbd-macro
+("(f " 1) "rsw@cs.brown.edu" "19911126:00:38:11" nil nil)
+("factorial" nil nil eval-elisp ((message "Factorial of 5 = %d" (* 5 4
+3 2))) "rsw@cs.brown.edu" "19911125:09:52:22" "rsw"
+"19911125:09:54:00")
+
+
+
+"active-hyper.credits" 
+("Documentation" nil nil eval-elisp ((find-file "active-hyper.documentation")) "brannon@cs.caltech.edu" "19920416:09:46:28" nil nil)
+("up" nil nil eval-elisp ((find-file "active-hyper.menu.main")) "brannon@cs.caltech.edu" "19920416:09:44:42" nil nil)
+
+("chnglg" nil nil eval-elisp ((view-file "active-hyper.Changelog")) "tb06@CC.Lehigh.EDU" "19920325:01:39:08"
+nil nil) 
+("todo" nil nil link-to-file ("./active-hyper.to.do")
+"tb06@CC.Lehigh.EDU" "19920325:01:35:55" nil nil)
+
+"active-hyper.list.frq.otl" ("Top_of_File" nil nil eval-elisp
+((goto-char (point-min))) "tb06@CC.Lehigh.EDU" "19920325:03:05:58" nil
+nil) ("Return_to_Top_Level" nil nil eval-elisp ((find-file
+"active-hyper.menu.main"))) "tb06@CC.Lehigh.EDU" "19920325:01:47:19"
+nil nil)
+
+"active-hyper.list.big.otl" 
+("Usenet" nil nil eval-elisp ((view-file
+"active-hyper.usenet")) "brannon@cs.caltech.edu" "19920325:18:21:07"
+nil nil) 
+
+("Scam_Updates" nil nil eval-elisp ((view-file "/anonymous@xcf.berkeley.edu:/UPDATE")) "brannon@cs.caltech.edu" "19920325:17:15:39" nil nil) 
+("Scam_List" nil nil eval-elisp ((view-file "/anonymous@xcf.berkeley.edu:/SEE_ALSO")) "brannon@cs.caltech.edu" "19920325:17:14:52" nil nil) 
+("Top_of_File" nil nil eval-elisp ((goto-char (point-min))) "tb06@CC.Lehigh.EDU" "19920325:02:04:52" nil nil) 
+("Frequent_FTP_Sites" nil nil link-to-file ("./active-hyper.list.frq.otl") "tb06@CC.Lehigh.EDU" "19920325:02:02:52" nil nil) 
+("Show_All_Fields_of_Entries" nil nil
+eval-elisp (
+ (progn
+   (set-buffer-modified-p nil)
+   (kill-buffer (current-buffer))
+   (delete-other-windows)
+   (find-file "active-hyper.list.big.otl"))) "tb06@CC.Lehigh.EDU"
+"19920325:00:58:23" nil nil) 
+("Extensive_Description_of_SymbMath" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.symbmath")) "tb06@CC.Lehigh.EDU" "19920324:20:20:04" nil nil)
+("Describe_Kanji_Guess" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.kanji")) "tb06@CC.Lehigh.EDU" "19920324:19:24:48" nil nil) 
+("Describe_the_Abstracts_Database" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.math.abstracts.database")) "tb06@CC.Lehigh.EDU" "19920324:19:01:11" nil nil) 
+("Describe_psfig"
+nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.psfig")) "tb06@CC.Lehigh.EDU" "19920324:18:58:11" nil nil) 
+("Verbose_Description_of_TXL" nil nil eval-elisp ((view-file "/anonymous@scame.berkeley.edu:tmp/active.txl")) "tb06@CC.Lehigh.EDU" "19920324:18:49:18" nil nil) 
+("Describe_the_Programming_Language_J" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.j")) "tb06@CC.Lehigh.EDU" "19920324:18:46:47" nil nil)
+("Important_for_all_Biological_Scientists" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.biological.scientists")) "tb06@CC.Lehigh.EDU" "19920324:18:41:35" nil nil)
+("Setup_of_bioftp.unibas.ch" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.bioftp.unibas.ch")) "tb06@CC.Lehigh.EDU" "19920324:18:38:08" nil nil)
+("Paragon_Information" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.paragon")) "tb06@CC.Lehigh.EDU" "19920324:18:34:52" nil nil) 
+("Describe_Netlib" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.netlib")) "tb06@CC.Lehigh.EDU" "19920324:18:28:52" nil nil)
+
+("View_Definition_of_Mobal" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.mobal")) "tb06@CC.Lehigh.EDU" "19920324:17:58:19" nil nil)
+
+("Trantor_Directory_Index" nil nil eval-elisp ((view-file "/anonymous@trantor.harris-atd.com:README")) "tb06@CC.Lehigh.EDU" "19920324:16:15:55" nil nil) ("Return_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main"))) "tb06@CC.Lehigh.EDU" "19920324:07:07:03" nil nil)
+
+("Cut_Out_All_But_Topic_Headers" nil nil eval-elisp
+ (
+  (progn
+    (message "Displaying by topic...")	
+    (active-hyper:display-topics)
+    (active-hyper:sort-buffer)
+    (active-hyper:outline-quickdoc)
+    (active-hyper:prevent-save)
+    (goto-char (point-max))
+    )) "tb06@CC.Lehigh.EDU" "19920324:06:57:22" nil nil)
+("master_index" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@ftp.uu.net:index/ls-lR.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:53:56" nil nil)
+("by_time" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@gatekeeper.dec.com:Index-bytime.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:45:50" nil nil)
+("by_name" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@gatekeeper.dec.com:Index-byname.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:45:50" nil nil)
+
+("a_300k_transfer" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@ftp.win.tue.nl:ls-lR.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:32:37" nil nil)
+("View_Database_of_Emacs_Lisp_Source_Code" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@archive.cis.ohio-state.edu.:pub/gnu/emacs/elisp-archive/LCD-datafile.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:22:11" nil nil)
+("View_all_files_archived_from_comp.sources.x" nil nil eval-elisp ((view-file "/anonymous@j.cc.purdue.edu:comp.sources.x/README.new")) "tb06@CC.Lehigh.EDU" "19920324:06:15:02" nil nil)
+("Guidelines_For_Posting_to_the_Archive" nil nil eval-elisp ((view-file "/anonymous@archive.cis.ohio-state.edu.:pub/gnu/emacs/elisp-archive/GUIDELINES")) "tb06@CC.Lehigh.EDU" "19920324:06:10:38" nil nil)
+("Terms_of_Using_GNU_Software" nil nil eval-elisp ((view-file "/anonymous@ftp.tue.win.nl:pub/gnu/COPYING-LIB")) "tb06@CC.Lehigh.EDU" "19920324:05:56:56" nil nil)
+("How_do_I_get_support_services_for_GNU_Software?" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/SERVICE")) "tb06@CC.Lehigh.EDU" "19920324:05:54:47" nil nil)
+("Ordering_GNU_Software" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/DISTRIB")) "tb06@CC.Lehigh.EDU" "19920324:05:53:19" nil nil)
+("What_Hardware_does_GNU_Software_Run_On?" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/MACHINES")) "tb06@CC.Lehigh.EDU" "19920324:05:49:36" nil nil)
+("List_of_GNU_Software" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/FTP")) "tb06@CC.Lehigh.EDU" "19920324:05:46:08" nil nil)
+
+"active-hyper.menu.main"
+("Install_HyperActiveFTP_Locally" nil nil eval-elisp ((find-file "active-hyper.menu.install")) "brannon@cs.caltech.edu" "19920415:18:21:56" nil nil)
+("changelog" nil nil eval-elisp ((view-file "active-hyper.Changelog")) "tb06@CC.Lehigh.EDU" "19920325:01:39:08" nil nil)
+("todo" nil nil link-to-file ("./active-hyper.to.do") "tb06@CC.Lehigh.EDU" "19920325:01:35:55" nil nil)
+("Hyperactive_FTP_System" nil nil link-to-file ("active-hyper.credits") "tb06@CC.Lehigh.EDU" "19920325:01:16:36" nil nil)
+("Edit_active-hyper.el" nil nil link-to-file ("./active-hyper.el") "tb06@CC.Lehigh.EDU" "19920325:00:30:03" nil nil)
+("Big_FTP_Site_List" nil nil eval-elisp 
+ (
+  (progn
+    (find-file "active-hyper.list.big.otl")
+    (delete-other-windows)
+    (toggle-read-only)
+    )
+ )    
+"tb06@CC.Lehigh.EDU" "19920324:19:36:55" nil nil)
+("Edit_ActiveHyperFTP.otl" nil nil link-to-file ("./active-hyper.list.frq.otl") "tb06@CC.Lehigh.EDU" "19920324:15:20:09" nil nil)
+
+("Dired" nil nil eval-elisp ((find-file ".dired")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Frequent_FTP_Sites" nil nil eval-elisp ((find-file "active-hyper.list.frq.otl")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_.hypb" nil nil eval-elisp ((find-file ".hypb")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_first.pcn" nil nil eval-elisp ((find-file "~/1992/warmup/first.pcn")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_second.pcn" nil nil eval-elisp ((find-file "~/1992/warmup/second.pcn")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_emv.c" nil nil eval-elisp ((find-file-other-window "~/1992/warmup/emv1.5/emv.c")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_.emacs" nil nil eval-elisp ((find-file "~/.emacs")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Invoke_VM" nil nil eval-elisp ((vm)) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Buffer_Menu" nil nil eval-elisp 
+  ((buffer-menu nil)) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Invoke_Gnus" nil nil eval-elisp 
+  (
+   (if (get-buffer "*Newsgroup*")
+       (progn
+	 (delete-other-windows)
+	 (switch-to-buffer "*Newsgroup*"))
+     (gnus))) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("cmushell:pcn" nil nil eval-elisp 
+ (
+  (if (get-buffer "pcn")
+      (if (one-window-p t)
+	  (pop-to-buffer "pcn")
+	(progn
+	  (switch-to-buffer "pcn" t)
+	  (setq default-directory "~/1992/warmup")
+	  (goto-char (point-max))
+	  (previous-window (selected-window))))
+  (progn (cmushell) 
+	 (rename-buffer "pcn")))) 
+"brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("cmushell:emv1.5" nil nil eval-elisp 
+ (
+  (if (get-buffer "emv1.5")
+      (if (one-window-p t)
+	  (pop-to-buffer "emv1.5")
+	(progn
+	  (switch-to-buffer "emv1.5" t)
+	  (goto-char (point-max))))
+  (progn (cmushell) 
+	 (rename-buffer "emv1.5")))) 
+"brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+
+"active-hyper.usenet"
+("List_of_Moderators" nil nil eval-elisp ((view-file "/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/moderator-list/part1")) "tb06@CC.Lehigh.EDU" "19920325:16:33:08" nil nil)
+("List_of_Active_Newsgroups" nil nil eval-elisp ((view-file "anonymous@/pit-manager.mit.edu:/pub/usenet/news.answers/active-newsgroups/part1")) "tb06@CC.Lehigh.EDU" "19920325:16:32:37" nil nil)
+("Introduction_to_news.announce" nil nil eval-elisp ((view-file "/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/news-announce-intro/part1")) "tb06@CC.Lehigh.EDU" "19920325:16:31:53" nil nil)
+("How_to_Get_Information_about_Networks" nil nil eval-elisp ((view-file "/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/network-info/part1")) "tb06@CC.Lehigh.EDU" "19920325:16:31:14" nil nil)
+("How_to_Create_a_New_Trial_Newsgroup" nil nil eval-elisp ((view-file "/anonymous@pit-manager.mit.edu:/pub/usenet/news.announce.newusers/How_to_Create_a_New_Trial_Newsgroup")) "tb06@CC.Lehigh.EDU" "19920325:16:30:42" nil nil)
+("How_to_Create_a_New_Newsgroup" nil nil eval-elisp ((view-file "/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/creating-newsgroups/part1")) "tb06@CC.Lehigh.EDU" "19920325:16:30:06" nil nil)
+("Alternative_Newsgroup_Hierarchies,_Part_I" nil nil eval-elisp ((view-file "/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/alt-hierarchies/part1")) "tb06@CC.Lehigh.EDU" "19920325:16:28:01" nil nil)
+("Alternative_Newsgroup_Hierarchies,_Part_II" nil nil eval-elisp ((view-file "/anonymous@pit-manager.mit.edu:/pub/usenet/news.answers/alt-hierarchies/part2")) "tb06@CC.Lehigh.EDU" "19920325:16:28:01" nil nil)
+
+"active-hyper.list.frq.otl"
+("Top_of_File" nil nil eval-elisp ((goto-char (point-min))) "tb06@CC.Lehigh.EDU" "19920325:03:05:58" nil nil)
+("Return_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main")) "tb06@CC.Lehigh.EDU" "19920325:01:47:19" nil nil)
+
+"active-hyper.list.big.otl"
+("New_Sites" nil nil eval-elisp ((view-file (concat ah-install-directory "active-hyper.new.sites"))) "brannon@cs.caltech.edu" "19920325:23:03:33" nil nil)
+("Top_of_File" nil nil eval-elisp ((goto-char (point-min))) "tb06@CC.Lehigh.EDU" "19920325:02:04:52" nil nil)
+("Frequent_FTP_Sites" nil nil link-to-file ("./active-hyper.frq.otl") "tb06@CC.Lehigh.EDU" "19920325:02:02:52" nil nil)
+("Show_All_Fields_of_Entries" nil nil eval-elisp 
+(
+ (progn
+   (set-buffer-modified-p nil)
+   (kill-buffer (current-buffer))
+   (delete-other-windows)
+   (find-file "active-hyper.list.big.otl")))
+"tb06@CC.Lehigh.EDU" "19920325:00:58:23" nil nil)
+("Extensive_Description_of_SymbMath" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.symbmath")) "tb06@CC.Lehigh.EDU" "19920324:20:20:04" nil nil)
+("Return_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.list.big.otl")) "tb06@CC.Lehigh.EDU" "19920324:20:20:04" nil nil)
+("Describe_Kanji_Guess" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.kanji")) "tb06@CC.Lehigh.EDU" "19920324:19:24:48" nil nil)
+("Describe_the_Abstracts_Database" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.math.abstracts.database")) "tb06@CC.Lehigh.EDU" "19920324:19:01:11" nil nil)
+("Describe_psfig" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.psfig")) "tb06@CC.Lehigh.EDU" "19920324:18:58:11" nil nil)
+("Verbose_Description_of_TXL" nil nil eval-elisp ((view-file "/anonymous@scame.berkeley.edu:tmp/active.txl")) "tb06@CC.Lehigh.EDU" "19920324:18:49:18" nil nil)
+("Describe_the_Programming_Language_J" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.j")) "tb06@CC.Lehigh.EDU" "19920324:18:46:47" nil nil)
+("Important_for_all_Biological_Scientists" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.biological.scientists")) "tb06@CC.Lehigh.EDU" "19920324:18:41:35" nil nil)
+("Setup_of_bioftp.unibas.ch" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.bioftp.unibas.ch")) "tb06@CC.Lehigh.EDU" "19920324:18:38:08" nil nil)
+("Paragon_Information" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.paragon")) "tb06@CC.Lehigh.EDU" "19920324:18:34:52" nil nil)
+("Describe_Netlib" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.netlib")) "tb06@CC.Lehigh.EDU" "19920324:18:28:52" nil nil)
+
+("View_Definition_of_Mobal" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.mobal")) "tb06@CC.Lehigh.EDU" "19920324:17:58:19" nil nil)
+
+("Trantor_Directory_Index" nil nil eval-elisp ((view-file "/anonymous@trantor.harris-atd.com:README")) "tb06@CC.Lehigh.EDU" "19920324:16:15:55" nil nil)
+("Return_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main"))) "tb06@CC.Lehigh.EDU" "19920324:07:07:03" nil nil)
+
+("Cut_Out_All_But_Topic_Headers" nil nil eval-elisp 
+ (
+  (progn
+    (message "Displaying by topic...")	
+    (active-hyper:display-topics)
+    (active-hyper:sort-buffer)
+    (active-hyper:outline-quickdoc)
+    (active-hyper:prevent-save)
+    (goto-char (point-max))
+    )) "tb06@CC.Lehigh.EDU" "19920324:06:57:22" nil nil)
+("master_index" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@ftp.uu.net:index/ls-lR.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:53:56" nil nil)
+("by_time" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@gatekeeper.dec.com:Index-bytime.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:45:50" nil nil)
+("by_name" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@gatekeeper.dec.com:Index-byname.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:45:50" nil nil)
+
+("a_300k_transfer" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@ftp.win.tue.nl:ls-lR.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:32:37" nil nil)
+("View_Database_of_Emacs_Lisp_Source_Code" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@archive.cis.ohio-state.edu.:pub/gnu/emacs/elisp-archive/LCD-datafile.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:22:11" nil nil)
+("View_all_files_archived_from_comp.sources.x" nil nil eval-elisp ((view-file "/anonymous@j.cc.purdue.edu:comp.sources.x/README.new")) "tb06@CC.Lehigh.EDU" "19920324:06:15:02" nil nil)
+("Guidelines_For_Posting_to_the_Archive" nil nil eval-elisp ((view-file "/anonymous@archive.cis.ohio-state.edu.:pub/gnu/emacs/elisp-archive")) "tb06@CC.Lehigh.EDU" "19920324:06:10:38" nil nil)
+("Terms_of_Using_GNU_Software" nil nil eval-elisp ((view-file "/anonymous@ftp.tue.win.nl:pub/gnu/COPYING-LIB")) "tb06@CC.Lehigh.EDU" "19920324:05:56:56" nil nil)
+("How_do_I_get_support_services_for_GNU_Software?" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/SERVICE")) "tb06@CC.Lehigh.EDU" "19920324:05:54:47" nil nil)
+("Ordering_GNU_Software" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/DISTRIB")) "tb06@CC.Lehigh.EDU" "19920324:05:53:19" nil nil)
+("What_Hardware_does_GNU_Software_Run_On?" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/MACHINES")) "tb06@CC.Lehigh.EDU" "19920324:05:49:36" nil nil)
+("List_of_GNU_Software" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/FTP")) "tb06@CC.Lehigh.EDU" "19920324:05:46:08" nil nil)
+
+"active-hyper.mainMenu"
+("changelog" nil nil eval-elisp ((view-file "active-hyper.changelog")) "tb06@CC.Lehigh.EDU" "19920325:01:39:08" nil nil)
+("todo" nil nil link-to-file ("./active-hyper.todo") "tb06@CC.Lehigh.EDU" "19920325:01:35:55" nil nil)
+("Hyperactive_FTP_System" nil nil eval-elisp ((find-file "active-hyper:credits)) "tb06@CC.Lehigh.EDU" "19920325:01:16:36" nil nil)
+("Edit_active-hyper.el" nil nil link-to-file ("./active-hyper.el") "tb06@CC.Lehigh.EDU" "19920325:00:30:03" nil nil)
+("Big_FTP_Site_List" nil nil eval-elisp 
+ (
+  (progn
+    (find-file "active-hyper.list.big.otl"))
+    (delete-other-windows)
+    (toggle-read-only)))
+    
+	       "tb06@CC.Lehigh.EDU" "19920324:19:36:55" nil nil)
+("Edit_ActiveHyperFTP.otl" nil nil link-to-file ("./active-hyper.list.frq.otl") "tb06@CC.Lehigh.EDU" "19920324:15:20:09" nil nil)
+("Edit_wrolo.extras.el:2" nil nil link-to-file ("/home/PL118a/tb06/emacs/wrolo.extras.el") "tb06@CC.Lehigh.EDU" "19920324:16:02:06" nil nil)
+("Edit_wrolo.extras.el" nil nil link-to-file ("/home/PL118a/tb06/emacs/wrolo.extras.el" 0) "tb06@CC.Lehigh.EDU" "19920324:07:37:59" nil nil)
+("Malcom_X" nil nil link-to-mail ("Tue, 10 Mar 92 19:59:05 PST" "/home/PL118a/tb06/mail/INBOX") "tb06@CC.Lehigh.EDU" "19920311:04:16:53" nil nil)
+
+
+("(Frequent_FTP_Sites)>_Jobs" nil nil link-to-mail ("Mar 10" "/home/PL118a/tb06/mail/INBOX") "tb06@CC.Lehigh.EDU" "19920311:03:46:54" nil nil)
+
+("Dired" nil nil eval-elisp ((find-file "~/emacs/active-hyper/.dired")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Frequent_FTP_Sites" nil nil eval-elisp ((find-file "~/emacs/active-hyper/active-hyper.list.frq.otl")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_.hypb" nil nil eval-elisp ((find-file "~/emacs/active-hyper/.hypb")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_first.pcn" nil nil eval-elisp ((find-file "~/1992/warmup/first.pcn")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_second.pcn" nil nil eval-elisp ((find-file "~/1992/warmup/second.pcn")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_emv.c" nil nil eval-elisp ((find-file-other-window "~/1992/warmup/emv1.5/emv.c")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_.emacs" nil nil eval-elisp ((find-file ah-dot-emacs-file)) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Invoke_VM" nil nil eval-elisp ((vm)) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Buffer_Menu" nil nil eval-elisp 
+  ((buffer-menu nil)) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Invoke_Gnus" nil nil eval-elisp 
+  (
+   (if (get-buffer "*Newsgroup*")
+       (progn
+	 (delete-other-windows)
+	 (switch-to-buffer "*Newsgroup*"))
+     (gnus))) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("cmushell:pcn" nil nil eval-elisp 
+ (
+  (if (get-buffer "pcn")
+      (if (one-window-p t)
+	  (pop-to-buffer "pcn")
+	(progn
+	  (switch-to-buffer "pcn" t)
+	  (setq default-directory "~/1992/warmup")
+	  (goto-char (point-max))
+	  (previous-window (selected-window))))
+  (progn (cmushell) 
+	 (rename-buffer "pcn")))) 
+"brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("cmushell:emv1.5" nil nil eval-elisp 
+ (
+  (if (get-buffer "emv1.5")
+      (if (one-window-p t)
+	  (pop-to-buffer "emv1.5")
+	(progn
+	  (switch-to-buffer "emv1.5" t)
+	  (goto-char (point-max))))
+  (progn (cmushell) 
+	 (rename-buffer "emv1.5")))) 
+"brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+
+"DEMO"
+("glossary" nil nil link-to-Info-node ("(hypb.info)Glossary") "rsw@cs.brown.edu" "19911210:07:11:29" nil nil)
+(".login" nil nil link-to-file ("/u/rsw/.login") "rsw@cs.brown.edu" "19911126:05:01:08" "rsw" "19911213:19:12:02")
+("tmp_directory" nil nil link-to-directory ("/tmp") "rsw@cs.brown.edu" "19911126:04:03:37" nil nil)
+("Info-directory" nil nil eval-elisp ((message "Info-directory = %s" Info-directory)) "rsw@cs.brown.edu" "19911126:03:46:54" nil nil)
+("Info-directory-list" nil nil eval-elisp ((describe-variable (quote Info-directory-list))) "rsw@cs.brown.edu" "19911126:03:46:16" "rsw" "19911230:07:17:52")
+("keyboard_macros" nil nil link-to-Info-node ("(emacs)Keyboard Macros") "rsw@cs.brown.edu" "19911126:01:08:12" nil nil)
+("factorial_alias" nil nil link-to-ebut ("./DEMO" "factorial") "rsw@cs.brown.edu" "19911126:00:54:30" "rsw" "19911126:00:56:10")
+("maximum_length" nil nil eval-elisp ((message "Max length of explicit button labels = %d characters." ebut:max-len)) "rsw@cs.brown.edu" "19911126:00:48:26" nil nil)
+("shell_command" nil nil exec-shell-cmd ("ls -l DEMO" nil nil) "rsw@cs.brown.edu" "19911126:00:42:32" "rsw" "19911213:19:07:43")
+("keyboard_macro" nil nil exec-kbd-macro ("(f " 1) "rsw@cs.brown.edu" "19911126:00:38:11" nil nil)
+("factorial" nil nil eval-elisp ((message "Factorial of 5 = %d" (* 5 4 3 2))) "rsw@cs.brown.edu" "19911125:09:52:22" "rsw" "19911125:09:54:00")
+
+
+
+"active-hyper.credits"
+("Documentation" nil nil eval-elisp ((view-file "active-hyper.documentation")) "brannon@cs.caltech.edu" "19920325:18:17:15" nil nil)
+("up" nil nil link-to-file ("./active-hyper.menu.main") "brannon@cs.caltech.edu" "19920325:18:06:44" nil nil)
+("chnglg" nil nil eval-elisp ((view-file "active-hyper.Changelog")) "tb06@CC.Lehigh.EDU" "19920325:01:39:08" nil nil)
+("todo" nil nil link-to-file ("./active-hyper.to.do") "tb06@CC.Lehigh.EDU" "19920325:01:35:55" nil nil)
+
+"active-hyper.list.frq.otl"
+("Top_of_File" nil nil eval-elisp ((goto-char (point-min))) "tb06@CC.Lehigh.EDU" "19920325:03:05:58" nil nil)
+("Return_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main"))) "tb06@CC.Lehigh.EDU" "19920325:01:47:19" nil nil)
+
+"active-hyper.list.big.otl"
+("Usenet" nil nil eval-elisp ((view-file "active-hyper.usenet")) "brannon@cs.caltech.edu" "19920325:18:21:07" nil nil)
+
+("Scam_Updates" nil nil eval-elisp ((view-file "/anonymous@xcf.berkeley.edu:/UPDATE")) "brannon@cs.caltech.edu" "19920325:17:15:39" nil nil)
+("Scam_List" nil nil eval-elisp ((view-file "/anonymous@xcf.berkeley.edu:/SEE_ALSO")) "brannon@cs.caltech.edu" "19920325:17:14:52" nil nil)
+("Top_of_File" nil nil eval-elisp ((goto-char (point-min))) "tb06@CC.Lehigh.EDU" "19920325:02:04:52" nil nil)
+("Frequent_FTP_Sites" nil nil link-to-file ("./active-hyper.list.frq.otl") "tb06@CC.Lehigh.EDU" "19920325:02:02:52" nil nil)
+("Show_All_Fields_of_Entries" nil nil eval-elisp 
+(
+ (progn
+   (set-buffer-modified-p nil)
+   (kill-buffer (current-buffer))
+   (delete-other-windows)
+   (find-file "active-hyper.list.big.otl")))
+"tb06@CC.Lehigh.EDU" "19920325:00:58:23" nil nil)
+("Extensive_Description_of_SymbMath" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.symbmath")) "tb06@CC.Lehigh.EDU" "19920324:20:20:04" nil nil)
+("Describe_Kanji_Guess" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.kanji")) "tb06@CC.Lehigh.EDU" "19920324:19:24:48" nil nil)
+("Describe_the_Abstracts_Database" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.math.abstracts.database")) "tb06@CC.Lehigh.EDU" "19920324:19:01:11" nil nil)
+("Describe_psfig" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.psfig")) "tb06@CC.Lehigh.EDU" "19920324:18:58:11" nil nil)
+("Verbose_Description_of_TXL" nil nil eval-elisp ((view-file "/anonymous@scame.berkeley.edu:tmp/active.txl")) "tb06@CC.Lehigh.EDU" "19920324:18:49:18" nil nil)
+("Describe_the_Programming_Language_J" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.j")) "tb06@CC.Lehigh.EDU" "19920324:18:46:47" nil nil)
+("Important_for_all_Biological_Scientists" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.biological.scientists")) "tb06@CC.Lehigh.EDU" "19920324:18:41:35" nil nil)
+("Setup_of_bioftp.unibas.ch" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.bioftp.unibas.ch")) "tb06@CC.Lehigh.EDU" "19920324:18:38:08" nil nil)
+("Paragon_Information" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.paragon")) "tb06@CC.Lehigh.EDU" "19920324:18:34:52" nil nil)
+("Describe_Netlib" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.netlib")) "tb06@CC.Lehigh.EDU" "19920324:18:28:52" nil nil)
+
+("View_Definition_of_Mobal" nil nil eval-elisp ((view-file "/anonymous@scam.berkeley.edu:tmp/active.mobal")) "tb06@CC.Lehigh.EDU" "19920324:17:58:19" nil nil)
+
+("Trantor_Directory_Index" nil nil eval-elisp ((view-file "/anonymous@trantor.harris-atd.com:README")) "tb06@CC.Lehigh.EDU" "19920324:16:15:55" nil nil)
+("Return_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main"))) "tb06@CC.Lehigh.EDU" "19920324:07:07:03" nil nil)
+
+("Cut_Out_All_But_Topic_Headers" nil nil eval-elisp 
+ (
+  (progn
+    (message "Displaying by topic...")	
+    (active-hyper:display-topics)
+    (active-hyper:sort-buffer)
+    (active-hyper:outline-quickdoc)
+    (active-hyper:prevent-save)
+    (goto-char (point-max))
+    )) "tb06@CC.Lehigh.EDU" "19920324:06:57:22" nil nil)
+("master_index" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@ftp.uu.net:index/ls-lR.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:53:56" nil nil)
+("by_time" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@gatekeeper.dec.com:Index-bytime.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:45:50" nil nil)
+("by_name" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@gatekeeper.dec.com:Index-byname.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:45:50" nil nil)
+
+("a_300k_transfer" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@ftp.win.tue.nl:ls-lR.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:32:37" nil nil)
+("View_Database_of_Emacs_Lisp_Source_Code" nil nil eval-elisp ((active-hyper:view-compressed-file "/anonymous@archive.cis.ohio-state.edu.:pub/gnu/emacs/elisp-archive/LCD-datafile.Z")) "tb06@CC.Lehigh.EDU" "19920324:06:22:11" nil nil)
+("View_all_files_archived_from_comp.sources.x" nil nil eval-elisp ((view-file "/anonymous@j.cc.purdue.edu:comp.sources.x/README.new")) "tb06@CC.Lehigh.EDU" "19920324:06:15:02" nil nil)
+("Guidelines_For_Posting_to_the_Archive" nil nil eval-elisp ((view-file "/anonymous@archive.cis.ohio-state.edu.:pub/gnu/emacs/elisp-archive")) "tb06@CC.Lehigh.EDU" "19920324:06:10:38" nil nil)
+("Terms_of_Using_GNU_Software" nil nil eval-elisp ((view-file "/anonymous@ftp.tue.win.nl:pub/gnu/COPYING-LIB")) "tb06@CC.Lehigh.EDU" "19920324:05:56:56" nil nil)
+("How_do_I_get_support_services_for_GNU_Software?" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/SERVICE")) "tb06@CC.Lehigh.EDU" "19920324:05:54:47" nil nil)
+("Ordering_GNU_Software" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/DISTRIB")) "tb06@CC.Lehigh.EDU" "19920324:05:53:19" nil nil)
+("What_Hardware_does_GNU_Software_Run_On?" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/MACHINES")) "tb06@CC.Lehigh.EDU" "19920324:05:49:36" nil nil)
+("List_of_GNU_Software" nil nil eval-elisp ((view-file "/anonymous@ftp.win.tue.nl:pub/gnu/GNUinfo/FTP")) "tb06@CC.Lehigh.EDU" "19920324:05:46:08" nil nil)
+
+".dired"
+("Return_to_Top_Level" nil nil eval-elisp ((find-file "active-hyper.menu.main")) "brannon@cs.caltech.edu" "19920416:10:17:40" nil nil)
+("Home_Directory:2" nil nil eval-elisp ((dired-other-window "/brannon@jove.cs.caltech.edu:~")) "brannon@cs.caltech.edu" "19920416:10:15:39" nil nil)
+("Home_Directory" nil nil eval-elisp ((dired-other-window "/tb06@pl118g.cc.lehigh.edu:~")) "brannon@cs.caltech.edu" "19920416:10:13:44" nil nil)
+("Top" nil nil eval-elisp ((find-file "active-hyper.menu.main"))) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Emacs_Home_Directory" nil nil eval-elisp ((dired "~/emacs/")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("warmup" nil nil eval-elisp ((dired "~/1992/warmup/")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("emv1.5" nil nil eval-elisp ((dired "~/1992/warmup/emv1.5")) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("Edit_.hypb" nil nil eval-elisp ((find-file-other-window ".hypb"))) "brannon@cs.caltech.edu" "19920308:16:36:14" nil nil)
+("gee" nil nil eval-elisp ((dired-other-window "/tb06@Pl118g.cc.lehigh.edu:/scratch/china.primitive")) "brannon@cs.caltech.edu" "19920416:09:58:48" nil nil)".dired" ("Top" nil nil eval-elisp ((find-file
+("eff" nil nil eval-elisp ((dired-other-window "/tb06@Pl118f.cc.lehigh.edu:/scratch/china.primitive")) "brannon@cs.caltech.edu" "19920416:09:58:48" nil nil)
+("eee" nil nil eval-elisp ((dired-other-window "/tb06@Pl118e.cc.lehigh.edu:/scratch/china.primitive")) "brannon@cs.caltech.edu" "19920416:09:58:48" nil nil)
+("dee" nil nil eval-elisp ((dired-other-window "/tb06@Pl118d.cc.lehigh.edu:/scratch/china.primitive")) "brannon@cs.caltech.edu" "19920416:09:58:48" nil nil)
+("cee" nil nil eval-elisp ((dired-other-window "/tb06@Pl118c.cc.lehigh.edu:/scratch/china.primitive")) "brannon@cs.caltech.edu" "19920416:09:58:48" nil nil)
+("bee" nil nil eval-elisp ((dired-other-window "/tb06@pl118b.cc.lehigh.edu:/scratch/china.primitive")) "brannon@cs.caltech.edu" "19920416:09:58:07" nil nil)

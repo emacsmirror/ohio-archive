@@ -1,0 +1,4 @@
+* Fix tab stops for indentation
+* Create proper interface for template definition
+* Fix font-lock regexp's for comments (partially done)
+* Fix font-lock regexp's for strings

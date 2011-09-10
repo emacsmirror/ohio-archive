@@ -1,0 +1,139 @@
+<HTML>
+<HEAD>
+<TITLE>Feff : Program and file structure</TITLE>
+</HEAD>
+<BODY>
+<A HREF="feff7-2.html">Previous</A>
+<A HREF="feff7-4.html">Next</A>
+<A HREF="feff7.html#toc3">Table of Contents</A>
+<HR>
+<H2><A NAME="s3">3. Program and file structure</A></H2>
+
+
+<P>This section describes the files and data used by the various modules.
+The main program FEFF reads one file created directly by the user, the
+file feff.inp;  it is line oriented with a KEYWORD
+followed by data in free format.  Case is not significant; ABCDE is
+equivalent to abcde or AbcDe.  Tab characters are treated as if they
+were blanks.  The routine that reads the input assumes that your machine
+uses the ASCII character set.</P>
+<P>Comments may be added at the end of any
+line after any required data, and spaces between lines are ignored. Any
+line beginning with an asterisk (*) is a comment and is ignored.
+An auxiliary program (ATOMS) is provided which generates the feff.inp file
+from crystallographic input parameters.  </P>
+<P>Other files required by the various modules are created by FEFF from
+feff.inp.  Some of these other files may be edited by the user as a way
+to modify the input data to the modules, see section 5. See the PRINT
+card in section 4 to obtain various diagnostic files.  Table 3.1
+summarizes this structure, the rest of this section describes the
+structure in more detail. </P>
+
+<H2><A NAME="ss3.1">3.1 Table 3.1</A></H2>
+
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+
+module  input files     output files    other useful output
+------  -----------     ------------    -------------------
+POTPH   feff.inp        phase.bin       diagnostic files
+        potph.inp       xsect.bin       (see PRINT card)
+                        rkk.bin
+
+PATHS   feff.inp        paths.dat       crit.dat
+        phase.bin
+        geom.dat
+
+GENFMT  feff.inp        feff.bin
+        phase.bin       list.dat
+        paths.dat       
+        rkk.bin
+
+FF2CHI  feff.inp        chi.dat         chipNNNN.dat
+        list.dat        xmu.dat         feffNNNN.dat
+        feff.bin
+        xsect.bin  
+-----------------------------------------------------------
+Note that geom.dat is written when feff.inp is read.  If you are
+using a hand-made geom.dat (possibly to take advantage of some
+symmetry), use the NOGEOM card to prevent your geom.dat from
+being overwritten.
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+
+<H2><A NAME="ss3.2">3.2 Scattering potential and phase shift code, POTPH</A></H2>
+
+<P>Reads potph.inp, which is created by FEFF's input routine from
+feff.inp. potph.inp is deleted by FEFF after use.  POTPH writes the
+binary file phase.bin, which contains the scattering phase shifts and
+other information needed by PATHS and GENFMT. Also, POTPH
+prints binary file rkk.bin, which contains dipole matrix elements,
+normalized to cross-section data in xsect.bin. The last file is written
+only if XANES card is used. Optionally,
+POTPH will write other diagnostic files with information about the
+potentials and phase shift calculations.  </P>
+
+
+
+<H2><A NAME="ss3.3">3.3 Path enumeration, PATHS</A></H2>
+
+<P>Reads geom.dat, which is created by FEFF from the information in
+feff.inp, and phase.bin.  geom.dat is deleted after use unless
+explicitly saved (see PRINT card).  PATHS writes paths.dat for use by
+GENFMT and as a complete description of each path for use of the user.
+PATHS will optionally write other diagnostic files.  The file crit.dat
+is particularly useful when studying large numbers of paths.  When
+studying large numbers of paths, this module will optionally write only
+crit.dat and save geom.dat, not writing paths.dat. </P>
+
+
+
+<H2><A NAME="ss3.4">3.4 Scattering amplitude and other XAFS parameter calculation, GENFMT</A></H2>
+
+<P>GENFMT reads phase.bin, rkk.bin and paths.dat, and writes a file feff.bin
+which contains all the EXAFS information for the paths, and list.dat which
+tells you some basic information about them.  These files are the main
+output of FEFF.  To read feff.bin into your own program, use the
+subroutine feffdt as an example.</P>
+<P>For compatibility
+with older versions, the program can read feff.bin and write
+the feffnnnn.dat files and files.dat in module ff2chi, if appropriate
+PRINT option was specified. They are exactly like the old
+ones.</P>
+
+
+
+<H2><A NAME="ss3.5">3.5 XAFS spectrum calculation, FF2CHI</A></H2>
+
+<P>FF2CHI reads list.dat and feff.bin, and writes
+chi.dat with the total XAFS from the paths specified in list.dat
+Additional instructions
+are passed to FF2CHI from feff.inp, so you can change S02, Debye
+temperature and some other parameters without re-doing the whole
+calculation.  The file list.dat can be edited by hand to change the
+paths being considered, and individual chipNNNN.dat files with chi from
+each path are optionally written. If the XANES card is specified and
+xsect.bin exists, FF2CHI will write the XANES data in xmu.dat.
+Various filtering options and corrections are possible at this
+point -- see input cards below.</P>
+<P>There is an internal limit on the number of paths (set to 1000) that will
+be read from feff.bin.  This limit was chosen to handle any reasonable
+problem without using an excessive amount of memory.  If you must use
+more paths, change the parameter "npx" is subroutine ff2chi to whatever
+you need.  It will need more memory.  We have not had a case where
+the filter criteria were not able to solve the problem with fewer than
+1000 paths. </P>
+
+
+
+
+<HR>
+<A HREF="feff7-2.html">Previous</A>
+<A HREF="feff7-4.html">Next</A>
+<A HREF="feff7.html#toc3">Table of Contents</A>
+</BODY>
+</HTML>

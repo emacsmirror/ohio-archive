@@ -1,0 +1,604 @@
+@setfilename{primes.info}
+@settitle The Primes Library
+@headings on
+@c -*-texinfo-*-
+@c This is part of the GNU Emacs Lisp Reference Manual.
+@c Copyright (C) 1999 Free Software Foundation, Inc.
+@c See the file elisp.texi for copying conditions.
+@c
+@c This chapter, and the corresponding library package, is
+@c authored by:
+@c
+@c 	Nelson H. F. Beebe
+@c 	Center for Scientific Computing
+@c 	University of Utah
+@c 	Department of Mathematics, 322 INSCC
+@c 	155 S 1400 E RM 233
+@c 	Salt Lake City, UT 84112-0090
+@c 	USA
+@c 	Email: beebe@math.utah.edu, beebe@acm.org, beebe@ieee.org (Internet)
+@c 	WWW URL: http://www.math.utah.edu/~beebe
+@c 	Telephone: +1 801 581 5254
+@c 	FAX: +1 801 585 1640, +1 801 581 4148
+@c
+@node Primes, Display, Hash, Top
+@comment node-name, next,          previous, up
+@chapter The Primes Library
+
+A prime number is any integer greater than one that has no exact
+integer divisors other than one and itself.
+
+Prime numbers have increasingly important practical applications
+in cryptography, and are also useful in hashing, besides being of
+fundamental importance in number theory.
+
+The primes library (@file{primes.el}) is a small collection of
+functions for:
+
+@itemize @bullet
+@item
+testing integers for primality,
+
+@item
+generating nearby primes,
+
+@item
+finding the @emph{n}-th prime,
+
+@item
+generating lists of primes in a given range,
+
+@item
+factoring a number into a product of primes,
+
+@item
+finding the greatest common divisor of two numbers, and
+
+@item
+finding the least common multiple of two numbers.
+@end itemize
+
+The modest collection of functions implemented in the library is
+likely to grow, and perhaps may even be improved algorithmically.
+The core of these functions is the primality test, @code{(prime-p
+n)}, whose running time is @emph{O(sqrt(n))}, which becomes
+excessive for large @emph{n}.
+
+Note that @emph{sqrt(n)} == @emph{2^{((lg n)/2)}}, where @emph{lg
+n}, the base-2 logarithm of @emph{n}, is the number of bits in
+@emph{n}.  Thus @emph{O(sqrt(n))} means @emph{O(2^(bits in n))},
+or @emph{O(10^(digits in n))}. That is, the running time
+increases @strong{exponentially} in the number of digits of
+@emph{n}.
+
+Because knowledge of the cost of these functions may be critical
+to the caller, each function's documentation string ends with a
+bracketed cost estimate as a final paragraph.
+
+From the time of the Greek Eratosthenes (ca. 276--195 BCE) to
+1974, the only known provably-correct algorithm for testing
+primality and factoring arbitrary integers was the Sieve of
+Eratosthenes, which involves the brute force trying of all
+possible divisors.
+
+Without additional storage to record primes already found or
+known, this means that @emph{O(sqrt(n))} divisions are needed to
+test an integer @emph{n} for primality. [Actually, that the
+divisions could stop early, at @emph{sqrt(n)}, was only
+discovered by Fibonacci (a.k.a. Leonardo Pisano) about 1200 CE.]
+
+Faster algorithms capable of dealing with larger integers are
+known.  For example, Maple V Release 5 (1997) implements a
+probabilistic function, @code{isprime(n)}, that is
+
+@quotation
+``very probably'' prime --- see Knuth ``The Art of Computer
+Programming'', Vol 2, 2nd edition, Section 4.5.4, Algorithm P
+[Addison-Wesley, Reading, MA, 1969, ISBN 0-201-03802-1] for a
+reference and H. Reisel, ``Prime numbers and computer methods for
+factorization'' [Birkh@"auser, Boston, 1994, 2nd edition, ISBN
+0-8176-3291-3] . No counter example is known and it has been
+conjectured that such a counter example must be hundreds of
+digits long.
+@end quotation
+
+The goal of the function implementations in the first release of
+the primes library is to provide demonstrably correct, small, and
+straightforward, GNU Emacs Lisp code for them, using pre-1974
+algorithms.  They should not be expected to be speedy for large
+arguments.
+
+Even if faster algorithms were implemented, their applicability
+would be limited, because GNU Emacs Lisp does not provide a big
+integer type.  And finally, the significant computational
+resources needed to apply these algorithms to big integers means
+that a compiled, rather than byte-code interpreted,
+implementation language is essential.
+
+Obviously, since the functions have integer arguments, and the
+function result is always the same for a given argument, they
+could all be implemented by a fast @emph{O(1)} table lookup
+operation, except that the storage required would be @emph{O(n)},
+which is unacceptably large.
+
+Perhaps a future version of the library might offer a limited
+table-lookup implementation, reverting to computation for numbers
+beyond the tabulated range.  Preliminary experiments show that
+the primality test could thus be sped up by as much as a factor
+of five, factorization by a factor of three, and the expensive
+@emph{n}-th prime computation reduced to a simple table lookup
+for common cases (there are only 9592 primes less than 100,000,
+and 78,498 primes less than 1,000,000).
+
+As a measure of the programming complexity of recent improved
+algorithms, the body of the primality test function in this
+library is only 12 lines of code, and the factoring function is
+15 lines of code, while similar functions (and several others) in
+the PARI library (a collaborative project to implement
+high-quality fast algorithms in number theory) amount to about
+3600 lines of code embedded in a library of more than 97,000
+lines.
+
+@node Prime Number Functions, Background Reading, ,Primes
+@comment node-name, next,          previous, up
+@section Prime Number Functions
+
+To use the primes library in your own code, simply include this
+line near the beginning of your GNU Emacs Lisp file:
+
+@smallexample
+(require 'primes)
+@end smallexample
+
+The functions provided by the GNU Emacs primes library all take
+integer arguments; invalid arguments provoke a silent @code{nil}
+return value.
+
+@defun gcd m n
+Return the @emph{greatest common divisor} of integers @var{m} and
+@var{n}, or @code{nil} if they are invalid.
+
+Example: @code{(gcd 1024 768)} returns @code{256}.
+
+[cost: @emph{O((12(ln 2)/pi^2)ln max(m,n))} == @emph{0.8427659@dots{} max(m,n)}]
+@end defun
+
+@defun lcm m n
+Return the @emph{least common multiple} of integers @var{m} and
+@var{n}, or @code{nil} if they are invalid, or the result is not
+representable (e.g., the product @var{m}*@var{n} overflows).
+
+Example: @code{(lcm 1024 768)} returns @code{3072}.
+
+[cost: @emph{O((12(ln 2)/pi^2)ln max(m,n))} == @emph{0.8427659@dots{} max(m,n)}]
+@end defun
+
+@defun prime-factors n
+Return a list of prime factors of @var{n}.
+
+If @var{n} is prime, there are no factors, except the trivial one
+of @var{n} itself, so the return value is the list (@var{n}).
+Thus, if @code{(length (prime-factors n))} is 1, @var{n} is
+prime.
+
+Otherwise, if @var{n} is not an integer greater than 1, the
+return value is @code{nil}, equivalent to an empty list.
+
+Example: @code{(prime-factors 1023)} returns @code{(3 11 31)}.
+
+[cost: @emph{O(n)}]
+@end defun
+
+@defun next-prime n
+Return the next prime number after @var{n}.
+
+Example: @code{(next-prime 9)} returns @code{11}.
+
+[cost: @emph{O(sqrt(n))}]
+@end defun
+
+@defun nth-prime n
+Return the @var{n}-th prime, where the first prime is 2.
+
+Example: @code{(nth-prime 100)} returns @code{541}.
+
+[cost: @emph{O(n*sqrt(n))}]
+@end defun
+
+@defun prev-prime n
+Return the previous prime, the largest one less than @var{n}.
+
+Example: @code{(prev-prime 7)} returns @code{5}, and
+@code{(prev-prime 2)} returns @code{nil}.
+
+[cost: @emph{O(sqrt(n))}]
+@end defun
+
+@defun prime-p n
+Test whether @var{n} is prime, and return @var{n} if so, and
+otherwise, @var{nil}.
+
+Example: @code{(prime-p 117)} returns @code{nil}.
+
+[cost: @emph{O(sqrt(n))}]
+@end defun
+
+@defun primes-between from to
+Return a list of primes in the range (@var{from}, @var{to}),
+inclusive.
+
+Example: @code{(primes-between 0 10)} produces @code{(2 3 5 7)}.
+
+[cost: @emph{O((to - from + 1)*sqrt(n)/2)}]
+@end defun
+
+@defun this-or-next-prime n
+Return @var{n} if it is prime, else return the next prime number
+after @var{n}.
+
+Example: @code{(this-or-next-prime 7)} returns @code{7}.
+
+[cost: @emph{O(sqrt(n))}]
+@end defun
+
+@defun this-or-prev-prime n
+Return @var{n} if it is prime, else return the prime number before
+(i.e., less than) @var{n}.
+
+Example: @code{(this-or-prev-prime 7)} returns @code{7}.
+
+[cost: @emph{O(sqrt(n))}]
+@end defun
+
+Because Emacs integers are usually more limited in size than the
+host word size would suggest, e.g.,
+
+@smallexample
+[-2^{27}, 2^{27} - 1] == [-134217728, 134217727]
+@end smallexample
+
+@noindent
+on a 32-bit machine, avoid passing excessively large integers to
+these functions, otherwise you may experience a failure like this
+one:
+
+@smallexample
+@group
+(next-prime 134217689)
+Arithmetic domain error: "sqrt", -134217728.0
+@end group
+@end smallexample
+
+While you may be able to use larger integers on some 64-bit
+machines, the required run time for these functions is then
+likely to be excessive.
+
+The @code{lcm} function is particularly sensitive to overflow,
+since it is computed from the relation @emph{lcm(m,n) =
+(m*n)/gcd(m,n)}: the intermediate product @emph{(m*n)} can
+overflow for values as small as @emph{2^14}, even if the final
+result would be representable.  Consequently, @code{lcm} is
+written to use double-precision floating-point arithmetic until
+the final division is completed.  Even this will fail for values
+near the overflow limit, such as @emph{2^27 - 1 - 2^25 =
+100663295}, and worse, the failure will not be detected: a
+non-@code{nil} incorrect answer will be returned.  This blemish
+needs to be remedied in a future version of this library.
+
+To complete this section, it is instructive to examine how
+certain special cases are handled in two important functions.
+Recall first the important definition that began this chapter:
+@quotation
+@emph{A prime number is any integer greater than one that has no
+exact integer divisors other than one and itself.}
+@end quotation
+
+Here is a table of results of primality testing from recent
+releases of several important algebra programming systems, and
+this package:
+
+@c WARNING: This table is too wide for smallexample, and the latter's
+@c indentation makes it worse, so display it as smallformat, and use an ugly
+@c explicit font change for force use of a fixed-width font.
+@smallformat
+@t{
+=====================================================================
+                          Primality Testing
+Program          Function -10   -2     -1    0     1     2      10
+---------------------------------------------------------------------
+Maple V5          isprime false false  false false false true   false
+Matlab 5.2.1.1420 isprime 0     0      0     0     0     1      0
+Mathematica 2.2   PrimeQ  False True   False False False True   False
+Reduce 3.6        primep  nil   (list) nil   nil   nil   (list) nil
+primes.el         prime-p nil   nil    nil   nil   nil   2      nil
+======================================================================
+}
+@end smallformat
+
+Mathematica and Reduce incorrectly ignore the argument sign,
+reporting that -2 is a prime.
+
+Reduce returns a list of the first 500 primes instead of
+@code{t}, but the two are equivalent for logical tests, so that
+behavior is acceptable, if perhaps unexpected.
+
+Maple, Matlab, and this package are consistent with the standard
+definition of a prime number.
+
+This package's @code{prime-p} function returns its argument when
+it is prime, because that is more useful than just @code{t}, and
+yet can still be treated equivalently in logical tests.
+
+Here is how they handle factorization:
+
+@c WARNING: This table is too wide for smallexample, and the latter's
+@c indentation makes it worse, so display it as smallformat, and use an ugly
+@c explicit font change for force use of a fixed-width font.
+@smallformat
+@t{
+============================================================================
+                               Factorization
+Program           Function      -10     -2      -1    0   1   2      10
+----------------------------------------------------------------------------
+Maple V5          ifactor       -2,5    -2      -1    0   1   2      2,5
+Maple V5          ifactors      -1(2,5) -1(2,1) -1()  0() 1() 1(2,1) 1(2,5)
+Matlab 5.2.1.1420 factor        ERROR   ERROR   ERROR 0   1   2      2,5
+Mathematica 2.2   FactorInteger -1,2,5  -1,2    -1,1  0   ()  2      2,5
+Reduce 3.6        factorize     2,5,-1  2,-1    1,-1  ()  1   2      2,5
+primes.el         prime-factors nil     nil     nil   nil nil 2      2,5
+============================================================================
+}
+@end smallformat
+
+Maple has two related functions: according to help inside the
+program, @code{ifactor} returns the complete integer
+factorization of its integer argument, and @code{ifactors}
+returns the complete integer factorization of its integer or
+fractional argument.  However, the Maple Handbook which
+accompanies the package claims that @code{ifactors} returns the
+@emph{prime} integer factors.
+
+Matlab handles arguments 0 and 1 anomalously, and raises an
+uncatchable error for negative arguments, aborting processing.
+By contrast, the consistent @code{nil} return from the Emacs
+@code{prime-factors} function for invalid arguments makes it
+possible to handle the exception gracefully.
+
+Reduce takes the absolute value of the argument, then for
+negative arguments, appends an additional factor of -1.  Argument
+1 is handled anomalously.
+
+Like Reduce, Mathematica takes the absolute value of the
+argument, and then, for negative arguments, prefixes an
+additional factor of -1.  However its handling of arguments -1
+and 1 is inconsistent, and the handling of arguments 0 and 1 is
+anomalous.
+
+Evidently, all of those other packages could profitably reexamine
+their prime number support for consistency, correctness, and
+usability!
+
+@node Testing and Profiling the Primes Library, Background Reading, Prime Number Functions,Primes
+@comment node-name, next,          previous, up
+@section Testing and Profiling the Primes Library
+
+The primes library file, @file{primes.el}, is accompanied by a
+thorough test package, @file{test-primes.el}, a practice that we
+hope other GNU Emacs Lisp package writers will follow.
+
+The test package contains a test function for each public
+function in the primes library, plus two driver programs that the
+(human) tester can invoke interactively with the usual @kbd{M-x}
+prefix, and two interfaces to those functions, to be used in
+batch mode as part of an automated package validation test:
+
+@defun test-primes
+Run all of the validation tests.  The test output log is stored
+in a buffer named @samp{*test-primes*} (or whatever you have set
+@var{test-primes-buffer} to); an existing buffer of that name is
+made unique by addition of a numeric suffix.  If all of the tests
+are successful, the buffer just contains a list of the test
+names, something like this:
+
+@smallexample
+There should be no output here other than the test names
+
+test of gcd ...
+test of lcm ...
+test of prime-p ...
+test of next-prime ...
+test of nth-prime ...
+test of prev-prime ...
+test of primes-between ...
+test of this-or-next-prime ...
+test of this-or-prev-prime ...
+@end smallexample
+
+The tests are hierarchically ordered, since, for example, the
+primality test is needed in all of the other functions.
+
+Any errors detected would appear following the corresponding
+@samp{test of @dots{}} line; there should be none.
+@end defun
+
+@defun test-primes-with-profile
+Run @code{test-primes} with function profiling turned on.  This
+produces the normal test log in the @samp{*test-primes*} buffer,
+and in addition, produces a second temporary buffer,
+@samp{*profile*} (or whatever you have set @var{profile-buffer}
+to), to hold the run-time profile showing counts and execution
+times for each function profiled.  An existing buffer of that
+name is made unique by addition of a numeric suffix.  A fragment
+of the profile looks something like this (slightly reformatted to
+reduce line width):
+
+@smallexample
+Function                  Calls  Total time (sec)  Avg time
+                                                   per call
+=======================  ======  ================  =========
+gcd                        5304         73.327100   0.013825
+lcm                        2754         46.438376   0.016862
+next-prime                   11          0.462194   0.042018
+nth-prime                     5         15.425060   3.085012
+prev-prime                   11          0.539797   0.049072
+prime-factors               242          3.093837   0.012784
+prime-p                    4984          9.984730   0.002003
+primes-between                4          0.186052   0.046513
+this-or-next-prime           10          0.353138   0.035314
+this-or-prev-prime           10          0.371206   0.037121
+@dots{}
+Profile by decreasing average time
+Function                  Calls  Total time (sec)  Avg time
+                                                   per call
+=======================  ======  ================  =========
+nth-prime                     5         15.425060   3.085012
+prev-prime                   11          0.539797   0.049072
+primes-between                4          0.186052   0.046513
+next-prime                   11          0.462194   0.042018
+this-or-prev-prime           10          0.371206   0.037121
+this-or-next-prime           10          0.353138   0.035314
+lcm                        2754         46.438376   0.016862
+gcd                        5304         73.327100   0.013825
+prime-factors               242          3.093837   0.012784
+prime-p                    4984          9.984730   0.002003
+@dots{}
+@end smallexample
+
+The first page of the buffer contains a summary of the
+environment in which the test was run, so that the user can
+readily distinguish profiles run on different systems.  The
+second page contains profile data with the function names in
+alphabetical order. The third, and last, page, contains profile
+results sorted by descending cost.
+@end defun
+
+@defun test-primes-and-kill-emacs
+This function is a wrapper for @code{test-primes}, except that it
+saves the test results in a file, and exits Emacs with a status
+code indicating the number of test failures.
+@end defun
+
+@defun test-primes-with-profile-and-kill-emacs
+This function is a wrapper for @code{test-primes-with-profile},
+except that it saves the test results and profile in files, and
+exits Emacs with a status code indicating the number of test
+failures.
+@end defun
+
+
+For the latter two functions, the filenames chosen are of the form
+
+@smallexample
+test-primes.results.HOSTNAME.YYYY-MM-DD-hh-mm-ss
+test-primes.profile.HOSTNAME.YYYY-MM-DD-hh-mm-ss
+@end smallexample
+
+@noindent
+so that tests can be run on multiple machines without filename
+collisions, and the test results can readily be distinguished by
+the filenames.
+
+Not only does profiling reveal hot spots in the code, but
+non-zero function invocation counts also verify that each
+function has been exercised by the tests.
+
+The exact results of a profile clearly depend on test data, on
+the compiler and optimization level used to build Emacs, on
+algorithms in the Emacs kernel, on the operating system, on the
+timer granularity, and on the host architecture.
+
+Nevertheless, this table of relative performance (larger is
+slower), sorted by function names on the left, and by decreasing
+relative cost on the right, may be a useful guide.  It was
+produced on a late 1995-vintage Sun UltraSPARC 170 workstation
+with Sun Solaris 2.6 running GNU Emacs 20.3.6 at the package
+author's site, and all Emacs code was byte-compiled:
+
+@smallexample
+gcd                     6.90   |   nth-prime            1540.20
+lcm                     8.42   |   prev-prime             24.50
+next-prime             20.98   |   primes-between         23.22
+nth-prime            1540.20   |   next-prime             20.98
+prev-prime             24.50   |   this-or-prev-prime     18.53
+prime-factors           6.38   |   this-or-next-prime     17.63
+prime-p                 1.00   |   lcm                     8.42
+primes-between         23.22   |   gcd                     6.90
+this-or-next-prime     17.63   |   prime-factors           6.38
+this-or-prev-prime     18.53   |   prime-p                 1.00
+@end smallexample
+
+The execution time of @code{nth-prime} depends on its argument:
+the largest value passed by the test program was 1000.
+
+The functions in the primes library depend heavily on integer
+arithmetic, and it is worth observing that some RISC
+architectures lack a full complement of integer instructions,
+sometimes relegating multiply and divide to software
+implementations.  Older Sun SPARC systems, and all HP PA-RISC
+systems, are widely-used examples.  Some supercomputers handle
+integer multiply and divide in floating-point hardware,
+necessitating a conversion from integer to floating-point and
+back.
+
+The primes library author's site has systems from seven major
+UNIX vendors representing more than ten different UNIX
+architectures, and about four times as many models.  Until the
+development of this library, GNU Emacs was normally built on
+these systems with vendor compilers using default optimizations.
+However, the primes library profiling turned up unexpected
+anomalies, with some architectures being notably slower than
+others, when such differences were not expected from other
+benchmarks.
+
+As an experiment, therefore, Emacs was rebuilt on the Sun SPARC
+systems with a high optimization level and options to generate
+code for the latest architecture versions.  The profiles showed a
+dramatic improvement: overall speedups by factors of 5 to 11,
+depending on the model, and speedups of up to 24 on the
+@code{gcd} test.  Serendipitously, the largest speedups were seen
+on the oldest and slowest models, whose users most need the
+performance increase.
+
+On Sun SPARC systems, it is possible to use this optimized Emacs
+on all models, because unknown hardware instructions met by an
+older model are silently trapped and emulated in software.  That
+may not be possible on some other systems.
+
+Similar rebuilds with optimization were carried out on the other
+architectures at the development site, and speedups of as little
+as 1.1, to as much as 16, were obtained.  Evidently, for
+compute-bound functions, compiler optimizations of Emacs can be
+extremely profitable!
+
+@node Background Reading, ,Testing and Profiling the Primes Library,Primes
+@comment node-name, next,          previous, up
+@section Background Reading
+
+For an interesting historical review of number theory, and a list
+of outstanding unsolved problems, see Leonard M. Adleman,
+@emph{Algorithmic Number Theory --- The Complexity Contribution},
+Proc. 35th IEEE Symposium on the Foundations of Computer Science
+(FOCS'94), Shafi Goldwasser (Ed.), IEEE Computer Society Press
+(Silver Spring, MD), pp. 88--113, 1994, ISBN 0-8186-6582-3, ISSN
+0272-5428.
+
+For more detail, and recommended computational algorithms, see
+the book by Eric Bach and Jeffrey Shallit, @emph{Algorithmic
+Number Theory. Volume I: Efficient Algorithms}, MIT Press
+(Cambridge, MA), 1996, ISBN 0-262-02405-5.
+
+For even more detail on, and complexity analysis of, the older
+methods, see Donald E. Knuth, @emph{Seminumerical algorithms, The
+Art of Computer Programming, Volume 2}, Third edition,
+Addison-Wesley (Reading, MA), 1997, ISBN 0-201-89684-2.
+
+The book by Steven S. Skiena, @emph{The Algorithm Design Manual},
+Springer-Verlag (New York, NY), 1998, ISBN 0-387-94860-0,
+contains in Section 8.2.8 only a brief overview of the factoring
+and primality testing problem, but it has pointers to important
+recent literature, and to excellent freely-available software
+packages (including the aforementioned PARI system); that
+practice is continued throughout the book, making it an
+outstanding reference volume for combinatorial algorithms.
+
+@bye

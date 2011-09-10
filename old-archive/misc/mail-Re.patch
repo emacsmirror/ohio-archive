@@ -1,0 +1,41 @@
+From utkcs2!emory!samsung!know!zaphod.mps.ohio-state.edu!mips!pacbell.com!pacbell!osc!jgk Thu Jun 28 11:34:33 EDT 1990
+Article 4517 of comp.emacs:
+Path: utkcs2!emory!samsung!know!zaphod.mps.ohio-state.edu!mips!pacbell.com!pacbell!osc!jgk
+>From: jgk@osc.COM (Joe Keane)
+Newsgroups: comp.emacs
+Subject: Adding `Re:' to replies
+Keywords: RMAIL, reply
+Message-ID: <2987@osc.COM>
+Date: 27 Jun 90 00:32:55 GMT
+Reply-To: jgk@osc.COM (Joe Keane)
+Organization: Object Sciences Corp., Menlo Park, CA
+Lines: 26
+
+For some reason RMAIL doesn't prefix `Re:' to the subject when you're replying
+to a message.  I don't know if it's generally desirable, but if you do want
+that behavior here is a patch to get it.
+
+*** /osc/arch/gnu/lisp/rmail.el	Tue May 16 14:54:22 1989
+--- /home/rd/jgk/elisp/rmail.el	Tue Jun 26 17:21:35 1990
+***************
+*** 1206,1213 ****
+  				(mail-fetch-field "resent-message-id" t))
+  			       ((mail-fetch-field "message-id"))))))
+      (and subject
+! 	 (string-match "\\`Re: " subject)
+! 	 (setq subject (substring subject 4)))
+      (mail-other-window nil
+        (mail-strip-quoted-names reply-to)
+        subject
+--- 1206,1214 ----
+  				(mail-fetch-field "resent-message-id" t))
+  			       ((mail-fetch-field "message-id"))))))
+      (and subject
+!       (progn
+! 	(string-match "^\\([\t ]\\|[Rr]e:\\|[Ff]wd:\\)*" subject)
+! 	(setq subject (concat "Re: " (substring subject (match-end 0))))))
+      (mail-other-window nil
+        (mail-strip-quoted-names reply-to)
+        subject
+
+

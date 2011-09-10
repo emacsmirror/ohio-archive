@@ -1,0 +1,91 @@
+The file clisp.el establishes a set of key bindings and functions to
+support one or more Common Lisp processes running in inferior shells.
+Instructions for installing this Lisp environment can be found in the
+"Install" file.  Release notes detailing changes from the previous
+version can be found in the "Notes" file.
+
+To use, set your lisp-mode-hook to:
+      (lambda () (require 'clisp)(start-lisp))
+If you want your first lisp started on a different host, use:
+      (lambda () (require 'clisp)(start-lisp "hostname"))
+
+There are two sets of key bindings established, one for editing
+lisp code and the other for interacting with a lisp listener.
+Both sets of bindings are available via the C-c prefix.
+
+Editing any file in lisp mode will cause an inferior lisp to be
+started automatically. Normally this is accomplished by setting the
+auto-mode-alist variable in your ".emacs" file to key off of a
+filename extension.
+
+While editing a file in Lisp mode:
+  C-c l    switches to the last inferior lisp process visited (see C-c e)
+  M-C-l    spawns a new lisp buffer, prompting for a host.
+
+You can start as many Lisp listeners as you like, each with a distinct
+value space. We use this feature to start a Lisp on a remote machine
+that is presumably faster or has more memory.
+
+The notion of "last Lisp process" corresponds to the last Lisp
+listener whose GNU window appeared on the screen. You can switch to
+any Lisp process by giving a prefix argument to C-c l specifying which
+*lispN* buffer to select; the "last Lisp process" notion only controls
+the behavior of C-c l (and other keybindings) when no prefix is given.
+
+To pass code from GNU to lisp:
+  C-c d    evals current defun in last inferior lisp process
+  C-c C-d  = (C-c d) + (C-c l)
+  C-c c    compiles current defun in last inferior lisp process
+  C-c C-c  = (C-c c) + (C-c l)
+  C-c s    evals last sexpr in last inferior lisp process
+  C-c C-s  = (C-c s) + (C-c l)
+  C-c r    evals current region in last inferior lisp process
+  C-c C-r  = (C-c r) + (C-c l)
+  C-c b    evals current buffer in last inferior lisp process
+  C-c C-b  = (C-c b) + (C-c l)
+
+The GNU emacs tags facility is used to cross index your source code.
+Special bindings to support this feature include:
+  C-c .    finds defun for current function in other window
+  C-c ,    looks for next matching defun (C-c .)
+  M-.      finds defun for current function (std GNU)
+  M-,      looks for next matching defun (std GNU)
+  C-c t    lists files indexed by (C-c .)
+  C-c C-t  recomputes lookup table for (C-c .) and (C-c t)
+
+In addition, there are a few bindings that are specific to Common Lisp
+support.
+  C-c m    shows Common Lisp macro expansion of current form
+  C-c f    shows Common Lisp documentation for current function
+  C-c v    shows Common Lisp documentation for current variable
+  M-q      reindents current comment or defun
+
+Indentation has been adapted to properly indent the Interlisp-style
+FOR macro distributed by segre@gvax.cs.cornell.edu
+
+Note that the "[" and "]" characters can be used as "super-parens" in
+either mode. A "]" closes as many open "(" exist up to and including
+an open "[". If no open "[" exists, "]" closes up to the top level.
+The square brackets are replaced by the appropriate number of "(" and
+")" in the buffer, since Common Lisp doesn't understand super-parens.
+N.B.; To insert explicit square brackets, they must be prefaced by
+C-q.
+
+While typing to an inferior Lisp process buffer:
+  C-c e    returns to last edited file of lisp code (see C-c l)
+  M-C-l    spawns a new lisp buffer, prompting for a host.
+  C-c l    with a prefix argument switches to that inferior lisp.
+
+The notion of "last edit buffer" is the analogue to "last Lisp
+buffer". The last GNU buffer visible that was not a Lisp process
+buffer is the "last edit buffer". To go to a different buffer, use the
+apporpriate GNU command (C-x b).
+
+Finally, there are some "ksh"-like extensions to shell.el to help in
+debugging Lisp code:
+  C-c h    show history
+  C-c C-p  previous form in history list
+  C-c C-n  next form in history list
+  C-c C-a  beginning of line
+  C-c C-r  search backwards in history
+  C-c C-s  search forward in history

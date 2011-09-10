@@ -1,0 +1,10 @@
+! make sure the common functions work
+keycode 113 = F11
+! [~`] -> ESC and ~
+keycode 191 = Escape asciitilde
+! [<>] -> [`~]
+keycode 201 = quoteleft asciitilde
+! [,,] -> [,<]
+keycode 232 = comma less
+! [..] -> [.>]
+keycode 237 = period greater

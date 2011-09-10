@@ -1,0 +1,2014 @@
+;;; -*- outline -*-   Big Bad FTP List
+
+<(Return to Top Level)>				C-c C-s to show the full entry
+<(Cut Out All But Topic Headers)>		C-c C-h hide the subentries
+<(Frequent FTP Sites)>				C-h m for extensive help
+
+
+<(Click Here to Add a New Site to this List)>
+
+
+* 	Local Sites
+**** 	"/anonymous@ncube10.csee:"
+**** 	"/tb06@pl118g.cc.lehigh.edu:"
+**** 	"/tb06@pl118f.cc.lehigh.edu:"
+**** 	"/tb06@pl118e.cc.lehigh.edu:"
+**** 	"/tb06@pl118d.cc.lehigh.edu:"
+**** 	"/tb06@pl118c.cc.lehigh.edu:"
+**** 	"/tb06@pl118b.cc.lehigh.edu:"
+**** 	"/tbrannon@pmatlab5.csee:"
+**** 	"/anonymous@klotho.cs.caltech.edu:"
+
+
+
+<(Back to Top)>
+
+<(Brand New HyperActive Site Listings)>
+
+
+<(Tom Czarnik's FTP List)> ;;; eventally perl this to HyperActive
+			   ;;; format so all the Hyperchondriacs can
+			   ;;; view it
+	
+
+*	HP48sx
+** 	Lots of stuff for the HP48sx
+***
+****	"/anonymous@seq.uncwil.edu:hp48"
+
+*    Latest Web2c (for TeX)
+**   {web,web2c}-<version>.tar.Z
+***  Latest version of Web2c changed every Sunday night.
+     This host is in Germany, Europe -- not in the USA!
+**** "/anonymous@ftp.th-darmstadt.de:pub/tex/src/web2c
+
+*	faces bitmaps and the like
+**
+***
+****	"/anonymous@iuvax.cs.indiana.edu:/pub/faces/"
+
+*    TeX (transfig)
+**   pub/transfig*.tar.Z
+***  Contains the sources for the figure translation package for TeX, including
+fig2dev.
+**** "/anonymous@ftp.cs.cornell.edu:pub"
+
+*    TeX/GIF/Animation/IEEE style file
+**   
+***  
+**** "/anonymous@wpi.wpi.edu:"
+
+*    XGobi
+**   general
+***  Dynamic scatter plotting graphics package for exploratory data analysis.
+ email: statlib@temper.stat.cmu.edu with message "send xgobi from general"
+**** "/statlib@lib.stat.cmu.edu:general"
+
+*     Project Gutenberg
+**   etext/*
+***  Public Domain Etexts. The primary goal of Project Gutenberg is 
+to encourage the creation and distribution of electronic text.
+**** "/anonymous@mrcnext.cso.uiuc.edu:"
+
+*    LaTeX/Postscript (Boxed eps)
+**   pub/siebenmann/*
+***  Boxed postscript filr inclusions in LaTeX. Supports OzTeX. 
+IP 130.84.128.100
+**** "/anonymous@rsovax.ups.circe.fr:"
+
+
+* 	How can I include a PostScript figure in LaTeX?/LaTeX/Postscript
+** 	psfig
+*** 	<(Describe psfig)>
+**** 	"/anonymous@whitechapel.media.mit.edu:"
+ 	"/anonymous@linc.cis.upenn.edu:"
+ 	"/anonymous@ymir.claremont.edu:"
+
+*    Xtank/Sun Sparcstation Sounds
+**   pub/xtank/xtank1.3d.tar.Z
+***  The directory contains the tar'd sources for a great X11 multiplayer game.
+There is a README file in there.
+**** "/anonymous@ftp.eng.umd.edu:"
+
+
+*    Rc
+**   Rc
+***  Here is always the latest version of the Rc shell. Rc is a Unix implementation of the Bell labs Plan 9 shell.
+**** "/anonymous@archone.tamu.edu:/pub/rc"
+
+
+* 	Threads/Unix Programming/Control Flow/Pre-Emptive Threads for Sparcs
+** 	Portable Common Runtime package (pcr)
+***	
+****	"/anonymous@arisia.xerox.com:/pub/pcr"
+
+* 	GNU/Free Software Foundation/Richard Stallman/Emacs
+** 	GNU Emacs FAQ
+***	
+****	"/anonymous@rtfm.mit.edu:pub/usenet/news.answers/GNU-Emacs-FAQ/"
+
+
+<(Back to Top)>
+
+*	Embedded Extensible Language
+**	Tcl/Tk
+****	"/anonymous@allspice.berkeley.edu:"
+****	"/anonymous@ftp.uu.net:/languages"
+**	Basic Object System
+****	"/anonymous@monch.edrc.cmu.edu:/usr0/snl/archive"
+**	porthole geometry manager
+****	"/anonymous@ajk.tele.fi:/pub/tcl+tk"
+
+*	Programming Language/Oberon
+***	a technical document is available from:
+****	"/anonymous@princeton.edu:pub/oberon/oberon.tex"
+
+*	Sockets
+*** Tutorial
+"/anonymous@130.59.1.40:/docs/papers/BSD_IPC_Tutorial" ;; nic.switch.edu
+;; src.doc.ic.ac.uk
+*** 
+"/anonymous@146.169.2.1:/usenet/comp.archives/auto/comp.lang.ada 
+*** sockettool.tar.Z
+"/anonymous@140.221.10.1:/pub/pdetools" - 	
+
+
+* 	ls-LR Section
+** 
+	The purpose of this section is to allow you to view the archive files
+	for major internet ftp sites. Email me to add your favorites. 
+
+	ftp.win.tue.nl 		<(a 300k transfer)>
+	gatekeeper.dec.com: 	<(by name)>  <(by time)>  a 666k transfer 
+	ftp.uu.net:		<(master index)>  
+	"/anonymous@trantor.harris-atd.com:" <(Trantor Directory Index)>
+
+* 	Operating Systems
+** 	BSD386
+***	BSD for the 386
+**** 	"/anonymous@tesla.ee.cornell.edu:"
+
+*	Languages / Smalltalk FAQ
+**	<(Smalltalk FAQ)>
+
+* 	List of European Consulting Firms
+****	"/anonymous@ursa-major.spdcc.com:"
+
+* 	Computer Music
+**	MIT Csound
+***	Construct music for many many workstations, excellent package
+**** 	"/anonymous@ems.media.mit.edu:"
+
+*	
+	GNU Software / Free Software Foundation / Richard M. Stallman
+** 	<(List of GNU Software)>
+	<(Ordering GNU Software)>
+	<(What Hardware does GNU Software Run On?)>
+	<(How do I get support services for GNU Software?)>
+	<(Terms of Using GNU Software)>
+GNU Software Archive Sites
+  	Note: please try to use these sites first. They are mirrored daily
+	from prep.ai.mit.edu and tend to have less of a system load. Thanks.
+ 	"/anonymous@ftp.tue.win.nl:"	"/anonymous@ftp.tue.win.nl:pub/gnu"
+	"/anonymous@src.doc.ic.ac.uk:"	"/anonymous@src.doc.ic.ac.uk:pub/gnu"
+ 	"/anonymous@prep.ai.mit.edu:"	"/anonymous@prep.ai.mit.edu:pub/gnu"
+	"/anonymous@sh.cs.net:" "/anonymous@mcsun.eu.net:"
+GNU Prototyping Site
+	a good introduction to elisp is here as well as GNUmach and other stuff 	they are working on 
+	"/anonymous@alpha.gnu.ai.mit.edu:"
+Emacs Lisp Archive
+	<(Guidelines For Posting to the Archive)>
+	<(View Database of Emacs Lisp Source Code)>
+	"/anonymous@archive.cis.ohio-state.edu:pub/gnu/emacs/elisp-archive"
+	"/anonymous@tutserver.tut.ac.jp:"
+Ange-FTP - transparent FTP support for Emacs file routines
+	Mailing List Archive 	"/anonymous@ftp.reed.edu:"
+	Most Recent Version	"/anonymous@alpha.gnu.ai.mit.edu:"
+
+* 	Parallel Computing
+** 	Ease
+*** 	Parallel language which allows context sharing
+**** 	"/anonymous@isatis.ensmp.fr:"
+ 
+* 	Parallel Computing
+** 	distr_os
+*** 	List of distributed systems and operating systems
+**** 	"/anonymous@titania.mathematik.uni-ulm.de:"
+
+* 	Computer Graphics/X Windows
+** 	SPHIGS
+***	Simple Hierarchical Interactive Graphics 
+**** 	"/anonymous@wilma.cs.brown.edu:"
+	"/anonymous@wuarchive.wustl.edu:"
+
+* 	Computer Graphics/X Windows
+** 	SRGP
+*** 	Simple Raster Graphics Package
+**** 	"/anonymous@wilma.cs.brown.edu:"
+	"/anonymous@wuarchive.wustl.edu:"
+
+
+* 	X Windows / comp.sources.x archive
+	<(View all files archived from comp.sources.x)>
+	"/anonymous@j.cc.purdue.edu:comp.sources.x"
+
+*	Framemaker Clip Art and Images
+****	"/anonymous@trantor.harris-atd.com:" <(Trantor Directory Index)>
+
+* 	C++ Class Libraries
+** 	NIHCL for g++
+*** 	140.174.1.1 is IP address
+**** 	"/anonymous@cygnus.com:"
+
+* 	Environment/Global Warming/Third World
+** 	Tiempo Newsletter
+*** 	pub/ECIX
+**** 	"/anonymous@igc.org:"
+
+* 	Music
+** 	Csound
+*** 	
+**** 	"/anonymous@ems.media.mit.edu:"
+
+* 	TeX
+** 	LaTeX styles
+*** 	directory of latex styles
+**** 	"/anonymous@fionavar.mit.edu:"
+**	troff to latex
+**** 	"/anonymous@137.226.112.31:/pub/textproc/TeX"
+**	<(TeX/LaTeX Frequently Asked Questions)>
+	<(TeX/LaTeX Frequently Asked Questions Supplement)>
+
+* 	Women Computer Scientists/Robotics
+** 	Women Computer Scientists/Reactive Robotics
+*** 	pub/ellens/womcs*.ps
+**** 	"/anonymous@ftp.ai.mit.edu:"
+
+* 	X-Windows
+*** 	x-source-list.Z contains X-win ftp sites. dir: contrib
+**** 	"/anonymous@export.lcs.mit.edu:"
+ 	"/anonymous@giza.cis.ohio-state.edu:" (mirror site)
+
+* 	Phone Phreaking / Hacking
+** 	Phrack
+*** 	Phrack is in cud . all kinds of hacker stuff from back in the days
+**** 	"/anonymous@192.88.144.4:"  ;; ftp.eff.org
+
+
+* 	Prose/Ethnic Tex
+** 	Poorman's TeX/Translation of John Trevisa from Latin
+**** 	"/anonymous@blackbox.hacc.washington.edu:"
+
+* 	TeX
+**** 	"/anonymous@byron.u.washington.edu:"
+ 	"/anonymous@june.cs.washington.edu:"
+
+* 	Ethnic TeX
+** 	chinese.tar.Z
+*** 	
+**** 	"/anonymous@ftphost.cac.washington.edu:"
+
+* 	Public Domain Scientific Software available from Netlib
+*** 	<(Describe Netlib)>
+
+
+* 	Statistics
+*** 	To get started using StatLib, send the one line message
+	send index to statlib@lib.stat.cmu.edu
+**** 	"/statlib@lib.stat.cmu.edu:"
+
+* 	Logic
+** 	HigherOrderLogic Theorem Prover (hol)
+*** 	
+**** 	"/anonymous@ted.cs.uidaho.edu:pub"
+
+* 	Computer Graphics
+** 	Gif Viewer for PC's
+*** 	pub/pc
+**** 	"/anonymous@wolfen.cc.uow.edu.au:"
+
+* 	Ethnic Tex
+** 	Bejing-24.bdf/PinYin pronunciation tables/Pinyin->GB code table/Best of comp.graphics/World Map/Zhongwen 
+**** 	"/anonymous@hanauma.stanford.edu:"
+
+* 	Ethnic Tex
+** 	ChTeX Modified
+**** 	"/anonymous@neon.stanford.edu:"
+
+* 	Postscript
+** 	Episode Viewer
+**** 	"/anonymous@lurch.stanford.edu:"
+
+* 	ADA/TeX
+** 	Annotated ADA
+*** 	Sriram Sankar's ada macros for TeX..
+**** 	"/anonymous@anna.stanford.edu:"
+
+* 	TeX
+** 	dvips
+*** 	quasi-official repository for TeX and related toys
+**** 	"/anonymous@labrea.stanford.edu:"
+
+* 	Gcc Hacks/Gcc for 68k
+**	Gcc 68k
+*** 	pub/GNU for docs and binaries from marc@sun-valley.stanford.edu Sat Nov 16 23:40:10 1991 
+**** 	"/anonymous@sun-valley.stanford.edu:"
+
+* 	Object-Oriented Graphics
+** 	Interviews
+*** 	home of Interviews, an object-oriented windowing system
+**** 	"/anonymous@interviews.stanford.edu:"
+
+* 	Editors/TeX/Gifs
+** 	Gifs/Unix-TECO/TeXtyl
+*** 	TeXtyl allows postprocessing with any available fonts
+**** 	"/anonymous@venus.ycc.yale.edu:"
+
+* 	Mathematics
+** 	Mathematical Abstracts Database
+*** 	<(Describe the Abstracts Database)>
+**** 	"/anonymous@yalevm.ycc.yale.edu:"
+
+* 	Graphics/Ray Tracing
+** 	Utah Raster Toolkit
+**** 	"/anonymous@weedeater.math.yale.edu:"
+
+* 	Spell Check
+** 	Ispell
+**** 	"/anonymous@bulldog.cs.yale.edu:"
+
+* 	Ethnic Tex
+** 	ChTeX
+*** 	mirror site for Ethnic Typographic/TeX things
+**** 	"/anonymous@kth.se:"
+
+* 	IBM
+** 	Hytelnet4.0
+*** 	A utility which gives an IBM-PC user instant-access to all Internet-accessible library  catalogs, Freenets, CWISs, Library BBSs, etc.  
+**** 	"/anonymous@vaxb.acs.unt.edu:"
+
+* 	Ray Tracing/Graphics
+** 	MicroEmacs/VT100 Art/Kermit Docs/Zoo Archiver
+**** 	"/anonymous@irisa.irisa.fr:"
+
+* 	Ethnic Tex
+** 	ArabTeX
+*** 	Home of ArabTeX
+**** 	"/anonymous@ifi.informatik.uni-stuttgart.de:"
+
+* 	X Games
+** 	Xpipeman
+*** 	Xpipeman is an addictive strategy game
+**** 	email to pavern@uk.ac.man.cs
+
+* 	Ethnic TeX/Chinese Metafonts
+** 	Arabic/Japanese/Korean/ChTeX/ArabTeX
+*** 	lots of language and tex-related stuff.
+**** 	"/anonymous@kythera.nmsu.edu:"
+
+* 	Ethnic Tex
+** 	Duke Chinese Typist
+**** 	"/anonymous@msdos.archive.umich.edu:"
+
+** 	ParaGraph
+**** 	"/anonymous@bull.cs.williams.edu:"
+
+* 	comp.sources.unix/TeX/Bitmaps/Games/Graphics
+** 	Bitmaps/comp.sources.unix/wp2latex/CommonTeX2.9/ckermit/Uemacs_3.10/UC-Berkeley Software Catalog
+**** 	"/anonymous@ccb.ucsf.edu:"
+
+* 	NSF-Japan/Software Development/Pnrogramming Languages/SB-Prolog
+** 	NSF-Japan/SB-Prolog/Japanese Computer Science Info/Scorpion
+Software Development System/SR Programming Language/Janus Programming
+Language/Icon Programming Language/Xkernel/Agrep/Anrep  
+**** 	"/anonymous@cs.arizona.edu:"
+
+* 	Graphics
+** 	Star Gifs/Ray Tracing
+**** 	"/anonymous@iear.arts.rpi.edu:"
+
+* 	LISP/Logic
+** 	thm (theorem prover)/Kyoto Common Lisp
+**** 	"/anonymous@rascal.ics.utexas.edu:"
+
+* 	TeX
+** 	Fig/TransFig
+**** 	"/anonymous@ftp.cs.cornell.edu:"
+
+*	Parallel Computing
+**	Oasis
+***	<(Description)>
+****	"/anonymous@141.212.99.7:oasis" ;; z.eecs.umich.edu
+
+* 	Parallel Computing Environment
+** 	Paragon Parallel Programming Environment
+*** 	<(Paragon Information)>
+**** 	"/anonymous@tesla.ee.cornell.edu:"
+
+* 	Parallel Computing
+** 	Parallel Virtual Machine
+*** 	PVM (parallel virtual machine) is a software
+package which allows the utilization for a heterogeneous network of
+computers.
+**** 	"/anonymous@cs.utk.edu:"
+
+* 	Protein Primary Structure
+** 	ProfileGraph
+**** 	"/anonymous@nic.funet.fi:"
+	"/anonymous@menudo.uh.edu:"
+
+
+* 	Drosophila Genetic Map/Protein Primary Structure
+** 	ProfileGraph/FlyBase (Drosophila)
+*** 	
+**** 	"/anonymous@ftp.bio.indiana.edu:"
+
+* 	Restriction Enzyme Dbase/Cold Spring Harbor
+** 	Cold Spring Harbor restriction enzyme database
+*** 	The data are contained in the file type2.lst and
+literature references are in references.lst.  Questions about the
+database should be directed to Dr. Roberts at roberts@cshl.org.
+
+                                Dave Kristofferson
+                                GenBank Manager
+                                kristoff@genbank.bio.net
+**** 	"/anonymous@karyon.bio.net:pub/db"
+
+* 	Games
+**** 	"/anonymous@decuac.dec.com:"
+
+* 	Biology
+** 	Biology
+*** 	<(Setup of bioftp.unibas.ch)>
+**** 	"/anonymous@bioftp.unibas.ch:"
+
+* 	Medical Information
+** 	Datafile of Biological Scientists
+*** 	<(Important for all Biological Scientists)>
+**** 	"/anonymous@lhc.nlm.nih.giv:"
+
+* 	Medical Information
+** 	Eukaryotic Promoter Database
+*** 	./repository/EPD
+**** 	"/anonymous@ncbi.nlm.nih.gov:"
+
+*	Recipes/Games/comp.sources.games/comp.sources.misc/comp.sources.sun/comp.sources.unix  
+** 	c++2latex/shX
+*** 	comp.sources.misc
+**** 	"/anonymous@gatekeeper.dec.com:"
+
+* 	TeX
+** 	TeXPS
+**** 	"/anonymous@arthur.cs.purdue.edu:"
+
+* 	Ethnic TeX
+** 	cxterm/celvis/cless/cclib16* fonts
+**** 	"/anonymous@cs.purdue.edu:"
+
+*	comp.binaries.amiga/comp.sources.amiga/comp.sources.games/comp.sources.sun comp.sources.unix/comp.sources.x/comp.sys.next  
+** 	hqx
+*** 	
+**** 	"/anonymous@j.cc.purdue.edu:"
+
+* 	TeX/Image Compression/Graphics/Ray Tracing
+** 	epp2tex/JPEGxeval IMAGE Compression/Utah Raster Toolkit
+*** 	epp2tex is a tool which accepts a relatively easy to write file
+of estimation results.  It generates a LaTeX table.  It has limited
+commandline support for tuning the appearance of the table.
+**** 	"/anonymous@ftp.uu.net:"
+
+* 	Programming Language
+** 	Fortran2C/Pascal2C/J (programming language)
+*** 	<(Describe the Programming Language J)>
+**** 	"/anonymous@watserv1.waterloo.edu:"
+
+* 	Ethnic TeX/Latin Font/Cyrillic Font/X-Windows Fonts
+** 	KOI-7/8 fonts
+*** 	cd to COUP/TL/xkoi-8.7.tar
+**** 	"/anonymous@moxie.oswego.edu:"
+
+* 	Pattern Processing/Teco
+** 	Teco
+*** 	teco is in pub/teco
+**** 	"/anonymous@usc.edu:"
+
+* 	C Declaration Parser/Pascal2C/Emacs Calculator
+** 	PascaltoC/C Declaration Parser/GnuCalc
+*** 	dave gillespies calc adds floating point ops to elisp!
+**** 	"/anonymous@csvax.cs.caltech.edu:"
+
+* 	Artificial Intelligence
+** 	Artificial Intelligence Lisp Code
+*** 	pub/norvig
+**** 	"/anonymous@unix.sri.com:"
+
+* 	Graphics
+** 	NIH Image 1.19
+**** 	"/anonymous@alw.nih.gov:"
+
+* 	Japanese Tutorial
+** 	Kanji Guess/Japanese learning aid
+*** 	<(Describe Kanji Guess)>
+**** 	"/anonymous@monu6.cc.monash.edu.au:pub/Nihongo"
+
+
+
+* 	NeXT Software
+**** 	"/anonymous@nova.cc.purdue.edu:"
+
+* 	Raster Fonts/MetaFonts
+** 	Metafonts
+*** 	probably has all the HP fonts in the world
+**** 	"/anonymous@mims-iris.waterloo.edu:"
+
+* 	Raster Fonts/MetaFonts
+** 	Metafonts
+*** 	Raster fonts for Metafont use
+**** 	"/anonymous@ctrsci.math.utah.edu:"
+
+* 	Raster Fonts/MetaFonts
+** 	Metafonts
+*** 	Raster fonts for Metafont use
+**** 	"/anonymous@science.utah.edu:"
+
+** 	VMS Gnu Emacs
+**** 	"/anonymous@cc.utah.edu:"
+
+* 	Graphics/Ray Tracing/Non-Rational B-Spline Software
+** 	Utah Raster Toolkit/NURBS (Non-Uniform Ratl B-Splines)
+**** 	"/anonymous@cs.utah.edu:"
+
+* 	Webster
+** 	Access Webster
+**** 	"/anonymous@ee.ecn.purdue.edu:"
+
+* 	X-Windows/TeX
+** 	BDF Fonts/XTeX
+*** 	view dvi file within X-Windows
+**** 	"/anonymous@foobar.colorado.edu:"
+
+* 	Graphics/TeX to Document C Code (Spiderweb)/Music/Tex
+** 	CWEB/WEB/Rayshade 3.0/Rayshade 4.0/Spiderweb
+*** 	has next wares AND is primary src for greek fonts for TeX. spiderweb is used to document c code within latex
+**** 	"/anonymous@princeton.edu:"
+
+* 	Parallel Computing
+** 	Ease
+*** 	source code for parallel language ease is here
+**** 	"/anonymous@isatis.ensmp.fr:"
+
+* 	Parallel Computing
+** 	List of Distributed Systems
+*** 	pub/soft/distr_os
+**** 	"/anonymous@titania.mathematik.uni-ulm.de:"
+
+* 	Japanese
+** 	Nihongo Emacs
+**** 	"/anonymous@ftp.cs.titech.ac.jp:"
+
+* 	Sun RPC/NN/xypic
+** 	Sun RPC/NN/xypic
+*** 	Denmark
+**** 	"/anonymous@freja.diku.dk:"
+
+* 	Statistics/Contingency Tables/EM Algorithm/TeX/AUC-TeX
+** 	AUC-TeX
+*** 	Comprehensive Environment for writing latex files
+**** 	"/anonymous@iesd.auc.dk:"
+
+* 	TeX
+** 	LaTeX figures
+**** 	"/anonymous@hercules.csl.sri.com:"
+
+* 	Mathematics
+** 	Theorem Prover
+**** 	"/anonymous@herky.cs.uiowa.edu:"
+
+* 	Knowledge Representation
+** 	Mobal
+*** 	<(View Definition of Mobal)>
+**** 	"/anonymous@xpssun.gmd.de:"
+
+* 	X-Windows
+** 	MandelSpawn
+*** 	in pub/X11/contrib/ms-0.05.tar.Z
+**** 	"/anonymous@funic.funet.fi:"
+
+* 	Tex/Graphics/Gifs/Ray Tracing/Radiosity
+** 	Astronomical Observatory FITS Viewer/Ray Tracing/Bibliography/Radiosity Bibliography/Salem/CellSim/GraphicsGems/Quickdraw Popi/Ray Tracing News/ColorQuant/DKBTracer/PVRay/DRT/Ohtas Ray Tracer/QRT/RayScene/VORT Ray Tracer/VM-pRAY/Polygon/Processor Sphigs/SRGP/Wave/Sphere/TeXhax digest    
+*** 	major TeX archive. has TeXhax digest
+**** 	"/anonymous@wuarchive.wustl.edu:"
+
+* 	TeX
+** 	ChTex/ArabTeX/Image
+*** 	huge directory of styles. including one for the thesis.
+**** 	"/anonymous@ftp.ics.osaka-u.ac.jp:"
+
+
+* 	Natural Language Processing
+** 	Text to Phoneme Program
+*** 	/pub/linguist/phone.tar.Z
+**** 	"/anonymous@ftp.Hawaii.edu:"
+
+* 	Graphics/Ray Tracing
+** 	Utah Raster Toolkit
+**** 	"/anonymous@nl.cs.cmu.edu:"
+
+* 	Natural Language Processing
+** 	English Parser
+*** 	/usr/sleator/public
+**** 	"/anonymous@spade.pc.cs.cmu.edu:"
+
+* 	ADA
+** 	ADA
+*** 	All the ADA you could ask for
+**** 	"/anonymous@ajpo.sei.cmu.edu:"
+
+* 	Gnu/VMS G++
+** 	VMS G++
+*** 	Major Gnu Archive
+**** 	"/anonymous@mango.miami.edu:"
+
+* 	Chinese News/Chinese Word Processors
+** 	Big5->GB/Readnews
+*** 	contains a lot of Chinese word processors both for PC's and other
+**** 	"/anonymous@ahkcus.org:"
+
+* 	Chinese Chess
+** 	Chinese Chess
+*** 	
+**** 	"/anonymous@cs.ualberta.ca:"
+
+* 	Genealogy
+** 	Genealogy
+*** 	
+**** 	"/anonymous@134.114.64.24:"
+
+* 	Japanese Terminal Emulator
+*** 	For the PC, you should use a terminal emulator hterm written by
+Hirano-san at Tokyo U if your PC has VGA or EGA.  If your display
+adapter is Hercules or CGA (!), then you have to settle with my
+KD (kanji driver) + MS-Kermit.  Both of these are free and can
+be obtained by anonymous FTP from mindseye.berkeley.edu
+[128.32.232.19].  Both supports full JIS-level 2 Japanese
+character set (6000+ characters).
+
+If you use regular 'rn' be sure to use a command w | more -f
+at the first pause after news header for an article is displayed.
+
+--
+Izumi Ohzawa             [ $BBg_78^=;(B ]
+USMail: University of California, 360 Minor Hall, Berkeley, CA 94720
+Telephone: (510) 642-6440     Fax:  (510) 642-3323
+Internet: izumi@pinoko.berkeley.edu (NeXT Mail OK)
+**** 	"/anonymous@mindseye.berkeley.edu:"
+
+* 	LISP/Mathematics
+** 	Lisp Mathematica (mma)
+*** 	mathematica-like system written in Allegro common lisp
+**** 	"/anonymous@peoplesparc.berkeley.edu:"
+
+
+
+* 	TeX
+** 	ChTex/ArabTeX/Image
+*** 	contains the addendum to the TeX FAQ in pub/raymond
+**** 	"/anonymous@math.berkeley.edu:"
+
+* 	Programming Languages
+** 	TCL
+*** 	Paper in USENIX 89
+**** 	"/anonymous@sprite.berkeley.edu:"
+
+* 	TeX/build an lplain.fmt with to different hyphen-files?
+** 	Babel
+*** 	
+
+   I get the impression that TeX 3.x supports some sort of a multilingual
+   scheme, providing a way to easily swith between languages in the same
+   document.
+
+You should look at the Babel system, by Johannes Braams, obtainable by
+mail from listserv@hearn.bitnet, listserv@dhdurz1.bitnet,
+mail-server@rusinfo.rus.uni-stuttgart.de, or by anonymous ftp from
+rusinfo.rus.uni-stuttgart.de [129.69.1.12].
+
+**** 	"/anonymous@rusinfo.rus.uni-stuttgart.de:"
+
+* 	Mathematics
+** 	SymbMath
+***	<(Extensive Description of SymbMath)>
+**** 	"/anonymous@simtel20.army.mil:"
+
+* 	Tex/Raster Fonts/MetaFonts
+** 	dvips/dvitops/Web/Cweb/Spiderweb/MusicTeX
+*** 	2nd largest tex archive in the WORLD. Aggresively tracks down packages
+**** 	"/anonymous@ymir.claremont.edu:"
+
+* 	Ethnic TeX
+** 	Cyrillic Fonts
+**** 	"/anonymous@hmcvax.claremont.edu:"
+
+* 	<(Perl Freyquently Asked Questions)>
+** 	Perl Reference Guide
+**** 	"/anonymous@sol.cs.ruu.nl:"
+**	Perl Distribution/Source Archive
+**** 	"/anonymous@archive.cis.ohio-state.edu:pub/perl"
+** 	Perl (MSDOS)
+*** 	pub/msdos/perl
+**** 	"/anonymous@eeserv.ee.umanitoba.ca:"
+***	Perl Manual
+****	"/anonymous@128.214.6.100:/pub/languages/perl-manual" ;; nic.funet.fi
+***	Perl Manpage
+****	"/anonymous@128.83.162.5:/pub/languages/perl-4.019" 
+***	Perl Texinfo
+****	"/anonymous@128.93.1.26:/lang/perl"
+***	Perl Tutorials
+****	"/anonymous@128.214.6.100:/pub/languages/perl/convex.com/tutorial "
+
+
+* 	ChTex/ArabTeX/Image
+** 	comp.sources.x
+**** 	"/anonymous@schizo.samsun.com:"
+* 	TeX/Gifs
+** 	ChTex
+*** 	[128.252.135.4] ... mirror wmsr-simtel20.army.mil
+**** 	"/anonymous@wuarchive.wustl.edu:"
+
+* 	TeX
+** 	Image
+*** 	[131.170.24.42] ... mirrors labrea for those down under
+**** 	"/anonymous@yallara.cs.rmit.oz.au:"
+
+* 	Cscheme
+** 	Cscheme 6.2
+*** 	includes a GL interface
+**** 	"/anonymous@godzilla.cgl.rmit.oz.au:"
+
+* 	Tex
+** 	ChTex/ArabTeX/Image
+*** 	run by george greenwade, a man on the up and up
+**** 	"/anonymous@niord.shsu.edu:"
+
+* 	TeX
+** 	TeX/gcc/ghostscript
+*** 	TeX, gcc, ghostscript, f2c
+**** 	"/anonymous@research.att.com:"
+
+* 	X-Windows/Emacs Hacks
+** 	ISO Latin-1 Emacs Mode
+*** 	input the ISO Latin-1 character set in a convenient way
+**** 	"/anonymous@laas.laas.fr:"
+
+* 	Perl
+** 	Perl
+**** 	"/anonymous@convex.com:"
+
+
+
+* 	X-Windows/Parallel Computing
+** 	PCP (parallel language)/AWM X Tutorial
+**** 	"/anonymous@maddog.llnl.gov:"
+
+* 	X-Windows
+*** 	X11R4
+**** 	"/anonymous@lll-crg.llnl.gov:"
+
+* 	X-Windows/Tex
+** 	ChTex/ArabTeX/Image
+*** 	GNU X11 comp.sources.unix
+**** 	"/anonymous@iraun1.ira.uka.de:"
+
+* 	Rapid Language Prototyping
+** 	TXL
+*** 	<(Verbose Description of TXL)>
+**** 	"/anonymous@qusuna.qucis.queensu.ca:"
+
+* 	X-Windows/Tex
+*** 	Karl Berry's font naming scheme v1.0 192.12.26.23 tex/fontname/fontname.texi
+**** 	"/anonymous@ftp.cs.umb.edu:"
+
+* 	X-Windows/Sun/Unix
+** 	comp.sources.misc/comp.sources.sun/comp.sources.unix
+*** 	misc, TeX, X
+**** 	"/anonymous@hydra.helsinki.fi:"
+
+* 	hashing
+** 	Perfect Hash Generator
+**** 	"/anonymous@ics.uci.edu:"
+
+
+
+* 	Miscellany/Images
+*** 	images, gnu, icon, kermit, and so forth, ghostscript patches
+**** 	"/anonymous@extro.ucc.su.oz.au:"
+
+* 	X-Windows
+*** 	X applications here
+**** 	"/anonymous@cs.toronto.edu:"
+
+* 	Tex
+*** 	ascii2german.sh by dorai@egeria.rice.edu in /public 
+ ascii2german converts 
+**** 	"/anonymous@titan.rice.edu:"
+
+* 	AMSTeX
+** 	AMSTeX
+*** 	AMSFonts, AMS-LaTeX, AMSTeX  NOTE: The AMS doesn't alert other 
+       archive sites when there are changes to the contents 
+       of e-math.ams.com.  Consequently, other sites may be slightly behind.
+       Administrative contact for E-MATH:  tech-support@math.ams.com.
+**** 	"/anonymous@e-math.ams.com:"
+
+* 	X-Windows/Tex
+** 	ChTex/ArabTeX/Image
+*** 	per karl berry's article in TUGboat .. also said 'adobe font names'
+**** 	"/anonymous@ftp.cs.umb.edu:"
+
+* 	X-Windows/Tex
+** 	AIList/Sun-Spots
+*** 	[128.100.1.105] ... Mirrors the clarkson style archives for 
+       Canadian users contains pub/TeX/tex-styles
+**** 	"/anonymous@ftp.cs.toronto.edu:"
+
+* 	Mailing Lists/Graphics/TeX
+** 	MuTeX/Raster Files/Huge Maling List Index (list-of-lists)
+*** 	
+**** 	"/anonymous@cs.ubc.ca:"
+
+* 	Neuro-Evolution/Speech Recognition
+** 	Neuro-Evolution/Speech Recognition
+**** 	"/anonymous@cse.ogc.edu:"
+
+* 	X-Windows/Tex
+** 	ChTex/ArabTeX/Image
+*** 	v2.1, pub/transfig/fig.tar.Z     Fig is a graphics editor under
+xo       SunView.  Its output can be translated via TransFig [qv] into
+       Postscript, pic, LaTeX picture envirnoment, PiCTeX, EEPIC, TeXtyl etc.
+**** 	"/anonymous@sun.soe.clarkson.edu:"
+
+* 	X-Windows/Tex
+** 	ChTex/ArabTeX/Image
+*** 	contains fig under pub/fig. this allows graphic editing which
+       can be put in latex by transfig which is also here. and sun.soe.clarkson.edu
+**** 	"/anonymous@svax.cs.cornell.edu:"
+
+* 	Tex
+** 	ChTex/ArabTeX/Image
+*** 	devanagari font from TeX. pub dir
+**** 	"/anonymous@rugrcx.rug.nl:"
+
+* 	X-Windows/Tex
+** 	ChTex/ArabTeX/Image
+*** 	United Kingdom Chum...X11R5 dist, udda stuph
+**** 	"/anonymous@130.88.200.7:"
+
+* 	X-Windows/Tex
+** 	ChTex/ArabTeX/Image
+*** 	X11R4
+**** 	"/anonymous@crl.dec.com:"
+
+* 	TeX
+** 	TeX
+*** 	TeX related stuph
+**** 	"/anonymous@a.cs.uiuc.edu:"
+
+* 	Elisp/Tex
+** 	Calendar.el/Diary.el/tree.sty
+*** 	tree.sty and home site for Ed Reingold's calendar
+**** 	"/anonymous@emr.cs.uiuc.edu:"
+
+* 	Smalltalk Archive
+**** 	"/anonymous@st.cs.uiuc.edu:"
+
+* 	Quran
+*** 	The login is 'MARK'
+the password is 'IPFS'
+The type 'ACCT QUOTE IRAN' for read password.
+Quran.txt is the text file
+desquran.zip is the PC program (includes the compressed version of the text).
+**** 	"/anonymous@vmd.cso.uiuc.edu:"
+
+* 	X-Windows
+** 	SPHIGS/SRGP
+*** 	sphigs and srgp are in pub... for an alternative to xlib
+**** 	"/anonymous@128.148.31.66:"
+
+* 	Hypertext
+** 	Hyperbole
+*** 	
+**** 	"/anonymous@wilma.cs.brown.edu:"
+
+* 	Recipes
+** 	Recipes
+*** 	
+**** 	"/anonymous@128.252.135.4:"
+
+* 	Recipes
+** 	Recipes
+*** 	
+**** 	"/anonymous@sulaw.law.su.oz.au:"
+
+* 	Magick/Gifs
+** 	ChTex/ArabTeX/Image
+*** 	Aleister Crowley GIF's and other magickal items
+**** 	"/anonymous@slopoke.mlb.semi.harris.com:"
+
+* 	Parallel Machine
+** 	ChTex/ArabTeX/Image
+*** 	parallel machine
+
+* 	Parallel Computing
+** 	Parallax
+*** 	Parts of the book intro to parallel computing by lewis and
+el-rewini <prentice-hall, publishers> are available on the server.
+also the parallel software is available  
+**** 	"/anonymous@lynx.cs.orst.edu:"
+
+* 	FTP Database
+** 	Xarchive Standalone
+*** 	has an x version non-x version and a perl version. all in the
+directory archive/clients  
+**** 	"/anonymous@archie.mcgill.ca:"
+
+* 	Parallel Computing
+** 	SIMD Simulator
+*** 	/pub/blitzen ... email to brain@adm.csc.ncsu.edu
+**** 	"/anonymous@mcnc.mcnc.org:"
+
+* 	Parallel Computing
+** 	PCN 
+*** 	awesome parallel language soon to have C++ compatibility
+**** 	"/anonymous@info.mcs.anl.gov:pub/pnc"
+
+* 	ftp
+** 	ange-ftp mail archive
+*** 	
+
+* 	Parallel Language
+** 	Parallel C/Parallel Fortran
+*** 	pub/Parallel/Tools/pc.1.1.1.tar.Z
+C parallel  fortran is also being developed at Univ. of Houston. Contact
+scott@uh.edu for information regarding pf.
+J. Eric Townsend - jet@uh.edu - UH Dept of Mathematics
+vox: (713) 749-2126  '91 CB750, DoD# 0378, TMRA# 27834
+**** 	"/anonymous@karazm.math.uh.edu:"
+
+**	text-to-phoneme/Linguistics/Natural Language Processing
+***	There is such a program available by anonymous ftp from
+here: ftp.Hawaii.edu.  It is file /pub/linguist/phon.tar.Z.
+Greg Lee <lee@uhunix.uhcc.hawaii.edu>
+
+
+**	Biology/BioBits
+***	All of the BioBits are available as a source direct from nic.funet.fi
+and are also registered with think.com so you can read them with WAIS
+from either place.
+
+You can also get them via anonymous ftp from nic.funet.fi in the directory
+/pub/sci/molbio/biobit
+   Rob Harper                     /   E-mail:          harper@convex.csc.fi    
+   Finnish State Computer Centre  /   Molbio/software: harper@nic.funet.fi
+   P.O. Box 40, SF-02101 Espoo    /   Telephone:       +358 0 457 2076
+   Finland                        /   Fax:             +358 0 457 2302
+
+
+
+*
+**	7 wonders of the world/pyramids/babylon/zeus/colossus/artemis
+***
+Well, there is strong evidence that they did exist, and some even have parts
+still lying about.  Here is a play-by-play:
+
+1)  Egyptian pyramids - Obviously still evist.  Erected from about
+2650-1800BC.  About 80 still exist.
+
+2) Hanging gardens of Babylon - Not mentioned by Herodotus, but many others
+refer to them.  Destroyed by Sennacherib in 689.
+
+3) Statue of Zeus by Phidas (at Olympia) - Was at the sacred grove of Olympis
+by 457 BC.  Almost 60 feet tall.  Moved by Theodorus I to Constantinople where
+it was burned in 475 AD.
+
+4) Colossus of Rhodes - Designed by Chares of Lindus.  Took 12 years to build
+(done in 280 BC).  Destroyed by earthquake in 224BC.  Some of the parts lay
+there for 896 years, then were sold to a Jew of Emesa.
+
+5) Temple of Artemis - Is still there (parts of it, at least)  At Ephesus.
+Built by the architect Chersiphron in 6th cen BC.  Burned in 356 BC by
+Herostratus, rebuilt, destroyed again by Goths in 262 AD.  Fragments are at
+the British Museum.
+1
+6) Mausoleum at Harlicarnassus - Built in 353 BC.  Destroyed by earthquake
+before 1400AD.
+
+7) Lighthouse at Alexandria - Erected around 270 BC.  Was the prototype for
+all following structures of its kind. I do not know when it was destroyed.
+
+All of these items are considered valid.  There may be a few questions about
+the particular facts, but you can bet that they all existed.
+
+
+*
+**	Number systems/ancient science
+***
+Ever wonder why there are 60 seconds in a minute and 60 minutes in an
+hour?  Or why there are 360 degrees in a circle?
+
+The 'sexagesimal' system was used by the Babylonians for astronomical
+purposes, and was based on the fact that the sun moves approximately
+one degree through the sky each day.
+
+Other common number bases in use today are:
+
+24 - number of hours in a day
+
+16 - number of ounces in a pound
+12 - number of pennies in a shilling (well, this used to be common...)
+   - number of inches in a foot
+
+The decimal system isn't as intuitive as all that...
+
+You might want to have a look at:
+
+"The Exact Sciences in Antiquity" by O. Neugebauer, 2nd Edition, Dover
+Publications, 1969.
+
+Chapter 1, "Numbers", goes into a lot of detail about number systems,
+ranging from the Babylonians to the Greeks via the Egyptians.  Arabic
+mathematics was largely based on these.
+
+
+*
+**	golf
+***
+Pat Inglis refers to the Golf Digest article:
+
+>The fact that it was published in the April issue lead me to believe
+>that the whole article was a joke! Although most of the shots were
+>highly improbable (with the exception of the skipping across water one
+>which I have done purely by accident :-)), the article was serious but
+>meant to be taken in good fun.
+
+No joke.  Pros actually practise the shot.  I've seen Ken Venturi use it
+on his instructional segment on TV.  He explained the necessity of it, showed
+what to do, and skipped the ball across the water and up onto the green.  The
+ball stopped about 3 feet from the cup.  The film crew and Venturi and 
+everybody within range of the mike laughed.  He said something like "It doesn't 
+always work out that well."  Pretty amazing.
+
+-stew
+
+
+*
+**	locker
+***	31-6-42, locker #21
+
+1) turn clockwise two full rotations and go to first number and stop
+
+2) turn counter-clockwise past second number once and then stop on 2nd number
+
+3) turn clockwise to third number and pull open
+
+*
+**	voodoo/ethnobiology
+***	
+After a brief and boring discourse on the popularity of the word zombie in many
+disciplines, Davis offers possible origins of the term. First, Elsie Clews 
+suggests that in French the word "ombres" means shadows. Inserting a "z" at the front yields z'ombres. Clews also feebly makes a connection betweeen jumbie,
+the West Indian term for ghost and zombie. Maya Deren, an awesome filmmaker 
+notes that the beliefs of the Arawak Indians concerning the zemis, or souls of
+the dead, "...are precisely those relating to the zombies." (57) However 
+according to Davis most scholars "...indicate an African origin for the 
+word." (57)
+
+Past the history, Davis notes that death is but an unknown frontier. The 
+existence of zombies is for the Haitians proof of the power of the dead
+over life. --> Rituals respecting the power of the dead form most of the core
+of Haitian Voodoo. Davis then relates three secondhand accounts that he 
+heard from a mambo, or Voodoo priestess. 
+	1) a child dies. the father of the child seeks the murderer. once he 
+finds the murderer, he kills the murderer's daughter. 5 months later. the
+first girl is found dead. the police attribute the death to lightning, however,
+the girl is not burnt and the child in her arms is alive. the voodoo
+explanation is that a death spirit took the girl.
+
+	2) a woman sews a funeral dress for a girl. she is told later by
+a bokor (sorceror, magician) that the girl will be raised. The bokor held a
+rope between two graves and straddled a third grave. He clapped his hands and
+called the girl's name. She appeared from the side of the cemetary. The bokor
+intends to make a magical force (pwin) out of the girl.
+
+	3) Mammes owes money. He goes to a houngan (male mambo, a voodoo
+priest). The money is sent out from the houngan's house. However, the houngan
+takes the soul of Mammes. The former vivacious Mammes is zombie-like. Mammes
+has intercourse with a hideous woman with oozing sores. When he awakes, he
+wants to know why he sleeps with such an ugly woman. The houngan has died.
+The implication is that the houngan sent the woman so that he could reclaim
+his soul through sexual intercourse.
+
+Davis says all Haitian zombies can be categorized as either a spirit which a
+priestess keeps in a jar to be sent into man or animal or a person who has
+been made glassy-eyed and listless because his soul has been stolen. He can 
+become normal again by regaining his soul usually at the death of the master.
+The second way to regain the soul is if the zombie is fed salt. He flies into
+a murderous rage in which he generally kills the person who made him a zombie
+first.
+
+Davis says that Zora Neale Hurston, an young American anothropologist, 
+suggests the idea that instead of returning from death, the victims are
+given drugs which bring on death-like states.
+
+*
+**	my words
+***
+
+\documentstyle{article}
+\setlength{\textwidth}{6.5in}
+\setlength{\textheight}{8.5in}
+\setlength{\topmargin}{0.0in}
+\setlength{\oddsidemargin}{0.0in}
+\setlength{\evensidemargin}{0.0in}
+\pagestyle{headings}
+
+
+\title{Three Strikes}
+\author{Terrence Monroe Brannon}
+\date{25 Aug 1991}
+\maketitle
+\begin{document}
+\baselineskip .25in
+\section{}
+There was a horrible funk with this woman. She walked toward me and I felt it
+rather than smelt it. Had observed her many times from afar, wondered what
+business she had around me and those like me. Though she was in the minority,
+she walked with a great confidence, a great air of self-satisfaction and it
+made me want to crack through---made me want to be what she desired. Couldn't
+get a line on her though, never talked to her. Never knew what made her click.
+Or what might make her crack.
+
+I knew if I talked to her I could impress her. Drop hints about all my
+perversion---common ground between us. She was set up, no doubt. If we were to
+talk turkey it would be on her terms and in her muck and mire and stench.
+
+But what did I want with her anyway? Why should I try to satisfy my sick
+psyche? Why not rectify it? Even as I ask I feel the urge to feed my
+sickness. Feed it slabs and slabs of perverse pleasure. Just once more into
+the fire won't hurt. Remember the pleasure with Cecile. Forget the spikes
+she drove into your heart at the end. Remember how Lisa loved you? All the
+affection, all that sexy body, all night long. Forget how she was fucking 
+someone
+else the week you broke up. Forget how after you broke up she came by "to say
+hi" and put that luscious tongue on you. Put lust in your blood and then
+hustled out the door before you could smoke that pussy one last time. Can't
+hurt to be a fool one more time. Who said "three strikes and you're out"
+anyway?
+
+\end{document}
+
+
+
+
+
+
+--
+
+All sex with Ayurvinda was a journey for me. A journey which took me back hundreds of years, to ancient cities. Stone edifices in the deserts of Yucatan. whirling powers would cloud my head and make me seek deeper, sink deeper into her liquid depths- black depths smoother than oil, darker than night. Immersed in such wordless deepness.
+
+Calm snugness when I mold with her. Treasures in the chest down to where she spreads for me, for me for me.
+
+--
+
+\documentstyle{article}
+
+\begin{document}
+
+A ringing sound knifed through the crisp winter night. 
+"Why must I be like that . Why must I chase the cat . Nothing but the dog
+in me..." - atomic dog by george something-or-the-other.
+
+Black, bald-headed man with feathers looped around his waist and venomous
+white juice gushing from his mouth holds dog carcass skyward. Tilts his
+head backward and with teeth bared and neck muscles taut screeches 
+to the gods. Convulsively, the head is a pendulum as his black silk torso
+undulates with a passion. {\em European bystanders never seen such behavior. Not}
+\ what they'd call civilized. Heedless the body does work. Circling and
+whirling dust fiercely in the air. The tribe is watching letting the
+vibrations take them and make them. Rhythm does pound deeply.
+
+deep interest in the sister from El Paso. Spain is VERY close to Africa.
+she speaks the spanish with a quickness
+
+On Friday, I saw the most amazing hypnotist. He made a girl speak nonsense
+yet had another person comprehend it. 
+
+\end{document}
+
+--
+
+*
+**	mexico/occult/quetzalcoatl
+***
+
+This is a broad subject. I'm including excerpts from the Introduction
+of the book "Quetzalcoatl in Myth, Antropology and Art" by Portillo,
+Sodi and Diaz Infante. What you will read below was written by
+Demetrio Sodi.
+
+Enjoy:
+
+                                                                          
+Numerous authors have studied Quetzalcoatl, one of the most important
+pre-Colombian deities, in many different ways. A vast bibliography has
+been amassed on the subject, including excellent studies and analyses, as
+well as literary re-creations which have sparked great interest in this
+most captivating figure, while at the same time causing unfortunate
+confusion due to the irregular quality of this type of literature. Above
+all, Quetzalcoatl's dualism, his being simultaneously a man and a god,
+comprehends his historic as well as religious character in the abstract
+manifestation of very ancient concepts that we have been able to unravel
+through archeological remains which have allowed us to establish a
+fairly complete chronology of ancient Mexico.
+
+The basic idea of this study is to differentiate and clarify the identity
+problem which surrounds Quetzalcoatl the god, along with his symbolism,
+and Quetzalcoatl the man and his historical activity, shedding light upon
+those aspects in which the deity and human reality become one:
+Quetzalcoatl the god is the plumed serpent, but he is also and here he
+becomes confused with Quetzalcoatl the man) Tlahuizcalpantecuhtli, the
+Lord of the Dwelling Place of the Aurora, Venus at dawn, planet which---ac-
+cording to myth---is Quetzalcoatl the man, who,  after having set fire
+to himself, ascended to the firmament, becoming Venus---his nahual or
+alterego being Xolotl, a monstrous dog which symbolizes Venus in her
+evening phase. Another fusing of the human with the divine is the
+parallelism which exists between the myth of Quetzalcoatl the god and his
+enmity toward Tezcatlipoca, and the coin- cidence that the governing
+priest, Ce Acatl Topiltzin ends his glorious reign at the hands of the
+priests of Tezcatlipoca, who forced him to abandon Tula after having
+committed several moral transgressions which he himself had strived to
+avoid for humanity's sake. The Quetzalcoatl-Tezcatlipoca conflict appears
+in the myth of creation as well as in historical documents, both of which
+emerge in the drama of Tula.
+
+The principle of duality which permeates the religion of various
+Mesoamerican cultures has much to do with the Quetzalcoatl concept
+crystalized in Nahuatl culture. Given the impossibility of taking all the
+different cultures into account, we will limit ourselves to analyzing
+Quetzalcoatl almost exclusively within the Nahuatl culture, with brief
+references to other surrounding areas.
+
+It would seem that the concept of duality crystalizes at the beginning of
+the Lower Preclassic period, if not a bit later; that is to say, two
+thousand years before Christ. From that time on, certain cultural traits
+can be established which make up a common Mesoamerican substratum, and
+which later on would appear in line with local' typification and develop-
+ment, differently expressed according to each individual culture's
+evolution. Dualism is one of the concepts which form part of this common
+substratum.
+
+One of this duality's forms of expression was the plumed serpent complex:
+the duality earth-air, that which crawls on the ground and that which
+flies united in a single concept. Quetzalcoatl is generally known as the
+plumed serpent in the Nahuatl areas, and as Kukulcan in the Mayan areas.
+Quetzalcoatl can be translated either as the Serpent of Precious Feathers
+or as the Precious Twin; both translations are fundamentally important in
+the naming of the divinity. Kukulcan only holds the Plumed Serpent
+meaning.
+
+Quetzalcoatl-Kukulcan is a perfectly defined deity which reaches its
+maximum cultural expression during the Toltec period (tenth to twelfth
+century A.D.), but there also exists an archeological complex inspired by
+the Plumed Serpent which, in reality, does not symbolize this particular
+god. The plumed serpent complex, or the complex of the serpent-bird which
+appears during the Preclassic period, is related to the water gods and not
+to penitence, creativity, Ometeotl---or the prohibition of human
+sacrifice---and Venus in her morning or evening phases as it would later
+on in Teotihuacan. Roman Pina-Chan, one of the foremost authorities on the
+Preclassic period, has clearly stated that ''At first the agricultural
+groups probably considered the aquatic serpent, depicted with a kind of
+crest on its head, as the spirit of the waters, with the arrival of the
+Olmecs this serpent is attributed certain characteristics of the tiger, or
+jaguar, especially the claw which served as a tail, converting this animal
+into a mythological or magical creature, similar to the Chinese concept of
+the celestial dragon. In one way or another this concept evolves towards
+the representations of a plumed or precious serpent that symbolizes the
+water which 'winds' or 'runs,' indicating that this phenomenon is
+related to inland water, as can be observed in the temple of Quet-
+zalcoatl at Teotihuacan.''
+
+It is difficult to determine exactly to what degree the serpent-bird and
+earth-water relationship is maintained after the Preclassic period.
+Perhaps it turns into an abstract concept following this period,
+abandoning a specific affiliation for a complex one with the many other
+gods that operate within a cosmovision born of a mythical cosmogony. It is
+most lil<ely that it was in Teotihuacan---the quintessential classic
+city---on the Central Plateau region, which reaches its climax during
+the following period, where it solidified into the already defined aquatic
+deity.
+
+Pina-Chan adds:
+'The most important Teotihuacan deity was probably Tlaloc, rain god and
+god of the celestial waters who was considered as he who fertilizes the
+earth and protects earthly goods. This god lived in the high mountains
+where the clouds are born, and he is depicted as wearing a mask, blinders,
+nose-ring, and as having fangs and a forked serpent tongue.  In other
+words, he was a deity with characteristics of both serpent and jaguar.
+
+''Nevertheless, in order to have arrived at the concept and representation
+of a god of this nature, there had to be an evolutionary process. It would
+seem that the celestial dragon species connected with water which appears
+in Tlatilco during the Middle Preclassic period was prior to the plumed
+serpent concept that was later followed by the god Tlaloc.''
+
+According to Pina-Chan, therefore, the plumed serpent is no more than
+Tlaloc's antecedent, a predecessor of the water god. Nonetheless, Laurette
+Sejourne, one of the most outstanding Quetzalcoatl specialists, thinks
+differently: "The basis of the Nahuatl culture is founded entirely upon
+the religious teachings of Quetzalcoatl, whose spiritual elevation is
+comparable to Christ's or Buddha's. And as our era begins with Christ, the
+pre-Columbian era began with Quetzalcoatl: they maintained that they lived
+in the era of the Plumed Serpent. Stemming from the establishment of this
+religion, Mesoamerican art does no more than express the essential
+formulas of his doctrine, taking advantage of styles as diverse as the
+Romanesque and Gothic, for example.
+
+''Through archeology it has been proved that Teotihuacan, the first great
+Mesoamerican city, is dedicated to quetzal-coatl (bird-serpent), which is
+the key image of her symbolic language due to the fact that it expresses
+the basic concept of the Nahuatl religion. This is an important
+clarification because it al lows us to situate the commencement of the
+Nahuatl era approximately at the same time that our era began. It is not
+entirely impossible that the discovery of a ceremonial center dedicated to
+the Plumed Serpent even older than Teotihuacan could push back this date
+even further.''
+
+That is to say that---according the Sejoume---the Preclassic serpent-bird
+complex (aquatic) evolves in Teotihuacan (Classic) until it becomes
+Quetzalcoatl, a deity who begins a whole new era, the Mesoamerican age.
+
+In Teotihuacan, at the pyramid known as the temple of
+Quetzalcoatl---within the immense sanctum called the Citadel---the plumed
+serpent appears in all its glory, sculpted in polychromatic stone, and
+alternating with representations of the water god.  According to the
+hypothesis that this is a reminiscence of the Preclassic period, in
+Teotihuacan the plumed serpent god is already separate from the water god,
+but he continues to be intimately related to him. In this sense, all
+evidence points to the idea that Quetzalcoatl, as an individual deity,
+crystalizes in Teotihuacan, and that this city is his place of origin. On
+the other hand, Quetzalcoatl the god, is also a wind divinity, and goes by
+the name of Ehecatl, a deity whose attributes we shall study later on. At
+the same time, Quetzalcoatl appears intimately related to various myths
+such as that of creation and those of tt-e elements which sustain the
+human race: corn, for example, the pre-Columbian food par excellence. This
+myth is so important that we could call the Mesoamerican cultures ''corn
+civilizations.'' Hordes from the north descend upon the central valleys,
+captained by Mixcoatl after the fall of Teotihuacan. These groups are
+generically known as the Toltecs.
+
+
+First they came
+to the place called Tollantzinco
+[Tulancingo, Hidalgo].
+Forthwith they went to Xicocotitlan
+to the place called Tollantzinco.
+Now no one remembers
+how long they traveled.
+They came *om the depths of the plains,
+*om between the rocks.
+There they saw sel/en caves
+nd made of these caves their temples
+their place of prayer.
+
+
+After the fall of Teotihuacan, the Toltecs found Culhuacar, and aftelwards
+they establish themselves in rula, just as the text narrates. Until
+recently there was much confusion over the cities of Tula and Teotihuacan
+due to the indigenous and European texts written after the Conquest. Even
+today the origin of the Toltecs continues to be an important and
+controversial topic. Toltecatl is a Nahuatl word which means ''artist'';
+those who were wise and sensitive, those who could create works of great
+beauty and perfection, were called toltecatl.  Toltecayotl means
+'Toltecness,'' or a ''reunion of the arts and artists.'' In the
+Toltecayotl lived the tlacuilo, or the painter, who owned black and red
+earth; the zuquichiuqui, or potter, ''taught the clay to lie''; the
+amantecatl was the artist of the pen, and there were also other artisans,
+builders, and sculptors, all of whom ''put their heart touched by the gods
+in their work' (tlayoltehuial1i), as it is said in the texts, and together
+they created the concept of excellence with which all things Toltec were
+expressed.  For this reason, given the grandeur and artistic wealth of
+Teotihuacan, it was thought for many years that this city was the Toltec
+capital. But after systematic archeological exploration, it has been
+clearly established that Tula Xicotitlan, in the present-day State of
+Hidalgo, was the true capital of the Toltecs. It was precisely from these
+archeological studies that great confusion arose through the heated
+polemics between the experts. How can it be possible that Tula, a
+relatively small and poor city---when compared to Teotihuacan---be the
+cradle of Toltecayotl, the marvelous world of the arts to which the texts
+refer? The answer most surely can be found in a simple play on words and
+ideas. The The Toltecs from Tula, semisavage, absorb the remains of the
+Teotihuacan culture;s unequa!ed grandeur. Thus, Teotihuacan is most
+certainly the capital city of Toltecayotl, or in other words, their
+artists and artisans rightly deserved the name of Toltecs.  But those of
+Tula, although they could never surpass their Teotihuacan teachers, are
+nevertheless great artists and can also be called Toltecs; on the other
+hand, they also called themselves Toltecs due to their ethnic
+affiliations, and the term was later consecrated through language and
+popular use.
+
+There is an indigenous text in which the Aztecs describe their impressions
+upon seeing Tula for the first time during their long peregrination
+south---a text which makes the Aztecs perhaps the first archeologists of
+the Western Hemisphere.
+
+We once again come across Quetzalcoatl in this description, but no longer
+as palt of the serpent-bird or plumed-serpent complex. This poem refers to
+a real man, posthumous son of Mixcoatl who (according to several
+chronicles) was bom in Tepoztlan, and who later traveled to Culhuacan,
+where he was called on by the Tula Toltecs to govern them after the
+dispersion of the Toltecs from Teotihuacan. Quetzalcoatl accepts the
+position, and while developing an extraordillary government, he creates a
+new religion for his people, a new concept of life. The real man
+corresponds to an abstract and religious concept in such a way that the
+Toltecs mythicize him and believe that to him they owe all: their
+calendar, corn, even their colored cotton.
+
+This man, priest and statesman who dedicates much of his time to
+philosophical and religious meditation, is the figure who would
+revolutionize Mesoamerican culture and originate a new era. With the name
+of Ce Acatl Topiltzin Quetzalcoatl, ''Our Prince Quetzalcoatl 1 Cane''
+(this being his calendar name), Quetzalcoatl---the man---appears, figure
+who in texts and chronicles---would be constantly confused with
+Quetzalcoatl the god, cultural hero, creator of a theology and of numerous
+intellectual achievements to which ''humanity owes its existence." He
+preached penitence and completely avoided human sacrifice.
+
+The ideas of Quetzalcoatl are of prime importance in the Mexican people's
+history of ideas. The development of the Mesoamerican cultures, the
+analysis of theil cosmogony, their cosmovision, and divine numerals, give
+us a norm which can be followed in order to understand these ideas.
+
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+     ____   ____
+    /    \  |   \     Omar Patino-Siliceo       Academic Computing Support
+   |      | |    |    Box 1375, Station B       Computer Center
+   |      | |__ /     Nashville, TN 37235       Vanderbilt University
+    \    /  |  \
+   __\  /__ |   \     Tel: (615) 343 1631       ops@vuse.vanderbilt.edu     
+
+<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+
+
+In brief, this was an ancient agricultural deity of a group of late immigrants
+to what is now central Mexico.  The identity of the deity was in dynamic flux
+throughout the 700 or so years immediately preceding the Spanish conquest,
+when these immigrants settled and developed a unique civilization.  Around
+1100 AD the deity became identified with one of its foremost priests at the
+Toltec capitol of Tollan (it was a common belief among these people that
+priests routinely became the embodiment of the deity they served), whose full
+name was Ce Acatl Topiltzin Quetzalcoatl (One Reed Revered Leader Precious
+Serpent).  It is this individual who is associated with the legend you
+mention.  He was the chief priest of Quetzalcoatl at the temple called
+Tlahuilazcalpantecuhtli (a temple dedicated to the evening star, Venus). He
+was tricked by a rival priest into a drinking bout and associated debauchery
+and was publicly disgraced.  He left spouting off assorted mumbo-jumbo and
+embarked on the gulf coast toward the east (he seems to really have ended up
+in present-day Yucatan).
+
+The deity itself originated as a wind-god, and evolved to be on of the more
+important deities in the pantheon of Nahuatl peoples (Uto-Aztecan-Tanoan
+stock, related to the greater Athapascan language group that also includes
+folks such as Utes and Apaches).  Its associated celestial representation
+was Venus and, depending on era and cultural group, there is a specific
+color associated with it, as well as a cardinal direction (West).  Other
+cultural attributions of the deity are the invention of the sciences, writing,
+the calendar and of agriculture.
+
+You have asked a question that many have spent lifetimes dealing with.  For
+additional info, I refer you to a very accessible book for non-specialists:
+
+Caso, Alfonso.  The Aztecs, People of the sun.  1958.  Univ. of Oklahoma Press.
+(50th Volume of the series: "Civilization of the American Indian."
+
+Read, specifically, pp. 23-27, Complexity of the Aztec Pantheon.
+
+-Ricardo
+
+
+
+
+
+
+*	Teach yourself C++ book
+**	Al Stevens.  Published by MIS press.  ISBN: 1-55828-176-2
+
+*	wordperfect/market
+**	1800-451-5151
+	will have offices in singapore and tokyo, japan
+	first translations will be to japanese and korean.
+	we can submit a proposal with: our org, our current
+operations, our plan of action , and would we want to do anything with
+an english-only version of the software
+	David Pearson , WP Corp., MS a-145, 1555 Technology Way, Orem,
+UT 84057 
+
+*	
+**	Parallel/Concurrent Smalltalk
+***	
+Object Technology International (here in Ottawa) have a modified version of
+ST V that runs in a multiprocesor environment. I was talking to someone from
+a Canadian governmental agency that was using it. It is also apparently
+being used by people like the FBI and CIA.
+
+OTI has added an 'Actor' class whose instances run on separate hardware
+processors. Obviously they have added some primitives.
+
+This is second hand info; contact OTI for more details. From the phone book,
+their address is: 1785 Woodward DR, Ottawa. (613) 228-3535
+
+Good luck.
+
+-- 
+Timothy C. Lethbridge             tcl@csi.uottawa.ca
+(613) 564-8155                   FAX: (613) 564-9486
+Department of Computer Science, University of Ottawa
+150 Louis Pasteur,    Ottawa,    Canada      K1N 6N5
+
+*
+**	Smalltalk books
+***	A list of Smalltalk-relevant texts.  Retrieved from the Digitalk
+forum on Compuserve.  If you know of any additional texts, please
+let me know.  Thanx.
+
+
+Ron Schultz                                  
+Berard Software Engineering, Inc.            
+Columbus Ohio Office                           Headquarters
+5634 Claire Court                              301 Lakeforest Drive
+Dublin, Ohio 43017                             Gaithersburg, Md. 20877
+Phone  (614) 798-0295                          (301) 417-9885  
+FAX    (614) 798-0296                          (301) 417-0021
+
+
+Smalltalk 80 The Language, Adele Goldberg & David Robson
+        Addison-Wesley 1989             ISBN 0-201-13688-0
+
+Smalltalk 80 The Interactive Programming Environment, Adele Goldberg
+        Addison Wesley 1984             ISBN 0-201-11372-4
+
+Smalltalk 80 Bits of History, Words of Advice , Glenn Krasner
+        Addison Wesley 1984             ISBN 0-201-11669-3
+
+Inside Smalltalk Volume I, Wilf Lalonde & John Pugh
+        Prentice Hall 1991              ISBN 0-13-468414-1
+
+Inside Smalltalk Volume II, Wilf Lalonde & John Pugh
+        Prentice Hall 1991              ISBN 0-13-465964-3
+
+Object-Oriented Graphics, P. Wisskirchen
+	Springer-Verlag 1990		ISBN 3-540-52859-8
+
+Practical Smalltalk: Using Smalltalk/V, Dan Shafer and Dean A. Ritz.
+        Springer-Verlag                 ISBN 0-387-97394-X
+
+Rapid Prototyping for Object Oriented Systems, Mark Mullen
+        Addison Wesley 1990             ISBN 0-201-55024-5
+
+Object-Oriented Design, Peter Coad and Ed Yourdon
+	Yourdon Press 1991		ISBN 0-13-630070-7
+
+Object Oriented Programming for Artificial Intelligence, Ernest Tello
+        Addison Wesley 1989             ISBN 0-201-09228-x
+
+The Well Tempered Object, Stephen Travis Pope
+        MIT Press 1991                  ISBN 0-262-16126-5
+
+RefTalk/Vwin, David Carl O'Neal
+        NuVista Press 1991              ISBN pending
+
+Human-Computer Interface Design Guidelines, C. Marlin Brown
+        Ablex Publishing 1989           ISBN 0-89391-332-4
+
+Designing Object-Oriented Software,
+                Rebecca Wirfs-Brock, Brian Wilkerson, and Lauren Wiener
+        Prentice-Hall 1990              ISBN 0-13-629825-7
+
+Object Oriented Programming with Smalltalk/V, Dusko Savic
+        Ellis Horwood 1990              ISBN 0-13-040692-9
+
+An Introduction to Object Oriented Programming & Smalltalk
+        Lewis Pinson & Richard Wiener
+        Addison Wesley 1988             ISBN 0-201-19127-x
+
+SAA Common User Access Advanced Interface Design Guide
+        IBM 1989                        IBM Document # SC26-4582-0
+
+IBM Red Books----(available from your IBM representative
+                  contact your local office of IBM and request
+                  the placing of an IBM Red Book Order.  If you
+                  are an IBM customer, the books are free.  If you
+                  are not an IBM customer, the books may have a nominal
+                  fee.)----
+
+A Practical Introduction to Object Oriented Programming
+        IBM 1990                        IBM Document # GG24-3641
+
+Object Oriented Design - A preliminary Approach
+        IBM 1990                        IBM Document # GG24-3647
+
+Developing a CUA Workplace Application
+        IBM 1990                        IBM Document # GG24-3580-00
+
+Managing the Development of Object Oriented Applications
+        IBM 1990                        IBM Document # GG24-3581-00
+
+Object Oriented Analysis of the ITSO Common Scenario
+        IBM 1990                        IBM Document # GG24-3566
+
+CUA Evaluation
+        IBM 1990                        IBM Document # GG24-3456
+
+SAA CUA '91 Guide
+        IBM 1991                        IBM Document # SC34-4289
+
+SAA CUA '91 Reference
+        IBM 1991                        IBM Document # SC34-4290
+
+SAA - A Guide for Evaluating Applications
+        IBM 1991                        IBM Document # G320-9803
+
+*	
+**	Artificial Intelligence/Biology/Gene Structure/Genomic DNA
+***
+          GENEID ONLINE SYSTEM FOR PREDICTION OF GENE STRUCTURE
+                        version 1.0 11/20/1991
+
+Geneid is an Artificial Intelligence system for analyzing vertebrate genomic 
+DNA and prediction of exons and gene structure (1). A prototype is 
+implemented as a fast, automatic email-response system. 
+ 
+REGISTRATION:
+Before or simultaneously with submitting a sequence for analysis, you need to
+register your name by sending a line with the word "register", followed by
+your name and address. Example:
+
+  register, Don Johnson,  Miami Vice,  Baywiev Marina Dock A12,  Miami, FL 
+ 34566-1234, U.S.A.
+
+(the line can be longer than 80 characters as long as it contains no 
+linebreaks). Send the line in a mail to: geneid@darwin.bu.edu.  The
+registration information will only be used for maintaining a file of the 
+number and geographic distribution of the users.
+
+
+SUBMITTING SEQUENCES:
+Your sequences must be submitted in the following format (approximately same 
+format as used for fasta, BLAST and GRAIL):
+You can submit only one sequence per mail. Put the sequence after the 
+keyword "Genomic Sequence" as shown below:
+
+Genomic Sequence
+>seqname
+TTGGCCACTCCCTCTCTGCGCGCTCGCTCGCTCACTGAGGCCGGGCGACCAAAGGTCGCC
+CGACGCCCGGGCTTTGCCCGGGCGGCCTCAGTGAGCGAGCGAGCGCGCAGAGAGGGAGTG
+GCCAACTCCATCACTA...................
+
+(Remember that long lines get truncated by Mail, so try to keep the lines 
+below 80 characters. The seqname is limited to 20 characters). If your mail does not contain the keyword "Genomic Sequence", or any other keywords listed in this file, no mail will be returned to you.
+If the reply file with the results will exceed the Mail limit of 300 kB, the 
+reply will be split into several files.
+On a UNIX system you could send the File containing the sequence as follows:
+mail -v geneid@darwin.bu.edu  <File
+
+
+LIMITS:
+GeneId currently will not accept sequences smaller than 100 bp or larger 
+than 20 kb.
+
+
+CONFIDENTIALITY:
+Your submitted sequence will be deleted automatically immediately after
+reception by GeneID.
+
+
+ANALYSIS:
+GeneID will scan your sequence for potential splice sites, startcodons, and 
+stopcodons. Then it will try to assemble these into potential first exons, 
+internal exons, and last exons. Exons will be evaluated according to a number 
+of characteristics related to coding and splicing, and only likely exons will 
+be kept. Mutually exchangeable exons (normally overlapping and in the same 
+frame) will be put together in classes. Only the top 15 ranking first and
+last exon classes, and the top 35 ranking internal exon classes 
+from each sequence will be kept, and assembled into potential gene models with
+open reading frame, that will be ranked according to quality of the exons 
+they contain. The top 20 models will be included in the return mail. Your 
+return mail will also contain lists of the sites and exons created during the 
+analysis. GeneID will not analyze the reverse complement of your sequence. If 
+you suspect a gene on the other strand, submit the reverse complement 
+sequence separately.
+
+
+TIPS FOR USE OF GENEID:
+GeneID will try to identify first, internal, and last exons in each of the
+sequences you submit, and try to assemble these into models of ONE likely
+gene in each sequence. To avoid missing any exons, the number of exons will
+be vastly overpredicted, and only a few of them are likely to be true (they 
+tend to be the top ranking exons, but a few true exons rank very low). But
+these few true exons are likely to be found in the gene models because they
+fit together to form a continuous open reading frame. Thus you should look to
+the gene models to find a probable coding region.
+If you submit a sequence that turns out to contain two genes, the behavior of
+GeneID is unpredictable. It could either predict one large gene containing 
+both, or it could predict only the gene with the most typical charateristics.
+If you submit a sequence that contains only part of a gene, GeneID will try to
+identify an entire gene in this sequence. Thus the predicted first exon may 
+actually be part of a true internal exon, or the predicted last exon may be 
+part of a true internal exon. If GeneID fails to predict any genes, you might
+look at the potential exon lists.
+Thus you can experiment with input and response, by starting out with 
+sequences that are not too long (for example less than 10 kb), and see if
+GeneID is able to extend the gene if you extend the sequence.
+GeneID will not construct models with more than 22 exons.
+If the sequence contains frameshift errors in exons, then that may affect 
+the quality of the prediction in the current implementation.
+
+ACCURACY:
+In a test on 28 genes from GenBank, 91% of the nucleotides were correctly 
+predicted as coding or non-coding. Since these two categories are unequally 
+represented, a better measure of accuracy may be the correlation coefficient, 
+which was found to be 0.68. See paper for details.
+
+ANALYSIS TIME:
+Will depend on the load on the system and grows approximately linearly with
+the length of the sequence input. Expect at least 1 minute per kb. Longer
+response times can occur if the system is temporarily down (check with the 
+UNIX command: "finger geneid@darwin.bu.edu").
+
+FURTHER INFORMATION:
+A preprint of a paper describing the development and testing of GeneID is
+available as a Stuffit.hqx file for Macintosh. Simply include the line:
+  
+  Preprint Request
+
+in your mail to geneid@darwin.bu.edu, and the manuscript will be mailed to 
+you.
+
+
+REFERENCING:
+Publication of output from GeneID must be referenced as follows:
+(1) Guigo, R., Knudsen, S., Drake, N., and Smith, T. (1991) Prediction of 
+Gene Structure. Submitted manuscript.
+
+
+PROBLEMS, COMMENTS, AND SUGGESTIONS:
+Can be mailed to klose@darwin.bu.edu.
+
+Users of the MBCRR and BMERC national computer resources have direct 
+online access from their account. Contact Tom Graf at tom@mbcrr.harvard.edu
+for information on these accounts.
+
+---------------------------------------
+Biomolecular Engineering Research Center
+Boston University
+-- 
+Domain: curtiss@umiacs.umd.edu		     Phillip Curtiss
+  UUCP:	uunet!mimsy!curtiss		UMIACS - Univ. of Maryland
+ Phone:	+1-301-405-6710			  College Park, Md 20742
+
+*
+**	TeX book
+***
+Let me put in a plug for what I think is the best *learning* book
+for TeX at the moment:
+
+  A Beginner's Book of TeX
+  Raymond Seroul and Silvio Levy
+  Springer Verlag 1991
+
+Although it does have a Dictionary/Index, this is mainly 
+a learning book for the beginner. I found it very well-written.
+It contains a lot of information in a clear way.
+
+*
+**	c++ book
+***
+Try Keith Weiskamp and Bryan Flamig's The Complete C++ Primer.
+
+This is a book that was written specifically for the C programmer
+who wants to write C++ code. It also has enough C references
+that somebody who doesn't remember all of C can get by.
+
+The book was recommended to me by a very good hacker and I've
+just started reading it.
+
+Its Academic Press, ISBN 0-12-73.C153W45 (1989)
+
+*
+**	c++ book
+***
+Try Keith Weiskamp and Bryan Flamig's The Complete C++ Primer.
+
+This is a book that was written specifically for the C programmer
+who wants to write C++ code. It also has enough C references
+that somebody who doesn't remember all of C can get by.
+
+The book was recommended to me by a very good hacker and I've
+just started reading it.
+
+Its Academic Press, ISBN 0-12-73.C153W45 (1989)
+
+*	pcn/definitional variables/mutable variables/data checks
+**
+Actually, the swap example on p.17 of "Parallel Programming with PCN"
+is correct as it is.  I suspect what happened is that you ran it from
+the PCN shell with the command:
+
+	swap:swaptest(1,2)
+
+This will, in fact, produce an incorrect answer.  However, this is not
+because the swap program is wrong, but because you are calling a
+procedure that expects mutable arguments with definitional arguments.
+
+More specificly, the problem is that the 'swap:swaptest(1,2)' call
+from the PCN shell is passing definitional variables for i and j.  But
+the swaptest() procedure is expecting i and j to be mutable variables.
+Since swaptest() is expecting mutable variables, it does not do data
+checks on the variables.
+
+If you wish to run swaptest() from the PCN shell (or call it with
+definitional arguments), then you need to wrap a procedure around it
+that does the conversion from definitional arguments to mutable
+arguments.  For example:
+
+defn_swaptest(i,j)
+     int m_i, m_j;
+{;
+    m_i := i,
+    m_j := j,
+    swaptest(m_i, m_j)
+}
+
+Either that, or you can change i and j to be definitional arguments in
+swaptest() and swap().
+
+However, this technicality is certainly not obvious in the "Parallel
+Programming with PCN" example.  It took me a couple minutes of staring
+at it to see that this was the problem.  Thank you for pointing it
+out, so that in a future version of the manual we can make this
+example more clear.
+
+-Steve
+
+
+
+*	unix programming/c programming/networks/tcp/ip/sockets/ipc
+**
+Advanced UNIX Programming, Rochkind, 265p., Prentice Hall, 1985
+Covers file and terminal I/O, processes, IPC, signals, system calls etc.
+
+UNIX Network Programming, Stevens, 772p. Prentice Hall, 1990
+Lots of socket source code
+
+Internetworking with TCP/IP, Douglas Comer, 2 Vol., Prentice Hall, 1991.
+*	biology
+**
+ HC/CRYSTAL      180      2/1/92    BinHex4.0,Compact1.3.2
+ /mac/etc/chemistry/crystaltutordemo.cpt.hqx
+ 
+               A set of seven stacks illustrating the basic ideas
+               of solid state structure and geometry.
+ 
+ HC/GENBANK      207      2/1/92    BinHex4.0,Stuffit1.5.1 
+ /mac/etc/biology/genbanksearch.sit.hqx
+ 
+               A tool for interacting with computer services at
+               Genbank, a molecular biology database at 
+               Stanford.  You need MacTCP and a valid e-mail 
+               address.
+ 
+ HC/ENZYMEKIN    108      2/1/92    BinHex4.0,Stuffit1.5.1
+ /mac/etc/biology/enzymekinetics1.0c.sit.hqx
+ 
+               Plots velocity vs substance concentration,
+               Linewaver-Burk, Eadie-Hofster.  Stores it's
+               plots in the clipboard as PICTs.
+ 
+ HC/TIMEZONES     35      2/1/92    BinHex4.0 
+ /mac/etc/production/ustimezones2.0.hqx
+ 
+               Do you call people in other time zones around the
+               country?  The map in this stack displays times in
+               different places of the U.S.  Select an area 
+               code and it'll give you the zone and the time
+               (includes Canada, Alaska and Hawaii)
+ 
+ DEMO/GCK        807      2/2/92    BinHex4.0,Compact1.3.2
+ /mac/etc/biology/geneconstkitdemo1.06.cpt.hqx
+ 
+               Thorough looking program which includes tutorial
+               and extensive on-line help.  DNA Construction
+               and create lists of enzymes.
+ 
+ UT/LWTOOLS      536        2/2/92    BinHex4.0,Compact1.3.2 
+ /mac/utilities/print/dmmlwstuff1.1.cpt.hqx
+ 
+              A set of templates for altering and removing a lot of the
+              different resources from the System 7.0 laserwriter driver.
+              It allows removal of the Truetype resource, as well as a lot
+              of others.  Includes N-Up chooser goodie that allows
+              you to save paper by printing documents "N-Up" (such as
+              two pages to one physical sheet).  Postscript tools
+              also.  Even the Unadobe and Readobe utilities. 
+ 
+ GA/EMPIRE       339      2/2/92   BinHex4.0,Compact1.3.2
+ /mac/games/war/empiremaster2.01.cpt.hqx
+ 
+               The idea here is to conquer the world & wipe your
+               opponent's (in this case, the mac) military.  Based
+               on the Vax "Empire" game, you conquer cities
+               and expand.  Eventually, you run into the computer's
+               territory.  V  2.01
+ 
+ DEMO/BEYOND     333      2/2/92    BinHex4.0,Compact1.3.2
+ /mac/etc/demo/drtsbeyonddemo2.06.cpt.hqx
+ 
+               Got a MIDI Input device and a musical keyboard? 
+               This is a demo version of a Midi Editor with
+               some neato advanced composition tools.  Includes
+               sample songs for you to try out. 
+ 
+ CO/FIRSTCLAS    255      2/2/92    BinHex4.0,StuffitDeluxe
+ /mac/utilities/communications/firstclassuser1.65.sit.hqx
+ 
+               A client application which will allow you to hook
+               up (via AppleTalk or modem) to First Class 
+               Bulletin Board systems.
+ 
+ GA/ATAXX         57      2/2/92    BinHex4.0,Compact1.3.2
+ /mac/games/board/ataxx1.01.cpt.hqx
+ 
+               Playing with either another player, or the mac,
+               this game's object is to end up with the
+               most pieces.  Reminds me of Othello.  V 1.01
+ 
+ FO/CASLON        56      2/2/92    BinHex4.0,Compact1.3.2
+ /mac/system.extensions/font/type.one.fonts/caslonswash.cpt.hqx
+ 
+               Size: 24.  A Type I font of classic looking
+               serifed script.  Upper/lower case.
+ 
+ FO/CHAMPION      45      2/2/92    BinHex4.0,Compact1.3.2
+ /mac/system.extensions/font/type.one.fonts/champion.cpt.hqx
+ HC/GELFRAG      173      2/2/92    BinHex4.0,Stuffit1.5.1
+ /mac/etc/biology/gelfragsizer1.4.sit.hqx
+ 
+               Designed to take some of the tedium out of 
+               estimating sizes (molecular weights) of DNA/RNA
+               fragments in experiments and provide an accurate
+               estimate.
+ 
+ UT/SPKQUENCH    156      2/2/92    BinHex4.0,Compact1.3.2
+ /mac/etc/biology/speakquencher1.4.cpt.hqx
+ 
+               Uses sound manager to read DNA sequences to user
+               through the Mac's speaker.
+ 
+ FO/SHOCK         77      2/2/92    BinHex4.0,Compact1.3.2
+ /mac/system.extensions/font/type.one.fonts/shockfont.cpt.hqx
+ 
+               Size:  24 & 48
+               Type one font where the lower case letters are
+               all caps of zapped, quirky letters.
+ 
+ UT/TESTPAT       77      2/2/92    BinHex4.0,Compact1.3.2
+ /mac/utilities/developerhelps/testpat
+
+
+* 	Z Sites
+**** 	"/anonymous@cs.umn.edu:"
+**** 	"/anonymous@sirius.ucs.adelaide.edu.au:"
+**** 	"/anonymous@kampi.hut.fi:"
+**** 	"/anonymous@garbo.uwasa.fi:"
+**** 	"/anonymous@ousrvr.oulu.fi:"
+**** 	"/anonymous@tukki.jyu.fi:"
+**** 	"/anonymous@tolsun.oulu.fi:"
+**** 	"/anonymous@ftp.nisc.sri.com:"
+**** 	"/anonymous@scam.berkeley.edu:"
+**** 	"/anonymous@peace.waikato.ac.nz:"
+**** 	"/anonymous@cs.orst.edu:"
+**** 	"/anonymous@louie.udel.edu:"
+**** 	"/anonymous@nic.nyser.net:"
+**** 	"/anonymous@jaguar.utah.edu:"
+**** 	"/anonymous@alf.uib.no:"
+**** 	"/anonymous@hemuli.tik.vtt.fi:"
+**** 	"/anonymous@sunic.sunet.se:"
+**** 	"/anonymous@chem.bu.edu:"
+**** 	"/anonymous@itstd.sri.com:"
+**** 	"/anonymous@genbank.bio.net:"
+**** 	"/anonymous@rdss.ucar.edu:"
+
+<(Return to Top Level)>				C-c C-s to show the full entry
+<(Cut Out All But Topic Headers)>		C-c C-h hide the subentries
+<(Frequent FTP Sites)>				C-h m for extensive help
+<(Top of File)>

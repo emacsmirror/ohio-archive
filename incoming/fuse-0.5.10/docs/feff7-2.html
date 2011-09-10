@@ -1,0 +1,141 @@
+<HTML>
+<HEAD>
+<TITLE>Feff : Conceptual description</TITLE>
+</HEAD>
+<BODY>
+<A HREF="feff7-1.html">Previous</A>
+<A HREF="feff7-3.html">Next</A>
+<A HREF="feff7.html#toc2">Table of Contents</A>
+<HR>
+<H2><A NAME="s2">2. Conceptual description</A></H2>
+
+
+<P>This section describes the various modules and outlines the use of the
+code. </P>
+
+
+<H2><A NAME="ss2.1">2.1 Scattering potential and phase shift code, POTPH </A></H2>
+
+
+<P>The potentials of each atomic type are calculated as if the atoms were 
+isolated in space using a relativistic Dirac-Fock Desclaux atom 
+code.  The scattering potentials are calculated by overlapping the 
+free atom densities within the muffin tin approximation (Mattheiss 
+prescription), and including the Hedin-Lundqvist/Quinn self energy for 
+excited states.  Muffin-tin radii are determined automatically from 
+calculated Norman radii and scattering phase shifts are determined by 
+matching at the muffin tin radius.  XAFS spectra are referenced to the 
+threshold Fermi level, which is estimated by electron gas theory at the 
+mean interstitial density.  Atomic configurations and core-hole lifetimes 
+are built in, and mean free paths are determined from the imaginary part 
+of the average interstitial potential. Dipole matrix elements are
+calculated using atomic core and normalized continuum wavefunctions.
+An absolute energy scale is obtained by a Desclaux-atom calculation of
+the total energy of the system with and without the core-hole.
+Polarization dependence is optionally incorporated in the
+dipole-operator.   </P>
+<P>The free atomic potentials need as input only the atomic number of the atoms,
+and, for the absorbing atom, the type of the core hole being considered. To 
+do the overlapping for the unique potentials, the neighboring atoms must 
+be identified, either by position (from a list of the cartesian
+coordinates of each atom) or by explicit overlapping instructions. </P>
+<P>To save time the code calculates the overlapped atom potential for each
+unique potential only once, using as a sample geometry the atom
+with the unique potential index that is closest to the absorbing atom.
+Thus it is essential that the neighborhood of that sample atom be correct.</P>
+
+
+
+<H2><A NAME="ss2.2">2.2 Path enumeration, PATHS</A></H2>
+
+<P>The code uses a constructive algorithm with several path importance
+filters to explore all significant multiple-scattering paths in order
+of increasing path length, based on a list of atomic coordinates.
+An efficient degeneracy checker is used to identify equivalent
+paths (based on similar geometry, path reversal symmetry, and space
+inversion symmetry). To avoid roundoff errors, the degeneracy checker
+is conservative, very occasionally thinking that two degenerate paths
+are not degenerate.  These errors occur in the third or fourth decimal
+place (less than 0.001 Ang) and fail safe, that is, no paths will be lost.</P>
+<P>The criteria used in filtering are based on increasingly accurate
+estimates of each path's amplitude.  The earliest filters, the
+pathfinder heap and keep filters, are applied as the paths are being
+created.  A plane wave filter based on the plane wave approximation
+(plus a curved wave correction for multiple-scattering paths) and
+accurate to about 30% is applied after the paths have been enumerated
+and sorted.  Finally, and accurate curved wave filter is applied to
+all remaining paths. </P>
+
+
+
+<H2><A NAME="ss2.3">2.3 Scattering amplitude and other XAFS parameter calculation, GENFMT</A></H2>
+
+
+<P>For each path the code calculates the effective scattering amplitude
+(|f_eff| from which FEFF gets its name; see 6.11),
+total scattering phase shift and
+other XAFS parameters using the scattering matrix algorithm of Rehr and
+Albers.  Once the scattering phase shifts and the paths are determined,
+no other input is necessary for this calculation. </P>
+
+
+
+<H2><A NAME="ss2.4">2.4 XAFS spectrum calculation, FF2CHI</A></H2>
+
+<P>The code ff2chi constructs the XAFS spectrum chi(k) (See 6.11) using the XAFS
+parameters from one or more paths.  Single and multiple scattering
+Debye-Waller factors are calculated using a correlated Debye model.
+Output from this module is the total XAFS spectrum and optionally, the
+contribution to the XAFS from each path individually.  Numerous
+options for filtering, Debye-Waller factors, and other corrections
+are available at this point.  See descriptions of input cards below.</P>
+
+
+
+<H2><A NAME="ss2.5">2.5 Calculation Strategy</A></H2>
+
+<P>The scattering phase shifts for each unique potential are necessary for
+both PATHS and GENFMT.  They are used for the importance filters in
+PATHS and are the basis of the XAFS parameters calculation in GENFMT.
+This part of the calculation can be slow, so it is usually best to run
+it only once and use the results while studying the paths and XAFS. </P>
+<P>To study the necessary paths, the pathfinder module PATHS will need the
+atomic positions of any atoms from which scattering is expected.  If
+the structure is completely unknown, single-scattering paths can be
+created explicitly.  Because the number of possible paths increases
+exponentially with total path length, start with a short total path
+length, study the few paths (representing scattering from the nearest
+neighbors), and gradually increase the total path length, possibly
+studying the path importance coefficients and using the filters to
+limit the number of paths.  This process is not automated, and if done
+carelessly can yield so many paths that no analysis will be possible. </P>
+<P>Finally, use GENFMT to calculate the XAFS parameters, and FF2CHI to
+assemble the results into a chi curve.  Here, the slow part is GENFMT 
+and FF2CHI is very fast.  Therefore, to explore parameters such as
+Debye-Waller factors, mean free path and energy zero shifts, various
+combinations of paths and coordination numbers, run only module FF2CHI
+using the results saved from GENFMT. </P>
+<P>There are three ways to modify the Debye-Waller factor, all of which affect
+only the module FF2CHI.  The DEBYE card uses the correlated Debye model
+to calculate a Debye-Waller factor for each path.  The SIG2 card adds
+a constant Debye-Waller factor to each path.  And you can edit list.dat
+to add a particular Debye-Waller factor to a particular path.  These three
+Debye-Waller factors are summed, so if the DEBYE and SIG2 cards are present,
+and if you have added a Debye-Waller factor to a particular path, the Debye-
+Waller factor used will be the sum of all three.  See documentation below
+for details.</P>
+<P>If your model changes significantly, the phase shifts (which are based
+in part on the structure of the material) will have to be recalculated.
+Any time the phase shifts change, the XAFS parameters will have to be
+re-calculated.  If the path filters have been used, the path list will
+also have to be recomputed. </P>
+
+
+
+
+<HR>
+<A HREF="feff7-1.html">Previous</A>
+<A HREF="feff7-3.html">Next</A>
+<A HREF="feff7.html#toc2">Table of Contents</A>
+</BODY>
+</HTML>

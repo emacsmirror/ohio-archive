@@ -1,0 +1,66 @@
+This is "dunnet", a text adventure game written in emacs-lisp.  I decided it
+would be interesting to write an elisp program, so for fun I wrote this
+one.  Try to play it without looking at the code, for two reasons:
+
+1. It's more fun if you don't cheat.
+2. Since I haven't written much lisp, I'm not confident of the quality
+   of the code.
+
+You'll notice some really different things about this dungeon.  Without
+giving anything away, let's just say that like much lisp code seems to
+be, this dungeon is sort of recursive in a way.  A minimal knowledge of
+UNIX, DOS, and some internet experience is assumed.
+
+Thanks to help from many people including (but not limited to)
+Nathan Glasser (nathan@brokaw.lcs.mit.edu)
+H. B. Furuseth (h.b.furuseth@usit.uio.no)
+Chris Moore (more@src.bae.co.uk)
+Chris Metcalf (metcalf@catfish.lcs.mit.edu)
+Norman Walsh (walsh%ibis@cs.umass.edu)
+
+I encourage comments, good and bad.  Please e-mail me what you
+thought of the game.
+
+INSTALLATION
+------------
+
+Modify the first line of dun-main.el to have a logfile that is writable
+by all.  You only need to do this if you want to log where everyone died
+or saved, or won.  You will also need to create this file as an empty file,
+if it doesn't already exist.
+
+You can use the 'makefile' to compile everything and encrypt the appropriate
+portions of dunnet.  You may, of course, just run the code as-is.  In either
+case, all of the files must be put in your load-path directory, or they
+must be in your current directory when it is run.  If you do
+run make, all of the compiled/encrypted files are put in ../bin.
+
+*IMPORTANT*
+
+There are two ways to run the program:
+
+1. dunnet
+2. dunnet.window
+
+These files are Unix shellscripts, and one of them should be put in a
+normal bin directory.  If you are on a non-unix machine, it should be
+simple to set up similar script files.
+
+NOTE: There are two additional script files, dunnet.curdir, and 
+      dunnet.window.curdir.  These can be used with Unix in order
+      to run dunnet in the current directory.  You may need to create
+      similar scripts for other plaforms.
+
+This software assumes you have "cl.el" (necessary), 
+and "yow.el" (not critical) in the load-path directory.  These 
+come standard with Gnu emacs. 
+
+Some hints and tips.
+
+Read the help carefully.
+Save the game *very* often.
+An abbreviation for examine is 'x'.  EXAMINE EVERYTHING.
+You can use 'get all', but not 'drop all'.
+
+Questions or comments to ronnie@media.mit.edu.
+

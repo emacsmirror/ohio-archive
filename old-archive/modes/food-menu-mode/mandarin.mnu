@@ -1,0 +1,196 @@
+## Mandarin Restaurant ##
+#       774-4500, 82 S. Main, Oberlin, OH
+#
+#       Hours:
+#       Open Tuesday - Sunday, 11:30am to 11:30pm. Closed Mondays.
+
+# Menu format works like this:
+# Codes introduced with a backslash (the "item" indicator on a menu):
+# \a    appetizer
+# \m    main dish
+# \b    beverage
+# \v    vegetarian
+# \s    soup
+# \S    spicy
+# \d    special deal (usually a luncheon special or something, with
+#                     details given on the menu.)
+#       
+# 
+# introduce extraneous comments with "#"
+# 
+# a "$" indicates the beginning of a price.  This is U.S.-centric, but
+# people will just have to deal with that.  Right now, maximum is 3 sizes
+# for a dish.  This may change, but don't count on it.  If you are 
+# actually eating at restaurants that offer the same dish in four or more 
+# sizes, Emacs is the least of your problems.
+# 
+# "*** foo ***" at the *beginning* of a line indicates a section on the 
+# menu.  Format is "*** section name ***".
+#
+# so now you know how restaurant menu format works.  whoopee.
+
+
+# Delivery costs $1.00, but there's no tax on
+# food not eaten at the restaurant. If you do
+# eat in, Ohio tax is 5.5%.
+
+# Luncheon Specials are listed toward the end...
+# just do a search for the word "luncheon" or 
+# something. Beverages, including beer now (!),
+# are also at the end. Also, check out the 
+# recent additions to the menu, under "new 
+# additions", right before the lunch specials. 
+# Please direct any questions or mistakes to 
+# Karl Fogel (kfogel@cs.oberlin.edu).
+
+*** appetizers ***
+\av     vegetarian egg roll                     $1.00
+\a      egg roll                                $1.00
+\a      fried wonton                            $2.25
+\a      potstickers (6)                         $3.50
+\a      vegetarian potstickers (3)              $2.25
+\a      shrimp chips                            $1.00
+
+*** soups ***
+\sv     egg drop soup                           $1.00
+\s      wonton soup                             $1.75
+\sS     spicy & sour soup                       $1.75
+\sv     chinese vegetable and bean curd soup    $1.75
+\s      pickle and shredded pork soup           $1.75
+\s      crabmeat corn soup (for 2)              $4.50
+
+*** fried rice ***
+\mv     beef, chicken, pork, veg fried rice     $3.50   $4.50
+\m      shrimp or three-delicacies fried rice   $4.50   $5.95
+
+*** chow mein ***
+# lo mein (soft noodles) add 50 cents #
+\mv     beef, chicken, pork, or veg chow mein   $3.50   $4.95
+\m      shrimp or three-delicacies  fried rice  $4.75   $6.25
+
+*** egg fu young ***
+\mv     beef, chicken, pork, or veg foo young   $3.50   $4.95
+\m      shrimp or three-delicacies foo young    $4.75   $6.25
+
+*** beef ***
+\m       B-1: pepper steak                      $4.95   $6.95
+\m       B-2: beef with snow peas               $5.50   $7.50
+\m       B-3: beef with broccoli                $5.50   $7.50
+\m       B-4: beef vegetable deluxe             $5.95   $7.95
+\mS      B-5: sauteed beef szechuan style       $5.95   $7.95
+\mS      B-6: yu-shan beef                      $5.95   $7.95
+\m       B-7: moo-shu beef                      $5.95   $7.95
+\mS      B-8: mongolian beef                    $5.95   $7.95
+\m       orange beef or sesame beef             $9.50
+
+*** pork ***
+\m       P-1: sweet and sour pork               $4.95   $6.75
+\m       P-2: moo-shu pork                      $4.95   $6.75
+\mS      P-3: double-cooked pork                $4.95   $6.75
+\mS      P-4: yu-shan pork                      $4.95   $6.75
+\m       P-5: pork with chinese vegetables      $4.95   $6.75
+
+*** poultry ***
+\m       C-1: sweet & sour chicken              $4.95   $6.95
+\m       C-2: mushroom chicken                  $4.95   $6.95
+\m       C-3: almond chicken                    $4.95   $6.95
+\mS      C-4: kung-pao chicken                  $4.95   $6.95
+\m       C-5: cashew nuts chicken               $4.95   $6.95
+\m       C-6: chicken with chinese vegetables   $4.95   $6.95
+\mS      C-7: chicken with garlic sauce         $4.95   $6.95
+\m       C-8: lemon chicken                     $4.95   $6.95
+\mS      C-9: chicken and shrimp                $6.75   $8.75
+\mS      C-10: general tso's chicken                    $9.50
+\mS      C-11: sesame chicken                           $9.50
+\m       C-12: mandarin crispy & aromatic duck (half)   $9.50
+\m       C-13: mandarin chicken wings                   $7.50
+\m       orange chicken                                 $9.50
+\m       empress chicken                        $4.95   $6.95
+
+*** seafood ***
+\m       S-1: shrimp with lobster sauce         $5.95   $8.25
+\m       S-2: shrimp with snow peas             $5.95   $8.25
+\mS      S-3: yu-shan shrimp                    $5.95   $8.25
+\m       S-4: shrimp with chinese vegetables    $5.95   $8.25
+\m       S-5: cashew nut shrimp                 $5.95   $8.25
+\mS      S-6: kung-pao shrimp                   $5.95   $8.25
+\mS      S-7: sauteed shrimp with hot sauce     $6.95   $9.25
+\m       S-8: three delicacies                  $6.75   $8.95
+
+*** vegetarian's corner ***
+\mv      V-1: vegetarian's delight              $4.50   $5.95
+\mv      V-2: buddhist's delight                $4.50   $5.95
+\mvS     V-3: ma-po bean curd                   $5.25   $6.75
+\mv      V-4: family style bean curd            $5.25   $6.75
+\mvS     V-5: yu-shan broccoli                  $4.50   $5.95
+\mv      V-6: moo-shu vegetable                 $4.50   $5.95
+
+*** new additions ***
+\a      bar-b-q spareribs (5)                   $4.50
+\a      beef on skewers (4)                     $3.95
+\a      pu pu platter (for 2)                   $8.25
+\av     sesame noodle                           $3.95
+\s      pork noodle soup                        $3.95
+
+\m       A-1: bean curd with seafood            $5.95   $8.25
+\m       A-2: scallop and chicken               $5.95   $8.25
+\m       A-3: sauteed squid                     $5.95   $8.25
+\mS      A-4: hunan chicken                     $5.95   $7.95
+\m       A-5: mandarin crispy chicken                   $7.95
+\mS      A-6: curry chicken                     $5.95   $7.95
+\m       A-7: pork with black beans             $4.95   $6.95
+\m       A-8: pork and bean sprouts             $4.95   $6.95
+\mv      A-9: sauteed string beans                      $6.50
+\mv      A-10: sauteed chingensai (baby bok choy)       $6.50
+
+*** luncheon specials ***
+# served with fried rice, an eggroll and a 
+# bowl of egg drop soup if eaten in, and 
+# just the rice and the eggroll if it's to 
+# go. These specials are a great deal:
+# lots o' food for not lots o' money. 
+# I recommed the L-16, myself...
+
+\md      L-1: chicken chow mein                 $3.50
+\md      L-2: chicken lo mein                   $3.95
+\md      L-3: sweet & sour pork                 $3.95
+\md      L-4: almond chicken                    $3.95
+\md      L-5: mushroom chicken                  $3.95
+\mSd     L-6: yu-shan chicken                   $3.95
+\mSd     L-7: kung-pao chicken                  $3.95
+\md      L-8: pepper steak                      $4.25
+\mSd     L-9: sauteed beef szechuan style       $4.25
+\mSd     L-10: chicken & shrimp hunan style     $4.95
+\md      L-11: shrimp with lobster sauce        $4.95
+\mSd     L-12: yu-shan shrimp                   $4.95
+\mvSd    L-13: yu-shan broccoli                 $3.95
+\md      L-14: sweet & sour chicken             $4.25
+\mSd     L-15: curry chicken                    $4.25
+\mSd     L-16: sesame chicken                   $4.50
+\mSd     L-17: hunan chicken                    $4.50
+\md      L-18: beef with broccoli               $4.50
+\mvd     L-19: vegetarian delight               $3.95
+\md      L-20: cashew nut shrimp                $4.95
+
+
+*** family dinners ***
+# Minimum for 2, no substitutions.
+# Hey, I don't make the rules...
+
+\md      FA: choice of entree under 7.00        $7.50
+         # 1 egg roll, 2 fried wontons, 
+         # egg drop soup, and steamed rice 
+         # included.
+                
+
+\md      FB: choice of entree under 8.25        $9.50
+         # 1 egg roll, 2 fried wontons, 
+         # choice of soup under 3.50, and 
+         # rice included.
+
+
+*** beverages ***
+\b      tea or coffee                           $0.75
+\b      ice tea, soft drinks                    $0.75
+\b      imported bottled beer                   $1.75
+\b      draft beer                              $1.10   $1.25

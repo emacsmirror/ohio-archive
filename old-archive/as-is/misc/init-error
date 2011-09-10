@@ -1,0 +1,90 @@
+To: unix-emacs@bbn.com
+Date: 17 Mar 89 21:51:23 GMT
+From: Joe Wells <bucsb!jbw@bu-cs.bu.edu>
+Subject: Error in init file
+
+Ashwin Ram writes:
+>I also think that the "error in init file" situation is badly handled.
+>Firstly, the error message should reflect what the error was.  Secondly,
+>Emacs should tell you where the error occurred, or better still visit the
+>offending file and position itself at the point where the error was
+>encountered.
+
+Ok, well here's a partial fix for the situation.  First, you need the
+print-error function.  Then you need to apply a patch to
+lisp/startup.el.  I am sending both of these.  You will then get more
+useful error messages when your .emacs file bombs out.
+
+--
+Joe Wells
+INTERNET: jbw%bucsf.bu.edu@bu-it.bu.edu    IP: [128.197.2.9]
+UUCP: ...!harvard!bu-cs!bucsf!jbw
+
+----------------------------------------------------------------------
+;; This function is derived from cmd_error in src/keyboard.c.  I
+;; assume all of the special cases are actually necessary.
+;; It's a real shame that cmd_error is not callable from lisp.  It's
+;; stupid to have to duplicate code.
+
+(defun print-error (data)
+  "Print an error message from DATA in the standard format.  DATA is
+in the format created by signal and caught by condition-case."
+  (let (errmsg tail (errname (car data)) file-error)
+    (setq standard-output t)
+    (setq standard-input t)
+    (discard-input)
+    (ding)
+    
+    (cond ((eq errname 'error)
+	   (setq data (cdr data))
+	   (or (consp data)
+	       (setq data nil))
+	   (setq errmsg (car data)))
+	  (t
+	   (setq errmsg (get errname 'error-message))
+	   (setq file-error (memq 'file-error
+				  (get errname 'error-conditions)))))
+    
+    (or (consp data)
+	(setq data nil))
+    (setq tail (cdr data))
+    
+    (cond (file-error
+	   (setq errmsg (car tail))
+	   (setq tail (cdr tail))))
+    
+    (if (stringp errmsg)
+	(princ errmsg t)
+      (princ "peculiar error" t))
+    
+    (if (consp tail) (princ ": " t))
+    
+    (while (consp tail)
+      (if file-error
+	  (princ (car tail) t)
+	(prin1 (car tail) t))
+      (setq tail (cdr tail))
+      (if (consp tail) (princ ", " t)))
+    
+    t))
+----------------------------------------------------------------------
+*** /usr14/gnu/dist-18.52/lisp/startup.el	Sun Jul 10 14:43:37 1988
+--- ./startup.el	Fri Mar 17 16:45:39 1989
+***************
+*** 119,125 ****
+  			 ;; Don't you dare turn this off for anyone
+  			 ;; except yourself.
+  			 (load "default" t t)))))
+!       (error (message "Error in init file")))
+      (if (get-buffer "*scratch*")
+  	(save-excursion
+  	  (set-buffer "*scratch*")
+--- 119,125 ----
+  			 ;; Don't you dare turn this off for anyone
+  			 ;; except yourself.
+  			 (load "default" t t)))))
+!       (error (print-error error)))
+      (if (get-buffer "*scratch*")
+  	(save-excursion
+  	  (set-buffer "*scratch*")
+

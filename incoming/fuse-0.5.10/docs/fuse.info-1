@@ -1,0 +1,1165 @@
+This is Info file fuse.info, produced by Makeinfo version 1.68 from the
+input file fuse.texi.
+
+START-INFO-DIR-ENTRY
+* FUSE: (fuse).             Feff/UWXAFS System for Emacs
+END-INFO-DIR-ENTRY
+
+
+File: fuse.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir)
+
+Master Menu
+***********
+
+   This document is a user's guide to FUSE.  FUSE is a set of Emacs
+lisp programs for editing input files for FEFF and the UWXAFS programs.
+
+* Menu:
+
+* Introduction::                Introduction to FUSE
+* Installation::
+* Syntax::                      Input file syntax
+* Key Sequences::
+* Variables::
+* Keywords::
+* Run::
+* Plot::
+* Glossary::
+* Future::
+* Function Index::
+* Variable Index::
+* Key Index::
+* Concept Index::
+
+
+File: fuse.info,  Node: Introduction,  Next: Installation,  Prev: Top,  Up: Top
+
+Introduction to FUSE
+********************
+
+   This document describes the installation, configuration, and use of
+FUSE .  FUSE  is the FEFF/UWXAFS System for Emacs.  It is a user
+interface for FEFF, ATOMS, AUTOBK, FEFFIT and a few other programs
+developed by the members and former members of the x-ray absorption
+spectroscopy group at the University of Washington.
+
+   This document is written with the assumption that the reader is
+familiar with EXAFS analysis, the use of FEFF and the UWXAFS programs,
+and the use of Emacs.  It is not expected that the reader is an guru in
+any of these topics, as their basic concepts will not be explained
+here.  For further reading on any of those topics, please see the
+bibliography.
+
+   The general purpose of a user interface to these (or any) programs is
+to to add value to the programs by making their use easier and more
+efficient.  I have broken down the interface to FEFF and the UWXAFS
+programs into five conceptual areas of functionality.  These are
+
+*Generation of input files*
+     The input structures to these programs are rather complicated and
+     offer many options for the user.  This is particularly true for
+     FEFFIT, which uses a highly abstracted metalanguage for
+     constraining parameters in a fitting model.  Much of the
+     functionality of FUSE  is dedicated to the generation and
+     manipulation of the constituent text of these input files.  The
+     creation of input files is the most difficult part of using these
+     programs even though the input files are composed entirely of
+     ASCII text.  Thus I was motivated to use Emacs as the
+     application/program interface.  Along with good integration of
+     system level features such as file handling and process handling,
+     Emacs possesses extremely powerful text manipulation capabilities
+     and a flexible keyboard and mouse based user model.
+
+*Program execution*
+     FUSE  uses the Emacs system interface to execute the programs and
+     to display their run-time messages.  Although each of the programs
+     requires that input files have filenames specific to the program
+     (i.e. FEFF requires that its input file be called `feff.inp'), FUSE
+     allows you to use input files with arbitrary names.  It uses a
+     command wrapper to temporarily rename files to the name expected
+     by the executed program.
+
+*Organization of graphical output*
+     FUSE  uses GNUPLOT to display data.  Scripts for running GNUPLOT
+     are generated automatically from the contents of the input files
+     and may be saved for future use.  Many display options exist for
+     FEFFIT for plotting results in different spaces and for plotting
+     the contributions from individual scattering paths.
+
+*Organization of textual output*
+     Analysis of data is performed to obtain answers to physical
+     questions.  Pretty pictures are very important, but often a number
+     is the bottom line.  FUSE  has several features for organizing the
+     textual output of the programs into useful formats.
+
+*Error handling and recovery from mistakes*
+     Any program that can be used can be misused.  FUSE  has features
+     for examining the contents of input files for errors or
+     inconsistencies.  It also allows the user to examine the run-time
+     and saved-file output of the programs.
+
+   I have used different fonts of type in this document to denote
+different concepts.
+
+   * SMALL CAPS are used to denote the names of programs or scripts
+     which are executed by the computer.
+
+   * `Quoted fixed width font' denotes the names of files.
+
+   * `Slanted fixed width font' is used to denote things to be typed at
+     the keyboard.
+
+   * `Fixed width font' denotes verbatim transcriptions of the contents
+     of computer files.
+
+   * *Italics* are used as an emphasis font, i.e. to catch your eye for
+     important concepts.
+
+   * The name of this package, FUSE , is set in a sans-serif font in
+     the postscript format of the document.
+
+   FUSE  is an ongoing project.  I hope that, in its present form, it
+will help you analyst you data.  For some hints of what FUSE  will do
+in the future, take a peek at *Note Future::.  If you have any
+questions, comments, complaints, or suggestions, please contact me.
+There is a bug report function built into FUSE  which sends me email
+using the Emacs mailer.  See *Note Key Sequences:: for details.  Use
+that function or any of my contact information shown on the second page
+of this document.
+
+
+File: fuse.info,  Node: Installation,  Next: Syntax,  Prev: Introduction,  Up: Top
+
+Installing FUSE
+***************
+
+* Menu:
+
+* Unpacking::                   Unpacking the FUSE distribution
+* Making::                      Configuring, Making, Installing
+* Customizing::                 Customizing FUSE
+
+
+File: fuse.info,  Node: Unpacking,  Next: Making,  Prev: Installation,  Up: Installation
+
+Unpacking the distribution
+==========================
+
+   FUSE  is distributed in two compressed archive formats.  One uses
+the standard unix TAR and GZIP utilities, the other uses ZIP.  Their
+contents are the same.  Use whichever one is more convenient for you.
+
+   You can unpack the distribution any place on your disk.  One of the
+steps of the installation discussed in *Note Making:: will move all of
+the necessary files to their final home.  To unpack the TARred and
+GZIPped file, `cd' to your lisp directory and execute these commands:
+         > gunzip fuse.tar.gz
+         > tar xvf fuse.tar
+
+To unpack the ZIPped file, execute this commands:
+         > unzip fuse.zip
+
+After doing one of those steps, you will find that the FUSE
+
+   distribution has been unpacked into a subdirectory called
+`fuse-#.#.#', where the `#' signs denote the current version number of
+FUSE .
+
+   Now `cd' into the `fuse-#.#.#' subdirectory.  Here is what you will
+find in that directory.
+   * Several files including:
+    `Makefile.emacs'
+    `Makefile.xemacs'
+          The instructions for the MAKE program, one for Emacs and one
+          for XEmacs.
+
+    `configure'
+          A Bourne shell script used to configure the distribution for
+          your machine.  *Note Making::.
+
+    `INSTALL'
+          A file with the installation instructions from *Note Making::.
+
+    `README'
+    `COPYING'
+    `HOOKS'
+          Some files with general infomration about FUSE .
+
+   * A bunch of files that end in `.el'.  These are the main programs in
+     FUSE .
+
+   * The `docs/' directory contains documentation for FUSE  as well as
+     for ATOMS and FEFF in a variety of formats, including INFO, HTML,
+     POSTSCRIPT and plain text.
+
+   * The `pixmaps/' directory contains all of the icons used in the
+     toolbars.  *Note Menus and Toolbars::.
+
+   * The `scripts/' directory contains several shell and perl scripts
+     used by FUSE .
+
+   * The `fortran/' directory contains some programs useful for handling
+     UWXAFS binary files as well as copies of the programs NORMAL for
+     normalization and alignment of absorption data, and PHIT, a
+     general purpose fitting program.
+
+   * The `emulation/' directory contains some files useful if you want
+     Emacs to emulate VI, EDT, or CRISP while using FUSE .
+
+   * The `example/' directory contains files that you will need for the
+     tutorial, *note Introduction: (fuse-tutorial)Introduction., and
+     various example input files demonstrating features of FUSE .
+
+
+File: fuse.info,  Node: Making,  Next: Customizing,  Prev: Unpacking,  Up: Installation
+
+Configuring, making, and installing.
+====================================
+
+   Before starting, you need to decide on a few things.  During the
+first step in the installation process, you will be asked a few
+questions that FUSE  needs to know to install itself properly.  These
+are
+  1. Will you be using Emacs or XEmacs?(1)
+
+  2. In which directory will you be installing FUSE ?  If you are
+     installing FUSE  as a normal user, then this should be a directory
+     where you keep personal Emacs lisp files.  If you are installing
+     FUSE
+
+     as root, then this should be the `site-lisp' directory.  Telling
+     the wrong place to the installation script will result in FUSE  not
+     being accessible to Emacs.
+
+  3. What is the location of perl on your computer?  The `configure'
+     script will most likely be able to determine this, but if it fails
+     you will need to supply its location.  Perl is required to
+     properly install various scripts the FUSE  uses to plot data and
+     perform other chores.  You can determine its location by `which
+     perl' under tcsh or `type perl' under bash.
+
+  4. Do you want the installation script to edit your `.emacs' file so
+     that FUSE  is automatically used with input files.  To do so the
+     script will write several lines to your `.emacs' file.  If you have
+     previously installed FUSE  then it is probably safe to answer no to
+     this question.  If you are installing this as root, you will have
+     to edit the `site-start.el' file by hand with the lines printed to
+     the screen at the end of the configuration step.(2)
+
+
+   Once you have decided on thse points, type `configure' at the
+command line.  This is an interactive script that asks you for the
+answers to the questions.  Just follow the instructions printed on the
+screen.
+
+   Once the configuration is done, type `make' then `make install'.
+Please note that if the location where you intend to have FUSE
+installed is the same as the place where you unpacked it, you should
+skip the `make install' step.  Nothing bad will happen if you don't
+skip it, but you will get a lot of non-critical but alarming looking
+error messages.(3)
+
+   The lines that are added to the `.emacs' file look something like
+this, with `~/lisp/fuse/' replaced by the installation location on your
+computer:
+            (setq load-path
+                  (append (list "~/lisp/fuse/" ) load-path))
+            (setq auto-mode-alist
+                  (append (list (cons "\\.inp$" 'input-mode))
+                          auto-mode-alist))
+            (autoload 'fuse-mode "fuse" t)
+            (autoload 'input-mode "input" t)
+            (global-set-key [(f9)]  'fuse-mode)
+            (add-hook 'dired-load-hook '(lambda () (load-library "fuse-dired")))
+
+The first two lines tell emacs where to find FUSE .  The next three
+lines tells Emacs to use FUSE  for files ending in `.inp'.  The two
+`autoload' lines tell Emacs how to start using FUSE .  The next to last
+line binds the <F9> key to start up FUSE .  The last allows for batch
+processing of input files using dired mode in Emacs.
+
+   To enable syntax coloring of the text of your input files using the
+`font-lock' package, place the following line in your `.emacs' file:
+          (global-font-lock-mode t)
+
+I find that `font-lock' offers better performance than `hilit19'.  Both
+packages are supported.
+
+   To enable syntax coloring of the text of your input files using the
+`hilit19' package, place the following lines in your `.emacs' file:
+          (cond (window-system
+                 (setq hilit-mode-enable-list  '(not text-mode)
+                        hilit-background-mode   'light
+                        hilit-inhibit-hooks     nil
+                        hilit-inhibit-rebinding nil)
+                 (require 'hilit19) ))
+
+   ---------- Footnotes ----------
+
+   (1) By Emacs, I mean the version published by the Free Software
+Foundation, `http://www.gnu.org'.  XEmacs refers to the version
+available from `http://www.xemacs.org'.
+
+   (2) A future version of FUSE  will handle this for the root
+installtion, but the current version does not.
+
+   (3) That is a bug that will be fixed in a fututre version.
+
+
+File: fuse.info,  Node: Customizing,  Prev: Making,  Up: Installation
+
+Customizing FUSE
+================
+
+   There are lots of variables (*note Variables::.) which can be set to
+customize the appearence and bahavior of FUSE .  There are at least
+four ways to do so, some more convenient than others.
+
+  1. At any time while using FUSE , you can type `M-x set-variable' and
+     respond with the name of the variable you want to change andthe
+     value you want to change it too.  This solution, however, does not
+     last between Emacs sessions.  To make a permanent change you need
+     to do one of the other things in this list.
+
+  2. Add lines to your `.emacs' file.  Take a look at the file
+     `dot-emacs' that comes with FUSE  for an example of this.  The
+     best way to set a user variable in `.emacs' is
+                 (add-hook 'fuse-mode-hook '(lambda ()
+                          (setq input-comment-char "% ")
+                          (setq input-stanza-indent 2)   ))
+
+     In this example I set two user variables to their default values.
+
+  3. Create a file called `.fuse'.  This file is read when a buffer
+     first enters Input mode.  It contains Emacs lisp statements for
+     setting the values of the variables.  An example of a `.fuse' file
+     is given with the FUSE  distribution in a file called `dot-fuse'.
+     In this example, every user configurable is set to its default
+     value.  The lines of the `.fuse' file look like these two:
+            (setq input-comment-char "% ")
+            (setq input-stanza-indent 2)
+
+     This is a little redundant with the `.emacs' file, but it is
+     convenient to have another place to put your FUSE  customizations
+     and keep clutter out of `.emacs'.
+
+  4. If you are using GNU Emacs 20 or XEmacs 20, or if you have the
+     `custom' package specially installed for version 19 of either
+     program, you can use it to set and save changes to FUSE 's user
+     variables.  This is the niftiest way of customizing FUSE  or any
+     other Emacs package.  Just type `M-x customize-group' and answer
+     `fuse'.  You will then be presented with a hypertext buffer for
+     setting the FUSE  user variables.  FUSE  is in the LOCAL
+     customization group.
+
+
+
+File: fuse.info,  Node: Syntax,  Next: Key Sequences,  Prev: Installation,  Up: Top
+
+The syntax and appearance of input files
+****************************************
+
+* Menu:
+
+* Program syntax::              The syntax of FEFF and the UWXAFS programs
+* Additional syntax::           Additional syntax rules imposed by 
+FUSE
+
+* Colorization::                Syntax colorization
+* Input filenames::             Associating programs with input files
+* Autoconfiguration::           Automatic configuration
+* Master files::                Master files and include files
+* Indentation::                 Indentation and separation
+
+
+File: fuse.info,  Node: Program syntax,  Next: Additional syntax,  Prev: Syntax,  Up: Syntax
+
+The syntax of FEFF and the UWXAFS programs
+==========================================
+
+   Each of FEFF and the UWXAFS programs requires an input file as part
+of its input structure.  This input file is always an ASCII text file
+which contains all of the information required by the program at
+run-time.  This information might include the names and locations of
+any other input files, the names to be assigned to output files, and
+any physical or run-time parameters required by the program.
+
+   Although there are some differences in how each program interprets
+its input file, there are several common rules governing the syntactic
+structure of the input files.  The input files are always parsed.  This
+means that there is considerable freedom in the order in which
+information is placed in the input file.  Each program reads a line of
+input and searches for specially recognized words called *keywords*.
+When a recognized keyword is found, the next one or more words in the
+input file are read and interpreted in a context appropriate to the
+keyword.  For example, in AUTOBK the word `data' is used to specify the
+name of the file containing the input chi(k) data.  When AUTOBK
+encounters the word `data' it interprets the following word as the name
+of a computer file.
+
+   In all of the programs keywords and their values are separated by
+white space.  The formal definition of white space in all of the
+programs is any number of space or tab characters followed by zero or
+one comma or equals sign followed by any number of spaces or tabs.
+Here is an example of how this rule might be implemented:
+     	keyword1 = value1	keyword2 = value2
+   In this example, the equals sign (`=') is used to emphasize the
+relationship between the keyword and its value, and a tab is inserted
+before the second keyword.
+
+   In most cases there can be any number of keyword/value pairs on a
+line and the keywords can come in any order.  There are a few notable
+exceptions to this rule:
+
+  1. In FEFF there can only be one keyword per line and it must come at
+     the beginning of the line.  Anything on a line after the keyword
+     and its value is ignored by FEFF.
+
+  2. In ATOMS the keyword `atoms' (or possibly `basis') must be the
+     last keyword in the file.
+
+  3. In ATOMS the 10 characters following the keyword `space' are read
+     as the value of that keyword.  This is because space group
+     notation contains spaces, but no space group symbol is longer than
+     10 characters.
+
+  4. In FEFFIT all path parameters and the words `set', `guess', and
+     `local' must be the only keywords on their lines and must come at
+     the beginning of the line.
+
+  5. In FEFFIT there is one keyword that contains white space.  It is
+     `next data set' and is used to denote the boundary between data
+     sets.
+
+
+   For complete details on the keywords recognized by these programs and
+the syntax of their values, see the documents for each program.
+
+   Each of the programs recognizes certain characters as comment
+characters.  This means that any text on a line following one of these
+characters will be ignored by the program.  In FEFF `*' is the comment
+character.  In ATOMS and AUTOBK any of `*', `#', `%', or `!' are
+comment characters.  In FEFFIT all of `*', `#', `%', or `!' are
+beginning of line comment characters, while `#', `%', or `!' are comment
+characters in the middle of the line.  The reason for this distinction
+in FEFFIT is that `*' is used in math expressions.
+
+
+File: fuse.info,  Node: Additional syntax,  Next: Colorization,  Prev: Program syntax,  Up: Syntax
+
+Additional syntax rules imposed by FUSE
+=======================================
+
+   The syntax rules described above are an integral part of FUSE  and
+are used to determine the behavior of most of its features.  There is a
+major syntactic rule imposed by FUSE  for FEFFIT input that is not a
+requirement of the program.  This rule is:
+     All path parameters sharing a common path index (i.e. all those
+     referring to the same scattering path as calculated by FEFF) must
+     be contiguous in the input file.  Such a grouping of path
+     parameters is called a *path paragraph*.  Path paragraph are
+     separated by lines containing only comment and whitespace
+     characters (i.e. space, tab, comma, `=', `*', `#', `%', and `!').
+     The first line in a path paragraph *must* be for the path parameter
+     `path', which is used to identify the name of the FEFF output file
+     containing the calculation for that scattering path.
+
+This definition of the path paragraph is *required* for several of the
+most powerful editing features in FEFFIT minor mode.  I strongly
+encourage you to observe the syntactic structure of the path paragraph.
+If you prefer to group together all `path' lines separately from all
+`sigma2' lines, then you will not find FEFFIT minor mode to be
+particularly helpful.  Sorry.
+
+
+File: fuse.info,  Node: Colorization,  Next: Input filenames,  Prev: Additional syntax,  Up: Syntax
+
+Syntax colorization
+===================
+
+   Each minor mode has rules for syntax colorization of the text.  FUSE
+supports both font-lock and hilit19 for syntax colorization.  Keywords
+are cast in one of several colors, with conceptually similar keywords
+sharing colors.  Comments are set in a different color, which is red by
+default.  See the installation instructions for how to enable your Emacs
+session to use FUSE 's syntax colorization.
+
+
+File: fuse.info,  Node: Input filenames,  Next: Autoconfiguration,  Prev: Colorization,  Up: Syntax
+
+Associating programs with input files
+=====================================
+
+   Each of the programs requires that the input file have a particular
+name.  For example FEFF requires that its input file be called
+`feff.inp'.  You might, however, wish to use file names which are
+mnemonically associated with the contents of the file.  For instance,
+the `feff.inp' file used to model data on metallic copper might be
+called `cu-feff.inp'.  Because FUSE  uses minor modes specific to each
+program for editing the input files, it is necessary for FUSE  to
+determine which for which program each edited input file is intended.
+To determine this, it first looks at the file name, if the filename is
+obviously indicative of a particular program (e.g. `autobk.inp' is
+almost certainly intended for use with AUTOBK) then that program is
+used.  If the filename is not obviously indicative, then FUSE  may
+prompt you for a program name.  It is important to answer this question
+correctly.  Every input file is edited in INPUT major mode and in a
+minor mode appropriate to the program.  To enable the full
+functionality of FUSE , the associated program must be identified so
+that the appropriate minor mode can be used.
+
+
+File: fuse.info,  Node: Autoconfiguration,  Next: Master files,  Prev: Input filenames,  Up: Syntax
+
+Automatic configuration
+=======================
+
+   There are several features in FUSE  that are routinely set in the
+course of editing an input files that are convenient to retain between
+editing sessions.  To do this, FUSE  writes special comment lines to
+your input files that are read when the file is initially loaded by
+Emacs and used to set variables which appropriately alter the behavior
+of FUSE .  The comment lines are generally written to the end of the
+input file and begin with a special string of comment characters.  They
+look something like this:
+     !!&& program:	"autobk"
+
+   There are several variables which are set in this manner.  The most
+important is the one that identifies the program for which the input
+file is intended.  In the example above, the comment line identifies
+AUTOBK as the program for the input file.
+
+   There are currently five other pieces of information that are stored
+in these special comment lines.  These are (1) the directory path to
+the location of files from a FEFF run, (2) the directory path to input
+data files, (3) the directory path to out files, (4) the default
+k-weight to use when chi(k) data is plotted, and (5) the name of the
+master file for an include file in a multi-file input file.  In the
+future more automatic configuration possibilities may be added.
+
+   The automatic configuration lines are updated each time an input
+file is saved to disk.  Each of the variable set by these lines can be
+altered by functions built into FUSE  during the course of editing.
+These are found in the `Input' menu.  See the chapter on *Note Key
+Sequences:: for details of these function.  In *Note Variables::, you
+will see that the variable `input-prohibit-autoconfig-flag' can be set
+to prohibit the writing of the auto-configuration lines.  Use this if
+you object to having FUSE  insert text into your input file.  I
+recommend, though, that you allow it to do so.  It is very convenient
+to not have to re-enter this information every time the file is edited.
+
+
+File: fuse.info,  Node: Master files,  Next: Indentation,  Prev: Autoconfiguration,  Up: Syntax
+
+Master files and include files
+==============================
+
+   FEFFIT, AUTOBK, and PHIT allow the use of include files.  FUSE
+allows you to specify the relationship between include files and their
+master files by setting an automatic configuration variable.  Currently
+this variable is used only by a few functions.  The program running
+function will use the master file as the input file.  Also the
+functions for jumping to log and prm files jump to the files
+appropriate to the master file.  Plotting and paragraph manipulation
+functions do not currently use the master file.
+
+
+File: fuse.info,  Node: Indentation,  Prev: Master files,  Up: Syntax
+
+Indentation and separation
+==========================
+
+   In the first section of this chapter I described the rules recognized
+by the programs for separating keywords and values.  As long as at
+least one whitespace character separates words in the input files, the
+programs are quite content.  Merely meeting the minimum requirement,
+however, will make for a messy looking and hard to read input file.
+Because you or some other human will eventually read your input file,
+it is convenient to adopt certain conventions about indenting text and
+about separating textual elements within the input files.
+
+   To make input files easier to read thus easier to understand, FUSE
+uses several configurable rules for determining proper indentation and
+separation.  The choices FUSE  makes about indentation and separation
+are context-dependent.  That is, the indentation of, say, a line
+containing a `guess'ed variable in FEFFIT may be different from the
+indentation of a line in an AUTOBK input file.  In the chapter *Note
+Variables:: there are several variables with names ending in either
+`indent' or `separate'.  These variables control the amount and type of
+whitespace used in various situation by many FUSE  functions.
+
+   Each of these variables takes an integer value.  A positive integer
+specific how many *spaces* will be inserted as indentation or
+separation.  A negative number specifies the number of *tabs* to
+insert.  For indentation variables, a value of 0 means that no
+whitespace will be inserted, i.e. the text will be flush against the
+left side of the screen.  For separation variables, a value of 0 will
+default to -1, i.e. a single tab character.  While you are certainly
+free to choose absurdly large numbers, for example -73 for an
+indentation value, I strongly recommend against this.  For one thing,
+an indentation of 73 tabs will be ugly and difficult to read.  For
+another, each of the programs has a hard-wired limit on the length of a
+text line.  For example, ATOMS only reads the first 78 characters of
+each line.
+
+   Each minor mode has a `cleaning' function which can be used to
+standardize the appearance of the file.  See *Note Key Sequences:: for
+the key sequence in each minor mode that runs the cleaning function.
+Each cleaning function will alter each line in the file by deleting all
+existing indentation and separation on the line and inserting the
+appropriate whitespace as determined from the user configuration
+variables.  All of the variables have defaults that will make any input
+file tidy and easy to read.  The default values for variables used by
+the FEFF minor mode are chosen to make the file look like one generated
+by ATOMS.
+
+   Several other functions, such as those that insert templates, also
+use the indentation and separation variables.
+
+
+File: fuse.info,  Node: Key Sequences,  Next: Variables,  Prev: Syntax,  Up: Top
+
+Key Sequences
+*************
+
+   As with most packages in Emacs, there are a number of different ways
+of accessing all of the functions in FUSE .  The most primitive manner
+of accessing functions is to type `M-x' followed by the name of the
+function.  Additionally, most user functions are bound to key
+sequences.  Most of these involve typing `C-c' followed by another
+control character and then followed by a single character.  These are
+lengthy key sequences.  Major modes typically use `C-c' sequences.  To
+have enough options available, I felt it necessary to have all of the
+FUSE  functions use a second control prefix.
+
+   `C-' means to stike the control key while striking the following
+character. `M-' means to strike the <ESC> key before striking the
+following key.  Alternatively, you can hold down the <ALT> or <META>
+key while striking the following key.
+
+   In the pages that follow, the functions are divided by mode.  The
+functions intended for use in more than one mino mode are listed first,
+followed by the function specific to each of the minor modes.  Each
+function is listed by it full name, i.e. the one to be used with `M-x'.
+The function name is followed by a brief description.  The description
+is the same one you would see by typing `C-h f' and responding with the
+name of the function.  Finally the default key binding for each
+function is given.
+
+* Menu:
+
+* Menus and Toolbars::          Menus and Toolbars in FUSE
+* input mode::                  functions in input major mode
+* atoms mode::                  functions in atoms minor mode
+* feff mode::                   functions in feff minor mode
+* autobk mode::                 functions in autobk minor mode
+* feffit mode::                 functions in feffit minor mode
+
+
+File: fuse.info,  Node: Menus and Toolbars,  Next: input mode,  Prev: Key Sequences,  Up: Key Sequences
+
+Menus and Toolbars in FUSE
+==========================
+
+   Although key sequences are very handy for the most commonly used
+features of FUSE  or any major mode, it is nice to have a mouse
+interface to the commands.  Consequently, virtually  all of the user
+functions in FUSE  are available in pull-down menus.  Additionally, for
+the user of XEmacs, several of the most commonly used functions are
+available on a toolbar.
+
+* Menu:
+
+* Pull-down Menus::             Pull-down menus
+* Toolbars::                    Toolbars
+
+
+File: fuse.info,  Node: Pull-down Menus,  Next: Toolbars,  Prev: Menus and Toolbars,  Up: Menus and Toolbars
+
+Pull-down menus
+---------------
+
+   When you edit any file in input mode, you will find a new entry on
+the menu-bar labeled `Input'.  This menu contains functions that are
+not specific to any particular minor mode.  For each of the minor modes
+corresponding to a particular program, there will be a menu labeled with
+the name of the program.  For example in atoms minor mode, there will
+be a menu labeled `Atoms'.  Most of the functions in the program
+specific menus are themselves specific to that minor mode, although
+there is some repetition between the `Input' menu and the minor mode
+menus and between the various minor mode menus.
+
+   Virtually all of the features of FUSE  can be found in the menus.
+Poking at the menus to see what happens is a great way of learning about
+the many features of FUSE .
+
+   Menus in Emacs are user-configurable, so you may add features to the
+input mode menus if you are so inclined.  See the lisp reference in
+either the GNU Emacs or XEmacs info manuals.  The customization
+interface is somewhat different for the two.  I used the `easymenu'
+package to create the menus.  If you are really interested in tailoring
+the menus, I recommend that you check out the `easymenu' source file.
+
+
+File: fuse.info,  Node: Toolbars,  Prev: Pull-down Menus,  Up: Menus and Toolbars
+
+Toolbars
+--------
+
+   XEmacs takes some major strides forward compared to GNU Emacs in
+terms of graphical capabilities.  One of these is the ability to display
+various image formats within the XEmacs frame.  Because of this XEmacs
+can offer a toolbar, that is an ordered display of images which offer
+function callback to mouse events.  When you fire up XEmacs and begin
+using FUSE , you will see a toolbar which appears, by default, on the
+left side of the frame.
+
+   The features available on the toolbar are necessarily fewer than
+what is available in the menus.  The toolbar takes up considerably more
+screen real-estate than menus.  Therefor I have selected several of the
+most important functions for the toolbar.  The functions selected are
+the ones for creating templates, running the programs, plotting the
+output, looking at log files, describing keywords, and reading
+documentation.  To invoke a function via the toolbar, just click the
+left mouse button on the icon.
+
+   The icon for creating templates is a pencil hovering over a sheet of
+paper.  The "run" icon is a big red exclamation point.  The "describe
+keywords" icon is a big red question mark and calls the
+`input-describe-keywords' function.  *Note Key Sequences::.  The "log
+file" icons are little scrolls of paper.  The "plotting" icons are
+little pictures of graphs with a few characters on them to identify the
+type of graph.  The "document" icon is a book.  The icon depicting a
+person lying under a palm tree at the beach is the one that you should
+click when you are done editing your input file and are ready to go
+home!
+
+
+File: fuse.info,  Node: input mode,  Next: atoms mode,  Prev: Menus and Toolbars,  Up: Key Sequences
+
+Key Sequences for input mode
+============================
+
+ - Function: input-complete-keyword
+     Complete the keyword just before point.  Completion is based on a
+     list of valid keywords for the currently defined FEFF or UWXAFS
+     program.  If found, write a message to the echo area about what
+     kind of argument it takes.
+     Bound to `M-<TAB> '.
+
+ - Function: input-arg-for-this-keyword
+     Determine appropriate argument for keyword under point.  Write a
+     message to the echo area telling what kind of argument the keyword
+     under point takes.
+     Bound to `M-?'.
+
+ - Function: input-check-this-keyword-arg
+     Check if argument of keyword under point is valid for that keyword.
+     Argument syntax is given in the appropriate keyword-alist.  Point
+     is left in place.
+     Bound to `M-<RET> '.
+
+ - Function: input-display-keywords
+     Open a buffer displaying all keywords for the current program.
+     For FEFFIT keywords, identify scope (global or local) of each
+     keyword.
+     Bound to `C-c C-b k'.
+
+ - Function: input-repaint-command
+     Repaint buffer colorization.  Repaint region if BEGIN and END are
+     set.  Use hilit19 or font-lock and the patterns appropriate to the
+     current program.
+     Bound to `C-S-l'.
+
+ - Function: input-set-data-path
+     Set directory path for an input data file.  Get input from
+     minibuffer if ARG is `nil'.
+     Bound to `C-c C-d d'.
+
+ - Function: input-set-feff-path
+     Set directory path for input feff files.  Get input from
+     minibuffer if ARG is `nil'.
+     Bound to `C-c C-d f'.
+
+ - Function: input-set-out-path
+     Set directory path for output files.  Get input from  minibuffer
+     if ARG is `nil'.
+     Bound to `C-c C-d o'.
+
+ - Function: input-set-all-paths
+     Set paths to data files, feff files, and output files.  Each will
+     be  prompted in minibuffer.
+     Bound to `C-c C-d a'.
+
+ - Function: input-set-k-weight
+     Set default k-weighting for plotting chi(k).  Get input from
+     minibuffer if ARG is `nil'.  The k-weight will be set to zero for
+     negative input.
+     Bound to `C-c C-d k'.
+
+ - Function: input-set-eshift
+     Set default e0 shift for the eshift script Get input from
+     minibuffer if ARG is `nil'.  The k-weight will be set to zero for
+     negative input.
+     Bound to `C-c C-d e'.
+
+ - Function: input-set-master
+     Set directory path for the output files file.  Get input from
+     minibuffer if ARG is `nil'.
+     Bound to `C-c C-d m'.
+
+ - Function: input-set-version
+     Set program version for this input file.  Get input from
+     minibuffer if ARG is `nil'.
+     Bound to `C-c C-d v'.
+
+ - Function: input-insert-filename
+     Insert a filename at point, prompting for name in minibuffer.
+     Uses completion.
+     Bound to `C-c C-d i'.
+
+ - Function: input-toggle-gnuplot-terminal
+     Toggle GNUPLOT terminal type between x11 and postscript.
+     Bound to `C-c C-p s'.
+
+ - Function: input-guess-to-set
+     Switch guess and set on the present line.
+     Bound to `C-c C-s s'.
+
+ - Function: input-true-false
+     Switch logical values under point with completion.
+     Bound to `C-c C-s a'.
+
+ - Function: input-swap-comment
+     Comment/uncomment the present line.  Will not uncomment an
+     auto-configuration or time stamp line.  ARG is passed to
+     `comment-out-region' as the number of comment characters to insert
+     into the current line.  ARG can be specified interactively with
+     `universal-argument' and a number.  ARG is ignored when
+     uncommenting.
+     Bound to `C-c C-s c'.
+
+ - Function: input-newline
+     Insert a newline and indent.  The indentation appropriate to the
+     current textual area - see documents for `input-indent' and
+     `input-determine-area'.
+     Bound to `<RET> '.
+
+ - Function: input-clean-line
+     Clean current line by indenting and separating columns if
+     appropriate.
+     Bound to `C-c C-i '.
+
+ - Function: input-clean-region
+     Clean region.  Region defined by BEGIN and END, usually point and
+     mark.
+     Bound to `C-c C-c r'.
+
+ - Function: input-clean-file
+     Clean entire file.
+     Bound to `C-c C-c f'.
+
+ - Function: input-run-this-program-this-file
+     Run the current program on the current file.  This function
+     appears in each of the minor mode pull-down menus in FUSE.
+     Bound to `C-c C-r r'.
+
+ - Function: input-run-any-program-any-file
+     Run a program on an input file.  Prompt in minibuffer for name of
+     program to run and name of input file on which to run.
+     Bound to `C-c C-r a'.
+
+ - Function: input-mark-stanza
+     Mark current stanza.
+     Bound to `C-c C-o m'.
+
+ - Function: input-kill-stanza
+     Kill current stanza.
+     Bound to `C-c C-o k'.
+
+ - Function: input-next-stanza
+     Move point to beginning of next stanza.  If numeric ARG is
+     provided, move forward that many stanzas.
+     Bound to `C-c C-o n'.
+
+ - Function: input-previous-stanza
+     Move point to beginning of previous stanza.  If numeric ARG is
+     provided, move back that many stanzas.
+     Bound to `C-c C-o p'.
+
+ - Function: input-forward-paragraph
+     Move point to the beginning of the next path paragraph.
+     Bound to `C-c C-o f'.
+
+ - Function: input-backward-paragraph
+     Move point to the beginning of the previous path paragraph.
+     Bound to `C-c C-o b'.
+
+ - Function: input-mark-paragraph
+     Mark the current path paragraph.
+     Bound to `C-c C-o m'.
+
+ - Function: input-kill-paragraph
+     Kill the current path paragraph.
+     Bound to `C-c C-o k'.
+
+ - Function: input-snag-from-previous-stanza
+     Grab value for keyword under point from previous stanza.
+     Bound to `C-c C-s p'.
+
+ - Function: input-snag-from-next-stanza
+     Grab value for keyword under point from next stanza.
+     Bound to `C-c C-s n'.
+
+ - Function: input-snag-from-previous-paragraph
+     Grab value for keyword under point from previous paragraph.
+     Determine path parameter of the current line and grab the
+     equivalent value from the previous paragraph.
+     Bound to `C-c C-s p'.
+
+ - Function: input-snag-from-next-paragraph
+     Grab value for keyword under point from previous paragraph.
+     Determine path parameter of the current line and grab the
+     equivalent value from the next paragraph.
+     Bound to `C-c C-s n'.
+
+ - Function: input-back-to-original
+     Return to original buffer.  This is used in a buffer displaying a
+     file that was jumped to from an input file.  Using return the
+     original file to the current window.
+     Bound to `M-C-`'.
+
+ - Function: input-jump-to-log-file
+     Display the log file for the current input file in a read-only
+     buffer.  Some programs do not have log files.  feff.inp is the log
+     file for ATOMS and will be visited write-enabled.
+     Bound to `C-c C-f l'.
+
+ - Function: input-jump-to-data-file
+     Open a read-only buffer displaying the data or feff file under
+     point.  Check to see if point is in a comment then make sure that
+     point is on a file name or on a keyword that takes a file name as
+     an argument.  the following file types can be jumped to: an input
+     data file, a feffnnnn.dat file specified in a FEFFIT path
+     paragraph, an include file, a file in a NORMAL file list, or a
+     file named in a special comment (defined as being in a normal
+     comment, but bounded by angle brackets.  A UWXAFS data file will
+     be displayed.  A file specified in a title or a comment cannot be
+     jumped to.
+     Bound to `C-c C-f d'.
+
+ - Function: input-jump-to-master-file
+     Visit the master file for this include file.  Nothing is done if
+     no master file is defined.
+     Bound to `C-c C-f a'.
+
+ - Function: input-jump-to-gnuplot-buffer
+     Display the buffer containing the run-time messages from GNUPLOT.
+     This will display in the gnuplot frame if `input-use-frames' is
+     non-`nil'.
+     Bound to `C-c C-e '.
+
+ - Function: input-set-and-jump
+     Jump to the file under point using the mouse.  The file under the
+     mouse can be a data file, a feff file, an include file, or a file
+     in a list of files.  See `input-jump-to-data-file'.  Argument is a
+     mouse EVENT.
+     Bound to `S-mouse3'.
+
+ - Function: input-submit-feedback
+     Submit feedback on FUSE to the author <ravel@phys.washington.edu>.
+     Bound to `C-c C-b b'.
+
+ - Function: input-submit-program-bug-report
+     Submit a bug report for a program.  The mail will be sent to the
+     maintainer of the program or to the maintainer of the UWXAFS
+     package.  Use this function only for submitting bug reports about
+     feff or the analysis software.  Use `input-submit-feedback' to
+     submit a bug report about FUSE.
+     Bound to `C-c C-b p'.
+
+ - Function: input-set-configuration
+     Get the auto-configuration values from this file.  This function
+     is called when an input file is first visited to set the
+     auto-configuration variables from the comments previously written
+     to the file.  The comments can also be edited on screen and reset
+     using this function.  To edit on screen, change the value
+     contained between the double quotes.
+     Bound to `C-c C-b a'.
+
+ - Function: input-save-run-log
+     Save contents of the run-time display buffer to a file.  This is
+     used as a `kill-emacs-hook' as well as an interactive function.
+     Bound to `C-c C-b l'.
+
+ - Function: input-visit-previous-run-log
+     Examine the run-time log file from your previous FUSE session.
+     Bound to `C-c C-b o'.
+
+ - Function: input-document
+     Look at on-line documentation using info or the w3 package.  If
+     use of both info and w3 is turned off, then the plain text document
+     will be displayed.  If DOC not provided, it will prompted for in
+     minibuffer.
+     Bound to `C-c C-b d'.
+
+ - Function: input-determine-program
+     Determine the program for the input file.  If the program
+     auto-configuration line is set in the file, then the program
+     specified there is used.  Next the name of the input file is used,
+     i.e. PROGRAM.inp gets set to PROGRAM.  Finally the user is
+     prompted for a valid program from the minibuffer using completion.
+     If nothing is selected or if an invalid program name is entered,
+     no program will be associated with the input file and no minor
+     mode will be entered.  When used interactively to switch programs,
+     the program is prompted for in the minibuffer.  If an invalid
+     response is given, then the function does nothing.
+     Bound to `C-c C-b s'.
+
+ - Function: input-show-version
+     Show FUSE version number in echo area.
+     Bound to `C-c C-b v'.
+
+
+File: fuse.info,  Node: atoms mode,  Next: feff mode,  Prev: input mode,  Up: Key Sequences
+
+Key Sequences for atoms mode
+============================
+
+ - Function: Atoms-make-template
+     Write a template for ATOMS using a tempo template.  The crystal
+     class will be prompted and entries for the appropriate lattice
+     parameters will be inserted in the template.
+     Bound to `C-c C-t t'.
+
+ - Function: Atoms-jump-to-p1
+     Display the p1.inp file in another buffer.
+     Bound to `C-c C-f p'.
+
+ - Function: Atoms-jump-to-unit
+     Display the unit.dat file in another buffer.
+     Bound to `C-c C-f u'.
+
+ - Function: Atoms-jump-to-geom
+     Display the geom.dat file in another buffer.
+     Bound to `C-c C-f g'.
+
+
+File: fuse.info,  Node: feff mode,  Next: autobk mode,  Prev: atoms mode,  Up: Key Sequences
+
+Key Sequences for feff mode
+===========================
+
+ - Function: Feff-make-template
+     Write a template for FEFF using a tempo template.  The crystal
+     class will be prompted and entries for the appropriate lattice
+     parameters will be inserted in the template.
+     Bound to `C-c C-t t'.
+
+ - Function: Feff-jump-to-misc
+     Display the misc.dat file in another buffer.
+     Bound to `C-c C-f m'.
+
+ - Function: Feff-jump-to-files
+     Display the files.dat file in another buffer.
+     Bound to `C-c C-f f'.
+
+ - Function: Feff-jump-to-list
+     Display the list.dat file in another buffer.
+     Bound to `C-c C-f s'.
+
+ - Function: Feff-jump-to-paths
+     Display the paths.dat file in another buffer.
+     Bound to `C-c C-f p'.
+
+ - Function: Feff-display-intrp
+     Display output of INTRP.  This is a perl script for
+     pretty-printing the contents of paths.dat, and files.dat in its
+     own buffer, usually called intrp.dat.
+     Bound to `C-c C-f i'.
+
+ - Function: Feff-comment-out-region
+     This is a wrapper around `comment-out-region' to handle feff's
+     annoying comment character.  BEGIN and END are typically point and
+     mark.  ARG is `t' for uncommenting
+     Bound to `C-c ;'.
+
+ - Function: Feff-8-write-convergence-data
+     Write convergence and electronics data.  This constructs a file
+     with some header information to identify the feff8 run and a two
+     column list of self-consistency loop index and fermi energy.  The
+     information about charge transfer and orbital occupancy is
+     included in the file.  This forces a save of lots of backup copies
+     so that convergence studies can be made without accidentally
+     loosing the data.
+     Bound to `C-c C-e w'.
+
+ - Function: Feff-8-jump-to-convergence
+     Display the convergence.dat file in another buffer.
+     Bound to `C-c C-e c'.
+
+ - Function: Feff-plot-chi
+     Write a GNUPLOT script for plotting the results of an FEFF run.  A
+     GNUPLOT script is written for the total chi(k) from chi.dat using
+     GNUFIX and the script is sent to GNUPLOT.
+     Bound to `C-c C-p c'.
+
+ - Function: Feff-plot-xmu
+     Write a GNUPLOT script for plotting the results of an FEFF run.  A
+     GNUPLOT script is written for mu and the background from xmu.dat
+     using GNUFIX and the script is sent to GNUPLOT.
+     Bound to `C-c C-p x'.
+
+ - Function: Feff-8-plot-convergence
+     convergence results
+     Bound to `C-c C-e p'.
+
+ - Function: Feff-8-plot-rho
+     s
+     Bound to `C-c C-e d'.
+
+ - Function: Feff-8-plot-xmu
+     title
+     Bound to `C-c C-e x'.
+
+
+File: fuse.info,  Node: autobk mode,  Next: feffit mode,  Prev: feff mode,  Up: Key Sequences
+
+Key Sequences for autobk mode
+=============================
+
+ - Function: Autobk-make-template
+     Write a template for AUTOBK using a tempo template.
+     Bound to `C-c C-t t'.
+
+ - Function: Autobk-insert-ezero
+     Fetch the value of e0 for the current stanza.  Find it in the
+     AUTOBK log file and insert it into the current stanza.
+     Bound to `C-c C-s e'.
+
+ - Function: Autobk-run-stanza
+     Run AUTOBK on the current stanza.
+     Bound to `C-c C-r s'.
+
+ - Function: Autobk-plot-ksp
+     Parse the current stanza for filenames of data and output files.
+     Write a gnuplot script for plotting weighted chi(k), and send the
+     script to gnuplot.
+     Bound to `C-c C-p k'.
+
+ - Function: Autobk-plot-bkg
+     Parse the current stanza for filenames of data and output files.
+     Write a gnuplot script for over-plotting data with the background
+     function, then send the script to gnuplot.
+     Bound to `C-c C-p b'.
+
+ - Function: Autobk-plot-thy
+     Parse the current stanza for filenames of data and output files.
+     Write a gnuplot script for over-plotting chi(k) data with the
+     background standard, then send the script to gnuplot.
+     Bound to `C-c C-p t'.
+
+ - Function: Autobk-plot-all-chi
+     Plot chi(k) from every stanza in the current AUTOBK input file.
+     Bound to `C-c C-p a'.
+

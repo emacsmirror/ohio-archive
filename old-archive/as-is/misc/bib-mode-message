@@ -1,0 +1,206 @@
+Date: Fri, 2 Dec 88 16:52:27 EST
+From: lfk@mbio.med.upenn.edu (Lee Kolakowski)
+To: dsill@ee00
+Subject: [kautz@allegra.att.com: bib mode]
+
+Posted-Date: Wed, 30 Nov 88 21:21:52 EST
+Received-Date: Wed, 30 Nov 88 21:36:15 EST
+From: kautz@allegra.att.com
+Date: Wed, 30 Nov 88 21:21:52 EST
+>From: allegra!kautz (Henry Kautz)
+To: arpa!lfk@mbio.med.upenn.edu
+Subject: bib mode
+
+
+[ Dave this is what Kautz sent me after someone else sent the address
+above. Good luck --Frank ]
+
+
+this is for troff bib files, not bibtex files.
+;; AddBib & Bib-Mode
+;;   GNU Emacs code to help maintain databases compatible with Unix
+;;   refer and lookbib.  The file bib-file should be set to your 
+;;   bibliography file.  Keys are automagically inserted as you type,
+;;   and appropriate keys are presented for various kinds of entries.
+;;     Copyright 1987 Henry A. Kautz
+;;        :uucp:  allegra!kautz		
+;;        :arpa:  kautz@allegra.att.com
+;;        :csnet: kautz%allegra@btl.csnet
+;;        :mail:  AT&T Bell Laboratories	
+;;                Room 3C-402A
+;;                600 Mountain Ave.	
+;;                Murray Hill, N.J. 07974	
+
+(provide 'addbib)
+(provide 'bib-mode)
+
+(defvar bib-file "~/my-bibliography.bib" 
+   "Default name of file used by addbib")
+
+(defvar unread-bib-file "~/to-be-read.bib"
+   "Default name of file used by unread-bib in bib-mode")
+
+(defvar bib-mode-map (copy-keymap text-mode-map))
+(define-key bib-mode-map "\C-M" 'return-key-bib)
+(define-key bib-mode-map "\C-c\C-u" 'unread-bib)
+(define-key bib-mode-map "\C-c\C-@" 'mark-bib)
+(define-key bib-mode-map "\e`" 'abbrev-mode)
+(defvar bib-mode-abbrev-table nil
+   "Abbrev table used in bib mode")
+
+(defun addbib ()
+   "Set up editor to add to bibliography file specified 
+by global variable bib-file.  See description of bib-mode."
+   (interactive)
+   (find-file bib-file)
+   (goto-char (point-max))
+   (bib-mode)
+   )
+   
+(defun bib-mode ()
+   "Mode for editing lookbib style bibliographies.  
+Hit RETURN to get next % field key.
+If you want to ignore this field, just hit RETURN again.
+Use text-mode to turn off.  
+
+ journal papers:                    A* T D J V N P K W X
+ articles in books & proceedings:   A* T D B E* I C P K W X 
+ tech reports:                      A* T D R I C K W X
+ books:                             A* T D I C K W X
+
+Fields:
+
+A uthor		T itle		D ate  		J ournal
+V olume		N umber		P age		K eywords
+B in book or proceedings	E ditor		C ity & state
+I nstitution, school, or publisher
+R eport number or 'phd thesis' or 'masters thesis' or 'draft' or 
+     'unnumbered' or 'unpublished'
+W here can be found locally (login name, or ailib, etc.)
+X comments (not used in indexing)
+
+\\[unread-bib] appends current entry to a different file (for 
+example, a file of papers to be read in the future), given by
+the value of the variable unread-bib-file.
+\\[mark-bib] marks current or previous entry.
+Abbreviations are saved in bib-mode-abbrev-table.
+Hook can be stored in bib-mode-hook.
+Field keys given by variable bib-assoc.
+
+Commands:
+\\{bib-mode-map}
+"
+   (interactive)
+   (text-mode)
+   (use-local-map bib-mode-map)
+   (setq mode-name "Bib")
+   (setq major-mode 'bib-mode)
+   (define-abbrev-table 'bib-mode-abbrev-table ())
+   (setq local-abbrev-table bib-mode-abbrev-table)
+   (abbrev-mode 1)
+   (run-hooks 'bib-mode-hook)
+   )
+
+(defvar bib-assoc '(
+		   (" *$" . "%A ")
+		   ("%A ." . "%A ")
+		   ("%A $" . "%T ")
+		   ("%T " . "%D ")
+		   ("%D " . "%J ")
+		   ("%J ." . "%V ")
+		   ("%V " . "%N ")
+		   ("%N " . "%P ")
+		   ("%P " . "%K ")
+		   ("%K " . "%W ")
+		   ("%W " . "%X ")
+		   ("%X " . "")
+		   ("%J $" . "%B ")
+		   ("%B ." . "%E ")
+		   ("%E ." . "%E ")
+		   ("%E $" . "%I ")
+		   ("%I " . "%C ")
+		   ("%C " . "%P ")
+		   ("%B $" . "%R ")
+		   ("%R " . "%I ")
+		   )
+		   
+"Describes bibliographic database format.  A line beginning with
+the car of an entry is followed by one beginning with the cdr.
+")
+
+(defun bib-find-key (slots)
+   (cond
+      ((null slots)
+	 (if (bobp)
+	    ""
+	    (progn (previous-line 1) (bib-find-key bib-assoc))))
+      ((looking-at (car (car slots)))
+	 (cdr (car slots)))
+      (t (bib-find-key (cdr slots)))
+      ))
+
+
+(defun return-key-bib ()
+   "Magic when user hits return, used by bib-mode"
+   (interactive)
+   (if (eolp)
+      (let (new-key beg-current)
+	 (beginning-of-line)
+	 (if (not (looking-at "%. $"))
+	    (progn
+	       (end-of-line)
+	       (newline)
+	       (beginning-of-line)
+	       (previous-line 1)
+	       ))
+	 (setq beg-current (point))
+	 (setq new-key (bib-find-key bib-assoc))
+	 (goto-char beg-current)
+	 (if (looking-at "%. $")
+	    (kill-line nil)
+	    (next-line 1)
+	    )
+	 (insert-string new-key)
+	 )
+      (newline)
+      )
+   )
+
+(defun mark-bib ()
+   "set mark at beginning of current or previous bib entry, point at end"
+   (interactive)
+   (beginning-of-line nil)
+   (if (looking-at "^ *$") (re-search-backward "[^ \n]" nil 2))
+   (re-search-backward "^ *$" nil 2)
+   (re-search-forward "^%")
+   (beginning-of-line nil)
+   (push-mark (point))
+   (re-search-forward "^ *$" nil 2)
+   (next-line 1)
+   (beginning-of-line nil)
+   )
+
+(defun unread-bib ()
+   "append current or previous entry to file of unread papers
+named by variable unread-bib-file"
+   (interactive)
+   (mark-bib)
+   (if (get-file-buffer unread-bib-file)
+      (append-to-buffer (get-file-buffer unread-bib-file) (mark) (point))
+      (append-to-file (mark) (point) unread-bib-file)
+      )
+   )
+
+
+Frank Kolakowski 
+____________________________________________________________________________
+|lfk@mbio.med.upenn.edu                         ||      Lee F. Kolakowski   |
+|kolakowski@mscf.med.upenn.                     ||	Univ. of Penna.     |
+|c/o jes@eniac.seas.upenn.edu			||	Dept of Chemistry   |
+|kolakowski%c.chem.upenn.edu@relay.upenn.edu	||	231 South 34th St.  |
+|kolakowski%d.chem.upenn.edu@relay.upenn.edu    ||	Phila, PA 19104     |
+|bcooperman.kolakowski@bionet-20.arpa		||--------------------------|
+|AT&T:	1-215-898-2927				||      One-Liner Here!     |
+=============================================================================
+
+

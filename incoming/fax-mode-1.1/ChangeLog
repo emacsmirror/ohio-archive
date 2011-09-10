@@ -1,0 +1,101 @@
+Sun Dec 31 13:42:06 1995  Ralph Schleicher  <rs@purple.IN-Ulm.DE>
+
+	* sendfax.el.in (sendfax): Validate file names to attach.
+
+	* sendfax.el.in (sendfax): Output to `*Fax Options*' buffer
+ 	improved.
+
+Sat Dec 30 09:25:19 1995  Ralph Schleicher  <rs@purple.IN-Ulm.DE>
+
+	* sendfax.el.in (fax-send): Extra command line options can be
+ 	specified via one or more `Options:' header fields.
+
+	* texfax.el (texfax-font-lock-tex): Highlight literal TeX input
+ 	using Font-Lock mode.
+
+Fri Dec 29 19:02:14 1995  Ralph Schleicher  <rs@purple.IN-Ulm.DE>
+
+	* sendfax.el.in (fax-setup): Added support for Font-Lock mode.
+
+Thu Dec 28 09:52:15 1995  Ralph Schleicher  <rs@purple.IN-Ulm.DE>
+
+	* sendfax.el.in: (fax-setup): Splitted `fax-setup-hook' into
+ 	`fax-before-setup-hook' and `fax-after-setup-hook'.
+
+	* sendfax.el.in: New internal functions `fax-end-of-header' and
+ 	`fax-beginning-of-text'; both return buffer positions.
+
+	* sendfax.el.in: Added `*fax*' to `same-window-buffer-names'.  New
+ 	commands `fax-other-window' and `fax-other-frame'.
+
+Wed Dec 27 15:42:04 1995  Ralph Schleicher  <rs@purple.IN-Ulm.DE>
+
+	* texfax.el: New command `texfax-add-tex-properties' for adding
+ 	the correct text properties to literal TeX input.  Ditto for the
+ 	`texfax-remove-tex-properties' command which does the reverse.
+
+	* aclocal.m4, Makefile.in: `emacs -batch' implies `-q'; thus `-q'
+ 	is obsolete.
+
+	* snail.el.in: Added code for loading `sendmail-synch-aliases'
+ 	automatically.
+
+	* sendfax.el.in: Added code for loading `mail-position-on-field'
+ 	and `mail-fetch-field' automatically.
+
+	* phone.el (phone-number-dial-string): Bug report by Karl
+ 	Eichwalder <ke@ke.Central.DE>: `a-regexp' have to be prefixed
+ 	by `l-regexp' and not `i-regexp'!
+
+Sat Dec 23 09:33:07 1995  Ralph Schleicher  <rs@purple.IN-Ulm.DE>
+
+	* texfax.el: The TeX macros now work out of the box with plain
+	TeX.  Where is the guy writing something for LaTeX?
+
+Fri Dec 22 07:52:17 1995  Ralph Schleicher  <rs@purple.IN-Ulm.DE>
+
+	* texfax.el: Define a default "TeXfax" text format.
+
+	* configure.in: Replaced `AC_PATH_EMACS' by `RS_PATH_EMACS'.
+
+	* aclocal.m4: Changed the prefix sequence of my own macro names
+ 	and shell variables from `AC_' to `RS_'.
+
+	* Makefile.in (DOC): Put `.' at the beginning of `load-path'
+ 	instead of setting `load-path' to `.' so that Emacs can load
+ 	`tabify'.
+
+	* makedoc.el: Ensure that each symbol is documented only once and
+ 	replace tab characters by spaces in the `DOC' file.
+
+	* Makefile.in (dist): Switched to the PACKAGE-VERSION naming
+ 	scheme according to GNU Coding Standards.
+
+	* Makefile.in (LCD-entry): New target for updating the LCD Archive
+ 	Entry automatically.
+
+	* Makefile.in: Define `DEFS' earlier.
+
+Thu Dec 21 08:56:16 1995  Ralph Schleicher  <rs@purple.IN-Ulm.DE>
+
+	* faxed.el: New file.  Faxed mode is a minor mode for Dired.  It
+ 	redefines some keys so that the user can view a fax message by
+ 	simply pressing `v'.
+
+	* faxutil.el: New commands `fax-view-file' and `fax-print-file'
+ 	for viewing respectively printing a fax message.
+
+	* sendfax.el.in (sendfax): Call the default fax sending program if
+ 	`sendfax-program' is bound to `nil'.
+
+Tue Dec 19 17:51:09 1995  Ralph Schleicher  <rs@purple.IN-Ulm.DE>
+
+  	* sendfax.el.in: (fax-send): The format of the message text can be
+ 	specified in the `Format:' header field (the last field counts).
+
+	* sendfax.el.in: (sendfax): Added support for buffer-local text
+ 	formats.  `sendfax-change-format' selects a new format.
+
+	* emacs.el: `(replace-string "site-init.el" "site-start.el")'.
+
+Version 1.0 released.

@@ -1,0 +1,1618 @@
+From utkcs2!emory!sol.ctr.columbia.edu!cica!iuvax!rutgers!news-server.csri.toronto.edu!helios.physics.utoronto.ca!ists!mike Mon Jun 25 07:39:11 EDT 1990
+Article 3045 of gnu.emacs:
+Xref: utkcs2 comp.emacs:4482 comp.text.tex:1051 gnu.emacs:3045
+Path: utkcs2!emory!sol.ctr.columbia.edu!cica!iuvax!rutgers!news-server.csri.toronto.edu!helios.physics.utoronto.ca!ists!mike
+>From: mike@ists.ists.ca (Mike Clarkson)
+Newsgroups: comp.emacs,comp.text.tex,gnu.emacs
+Subject: LaTeXinfo - Patch to ver. 1.3 - 1 of 2
+Message-ID: <9614@ists.ists.ca>
+Date: 22 Jun 90 23:36:28 GMT
+Followup-To: comp.emacs
+Organization: Institute for Space and Terrestrial Science
+Lines: 1604
+
+This is a patch to the latexinfo posting I contributed a couple of weeks ago.
+Sorry for the size of the posting, but I started working on a new manual
+and made some significant changes.  The major added future is some support
+for the LaTeX tabular environment.
+
+The patch consists of 3 files: rename.sh patch.1a and patch.1b.  The
+rename.sh file renames the files to be less than 14 chars for Sys V
+sites.  If you are a Bsd site, run this file and it will rename the
+files to what I'll be calling them from now on.  If you are a Sys V
+site, edit this file, and change the mv commands to correspond to
+whatever you manually called them yourself.  Run the rename.sh file with
+the command
+
+	sh rename.sh	
+
+Then patch the distribution with
+
+	patch -p0 < patch.1a
+	patch -p0 < patch.1b
+
+Then delete the rename.sh file with
+
+	rm -f rename.sh
+
+You should be able to update the distribution with
+
+	make
+
+mike@ists.ists.ca
+
+-- 
+Mike Clarkson					mike@ists.ists.ca
+Institute for Space and Terrestrial Science	uunet!attcan!ists!mike
+York University, North York, Ontario,		FORTRAN - just say no. 
+CANADA M3J 1P3					+1 (416) 736-5611
+
+-------------------------------------------------------------------------------
+#! /bin/sh
+# This is a shell archive.  Remove anything before this line, then unpack
+# it by saving it into a file and typing "sh file".  To overwrite existing
+# files, type "sh file -c".  You can also feed this as standard input via
+# unshar, or by typing "sh <file", e.g..  If this archive is complete, you
+# will see the following message at the end:
+#		"End of shell archive."
+# Contents:  rename.sh patch.1a
+# Wrapped by mike@sam on Fri Jun 22 13:22:01 1990
+PATH=/bin:/usr/bin:/usr/ucb ; export PATH
+if test -f 'rename.sh' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'rename.sh'\"
+else
+echo shar: Extracting \"'rename.sh'\" \(383 characters\)
+sed "s/^X//" >'rename.sh' <<'END_OF_FILE'
+X#!/bin/sh
+X# Rename the files to make them less than 14 chars for Sys V
+X
+Xmv tex-to-latexinfo.el tolatexinfo.el
+Xmv latexinfo-mode.el latexinfomd.el
+Xmv manual/makeinfofile.el manual/makeinfo.el
+X
+X# Delete a file that shouldn't be distributed (it's junk).
+Xrm -f nodify-new.el
+X
+X# touch the new files to make it easy for patch
+Xtouch CHANGES tabular.sty tabular-fmt.el manual/latexinfo.bbl
+X
+END_OF_FILE
+if test 383 -ne `wc -c <'rename.sh'`; then
+    echo shar: \"'rename.sh'\" unpacked with wrong size!
+fi
+# end of 'rename.sh'
+fi
+if test -f 'patch.1a' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'patch.1a'\"
+else
+echo shar: Extracting \"'patch.1a'\" \(48527 characters\)
+sed "s/^X//" >'patch.1a' <<'END_OF_FILE'
+Xdiff -cr /tmp/old/.emacs ./.emacs
+X*** /tmp/old/.emacs	Tue Jun 19 12:47:58 1990
+X--- ./.emacs	Thu Jun 21 21:11:34 1990
+X***************
+X*** 11,17 ****
+X         latexinfo-formats-directory
+X         load-path))
+X  
+X! (autoload 'get-latexinfo-node "get-node.el"
+X  	  "Get help on a LaTeXinfo topic" t)
+X  
+X  (define-key help-map "g" 'get-latexinfo-node)
+X--- 11,17 ----
+X         latexinfo-formats-directory
+X         load-path))
+X  
+X! (autoload 'get-latexinfo-node "get-node"
+X  	  "Get help on a LaTeXinfo topic" t)
+X  
+X  (define-key help-map "g" 'get-latexinfo-node)
+X***************
+X*** 19,25 ****
+X--- 19,30 ----
+X  (autoload 'latexinfo-format-buffer "latexinfo"
+X  	  "Format a buffer for LaTeXinfo" t)
+X  
+X+ (autoload 'latexinfo-mode "latexinfomd"
+X+ 	  "An editing for LaTeXinfo files" t)
+X+ 
+X  (autoload 'nodify-file "nodify"
+X  	  "Create nodes structure for a LaTeXinfo file." t)
+X  
+X+ (autoload 'tex-to-latexinfo "tolatexinfo"
+X+ 	  "Convert a buffer from TeXinfo to LaTeXinfo" t)
+X  
+Xdiff -cr /tmp/old/CHANGES ./CHANGES
+X*** /tmp/old/CHANGES	Thu Jun 21 21:13:48 1990
+X--- ./CHANGES	Thu Jun 21 21:11:35 1990
+X***************
+X*** 0 ****
+X--- 1,19 ----
+X+ 1.2	First public release - June 2, 1990
+X+ 
+X+ 1.3	First Patch - June 19, 1990
+X+ 
+X+ 	Added this CHANGES file.
+X+ 	Updated the README file in the manual directory.
+X+ 	Deleted nodify-new.el and removed it from the Makefile.
+X+ 	Improved the Makefiles.
+X+ 	Made some modifications to macsyma.sty to cut down on string usage.
+X+ 	Introduced support for the tabular environment and \hline.
+X+ 	Introduced support for the table environment with \caption.
+X+ 	Figures are now ignored.
+X+ 	\input *must* occur at the beginning of a line.
+X+ 	Updated scheme-fmt so it won't conflict with texinfo.
+X+ 	Renamed the long files to < 14 chars for SysV
+X+ 	Made the manual a {book} so it starts chapters on the odd page.
+X+ 	Changed the indexes to \chapters
+X+ 
+X+ 
+Xdiff -cr /tmp/old/MANIFEST ./MANIFEST
+X*** /tmp/old/MANIFEST	Tue Jun 19 12:47:59 1990
+X--- ./MANIFEST	Thu Jun 21 21:11:36 1990
+X***************
+X*** 2,7 ****
+X--- 2,8 ----
+X  -----------------------------------------------------------
+X   .emacs                     1	
+X   .login                     1	
+X+  CHANGES                    1	
+X   COPYING                    2	
+X   MANIFEST                   1	This shipping list
+X   Makefile                   1	
+X***************
+X*** 10,32 ****
+X   get-node.el                1	
+X   head-fmt.el                1	
+X   head.sty                   1	
+X-  latexinfo-mode.el          2	
+X   latexinfo.el               9	
+X   latexinfo.sty              2	
+X   macsyma-fmt.el             1	
+X   macsyma.sty                1	
+X   manual/Makefile            1	
+X   manual/README              1	
+X   manual/latexinfo.bib       1	
+X!  manual/latexinfo.tex-aa    7	
+X!  manual/latexinfo.tex-ab    5	
+X!  manual/latexinfo.tex-ac    4	
+X!  manual/latexinfo.tex-ad    6	
+X!  manual/latexinfo.tex-ae    3	
+X!  manual/makeinfofile.el     1	
+X   manual/sample.tex          1	
+X   manual/texindex.c          8	
+X-  nodify-new.el              1	
+X   nodify.el                  1	
+X   praxis-fmt.el              1	
+X   praxis.sty                 1	
+X--- 11,33 ----
+X   get-node.el                1	
+X   head-fmt.el                1	
+X   head.sty                   1	
+X   latexinfo.el               9	
+X   latexinfo.sty              2	
+X+  latexinfomd.el             2	
+X   macsyma-fmt.el             1	
+X   macsyma.sty                1	
+X   manual/Makefile            1	
+X   manual/README              1	
+X+  manual/latexinfo-aa        7	
+X+  manual/latexinfo-ab        5	
+X+  manual/latexinfo-ac        3	
+X+  manual/latexinfo-ad        6	
+X+  manual/latexinfo-ae        4	
+X+  manual/latexinfo.bbl       1	
+X   manual/latexinfo.bib       1	
+X!  manual/makeinfo.el         1	
+X   manual/sample.tex          1	
+X   manual/texindex.c          8	
+X   nodify.el                  1	
+X   praxis-fmt.el              1	
+X   praxis.sty                 1	
+X***************
+X*** 34,37 ****
+X   scheme-fmt.el              2	
+X   scheme.sty                 1	
+X   smallverb.sty              1	
+X!  tex-to-latexinfo.el        2	
+X--- 35,40 ----
+X   scheme-fmt.el              2	
+X   scheme.sty                 1	
+X   smallverb.sty              1	
+X!  tabular-fmt.el             1	
+X!  tabular.sty                1	
+X!  tolatexinfo.el             2	
+Xdiff -cr /tmp/old/Makefile ./Makefile
+X*** /tmp/old/Makefile	Tue Jun 19 12:48:00 1990
+X--- ./Makefile	Thu Jun 21 21:11:36 1990
+X***************
+X*** 1,6 ****
+X  SHARDIR=/tmp/latexinfo
+X  
+X! UTILS = .login .emacs Makefile README COPYING
+X  
+X  STYS = format.sty \
+X  	head.sty \
+X--- 1,6 ----
+X  SHARDIR=/tmp/latexinfo
+X  
+X! UTILS = .login .emacs Makefile README COPYING CHANGES
+X  
+X  STYS = format.sty \
+X  	head.sty \
+X***************
+X*** 9,38 ****
+X  	praxis.sty \
+X  	psfonts.sty \
+X  	scheme.sty \
+X! 	smallverb.sty
+X  
+X  
+X  ELS = get-node.el \
+X  	head-fmt.el \
+X! 	latexinfo-mode.el \
+X  	latexinfo.el \
+X  	macsyma-fmt.el \
+X- 	nodify-new.el \
+X  	nodify.el \
+X  	praxis-fmt.el \
+X  	scheme-fmt.el \
+X! 	tex-to-latexinfo.el
+X  
+X  
+X  MANS=	manual/Makefile \
+X  	manual/README \
+X  	manual/latexinfo.bib \
+X! 	manual/latexinfo.tex-aa \
+X! 	manual/latexinfo.tex-ab \
+X! 	manual/latexinfo.tex-ac \
+X! 	manual/latexinfo.tex-ad \
+X! 	manual/latexinfo.tex-ae \
+X! 	manual/makeinfofile.el \
+X  	manual/sample.tex \
+X  	manual/texindex.c
+X  
+X--- 9,40 ----
+X  	praxis.sty \
+X  	psfonts.sty \
+X  	scheme.sty \
+X! 	smallverb.sty \
+X! 	tabular.sty
+X  
+X  
+X  ELS = get-node.el \
+X  	head-fmt.el \
+X! 	latexinfomd.el \
+X  	latexinfo.el \
+X  	macsyma-fmt.el \
+X  	nodify.el \
+X  	praxis-fmt.el \
+X  	scheme-fmt.el \
+X! 	tabular-fmt.el \
+X! 	tolatexinfo.el
+X  
+X  
+X  MANS=	manual/Makefile \
+X  	manual/README \
+X  	manual/latexinfo.bib \
+X! 	manual/latexinfo.bbl \
+X! 	manual/latexinfo-aa \
+X! 	manual/latexinfo-ab \
+X! 	manual/latexinfo-ac \
+X! 	manual/latexinfo-ad \
+X! 	manual/latexinfo-ae \
+X! 	manual/makeinfo.el \
+X  	manual/sample.tex \
+X  	manual/texindex.c
+X  
+X***************
+X*** 48,57 ****
+X  	cp README Part00
+X  	echo "#! /bin/sh" >> Part00
+X  	echo "mkdir manual" >> Part00
+X  	-mkdir $(SHARDIR)
+X  	mv Part?? $(SHARDIR)
+X  
+X  clean::	
+X! 	rm *.el~ #*
+X  	(cd manual ; make clean)
+X  
+X--- 50,65 ----
+X  	cp README Part00
+X  	echo "#! /bin/sh" >> Part00
+X  	echo "mkdir manual" >> Part00
+X+ 	echo "exit 0" >> Part00
+X  	-mkdir $(SHARDIR)
+X  	mv Part?? $(SHARDIR)
+X  
+X  clean::	
+X! 	rm -f *.el~ #*
+X  	(cd manual ; make clean)
+X+ 
+X+ veryclean::	
+X+ 	rm -f *.elc
+X+ 	(cd manual ; make veryclean)
+X+ 
+X  
+Xdiff -cr /tmp/old/README ./README
+X*** /tmp/old/README	Tue Jun 19 12:48:01 1990
+X--- ./README	Thu Jun 21 21:11:37 1990
+X***************
+X*** 1,4 ****
+X! This is version 1.2 of the LaTeXinfo documentation, and is for Version 18
+X  of GNU Emacs.
+X  
+X  Documentation for GNU utilities and libraries is usually written in a
+X--- 1,4 ----
+X! This is version 1.3 of the LaTeXinfo documentation, and is for Version 18
+X  of GNU Emacs.
+X  
+X  Documentation for GNU utilities and libraries is usually written in a
+Xdiff -cr /tmp/old/format.sty ./format.sty
+X*** /tmp/old/format.sty	Tue Jun 19 12:48:01 1990
+X--- ./format.sty	Thu Jun 21 21:11:38 1990
+X***************
+X*** 1,7 ****
+X- % We make @ signs act like letters, temporarily, to avoid conflict
+X- % between user names and internal control sequences of plain format.
+X- %\catcode`@=11
+X- 
+X  \ifcase \@ptsize\relax 
+X  
+X  \voffset= -30pt
+X--- 1,3 ----
+X***************
+X*** 45,50 ****
+X  	\fi
+X  
+X  \fi
+X- 
+X- %\catcode`@=12 % at signs are no longer letters
+X  
+X--- 41,44 ----
+Xdiff -cr /tmp/old/head-fmt.el ./head-fmt.el
+X*** /tmp/old/head-fmt.el	Tue Jun 19 12:48:03 1990
+X--- ./head-fmt.el	Thu Jun 21 21:11:39 1990
+X***************
+X*** 19,28 ****
+X  	      (point))))))
+X    )
+X  
+X! (load-library "informat")
+X! ;; We replace Info-split because we can't split and keep the index entries
+X  ;; the same.
+X! (defun Info-split ()
+X    (interactive)
+X    (let ((lastmessage "Making tags table for Info file..."))
+X      (message lastmessage)
+X--- 19,28 ----
+X  	      (point))))))
+X    )
+X  
+X! 
+X! ;; We replace latexinfo-split because we can't split and keep the index entries
+X  ;; the same.
+X! (defun latexinfo-split ()
+X    (interactive)
+X    (let ((lastmessage "Making tags table for Info file..."))
+X      (message lastmessage)
+Xdiff -cr /tmp/old/latexinfo.el ./latexinfo.el
+X*** /tmp/old/latexinfo.el	Tue Jun 19 12:49:06 1990
+X--- ./latexinfo.el	Thu Jun 21 21:12:23 1990
+X***************
+X*** 31,37 ****
+X  (defvar latexinfo-known-document-styles
+X        '(latexinfo 11pt 12pt twoside titlepage psfonts smallverb format))
+X  
+X! (autoload 'latexinfo-mode "latexinfo-mode"
+X  	    "Major mode for editing latexinfo files." t)
+X  
+X  (autoload 'Info-tagify "informat" "Info Tagify" t)
+X--- 31,37 ----
+X  (defvar latexinfo-known-document-styles
+X        '(latexinfo 11pt 12pt twoside titlepage psfonts smallverb format))
+X  
+X! (autoload 'latexinfo-mode "latexinfomd"
+X  	    "Major mode for editing latexinfo files." t)
+X  
+X  (autoload 'Info-tagify "informat" "Info Tagify" t)
+X***************
+X*** 40,46 ****
+X  (put 'latexinfoversion 'latexinfo-format 'latexinfo-format-latexinfoversion)
+X  (defun latexinfo-format-latexinfoversion ()
+X    (latexinfo-parse-noarg)
+X!   (insert "1.2"))
+X  
+X  (defvar latexinfo-format-syntax-table nil)
+X  
+X--- 40,46 ----
+X  (put 'latexinfoversion 'latexinfo-format 'latexinfo-format-latexinfoversion)
+X  (defun latexinfo-format-latexinfoversion ()
+X    (latexinfo-parse-noarg)
+X!   (insert "1.3"))
+X  
+X  (defvar latexinfo-format-syntax-table nil)
+X  
+X***************
+X*** 82,98 ****
+X      (latexinfo-format-buffer-1)
+X      (if notagify
+X  	nil
+X!       (progn
+X! 	(if (> (buffer-size) 30000)
+X! 	    (progn
+X! 	      (message (setq lastmessage "Making tags table for Info file..."))
+X! 	      (Info-tagify)))
+X! 	(if (> (buffer-size) 100000)
+X! 	    (progn
+X! 	      (message (setq lastmessage "Splitting Info file..."))
+X! 	      (Info-split)))))
+X      (message (concat lastmessage
+X  		     (if (interactive-p) "done.  Now save it." "done.")))))
+X  
+X  (defun latexinfo-format-buffer-1 ()
+X    (let (latexinfo-format-filename
+X--- 82,101 ----
+X      (latexinfo-format-buffer-1)
+X      (if notagify
+X  	nil
+X!       (latexinfo-split)
+X!       )
+X      (message (concat lastmessage
+X  		     (if (interactive-p) "done.  Now save it." "done.")))))
+X+ 
+X+ (defun latexinfo-split ()
+X+   (if (> (buffer-size) 30000)
+X+       (progn
+X+ 	(message (setq lastmessage "Making tags table for Info file..."))
+X+ 	(Info-tagify)))
+X+   (if (> (buffer-size) 100000)
+X+       (progn
+X+ 	(message (setq lastmessage "Splitting Info file..."))
+X+ 	(Info-split))))
+X  
+X  (defun latexinfo-format-buffer-1 ()
+X    (let (latexinfo-format-filename
+X***************
+X*** 110,115 ****
+X--- 113,119 ----
+X  	latexinfo-kindex
+X  	latexinfo-stack
+X  	latexinfo-node-names
+X+ 	(latexinfo-table-number 0)
+X  	outfile
+X  	(fill-column fill-column)
+X  	(input-buffer (current-buffer))
+X***************
+X*** 172,177 ****
+X--- 176,182 ----
+X  	latexinfo-example-start
+X  	latexinfo-last-node
+X  	latexinfo-node-names
+X+ 	(latexinfo-table-number 0)
+X  	(fill-column fill-column)
+X  	(input-buffer (current-buffer))
+X  	(input-directory default-directory)
+X***************
+X*** 178,187 ****
+X  	filename-beginning
+X  	filename-ending)
+X  
+X! ;;; Find a buffer to use.
+X! 
+X      (switch-to-buffer (get-buffer-create latexinfo-region-buffer-name))
+X- 
+X      ;; Insert the region into the buffer.
+X      (erase-buffer)
+X  
+X--- 183,190 ----
+X  	filename-beginning
+X  	filename-ending)
+X  
+X!     ;; Find a buffer to use.
+X      (switch-to-buffer (get-buffer-create latexinfo-region-buffer-name))
+X      ;; Insert the region into the buffer.
+X      (erase-buffer)
+X  
+X***************
+X*** 234,245 ****
+X    (message "Done."))
+X  
+X  (defun latexinfo-format-scan-noverbatim ()
+X!   (if (re-search-forward "^\\\\begin{verbatim}\\|\\\\input{" nil t)
+X        (let ((start (point-min))
+X  	    end
+X  	    str)
+X  	(goto-char start)
+X! 	(while (re-search-forward "^\\\\begin{verbatim}\\|\\\\input{" nil t)
+X  	  (setq str (buffer-substring (match-beginning 0) (match-end 0)))
+X  	  ;; Handle LaTeX \input{filename} commands by inserting them now.
+X  	  ;; Only look at the beginning of the line to avoid \c \input{foo}
+X--- 237,248 ----
+X    (message "Done."))
+X  
+X  (defun latexinfo-format-scan-noverbatim ()
+X!   (if (re-search-forward "^\\\\\\(begin{verbatim}\\|input{\\)" nil t)
+X        (let ((start (point-min))
+X  	    end
+X  	    str)
+X  	(goto-char start)
+X! 	(while (re-search-forward "^\\\\\\(begin{verbatim}\\|input{\\)" nil t)
+X  	  (setq str (buffer-substring (match-beginning 0) (match-end 0)))
+X  	  ;; Handle LaTeX \input{filename} commands by inserting them now.
+X  	  ;; Only look at the beginning of the line to avoid \c \input{foo}
+X***************
+X*** 258,272 ****
+X  				file-name
+X  			      (concat file-name ".tex"))))
+X  		     (beginning-of-line 1)
+X! 		     (delete-region (point) (progn (forward-line 1) (point)))
+X! 		     (message "Inserting file %s..." file-name) (sit-for 1)
+X! 		     (insert-file file-name)
+X! 		     (message "Inserting file %s...done" file-name)
+X  		     )))
+X  		((string-equal str "\\begin{verbatim}")
+X  		 (delete-region (point) (progn (beginning-of-line 1) (point)))
+X- ;;		 (message "texinfo-format-scan-noverbatim %d" (point))
+X- ;;		 (sit-for 1)
+X  		 (latexinfo-format-expand-region start (point))
+X  		 (setq start
+X  		       (progn
+X--- 261,277 ----
+X  				file-name
+X  			      (concat file-name ".tex"))))
+X  		     (beginning-of-line 1)
+X! 		     (if (file-readable-p file-name)
+X! 			 (progn
+X! 			   (delete-region (point) (progn (forward-line 1) (point)))
+X! 			   (message "Inserting file %s..." file-name) (sit-for 1)
+X! 			   (insert-file file-name)
+X! 			   (message "Inserting file %s...done" file-name))
+X! 		       (error "I can't find the file %s" file-name))
+X! 
+X  		     )))
+X  		((string-equal str "\\begin{verbatim}")
+X  		 (delete-region (point) (progn (beginning-of-line 1) (point)))
+X  		 (latexinfo-format-expand-region start (point))
+X  		 (setq start
+X  		       (progn
+X***************
+X*** 611,616 ****
+X--- 616,626 ----
+X  	(setq column (1- column))))
+X      (insert ?\n)))
+X  
+X+ (put 'paragraph 'latexinfo-format 'latexinfo-format-var)
+X+ (put 'subparagraph 'latexinfo-format 'latexinfo-format-noop)
+X+ (put 'paragraph* 'latexinfo-format 'latexinfo-format-var)
+X+ (put 'subparagraph* 'latexinfo-format 'latexinfo-format-noop)
+X+ 
+X  (put '\. 'latexinfo-format 'latexinfo-format-\.)
+X  (defun latexinfo-format-\. ()
+X    (latexinfo-discard-command)
+X***************
+X*** 620,625 ****
+X--- 630,668 ----
+X  (defun latexinfo-format-\: ()
+X    (latexinfo-discard-command))
+X  
+X+ ;; These shouldn't need to be used, but they are still valid LaTeX.
+X+ (put '& 'latexinfo-format 'latexinfo-format-&)
+X+ (defun latexinfo-format-& ()
+X+   (latexinfo-parse-noarg)
+X+   (insert "&"))
+X+ 
+X+ (put '_ 'latexinfo-format 'latexinfo-format-_)
+X+ (defun latexinfo-format-_ ()
+X+   (latexinfo-parse-noarg)
+X+   (insert "_"))
+X+ 
+X+ (put '$ 'latexinfo-format 'latexinfo-format-$)
+X+ (defun latexinfo-format-$ ()
+X+   (latexinfo-parse-noarg)
+X+   (insert "$"))
+X+ 
+X+ (put '~ 'latexinfo-format 'latexinfo-format-~)
+X+ (defun latexinfo-format-~ ()
+X+   (latexinfo-parse-noarg)
+X+   (insert "~"))
+X+ 
+X+ (put '^ 'latexinfo-format 'latexinfo-format-^)
+X+ (defun latexinfo-format-^ ()
+X+   (latexinfo-parse-noarg)
+X+   (insert "^"))
+X+ 
+X+ (defun latexinfo-format-tie ()
+X+   (latexinfo-parse-noarg)
+X+   (insert " "))
+X+ 
+X+ ;; Use \tie when you need one.
+X+ (put 'tie 'latexinfo-format 'latexinfo-format-tie)
+X+ 
+X  
+X  ;; \begin{itemize} pushes (itemize "COMMANDS" STARTPOS) on latexinfo-stack.
+X  ;; \begin{enumerate} pushes (enumerate 0 STARTPOS).
+X***************
+X*** 691,721 ****
+X        (save-excursion
+X  	(center-line)))))
+X  
+X! (put 'table 'latexinfo-format 'latexinfo-table)
+X! (defun latexinfo-table ()
+X!   (latexinfo-push-stack 'table (latexinfo-parse-arg-discard))
+X!   (setq fill-column (- fill-column 5)))
+X  
+X! (put 'ftable 'latexinfo-format 'latexinfo-ftable)
+X! (defun latexinfo-ftable ()
+X!   (latexinfo-push-stack 'table "\\code")
+X!   (setq fill-column (- fill-column 5))
+X!   (latexinfo-discard-line))
+X  
+X  (put 'description 'latexinfo-format 'latexinfo-description)
+X  (defun latexinfo-description ()
+X!   (latexinfo-push-stack 'table "\\asis")
+X    (setq fill-column (- fill-column 5))
+X    (latexinfo-discard-line))
+X  
+X! (put 'table 'latexinfo-end 'latexinfo-end-table)
+X! (put 'ftable 'latexinfo-end 'latexinfo-end-table)
+X! (put 'description 'latexinfo-end 'latexinfo-end-table)
+X! (defun latexinfo-end-table ()
+X    (setq fill-column (+ fill-column 5))
+X    (latexinfo-discard-command)
+X    (let ((stacktop
+X! 	 (latexinfo-pop-stack 'table)))
+X      (latexinfo-do-itemize (nth 1 stacktop))))
+X  
+X  ;; At the \end, indent all the lines within the construct
+X--- 734,776 ----
+X        (save-excursion
+X  	(center-line)))))
+X  
+X! (put 'caption 'latexinfo-format 'latexinfo-caption)
+X! (defun latexinfo-caption ()
+X!     (insert
+X!      (format "Table %d : %s" latexinfo-table-number
+X! 	     (latexinfo-parse-arg-discard)))
+X!     (center-line)
+X!     (goto-char latexinfo-command-start))
+X  
+X! ;;; Tables and figures
+X! (put 'table 'latexinfo-format 'latexinfo-format-table)
+X! (put 'table* 'latexinfo-format 'latexinfo-format-table)
+X! (put 'table 'latexinfo-end 'latexinfo-discard-command)
+X! (defun latexinfo-format-table ()
+X!   (latexinfo-discard-line-with-args)
+X!   (setq latexinfo-table-number (1+ latexinfo-table-number)))
+X  
+X+ ;; Figures are ignored for now
+X+ (put 'figure 'latexinfo-format 'latexinfo-format-figure)
+X+ (put 'figure* 'latexinfo-format 'latexinfo-format-figure)
+X+ (put 'figure 'latexinfo-end 'latexinfo-discard-command)
+X+ (defun latexinfo-format-figure ()
+X+   (delete-region latexinfo-command-start
+X+ 		 (progn (re-search-forward "\\\\end[ {]figure[ }\n]")
+X+ 			(point))))
+X+ 
+X  (put 'description 'latexinfo-format 'latexinfo-description)
+X  (defun latexinfo-description ()
+X!   (latexinfo-push-stack 'description "\\asis")
+X    (setq fill-column (- fill-column 5))
+X    (latexinfo-discard-line))
+X  
+X! (put 'description 'latexinfo-end 'latexinfo-end-description)
+X! (defun latexinfo-end-description ()
+X    (setq fill-column (+ fill-column 5))
+X    (latexinfo-discard-command)
+X    (let ((stacktop
+X! 	 (latexinfo-pop-stack 'description)))
+X      (latexinfo-do-itemize (nth 1 stacktop))))
+X  
+X  ;; At the \end, indent all the lines within the construct
+X***************
+X*** 750,761 ****
+X      (insert ?\b (format "%3d. " next) ?\n))
+X    (forward-line -1))
+X  
+X! (put 'table 'latexinfo-item 'latexinfo-table-item)
+X! (defun latexinfo-table-item ()
+X    (let ((arg (latexinfo-parse-arg-discard))
+X  	(itemfont (car (cdr (car latexinfo-stack)))))
+X      (insert ?\b itemfont ?\{ arg "}\n     \n"))
+X    (forward-line -2))
+X  
+X  (put 'ifinfo 'latexinfo-format 'latexinfo-discard-line)
+X  (put 'ifinfo 'latexinfo-end 'latexinfo-discard-command)
+X--- 805,817 ----
+X      (insert ?\b (format "%3d. " next) ?\n))
+X    (forward-line -1))
+X  
+X! (put 'description 'latexinfo-item 'latexinfo-description-item)
+X! (defun latexinfo-description-item ()
+X    (let ((arg (latexinfo-parse-arg-discard))
+X  	(itemfont (car (cdr (car latexinfo-stack)))))
+X      (insert ?\b itemfont ?\{ arg "}\n     \n"))
+X    (forward-line -2))
+X+ 
+X  
+X  (put 'ifinfo 'latexinfo-format 'latexinfo-discard-line)
+X  (put 'ifinfo 'latexinfo-end 'latexinfo-discard-command)
+X***************
+X*** 785,791 ****
+X    (insert (upcase (latexinfo-parse-arg-discard)))
+X    (goto-char latexinfo-command-start))
+X  
+X- (put 'asis 'latexinfo-format 'latexinfo-format-noop)
+X  (put 'b 'latexinfo-format 'latexinfo-format-noop)
+X  (put 't 'latexinfo-format 'latexinfo-format-noop)
+X  (put 'i 'latexinfo-format 'latexinfo-format-noop)
+X--- 841,846 ----
+X***************
+X*** 819,825 ****
+X    (latexinfo-discard-command)
+X    (insert "*"))
+X  
+X! (put 'smallexample 'latexinfo-format 'latexinfo-format-example)
+X  (put 'example 'latexinfo-format 'latexinfo-format-example)
+X  (put 'quotation 'latexinfo-format 'latexinfo-format-example)
+X  (put 'lisp 'latexinfo-format 'latexinfo-format-example)
+X--- 874,880 ----
+X    (latexinfo-discard-command)
+X    (insert "*"))
+X  
+X!  (put 'smallexample 'latexinfo-format 'latexinfo-format-example)
+X  (put 'example 'latexinfo-format 'latexinfo-format-example)
+X  (put 'quotation 'latexinfo-format 'latexinfo-format-example)
+X  (put 'lisp 'latexinfo-format 'latexinfo-format-example)
+X***************
+X*** 1168,1176 ****
+X  ;;(put 'setchapternewpage 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  (put 'nopara 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  (put 'noindent 'latexinfo-format 'latexinfo-discard-line-with-args)
+X- ;;(put 'setx 'latexinfo-format 'latexinfo-discard-line-with-args)
+X- ;;(put 'setq 'latexinfo-format 'latexinfo-discard-line-with-args)
+X- ;;(put 'settitle 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  ;;(put 'defindex 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  (put 'synindex 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  (put 'hsize 'latexinfo-format 'latexinfo-discard-line-with-args)
+X--- 1223,1228 ----
+X***************
+X*** 1288,1301 ****
+X  	(setq options-list (nreverse options-list))
+X  	(while options-list
+X  	  (let ((option (car options-list))
+X  		(filename nil))
+X  	    (if (not (memq (intern option) latexinfo-known-document-styles))
+X  		(progn
+X  		  (message "Checking formatting option %s" option) (sit-for 2)
+X! 		  (setq filename (concat 
+X! 				  (file-name-as-directory
+X! 				   latexinfo-formats-directory)
+X! 				  option "-fmt"))
+X  		  (setq filename
+X  			 (cond
+X  			  ((file-readable-p (concat filename ".elc"))
+X--- 1340,1352 ----
+X  	(setq options-list (nreverse options-list))
+X  	(while options-list
+X  	  (let ((option (car options-list))
+X+ 		(directory (file-name-as-directory
+X+ 			    latexinfo-formats-directory))
+X  		(filename nil))
+X  	    (if (not (memq (intern option) latexinfo-known-document-styles))
+X  		(progn
+X  		  (message "Checking formatting option %s" option) (sit-for 2)
+X! 		  (setq filename (concat option "-fmt"))
+X  		  (setq filename
+X  			 (cond
+X  			  ((file-readable-p (concat filename ".elc"))
+X***************
+X*** 1302,1307 ****
+X--- 1353,1362 ----
+X  			   (concat filename ".elc"))
+X  			  ((file-readable-p (concat filename ".el"))
+X  			   (concat filename ".el"))
+X+ 			  ((file-readable-p (concat directory filename ".elc"))
+X+ 			   (concat directory filename ".elc"))
+X+ 			  ((file-readable-p (concat  directory filename ".el"))
+X+ 			   (concat  directory filename ".el"))
+X  			  (t nil)))
+X  		  (if filename
+X  		      (progn
+X***************
+X*** 1313,1319 ****
+X  			    (progn
+X  			        (message
+X  				 (concat "Running " option
+X! 					 "formatting hooks..."))
+X  				 (sit-for 1)
+X  				 (funcall option-symbol))))
+X  			(message "Done loading file %s" filename) (sit-for 1))
+X--- 1368,1374 ----
+X  			    (progn
+X  			        (message
+X  				 (concat "Running " option
+X! 					 " formatting hooks..."))
+X  				 (sit-for 1)
+X  				 (funcall option-symbol))))
+X  			(message "Done loading file %s" filename) (sit-for 1))
+X***************
+X*** 1414,1427 ****
+X    (latexinfo-parse-noarg)
+X    (insert "+/-"))
+X  
+X- (put '& 'latexinfo-format 'latexinfo-format-&)
+X- (defun latexinfo-format-& ()
+X-   (latexinfo-parse-noarg)
+X-   (insert "&"))
+X- 
+X  ;; LaTeX noops
+X  (put 'DOTS 'latexinfo-format 'latexinfo-format-dots)
+X  (put 'clearpage 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  (put 'cleardoublepage 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  (put 'tableofcontents 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  (put 'protect 'latexinfo-format 'latexinfo-parse-noarg)
+X--- 1469,1478 ----
+X    (latexinfo-parse-noarg)
+X    (insert "+/-"))
+X  
+X  ;; LaTeX noops
+X  (put 'DOTS 'latexinfo-format 'latexinfo-format-dots)
+X  (put 'clearpage 'latexinfo-format 'latexinfo-discard-line-with-args)
+X+ (put 'newpage 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  (put 'cleardoublepage 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  (put 'tableofcontents 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  (put 'protect 'latexinfo-format 'latexinfo-parse-noarg)
+X***************
+X*** 1434,1438 ****
+X  (put 'cpsubindex 'latexinfo-format 'latexinfo-discard-line-with-args)
+X  
+X  (provide 'latexinfo)
+X- 
+X- 
+X--- 1485,1487 ----
+Xdiff -cr /tmp/old/latexinfo.sty ./latexinfo.sty
+X*** /tmp/old/latexinfo.sty	Tue Jun 19 12:48:22 1990
+X--- ./latexinfo.sty	Thu Jun 21 21:11:52 1990
+X***************
+X*** 3,9 ****
+X  %   Copyright (C) 1985, 1986 Richard M. Stallman
+X  %   Copyleft  (0) 1988, 1989 Michael E. Clarkson
+X  
+X! \def\latexinfoversion{1.2}
+X  \message{Loading Latexinfo package [Version \latexinfoversion]:}
+X  \message{}
+X  
+X--- 3,9 ----
+X  %   Copyright (C) 1985, 1986 Richard M. Stallman
+X  %   Copyleft  (0) 1988, 1989 Michael E. Clarkson
+X  
+X! \def\latexinfoversion{1.3}
+X  \message{Loading Latexinfo package [Version \latexinfoversion]:}
+X  \message{}
+X  
+X***************
+X*** 350,363 ****
+X  \newskip\secondaryindent
+X  \secondaryindent=0.5cm
+X  
+X- %\catcode`\%=\other\catcode`\&=\other\catcode`\#=\other
+X- %\catcode`\@=\other\catcode`\$=\other\catcode`\_=\other
+X- %\catcode`\~=\other\catcode`\^=\other
+X- %\tex %
+X- %\catcode`\%=\other\catcode`\&=\other\catcode`\#=\other
+X- %\catcode`\@=\other\catcode`\$=\other\catcode`\_=\other
+X- %\catcode`\~=\other\catcode`\^=\other
+X- 
+X  \def\printindex#1{
+X  \def\indexbackslash{\rawbackslashxx}
+X  \tolerance=9500 \advance\baselineskip -1pt
+X--- 350,355 ----
+X***************
+X*** 554,559 ****
+X--- 546,566 ----
+X                         #7}}\fi
+X       \@xsect{#5}}
+X  
+X+ % Unnumbered
+X+ \def\unnumbered#1{\chapter*{#1}\@mkboth{\uppercase{#1}}{\uppercase{#1}}
+X+ \addcontentsline{toc}{chapter}{#1}}	 
+X+ 
+X+ % This is bogus if you use it in a book or report style
+X+ \def\unnumberedsec#1{\section*{#1}\@mkboth{\uppercase{#1}}{\uppercase{#1}}
+X+ \addcontentsline{toc}{section}{#1}}	 
+X+ 
+X+ \def\unnumberedsubsec#1{\subsection*{#1}\addcontentsline
+X+ 	{toc}{subsection}{#1}}	 
+X+ 
+X+ \def\unnumberedsubsubsec#1{\subsubsection*{#1}\addcontentsline
+X+ 	{toc}{subsubsection}{#1}}	 
+X+ 
+X+ % I doubt this still works - someone should write a style file.
+X  \def\smallbook{
+X  \global\lispnarrowing = 0.3in
+X  \global\baselineskip 12pt
+Xdiff -cr /tmp/old/latexinfomd.el ./latexinfomd.el
+X*** /tmp/old/latexinfomd.el	Tue Jun 19 12:48:19 1990
+X--- ./latexinfomd.el	Thu Jun 21 21:11:53 1990
+X***************
+X*** 32,37 ****
+X--- 32,38 ----
+X    (modify-syntax-entry ?\] ")[" latexinfo-mode-syntax-table)
+X    (modify-syntax-entry ?{ "(}" latexinfo-mode-syntax-table)
+X    (modify-syntax-entry ?} "){" latexinfo-mode-syntax-table)
+X+   (modify-syntax-entry ?$ "w" latexinfo-mode-syntax-table)
+X    (modify-syntax-entry ?\' "w" latexinfo-mode-syntax-table))
+X  
+X  (defvar latexinfo-mode-map nil)
+Xdiff -cr /tmp/old/macsyma.sty ./macsyma.sty
+X*** /tmp/old/macsyma.sty	Tue Jun 19 12:48:05 1990
+X--- ./macsyma.sty	Thu Jun 21 21:11:41 1990
+X***************
+X*** 2,70 ****
+X  % Portions of this document may be copyright
+X  % Massachusetts Institute of Technology
+X  %
+X- % To make a TeX copy of this manual:
+X- %	make sure texinfo.tex in on TeX's path
+X- %	tex users-doc
+X- %	texindex users-doc.pg
+X- %	texindex users-doc.vr
+X- %	texindex users-doc.fn
+X- %	texindex users-doc.cp
+X- %	tex users-doc
+X  
+X- % To make a GNU Emacs copy of this manual:
+X- %	execute the following GNU Emacs code
+X- %
+X- % (load-library "texinfmt")
+X- % (defun texinfo-format-dots ()
+X- %   (texinfo-discard-command)
+X- %   (insert "..."))
+X- % 
+X- % (defun make-manual ()
+X- %   (interactive)
+X- %   (put 'f 'texinfo-format 'texinfo-format-noop)
+X- %   (put 'v 'texinfo-format 'texinfo-format-noop)
+X- %   (put 'o 'texinfo-format 'texinfo-format-noop)
+X- %   (put 'fb 'texinfo-format 'texinfo-format-noop)
+X- %   (put 'vb 'texinfo-format 'texinfo-format-noop)
+X- %   (put 'concept  'texinfo-format 'texinfo-format-defn)
+X- %   (put 'filen 'texinfo-format 'texinfo-format-code)
+X- %   (put 'flushr 'texinfo-format 'texinfo-format-noop)
+X- %   (put 'head  'texinfo-format 'texinfo-format-head)
+X- %   (put 'DOTS 'texinfo-format 'texinfo-format-dots) ;; DUMB
+X- %   (let ((lastmessage "Formatting Info file..."))
+X- %     (message lastmessage)
+X- %     (texinfo-format-buffer-1)
+X- %     (message
+X- %      (setq lastmessage
+X- % 	   "Making tags table for Info file..."))
+X- %     (Info-tagify)
+X- %     (message (concat lastmessage
+X- % 		     (if (interactive-p)
+X- % 			 "done.  Now save it." "done."))))
+X- %   )
+X- %
+X- % (defun texinfo-format-head ()
+X- %   (kill-line)
+X- %   (delete-char 1)
+X- %   (insert (texinfo-parse-arg-discard))
+X- %   (goto-char texinfo-command-start))
+X- %
+X- %	Then M-x make-manual
+X- 
+X- \voffset= -30pt
+X- \textheight 580pt 	% increase from 536pt
+X- \textwidth  450pt	% increase from 360pt
+X- \hoffset= -45pt		% compensate to keep centered
+X- \if@twoside 
+X- 	\reversemarginpar	% I assume the binding side is the
+X- 	\oddsidemargin 70pt 	% bigger margin, so reverse the
+X- 	\evensidemargin 38pt 	% placement  of marginpars
+X- 	\marginparwidth 40pt	% less of a margin to work with
+X-   \else \oddsidemargin 54pt \evensidemargin 54pt \marginparwidth 83pt 
+X- 	\fi
+X- 
+X- 
+X- % Preliminary stuff before texinfo format is turned on
+X  \def\Macsyma{{\bf Macsyma}}
+X  
+X  \def\f#1{\fnindex{#1}{\sf #1}}
+X--- 2,8 ----
+X***************
+X*** 83,86 ****
+X--- 21,40 ----
+X  %\def\pcp#1{\marginpar{{\scriptsize #1}}\kyindex{#1}}
+X  \def\pcp#1{}
+X  
+X+ 
+X+ \def\@chapter[#1]#2{\ifnum \c@secnumdepth >\m@ne
+X+  \refstepcounter{chapter}
+X+  \typeout{\@chapapp\space\thechapter.}
+X+  \addcontentsline{toc}{chapter}{\protect
+X+  \numberline{\thechapter}#1}\else
+X+  \addcontentsline{toc}{chapter}{#1}\fi
+X+  \chaptermark{#1}
+X+ % \addtocontents{lof}{\protect\addvspace{10pt}}
+X+ % \addtocontents{lot}{\protect\addvspace{10pt}}
+X+ \if@twocolumn\@topnewpage[\@makechapterhead{#2}] 
+X+  \else \@makechapterhead{#2}
+X+  \@afterheading \fi} 
+X+ \def\@schapter#1{\if@twocolumn \@topnewpage[\@makeschapterhead{#1}]
+X+  \else \@makeschapterhead{#1} 
+X+  \@afterheading\fi}
+X  
+XCommon subdirectories: /tmp/old/manual and ./manual
+Xdiff -cr /tmp/old/nodify.el ./nodify.el
+X*** /tmp/old/nodify.el	Tue Jun 19 12:48:12 1990
+X--- ./nodify.el	Thu Jun 21 21:11:45 1990
+X***************
+X*** 1,6 ****
+X  (setq save-all nil)
+X  (defun nodify-file () "
+X! Insert the \\node constructs into a texinfo buffer that contains
+X  only \\chapter, \\section ... commands."
+X         (interactive)
+X         (save-excursion
+X--- 1,6 ----
+X  (setq save-all nil)
+X  (defun nodify-file () "
+X! Insert the \\node constructs into a latexinfo buffer that contains
+X  only \\chapter, \\section ... commands."
+X         (interactive)
+X         (save-excursion
+Xdiff -cr /tmp/old/scheme-fmt.el ./scheme-fmt.el
+X*** /tmp/old/scheme-fmt.el	Tue Jun 19 12:48:24 1990
+X--- ./scheme-fmt.el	Thu Jun 21 21:11:55 1990
+X***************
+X*** 75,86 ****
+X  	("\\\\schtrue" . "\\\\code{#t}")
+X  	("\\\\backquote{}" . "`")
+X  	("\\\\backquote" . "`")
+X- 	("\\\\backwhack{}" . "\\\\back")
+X- 	("\\\\backwhack" . "\\\\back")
+X- 	("\\\\atsign" . "@")
+X  	("\\\\sharpsign" . "#")
+X  	("\\\\verticalbar" . "|")
+X- 	("~\\\\cite{" . " \\\\cite{")
+X  	))
+X  
+X  (setq scheme-delete-list
+X--- 75,82 ----
+X***************
+X*** 97,313 ****
+X  	    (forward-char 1)
+X  	  (kill-line nil)))))
+X  
+X! (put 'meta 'texinfo-format 'latexinfo-hyper)
+X! (put 'hyper 'texinfo-format 'latexinfo-hyper)
+X  (defun latexinfo-hyper ()
+X!   (insert "\\var{<" (texinfo-parse-arg-discard) ">}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'hyperi 'texinfo-format 'latexinfo-hyperi)
+X  (defun latexinfo-hyperi ()
+X!   (insert "\\var{<" (texinfo-parse-arg-discard) "-1>}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'hyperii 'texinfo-format 'latexinfo-hyperii)
+X  (defun latexinfo-hyperii ()
+X!   (insert "\\var{<" (texinfo-parse-arg-discard) "-2>}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'hyperj 'texinfo-format 'latexinfo-hyperj)
+X  (defun latexinfo-hyperj ()
+X!   (insert "\\var{<" (texinfo-parse-arg-discard) "-i>}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'hypern 'texinfo-format 'latexinfo-hypern)
+X  (defun latexinfo-hypern ()
+X!   (insert "\\var{<" (texinfo-parse-arg-discard) "-n>}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'vari 'texinfo-format 'latexinfo-vari)
+X  (defun latexinfo-vari ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-1}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'varii 'texinfo-format 'latexinfo-varii)
+X  (defun latexinfo-varii ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-2}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'variii 'texinfo-format 'latexinfo-variii)
+X  (defun latexinfo-variii ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-3}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'variv 'texinfo-format 'latexinfo-variv)
+X  (defun latexinfo-variv ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-4}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'varj 'texinfo-format 'latexinfo-varj)
+X  (defun latexinfo-varj ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-i}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'varn 'texinfo-format 'latexinfo-var-n)
+X  (defun latexinfo-var-n ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-n}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'vr 'texinfo-format 'latexinfo-vr)
+X  (defun latexinfo-vr ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'vri 'texinfo-format 'latexinfo-vri)
+X  (defun latexinfo-vri ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-1}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'vrii 'texinfo-format 'latexinfo-vrii)
+X  (defun latexinfo-vrii ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-2}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'vriii 'texinfo-format 'latexinfo-vriii)
+X  (defun latexinfo-vriii ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-3}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'vriv 'texinfo-format 'latexinfo-vriv)
+X  (defun latexinfo-vriv ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-4}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'vrj 'texinfo-format 'latexinfo-vrj)
+X  (defun latexinfo-vrj ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-i}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'vrn 'texinfo-format 'latexinfo-vr-n)
+X  (defun latexinfo-vr-n ()
+X!   (insert "\\var{" (texinfo-parse-arg-discard) "-n}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'defining 'texinfo-format 'latexinfo-defining)
+X  (defun latexinfo-defining ()
+X!   (insert "\\emph{" (texinfo-parse-arg-discard) "}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'ide 'texinfo-format 'texinfo-format-noop)
+X  
+X! (put 'mainschindex 'texinfo-format 'texinfo-parse-arg-discard)
+X! (put 'mainindex 'texinfo-format 'texinfo-parse-arg-discard)
+X! (put 'schindex 'texinfo-format 'texinfo-parse-arg-discard)
+X! (put 'sharpindex 'texinfo-format 'texinfo-parse-arg-discard)
+X! (put 'index 'texinfo-format 'texinfo-parse-arg-discard)
+X  
+X! (put 'domain 'texinfo-format 'texinfo-format-noop)
+X! (put 'nodomain 'texinfo-format 'texinfo-parse-arg-discard)
+X! (put 'todo 'texinfo-format 'texinfo-parse-arg-discard)
+X  
+X! (put 'ev 'texinfo-format 'latexinfo-format-ev)
+X  
+X  (defun latexinfo-format-ev ()
+X!   (texinfo-parse-noarg)
+X    (insert "        => "))
+X  
+X! (put 'lev 'texinfo-format 'latexinfo-format-lev)
+X  (defun latexinfo-format-lev ()
+X!   (texinfo-parse-noarg)
+X    (insert "\n    => "))
+X  
+X! (put 'unspecified 'texinfo-format 'latexinfo-format-unspecified)
+X  (defun latexinfo-format-unspecified ()
+X!   (texinfo-parse-noarg)
+X    (insert "\\emph{unspecified}")
+X!   (goto-char texinfo-command-start))
+X  
+X! (put 'error 'texinfo-format 'latexinfo-format-error)
+X  (defun latexinfo-format-error ()
+X!   (texinfo-parse-noarg)
+X    (insert "\\emph{error}"))
+X  
+X! (put 'schemenoindent 'texinfo-format 'texinfo-format-schemenoindent)
+X! (defun texinfo-format-schemenoindent ()
+X!   (texinfo-push-stack 'example nil)
+X!   (texinfo-discard-line))
+X  
+X! (put 'schemenoindent 'texinfo-end 'texinfo-end-schemenoindent)
+X! (defun texinfo-end-schemenoindent ()
+X!   (texinfo-discard-command)
+X    (let ((stacktop
+X! 	 (texinfo-pop-stack 'example)))
+X!     (texinfo-do-itemize (nth 1 stacktop))))
+X  
+X! (put 'tabular 'texinfo-format 'texinfo-format-tabbing)
+X! (put 'tabbing 'texinfo-format 'texinfo-format-tabbing)
+X! (defun texinfo-format-tabbing ()
+X!   (texinfo-push-stack 'example nil)
+X!   (texinfo-discard-line-with-args)
+X!   )
+X  
+X! (put 'tabular 'texinfo-end 'texinfo-end-tabbing)
+X! (put 'tabbing 'texinfo-end 'texinfo-end-tabbing)
+X! (defun texinfo-end-tabbing ()
+X!   (texinfo-discard-line)
+X!   (let ((stacktop
+X! 	 (texinfo-pop-stack 'example)))
+X!     (texinfo-do-tabbing (nth 1 stacktop))))
+X! 
+X! (defun texinfo-do-tabbing (from)
+X!   (let ((end (point)))
+X!     (save-excursion
+X!       (goto-char from)
+X!       (while (search-forward "&" end t)
+X! 	(if (save-excursion
+X! 	      (bobp)
+X! 	      (forward-char -2)
+X! 	      (not (looking-at "\\\\")))
+X! 	    (progn
+X! 	      (delete-char -1)
+X! 	      (insert "\t")
+X! 	      ))))))
+X! 
+X! (put 'scheme 'texinfo-format 'texinfo-format-example)
+X! (put 'scheme 'texinfo-end 'texinfo-end-example)
+X! 
+X! (put 'rationale 'texinfo-format 'texinfo-format-rationale)
+X! (put 'rationale 'texinfo-end 'texinfo-discard-command)
+X! (defun texinfo-format-rationale ()
+X!   (texinfo-discard-line)
+X    (insert "Rationale: "))
+X  
+X! (put 'note 'texinfo-format 'texinfo-format-note)
+X! (put 'note 'texinfo-end 'texinfo-discard-command)
+X! (defun texinfo-format-note ()
+X!   (texinfo-discard-line)
+X    (insert "Note: "))
+X  
+X! (put 'header 'texinfo-format 'texinfo-format-header)
+X! (put 'header 'texinfo-end 'texinfo-discard-command)
+X! (defun texinfo-format-header ()
+X    (save-excursion
+X      (forward-char 1)
+X      (forward-sexp 1)
+X      (delete-char -1))
+X!   (goto-char texinfo-command-start)
+X    (delete-region (point) (progn (forward-line 1) (point))))
+X  
+X  
+X! (put 'evalsto 'texinfo-format 'latexinfo-format-arrow)
+X! (put 'unsection 'texinfo-format 'texinfo-parse-noarg)
+X  
+X  (defun latexinfo-format-syntax ()
+X! (put 'syntax 'texinfo-format 'latexinfo-format-syntax)  
+X!   (texinfo-parse-noarg)
+X    (insert "\\b{Syntax:} ")
+X!   (goto-char texinfo-command-start))
+X  
+X  (defun latexinfo-format-semantics ()
+X! (put 'semantics 'texinfo-format 'latexinfo-format-semantics)  
+X!   (texinfo-parse-noarg)
+X    (insert "\\b{Semantics:} ")
+X!   (goto-char texinfo-command-start))
+X  
+X  
+X  (defun find-entry (byte)
+X--- 93,280 ----
+X  	    (forward-char 1)
+X  	  (kill-line nil)))))
+X  
+X! (put 'meta 'latexinfo-format 'latexinfo-hyper)
+X! (put 'hyper 'latexinfo-format 'latexinfo-hyper)
+X  (defun latexinfo-hyper ()
+X!   (insert "\\var{<" (latexinfo-parse-arg-discard) ">}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'hyperi 'latexinfo-format 'latexinfo-hyperi)
+X  (defun latexinfo-hyperi ()
+X!   (insert "\\var{<" (latexinfo-parse-arg-discard) "-1>}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'hyperii 'latexinfo-format 'latexinfo-hyperii)
+X  (defun latexinfo-hyperii ()
+X!   (insert "\\var{<" (latexinfo-parse-arg-discard) "-2>}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'hyperj 'latexinfo-format 'latexinfo-hyperj)
+X  (defun latexinfo-hyperj ()
+X!   (insert "\\var{<" (latexinfo-parse-arg-discard) "-i>}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'hypern 'latexinfo-format 'latexinfo-hypern)
+X  (defun latexinfo-hypern ()
+X!   (insert "\\var{<" (latexinfo-parse-arg-discard) "-n>}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'vari 'latexinfo-format 'latexinfo-vari)
+X  (defun latexinfo-vari ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-1}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'varii 'latexinfo-format 'latexinfo-varii)
+X  (defun latexinfo-varii ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-2}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'variii 'latexinfo-format 'latexinfo-variii)
+X  (defun latexinfo-variii ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-3}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'variv 'latexinfo-format 'latexinfo-variv)
+X  (defun latexinfo-variv ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-4}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'varj 'latexinfo-format 'latexinfo-varj)
+X  (defun latexinfo-varj ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-i}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'varn 'latexinfo-format 'latexinfo-var-n)
+X  (defun latexinfo-var-n ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-n}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'vr 'latexinfo-format 'latexinfo-vr)
+X  (defun latexinfo-vr ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'vri 'latexinfo-format 'latexinfo-vri)
+X  (defun latexinfo-vri ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-1}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'vrii 'latexinfo-format 'latexinfo-vrii)
+X  (defun latexinfo-vrii ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-2}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'vriii 'latexinfo-format 'latexinfo-vriii)
+X  (defun latexinfo-vriii ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-3}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'vriv 'latexinfo-format 'latexinfo-vriv)
+X  (defun latexinfo-vriv ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-4}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'vrj 'latexinfo-format 'latexinfo-vrj)
+X  (defun latexinfo-vrj ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-i}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'vrn 'latexinfo-format 'latexinfo-vr-n)
+X  (defun latexinfo-vr-n ()
+X!   (insert "\\var{" (latexinfo-parse-arg-discard) "-n}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'defining 'latexinfo-format 'latexinfo-defining)
+X  (defun latexinfo-defining ()
+X!   (insert "\\emph{" (latexinfo-parse-arg-discard) "}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'ide 'latexinfo-format 'latexinfo-format-noop)
+X  
+X! (put 'mainschindex 'latexinfo-format 'latexinfo-parse-arg-discard)
+X! (put 'mainindex 'latexinfo-format 'latexinfo-parse-arg-discard)
+X! (put 'schindex 'latexinfo-format 'latexinfo-parse-arg-discard)
+X! (put 'sharpindex 'latexinfo-format 'latexinfo-parse-arg-discard)
+X! (put 'index 'latexinfo-format 'latexinfo-parse-arg-discard)
+X  
+X! (put 'domain 'latexinfo-format 'latexinfo-format-noop)
+X! (put 'nodomain 'latexinfo-format 'latexinfo-parse-arg-discard)
+X! (put 'todo 'latexinfo-format 'latexinfo-parse-arg-discard)
+X  
+X! (put 'ev 'latexinfo-format 'latexinfo-format-ev)
+X  
+X  (defun latexinfo-format-ev ()
+X!   (latexinfo-parse-noarg)
+X    (insert "        => "))
+X  
+X! (put 'lev 'latexinfo-format 'latexinfo-format-lev)
+X  (defun latexinfo-format-lev ()
+X!   (latexinfo-parse-noarg)
+X    (insert "\n    => "))
+X  
+X! (put 'unspecified 'latexinfo-format 'latexinfo-format-unspecified)
+X  (defun latexinfo-format-unspecified ()
+X!   (latexinfo-parse-noarg)
+X    (insert "\\emph{unspecified}")
+X!   (goto-char latexinfo-command-start))
+X  
+X! (put 'error 'latexinfo-format 'latexinfo-format-error)
+X  (defun latexinfo-format-error ()
+X!   (latexinfo-parse-noarg)
+X    (insert "\\emph{error}"))
+X  
+X! (put 'schemenoindent 'latexinfo-format 'latexinfo-format-schemenoindent)
+X! (defun latexinfo-format-schemenoindent ()
+X!   (latexinfo-push-stack 'example nil)
+X!   (latexinfo-discard-line))
+X  
+X! (put 'schemenoindent 'latexinfo-end 'latexinfo-end-schemenoindent)
+X! (defun latexinfo-end-schemenoindent ()
+X!   (latexinfo-discard-command)
+X    (let ((stacktop
+X! 	 (latexinfo-pop-stack 'example)))
+X!     (latexinfo-do-itemize (nth 1 stacktop))))
+X  
+X! (put 'scheme 'latexinfo-format 'latexinfo-format-example)
+X! (put 'scheme 'latexinfo-end 'latexinfo-end-example)
+X  
+X! (put 'rationale 'latexinfo-format 'latexinfo-format-rationale)
+X! (put 'rationale 'latexinfo-end 'latexinfo-discard-command)
+X! (defun latexinfo-format-rationale ()
+X!   (latexinfo-discard-line)
+X    (insert "Rationale: "))
+X  
+X! (put 'note 'latexinfo-format 'latexinfo-format-note)
+X! (put 'note 'latexinfo-end 'latexinfo-discard-command)
+X! (defun latexinfo-format-note ()
+X!   (latexinfo-discard-line)
+X    (insert "Note: "))
+X  
+X! (put 'header 'latexinfo-format 'latexinfo-format-header)
+X! (put 'header 'latexinfo-end 'latexinfo-discard-command)
+X! (defun latexinfo-format-header ()
+X    (save-excursion
+X      (forward-char 1)
+X      (forward-sexp 1)
+X      (delete-char -1))
+X!   (goto-char latexinfo-command-start)
+X    (delete-region (point) (progn (forward-line 1) (point))))
+X  
+X  
+X! (put 'evalsto 'latexinfo-format 'latexinfo-format-arrow)
+X! (put 'unsection 'latexinfo-format 'latexinfo-parse-noarg)
+X  
+X  (defun latexinfo-format-syntax ()
+X! (put 'syntax 'latexinfo-format 'latexinfo-format-syntax)  
+X!   (latexinfo-parse-noarg)
+X    (insert "\\b{Syntax:} ")
+X!   (goto-char latexinfo-command-start))
+X  
+X  (defun latexinfo-format-semantics ()
+X! (put 'semantics 'latexinfo-format 'latexinfo-format-semantics)  
+X!   (latexinfo-parse-noarg)
+X    (insert "\\b{Semantics:} ")
+X!   (goto-char latexinfo-command-start))
+X  
+X  
+X  (defun find-entry (byte)
+X***************
+X*** 319,329 ****
+X  		      (skip-chars-forward "^\n\b)")
+X  		      (point))))
+X  
+X! (put 'modeline 'texinfo-format 'texinfo-format-code)
+X  
+X! (put 'f 'texinfo-format 'texinfo-format-noop)
+X! (put 'v 'texinfo-format 'texinfo-format-noop)
+X! (put 'fb 'texinfo-format 'texinfo-format-noop)
+X! (put 'vb 'texinfo-format 'texinfo-format-noop)
+X! (put 'ide 'texinfo-format 'texinfo-format-noop)
+X  
+X--- 286,296 ----
+X  		      (skip-chars-forward "^\n\b)")
+X  		      (point))))
+X  
+X! (put 'modeline 'latexinfo-format 'latexinfo-format-code)
+X  
+X! (put 'f 'latexinfo-format 'latexinfo-format-noop)
+X! (put 'v 'latexinfo-format 'latexinfo-format-noop)
+X! (put 'fb 'latexinfo-format 'latexinfo-format-noop)
+X! (put 'vb 'latexinfo-format 'latexinfo-format-noop)
+X! (put 'ide 'latexinfo-format 'latexinfo-format-noop)
+X  
+Xdiff -cr /tmp/old/scheme.sty ./scheme.sty
+X*** /tmp/old/scheme.sty	Tue Jun 19 12:48:14 1990
+X--- ./scheme.sty	Thu Jun 21 21:11:47 1990
+X***************
+X*** 8,15 ****
+X  \newcommand{\singlequote}{{\tt'}}  %\char19
+X  \newcommand{\doublequote}{{\tt"}}
+X  \newcommand{\backquote}{{\tt\char18}}
+X- \newcommand{\backwhack}{{\tt\char`\\}}
+X- \newcommand{\atsign}{{\tt\char`\@}}
+X  \newcommand{\sharpsign}{{\tt\#}}
+X  \newcommand{\verticalbar}{{\tt|}}
+X  
+X--- 8,13 ----
+Xdiff -cr /tmp/old/tabular-fmt.el ./tabular-fmt.el
+X*** /tmp/old/tabular-fmt.el	Thu Jun 21 21:13:49 1990
+X--- ./tabular-fmt.el	Thu Jun 21 21:11:48 1990
+X***************
+X*** 0 ****
+X--- 1,75 ----
+X+ ;;; With this style loaded, & is a special character for the tabular
+X+ ;;; environments.  Use \& if you want to insert an & .
+X+ (put '& 'latexinfo-format 'latexinfo-format-&)
+X+ (defun latexinfo-format-& ()
+X+   (latexinfo-parse-noarg)
+X+   (insert "&"))
+X+ 
+X+ 
+X+ ;; Math tabular environments are ignored.
+X+ (put 'displaymath 'latexinfo-format 'latexinfo-format-displaymath)
+X+ (put 'displaymath 'latexinfo-end 'latexinfo-discard-command)
+X+ (defun latexinfo-format-displaymath ()
+X+   (delete-region latexinfo-command-start
+X+ 		 (progn (re-search-forward "\\\\end[ {]displaymath[ }\n]")
+X+ 			(point))))
+X+ 
+X+ (put 'equation 'latexinfo-format 'latexinfo-format-equation)
+X+ (put 'equation 'latexinfo-end 'latexinfo-discard-command)
+X+ (defun latexinfo-format-equation ()
+X+   (delete-region latexinfo-command-start
+X+ 		 (progn (re-search-forward "\\\\end[ {]equation[ }\n]")
+X+ 			(point))))
+X+ 
+X+ (put 'eqnarray 'latexinfo-format 'latexinfo-format-eqnarray)
+X+ (put 'eqnarray 'latexinfo-end 'latexinfo-discard-command)
+X+ (defun latexinfo-format-eqnarray ()
+X+   (delete-region latexinfo-command-start
+X+ 		 (progn (re-search-forward "\\\\end[ {]eqnarray[ }\n]")
+X+ 			(point))))
+X+ 
+X+ (put 'array 'latexinfo-format 'latexinfo-format-array)
+X+ (put 'array 'latexinfo-end 'latexinfo-discard-command)
+X+ (defun latexinfo-format-array ()
+X+   (delete-region latexinfo-command-start
+X+ 		 (progn (re-search-forward "\\\\end[ {]array[ }\n]")
+X+ 			(point))))
+X+ 
+X+ 
+X+ 
+X+ ;;; The tabular environment
+X+ (put 'tabular 'latexinfo-format 'latexinfo-format-tabular)
+X+ (put 'tabular 'latexinfo-end 'latexinfo-end-tabular)
+X+ (defun latexinfo-format-tabular ()
+X+   (latexinfo-push-stack 'tabular nil)
+X+   (latexinfo-discard-line-with-args))
+X+ 
+X+ (defun latexinfo-end-tabular ()
+X+   (latexinfo-discard-command)
+X+   (let ((stacktop
+X+ 	 (latexinfo-pop-stack 'tabular)))
+X+     (latexinfo-do-tabular (nth 1 stacktop))))
+X+ 
+X+ (put 'hline 'latexinfo-format 'latexinfo-format-hline)
+X+ (defun latexinfo-format-hline ()
+X+     (let ((dashes (make-string fill-column ?-)))
+X+       (latexinfo-discard-line-with-args)
+X+       (insert dashes "\n")))
+X+   
+X+ (defun latexinfo-do-tabular (from)
+X+   (let ((end (point)))
+X+     (save-excursion
+X+       (goto-char from)
+X+       (while (search-forward "&" end t)
+X+ 	(if (save-excursion
+X+ 	      (bobp)
+X+ 	      (forward-char -2)
+X+ 	      (not (looking-at "\\\\")))
+X+ 	    (progn
+X+ 	      (delete-char -1)
+X+ 	      (insert " ")
+X+ 	      )))
+X+       (goto-char from)
+X+       (replace-regexp "\\\\\\\\$" "")
+X+       )))
+X+ 
+END_OF_FILE
+if test 48527 -ne `wc -c <'patch.1a'`; then
+    echo shar: \"'patch.1a'\" unpacked with wrong size!
+fi
+# end of 'patch.1a'
+fi
+echo shar: End of shell archive.
+exit 0

@@ -1,0 +1,26 @@
+You might need texinfo-2.10 for compiling the texinfo files.
+Get it from wuarchive.wustl.edu or prep.ai.mit.edu or wherever.
+
+The supplied Makefile will make everything for you
+(if you have makeinfo,tex,texindex and gnuemacs installed, else rename
+the variables suitably).
+Take a look at it - you might want to redefine the BATCHCOMMAND variable
+if nothing else.
+
+The texinfo-note is about a problem with the circle font,
+if you have that problem.
+
+vip.blurb is the net announcement
+
+gmhist.el is the history package used with VIP4.3 (not by default)
+
+vip.texinfo and vip-cmd.texinfo are the texinfo files for the manual
+
+vipcard.tex is the quickref
+
+vip.el is vip4.3
+
+README is this file, which you are presumably reading. I dunno 
+know why this is always mentioned. Perhaps to be PC, and avoid
+discrimination against the differently-abled evolutionarily
+disadvantaged, who survive only on ultra-short-term memory.

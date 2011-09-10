@@ -1,0 +1,1018 @@
+This is w3.info, produced by Makeinfo version 3.12f from w3.txi.
+
+INFO-DIR-SECTION World Wide Web
+INFO-DIR-SECTION GNU Emacs Lisp
+START-INFO-DIR-ENTRY
+* Emacs/W3: (w3).                 Emacs/W3 World Wide Web browser.
+END-INFO-DIR-ENTRY
+   This file documents the Emacs/W3 World Wide Web browser.
+
+   Copyright (C) 1993, 1994, 1995, 1996 William M. Perry Copyright (C)
+1996, 1997 Free Software Foundation
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+
+File: w3.info,  Node: More Help,  Next: Future Directions,  Prev: Advanced Features,  Up: Top
+
+More Help
+*********
+
+   For more help on Emacs/W3, please send me mail
+(wmperry+w3@cs.indiana.edu).  Several discussion lists have also been
+created for Emacs/W3.  To subscribe, send mail to
+majordomo@indiana.edu, with the body of the message 'subscribe LISTNAME
+<EMAIL ADDRES>'.  All other mail should go to <listname>@indiana.edu.
+
+   * w3-announce - this list is for anyone interested in Emacs/W3, and
+     should in general only be used by me.  The gnu.emacs.sources
+     newsgroup and a few other mailing lists are included on this.
+     Please only use this list for major package releases related to
+     Emacs/W3.  (www-announce@w3.org is included on this list).
+
+   * w3-beta - this list is for beta testers of Emacs/W3.  These brave
+     souls test out not-quite stable code.
+
+   * w3-dev - a list consisting of myself and a few other people who are
+     interested in the internals of Emacs/W3, and doing active
+     development work.  Pretty dead right now, but I hope it will grow.
+
+   For help on the World Wide Web in general, please refer to the
+comp.infosystems.www.* newsgroups.  There are also several discussion
+lists concerning the Web.  Send mail to <listname>-request@w3.org with
+a subject line of 'subscribe <listname>'.  All mail should go to
+<listname>@w3.org.  Administrative mail should go to www-admin@w3.org.
+The lists are:
+
+   * www-talk - for general discussion of the World Wide Web, where its
+     going, new features, etc.  All the major developers are subscribed
+     to this list.
+
+   * www-announce - for announcements concerning the World Wide Web.
+     Server changes, new servers, new software, etc.
+
+   As a last resort, mail me.  I'll try to answer as quickly as I can.
+
+
+File: w3.info,  Node: Future Directions,  Next: Reporting Bugs,  Prev: More Help,  Up: Top
+
+Future Directions
+*****************
+
+   Changes are constantly being made to the Emacs browser (hopefully all
+for the better).  This is a list of the things that are being worked on
+right now.
+
+   BUGS (4.0):
+   - need to support HTTP/0.9 (http://c2.com:8080) responses
+
+   - /etc/mailcap cannot overide builtin mm-mime-data stuff?
+
+   - try to protect people from using '~' in file URLs
+
+   - keystrokes entered while in w3-pause self-insert under XEmacs --
+     the loop around dispatch-event needs to be smarter about what it
+     swallows.
+
+   - border-color can have multiple color specifications, but we
+     currently choke with 'args out of range' when we see this.
+
+   - widget appears to be stealing button3 to mean 'activate' -- this is
+     bogus!  We lose all context-sensitive menus because of this.
+
+   - We still seem to be growing the line size under Emacs 19.x/20.x
+
+   - It would be really nice if w3 buffers were put into w3-mode as soon
+     as they were created. Then if the rendering craps out somehow then
+     the buffer could be browsed such as it was. Ideally, links and
+     widgets would be functional.
+
+   - document how to translate Netscape foo.pac files to emacs lisp
+
+   - Should we stop using reporter.el?
+
+   BUGS (4.1):
+   - background colors are not heeded on table rows (<tr>).  Same
+     properties on individual cells or the table as a whole work fine.
+
+   - <br> in <dd> hosed -- margins in general tend to be too big
+     sometimes.
+
+   - client side imagemaps have to be in the same buffer (actually in
+     the smae buffer, _BEFORE_ the usemap directive on an image) -- fix
+     to be able to use imagemaps in different files, any position, etc,
+     etc.
+
+   FEATURES (4.1)
+   - cache a formatted version of documents, with enough info to
+     recreate the widgets in them.
+
+   - w3-preview-region command
+
+   - LDAP support (XEmacs)
+
+   - New proxy type for sending requests via mail to a mail->web->mail
+     gateway.
+
+   - Emacspeak Interaction
+
+        * some way of specifying in a stylesheet whether certain text is
+          inaudible.  use the 'inaudible text property for this.
+
+        * Full Aural-CSS support
+
+   - more sophisticated filling algorithm. I'm not sure exactly what
+     would be sufficient but breaking lines after punctuation  seems
+     like it would solve most of the problem.
+
+   - When fetching images for viewing (not inlining), W3 should at least
+     have an option of displaying it inline, ala Netscape.
+
+   - Widget library merging
+
+        * Write a font selection widget
+
+        * Write a voice selection widget
+
+        * Write a mailcap entry widget
+
+   - Custom library merging *Add custom support for MM
+
+   - Hotlist handling
+
+        * Abstract out current support
+
+        * Do something similar to GNUS 'backends' to provide easy way
+          to add new bookmark formats, etc.
+
+   - Write a new major mode for handling CSS style sheets
+
+   FEATURES (5.0)
+
+   - Emacspeak Integration
+
+        * Need option to turn off table rendering and print it out as a
+          table that is viewable with emacspeak-table-ui.el
+
+   - Write a text/xml parser
+
+   - Completely rewrite display code again
+
+        * Abstract everything out to follow parse->flow objects->render
+          model
+
+        * Base all stylesheet stuff off of DSSSL
+
+        * CSS2
+
+        * New rendering backends
+
+             - Native postscript output
+
+             - LaTeX upgrade
+
+             - TeXinfo
+
+   - Display code
+
+        * implement <spacer> from netscape 3.0b5
+
+        * reimplement w3-show-headers
+
+        * Handle math environment using the calc library
+
+        * Better integration with the parser
+
+
+File: w3.info,  Node: Reporting Bugs,  Next: Dealing with Firewalls,  Prev: Future Directions,  Up: Top
+
+Reporting Bugs
+**************
+
+   If any bugs are discovered in Emacs/W3, please report them to the
+mailing list w3-beta@xemacs.org -- this is where the brave souls who
+beta test the latest versions of Emacs/W3 reside, and are generally
+very responsive to bug reports.  Please make sure to use the bug
+submission feature of Emacs/W3, so that all relevant information will
+be sent along with your bug report.  By default this is bound to the
+`<w>' key when in an Emacs/W3 buffer, or you can use <M-x
+w3-submit-bug> from anywhere within Emacs.
+
+   For problems that are causing emacs to signal and error, please send
+a backtrace.  You can get a backtrace by `M-x setvariable RET
+debug-on-error RET t RET', and then reproduce the error.
+
+   If the problem is visual, please capture a copy of the output and
+mail it along with the bug report (preferably as a MIME attachment, but
+anything will do).  You can use the `xwd' program under X-windows for
+this, or <Alt-PrintScreen> under Windows 95/NT.  Sorry, but I don't
+remember what the magic incarnation is for doing a screen dump under
+NeXTstep or OS/2.
+
+   If the problem is actually causing Emacs to crash, then you will
+need to also mail the maintainers of the various Emacs distributions
+with the bug.  Please use the gnu.emacs.bug newgroup for reporting bugs
+with GNU Emacs 19, and comp.emacs.xemacs for reporting bugs with XEmacs
+19 or XEmacs 20.  I am actively involved with the beta testing of the
+latest versions of both branches of Emacs, and if I can reproduce the
+problem, I will do my best to see it gets fixed in the next release.
+
+   It is also important to always maintain as much context as possible
+in your responses.  I get so much email from my various Emacs-activities
+and work, that I cannot remember everything.  If you send a bug report,
+and I send you a reply, and you reply with 'no that didn't work', then
+odds are I will have no clue what didn't work, much less what that was
+trying to fix in the first place.  It will be much quicker and less
+painful if I don't have to waste a round-trip email exchange saying
+'what are you talking about'.
+
+
+File: w3.info,  Node: Dealing with Firewalls,  Next: Proxy Gateways,  Prev: Reporting Bugs,  Up: Top
+
+Dealing with Firewalls
+**********************
+
+   By default, Emacs can support standard TCP/IP network connections on
+almost all the platforms it runs on (Unix, VMS, Windows, etc).
+However, there are several situations where it is not sufficient.
+
+Firewalls
+     It is becoming more and more common to be behind a firewall or some
+     other system that restricts your outbound network activity,
+     especially if you are like me and away from the wonderful world of
+     academia.  Emacs/W3 has several different methods to get around
+     firewalls (not to worry though -- none of them should get you in
+     trouble with the local MIS department.)
+
+Emacs cannot resolve hostnames.
+     This happens quite often on SunOS workstations and some ULTRIX
+     machines.  Some C libraries do not include the hostname resolver
+     routines in their static libraries.  If Emacs was linked
+     statically, and was not linked with the resolver libraries, it wil
+     not be able to get to any machines off the local network.  This is
+     characterized by being able to reach someplace with a raw ip
+     number, but not its hostname (<http://129.79.254.191/> works, but
+     <http://www.cs.indiana.edu/> doesn't).
+
+     The best solution for this problem is to recompile Emacs, making
+     sure to either link dynamically (if available on your operating
+     system), or include the `-lresolv'.
+
+     If you do not have the disk space or the appropriate permissions to
+     recompile Emacs, another alternative is using the `nslookup'
+     program to do hostname resolution.  To turn this on, set the
+     variable `url-gateway-broken-resolution' in your `~/.emacs' file.
+     This runs the program specified by `url-gateway-nslookup-program'
+     (by default "`nslookup'" to do hostname resolution.  This program
+     should expect a single argument on the command line -- the
+     hostname to resolve, and should produce output similar to the
+     standard Unix `nslookup' program:
+
+          Name: www.cs.indiana.ed
+          Address: 129.79.254.191
+
+Using TERM (or TERM-like) Networking Software
+     TERM (1) for slip-like access to the internet.
+
+     NOTE: XEmacs and Emacs 19.22 or later have patches to enable native
+     TERM networking.  To enable it, `#define TERM' in the appropriate
+     s/*.h file for the operating system, then change the `SYSTEM_LIBS'
+     definition to include the `termnet' library that comes with the
+     latest versions of TERM.
+
+     If you run into any problems with the native TERM networking
+     support in Emacs or XEmacs, please let wmperry+w3@cs.indiana.edu
+     know, as he is responsible for the original support.
+
+   Emacs/W3 has support for using the gateway mechanism for certain
+domains, and directly connecting to others.  The variable
+`url-gateway-local-host-regexp' controls this behaviour.  This is a
+regular expression (2) that matches local hosts that do not require the
+use of a gateway.  If `nil', then all connections are made through the
+gateway.
+
+   Emacs/W3 supports several methods of getting around gateways.  The
+variable `url-gateway-method' controls which of these methods is used.
+This variable can have several values (use these as symbol names, not
+strings), ie: `(setq url-gateway-method 'telnet)'.  Possible values are:
+
+"telnet"
+     Use this method if you must first telnet and log into a gateway
+     host, and then run telnet from that host to connect to outside
+     machines.
+
+    `url-gateway-telnet-host'
+          The gateway host to telnet to.  Once logged in there, you
+          then telnet out to the hosts you want to connect to.
+
+    `url-gateway-telnet-parameters'
+          This should be a list of parameters to pass to the `telnet'
+          program.
+
+    `url-gateway-telnet-password-prompt'
+          This is a regular expression that matches the password prompt
+          when logging in.
+
+    `url-gateway-telnet-login-prompt'
+          This is a regular expression that matches the username prompt
+          when logging in.
+
+    `url-gateway-telnet-user-name'
+          The username to log in with.
+
+    `url-gateway-telnet-password'
+          This is the password to send when logging in.
+
+    `url-gateway-prompt-pattern'
+          This is a regular expression that matches the shell prompt.
+
+"rlogin"
+     This method is identical to the `telnet' method, but uses `rlogin'
+     to log into the remote machine without having to send the username
+     and password over the wire every time.
+
+    `url-gateway-rlogin-host'
+          Host to `rlogin' to before telnetting out.
+
+    `url-gateway-rlogin-parameters'
+          Parametres to pass to `rsh'.
+
+    `url-gateway-rlogin-user-name'
+          User name to use when logging in to the gateway.
+
+    `url-gateway-prompt-pattern'
+          This is a regular expression that matches the shell prompt.
+
+"tcp"
+     Masanobu UMEDA (umerin@mse.kyutech.ac.jp) has written a very small
+     application that you can run in a subprocess to do the network
+     connections.
+
+"SOCKS"
+     Use if the firewall has a SOCKS gateway running on it.  SOCKS v5
+     protocol is defined in RFC1928.
+
+    `socks-password'
+          If this is `nil' then you will be asked for the passward,
+          otherwise it will be used as the password for authenticating
+          you to the SOCKS server.
+
+    `socks-username'
+          This is the username to use when authenticating yourself to
+          the SOCKS server.  By default this is your login name
+
+    `socks-timeout'
+          This controls how long, in seconds, Emacs/W3 will wait for
+          responses from the SOCKS server; it is 5 by default.
+
+    `socks-server'
+          Thiss the default server, it take the form (`"Default server"'
+          SERVER PORT VERSION) where VERSION can be either 4 or 5.
+
+    `socks-server-aliases'
+          This a list of server aliases.  It is a list of aliases of
+          the form (ALIAS HOSTNAME PORT VERSION).
+
+    `socks-network-aliases'
+          This a list of network aliases.  Each entry in the list takes
+          the form (ALIAS (NETWORK)) where ALIAS is a string that names
+          the NETWORK.  The networks can contain a pair (not a dotted
+          pair) of IP addresses which specify a range of IP addresses,
+          an IP address and a netmask, a domain name or a unique
+          hostname or IP address.
+
+    `socks-redirection-rules'
+          This a list of redirection rules.  Each rule take the form
+          (DESTINATION NETWORK CONNECTION TYPE) where DESTINATION
+          NETWORK is a network alias from `socks-network-aliases' and
+          CONNECTION TYPE can be `nil' in which case a direct
+          connection is used, or it can be an alias from
+          `socks-server-aliases' in which case that server is used as a
+          proxy.
+
+    `socks-nslookup-program'
+          This the `nslookup' program.  It is `nslookup' by default.
+
+"native"
+     This means that Emacs/W3 should use the builtin networking code of
+     Emacs.  This should be used only if there is no firewall, or the
+     Emacs source has already been hacked to get around the firewall.
+
+   Emacs/W3 should now be able to get outside the local network.  If
+none of this makes sense, its probably my fault.  Please check with the
+network administrators to see if they have a program that does most of
+this already, since somebody somewhere at the company has probably been
+through something similar to this before, and would be much more
+helpful/knowledgeable about the local setup than I would be.  But feel
+free to mail me as a last resort.
+
+   ---------- Footnotes ----------
+
+   (1) TERM is a user-level protocol for emulating IP over a serial
+line.  More information is available at
+<ftp://sunsite.unc.edu/pub/Linux/apps/comm/term>
+
+   (2) Please see the full Emacs distribution for a description of
+regular expressions
+
+
+File: w3.info,  Node: Proxy Gateways,  Next: Installing SSL,  Prev: Dealing with Firewalls,  Up: Top
+
+Proxy Gateways
+**************
+
+   In late January 1993, Kevin Altis and Lou Montulli proposed and
+implemented a new proxy service.  This service requires the use of
+environment variables to specify a gateway server/port # to send
+protocol requests to.  Each protocol (HTTP, WAIS, gopher, FTP, etc.)
+can have a different gateway server.  The environment variables are
+`PROTOCOL'_proxy, where `PROTOCOL' is one of the supported network
+protocols (gopher, file, HTTP, FTP, etc.)
+
+   For companies with internal intranets, it will usually be helpful to
+define a list of hosts that should be contacted directly, not sent
+through the proxy.  The `NO_PROXY' environment variable controls what
+hosts are able to be contacted directly.  This should be a comma
+separated list of hostnames, domain names, or a mixture of both.
+Asterisks can be used as a wildcard.  For example:
+
+     NO_PROXY=*.aventail.com,home.com,*.seanet.com
+
+   tells Emacs/W3 to contact all machines in the aventail.com and
+seanet.com domains directly, as well as the machine named home.com.
+
+   For those adventurous souls who enjoy writing regular expressions,
+all the proxy settings can be manipulated from Emacs-Lisp.  The variable
+`url-proxy-services' controls this.  This is an assoc list, keyed on
+the protocol type (HTTP, gopher, etc) in all lowercase.  The `cdr' of
+each entry should be the ADDRESS of the proxy server to contact,
+followed by ":" and the port number to use. In the case of the special
+"no_proxy" entry, it should be a regular expression that matches any
+hostnames that should be contacted directly.
+
+     (setq url-proxy-services
+            '(("http"     . "proxy.aventail.com:80")
+              ("no_proxy" . "^.*\\(aventail\\|seanet\\)\.com")))
+
+
+File: w3.info,  Node: Installing SSL,  Next: Mailcap Files,  Prev: Proxy Gateways,  Up: Top
+
+Installing SSL
+**************
+
+   In order to use SSL in Emacs/W3, an implementation of SSL is
+necessary.  Emacs/W3 is configued to work out of the box with SSLeay
+0.6.6 or later.  For best results, you should apply a patch that makes
+the SSLeay client much quieter about what it reports.
+
+   You can download SSLeay from <ftp://ftp.psy.uq.oz.au/pub/Crypto/SSL/>
+
+   The following variables control how the external program is invoked.
+
+`ssl-program-name'
+     The name of the program to run, as a string.
+
+          (setq ssl-program-name "s_client")
+
+`ssl-program-arguments'
+     This should be used if your SSL program needs command line
+     switches to specify any behaviour (certificate file locations,
+     etc).  This is a list of strings and symbols.
+
+     The special symbols 'host and 'port may be used in the list of
+     arguments and will be replaced with the hostname and service/port
+     that will be connected to.
+
+          (setq ssl-program-arguments '("-host" host
+                                        "-port" service
+                                        "-verify" "4"
+                                        "-CApath /usr/local/ssl/certs"))
+     The default is ("-host" host "-port" service "-verify"
+SSL-CERTIFICATE-VERIFICATION-POLICY -CApath SSL-CERTIFICATE-DIRECTORY).
+
+   `ssl-certificate-directory' is the directory in which CA
+certificates are stored.  It is `W3-CONFIGURATION-DIRECTORY/cert' by
+default.
+
+   `ssl-rehash-program-name' is the program that is run after adding a
+certificate to the `ssl-certificate-directory' directory.  It is run
+with the directory name as an argument and defaults to `c_rehash'.
+
+   `ssl-view-certificate-program-name' names the program that can
+produce a human-readable view of a certificate.  It is `x509' by
+default and is called with the arguments listed in
+`ssl-view-certificate-program-arguments' which is `("text" "-inform"
+"DER")' by default.
+
+   `ssl-certificate-directory-style' specifies the type of certificate
+database to use.  It's default (and at the moment, only possible value)
+is `ssleay' which specifies a directory or pem encoded certificates
+with hash symlinks.
+
+   You can decide how high up the chain of certificates should be
+verified by setting `ssl-certificate-verification-policy'.  Possible
+values are
+0
+     No verification
+
+1
+     Verification required
+
+3
+     Reject connection if verification fails
+
+5
+     SSL_VERIFY_CLIENT_ONCE The default is 0
+
+
+File: w3.info,  Node: Mailcap Files,  Next: Temporary,  Prev: Installing SSL,  Up: Top
+
+Mailcap Files
+*************
+
+   NCSA Mosaic and almost all other WWW browsers rely on a separate file
+for mapping MIME types to external viewing programs.  This takes some of
+the burden off of browser developers, so each browser does not have to
+support all image formats, or postscript, etc.  Instead of having the
+users of Emacs/W3 duplicate this in lisp, this file can be parsed using
+the `mm-parse-mailcaps' function.  This function is called each time
+Emacs/W3 is loaded.  It tries to locate mimetype files in several
+places. If the environment variable `MAILCAPS' is nonempty, then this
+is assumed to specify a UNIX-like path of mimetype files (this is a
+colon separated string of pathnames).  If the `MAILCAPS' environment
+variable is empty, then Emacs/W3 looks for these files:
+
+  1. `~/.mailcap'
+
+  2. `/etc/mailcap'
+
+  3. `/usr/etc/mailcap'
+
+  4. `/usr/local/etc/mailcap'
+
+   This format of this file is specified in RFC 1343, but a brief
+synopsis follows (this is taken verbatim from sections of RFC 1343).
+
+   Each mailcap file consists of a set of entries that describe the
+proper handling of one media type at the local site.  For example, one
+line might tell how to display a message in Group III fax format.  A
+mailcap file consists of a sequence of such individual entries,
+separated by newlines (according to the operating system's newline
+conventions). Blank lines and lines that start with the "#" character
+(ASCII 35) are considered comments, and are ignored.  Long entries may
+be continued on multiple lines if each non-terminal line ends with a
+backslash character ('\', ASCII 92), in which case the multiple lines
+are to be treated as a single mailcap entry.  Note that for such
+"continued" lines, the backslash must be the last character on the line
+to be continued.
+
+   Each mailcap entry consists of a number of fields, separated by
+semi-colons.  The first two fields are required, and must occur in the
+specified order.  The remaining fields are optional, and may appear in
+any order.
+
+   The first field is the content-type, which indicates the type of data
+this mailcap entry describes how to handle.  It is to be matched against
+the type/subtype specification in the "Content-Type" header field of an
+Internet mail message.  If the subtype is specified as "*", it is
+intended to match all subtypes of the named content-type.
+
+   The second field, view-command, is a specification of how the
+message or body part can be viewed at the local site.  Although the
+syntax of this field is fully specified, the semantics of program
+execution are necessarily somewhat operating system dependent.
+
+   The optional fields, which may be given in any order, are as follows:
+   * The "compose" field may be used to specify a program that can be
+     used to compose a new body or body part in the given format.  Its
+     intended use is to support mail composing agents that support the
+     composition of multiple types of mail using external composing
+     agents.  As with the view- command, the semantics of program
+     execution are operating system dependent.  The result of the
+     composing program may be data that is not yet suitable for mail
+     transport--that is, a Content-Transfer-Encoding may need to be
+     applied to the data.
+
+   * The "composetyped" field is similar to the "compose" field, but is
+     to be used when the composing program needs to specify the
+     Content-type header field to be applied to the composed data.  The
+     "compose" field is simpler, and is preferred for use with existing
+     (non-mail-oriented) programs for composing data in a given format.
+     The "composetyped" field is necessary when the Content-type
+     information must include auxilliary parameters, and the
+     composition program must then know enough about mail formats to
+     produce output that includes the mail type information.
+
+   * The "edit" field may be used to specify a program that can be used
+     to edit a body or body part in the given format.  In many cases,
+     it may be identical in content to the "compose" field, and shares
+     the operating-system dependent semantics for program execution.
+
+   * The "print" field may be used to specify a program that can be
+     used to print a message or body part in the given format.  As with
+     the view-command, the semantics of program execution are operating
+     system dependent.
+
+   * The "test" field may be used to test some external condition (e.g.
+     the machine architecture, or the window system in use) to
+     determine whether or not the mailcap line applies.  It specifies a
+     program to be run to test some condition.  The semantics of
+     execution and of the value returned by the test program are
+     operating system dependent.  If the test fails, a subsequent
+     mailcap entry should be sought.  Multiple test fields are not
+     permitted--since a test can call a program, it can already be
+     arbitrarily complex.
+
+   * The "needsterminal" field indicates that the view-command must be
+     run on an interactive terminal.  This is needed to inform
+     window-oriented user agents that an interactive terminal is
+     needed.  (The decision is not left exclusively to the view-command
+     because in some circumstances it may not be possible for such
+     programs to tell whether or not they are on interactive
+     terminals.)  The needsterminal command should be assumed to apply
+     to the compose and edit commands, too, if they exist.  Note that
+     this is NOT a test--it is a requirement for the environment in
+     which the program will be executed, and should typically cause the
+     creation of a terminal window when not executed on either a real
+     terminal or a terminal window.
+
+   * The "copiousoutput" field indicates that the output from the
+     view-command will be an extended stream of output, and is to be
+     interpreted as advice to the UA (User Agent mail- reading program)
+     that the output should be either paged or made scrollable. Note
+     that it is probably a mistake if needsterminal and copiousoutput
+     are both specified.
+
+   * The "description" field simply provides a textual description,
+     optionally quoted, that describes the type of data, to be used
+     optionally by mail readers that wish to describe the data before
+     offering to display it.
+
+   * The "x11-bitmap" field names a file, in X11 bitmap (xbm) format,
+     which points to an appropriate icon to be used to visually denote
+     the presence of this kind of data.
+
+   * Any other fields beginning with "x-" may be included for local or
+     mailer-specific extensions of this format.  Implementations should
+     simply ignore all such unrecognized fields to permit such
+     extensions, some of which might be standardized in a future
+     version of this document.
+
+
+File: w3.info,  Node: Temporary,  Next: General Index,  Prev: Mailcap Files,  Up: Top
+
+
+File: w3.info,  Node: General Index,  Next: Key Index,  Prev: Temporary,  Up: Top
+
+General Index
+*************
+
+* Menu:
+
+* .w3:                                   Startup Files.
+* 32-Bit Windows:                        Windows.
+* AXP-VMS:                               VMS.
+* Authentication, Basic:                 Security.
+* Authentication, Digest:                Security.
+* Bad HTML:                              Debugging HTML.
+* Basic Usage:                           Basic Usage.
+* Broken SunOS libc:                     Dealing with Firewalls.
+* Browser emulation:                     Emulation.
+* Browser masquerading:                  Masquerading.
+* Browsing with no network connection:   Disk Caching.
+* Buffer movement:                       Action.
+* Bugs:                                  Reporting Bugs.
+* Cache cleaning:                        Disk Caching.
+* Cache only mode:                       Disk Caching.
+* Caching:                               Disk Caching.
+* Cleaning the cache:                    Disk Caching.
+* Clearing the cache:                    Disk Caching.
+* Clueless in Seattle:                   Getting Started.
+* Completion of URLs:                    Global History.
+* Contacting the author:                 Reporting Bugs.
+* Cookies:                               Cookies.
+* DOS:                                   MS-DOS.
+* Debugging:                             Debugging HTML.
+* Default stylesheet:                    Startup Files.
+* Digital VMS:                           VMS.
+* Disk Cache:                            Disk Caching.
+* Emulation of other browsers:           Emulation.
+* Export Restrictions <1>:               Installing SSL.
+* Export Restrictions:                   Security.
+* Exportability <1>:                     Installing SSL.
+* Exportability:                         Security.
+* FTP:                                   ftp.
+* Faulty hostname resolvers:             Dealing with Firewalls.
+* File URLs:                             file.
+* Firewalls:                             Dealing with Firewalls.
+* GNUS:                                  Interfacing to Mail/News.
+* Gag Puke Retch <1>:                    Installing SSL.
+* Gag Puke Retch:                        Security.
+* Getting Started:                       Getting Started.
+* HTTP:                                  http/https.
+* HTTP Proxy:                            Proxy Gateways.
+* HTTP/1.0 Authentication <1>:           Installing SSL.
+* HTTP/1.0 Authentication:               Security.
+* HTTPS:                                 http/https.
+* History Lists:                         Session History.
+* Hooks:                                 Hooks.
+* Hostname resolution:                   Dealing with Firewalls.
+* IRC:                                   irc.
+* IRC URLs:                              irc.
+* Interfacing to Mail/News:              Interfacing to Mail/News.
+* Invalid HTML:                          Debugging HTML.
+* LaTeX:                                 Printing.
+* Limiting the size of the cache:        Disk Caching.
+* Lynx emulation:                        lynx.
+* MS-DOG:                                MS-DOS.
+* MS-DOS:                                MS-DOS.
+* Masquerading as other browsers:        Masquerading.
+* Microsloth <1>:                        Windows.
+* Microsloth:                            MS-DOS.
+* NFS:                                   nfs.
+* NFS URLs:                              nfs.
+* NO_PROXY:                              Proxy Gateways.
+* Netless browsing:                      Disk Caching.
+* Netscape emulation:                    netscape.
+* Newsgroups:                            More Help.
+* No Proxy:                              Proxy Gateways.
+* Non-Unix Operating Systems:            Non-Unix Operating Systems.
+* OS/2:                                  OS/2.
+* Paranoia:                              Security.
+* Persistent Cache:                      Disk Caching.
+* Postscript:                            Printing.
+* Printing:                              Printing.
+* Proxies:                               Proxy Gateways.
+* Proxies, environment variables:        Proxy Gateways.
+* Proxies, exclusion lists:              Proxy Gateways.
+* Proxies, setting from lisp:            Proxy Gateways.
+* Proxy Servers:                         Proxy Gateways.
+* RMAIL:                                 Interfacing to Mail/News.
+* Relevant Newsgroups:                   More Help.
+* Relying on cache:                      Disk Caching.
+* Reporting Bugs:                        Reporting Bugs.
+* SSL <1>:                               Installing SSL.
+* SSL:                                   Security.
+* Secure Sockets Layer <1>:              Installing SSL.
+* Secure Sockets Layer:                  Security.
+* Security:                              Security.
+* Security, Basic:                       Security.
+* Security, Digest:                      Security.
+* Standalone mode:                       Disk Caching.
+* Startup files:                         Startup Files.
+* Support:                               More Help.
+* TERM:                                  Dealing with Firewalls.
+* Turning on caching:                    Disk Caching.
+* Usefulness of global history:          Global History.
+* Using Emacs/W3 with Gnus:              Interfacing to Mail/News.
+* Using Emacs/W3 with RMAIL:             Interfacing to Mail/News.
+* Using Emacs/W3 with VM:                Interfacing to Mail/News.
+* VAX-VMS:                               VMS.
+* VM:                                    Interfacing to Mail/News.
+* VMS:                                   VMS.
+* Warp:                                  OS/2.
+* Windows '95:                           Windows.
+* Windows (32-Bit):                      Windows.
+* browse-url-browser-function:           Interfacing to Mail/News.
+* data URLs:                             data.
+* files:                                 file.
+* finger:                                finger.
+* finger URLs:                           finger.
+* font-blink-interval:                   Other Variables.
+* gopher:                                gopher.
+* gopher URLs:                           gopher.
+* history:                               Startup Files.
+* info:                                  info.
+* info URLs:                             info.
+* mailserver:                            mailserver.
+* mailserver URLs:                       mailserver.
+* mailto:                                mailto.
+* mailto URLs:                           mailto.
+* mime-types file:                       Adding MIME types based on file extensions.
+* mm-add-mailcap-entry:                  Specifying Viewers.
+* mm-content-transfer-encodings:         Other Variables.
+* mm-mime-extensions:                    Adding MIME types based on file extensions.
+* mm-parse-mimetypes:                    Adding MIME types based on file extensions.
+* news:                                  news/nntp/snews.
+* news URLs:                             news/nntp/snews.
+* nntp:                                  news/nntp/snews.
+* profile:                               Startup Files.
+* rlogin:                                rlogin/telnet/tn3270.
+* rlogin URLs:                           rlogin/telnet/tn3270.
+* scroll-down:                           Movement.
+* snews:                                 news/nntp/snews.
+* socks-network-aliases:                 Dealing with Firewalls.
+* socks-nslookup-program:                Dealing with Firewalls.
+* socks-password:                        Dealing with Firewalls.
+* socks-redirection-rules:               Dealing with Firewalls.
+* socks-server:                          Dealing with Firewalls.
+* socks-server-aliases:                  Dealing with Firewalls.
+* socks-timeout:                         Dealing with Firewalls.
+* socks-username:                        Dealing with Firewalls.
+* ssl-certificate-directory:             Installing SSL.
+* ssl-certificate-directory-style:       Installing SSL.
+* ssl-certificate-verification-policy:   Installing SSL.
+* ssl-program-arguments:                 Installing SSL.
+* ssl-program-name:                      Installing SSL.
+* ssl-rehash-program-name:               Installing SSL.
+* ssl-view-certificate-program-arguments: Installing SSL.
+* ssl-view-certificate-program-name:     Installing SSL.
+* telnet:                                rlogin/telnet/tn3270.
+* telnet URLs:                           rlogin/telnet/tn3270.
+* tn3270:                                rlogin/telnet/tn3270.
+* tn3270 URLs:                           rlogin/telnet/tn3270.
+* turn-off-arena-masquerade-mode:        Masquerading.
+* turn-off-ie-masquerade-mode:           Masquerading.
+* turn-off-lynx-masquerade-mode:         Masquerading.
+* turn-off-netscape-masquerade-mode:     Masquerading.
+* turn-on-arena-masquerade-mode:         Masquerading.
+* turn-on-ie-masquerade-mode:            Masquerading.
+* turn-on-lynx-emulation:                lynx.
+* turn-on-lynx-masquerade-mode:          Masquerading.
+* turn-on-netscape-emulation:            netscape.
+* turn-on-netscape-masquerade-mode:      Masquerading.
+* url-automatic-caching:                 Disk Caching.
+* url-bad-port-list:                     Other Variables.
+* url-be-anal-about-file-attributes:     http/https.
+* url-be-asynchronous:                   Display Variables.
+* url-cache-creation-function:           Disk Caching.
+* url-cache-directory:                   Disk Caching.
+* url-cache-expired:                     Disk Caching.
+* url-cache-ignored-protocols:           Disk Caching.
+* url-confirmation-func:                 Other Variables.
+* url-cookie-confirmation:               Cookies.
+* url-cookie-file:                       Cookies.
+* url-cookie-trusted-urls:               Cookies.
+* url-cookie-untrusted-urls:             Cookies.
+* url-default-ports:                     news/nntp/snews.
+* url-default-retrieval-proc:            Display Variables.
+* url-directory-index-file:              file.
+* url-external-retrieval-args:           Other Variables.
+* url-external-retrieval-program:        Other Variables.
+* url-gateway-broken-resolution:         Dealing with Firewalls.
+* url-gateway-local-host-regexp:         Dealing with Firewalls.
+* url-gateway-method:                    Dealing with Firewalls.
+* url-gateway-prompt-pattern:            Dealing with Firewalls.
+* url-gateway-rlogin-host:               Dealing with Firewalls.
+* url-gateway-rlogin-parameters:         Dealing with Firewalls.
+* url-gateway-rlogin-user-name:          Dealing with Firewalls.
+* url-gateway-telnet-host:               Dealing with Firewalls.
+* url-gateway-telnet-login-prompt:       Dealing with Firewalls.
+* url-gateway-telnet-parameters:         Dealing with Firewalls.
+* url-gateway-telnet-password:           Dealing with Firewalls.
+* url-gateway-telnet-password-prompt:    Dealing with Firewalls.
+* url-gateway-telnet-user-name:          Dealing with Firewalls.
+* url-global-history-file <1>:           Global History.
+* url-global-history-file:               Startup Files.
+* url-global-history-save-interval <1>:  Global History.
+* url-global-history-save-interval:      Startup Files.
+* url-gopher-icons:                      gopher.
+* url-gopher-labels:                     gopher.
+* url-gopher-to-mime:                    gopher.
+* url-honor-refresh-requests:            http/https.
+* url-inhibit-mime-parsing:              Other Variables.
+* url-irc-function:                      irc.
+* url-keep-history <1>:                  Global History.
+* url-keep-history <2>:                  Session History.
+* url-keep-history:                      Startup Files.
+* url-list-processes:                    Miscellaneous.
+* url-mail-command:                      mailto.
+* url-max-password-attempts:             Other Variables.
+* url-mime-language-string:              Other Variables.
+* url-multiple-p:                        Other Variables.
+* url-news-server:                       news/nntp/snews.
+* url-news-use-article-mode:             news/nntp/snews.
+* url-nfs-automounter-directory-spec:    nfs.
+* url-passwd-entry-func:                 Other Variables.
+* url-personal-mail-address:             Other Variables.
+* url-privacy-level:                     Security.
+* url-proxy-services:                    Proxy Gateways.
+* url-show-status:                       Other Variables.
+* url-standalone-mode:                   Disk Caching.
+* url-temporary-directory:               Other Variables.
+* url-uncompressor-alist:                Other Variables.
+* url-use-hypertext-dired:               Action.
+* url-use-hypertext-gopher:              gopher.
+* url-view-url:                          Information.
+* w3:                                    Getting Started.
+* w3-arena-masquerade-mode:              Masquerading.
+* w3-auto-image-alt:                     Display Variables.
+* w3-backward-in-history <1>:            Session History.
+* w3-backward-in-history:                Movement.
+* w3-bullets:                            Display Variables.
+* w3-complete-link:                      Action.
+* w3-configuration-directory:            Startup Files.
+* w3-debug-buffer:                       Debugging HTML.
+* w3-debug-html:                         Debugging HTML.
+* w3-default-configuration-file:         Startup Files.
+* w3-default-homepage:                   Getting Started.
+* w3-default-image-alt-func:             Display Variables.
+* w3-default-stylesheet:                 Startup Files.
+* w3-defined-link-types:                 Display Variables.
+* w3-delay-image-loads:                  Display Variables.
+* w3-display-errors-hook:                Debugging HTML.
+* w3-display-frames:                     Display Variables.
+* w3-do-incremental-display:             Display Variables.
+* w3-do-scripting:                       Other Variables.
+* w3-document-information:               Information.
+* w3-documentation-root:                 Other Variables.
+* w3-download-this-url:                  Action.
+* w3-download-url-at-point:              Action.
+* w3-dummy-img-alt-repl:                 Display Variables.
+* w3-echo-link:                          Display Variables.
+* w3-end-of-document:                    Movement.
+* w3-fetch <1>:                          Session History.
+* w3-fetch:                              Action.
+* w3-follow-inlined-image:               Action.
+* w3-follow-link:                        Action.
+* w3-follow-mouse:                       Action.
+* w3-forward-in-history <1>:             Session History.
+* w3-forward-in-history:                 Movement.
+* w3-goto-last-buffer <1>:               Action.
+* w3-goto-last-buffer:                   Movement.
+* w3-help:                               Miscellaneous.
+* w3-history-backward:                   Movement.
+* w3-history-forward:                    Movement.
+* w3-honor-stylesheets:                  Display Variables.
+* w3-horizontal-rule-char:               Display Variables.
+* w3-hotlist-add-document:               Hotlist Handling.
+* w3-hotlist-add-document-at-point:      Hotlist Handling.
+* w3-hotlist-append:                     Hotlist Handling.
+* w3-hotlist-apropos:                    Hotlist Handling.
+* w3-hotlist-delete:                     Hotlist Handling.
+* w3-hotlist-file <1>:                   Hotlist Handling.
+* w3-hotlist-file:                       Startup Files.
+* w3-hotlist-refresh:                    Hotlist Handling.
+* w3-hotlist-rename-entry:               Hotlist Handling.
+* w3-html-errors-font-lock-keywords:     Debugging HTML.
+* w3-icon-format:                        Display Variables.
+* w3-ie-masquerade-mode:                 Masquerading.
+* w3-image-mappings:                     Display Variables.
+* w3-insert-formatted-url:               Miscellaneous.
+* w3-insert-this-url:                    Miscellaneous.
+* w3-latex-docstyle:                     Printing.
+* w3-latex-packages:                     Printing.
+* w3-latex-print-links:                  Printing.
+* w3-latex-use-latex2e:                  Printing.
+* w3-latex-use-maketitle:                Printing.
+* w3-leave-buffer <1>:                   Action.
+* w3-leave-buffer:                       Movement.
+* w3-load-hook:                          Hooks.
+* w3-lynx-emulation-minor-mode:          lynx.
+* w3-lynx-masquerade-mode:               Masquerading.
+* w3-mail-current-document:              Miscellaneous.
+* w3-mail-document-author:               Miscellaneous.
+* w3-mail-document-under-point:          Miscellaneous.
+* w3-max-menu-length:                    Display Variables.
+* w3-max-menu-width:                     Display Variables.
+* w3-maximum-line-length:                Display Variables.
+* w3-min-img-size:                       Display Variables.
+* w3-mode-hook:                          Emulation.
+* w3-modeline-format:                    Display Variables.
+* w3-netscape-compatible-comments:       Other Variables.
+* w3-netscape-emulation-minor-mode:      netscape.
+* w3-netscape-masquerade-mode:           Masquerading.
+* w3-next-document:                      Movement.
+* w3-notify:                             Display Variables.
+* w3-open-local:                         Action.
+* w3-popup-info:                         Information.
+* w3-popup-menu-on-mouse-3:              Other Variables.
+* w3-postscript-print-function:          Printing.
+* w3-prev-document:                      Movement.
+* w3-print-command:                      Printing.
+* w3-print-this-url:                     Action.
+* w3-print-url-under-point:              Action.
+* w3-quit <1>:                           Action.
+* w3-quit:                               Movement.
+* w3-refresh-buffer:                     Action.
+* w3-reload-document:                    Action.
+* w3-reuse-buffers:                      Other Variables.
+* w3-right-margin:                       Display Variables.
+* w3-save-as:                            Action.
+* w3-save-this-url:                      Information.
+* w3-save-url:                           Information.
+* w3-scroll-up:                          Movement.
+* w3-show-history-list <1>:              Session History.
+* w3-show-history-list:                  Action.
+* w3-show-hotlist:                       Hotlist Handling.
+* w3-source-document:                    Information.
+* w3-source-document-at-point:           Information.
+* w3-start-of-document:                  Movement.
+* w3-submit-bug:                         Reporting Bugs.
+* w3-temporary-directory:                Other Variables.
+* w3-track-mouse:                        Other Variables.
+* w3-use-hotlist:                        Hotlist Handling.
+* w3-use-links:                          Miscellaneous.
+* w3-use-menus:                          Other Variables.
+* w3-use-terminal-characters:            Display Variables.
+* w3-use-terminal-characters-on-tty:     Display Variables.
+* w3-use-terminal-glyphs:                Display Variables.
+* w3-user-colors-take-precedence:        Display Variables.
+* w3-user-fonts-take-precedence:         Display Variables.
+* w3-version:                            Miscellaneous.
+* w3-view-this-url:                      Information.
+* w3-widget-backward:                    Movement.
+* w3-widget-forward:                     Movement.
+

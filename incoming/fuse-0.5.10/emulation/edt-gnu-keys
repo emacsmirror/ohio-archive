@@ -1,0 +1,80 @@
+;;
+;;  Key definitions for the EDT emulation within GNU Emacs
+;;
+
+(defconst *EDT-keys*
+  '(
+
+;;
+;;  Arrows
+;;
+    ("UP" . [up])
+    ("DOWN" . [down])
+    ("LEFT" . [left])
+    ("RIGHT" . [right])
+
+;;
+;;  PF keys
+;;
+    ("PF1" . [f9])
+    ("PF2" . [f10])
+    ("PF3" . [f11])
+    ("PF4" . [f12])
+
+;;
+;;  KP0-9 KP- KP, KPP and KPE
+;;
+    ("KP0" . [kp-insert])
+    ("KP1" . [kp-end])
+    ("KP2" . [kp-down])
+    ("KP3" . [kp-next])
+    ("KP4" . [kp-left])
+    ("KP5" . [kp-begin])
+    ("KP6" . [kp-right])
+    ("KP7" . [kp-home])
+    ("KP8" . [kp-up])
+    ("KP9" . [kp-prior])
+    ("KP-" . [kp-subtract])
+    ("KP," . [67108908])
+    ("KPP" . [kp-delete])
+    ("KPE" . [kp-enter])
+
+;;
+;;  Editing keypad (FIND, INSERT, REMOVE)
+;;                 (SELECT, PREVIOUS, NEXT)
+;;
+    ("FIND" . [insert])
+    ("INSERT" . [home])
+    ("REMOVE" . [prior])
+    ("SELECT" . [delete])
+    ("PREVIOUS" . [end])
+    ("NEXT" . [next])
+
+;;
+;;  F1-14 Help Do F17-F20
+;;
+    ("F1" . [f1])
+    ("F2" . [f2])
+    ("F3" . [f3])
+    ("F4" . [f4])
+    ("F5" . [f5])
+    ("F6" . [f6])
+    ("F7" . [f7])
+    ("F8" . [f8])
+    ("F9" . [M-f1])
+    ("F10" . [M-f2])
+    ("F11" . [M-f3])
+    ("F12" . [M-f4])
+    ("F13" . [M-f5])
+    ("F14" . [M-f6])
+    ("HELP" . [kp-divide])
+    ("DO" . [kp-multiply])
+    ("F17" . [M-f9])
+    ("F18" . [M-f10])
+    ("F19" . [M-f11])
+    ("F20" . [M-f12])
+;;
+;;  Extra Keys 
+;;
+    )
+  )

@@ -1,0 +1,309 @@
+#**********************************************************************
+#
+#    .twmrc
+#
+#**********************************************************************
+
+IconDirectory	"/usr/lib/X11/twm/bitmaps"
+
+#NoDefaults
+NoVersion
+NoGrabServer
+NoRaiseOnMove
+NoRaiseOnResize
+#NoMenuShadows
+NoTitleHighlight
+NoHighlight
+NoTitleFocus
+NoSaveUnders
+SqueezeTitle
+ConstrainedMoveTime 0
+DecorateTransients
+#TitleButtonBorderWidth 0
+#ButtonIndent 0
+#LeftTitleButton "iconify.bm" = f.iconify
+#RightTitleButton "mac_close.bm" = f.destroy
+OpaqueMove
+#ClientBorderWidth
+BorderWidth	1
+RandomPlacement
+IconRegion	"600x200+0+0" NORTH EAST 75 25
+#IconRegion	"1024x250+0+600" NORTH WEST 1024 25
+#IconRegion	"600x200-200+0" NORTH EAST 75 25
+#IconRegion	"200x100-0+200" WEST NORTH 25 50
+TitleFont	"-*-helvetica-bold-o-normal--*-140-*-*-*-*-iso8859-1"
+MenuFont	"-*-helvetica-bold-o-normal--*-140-*-*-*-*-iso8859-1"
+IconFont	"-*-helvetica-bold-o-normal--*-140-*-*-*-*-iso8859-1"
+ResizeFont	"-*-helvetica-bold-o-normal--*-120-*-*-*-*-iso8859-1"
+IconManagerFont	"-*-helvetica-bold-o-normal--*-120-*-*-*-*-iso8859-1"
+#ShowIconManager
+SortIconManager
+IconManagerGeometry	"=100x100-200+0"
+
+Cursors
+{
+	Button "left_ptr"
+	Menu "hand2"
+	Title "left_ptr"
+	Frame "left_ptr"
+	Icon "left_ptr"
+}
+
+Color
+{
+    BorderColor "black"
+    TitleBackground "LightCyan" 	
+    TitleForeground "BlueViolet"	
+    MenuBackground "GhostWhite"
+    MenuForeground "Black"
+    MenuTitleBackground "LightCyan"
+    MenuTitleForeground "BlueViolet"
+    IconBorderColor "GhostWhite"
+    IconBackground "LightCyan"
+    IconForeground "BlueViolet"
+}
+
+Monochrome
+{
+	IconManagerHighlight	"white"
+}
+
+# define key bindings
+
+MoveDelta 3
+
+Function "move-or-raise"
+{
+	f.move
+	f.deltastop
+	f.raise
+}
+
+Function "move-or-raiselower"
+{
+	f.move
+	f.deltastop
+	f.raiselower
+}
+
+Function "move-or-iconify"
+{
+	f.move
+	f.deltastop
+	f.iconify
+}
+
+Function "raise-or-resize"
+{
+	f.raise
+	f.deltastop
+	f.resize
+}
+
+Function "next-window"
+{
+}
+
+Function "previous-window"
+{
+}
+
+DefaultFunction f.nop
+
+Button1	=	: title 	: f.function "move-or-raiselower"
+Button3 =	: title		: f.menu "Title Menu"
+Button1 = m	: window|icon	: f.lower
+Button2 = m	: window|icon	: f.move
+Button2 = c m   : window	: f.iconify
+Button3 = m	: window	: f.function "raise-or-resize"
+Button3 = c m	: title		: f.destroy
+Button1 =	: root		: f.menu "Listeners"
+Button2 =	: root		: f.menu "Miscellaneous"
+Button3 =	: root		: f.menu "System"
+Button1 =	: icon		: f.function "move-or-iconify"
+Button3 =	: icon		: f.menu "Title Menu"
+"F17"	=	: all		: f.iconify	# L7 (Open)  on SPARC1 type-4
+"F15"	=	: all		: f.raiselower	# L5 (Front) on SPARC1 type-4
+"F13"	=	: all		: f.identify	# L3 (Props) on SPARC1 type-4
+
+#ForceIcons
+
+Icons
+{
+	"Xmh"		"mail-up.bm"		# from IconDirectory
+	"XTerm"		"xterm.bm"		# from IconDirectory
+	"Emacs"		"swissarmyknife.bm"
+	"emacs"		"swissarmyknife.bm"	# from IconDirectory
+	"printer"	"printer.bm"	
+}
+
+#UnknownIcon	"icon"
+
+NoTitle
+{
+  "clock"
+  "oclock"
+  "xclock"
+  "xbiff"
+  "xeyes"
+  "xload"
+  "A Common Window"
+}
+
+IconManagerDontShow {
+	"clock"
+	"oclock"
+	"xclock"
+	"xbiff"
+	"xeyes"
+	"xload"
+	"A Common Window"
+}
+
+menu "Listeners"
+{
+"Listeners"	f.title
+"Emacs"		!"xemacs -geometry 80x58+3+25 &"
+"Local"		!"xterm -geometry +405+118 -T Local -n Local -bg AliceBlue -fg MidnightBlue &"
+"Console"	!"xconsole -geometry +1+1 &"
+"Manual"	!"xman -geometry 144x70+758+18 -bg LightCyan -fg MidnightBlue &"
+"News"		!"xrn &"
+"Library"	!"xrhost Ossian -bg Beige -fg DarkOliveGreen -T Library -n Library -e /home/brs/Bin/brsearch &"
+"Remote"	f.menu "Remote Hosts"
+}
+
+menu "Remote Hosts"
+{
+"Remote Hosts"	f.title
+"Emacs on Happy"!"xrsh happy env EMACSLIBRARY=$EMACSLIBRARY xemacs &"
+"Tivax"		!"xterm -T Tivax -n Tivax -geometry +405+490 -bg Aquamarine1 -fg Aquamarine4 -e rsh tivax &"
+"Snowwhite"	!"xrhost Snowwhite -bg honeydew -fg ForestGreen &"
+"Rannoch"	!"xrhost Rannoch -bg MistyRose1 -fg DarkViolet &"
+"Morlich"	!"xrhost Morlich -bg snow2 -fg snow4 &"
+"Chigley"	!"xrhost Chigley -bg azure1 -fg SlateBlue3 &"
+"Bashful"	!"xrhost Bashful -bg lavenderblush1 -fg lavenderblush4 &"
+}
+
+menu "Miscellaneous"
+{
+"Miscellaneous" f.title
+"Tools"		f.menu "Tools"
+"Screen Locks"	f.menu "Screen Locks"
+"Demos"		f.menu "Demos"
+"Sounds" 	f.menu "Sounds"
+"Backgrounds"	f.menu "Backgrounds"
+"Games"		f.menu "Games"
+"Clocks"	f.menu "Clocks"
+}
+
+menu "Tools"
+{
+"File Chooser & Browser" !"xfilebrowser &"
+"Colours"	!"xcolors -fg black -bg white &"
+"Colour Editor"	!"xcoloredit &"
+"Clipboard"	!"xclipboard &"
+"Calculator"	!"xcalc &"
+"Fig"		!"xfig -fg NavyBlue -bg LightCyan -geometry +202+18 &"
+"Tgif"		!"tgif &"
+"InterViews Draw"		!"idraw -l &"
+}
+
+menu "Screen Locks" 
+{
+"Fractal Lock"		!"xset bc; xlock &"
+"Colour Fractal Lock"	!"xlock -color &"
+"Fortune Lock"		!"xnlock &"
+}
+
+menu "Demos"
+{
+"Fortune"	!"xhost +snowwhite; rcmd snowwhite /bin/env PATH=$PATH DISPLAY=`echo $DISPLAY |sed s/unix/$HOST/` xfortune"
+"Kaleid"	!"kaleid -bstore -randomcolor &"
+"String Art"	!"kaleid -randomcolor -qix &"
+"Ico"		!"ico -p8 &"
+"Eyes"		!"xeyes &"
+}
+
+menu "Sounds"
+{
+"Audio Clock"			!"oclock-audio &"
+"Headlights On The Parade"	!"Xplayer /usr/hci/staff/russell/sounds/music/HeadlightsOnTheParade.au &"
+"Lay Down Sally" 		!"Xplayer /usr/hci/staff/russell/sounds/music/LayDownSally.au &"
+"Santa Claus Is Comin' To Town" !"Xplayer /usr/hci/staff/russell/sounds/music/SantaClausIsCominToTown.au &"
+"Stay"				!"Xplayer /usr/hci/staff/russell/sounds/music/Stay.au &"
+"The Downtown Lights" 		!"cat /usr/hci/staff/russell/sounds/music/TheDowntownLights-*.au | Xplayer &"
+"Tinseltown In The Rain" 	!"cat /usr/hci/staff/russell/sounds/music/TinseltownInTheRain-*.au | Xplayer &"
+"White Christmas"	 	!"cat /usr/hci/staff/russell/sounds/music/WhiteChristmas-*.au | Xplayer &"
+"You Can Call Me Al" 		!"Xplayer /usr/hci/staff/russell/sounds/music/YouCanCallMeAl.au &"
+"Short Bass Riff"		!"Xplayer /usr/hci/staff/russell/sounds/music/bass.au &"
+}
+
+menu "Backgrounds"
+{
+"Floating Colours" 	!"floatbg &"
+"Spooky"		!"xloadimage -onroot -border Grey27 -center -zoom 175 -brighten 75 -quiet /usr/hci/staff/russell/images/russell.ras &"
+"Batman"		!"xloadimage -onroot -colors 64 /usr/hci/staff/russell/images/batman.gif &"
+"Spock"			!"xloadimage -onroot -border Black -colors 64 -center -zoom 360 images/spock1.gif &"
+"Spock & Kirk" 		!"xloadimage -onroot -border Black -colors 64 -center -zoom 360 images/spock-kirk.gif &"
+"Liberty"       	!"xloadimage -onroot -center -xzoom 360 -yzoom 450 /usr/hci/staff/russell/images/ladyliberty.gif &"
+"Aquarium"		!"xaqua -r0 -f8 &"
+}
+
+menu "Games"
+{
+"Puzzle"	!"puzzle -picture /usr/X/XV11R4/mit/demos/puzzle/mandrill.cm &"
+"Patience"	!"xsol &"
+"Tetris"	!"xtetris &"
+"Asteroids"	!"xasteroids &"
+}
+
+menu "Clocks"
+{
+"Round Clock"		!"oclock &"
+"Digital Clock"		!"dclock -d -bg Ivory &"
+"X Clock"		!"xclock &"
+"Open Look Clock"	!"clock &"
+}
+
+menu "System"
+{
+	"System"		f.title
+	"Window ops"		f.menu "Window Ops"
+	"Windows"		f.menu "TwmWindows"
+	"" 			f.nop
+	"Refresh"		f.refresh
+	"Unfocus"		f.unfocus
+	"Show Icon Box"		f.showiconmgr
+	"Hide Icon Box"		f.hideiconmgr
+	"Version"		f.version
+	""			f.nop
+	"Restart"		f.restart
+	"Logout"		f.quit
+}
+
+menu "Window Ops"
+{
+	"Window Ops"		f.title
+	"Lower"			f.lower
+	"Raise"			f.raise
+	"Resize"		f.resize
+	"Move"			f.move
+	"Deiconify"		f.deiconify
+	"Iconify"		f.iconify
+	"Identify"		f.identify
+	"Focus"			f.focus
+	"Kill"			f.destroy
+}
+
+menu "Title Menu"
+{
+	"Lower"			f.lower
+	"Raise"			f.raise
+	"Resize"		f.resize
+	"Move"			f.move
+	"Iconify"		f.iconify
+	"Identify"		f.identify
+	"Focus"			f.focus
+	"Kill"			f.destroy
+	"Dismiss"		f.delete
+}

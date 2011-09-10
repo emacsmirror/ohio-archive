@@ -1,0 +1,29 @@
+This directory contains source code for Emacs that is mainly written in
+Emacs Lisp.
+
+You can use it for your own programs under the terms of the GNU General
+Public License.	 See the file `COPYING' for more informations.
+
+The file `DOC' contains the online documentation of all commands and
+user options.  An example setup is shown in `emacs.el'.  Reading these
+two files is recommended.
+
+Installation instructions for the impatient:
+
+	$ ./configure
+	$ make
+	# make install
+
+Copy the marked sections from `emacs.el' to the `site-start.el' file and
+modify the variable values according to your site.
+
+Please send criticisms, bug reports, suggestions, enhancements and all
+that to <rs@purple.IN-Ulm.DE>.
+
+
+		       I used ta do a little but the little wouldn't do
+					so the little got more and more.
+			      I just keep tryin' ta get a little better
+				       said a little better than before.
+
+						   Guns n' Roses (1987)

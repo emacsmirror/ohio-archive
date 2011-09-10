@@ -1,0 +1,1000 @@
+the \LaTeX\ and info output.
+
+
+\node Insert Left Brace, Insert Right Brace, Inserting A Backslash, Inserting Braces Backslashes Periods
+\subsection{Insert Left Brace}
+\cindex{Insert Left Brace}
+\findex{left-braces}
+
+\code{\back \{} stands for a single \{ in either printed or Info output.
+
+\node Insert Right Brace, Insert Colon, Insert Left Brace, Inserting Braces Backslashes Periods
+\subsection{Insert Right Brace}
+\cindex{Insert Right Brace}
+\cindex{Insert Right Brace}
+\findex{right-braces}
+
+\code{\back \}} stands for a single \} in either printed or Info output.
+
+\node Insert Colon, Insert Period, Insert Right Brace, Inserting Braces Backslashes Periods
+\subsection{Insert Colon}
+\cindex{Insert Colon}
+
+\code{\back :}\: is used after a character such as period or colon which
+normally causes \LaTeX\ to increase the width of the following whitespace,
+to suppress that effect.  For example, it can be used after periods that
+end abbreviations and do not end sentences.  \code{\back :}\: has no effect
+on the Info file output.
+
+\begin{example}
+It displays \back code\{Foo:\}\back : at that time.
+\end{example}
+
+\noindent
+produces
+
+\begin{quotation}
+It displays \code{Foo:}\: at that time.
+\end{quotation}
+
+The meanings of \code{\back :}\: and \code{\back .}\: in \LaTeX info are
+designed to work well with the Emacs sentence motion commands.
+
+\node Insert Period, Inserting Dots Bullets and TeX, Insert Colon, Inserting Braces Backslashes Periods
+\subsection{Insert Period}
+\cindex{Insert Period}
+\findex{periods}
+
+\code{\back .}\: stands for a period that really does end a sentence, useful
+when \LaTeX\ would otherwise assume by its heuristics that that is not so.
+This happens when there is a single-capital-letter word at the end of a
+sentence: \LaTeX\ normally guesses that it is an abbreviation.
+
+In the Info file output, \code{\back .}\: is equivalent to a simple \samp{.}.
+The \LaTeX info program preserves the amount of space that you use, so put
+two spaces after a period if you intend it to be the end of a sentence
+(as well as using \code{\back .}, if necessary, for the printed manual's sake).
+
+\begin{example}
+Give it to X. Give it to X\back .  Give it to X\back .
+\end{example}
+
+\noindent
+produces
+
+\begin{quotation}
+Give it to X. Give it to X\.  Give it to X\.
+\end{quotation}
+
+\node Inserting Dots Bullets and TeX, Dots, Insert Period, Marking Text Within a Paragraph
+\section{Inserting Dots Bullets and TeX}
+\cindex{Dots, inserting}
+\cindex{Bullets, inserting}
+\cindex{TeX-logo, inserting}
+\cindex{LaTeX-logo, inserting}
+\cindex{Special typesetting commands}
+\cindex{Typesetting commands for dots and the like}
+
+An ellipsis, a line of dots, is typeset differently than a string of
+periods; more whitespace is put between the dots in the ellipsis than is
+put between the periods.  Because of this, a special command is used in
+\LaTeX info for inserting dots.  Also, the trademark, \LaTeX, is typeset in a
+special fashion and it needs a command, as does the command for
+inserting the copyright symbol.  The \code{\back bullet} command is
+special, too.
+
+\begin{menu}
+* Dots::
+* Bullet::
+* Tex::
+\end{menu}
+
+\node Dots, Bullet, Inserting Dots Bullets and TeX, Inserting Dots Bullets and TeX
+\subsection{Dots}
+\findex{dots}
+\cindex{Inserting dots}
+\cindex{Dots, inserting}
+
+
+\code{\back dots} generates an ellipsis which is three dots in a row,
+appropriately spaced, like this: `\dots'.  Do not simply write three
+periods in the input file; that would work for the Info file output, but
+would produce the wrong amount of space between the periods in the printed
+manual.
+
+\begin{iftex}
+Here is an ellipsis: \dots
+
+Here are three periods in a row: ...
+
+The three periods in a row are closer together than the dots in the ellipsis.
+
+\end{iftex}
+
+\node Bullet, TeX, Dots, Inserting Dots Bullets and TeX
+\subsection{Bullet}
+\cindex{Bullet}
+\findex{bullet}
+
+\code{\back bullet} generates a large round dot, or the closest possible
+thing to one.
+
+Here is a bullet: \bullet
+
+\node TeX, Emphasizing Text, Bullet, Inserting Dots Bullets and TeX
+\subsection{TeX}
+\cindex{TeX}
+\findex{TeX}
+\findex{LaTeX}
+
+\code{\back TeX} generates `\TeX'.  In a printed manual, this is a
+special logo that is different from three ordinary letters.  
+\code{\back LaTeX} generates `\LaTeX'.  In a printed manual, this is
+a special logo that is different from five ordinary letters.
+
+
+\node Emphasizing Text, Emph and Strong, TeX, Marking Text Within a Paragraph
+\section{Emphasizing Text}
+\cindex{Emphasizing text}
+
+Usually, \LaTeX info changes the font automatically to mark words in the
+text according to what category the words belong to.  The \code{\back code}
+command, for example, does this.  Most often, this is the best way to mark
+specified words.  However, sometimes you will want to emphasize text
+directly. \LaTeX info has two ways to do this: commands that tell 
+\LaTeX info to emphasize the text but leave the method to the program, and
+commands that specify the font to use.  The first method is generally the
+best and it makes it possible to change the style of a document without
+have to re-edit it line by line.
+
+\begin{menu}
+* Emph and Strong::	Emphasizing text.
+* Fonts::		Selecting italic, bold or typewriter fonts.
+\end{menu}
+
+\node Emph and Strong, Fonts, Emphasizing Text, Emphasizing Text
+\subsection{Emph and Strong}
+\cindex{Emph and Strong}
+\findex{emph}
+\findex{strong}
+
+\code{\back emph} and \code{\back strong} are two forms of emphasis.  \code{\back strong}
+is stronger.
+
+In printed output, \code{\back emph} produces \emph{italics} and
+\code{\back strong} produces \strong{bold}.  In the Info file, both of
+these commands put asterisks around the argument.
+
+\node Fonts, Input and Include Files, Emph and Strong, Emphasizing Text
+\subsection{Fonts}
+\cindex{Fonts}
+\findex{i (italic font)}
+\findex{b (bold font)}
+\findex{t (typewriter font)}
+
+These three commands specify font changes in the printed manual and have no
+effect in the Info file.  \code{\back i} requests \i{italic} font (in some
+versions of \LaTeX, a slanted font is used), \code{\back b} requests \b{bold}
+face, and \code{\back t} requests the \t{fixed-width} font used by
+\code{\back kbd}.  All three commands apply to an argument that follows,
+surrounded by braces.\refill
+
+If possible, you should avoid using these three commands.  If you find a
+need to use one, it probably indicates a lack in the \LaTeX info language.
+
+\node Input and Include Files, Input Files, Fonts, Top
+\chapter{Input and Include Files}
+\cindex{Input and Include Files}
+
+When Info was first created, it was customary to create many small Info
+files on one subject.  By doing this, Emacs did not have to make a large
+buffer to hold the whole of a large Info file; instead, Emacs allocated
+just enough memory for the small Info file that was needed at the time.
+This way, Emacs could avoid wasting memory.  Include Files were designed
+as a way to create a single, large printed manual out of several smaller
+Info files.  However, because large Info files can now be split, include
+files are no longer strictly necessary and they are used infrequently.
+Most often, they are now used in projects where several different people
+are writing different sections of a document simultaneously.  
+
+Input files are simply inserted at the place where the \code{input} command
+occurs, both in the Infor file and the \LaTeX\ file.
+
+\begin{menu}
+* Input Files::
+* Include Files::
+\end{menu}
+
+\node Input Files, Include Files, Input and Include Files, Input and Include Files
+\section{Input Files}
+\cindex{Input Files}
+\findex{input}
+
+A line of the form \code{\back input\{\var{filename}\}} will include the
+contents of the file \var{filename} at that point.  A standard technique is
+to have a special file, used only for making a comprehensive manual,
+containing nothing but the beginning, the end, and a series of \code{\back
+input} commands.  The \code{\back input} \emph{must} occur at the beginning
+of a line.
+
+A file that is intended to be processed with \code{\back input}
+should not end with \code{\back end\{document\}}, since that would
+terminate \LaTeX\  processing immediately.
+
+
+\node Include Files, Conditionals, Input Files, Input and Include Files
+\section{Include Files}
+\cindex{Include Files}
+\findex{include}
+
+In a \LaTeX info file, the command \code{\back include\{filename\}} is
+ignored when the Info file is generated, but in a printed manual it
+causes the contents of the file \file{filename} to be processed and
+included in the manual.  The contents of the file
+\file{filename} can be ignored by Info because the first file can refer
+to \file{filename} with menus as well as cross references.  In the Info
+system, all the information is, as it were, `in one place'.  However,
+when two printed manuals are made from two separate \LaTeX info files,
+the two manuals are separate, and even if they give each other as
+references, the references are to separate documents.  Consequently, you
+will sometimes want to create a comprehensive, printed manual that
+contains all the necessary information together in one place.
+
+\code{\back include} files are special \LaTeX info files that are used only for
+making such a comprehensive manual.  They are listed inside an outer file
+that contains nothing but the beginning and end matter of a \LaTeX info file
+and a number of \code{\back include} commands listing the included files.
+
+An \code{\back include} file should not start with 
+\samp{\back documentstyle[latexinfo]}, as that has already been done by
+the outer file, and the character \samp{\back } has already been
+redefined to generate a backslash in the output.  Instead, a \code{\back
+include} file usually begins with a node; it lacks the beginning and
+ending of a
+\LaTeX info file that are described in the chapters on beginning and
+Ending a LaTeXinfo File. \xref{Beginning a LaTeXinfo File}, and
+\pxref{Ending a LaTeXinfo File}.  Likewise, a \code{\back include} file
+should not end with \code{\back end\{document\}}, since that would
+terminate \LaTeX\ processing immediately.\refill
+
+Here is an example of a outer \LaTeX info file with \code{\back include} files
+within it:\refill
+
+\clearpage
+\begin{verbatim}
+\documentstyle[11pt,twoside,latexinfo]{report}
+\pagestyle{headings}
+\begin{document}
+\bibliographystyle{alpha}
+
+\newindex{cp}
+
+\title{The Manual}
+
+\author{Fred Foobar,\\
+	Clarke Institute,\\
+	999 Queen Street,\\
+	Toronto, Ontario}
+
+\date{\today}
+
+\maketitle
+\tableofcontents
+\clearpage
+
+\setfilename{themanual.info}
+
+\include{foo.texinfo}
+\include{bar.texinfo}
+
+\begin{tex}
+\bibliography{references}
+\end{tex}
+
+\twocolumn
+ \chapter*{Function Index}
+ \printindex{fn}
+
+ \chapter*{Variable and Data Type Index}
+ \printindex{vr}
+
+\end{document}
+\end{verbatim}
+
+\node Conditionals, Using LaTeX Commands, Include Files, Top
+\chapter{Conditionals}
+\cindex{Conditionals}
+\cindex{Ifinfo}
+\cindex{Iftex}
+\findex{ifinfo}
+\findex{iftex}
+\findex{ignore}
+
+You may not always be able to use the same text for both the printed manual
+and the on-line Info file.  In this case, you can use the conditional
+environments  to specify which text is for the printed manual and which is for
+the Info file.
+
+\code{\back begin\{ifinfo\}} begins text that should be ignored by 
+\LaTeX\ when it typesets the printed manual.  The text appears only 
+in the Info file.  The \code{\back begin\{ifinfo\}} command should appear on a
+line by itself.  End the info-only text with a line containing
+\code{\back end\{ifinfo\}} by itself.  At the beginning of a \LaTeX info file,
+the Info permissions are contained within a region marked by 
+\code{\back begin\{ifinfo\}} and \code{\back end\{ifinfo\}}.\refill
+
+Likewise, \code{\back begin\{iftex\}} and \code{\back end\{iftex\}}
+lines delimit text that will not appear in the Info file but will appear
+in the printed manual.\refill
+
+For example, 
+
+\begin{verbatim}
+\begin{iftex}
+This text will appear only in the printed manual.
+\end{iftex}
+
+\begin{ifinfo}
+However, this text will appear only in the info manual.
+\end{ifinfo}
+\end{verbatim}
+
+\noindent
+The preceding example produces the following.  Note how you only see one of
+the two lines, depending on whether you are reading the on-line Info version
+or the printed version of this manual.
+
+\begin{iftex}
+This text will appear only in the printed manual.
+\end{iftex}
+
+\begin{ifinfo}
+However, this text will appear only in the info manual.
+\end{ifinfo}
+
+\code{\back begin\{ignore\}} and \code{\back end\{ignore\}}
+lines delimit text that will not appear in either the Info file or
+the printed manual.\refill
+
+
+\begin{menu}
+* Using LaTex Commands::		Using commands from regular LaTeX.
+\end{menu}
+
+\node Using LaTeX Commands, Printing Hardcopy, Conditionals, Conditionals
+\section{Using LaTeX Commands}
+\cindex{Using LaTeX Commands}
+\cindex{LaTeX commands, using them}
+
+Inside a region delineated by \code{\back begin\{iftex\}} and 
+\code{\back end\{iftex\}}, you can embed ordinary \LaTeX\ commands.  Info
+will ignore these commands since they are only in that part of the file
+that is seen by \LaTeX.  Note that you still have the characters \code{#
+$ % ^ & _ |} all printing as normal characters.  You can enter \LaTeX\
+completely, by delineating a region with the \code{\back begin\{tex\}}
+and \code{\back end\{tex\}} commands.  For example,\refill
+
+\begin{verbatim}
+\begin{tex}
+\bibliography{references}
+\end{tex}
+\end{verbatim}
+
+\noindent
+is how you would include a \LaTeX\ bibliography.
+In  the Info file, nothing between \code{\back begin\{tex\}} and 
+\code{\back end\{tex\}} will appear, i.e\. \code{tex} implies \code{iftex}.
+.\refill
+
+\node Printing Hardcopy, Formatting Requirements, Using LaTeX Commands, Top
+\chapter{Printing Hardcopy}
+\cindex{Printing hardcopy}
+\cindex{Hardcopy, printing it}
+\cindex{Making a printed manual}
+\cindex{Sorting indices}
+\cindex{Indices, sorting}
+\findex{texindex (for sorting indices)}
+
+There are three shell commands for printing a hardcopy of a \LaTeX info file.
+One is for formatting the file, the second is for sorting the index and the
+third is for printing the formatted document.  When you use the shell
+commands, you can either work directly in the operating system shell or
+work within a shell inside of GNU Emacs.
+
+The typesetting program \LaTeX\ is used for formatting a \LaTeX info
+file.  \LaTeX\ is a very powerful typesetting program and, if used
+right, does an exceptionally good job.  The commands in a \LaTeX info
+file are defined by a file called \file{latexinfo.sty} into make \LaTeX\
+understand them.  (That is why the beginning of every \LaTeX info file
+starts with the line that says \samp{\back documentstyle[latexinfo]};
+this command tells \LaTeX\ to use the\*
+\file{latexinfo.sty} file in processing the \LaTeX info file.)
+\code{latexinfo-format-buffer} reads the very same commands in the
+\LaTeX info file and processes them differently from \LaTeX\ to make an
+Info file.\refill
+
+Usually, the \LaTeX\ formatting command is the shell command \code{latex}
+followed by the name of the \LaTeX info file.  The \LaTeX\ command produces a
+formatted DVI file as well as several auxiliary files containing indices,
+cross references, etc.  The DVI file (for \dfn{DeVice Independent} file)
+can be printed on a wide variety of printers.\refill
+
+The \LaTeX\ formatting command itself does not sort the indices. Hence,
+to generate a printed index, you first need a sorted index to work from.
+\LaTeX\ outputs raw, unsorted index files under names that obey a
+standard convention.  These names are the name of your main input file
+to \LaTeX, with everything after the first period thrown away, and the
+two letter names of indices added at the end.  For example, the raw
+index output files for the input file \file{foo.texinfo} would be
+\file{foo.cp}, \file{foo.vr}, \file{foo.fn}, \file{foo.tp},
+\file{foo.pg} and \file{foo.ky}.  Those are exactly the arguments to
+give to \code{texindex}.  Or else, you can use \samp{??} as
+``wild-cards'' and give the command in this form:\refill
+
+\begin{example}
+texindex foo.??
+\end{example}
+
+For each file specified, \code{texindex} generates a sorted index file
+whose name is made by appending \samp{s} to the input file name.  The
+\code{\back printindex} command knows to look for a file of that name.
+\code{texindex} does not alter the raw index output file. After you have
+sorted the indices, you need to rerun the \LaTeX\ command on the \LaTeX info
+file.  This regenerates a formatted DVI file with the index entries in the
+correct order.\refill
+
+To summarize, this is a three step process:
+ 
+\begin{enumerate}
+\item
+Run the \LaTeX\ command on the \LaTeX info file.  This generates the formatted
+DVI file as well as the raw index files with two letter extensions.\refill
+
+\item
+Run the shell command \code{texindex} on the raw index files to sort them.
+The arguments to \code{texindex} are the names of the raw index files.
+\code{texindex} creates sorted index files whose names are the names of the
+raw index files with an \samp{s} appended.  To cause \code{texindex} to
+sort all the raw index files, append \samp{??} to the \LaTeX info file name in
+place of the \file{.texinfo} extension.\refill
+
+\item
+Rerun the \LaTeX\ command on the \LaTeX info file.  This regenerates a formatted
+DVI file with the index entries in the correct order.  This second run also
+makes all the cross references correct as well.  (The tables of contents
+are always correct.)\refill
+\end{enumerate}
+
+If you are including a bibliography, you should also run the
+\code{bibtex} command on the file between steps 1 and 3.  You need not
+run \code{texindex} after each \LaTeX\ run.  If you don't, the next
+\LaTeX\ run will use whatever sorted index files happen to exist from
+the previous use of \code{texindex}.  This is usually ok while you are
+debugging.
+
+Finally, the document can be printed out with the DVI print command
+(a shell command).  Depending on the system used, the DVI print command
+will be a command such as \code{lpr -d}.  The DVI print command may require
+a file name with the \samp{.dvi} extension.
+
+The following commands, for example, sort the indices, format and print the
+Bison Reference Manual (\cite{BisonReferenceManual}) (where \samp{%} is the
+shell prompt):
+
+\begin{example}
+% latex bison.texinfo
+% texindex bison.??
+% bibtex bison
+% latex bison.texinfo
+% lpr -d bison.dvi
+\end{example}
+
+\noindent
+(Remember that the words for the shell commands may be different at your
+site; but these are commonly used versions.)
+
+It is often most convenient to give formatting and printing commands from a
+shell within GNU Emacs.  This way, you can easily keep track of errors.  To
+create a shell within Emacs, type \kbd{M-x shell}.  In this shell, you can
+format and print the document.  You can switch to and from this shell while
+it is running and do other things.  If you are formatting a very long
+document on a slow machine, this can be very convenient; on a VAX 750, for
+example, formatting often takes 8 seconds or more per page depending on how
+loaded the computer is.  Faster machines take correspondingly less time.
+
+
+\begin{menu}
+* Formatting Requirements::
+* Using Local Variables and the Compile Command::
+\end{menu}
+
+\node Formatting Requirements, Using Local Variables and the Compile Command, Printing Hardcopy, Printing Hardcopy
+\section{Formatting Requirements}
+\cindex{Requirements for formatting }
+\cindex{Formatting requirements}
+
+Every \LaTeX info file that is to be input to \LaTeX\ must begin with a line
+that looks like
+
+\begin{verbatim}
+\documentstyle[12pt,twoside,latexinfo]{report} \c -*-latexinfo-*-
+\end{verbatim}
+
+\noindent
+This serves two functions.
+
+\begin{enumerate}
+\item
+When the file is processed by \LaTeX, it loads the macros needed for
+processing a \LaTeX info file.\refill
+\item
+When the file is edited in Emacs, it causes LaTeXinfo Mode to be used.\refill
+\end{enumerate}
+
+Every \LaTeX info file must end with a line saying
+
+\begin{verbatim}
+\end{document}
+\end{verbatim}
+
+which terminates \LaTeX\ processing and forces out unfinished pages.
+
+You also have to include a line that specifies the Info file name.
+
+\begin{example}
+\back setfilename\{\var{name-of-latexinfo-file}\}
+\end{example}
+
+By default, \LaTeX\ typesets pages for printing in an 8.5 by 11 inch
+format.  However, you can direct \LaTeX\ to typeset a document in a 7 by
+9.25 inch format that is suitable for bound books by inserting the
+following command on a line by itself at the beginning of the \LaTeX info
+file, before the \code{\back setfilename} command:
+
+\begin{example}
+\back smallbook
+\end{example}
+
+\noindent
+The Free Software Foundation distributes printed copies of the
+GNU Emacs Manual \cite{GNUEmacsManual} in this size.
+
+Finally, \LaTeX\ sometimes is unable to typeset a line without extending
+it into the right margin.  This can occur when \LaTeX\ comes upon what it
+interprets as a long word that it cannot hyphenate, like a net address,
+or a very long title.  When this happens, \LaTeX\ prints an error message
+like this:
+
+\begin{example}
+Overfull \back hbox (20.76302pt too wide)
+\end{example}
+
+\noindent
+and gives the line number along with the text of the offending line
+marked at all the places that \LaTeX\ knows to hyphenate words.  (In
+\LaTeX\ lines are in `horizontal boxes', hence the term, `hbox'.)
+
+If the \LaTeX info file has an overfull hbox, you can rewrite the sentence
+so the overfull hbox does not occur or you can decide to leave it.  A
+small excursion into the right margin often does not matter and may not
+even be noticable.  However, unless told otherwise, \LaTeX\ will print a
+large, ugly, black rectangle beside every line that is overfull.  This is
+so you will notice the location of the problem if you are correcting a
+draft.  To prevent such monstrosities from marring your final printout,
+put the following in the beginning of the \LaTeX info file  before the \code{\back setfilename} command:
+
+\begin{verbatim}
+\finalout
+\end{verbatim}
+
+\xref{Titlepage}, for information about creating a title page.
+\xref{Generating a Table of Contents}, for information about creating a 
+table of contents.\refill
+
+\node Using Local Variables and the Compile Command, Creating an On-line Info File, Formatting Requirements, Printing Hardcopy
+\section{Using Local Variables and the Compile Command}
+\cindex{Using Local Variables and the Compile Command}
+\cindex{Local variables}
+\cindex{Compile command for formatting}
+\cindex{Formatting with the compile command}
+
+Another way to give the \LaTeX\ formatting command to \LaTeX info is to
+put that command in a \dfn{local variables list} at the end of the
+\LaTeX info file.  You can then specify the \LaTeX\ formatting command
+as a \code{compile-command} and have Emacs run the \LaTeX\ formatting
+command by giving the command \kbd{M-x compile}.  This creates a special
+shell called the \samp{*compilation buffer*}.  For example, at the end
+of the \file{gdb.texinfo} file, after the \code{\back end\{document\}},
+you would put the following:\refill
+
+\begin{example}
+\back c Local Variables:
+\back c compile-command: "latex gdb.texinfo"
+\back c End:
+\end{example}
+
+\noindent
+This technique is most often used by programmers who compile programs
+this way.
+     
+\node Creating an On-line Info File, Installing an Info file, Using Local Variables and the Compile Command, Top
+\chapter{Creating an On-line Info File}
+\cindex{Creating an on-line Info file}
+\cindex{Running Info}
+\cindex{Info, creating an on-line file}
+\cindex{Formatting a file for Info}
+\cindex{Indirect subfiles}
+\findex{latexinfo-format-buffer}
+
+In GNU Emacs, using LaTeXinfo Mode, you can see what part or all of a
+\LaTeX info file will look like in Info by using the keyboard command
+\ctrl{c} \ctrl{f} (\code{latexinfo-format-region}).  This formats a region
+and displays in a temporary buffer called \samp{*Info Region*}; however,
+this command does not turn on Info reading program---it just displays
+what the region will look like.  The \code{latexinfo-format-region}
+command is described more extensively in the chapter on using LaTeXinfo
+Mode.  \xref{Formatting a Region for Info}.
+\refill
+
+In GNU Emacs, the way to create a working Info file is to visit the file
+and invoke
+
+\begin{example}
+\kbd{M-x latexinfo-format-buffer}
+\end{example}
+
+\noindent
+A new buffer is created and the Info file text is generated there.
+\ctrl{x} \ctrl{s} will save it under the name specified in the
+\code{\back setfilename} command.\refill
+
+If the \LaTeX info file has more than 30,000 bytes,
+\code{latexinfo-format-buffer} will automatically create a \dfn{tag
+table} for it.  With a tag table, Info can jump to new nodes more
+quickly than it can otherwise.  In addition, if the file has more than
+100,000 bytes in it, \code{latexinfo-format-buffer} will split the file
+into shorter Indirect subfiles of about 50,000 bytes each.  Files are
+split so that Info does not have to make a large buffer to hold the
+whole of a large Info file; instead, Info allocates just enough memory
+for the small, split off file that is needed at the time.  This way,
+Emacs avoids wasting memory when you run Info.  (Before splitting was
+implemented, Info files were always short and \dfn{include} files were
+designed as a way to create a single, large printed manual out of the
+smaller Info files. \xref{Input and Include Files}, for more
+information.)\refill
+
+When the file is split, Info itself works through a shortened version of
+the original file that contains the tag table and references to the files
+that were split off.  The split off files are called \dfn{indirect} files.
+
+The split off files have names that are created by appending \samp{-1},
+\samp{-2}, \samp{-3} and so on to the file names specified by the
+\code{\back setfilename} command.  The shortened version of the original file
+continues to have the name specified by \code{\back setfilename}.
+
+At one stage in writing this document, for example, the Info file was saved
+as \file{test-texinfo} and that file looked like this:
+
+\begin{example}
+Info file: test-texinfo,    -*-Text-*-
+produced by latexinfo-format-buffer
+from file: new-texinfo-manual.texinfo
+
+^_
+Indirect:
+test-texinfo-1: 102
+test-texinfo-2: 50422
+test-texinfo-3: 101300
+^_^L
+Tag table:
+(Indirect)
+\dots
+\end{example}
+
+\noindent
+(But \file{test-texinfo} had far more nodes than are shown here.)  Each of
+the split off, indirect files, \file{test-texinfo-1},
+\file{test-texinfo-2}, and \file{test-texinfo-3}, is listed in this file
+after the line that says \samp{Indirect:}.  The tag table is listed after
+the line that says \samp{Tag table:}. \refill
+
+You cannot run the \kbd{M-x Info-validate} node checking command on indirect
+files.  For information on how to prevent files from being split and how to
+validate the structure of the nodes, \pxref{Info-Validating a Large 
+File}\refill
+
+
+\begin{menu}
+* Installing an Info file::
+* Extending LaTeXinfo::
+\end{menu}
+
+\node Installing an Info file, Extending LaTeXinfo, Creating an On-line Info File, Creating an On-line Info File
+\section{Installing an Info file}
+\cindex{Installing an Info file}
+\cindex{Info file installation}
+\cindex{Dir directory for Info installation}
+
+An Info file is usually installed in the GNU Emacs directory called
+\file{info}.  This directory is the values of the Emacs variable
+\code{Info-directory}.  For Info to work, this directory must contain
+all the Info files, including the split off files.  In addition, the
+\file{info} directory must have a file that serves as a top level
+directory for the Info system.  This file is called \file{dir}.
+
+
+For example, in the \file{info} directory, the file called \file{dir}
+has the top level menu for all the Info files in the system.  This
+directory is the one defined by the GNU Emacs variable
+\code{Info-directory}.  This file has a master menu that looks like
+this:
+
+\begin{example}
+* Menu:
+
+* Info:    (info).      Documentation browsing system.
+* Emacs:   (emacs).     The extensible self-documenting text editor.
+* Texinfo: (texinfo).   With one source file, make either a printed 
+                        manual using TeX or an Info file using
+                        Texinfo.
+\end{example}
+
+To add a new Info file, just add it to this menu.  For example, if you
+were adding documentation for GDB, you would make the following entry:
+
+\begin{example}
+* GDB: (gdb).           The source-level C debugger.
+\end{example}
+
+\noindent
+The first item is the menu item name; it is followed by a colon.  The
+second item is the name of the Info file, in parentheses; it is followed by
+a period.  The third part of the entry is the description of the item.
+
+
+The top node of the file, named \samp{top}, should have as its parent the
+name of a node in another file, where there is a menu that leads to this
+file.  Specify the file name in parentheses.  If the file is to be
+installed directly in the Info directory file, use \samp{(dir)} as the
+parent of the top node; this is short for \samp{(dir)top}, the node \samp{top}
+in the file \file{dir}, which is the main menu of Info.
+
+\node Extending LaTeXinfo, Catching Mistakes, Installing an Info file, Creating an On-line Info File
+\section{Extending LaTeXinfo}
+\cindex{Extending LaTeXinfo}
+\cindex{LATEXINFO environment variable}
+\cindex{environment variable, LATEXINFO}
+
+Let's say that you wanted to develop a special format for a program
+called \code{macsyma}, which defined the command \code{\back f} to be
+used for specifying function.  This command would put its argument in
+the function index, and set the function in the printed manual in a
+special font.  You could create a style file called \file{macsyma.sty}
+that contained this definition (and any others you might want for
+Macsyma).  The \LaTeX\ commands to do this are quite simple:
+
+\begin{verbatim}
+\def\f#1{\findex{#1}{\sf #1}}
+\end{verbatim}
+
+\noindent
+Then you include \code{macsyma} in the list of options to the
+\code{documentstyle} command, \emph{after} the \code{latexinfo} option.
+Your \LaTeX info file would begin with
+
+\begin{verbatim}
+\documentstyle[12pt,twoside,latexinfo,macsyma]{report}
+\end{verbatim}
+
+But what about the Info file?  As it stands, the command \code{\back f}
+is not defined in \LaTeX info, so when you formatted the buffer it would
+ignore all the \code{\back f} commands, and their arguments.  You need
+to introduce the appropriate Emacs lisp code to provide the definition
+of the command that you have added.  For each option in the
+\code{documentstyle} command, \LaTeX info looks to see if the file name
+\var{option}\code{-fmt.el} exists in the directory defined by the Emacs
+variable \code{latexinfo-formats-directory}.  (This variable defaults to
+the value of the environment variable \code{LATEXINFO}). If it does
+exist, then it loads this file.  So continuing with our example, if the
+file \file{macsyma-fmt.el} contained the code
+
+\begin{example}
+(put 'f 'latexinfo-format 'latexinfo-format-code)
+\end{example}
+
+\noindent
+then it would define the \code{\back f} command to treat its argument
+the same way that the \code{\back code} command does.
+
+After the \var{option}\code{-fmt.el} has been loaded, \LaTeX info checks
+to see if a function (of no arguments) called \var{option}\code{-fmt-hook}
+has been defined.  If so, this function is called.  This allows you to
+define functions in the \var{option}\code{-fmt.el} file that operate
+on the whole \LaTeX info file.
+
+\LaTeX\ provides a number of optional style files by default.  These include 
+\code{latexinfo, 11pt, 12pt, twoside} and \code{titlepage}.  If any of
+the optional styles is a member of the Emacs variable
+\code{latexinfo-known-document-styles}, then \LaTeX info does not bother to
+look for the associated \code{-fmt} file.
+
+\node Catching Mistakes, Catching Errors with Info Formatting, Extending LaTeXinfo, Top
+\chapter{Catching Mistakes}
+\cindex{Structure of LaTeXinfo, catching mistakes}
+\cindex{Nodes, catching mistakes}
+\cindex{Nodes, correcting mistakes}
+\cindex{Catching mistakes}
+\cindex{Correcting mistakes}
+\cindex{Mistakes, catching}
+\cindex{Problems, catching}
+\cindex{Debugging the LaTeXinfo structure}
+
+Besides mistakes with the content of what ever you are describing, there
+are two kinds of mistake you can make with \LaTeX info: you can make
+mistakes with commands, and you can make mistakes with the structure of
+the nodes and chapters.  There are two tools for catching the first kind
+of mistake and two for catching the second.
+
+For finding problems with commands, your best action is to run\*
+\kbd{M-x latexinfo-format-region} on regions of your file as you write
+it.  In \LaTeX info mode, the \code{latexinfo-format-region} command is
+bound to \ctrl{c} \ctrl{f}.  In addition, you can run \LaTeX\ on the
+whole file.\refill
+
+For finding problems with the structure of nodes and chapters, you can
+use \ctrl{c} \ctrl{s} (\code{latexinfo-show-structure}) (and the related
+\code{occur} command) and you can use the \kbd{M-x Info-validate}
+command.
+
+\begin{menu}
+* Catching Errors with Info Formatting::
+* Catching Errors with LaTeX Formatting::
+* Using latexinfo-show-structure::
+* Finding Badly Referenced Nodes::
+\end{menu}
+
+\node Catching Errors with Info Formatting, Using the Emacs Lisp Debugger, Catching Mistakes, Catching Mistakes
+\section{Catching Errors with Info Formatting}
+\cindex{Catching errors with Info Formatting}
+\cindex{Debugging with Info Formatting}
+
+After you have written part of a \LaTeX info file, you can use the\*
+\kbd{M-x latexinfo-format-region} command to see whether the region
+formats properly.  In LaTeXinfo Mode, this command is bound to the
+keyboard command \ctrl{c} \ctrl{f}.  If you have made a mistake with a
+command, \kbd{M-x latexinfo-format-region} will stop processing at or
+after the error and give an error message.  To see where in the file the
+error occurred, switch to the \samp{*Info Region*} buffer; the cursor
+will be in a position that is after the location of the error.  Also,
+the text will not be formatted after the place the error occurred.\refill
+
+The \code{latexinfo-format-region} command does not always recognize errors.
+For example, no errors were reported when \code{latexinfo-format-region} was
+run on the whole itemized list of which the following is a part:
+
+\begin{example}
+name of the \LaTeX info file as an extension.  The \back samp\{??\} are
+`wildcards' that cause the shell to substitute all the raw index files.
+(\back xref\{sorting indices), for more information about sorting indices.)
+ \back refill
+\back cindex\{Sorting indices\}
+\back cindex\{Indices, sorting\}
+
+\back item 
+\back emph\{Third\}, rerun the \back TeX\ command on the \LaTeX info file.
+This regenerates a formatted DVI file with the index entries in the 
+correct order.  This second run also makes all the cross references
+and table of contents correct as well.
+\end{example}
+
+\noindent
+Instead, \code{latexinfo-format-region} ran without reporting the error, but
+it produced output that looked like this:
+
+\begin{example}
+     name of the latexinfo file as an extension.  The `??' are `wildcards'
+     that cause the shell to substitute all the raw index files.  (*Note for more information about sorting indices.) \back refill \back cindex Sorting indices \back cindex Indices: sorting indices), rerun the TeX command on the latexinfo file.  This
+     regenerates a formatted DVI file with the index entries in the correct
+     order.  This second run also makes all the cross references and table of
+     contents correct as well.
+\end{example}
+
+\noindent
+However, when \code{latexinfo-format-region} was run on part of the list that
+is shown, it did give an error message, \samp{Search failed: "[\},]"}.
+(This error message is explained in the section on using the Emacs Lisp
+Debugger, \pxref{Using the Emacs Lisp Debugger})
+
+Sometimes \code{latexinfo-format-region} will stop long after the original
+error;  this is because it does not discover the problem until then.  In this
+case, you will have to backtrack.\refill
+
+\node Using the Emacs Lisp Debugger, Catching Errors with LaTeX Formatting, Catching Errors with Info Formatting, Catching Errors with Info Formatting
+\subsection{Using the Emacs Lisp Debugger}
+\cindex{Using the Emacs Lisp debugger}
+\cindex{Emacs Lisp debugger}
+\cindex{Debugger, using the Emacs Lisp }
+
+If an error is especially elusive, you can turn on the Emacs Lisp debugger
+and look at the backtrace; this tells you where in the
+\code{latexinfo-format-region} function the problem occurred.  You can turn
+on the debugger with the command:\refill
+
+\begin{example}
+M-x set-variable \key{RET} debug-on-error \key{RET} t \key{RET}
+\end{example}
+
+\noindent
+and turn it off with
+
+\begin{example}
+M-x set-variable \key{RET} debug-on-error \key{RET} nil \key{RET}
+\end{example}
+
+Often, when you are using the debugger, it is easier to follow what is
+going on if you use the Emacs Lisp files that are not byte-compiled.  The
+byte-compiled files are read as octal numbers by the debugger that may look
+mysterious.  To use the uncompiled source files, load \file{latexinfo.el}
+and \file{latexinfo-mode.el} with the \kbd{M-x load-file} command.\refill
+
+The debugger will not catch an error if \code{latexinfo-format-region} does
+not detect one.  In the example shown above, \code{latexinfo-format-region}
+did not find the error when the whole list was formatted, but only when
+part of the list was formatted.  When \code{latexinfo-format-region} did not
+find an error, the debugger did not find one either. \refill
+
+However, when \code{latexinfo-format-region} did report an error, it invoked
+the debugger.  This is the backtrace it produced:
+
+\begin{example}
+Signalling: (search-failed "[\},]")
+  re-search-forward("[\},]")
+  (while ...)
+  (let ...)
+  latexinfo-format-parse-args()
+  (let ...)
+  latexinfo-format-xref()
+  funcall(latexinfo-format-xref)
+  (if ...)
+  (let ...)
+  (if ...)
+  (while ...)
+  latexinfo-format-scan()
+  (save-excursion ...)
+  (let ...)
+  latexinfo-format-region(103370 103631)
+* call-interactively(latexinfo-format-region)
+\end{example}
+
+The backtrace is read from the bottom up.  \code{latexinfo-format-region} was
+called interactively; and it in turn called various functions, including
+\code{latexinfo-format-scan}, \code{latexinfo-format-xref}\*
+and \code{latexinfo-format-parse-args}.  Inside the function
+\code{latexinfo-format-parse-args}, the function \code{re-search-forward} was
+called; it was this function that could not find the missing right hand
+brace.\refill
+
+\xref{Lisp Debug, , Debugging Emacs Lisp, emacs, The GNU Emacs Manual}, for
+more information.\refill
+
+
+\node Catching Errors with LaTeX Formatting, Using latexinfo-show-structure, Using the Emacs Lisp Debugger, Catching Mistakes
+\section{Catching Errors with LaTeX Formatting}
+\cindex{Catching errors with LaTeX formatting}
+\cindex{Debugging with LaTeX Formatting}
+
+You can also catch mistakes when you format a file with \LaTeX.
+Usually, you will want to do this after you have run
+\code{latexinfo-format-buffer} on the same file.
+\code{latexinfo-format-buffer} is usually faster and sometimes gives
+error messages that make more sense.  \xref{Catching Errors with Info
+Formatting}, for more information.\refill
+
+\clearpage
+For example, \LaTeX\ was run on the same itemized list discussed in the
+section on the use of \code{latexinfo-format-region}; the fragment with
+the error looked like this:
+
+\begin{example}
+name of the latexinfo file as an extension.  The \back samp\{??\} are `wildcards'
+that cause the shell to substitute all the raw index files.  (\back xref\{sorting

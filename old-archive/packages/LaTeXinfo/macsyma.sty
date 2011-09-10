@@ -1,0 +1,86 @@
+% Copyright 1987 Mike Clarkson.
+% Portions of this document may be copyright
+% Massachusetts Institute of Technology
+%
+% To make a TeX copy of this manual:
+%	make sure texinfo.tex in on TeX's path
+%	tex users-doc
+%	texindex users-doc.pg
+%	texindex users-doc.vr
+%	texindex users-doc.fn
+%	texindex users-doc.cp
+%	tex users-doc
+
+% To make a GNU Emacs copy of this manual:
+%	execute the following GNU Emacs code
+%
+% (load-library "texinfmt")
+% (defun texinfo-format-dots ()
+%   (texinfo-discard-command)
+%   (insert "..."))
+% 
+% (defun make-manual ()
+%   (interactive)
+%   (put 'f 'texinfo-format 'texinfo-format-noop)
+%   (put 'v 'texinfo-format 'texinfo-format-noop)
+%   (put 'o 'texinfo-format 'texinfo-format-noop)
+%   (put 'fb 'texinfo-format 'texinfo-format-noop)
+%   (put 'vb 'texinfo-format 'texinfo-format-noop)
+%   (put 'concept  'texinfo-format 'texinfo-format-defn)
+%   (put 'filen 'texinfo-format 'texinfo-format-code)
+%   (put 'flushr 'texinfo-format 'texinfo-format-noop)
+%   (put 'head  'texinfo-format 'texinfo-format-head)
+%   (put 'DOTS 'texinfo-format 'texinfo-format-dots) ;; DUMB
+%   (let ((lastmessage "Formatting Info file..."))
+%     (message lastmessage)
+%     (texinfo-format-buffer-1)
+%     (message
+%      (setq lastmessage
+% 	   "Making tags table for Info file..."))
+%     (Info-tagify)
+%     (message (concat lastmessage
+% 		     (if (interactive-p)
+% 			 "done.  Now save it." "done."))))
+%   )
+%
+% (defun texinfo-format-head ()
+%   (kill-line)
+%   (delete-char 1)
+%   (insert (texinfo-parse-arg-discard))
+%   (goto-char texinfo-command-start))
+%
+%	Then M-x make-manual
+
+\voffset= -30pt
+\textheight 580pt 	% increase from 536pt
+\textwidth  450pt	% increase from 360pt
+\hoffset= -45pt		% compensate to keep centered
+\if@twoside 
+	\reversemarginpar	% I assume the binding side is the
+	\oddsidemargin 70pt 	% bigger margin, so reverse the
+	\evensidemargin 38pt 	% placement  of marginpars
+	\marginparwidth 40pt	% less of a margin to work with
+  \else \oddsidemargin 54pt \evensidemargin 54pt \marginparwidth 83pt 
+	\fi
+
+
+% Preliminary stuff before texinfo format is turned on
+\def\Macsyma{{\bf Macsyma}}
+
+\def\f#1{\fnindex{#1}{\sf #1}}
+\def\v#1{\vrindex{#1}{\sf #1}}
+\def\o#1{{\sf #1}}
+\def\fb#1{\fnindexbold{#1}{\large\sf #1}}
+\def\vb#1{\vrindexbold{#1}{\large\sf #1}}
+\def\concept#1{\cpindex{#1}#1}
+\def\filen#1{\tpindex{#1}{\tt #1}}
+
+\def\ExampleInFile#1{\*\noindent There is an example in the file: \filen{#1}.}
+\def\DemoInFile#1{\*\noindent There is a demo in the file: \filen{#1}.}
+\def\UsageInFile#1{\*\noindent There are some usage notes in the file: 
+\filen{#1}.}
+
+%\def\pcp#1{\marginpar{{\scriptsize #1}}\kyindex{#1}}
+\def\pcp#1{}
+
+

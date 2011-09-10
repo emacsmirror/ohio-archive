@@ -1,0 +1,49 @@
+\gnuscleardoublepage
+
+\pagestyle{gnusindex}
+
+\renewcommand\indexname{Key Index}
+\renewcommand{\gnuschaptername}{Key Index}
+\input{gnus.kind}
+\gnuscleardoublepage
+
+\renewcommand\indexname{Function and Variable Index}
+\renewcommand{\gnuschaptername}{Function and Variable Index}
+\input{gnus.gind}
+\gnuscleardoublepage
+\thispagestyle{empty}
+
+\renewcommand\indexname{Concept Index}
+\renewcommand{\gnuschaptername}{Concept Index}
+\input{gnus.cind}
+
+\mbox{}
+%\thispagestyle{empty}\mbox{}\clearpage\thispagestyle{empty}\mbox{}\clearpage
+\ifodd\count0\else\thispagestyle{empty}\clearpage\fi
+\mbox{}
+\thispagestyle{empty}
+\vfill
+
+\begin{picture}(10,10)
+\put(90,-10){\makebox(0,0)[tr]{\epsfig{figure=tmp/larsi.ps,height=3cm}}}
+\end{picture}
+
+\hspace*{4cm}\parbox[t]{10cm}{
+This manual was written by Lars Magne Ingebrigtsen (b. 1968) who
+resides in Oslo, Norway and poses as a student, but doesn't get much
+studying done, for some strange reason or other.  When not worshipping
+at the altar of Emacs, he can often be found slouching on his couch
+reading while bopping his head gently to some obscure music.  He does
+not have a cat.
+
+Graphics by Luis Fernandes.  Set in Bembo and Futura.
+}
+
+\clearpage
+\mbox{}
+\thispagestyle{empty}
+\begin{picture}(500,500)(0,0)
+\put(-35,325){\makebox(480,350)[tr]{\epsfig{figure=tmp/new-herd-section.ps}}}
+\end{picture}
+
+\end{document}

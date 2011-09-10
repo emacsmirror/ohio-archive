@@ -1,0 +1,58 @@
+.\" fakefax.1						-*- nroff -*-
+.\"
+.\" Copyright (C) 1995 Ralph Schleicher
+.\"
+.\" This program is free software; you can redistribute it and/or
+.\" modify it under the terms of the GNU General Public License as
+.\" published by the Free Software Foundation; either version 2 of
+.\" the License, or (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+.\"
+.TH fakefax 1 "December 16, 1995"
+.SH NAME
+fakefax \- invoke yet another fax sending program
+.SH SYNOPSIS
+.HP
+.na
+.hy 0
+.B fakefax
+.I sendfax-program
+.RI [ sendfax-arguments ]
+.ad b
+.hy 1
+.SH DESCRIPTION
+The
+.B fakefax
+command is a wrapper for other fax sending programs.
+.B Fakefax
+saves its standard input to a temporary file.  Then it replaces all
+single hyphens in
+.I sendfax-arguments
+with the temporary file name.  Finally,
+.B fakefax
+invokes
+.I sendfax-program
+with the modified
+.IR sendfax-arguments .
+.SH DIAGNOSTICS
+If no internal error occurs,
+.B fakefax
+exits with the same exit status as
+.BR sendfax-program ;
+otherwise with a failure indicating exit status (non-zero on UN*X based
+systems).
+.SH AUTHOR
+Ralph Schleicher <rs@purple.IN-Ulm.DE>.
+.P
+.B Fakefax
+is free software and comes with ABSOLUTELY NO WARRANTY; see the GNU
+General Public License as published by the Free Software Foundation for
+details.

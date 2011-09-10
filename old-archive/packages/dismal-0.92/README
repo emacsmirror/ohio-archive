@@ -1,0 +1,110 @@
+                             dismal-mode
+                             Release 0.86
+
+                           Frank E. Ritter
+                        ritter@psyc.nott.ac.uk
+                              25-Sep-93
+
+INTRODUCTION
+------------
+
+This is a manual for dismal (Dis' Mode Ain't lotus), a major mode in
+GNU-emacs that implements a spreadsheet.  It includes how to load,
+run, and use dismal and dismal spreadsheets.  Dismal provides the
+basic spreadsheet functions.  Because it is based on GNU-emacs it
+offers several relatively novel features for a spreadsheet.  It is
+designed to be keystroke driven rather than mouse/menu driven
+(although it can be menu driven).  It is extensible, so that users can
+write their own commands and functions, for example, to allow a
+function cell to write to several nearby cells.  A ruler can be put up
+that reflects the semantics of column names past the ones
+automatically provided as letters.
+
+For futher information, please see the dismal-mode.doc file
+accompanying the release.
+
+OBTAINING AND INSTALLING THE PACKAGE
+------------------------------------
+
+dismal-mode is available via anonymous ftp from host 128.243.40.7
+(unicorn.ccc.nott.ac.uk, but most machines don't know it, so use the
+numbers) in the directory "pub/lpzfr" (From within ftp only the part
+of the tree rooted at /usr/ftp is visible) and eventually from the
+Elisp archives at The OSU.
+
+Again, the file is named "pub/lpzfr/dismal/dismal.tar.Z.uu.VERSION",
+where version gives you the version of dismal that you are getting.
+
+If you would like help with using anonymous ftp, feel free to send me
+a message and I will explain the procedure.
+
+To install the system:
+
+1) Find a directory where you wish to install the package.  (At the
+   University of Nottingham we currently put it in ~soar/emacs/utils/dismal.)
+   Transfer dismal.tar.Z.uu to your desired directory,
+    (mv dismal.tar.Z.uu.VERSION nice-directory/dismal/VERSION/dismal.tar.Z.uu)
+   cd to that directory, and do 
+
+   uudecode dismal.tar.Z
+   zcat dismal.tar.Z | tar xvf -
+
+2) Execute "make" in that directory.  This will compile the .el files.  If
+   GNU emacs at your site is not called "emacs", but something else (e.g.,
+   some places use "gmacs"), then compile the .el files using the alternative
+   command "make EMACS=xxxx" where "xxxx" is the name of your emacs program.
+   There are a lot of compiler warnings generated in 19.17.
+
+3) Please read the file "dismal-mode.doc".  It is very important, and explains
+   the basics of dismal.
+
+4) At U-N, where dismal is installed in /psyc/lang/soar/utils/dismal/VERSION,
+   users can set up their Emacs to use dismal by adding the following to
+   their ~/.emacs files: 
+
+   (load "/psyc/lang/soar/utils/dismal/VERSION/dismal-mode-defaults")
+
+   To use dismal at your site, change the pathname to
+   correspond to the location of the dismal files at your site.  More
+   information about installing and using dismal are contained in the file
+   dismal-mode.doc. 
+
+FILES
+-----
+
+The files included in the package are:
+
+    COPYING              dismal.el
+    Makefile             dismal-simple-menus.el
+    README               dismal-metacolumn.el
+    REFCARD              dismal-mouse-x.el
+    dismal-mode.doc      dismal-mode-defaults.el
+          
+
+   *float.el            *popper.el (v. 2.11)
+   *float-changes.el    *vectors.el
+   *heaps.el            *rmatrix.el
+   *utilities/soar-misc.el
+   *utilities/insert-date.el
+   *utilities/simple-menu.el
+   *utilities/goto-manual.el
+
+The last group of files marked with "*" are not part of dismal proper,
+but dismal depends on them.  It should be possible for later releases
+of dismal to replace them with smarter and faster code.
+
+MISCELLANEOUS
+-------------
+
+Some features which are not implemented yet, but will eventually be, are:
+
+    use of Emacs 19's features (menus, defsubs, fonts, floating numbers)
+    the use of sparse matrices to represent the spreadsheet
+    use of compression technology to reduce the size of the sheet
+    use of a "picture" of a buffer to draw the display at startup faster
+
+There are too many bugs or missing features to list them here.
+Interested users should consult the dismal.el file.
+
+Frank Ritter <ritter@psyc.nott.ac.uk>
+25-Sep-93 -University Park

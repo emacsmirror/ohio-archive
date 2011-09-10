@@ -1,0 +1,580 @@
+This is Info file phit.info, produced by Makeinfo version 1.67 from the
+input file /tmp/sgml2info30752tmp2.
+
+   \input texinfo
+
+
+File: phit.info,  Node: Source Code Parameters,  Next: Code Portability and Code Compilation,  Prev: To Do,  Up: Acknowledgments References and Program Notes
+
+Source Code Parameters
+======================
+
+   Phit is shipped with the following hard-wired parameters:
+           parameter (ndatx=2**13, nrangx=10, ndocx=19)
+           parameter (ntitx=19, nfunx=100, nconx=300)
+           parameter (nguesx=50, nsetx=300)
+
+   These parameters are defined as follows:
+  1.  `ndatx':  max number of input data points
+
+  2.  `nrangx': max number of fitting range delimiters in input data
+
+  3.  `ndocx':  max number of documents in i/o data
+
+  4.  `ntitx':  max number of title lines
+
+  5.  `nfunx':  max number of input functions
+
+  6.  `nconx':  max number of constants to be encoded
+
+  7.  `nguesx': max number of guessed values
+
+  8.  `nsetx':  max number of set values
+
+   If any of these are too small, they can be changed in the source code
+and the source code can be recompiled.
+
+
+File: phit.info,  Node: Code Portability and Code Compilation,  Next: Adding More Data Formats to Phit,  Prev: Source Code Parameters,  Up: Acknowledgments References and Program Notes
+
+Code Portability and Code Compilation
+=====================================
+
+   The 1977 ANSI Standard for Fortran has been followed closely, so that
+Phit should easily compile on any machine and run without any problems.
+The only significant departures from Fortran 77 are the assumption of
+the ASCII character set and the use of `integer*2' variables for the
+UWXAFS binary file handling routines.
+
+   There are, unfortunately, aspects of Fortran which are machine- and
+compiler-dependent by design.  One such aspect occurs in Phit in the
+form of a compiler-dependent dimension for the "word-length" of the
+data in the UWXAFS binary files.  The code cannot easily be made truly
+standard without significant changes to the UWXAFS binary file handling
+routines.  The distributed code will, however, work on most machines,
+with the notable exception of a Vax or Alpha running VMS.  Changing the
+second executable statement of Phit from `vaxflg = .false.' to `vaxflg
+= .true.' will optimize the code for a VMS machine.
+
+   The UWXAFS binary file handling routines also use character strings
+which are 2048 characters long.  Though standard, some compilers need
+to be told to accept character strings this long.  The notable example
+of such a compiler is `xlf' (for AIX, IBM's Unix flavor), which needs
+the compiler switch `-qcharlen=2048'.  While compiling on any machine,
+we recommend including some form of array bounds checking.  If you have
+any problems with the compilation, it may be worthwhile to turn off
+compiler optimization flags.  There may be some persistent, benign
+compiler warnings when you compile Phit.  There may also be "comparison
+is always false" warnings when using `f2c'.  These can both be safely
+ignored.
+
+
+File: phit.info,  Node: Adding More Data Formats to Phit,  Next: About this document-,  Prev: Code Portability and Code Compilation,  Up: Acknowledgments References and Program Notes
+
+Adding More Data Formats to Phit
+================================
+
+   If the two data file formats (UWXAFS, ASCII) are not acceptable or
+convenient to your needs (that is, if you prefer using some other
+format), other choices could be added with a minimal amount of coding.
+The input and output of data files is fairly well-isolated, with
+subroutine `inpdat' and `outdat' controlling which data format to use.
+If you'd like another file format either contact us about it or follow
+the example of the routines `inpcol' and `outcol', which read and write
+files in the ASCII column data format.
+
+
+File: phit.info,  Node: About this document-,  Prev: Adding More Data Formats to Phit,  Up: Acknowledgments References and Program Notes
+
+About this document-
+====================
+
+   This document was composed using a mark-up language called
+`linuxdoc-sgml'.  This is the documentation standard of the .
+`linuxdoc-sgml' is an adaptation of the QWERTZ document type definition
+written by Tom Gordon.  `linuxdoc-sgml' is available on .
+
+   The value of a Standard Generalized Markup Language (SGML) is that it
+can be processed into any number of formats from a common source.
+Using `linuxdoc-sgml', a single marked up file can be used to produce
+LaTeX, PostScript, plain ASCII, HTML, TeXinfo, or dvi documentation.
+
+
+File: phit.info,  Node: Appendix: Some Worked Examples
+
+Appendix: Some Worked Examples
+******************************
+
+   The examples in this appendix are from version 0.11 of Phit.  Some
+features of these examples might not be consistent with later versions.
+Chapters 3 and 4 are updated more often than is this appendix.
+
+* Menu:
+
+* Fitting a Line + a Gaussian + Noise::
+* Fitting An Einstein Temperature to XAFS Debye-Waller Factors::
+* Fitting the Near Edge Structure of Barium Titanate::
+
+
+File: phit.info,  Node: Fitting a Line + a Gaussian + Noise,  Next: Fitting An Einstein Temperature to XAFS Debye-Waller Factors,  Up: Appendix: Some Worked Examples
+
+Fitting a Line + a Gaussian + Noise
+===================================
+
+   This example fits a simple sum of two line shapes, a line and
+Gaussian.  The line has a slope of 3.2 and a y-intercept of -77.1.  The
+Gaussian is centered at 55, has a width of 5, and an amplitude of
+886.23.  On top of this was placed noise from a pseudo-random number
+generator with rms amplitude of 7.071.
+
+   Here is the input file for this fitting:
+             title = input data is a line + a gaussian + noise
+             xaxis = zeta
+             data =  noisy.dat               format = ascii
+             !x1 = 20        x2 = 80
+             all             write = fit
+     
+             %==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==
+     
+             guess   m               1
+             guess   b               1
+             guess   e0              54
+             guess   amp             12.9
+             guess   w               4
+             set     line            m*zeta
+     
+             func    1       line + b
+             id      1       a line!!!
+     
+             func    12      amp*gauss(zeta, e0, w)
+             id      12      a gaussian
+
+   In this input file, the input data is identified as `noisy.dat' with
+the keyword `data'.  The input file format is ASCII.  This need not be
+specified since ASCII input is the default.  Had the data been in a
+UWXAFS file then `format=uwxafs' would have been specified and the
+`nkey' or `skey' would have been provided.  The label for the xaxis is
+`zeta'.  This is used in the math expressions below.  Since the word
+`all' is in the input file, files containing the best fit line and the
+best fit Gaussian will be written as well as one containing the sum of
+the line and the Gaussian.  The fit will be performed over the entire
+input data range.  Were the `x1' and `x2' keywords not commented out,
+the fit would include only those points between the values of 20 and 80
+on the input x axis.
+
+   Five guess values are set.  These correspond to the slope and
+y-intercept of the line and the center, height, and width of the
+Gaussian.  The zeta dependent part of the line is introduced as the set
+value `line'.  Finally the functions to be summed are defined at the
+bottom of the input file.  Each function has an `id' line associated
+with it.  Note that the functions do not have to be sequentially
+numbered.
+
+   Here is the data and fit for this example.  (Picture goes here.)
+
+   Here is the log file for this fit:
+      ===========================================================================
+      PHIT 0.11                                                    by Bruce Ravel
+      ===========================================================================
+     
+      Data read from: "noisy.dat"
+     
+      Titles:
+        >  input data is a line + a gaussian + noise
+     
+     
+      ===========================================================================
+     
+          Number of data points in fit:                     100
+          Number of variables:                                5
+          Number of unused data points:                      95
+          Sigma = standard deviation of residuals:            5.7245
+          Reduced chi squared:                                1.0526
+          R factor:                                            .0014
+     
+      ===========================================================================
+     
+      Guess values:
+     
+          name                  initial guess   best fit value     uncertainty
+      ---------------------------------------------------------------------------
+      |   m                            1.0000         3.2032          .0185
+      |   b                            1.0000       -76.7160         1.2159
+      |   e0                          54.0000        55.1111          .1220
+      |   amp                         12.9000       887.1808        29.3860
+      |   w                            4.0000         4.9709          .1814
+      ---------------------------------------------------------------------------
+     
+      Correlations between guess values:
+     
+          variable 1             variable 2             correlation
+      ---------------------------------------------------------------------------
+          b                      m                      =    -.848
+          w                      amp                    =     .618
+          amp                    b                      =    -.225
+      ---------------------------------------------------------------------------
+          All other correletions are between .150 and -.150
+     
+      ===========================================================================
+     
+      The x-axis label is: zeta
+     
+          First  fitting range:       1.100 to   110.000
+     
+      ===========================================================================
+     
+      Set value math expressions:
+     
+          name                        value
+      ---------------------------------------------------------------------------
+          line                     m*zeta
+      ---------------------------------------------------------------------------
+     
+      ===========================================================================
+     
+      Function   1 >  a line!!!
+            line+b
+     
+      Function  12 >  a gaussian
+            amp*gauss(zeta,e0,w)
+
+   You will notice that it did an excellent job determining the values
+of the parameters.  Also the estimation of sigma was a little low, but
+reasonable.  This is a good fit, not only by the excellent
+determination of the parameters, but also by the chi-square and
+R-factor tests.
+
+   What happens if `sigdat' is set to 7.07, the rms noise value place
+on the data?  Call `R' is the ratio of `sigdat' to the sigma from the
+residuals, `R' = 7.07/5.72 = 1.24.  Normalized chi-square will be
+reduced by a factor of `R'^2 and the error bars increased by a factor
+of `R'.
+
+   One final note about this fit.  A good initial guess for `e0' was
+needed.  Guessing 45 is a poor enough initial guess that the
+minimization algorithm is unable to determine the best fit.  This is
+because, at values far from the proper center, the gaussian function is
+very insensitive to small changes in value for the center.  Thus the
+algorithm is unable to determine how to change this parameter to
+improve the fit.  Close initial guesses are not always necessary, but
+are often prudent.
+
+
+File: phit.info,  Node: Fitting An Einstein Temperature to XAFS Debye-Waller Factors,  Next: Fitting the Near Edge Structure of Barium Titanate,  Prev: Fitting a Line + a Gaussian + Noise,  Up: Appendix: Some Worked Examples
+
+Fitting An Einstein Temperature to XAFS Debye-Waller Factors
+============================================================
+
+   A single frequency model for displacement about bond lengths as
+measured by XAFS is usually successful.  In this example, I fit a
+single Einstein temperature to mean square displacements as determined
+from XAFS analysis at 10 temperatures.  The material is the YBCO
+superconductor and the scattering path that produced these data was a
+single scattering path between copper and barium.  Here is the input
+file:
+
+     title = testing einstein
+     data cb.dat
+     format = ascii          sigma
+     xaxis = T       npoints = 50
+     title = YBCO data, cu-ba bond
+     
+     %==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==
+     
+     guess   theta           400
+     set     rmass           43.444
+     
+     func    1       eins(t, theta, rmass)
+     id      1       the einstein model
+
+   The x-axis label is chosen to be `t' as this is data in temperature.
+The measurement uncertainties are provided in the file cb.dat and will
+be used in the minimization and error analysis.  The Einstein function
+for mean square displacement depends upon temperature, theta (the
+Einstein temperature), and the reduced mass of the two atoms.  In Phit,
+the reduced mass is in atomic units.  Theta is varied to produce the
+best fit.
+
+   Here is the data and fit for this example.  (picture goes here)
+
+   Here is the log file for this fit:
+      ===========================================================================
+      PHIT 0.11                                                    by Bruce Ravel
+      ===========================================================================
+     
+      Data read from: "cb.dat"
+     
+      Titles:
+        >  testing einstein
+        >  YBCO data, cu-ba bond
+     
+     
+      ===========================================================================
+     
+          Number of data points in fit:                      10
+          Number of variables:                                1
+          Number of unused data points:                       9
+          Sigma array provided with data.
+          Reduced chi squared:                                 .2639
+          R factor:                                            .0050
+     
+      ===========================================================================
+     
+      Guess values:
+     
+          name                  initial guess   best fit value     uncertainty
+      ---------------------------------------------------------------------------
+      |   theta                      400.0000       217.6208         1.1939
+      ---------------------------------------------------------------------------
+     
+      ===========================================================================
+     
+      The x-axis label is: t
+     
+          First  fitting range:      10.000 to   300.000
+     
+      ===========================================================================
+     
+      Set value math expressions:
+     
+          name                        value
+      ---------------------------------------------------------------------------
+          rmass                         43.4440
+      ---------------------------------------------------------------------------
+     
+      ===========================================================================
+     
+      Function   1 >  the einstein model
+            eins(t,theta,rmass)
+
+   This value for theta agrees with other XAFS analysis on this
+material.  The fit is a good one by inspection, chi-square, and
+R-factor.
+
+
+File: phit.info,  Node: Fitting the Near Edge Structure of Barium Titanate,  Prev: Fitting An Einstein Temperature to XAFS Debye-Waller Factors,  Up: Appendix: Some Worked Examples
+
+Fitting the Near Edge Structure of Barium Titanate
+==================================================
+
+   Here is a more difficult problem than the previous two.  This example
+will fit a number of Gaussians and an arctangent to the near edge
+structure of the titanium K-edge absorption in barium titanate.  The
+arctangent is chosen to model the atomic absorption step and the
+Gaussians are chosen to fit the peaks in the near-edge structure.
+
+   Here is the input file:
+
+
+     title = fitting near edge structure with atan + sum of gaussians
+     title = input data is BaTiO3, Ti K edge
+     xaxis = e
+     data =  ba.nor          format = ascii
+     x1 = 4965       x2 = 5000
+     write = fit     cormin = 0.5    all
+     
+     %==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==
+     
+     guess   ampatan         1
+     guess   watan           1
+     guess   e0              4980
+     
+     set     ec1             4969.5
+     guess   w1              2
+     guess   a1              1
+     
+     set     ec2             4973.5
+     guess   w2              2
+     guess   a2              1
+     
+     set     ec3             4980.5
+     guess   w3              2
+     guess   a3              1
+     
+     set     ec4             4986
+     guess   w4              2
+     guess   a4              1
+     
+     set     ec5             4993.5
+     guess   w5              2
+     guess   a5              1
+     
+     set     ec6             4998.5
+     guess   w6              2
+     guess   a6              1
+     
+     %==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==
+     
+     func    1       ampatan * (atan(watan*(e-e0)) + pi/2)
+     id      1       an arctangent
+     
+     func    2       a1 * gauss(e, ec1, w1)
+     id      2       gaussian #1, e_center=4969.5
+     
+     func    3       a2 * gauss(e, ec2, w2)
+     id      3       gaussian #2, e_center=4973.5
+     
+     func    4       a3 * gauss(e, ec3, w3)
+     id      4       gaussian #3, e_center=4980.5
+     
+     func    5       a4 * gauss(e, ec4, w4)
+     id      5       gaussian #4, e_center=4986
+     
+     func    6       a5*gauss(e, ec5, w5)
+     id      6       gaussian #5, e_center=4993.5
+     
+     func    7       a6*gauss(e, ec6, w6)
+     id      7       gaussian #6, e_center=4998.5
+
+   The fitting range is limited by the keywords `x1' and `x2'.  The
+output data will be written only over the fitting range, as specified
+by the keyword `write'.  Since the data is an entire XAFS scan and
+extends for hundreds of eV below and above the edge, it would be
+unnecessary to write the fit out to the full data range.  All of the
+individual functions will be written to data files.
+
+   My variables include the width, center, and amplitude of the
+arctangent and the widths and amplitudes of the gaussians.  I have
+fixed the centers of the gaussians at the energy value of the highest
+point of each peak in the data set.  Note in the picture below that the
+energy scale of this scan is shifted relative to the edge energy of
+titanium.  McMaster reports the titanium K edge energy as 4966 eV.  In
+this scan the edge energy is about 4980.  This most likely means that
+the monochromator software was reporting a constant offset when
+translating monochromator encoder readings into energy values.  This
+doesn't effect the analysis in any way.
+
+   Here is the data, fit, and individual functions for this example:
+(picture goes here)
+
+   Here is the log file:
+
+      ===========================================================================
+      PHIT 0.11                                                    by Bruce Ravel
+      ===========================================================================
+     
+      Data read from: "ba.nor"
+     
+      Titles:
+        >  fitting near edge structure with atan + sum of gauss
+        >  input data is BaTiO3, Ti K edge
+     
+     
+      ===========================================================================
+     
+          Number of data points in fit:                      71
+          Number of variables:                               15
+          Number of unused data points:                      56
+          Sigma = standard deviation of residuals:             .0190
+          Reduced chi squared:                                1.2706
+          R factor:                                        .4641E-03
+     
+      ===========================================================================
+     
+      Guess values:
+     
+          name                  initial guess   best fit value     uncertainty
+      ---------------------------------------------------------------------------
+      |   ampatan                      1.0000          .3314          .0327
+      |   watan                        1.0000          .4251          .0244
+      |   e0                        4980.0000      4979.8408         2.3025
+      |   w1                           2.0000          .9055          .1405
+      |   a1                           1.0000          .2407          .0353
+      |   w2                           2.0000         2.5543          .4258
+      |   a2                           1.0000          .5403          .0900
+      |   w3                           2.0000          .8335          .1101
+      |   a3                           1.0000          .2745          .0354
+      |   w4                           2.0000         1.7055          .0503
+      |   a4                           1.0000         2.2086          .0809
+      |   w5                           2.0000         1.7905          .2463
+      |   a5                           1.0000          .5889          .1365
+      |   w6                           2.0000         3.6052          .5544
+      |   a6                           1.0000         1.6088          .2232
+      ---------------------------------------------------------------------------
+     
+      Correlations between guess values:
+     
+          variable 1             variable 2             correlation
+      ---------------------------------------------------------------------------
+          e0                     ampatan                =     .992
+          a5                     w5                     =     .852
+          w6                     a5                     =    -.839
+          a2                     w2                     =     .829
+          a4                     w4                     =     .826
+          a2                     watan                  =     .759
+          a6                     w6                     =     .754
+          a3                     w3                     =     .681
+          a1                     w1                     =     .667
+          w6                     w5                     =    -.612
+          w2                     watan                  =     .605
+          a6                     a5                     =    -.602
+          a4                     a3                     =     .556
+          a5                     a4                     =     .546
+          w5                     a4                     =     .523
+          w2                     a1                     =    -.513
+          a6                     ampatan                =    -.500
+      ---------------------------------------------------------------------------
+          All other correletions are between .500 and -.500
+     
+      ===========================================================================
+     
+      The x-axis label is: e
+     
+          First  fitting range:    4965.000 to  5000.000
+     
+      ===========================================================================
+     
+      Set value math expressions:
+     
+          name                        value
+      ---------------------------------------------------------------------------
+          ec1                         4969.5000
+          ec2                         4973.5000
+          ec3                         4980.5000
+          ec4                         4986.0000
+          ec5                         4993.5000
+          ec6                         4998.5000
+      ---------------------------------------------------------------------------
+     
+      ===========================================================================
+     
+      Function   1 >  an arctangent
+            ampatan*(atan(watan*(e-e0))+pi/2)
+     
+      Function   2 >  gaussian #1, e_center=4969.5
+            a1*gauss(e,ec1,w1)
+     
+      Function   3 >  gaussian #2, e_center=4973.5
+            a2*gauss(e,ec2,w2)
+     
+      Function   4 >  gaussian #3, e_center=4980.5
+            a3*gauss(e,ec3,w3)
+     
+      Function   5 >  gaussian #4, e_center=4986
+            a4*gauss(e,ec4,w4)
+     
+      Function   6 >  gaussian #5, e_center=4993.5
+            a5*gauss(e,ec5,w5)
+     
+      Function   7 >  gaussian #6, e_center=4998.5
+            a6*gauss(e,ec6,w6)
+
+   This seems to be a good fit.  The R-factor is very low, indicating a
+small misfit relative to the size of the data.  The chi-square is
+nearly 1, which is expected since the standard deviation of the
+residual array was used as the measurement uncertainty.
+
+   The value for `e0', the center of the arctangent seems to be a
+reasonable measure for the edge energy on this shifted scale.  It is
+reasonable to call that point in the data the edge energy within the
+1.4 eV uncertainty that Phit found.
+
+   You will notice in the correlations table that the sixth Gaussian and
+the arctangent are highly correlated.  This is reasonable considering
+that the fitting range that I chose (in order to illustrate this point)
+ends within a half-width of the peak of the sixth Gaussian.  Thus the
+parameters describing this Gaussian are rather poorly determined and
+are very sensitive to the baseline determined by the height and
+placement of the arctangent.
+
+

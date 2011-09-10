@@ -1,0 +1,129 @@
+Mon Dec 13 14:30:46 1993  Per Cederqvist  (ceder@lysator.liu.se)
+
+	* Release 1.0.
+
+	* bugtrack-rmail.el (bugtrack-rmail-view-commented): New function.
+	* bugtrack-init.el (bugtrack-rmail-init): Bind "^" in
+	rmail-mode-map to it.
+
+	* BUGS: Added more comments to all open bug reports, for future
+	users who don't have access to my mail files.
+
+	* Id 43: &optional text-argument to bugtrack-create-bug
+	bugtrack.el (bugtrack-create-bug): Added an optional argument
+	``text''.
+
+	* Id 42: bugtrack-edit-done incorrectly moves point.
+	* bugtrack-edit.el (bugtrack-edit-done): Don't move point.
+	* bugtrack.el (bugtrack-narrow-to-page-and-update-mode-line): 
+	Really fix the fix made on Fri Nov  5 21:47:59 1993: Id 41: Emacs
+	19 incompatibility.
+
+	* bugtrack.el (bugtrack-version): New function.
+
+	* bugtrack.el, bugtrack-edit.el, bugtrack-init.el,
+	bugtrack-rmail.el, bugtrack-sum.el: Added copyright notice, and
+	some documentation.  Formatted according to guidelines in the
+	Elisp manual.
+
+	* COPYING: New file, containing GPL 2.
+	Contributors, LCD-entry, NEWS, README: New files.
+
+	* Makefile (EL, ELC): Add bugtrack-init.el.
+	(autoloads): Target removed (superseded by ;;;###autoload).
+	(VERSION, DISTFILES): New variable.
+	(clean, bugtrack-$(VERSION).tar.gz, bugtrack-$(VERSION).tar,
+	bugtrack-$(VERSION)): New targets.
+
+Fri Dec 10 21:42:56 1993  Per Cederqvist  (ceder@lysator.liu.se)
+
+	* bugtrack-init.el: New file.
+	(bugtrack-edit.el, bugtrack-rmail.el, bugtrack-sum.el,
+	bugtrack.el): Added ;;;###autoload before relevant functions.
+	Removed hand-coded autoloads. bugtrack-init.el is the
+	generated-autoload-file of all files.
+
+	* Better search functions, and ability to find all bugs about a
+	given mail:
+	* bugtrack.el (bugtrack-search-start,
+	bugtrack-search-include-closed, bugtrack-search-buffers): New
+	variables.
+	(bugtrack-browse-mode-map): Bind "," to bugtrack-search-continue.
+	(rmail-mode-hook): Delete defvar for it, and use add-hook to add
+	bugtrack-rmail-init to the hook.
+	(bugtrack-mode): bugtrack-previous-regexp is no longer
+	buffer-local.  Use force-mode-line-update instead of the old Emacs
+	18 idiom.
+	(bugtrack-rmail-init, rmail-mode-map): Bind "F" to
+	bugtrack-rmail-search-msg-id.
+	(bugtrack-search): Complete rewrite.
+	(bugtrack-search-continue): New function.
+	* bugtrack-rmail.el (bugtrack-filter,
+	bugtrack-rmail-search-msg-id): New functions.
+
+Wed Dec  1 17:38:38 1993  Per Cederqvist  (ceder@lysator.liu.se)
+
+	* bugtrack-sum.el (bugtrack-create-summary-cookie): Update use of
+	read for emacs 19 behavior (it no longer skips the terminating
+	character).
+
+Sat Nov  6 00:00:33 1993  Per Cederqvist  (ceder@lysator.liu.se)
+
+	* Id 39: bugtrack-find-mail sometimes fail.
+	* bugtrack-rmail.el (bugtrack-hunt-message-id): Accept any number
+	of whitespace between "Message-id:" and the message ID.
+
+	* Id 37: 'C' in RMAIL should default to last BUGS file.
+	* bugtrack.el (bugtrack-read-bug-file-name): New function.
+	(bugtrack): Use it.
+	* bugtrack-rmail.el (bugtrack-rmail-create-bug): Use it.
+
+Fri Nov  5 21:47:59 1993  Per Cederqvist  (ceder@lysator.liu.se)
+
+	* Id 4: bugtrack-create-bug: severity and priority should be hot
+	* bugtrack.el (bugtrack-read-digit): New function.
+	(bugtrack-create-bug): Use it.
+	* bugtrack-rmail.el (bugtrack-rmail-create-bug): Use it.
+
+	* Id 25: Should have a version field.
+	* bugtrack.el (bugtrack-create-bug): Prompt user for a version number.
+	* bugtrack-rmail.el (bugtrack-rmail-create-bug): Likewise.
+
+	* Id 41: Emacs 19 incompatibility.
+	* bugtrack.el (bugtrack-narrow-to-page-and-update-mode-line): Fix
+	Emacs 19 incompatibility.
+
+	* bugtrack.el (bugtrack-previous-unclosed-bug): With negative arg,
+	move to the N:th next *unclosed* bug.
+	(bugtrack-next-unclosed-bug): Likewise (but opposite).
+
+Tue Apr 27 01:04:19 1993  Per Cederqvist  (ceder@lysator.liu.se)
+
+	* bugtrack.el (bugtrack-narrow-to-page-and-update-mode-line): New
+	  function that does narrow-to-page and upates the mode-line
+	  counter. Use this everywhere that narrow-to-page was previously
+	  called.
+
+Mon Apr 26 22:50:15 1993  Per Cederqvist  (ceder@lysator.liu.se)
+
+	* bugtrack-edit.el (bugtrack-edit-mode): Set paragraph-start and
+	  paragraph-separate.  Run text-mode-hook prior to
+	  bugtrack-edit-mode-hook.
+
+Mon Jan 18 18:32:25 1993  Per Cederqvist  (ceder@konrad)
+
+	* bugtrack-sum.el (bugtrack-sum-pp): Insert the pretty-printed
+	  string in current buffer.
+
+Tue Dec 29 22:18:45 1992  Per Cederqvist  (ceder@konrad)
+
+	* bugtrack-sum.el: Tracked the latest (last?) rename of all functions
+	  in cookie.el.
+
+Sun Aug  9 22:04:11 1992  Inge Wallin  (inge@lysator)
+
+	* Created ChangeLog file
+
+	* bugtrack-edit.el(bugtrack-edit-done): Emptied the message area
+	  (the minibuffer) after bugtrack asked if it was OK that the
+	  headers have changed.

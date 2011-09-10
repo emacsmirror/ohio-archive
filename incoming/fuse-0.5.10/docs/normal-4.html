@@ -1,0 +1,186 @@
+<HTML>
+<HEAD>
+<TITLE>Normal: References and Program Notes</TITLE>
+</HEAD>
+<BODY>
+<A HREF="normal-3.html">Previous</A>
+<A HREF="normal-5.html">Next</A>
+<A HREF="normal.html#toc4">Table of Contents</A>
+<HR>
+<H2><A NAME="s4">4. References and Program Notes</A></H2>
+
+
+<P>If you have any good suggestions for expanding the functionality of
+Normal, please contact 
+<A HREF="mailto:ravel@u.washington.edu">the author</A>.  </P>
+
+<H2><A NAME="ss4.1">4.1 Bibliography</A></H2>
+
+
+<P>
+<OL>
+<LI> Bevington, Philip R., <I>Data Reduction and Error Analysis for
+the Physical Sciences</I>, McGraw-Hill, New York, (1969)</LI>
+<LI> <CODE>Netlib</CODE> software archive, 
+<A HREF="ftp://netlib.att.com/netlib/master/readme.html">AT&amp;T</A></LI>
+<LI> Press, W.H., S.A. Teukolsky, W.T. Vettering, B.P. Flannery
+<I>Numerical Recipes in Fortran, The Art of Scientific
+Programming</I>, Cambridge University Press, (1992)</LI>
+<LI> Stern, E.A. and Heald, S.M. <I>Basic Priciple and Applications
+of EXAFS</I>, chapter 10 from <I>Handbook on Synchrotron
+Radiation</I> E.E. Kock, ed., North Holland (1983)</LI>
+</OL>
+</P>
+
+
+
+
+<H2><A NAME="ss4.2">4.2 Copyright Issues</A></H2>
+
+
+<P><SF>Normal</SF> uses the <CODE>MINPACK</CODE> package of subroutines
+from AT&amp;T's Netlib repository.  This is freely available software.
+Several other algorithms are taken from <I>Numerical Recipes</I>
+by Press, <I>et al.</I>  By the terms stated in that book, the
+algorithms contained therein are freely available to anyone who
+transcribes them.  The rest of routines in <SF>Normal</SF> are copyright
+of the University of Washington.  Version numbers below 1.0 are not
+licensed software, but are only released to holders of the UWXAFS3.0
+software license.  The terms of that agreement apply. </P>
+
+
+
+
+<H2><A NAME="ss4.3">4.3 Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs</A></H2>
+
+
+
+<P>If you do not have a license to use FEFF or the UWXAFS analysis
+programs and are interested in obtaining one contact: </P>
+<P>
+<PRE>
+Ed Stern 
+c/o UWXAFS Project 
+University of Washington 
+Department of Physics, FM-15 
+Seattle WA, 98195, USA 
+phone: (206) 543-2023 
+fax: (206) 543-0635 
+electronic mail: stern@phys.washington.edu 
+url: http://krazy.phys.washington.edu/people/ed.html
+</PRE>
+ </P>
+<P>or </P>
+<P>
+<PRE>
+John Rehr
+c/o FEFF Project 
+University of Washington 
+Department of Physics, FM-15 
+Seattle WA, 98195, USA 
+phone: (206) 543-8593 
+fax: (206) 543-0635 
+electronic mail: jjr@phys.washington.edu 
+url=http://pauli.phys.washington.edu/~jjr/
+</PRE>
+ </P>
+<P>You should request copies of the licensing agreements for <SF>Feff</SF>
+and the UWXAFS programs.  These are licensed separately.  <SF>atoms</SF>
+is distributed with both packages.</P>
+
+
+
+
+<H2><A NAME="ss4.4">4.4 Source Code Parameters</A></H2>
+
+
+<P>Normal is shipped with the following hard-wired parameters:
+<BLOCKQUOTE><CODE>
+<PRE>
+      parameter (nptx=2**11, nfilx=50, ndocx=25)
+</PRE>
+</CODE></BLOCKQUOTE>
+
+These parameters are defined as follows: </P>
+<P>
+<DL>
+<DT><B> <CODE>nptx</CODE> </B><DD><P>max number of input or output data points</P>
+<DT><B> <CODE>nrangx</CODE> </B><DD><P>max number of data sets to process</P>
+<DT><B> <CODE>ndocx</CODE> </B><DD><P>max number of documents in i/o data</P>
+</DL>
+ </P>
+<P>If any of these are too small, they can be changed in the source code
+and the source code can be recompiled. </P>
+
+
+
+<H2><A NAME="ss4.5">4.5 Code Portability and Code Compilation</A></H2>
+
+
+<P>The 1977 ANSI Standard for Fortran has been followed closely, so that
+feffit should easily compile on any machine and run without any
+problems.  The only significant departures from Fortran 77 are the
+assumption of the ASCII character set and the use of
+<CODE>integer*2</CODE> variables for the UWXAFS binary file handling
+routines.  A non standard trick is occasionally used in manipulating
+character strings, but the author has never seen this fail on any
+machine in his experience. </P>
+<P>There are, unfortunately, aspects of Fortran which are machine- and
+compiler-dependent by design.  One such aspect occurs in <SF>Normal</SF>
+in the form of a compiler-dependent dimension for the "word-length" of
+the data in the UWXAFS binary files.  The code cannot easily be made
+truly standard without significant changes to the UWXAFS binary file
+handling routines.  The distributed code will, however, work on most
+machines, with the notable exception of a Vax.  Changing the first
+executable statement of <SF>Normal</SF> from <CODE>lvax = .false.</CODE>
+to <CODE>lvax = .true.</CODE> will make the code work on a Vax. </P>
+<P>The UWXAFS binary file handling routines also use character strings
+which are 2048 characters long.  Though standard, some compilers need
+to be told to accept character strings this long.  The notable example
+of such a compiler is xlf (for AIX, IBM's Unix flavor), which needs
+the compiler switch "-qcharlen=2048".  While compiling on any
+machine, we recommend including some form of array bounds checking.
+And if you have any problems with the compilation, it may be
+worthwhile to turn off compiler optimization flags.  There may be some
+persistent, benign compiler warnings when you compile feffit.  There
+may also be "comparison is always false" warnings when using f2c.
+These can both be safely ignored. </P>
+
+
+
+<H2><A NAME="ss4.6">4.6 Adding More Data Formats to Normal</A></H2>
+
+
+<P>If the two data file formats (UWXAFS, ASCII) are not acceptable or
+convenient to your needs (that is, if you prefer using some other
+format), other choices could be added with a minimal amount of coding.
+The input and output of data files is fairly well-isolated, with
+subroutine <CODE>inpdat</CODE> and <CODE>outdat</CODE> controlling
+which data format to use.  If you'd like another file format either
+contact us about it or follow the example of the routines
+<CODE>inpcol</CODE> and <CODE>outcol</CODE>, which read and write
+files in the ASCII column data format. </P>
+
+
+<H2><A NAME="ss4.7">4.7 About this document.</A></H2>
+
+<P>This document was composed using a mark-up language called
+<CODE>linuxdoc-sgml</CODE>.  This is the documentation standard of the
+<A HREF="ftp://ftp.cc.gatech.edu//pub/linux/docs/linux-doc-project/LDP-Manifesto">Linux Documentation Project</A>.  <CODE>linuxdoc-sgml</CODE> is an
+adaptation of the QWERTZ document type definition written by Tom
+Gordon.  <CODE>linuxdoc-sgml</CODE> is available on 
+<A HREF="ftp://ftp.cc.gatech.edu//pub/linux/utils/text/linuxdoc-sgml-1.2.tar.gz">the net</A>.</P>
+<P>The value of a Standard Generalized Markup Language (SGML) is that it
+can be processed into any number of formats from a common source.
+Using <CODE>linuxdoc-sgml</CODE>, a single marked up file can be used to produce
+LaTeX, PostScript, plain ASCII, HTML, TeXinfo, or dvi
+documentation.</P>
+
+
+
+<HR>
+<A HREF="normal-3.html">Previous</A>
+<A HREF="normal-5.html">Next</A>
+<A HREF="normal.html#toc4">Table of Contents</A>
+</BODY>
+</HTML>

@@ -1,0 +1,95 @@
+.TH EBUTTONS 1 "18 November 1992"
+.SH NAME
+ebuttons \- popup buttons for giving commands to an emacs session.
+.SH SYNOPSIS
+.B M-x ebuttons
+inside emacs, or
+.B (ebuttons) 
+in an emacs startup file.
+.SH DESCRIPTION
+.B Ebuttons
+provides an X interface to issue commands to an emacs
+session.  It allows you to specify (in an X resource file) labels for
+a set of buttons and a command for each that will be executed when the
+corresponding button is clicked on with the mouse. For instance you
+can define buttons to compile, to find the next error, to save
+buffers, to move to the top/bottom of the buffer, to exit emacs etc.
+
+The idea is that this should be a thin vertical window that sits just
+to the side of an emacs session and allows for fast execution of some
+things. It is not intended to replace the keyboard! It just gives
+another option - if your hand is already on the mouse, use 
+.BR ebuttons .
+If not, use the keyboard. Or as you like it. The window can also be
+made horizontal (see below) but then not as many buttons will fit on
+the screen.
+.SH STARTUP
+The simplest method is to automatically start 
+.B ebuttons
+when you enter emacs. This can be done by adding the following to your .emacs file.
+.sp
+    (if (equal window-system 'x)
+.br
+        (progn
+.br
+	      (load "ebuttons")
+.br
+	      (ebuttons)))
+.SH "KEY BINDINGS"
+It is useful to bind (ebuttons) to some key inside emacs. This function 
+starts the program if it is not already running 
+and toggles its visibility otherwise. The simplest way to do this is
+to put something like
+.sp
+    (define-key global-map "\^Xt" 'ebuttons)
+.sp
+in your .emacs file. This binds the command to the keystroke control-X t.
+.SH RESOURCES
+Your resource file should have pairs of lines like
+.sp
+    ebuttons.labelX:         label
+.br
+    ebuttons.commandX:       (emacs-command)
+.sp
+where X is any number from 0 to the number of possible buttons minus
+one. The upper limit is set in the Makefile and is 50 in the
+distribution. Label numbers may be omitted (i.e. you can define labels
+1, 2 and 5, omitting 3 and 4). If you only define 3 buttons, only 3
+will appear. Actually this is not entirely true, an extra button (the
+last button in the window) is added. It causes the 
+.B ebuttons 
+program to
+exit and is (usually) labelled Quit.  You can change the name that
+appears on this button (if you wish) with:
+.sp
+    ebuttons*Quit.label: your-label
+.sp
+in your resource file. Other resources that will have useful effects
+are
+.sp
+    ebuttons*Command.borderWidth
+    ebuttons*Box.orientation
+    ebuttons*Box.hSpace
+    ebuttons*Box.vSpace
+    ebuttons.geometry
+    ebuttons*background
+    ebuttons*font
+.sp
+The orientation resource can be set to "horizontal" or "vertical" (the default).
+Look in the Resources file in the distribution for an example of settings for these
+resources. My preference is to have the 
+.B ebuttons 
+window take up as little space as
+possible, so I use a small font and leave no vertical or horizontal
+space between the command buttons.
+.SH "SEE ALSO"
+The README in the distribution and
+.B Taglist 
+by Brad Mears (bmears@deltahp.jsc.nasa.gov) from which this program
+was distilled.
+.SH AUTHOR
+Terry Jones (terry@santafe.edu)
+.br
+Santa Fe Institute
+.br
+November 18, 1992.

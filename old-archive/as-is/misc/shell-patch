@@ -1,0 +1,330 @@
+From: tom@hcx2.ssd.harris.com
+Subject: Better cd tracking in shell buffer
+Date: 30 Jan 89 14:36:00 GMT
+
+
+Someone was just talking about modifying the shell to do better tracking
+of directory changes. I have been using these modifications for some time
+now with no problems.
+
+These are patches to the 18.52 version of shell.el. This includes
+the patches from Wolfgang Rupprecht that he posted along with
+shellext.el (which you must already have to use this, since these
+were developed on top of that version).
+
+My additional mods (on top of Wolfgang's) provide some bug fixes,
+but the primary mod is the introduction of two new variables and
+some additional shell functionality. An example from my .emacs file
+is:
+
+(setq shell-fixdir-regexp "\\(cd\\|pwd\\|goto\\|b\\|t\\|e\\|s\\)[ \t\n]")
+
+The variable shell-fixdir-regexp is a regular expression that matches
+any command which will print as its first line of output the full
+path name of a new directory. (I have an alias for 'cd' that does
+a 'pwd' after each 'cd', goto, b, t, e, and s, are some short little
+functions I wrote that also change the directory).
+
+This stuff works by temporarily installing a process filter in the
+shell which waits for one line of output, then removes itself. It
+matches that line against shell-fixup-directory-regexp and if a
+match is found it extracts the substring from (match-beginning 1)
+(match-end 1) and sets the new directory to that path name.
+
+To make most effective use of these mods, write aliases for all
+of your directory changing commands that print the new directory
+name and tell shell-fixdir-regexp about them all in .emacs, then
+no matter what happens the shell will follow your directory around
+properly (actually system errors that print NFS messages before
+your alias gets around to printing the directory can be a problem,
+but you can always reset the directory properly with 'pwd' which
+should always be included in the shell-fixdir-regexp).
+
+CAUTION: If, for some reason, you already run with some sort of
+process filter in your shell, this will probably mess it up totally.
+
+------------------------------cut here---------------------------------
+*** shell.el.1852	Mon Jan 30 08:14:14 1989
+--- shell.el	Mon Jan 30 09:12:37 1989
+***************
+*** 1,3 ****
+--- 1,25 ----
++ ;;;;
++ ;; this is a patched version of shell.el from gnuemacs 18.49
++ ;; patches are marked with '; wsr patch'
++ ;; -wolfgang rupprecht 9/15/87
++ ;;
++ ;; this version is even more patched by tom horsley. I don't know
++ ;; why, but the changes wolfgang made in the area of initial
++ ;; startup echoing things and waiting 3 seconds, etc. made this
++ ;; act horribly strange, so I backed just those changes out to
++ ;; produce this version, which seems to work fine.
++ ;;
++ ;; Even more patches installed to implement the shell-fixdir-regexp.
++ ;; This allows emacs to observe the output of a change directory
++ ;; command and determine what the directory should be from interactive
++ ;; feedback rather than trying to guess. This means you can have
++ ;; exceedingly complex shell scripts to do strange and wondrous
++ ;; things to your working directory, and emacs can still follow it.
++ ;;
++ ;; I have now re-written the initial startup to echo the init file
++ ;; again and it seems to work.
++ ;;;;
++ 
+  ;; Run subshell under Emacs
+  ;; Copyright (C) 1985, 1986, 1987, 1988 Free Software Foundation, Inc.
+  
+***************
+*** 21,26 ****
+--- 43,51 ----
+  
+  (provide 'shell)
+  
++ (defvar shell-wait-for-startup 60
++   "How long the startup code should spend waiting for a prompt.")
++ 
+  (defvar last-input-start nil
+    "In a shell-mode buffer, marker for start of last unit of input.")
+  (defvar last-input-end nil
+***************
+*** 40,45 ****
+--- 65,77 ----
+  (defvar shell-cd-regexp "cd"
+    "*Regexp to match subshell commands equivalent to cd.")
+  
++ (defvar shell-fixdir-regexp "pwd"
++   "*Regexp to recognize commands that print a new directory name.")
++ 
++ (defvar shell-fixup-directory-regexp "[^/\C-j]*\\(/[^ \t\C-j]*\\)"
++    "*Regexp to recognize the output of one of the shell-fixdir-regexp commands,
++ matching string 1 is the new directory name.")
++ 
+  (defvar explicit-shell-file-name nil
+    "*If non-nil, is file name to use for explicitly requested inferior shell.")
+  
+***************
+*** 84,95 ****
+--- 116,134 ----
+    (setq last-input-start (make-marker))
+    (make-local-variable 'last-input-end)
+    (setq last-input-end (make-marker))
++   (make-local-variable 'shell-history-list) ; wsr patch
++   (make-local-variable 'shell-history-index) ; wsr patch
++   (make-local-variable 'shell-last-search) ; wsr patch
+    (run-hooks 'shell-mode-hook))
+  
+  (if shell-mode-map
+      nil
+    (setq shell-mode-map (make-sparse-keymap))
++   ; sparse keymaps have unordered key documentation in "C-hm" help window
++   ; this should make the C-c map a regular 128 entry map
++   (define-key shell-mode-map "\C-c" (make-keymap))
+    (define-key shell-mode-map "\C-m" 'shell-send-input)
++   (define-key shell-mode-map "\C-j" 'shell-send-input) ; x25 glitch
+    (define-key shell-mode-map "\C-c\C-d" 'shell-send-eof)
+    (define-key shell-mode-map "\C-c\C-u" 'kill-shell-input)
+    (define-key shell-mode-map "\C-c\C-w" 'backward-kill-word)
+***************
+*** 142,148 ****
+              (let ((symbol (intern-soft (concat "explicit-" name "-args"))))
+                (if (and symbol (boundp symbol))
+                    (symbol-value symbol)
+!                 '("-i")))))))
+  
+  (defun make-shell (name program &optional startfile &rest switches)
+    (let ((buffer (get-buffer-create (concat "*" name "*")))
+--- 181,188 ----
+              (let ((symbol (intern-soft (concat "explicit-" name "-args"))))
+                (if (and symbol (boundp symbol))
+                    (symbol-value symbol)
+!                 '("-i"))))))
+!   (if shell-read-history (shell-input-history-file))) ; wsr patch
+  
+  (defun make-shell (name program &optional startfile &rest switches)
+    (let ((buffer (get-buffer-create (concat "*" name "*")))
+***************
+*** 168,188 ****
+                                "/bin/sh")
+                            switches))
+          (cond (startfile
+!                ;;This is guaranteed to wait long enough
+!                ;;but has bad results if the shell does not prompt at all
+!                ;;            (while (= size (buffer-size))
+!                ;;              (sleep-for 1))
+!                ;;I hope 1 second is enough!
+!                (sleep-for 1)
+                 (goto-char (point-max))
+                 (insert-file-contents startfile)
+                 (setq startfile (buffer-substring (point) (point-max)))
+!                (delete-region (point) (point-max))
+                 (process-send-string proc startfile)))
+          (setq name (process-name proc)))
+        (goto-char (point-max))
+        (set-marker (process-mark proc) (point))
+!       (shell-mode))
+      buffer))
+  
+  (defvar shell-set-directory-error-hook 'ignore
+--- 208,250 ----
+                                "/bin/sh")
+                            switches))
+          (cond (startfile
+!                ;;This waits for the first prompt to show up before
+!                ;;sending the init file. If a prompt does not come
+!                ;;withing shell-wait-for-startup seconds, it sends
+!                ;;it anyway. Your screen will look best if the
+!                ;;init file only has one line in it. If the init file
+!                ;;is too big things might break when you send all
+!                ;;that input to the shell at once (just another
+!                ;;reason to only put in one line).
+!                (let
+!                   (
+!                      (attempts 0)
+!                   )
+!                   ; wait up to shell-wait-for-startup seconds for a prompt.
+!                   (while (and (< attempts shell-wait-for-startup)
+!                               (progn
+!                                  (goto-char (point-max))
+!                                  (beginning-of-line 1)
+!                                  (not (looking-at shell-prompt-pattern))
+!                               )
+!                          )
+!                      (sleep-for 1)
+!                      (setq attempts (1+ attempts))
+!                   )
+!                )
+                 (goto-char (point-max))
+                 (insert-file-contents startfile)
+                 (setq startfile (buffer-substring (point) (point-max)))
+!                ; set the marker past the end of the stuff we
+!                ; are about to send.
+!                (set-marker (process-mark proc) (point-max))
+                 (process-send-string proc startfile)))
+          (setq name (process-name proc)))
+        (goto-char (point-max))
+        (set-marker (process-mark proc) (point))
+!       ; If you are already running a shell, don't kill the locals
+!       ; (your history list disappears for one thing).
+!       (if (eq major-mode 'shell-mode) nil (shell-mode)))
+      buffer))
+  
+  (defvar shell-set-directory-error-hook 'ignore
+***************
+*** 228,233 ****
+--- 290,296 ----
+      (error (funcall shell-set-directory-error-hook)))
+    (let ((process (get-buffer-process (current-buffer))))
+      (process-send-region process last-input-start last-input-end)
++     (shell-save-history)                ; wsr patch
+      (set-marker (process-mark process) (point))))
+  
+  ;;;  If this code changes (shell-send-input and shell-set-directory),
+***************
+*** 236,243 ****
+  ;;;  code.  Please let marick@gswd-vms.arpa know of any changes you
+  ;;;  make. 
+  
+  (defun shell-set-directory ()
+!   (cond ((and (looking-at shell-popd-regexp)
+                (memq (char-after (match-end 0)) '(?\; ?\n)))
+           (if shell-directory-stack
+               (progn
+--- 299,355 ----
+  ;;;  code.  Please let marick@gswd-vms.arpa know of any changes you
+  ;;;  make. 
+  
++ ;;; shell-fixdir-filter hacked into shell by tahorsley@SSD.HARRIS.COM
++ ;;; (really Tom Horsley at Harris Computer Systems Division)
++ (defun shell-fixdir-filter (process str)
++ "Filter installed in the shell process while waiting for a line of
++ output from a command that changes the directory."
++    (set-buffer (process-buffer process))
++    (goto-char (marker-position (process-mark process)))
++    (insert str)
++    (set-marker (process-mark process) (point))
++    (let
++       (
++          (endo (point))
++       )
++       (goto-char (marker-position last-input-end))
++       (if (re-search-forward shell-fixup-directory-regexp (point-max) t)
++          (unwind-protect
++             (cd (buffer-substring (match-beginning 1) (match-end 1)))
++             (message "Directory %s"
++                (buffer-substring (match-beginning 1) (match-end 1))
++             )
++             (set-process-filter process nil)
++             (goto-char endo)
++          )
++          ;; If we get a newline without recognizing file name, give up.
++          (if (re-search-forward "\C-j" endo t)
++             (progn
++                (set-process-filter process nil)
++                (message "Could not set directory.")
++             )
++          )
++       )
++       (goto-char endo)
++    )
++ )
++ 
++ (defun shell-fixdir-kludge ()
++ "Function invoked to install a filter in the shell which will wait for
++ a directory change command to happen and set the directory to the
++ file printed by the last command."
++    (let
++       (
++          (process (get-buffer-process (current-buffer)))
++       )
++       (set-process-filter process 'shell-fixdir-filter)
++    )
++ )
++ 
+  (defun shell-set-directory ()
+!   (cond ((looking-at shell-fixdir-regexp)
+!             (shell-fixdir-kludge))
+!         ((and (looking-at shell-popd-regexp)
+                (memq (char-after (match-end 0)) '(?\; ?\n)))
+           (if shell-directory-stack
+               (progn
+***************
+*** 335,340 ****
+--- 447,453 ----
+  (defun kill-shell-input ()
+    "Kill all text since last stuff output by the shell or its subjobs."
+    (interactive)
++   (goto-char (point-max))               ; slight bug fix. -wsr
+    (kill-region (process-mark (get-buffer-process (current-buffer)))
+                 (point)))
+  
+***************
+*** 345,350 ****
+--- 458,465 ----
+    (lisp-mode-commands inferior-lisp-mode-map)
+    (define-key inferior-lisp-mode-map "\e\C-x" 'lisp-send-defun))
+  
++ (require 'shellext) ; needs shell-mode-map and lisp-mode-map ; wsr patch
++ 
+  (defvar inferior-lisp-program "lisp"
+    "*Program name for invoking an inferior Lisp with `run-lisp'.")
+  
+***************
+*** 401,406 ****
+--- 516,524 ----
+    (setq last-input-start (make-marker))
+    (make-local-variable 'last-input-end)
+    (setq last-input-end (make-marker))
++   (make-local-variable 'shell-history-list) ; wsr patch
++   (make-local-variable 'shell-history-index) ; wsr patch
++   (make-local-variable 'shell-last-search) ; wsr patch
+    (run-hooks 'shell-mode-hook 'lisp-mode-hook))
+  
+  (defun run-lisp ()
+
+-------------------------------cut here--------------------------------
+=====================================================================
+    usenet: tahorsley@ssd.harris.com  USMail: Tom Horsley
+compuserve: 76505,364                         511 Kingbird Circle
+     genie: T.HORSLEY                         Delray Beach, FL  33444
+======================== Aging: Just say no! ========================
+

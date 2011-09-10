@@ -1,0 +1,248 @@
+
+Python version 1.0, VM version Intel x86 on 16 FEB 01 08:18:08 pm.
+Compiling: /usr/src/cvs/lisp-pcre/pcre.lisp 20 JAN 01 07:35:13 pm
+
+Converted ADD-UP-OPTIONS.
+Compiling DEFUN ADD-UP-OPTIONS: 
+Converted %COMPILE.
+Compiling DEF-ALIEN-ROUTINE ("pcre_compile" %COMPILE): 
+
+File: /usr/src/cvs/lisp-pcre/pcre.lisp
+
+In: DEF-ALIEN-ROUTINE ("pcre_compile" %COMPILE)
+  (DEF-ALIEN-ROUTINE ("pcre_compile" %COMPILE)
+                     PCRE
+                     (PATTERN C-STRING)
+                     (OPTIONS INT)
+                     ...)
+--> BLOCK WITH-ALIEN COMPILER-LET SYMBOL-MACROLET LET MULTIPLE-VALUE-PROG1 
+--> SYMBOL-MACROLET LET MULTIPLE-VALUE-PROG1 SYMBOL-MACROLET VALUES 
+--> ALIEN-FUNCALL ALIEN::NATURALIZE 
+==>
+  (ALIEN::%SAP-ALIEN ALIEN '#<ALIEN::ALIEN-POINTER-TYPE (* T)>)
+Note: Unable to optimize because:
+      Could not optimize away %SAP-ALIEN: forced to do runtime 
+allocation of alien-value structure.
+Note: Doing SAP to pointer coercion (cost 20).
+Note: Doing SAP to pointer coercion (cost 20) to "<return value>".
+Note: Doing signed word to integer coercion (cost 20) to "<return value>".
+
+Byte Compiling Top-Level Form: 
+Converted %INFO.
+Compiling DEF-ALIEN-ROUTINE ("pcre_info" %INFO): 
+
+File: /usr/src/cvs/lisp-pcre/pcre.lisp
+
+In: DEF-ALIEN-ROUTINE ("pcre_info" %INFO)
+  (DEF-ALIEN-ROUTINE ("pcre_info" %INFO) INT (CODE PCRE) (OPTIONS INT :OUT) ...)
+Note: Doing signed word to integer coercion (cost 20) to "<return value>".
+[Last message occurs 3 times]
+
+Converted REGCOMPILE.
+Compiling DEFUN REGCOMPILE: 
+
+File: /usr/src/cvs/lisp-pcre/pcre.lisp
+
+In: DEFUN REGCOMPILE
+  (MULTIPLE-VALUE-BIND
+      (PCRE ERRPTR ERROFFSET)
+      (%COMPILE PATTERN (ADD-UP-OPTIONS OPTIONS) TABLEPTR)
+    (WHEN (ZEROP #) (ERROR "Failed to compile regexp ~A." PATTERN))
+    PCRE)
+--> MULTIPLE-VALUE-CALL 
+==>
+  #'(LAMBDA (&OPTIONAL PCRE ERRPTR ERROFFSET &REST ...)
+      (DECLARE (IGNORE #:G0))
+      (WHEN (ZEROP #) (ERROR "Failed to compile regexp ~A." PATTERN))
+      PCRE)
+Note: Variable ERRPTR defined but never used.
+Note: Variable ERROFFSET defined but never used.
+
+Byte Compiling Top-Level Form: 
+Converted %STUDY.
+Compiling DEF-ALIEN-ROUTINE ("pcre_study" %STUDY): 
+
+File: /usr/src/cvs/lisp-pcre/pcre.lisp
+
+In: DEF-ALIEN-ROUTINE ("pcre_study" %STUDY)
+  (DEF-ALIEN-ROUTINE ("pcre_study" %STUDY)
+                     PCRE-EXTRA
+                     (CODE PCRE)
+                     (OPTIONS INT)
+                     ...)
+--> BLOCK WITH-ALIEN COMPILER-LET SYMBOL-MACROLET LET MULTIPLE-VALUE-PROG1 
+--> SYMBOL-MACROLET VALUES ALIEN-FUNCALL ALIEN::NATURALIZE 
+==>
+  (ALIEN::%SAP-ALIEN ALIEN '#<ALIEN::ALIEN-POINTER-TYPE (* T)>)
+Note: Unable to optimize because:
+      Could not optimize away %SAP-ALIEN: forced to do runtime 
+allocation of alien-value structure.
+Note: Doing SAP to pointer coercion (cost 20).
+Note: Doing SAP to pointer coercion (cost 20) to "<return value>".
+
+Converted %EXEC.
+Compiling DEF-ALIEN-ROUTINE ("pcre_exec2" %EXEC): 
+
+File: /usr/src/cvs/lisp-pcre/pcre.lisp
+
+In: DEF-ALIEN-ROUTINE ("pcre_exec2" %EXEC)
+  (DEF-ALIEN-ROUTINE ("pcre_exec2" %EXEC)
+                     INT
+                     (CODE PCRE)
+                     (STUDY-RESULT PCRE-EXTRA)
+                     ...)
+Note: Doing signed word to integer coercion (cost 20) from ALIEN to "<return value>".
+
+
+File: /usr/src/cvs/lisp-pcre/pcre.lisp
+
+In: DEFUN REGEXEC
+  (DEFUN REGEXEC (PCRE SUBJECT &KEY STUDIED LENGTH ...)
+    "Attempt to match the string SUBJECT against the compiled expression
+PCRE.  Returns a list of ( start . end ) pairs giving the positions of
+what was matched - whole match first then bracketed subexpressions if any."
+    (DECLARE (SIMPLE-BASE-STRING SUBJECT) (TYPE # PCRE)) ..)
+Note: Abbreviated type declaration: (SIMPLE-BASE-STRING SUBJECT).
+
+Converted REGEXEC.
+Compiling DEFUN REGEXEC: 
+
+File: /usr/src/cvs/lisp-pcre/pcre.lisp
+
+In: DEFUN REGEXEC
+  (MAKE-ALIEN INT OSIZE)
+==>
+  (ALIEN::%SAP-ALIEN (ALIEN::%MAKE-ALIEN (* 32 OSIZE))
+                     '#<ALIEN::ALIEN-POINTER-TYPE (* #)>)
+Note: Unable to optimize because:
+      Could not optimize away %SAP-ALIEN: forced to do runtime 
+allocation of alien-value structure.
+
+  (* 3 (1+ (%INFO PCRE)))
+==>
+  (* C::Y 3)
+Note: Unable to recode as shift and add due to type uncertainty:
+      The first argument is a (INTEGER -2147483647 2147483648), not a (UNSIGNED-BYTE
+                                                                       32).
+      The result is a (INTEGER -6442450941 6442450944), not a (UNSIGNED-BYTE 32).
+
+  (1+ (%INFO PCRE))
+==>
+  (+ (%INFO PCRE) 1)
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 1) because:
+      The first argument is a (SIGNED-BYTE 32), not a FIXNUM.
+      The result is a (INTEGER -2147483647 2147483648), not a FIXNUM.
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a (SIGNED-BYTE 32), not a FIXNUM.
+      The result is a (INTEGER -2147483647 2147483648), not a FIXNUM.
+      etc.
+
+  (* 3 (1+ (%INFO PCRE)))
+==>
+  (* C::Y 3)
+Note: Forced to do GENERIC-* (cost 30).
+      Unable to do inline fixnum arithmetic (cost 3) because:
+      The first argument is a (INTEGER -2147483647 2147483648), not a FIXNUM.
+      The result is a (INTEGER -6442450941 6442450944), not a FIXNUM.
+      Unable to do inline fixnum arithmetic (cost 4) because:
+      The first argument is a (INTEGER -2147483647 2147483648), not a FIXNUM.
+      The result is a (INTEGER -6442450941 6442450944), not a FIXNUM.
+      etc.
+
+  (MAKE-ALIEN INT OSIZE)
+--> ALIEN::%SAP-ALIEN ALIEN::%MAKE-ALIEN * * 
+==>
+  (ASH C::X 5)
+Note: Forced to do full call.
+      Unable to do inline ASH (cost 2) because:
+      The first argument is a (INTEGER -6442450941 6442450944), not a FIXNUM.
+      The result is a (INTEGER -206158430112 206158430208), not a FIXNUM.
+      Unable to do inline ASH (cost 3) because:
+      The first argument is a (INTEGER -6442450941 6442450944), not a (UNSIGNED-BYTE
+                                                                       32).
+      The result is a (INTEGER -206158430112 206158430208), not a (UNSIGNED-BYTE
+                                                                   32).
+      etc.
+
+  (* 2 NUM-MATCHES)
+--> * 
+==>
+  (ASH C::X 1)
+Note: Forced to do full call.
+      Unable to do inline ASH (cost 2) because:
+      The first argument is a (INTEGER -1 2147483647), not a FIXNUM.
+      The result is a (INTEGER -2 4294967294), not a FIXNUM.
+      Unable to do inline ASH (cost 3) because:
+      The first argument is a (INTEGER -1 2147483647), not a (UNSIGNED-BYTE 32).
+      The result is a (INTEGER -2 4294967294), not a (UNSIGNED-BYTE 32).
+      etc.
+
+  (1- (* 2 NUM-MATCHES))
+==>
+  (- (* 2 NUM-MATCHES) 1)
+Note: Forced to do GENERIC-- (cost 10).
+      Unable to do inline fixnum arithmetic (cost 1) because:
+      The first argument is a (INTEGER -2 4294967294), not a FIXNUM.
+      The result is a (INTEGER -3 4294967293), not a FIXNUM.
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a (INTEGER -2 4294967294), not a FIXNUM.
+      The result is a (INTEGER -3 4294967293), not a FIXNUM.
+      etc.
+
+  (LOOP FOR I FROM 0 ...)
+--> LET ANSI-LOOP::WITH-LOOP-LIST-COLLECTION-HEAD LET* BLOCK 
+--> ANSI-LOOP::LOOP-BODY TAGBODY WHEN COND IF 
+==>
+  (> I #:G9)
+Note: Forced to do GENERIC-> (cost 10).
+      Unable to do inline fixnum comparison (cost 4) because:
+      The first argument is a (OR (INTEGER 4 4)
+                                  (INTEGER 0 0)
+                                  (INTEGER 8 8)
+                                  (INTEGER 12 12)
+                                  ...), not a FIXNUM.
+      The second argument is a (INTEGER -3 4294967293), not a FIXNUM.
+
+  (MAKE-ALIEN INT OSIZE)
+--> ALIEN::%SAP-ALIEN ALIEN::%MAKE-ALIEN BLOCK ALIEN-FUNCALL ASH 
+--> MULTIPLE-VALUE-BIND LET UNLESS COND IF NOT IF TYPEP 
+==>
+  (FIXNUMP #:G60)
+Note: Doing signed word to integer coercion (cost 20), for:
+      The first argument of FIXNUMP.
+
+==>
+  (ALIEN::%SAP-ALIEN (ALIEN::%MAKE-ALIEN (* 32 OSIZE))
+                     '#<ALIEN::ALIEN-POINTER-TYPE (* #)>)
+Note: Doing SAP to pointer coercion (cost 20).
+
+  (CONS (DEREF OVEC I) (DEREF OVEC (1+ I)))
+Note: Doing signed word to integer coercion (cost 20), for:
+      The second argument of SET-SLOT.
+[Last message occurs 2 times]
+
+  (LOOP FOR I FROM 0 ...)
+--> LET ANSI-LOOP::WITH-LOOP-LIST-COLLECTION-HEAD LET* BLOCK 
+--> ANSI-LOOP::LOOP-BODY TAGBODY ANSI-LOOP::LOOP-REALLY-DESETQ 
+==>
+  (SETQ I (+ I 2))
+Note: Doing signed word to integer coercion (cost 20) to I.
+
+Byte Compiling Top-Level Form: 
+Converted REGEXEC-WITH-BINDINGS.
+Compiling DEFMACRO REGEXEC-WITH-BINDINGS: 
+Byte Compiling Top-Level Form: 
+Converted WITH-REGEXPS.
+Compiling DEFMACRO WITH-REGEXPS: 
+Byte Compiling Top-Level Form: 
+Converted SPLIT-RE.
+Compiling DEFUN SPLIT-RE: 
+Byte Compiling Top-Level Form: 
+
+Compilation unit finished.
+  27 notes
+
+
+src:cvs/lisp-pcre/pcre.x86f written.
+Compilation finished in 0:00:01.

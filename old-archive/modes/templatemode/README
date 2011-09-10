@@ -1,0 +1,29 @@
+This directory contains the code, data files and documentation for
+template-mode, a minor mode of GNU Emacs.  The files ending with ".el"
+are GNU Emacs Lisp files.  Files ending with ".texinfo" are TeX source
+files and Gnuemacs info source files.  Files ending with ".tpl" are
+source-form template files.
+
+awk.el			Major mode for editing "awk" programs
+bib.el			Major mode for editing bibliography files
+menu.el			Template-mode -- major mode for selections
+pascal.el		Major mode for editing Pascal programs
+symbol.el		Template-mode -- major mode for entry-in-place
+template.el		Root of template-mode
+tplhelper.el		Template-mode -- non-interactive functions
+tplparse.el		Template-mode -- Parsing and unparsing functions
+tplreplace.el		Template-mode -- replacement functions
+tplscan.el		Template-mode -- scanner and unscanner functions
+tplvars.el		Template-mode -- global variables and options
+dir			New part of root directory for Info
+manual.texinfo		User manual source -- printed form wrapper
+template.texinfo	User manual source -- bulk of document
+awk.tpl			Templates for awk programs
+bib.tpl			Templates for bibliography files
+c.tpl			Templates for C-mode
+elisp.tpl		Templates for Emacs-lisp-mode
+generic.tpl		Templates for use in any mode---mostly Function type
+latex.tpl		Templates for LaTeX-mode
+pascal.tpl		Templates for Pascal-mode
+scribe.tpl		Templates for Scribe-mode
+texinfo.tpl		Templates for Texinfo-mode

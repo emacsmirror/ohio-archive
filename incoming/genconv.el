@@ -1,0 +1,362 @@
+;;; $Id: genconv.el,v 1.15 2000/01/10 20:44:11 queinnec Exp $
+;;; Copyright (C) 1997-1998 by C.Queinnec (LIP6)
+
+;;; LCD Archive Entry:
+;;; genconv|Christian Queinnec|Christian.Queinnec@lip6.fr|
+;;; Table-driven string conversions.|
+;;; $Date: 2000/01/10 20:44:11 $|$Revision: 1.15 $|
+;;; ~/misc/genconv.el.Z|
+
+;; This file is not part of GNU Emacs.
+
+;;; Commentary:
+
+;;; This package performs various conversions using tables.  There are
+;;; currently tables toward ISO Latin1 from html accentuated letters
+;;; (you know the kind of &eacute; stuff), from quoted printable
+;;; sequences (the ugly =E20 things) or from (La)TeX (things such as
+;;; \'{e}).  To make these conversions handy, I have them in my
+;;; default buffer menu. 
+
+;;; To use that package, first compile it, evaluate (require 'genconv)
+;;; [Maybe in your .emacs], and try, on a appropriate text (not this
+;;; one or you will spoil the translation tables), to use the
+;;; following commands html2iso, latex2iso or quotedprintable2iso.
+
+;;; Repository:
+
+;;; Newer versions will be sent to the LCD Archive but may appear earlier
+;;; on http://www-spi.lip6.fr/~queinnec/Miscellaneous/genconv.el
+;;; Other Emacs packages can be found with World Wide Web with URL:
+;;;     http://www-spi.lip6.fr/~queinnec/WWW/elisp.html
+
+;;; {{{ Code:
+
+(defun convert-characters (table)
+  "Convert the current buffer using a translation TABLE."
+  (save-excursion
+    (let ((case-fold-search nil) )
+      (while (consp table)
+        (goto-char (point-min))
+        (let ((from (car (car table)))
+              (to   (cdr (car table))) )
+          (setq table (cdr table))
+          (while (search-forward from nil t)
+            (replace-match to t t) ) ) ) ) ) )
+
+(defun anti-convert-characters (table)
+  "Convert the current buffer using an inverted translation TABLE."
+  (convert-characters (invert-translation-table table)) )
+
+(defun invert-translation-table (table)
+  "Convert a translation TABLE into a reciprocal translation table. 
+No attempt is made to detect ambiguity. "
+  (if (consp table)
+      (cons (cons (cdr (car table)) (car (car table)))
+            (invert-translation-table (cdr table)) )
+    '() ) )
+
+;;; }}} {{{ translation tables
+
+(defvar *html2iso-translation*
+  '( ("&agrave;" . "à")
+     ("&Agrave;" . "À")
+     ("&acirc;"  . "â")
+     ("&Acirc;"  . "Â")
+     ("&eacute;" . "é")
+     ("&Eacute;" . "É")
+     ("&ecirc;"  . "ê")
+     ("&Ecirc;"  . "Ê")
+     ("&egrave;" . "è")
+     ("&Egrave;" . "È")
+     ("&euml;"   . "ë")
+     ("&Euml;"   . "Ë")
+     ("&icirc;"  . "î")
+     ("&Icirc;"  . "Î")
+     ("&iuml;"   . "ï")
+     ("&Iuml;"   . "Ï")
+     ("&ocirc;"  . "ô")
+     ("&Ocirc;"  . "Ô")
+     ("&ugrave;" . "ù")
+     ("&Ugrave;" . "Ù")
+     ("&ucirc;"  . "û")
+     ("&Ucirc;"  . "Û")
+     ("&uuml;"   . "ü")
+     ("&Uuml;"   . "Ü")
+     ("&ccedil;" . "ç")
+     ("&Ccedil;" . "Ç")
+     ) )
+
+(defvar *latex2iso-translation*
+  '( ("\\`a" . "à")
+     ("\\`A" . "À")
+     ("\\^a" . "â")
+     ("\\^A" . "Â")
+     ("\\'e" . "é")
+     ("\\'E" . "É")
+     ("\\^e" . "ê")
+     ("\\^E" . "Ê")
+     ("\\\"e" . "ë")
+     ("\\\"E" . "Ë")
+     ("\\`e" . "è")
+     ("\\`E" . "È")
+     ("\\^o" . "ô")
+     ("\\^O" . "Ô")
+     ("\\`u" . "ù")
+     ("\\`U" . "Ù")
+     ("\\^u" . "û")
+     ("\\^U" . "Û")
+     ("\\c{c}" . "ç")
+     ("\\c{C}" . "Ç")
+     ("\\`{a}" . "à")
+     ("\\`{A}" . "À")
+     ("\\^{a}" . "â")
+     ("\\^{A}" . "Â")
+     ("\\'{e}" . "é")
+     ("\\'{E}" . "É")
+     ("\\^{e}" . "ê")
+     ("\\^{E}" . "Ê")
+     ("\\\"{e}" . "ë")
+     ("\\\"{E}" . "Ë")
+     ("\\`{e}" . "è")
+     ("\\`{E}" . "È")
+     ("\\\"{\\i}" . "ï")
+     ("\\\"{\\I}" . "Ï")
+     ("\\^{o}" . "ô")
+     ("\\^{O}" . "Ô")
+     ("\\`{u}" . "ù")
+     ("\\`{U}" . "Ù")
+     ("\\^{u}" . "û")
+     ("\\^{U}" . "Û")
+     ("\\c c" . "ç")
+     ("\\c C" . "Ç")
+     ("\\c{}c" . "ç")
+     ("\\c{}C" . "Ç")
+     ("\\^\\i{}" . "î")
+     ("\\^\\I{}" . "Î")
+     ("\\\"\\i{}" . "ï")
+     ("\\\"\\I{}" . "Ï")
+     ("{\\`a}" . "à")
+     ("{\\`A}" . "À")
+     ("{\\^a}" . "â")
+     ("{\\^A}" . "Â")
+     ("{\\'e}" . "é")
+     ("{\\'E}" . "É")
+     ("{\\^e}" . "ê")
+     ("{\\^E}" . "Ê")
+     ("{\\\"e}" . "ë")
+     ("{\\\"E}" . "Ë")
+     ("{\\`e}" . "è")
+     ("{\\`E}" . "È")
+     ("{\\\"\\i}" . "ï")
+     ("{\\\"\\I}" . "Ï")
+     ("{\\^o}" . "ô")
+     ("{\\^O}" . "Ô")
+     ("{\\`u}" . "ù")
+     ("{\\`U}" . "Ù")
+     ("{\\^u}" . "û")
+     ("{\\^U}" . "Û")
+     ("~:"     . ":")
+     ("~;"     . ";")
+     ("~!"     . "!")
+     ("~?"     . "?")
+     ) )
+
+(defvar *quotedprintable2iso-translation*
+  '(;; I notice them in some documents produced by Word97
+    ("=20" . " ")
+    ("=\n" . "")
+    ("=3D" . "=")
+    ("=92" . "'")
+    ("=96" . "-")
+    ("=9C" . "oe")
+    ;; letters above 128:
+    ("=A0" . " ")
+    ("=A1" . "¡")
+    ("=A2" . "¢")
+    ("=A3" . "£")
+    ("=A4" . "¤")
+    ("=A5" . "¥")
+    ("=A6" . "¦")
+    ("=A7" . "§")
+    ("=A8" . "¨")
+    ("=A9" . "©")
+    ("=AA" . "ª")
+    ("=AB" . "«")
+    ("=AC" . "¬")
+    ("=AD" . "­")
+    ("=AE" . "®")
+    ("=AF" . "¯")
+    ("=B0" . "°")
+    ("=B1" . "±")
+    ("=B2" . "²")
+    ("=B3" . "³")
+    ("=B4" . "´")
+    ("=B5" . "µ")
+    ("=B6" . "¶")
+    ("=B7" . "·")
+    ("=B8" . "¸")
+    ("=B9" . "¹")
+    ("=BA" . "º")
+    ("=BB" . "»")
+    ("=BC" . "¼")
+    ("=BD" . "½")
+    ("=BE" . "¾")
+    ("=BF" . "¿")
+    ("=C0" . "À")
+    ("=C1" . "Á")
+    ("=C2" . "Â")
+    ("=C3" . "Ã")
+    ("=C4" . "Ä")
+    ("=C5" . "Å")
+    ("=C6" . "Æ")
+    ("=C7" . "Ç")
+    ("=C8" . "È")
+    ("=C9" . "É")
+    ("=CA" . "Ê")
+    ("=CB" . "Ë")
+    ("=CC" . "Ì")
+    ("=CD" . "Í")
+    ("=CE" . "Î")
+    ("=CF" . "Ï")
+    ("=D0" . "Ð")
+    ("=D1" . "Ñ")
+    ("=D2" . "Ò")
+    ("=D3" . "Ó")
+    ("=D4" . "Ô")
+    ("=D5" . "Õ")
+    ("=D6" . "Ö")
+    ("=D7" . "×")
+    ("=D8" . "Ø")
+    ("=D9" . "Ù")
+    ("=DA" . "Ú")
+    ("=DB" . "Û")
+    ("=DC" . "Ü")
+    ("=DD" . "Ý")
+    ("=DE" . "Þ")
+    ("=DF" . "ß")
+    ("=E0" . "à")
+    ("=E1" . "á")
+    ("=E2" . "â")
+    ("=E3" . "ã")
+    ("=E4" . "ä")
+    ("=E5" . "å")
+    ("=E6" . "æ")
+    ("=E7" . "ç")
+    ("=E8" . "è")
+    ("=E9" . "é")
+    ("=EA" . "ê")
+    ("=EB" . "ë")
+    ("=EC" . "ì")
+    ("=ED" . "í")
+    ("=EE" . "î")
+    ("=EF" . "ï")
+    ("=F0" . "ð")
+    ("=F1" . "ñ")
+    ("=F2" . "ò")
+    ("=F3" . "ó")
+    ("=F4" . "ô")
+    ("=F5" . "õ")
+    ("=F6" . "ö")
+    ("=F7" . "÷")
+    ("=F8" . "ø")
+    ("=F9" . "ù")
+    ("=FA" . "ú")
+    ("=FB" . "û")
+    ("=FC" . "ü")
+    ("=FD" . "ý")
+    ("=FE" . "þ")
+    ("=FF" . "ÿ")
+    ) )
+
+(defvar *suffixed2iso-translation*
+  '(("a`" . "à")
+    ("a^" . "â")
+    ("e'" . "é")
+    ("e^" . "ê")
+    ("e`" . "è")
+    ("e\"" . "ë")
+    ("i^" . "î")
+    ("i\"" . "ï")
+    ("o^" . "ô")
+    ("u\`" . "ù")
+    ("u^" . "û")
+    ("c,a" . "ça")
+    ("c,o" . "ço")
+    ("c,u" . "çu")
+    ("A`" . "À")
+    ("A^" . "Â")
+    ("E'" . "É")
+    ("E^" . "Ê")
+    ("E`" . "È")
+    ("E\"" . "Ë")
+    ("I^" . "Î")
+    ("I\"" . "Ï")
+    ("O^" . "Ô")
+    ("U\`" . "Ù")
+    ("U^" . "Û")
+    ("C,a" . "Ça")
+    ("C,o" . "Ço")
+    ("C,u" . "Çu")
+    ) )
+
+(defvar *iso2none-translation*
+  '(("à" . "a")
+    ("â" . "a")
+    ("é" . "e")
+    ("ê" . "e")
+    ("è" . "e")
+    ("ë" . "e")
+    ("î" . "i")
+    ("ï" . "i")
+    ("ô" . "o")
+    ("ù" . "u")
+    ("û" . "u")
+    ("ç" . "c")
+    ("À" . "A")
+    ("Â" . "A")
+    ("É" . "E")
+    ("Ê" . "E")
+    ("È" . "E")
+    ("Ë" . "E")
+    ("Î" . "I")
+    ("Ï" . "I")
+    ("Ô" . "O")
+    ("Ù" . "U")
+    ("Û" . "U")
+    ("Ç" . "C")
+    ) )
+
+;;; }}} {{{ Interface functions
+
+(defun html2iso ()
+  "Convert html accentuated sequences into ISO characters. "
+  (interactive)
+  (convert-characters *html2iso-translation*) )
+
+(defun latex2iso ()
+  "Convert (La)TeX accentuated sequences into ISO characters. "
+  (interactive)
+  (convert-characters *latex2iso-translation*) )
+
+(defun quotedprintable2iso ()
+  "Convert quoted printable accentuated sequences into ISO characters. "
+  (interactive)
+  (convert-characters *quotedprintable2iso-translation*) )
+
+(defun suffixed2iso ()
+  "Convert suffixed accents into ISO characters. "
+  (interactive)
+  (convert-characters *suffixed2iso-translation*) )
+
+(defun iso2none ()
+  "Remove accents from ISO characters. "
+  (interactive)
+  (convert-characters *iso2none-translation*) )
+
+;;; }}} 
+;;; So this package may be required.
+
+(provide 'genconv)
+
+;;; end of genconv.el

@@ -1,0 +1,25 @@
+This directory contains the sources to the etalk program.  Etalk is a
+program written in C and lisp, which allows a user to talk to other
+users using the BSD talk protocol over TCP links.
+
+This directory should contain the following:
+
+COPYING       - the rules
+INSTALL       - how to install
+README        - this file
+LCD-entry     - entry for LCD archive
+Makefile.in   - configure input makefile
+autoloads     - some lisp to help you make autoloads for personal intallation
+configure*    - configure script, use this before using make.
+etalk.c       - etalk main
+et_*.c        - etalk sources
+etl_*.c       - etalk library sources (which are/will be shared in
+                                       programs not included here)
+*.h           - various usefull headers
+etalk*.el     - etalk lisp sources
+etalk.texinfo - texinfo file for etalk
+etalkcomp.el  - lisp compiler script for makefile rule
+finger.el     - finger mode which uses aspects of etalk
+games/        - directory for tyrant mode games and game libs
+sformat.el    - special package to aid in extending format command
+tyrn-ai.el    - tyrant ai.  Only comes with one ai program. :(

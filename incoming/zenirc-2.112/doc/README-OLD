@@ -1,0 +1,192 @@
+ZenIRC 2.0 - Sun Feb 27 12:37:31 MST 1994 - ALPHA2
+
+DISCLAIMER:
+
+THIS IS REALLY OUT OF DATE, THE ONLY REASON IT'S KEPT AROUND IS THAT
+IT DOES DESCRIBE SOME THINGS PRETTY GOOD. BEFORE YOU BELIEVE WHAT THIS
+FILE SAYS, LOOK AT `zenirc-example.el' AND THE SOURCE.
+
+KNOWN BUGS:
+
+See the TODO file.
+
+KNOWN FEATURES AND INSTRUCTIONS:
+
+Here is a list of variables you might want to frobnicate in your .emacs or
+on the fly:
+
+zenirc-buffer-name, change the buffer name to something besides "*zenirc*"
+
+zenirc-IRCSERVER-alist - Association list of port/password/nick info for 
+each server.
+
+Zenirc will attempt to connect to each `host' at `port' in turn until a
+successful connection is made, using the username `user' (and `password' if
+the server requests one).  Your nickname is set to the value `nick'.
+
+The default value of this alist is determined by the value of the
+environment variable `IRCSERVER', which should be in the format
+`host:port:password:nickname:username'.  If more than one host:etc group is
+desired, separate each group with any nonzero amount of whitespace composed
+of spaces, tabs, and/or newlines.
+
+The actual data types of the atoms of each association are string (server),
+int (port), string (password), string (nickname), string (username).
+
+zenirc-server - The hostname of the IRC server to which to connect.
+
+This is initialized to the first server in `zenirc-IRCSERVER-alist' if that
+variable is non-`nil', or "irc-2.mit.edu" by default.
+
+zenirc-servername - The server name of the IRC server current connected to.
+(hmm. this should be a setq, I think)
+
+zenirc-port - The TCP port associated with the irc server specified 
+by `zenirc-server'. 
+
+If the server initially specified in `zenirc-server' appears in
+`zenirc-IRCSERVER-alist', and a port is explicitly associated with that
+server, `zenirc-port' is initialized to that port.  Otherwise,
+`zenirc-port' defaults to 6667.
+
+zenirc-user-login-name - the username with which you signon IRC.
+
+This is usually your username on the system as returned by the function
+`user-login-name'.  However, if the server initially specified in
+`zenirc-server' appears in `zenirc-IRCSERVER-alist' and a username is
+explicitly associated with that server, `zenirc-user-login-name' is
+initialized to that value.
+
+zenirc-nick - If the server initially specified in `zenirc-server' appears in
+`zenirc-IRCSERVER-alist' and a nickname is explicitly associated with that
+server, `zenirc-nick' is initialized to that nickname.  If this is not the
+case but the environment variable `IRCNICK' is set, `zenirc-nick' is
+initialized from that.  As a last resort, it defaults to the value of the
+variable `zenirc-user-login-name'.
+
+zenirc-name - The name which you use on IRC.
+The default is your GECOS information.
+
+zenirc-password - Connection password for your IRC server.
+The default is none.
+
+zenirc-userinfo - Reply to USERINFO ctcp
+
+zenirc-mode-map - Sparse keymap for zenirc-mode
+
+zenirc-ignorance-list - A list of regexps matching annoying
+things that should be ignored.
+
+zenirc-signal-list - A list of regexps matching things that should cause the
+user to be notified of them.
+
+zenirc-beep-on-signal - Set to t if notification of something matching a regexp
+in zenirc-signal-list should cause emacs to beep.
+
+zenirc-send-ctcp-errmsg-on-unknown - Set to t if ZenIRC should reply with an
+ERRMSG to unknown CTCP queries.
+
+zenirc-send-ctcp-errmsg-on-unbalanced - Set to t if ZenIRC should send an 
+ERRMSG to an unbalanced CTCP query. 
+
+zenirc-verbose-ctcp - Set to t if you want ZenIRC to tell you when it sends
+CTCP replies to people who query you.
+
+zenirc-fingerdata - CTCP FINGER reply data.
+
+zenirc-source - CTCP SOURCE reply data
+
+zenirc-text-list - insert note about function to set here
+
+zenirc-clientinfo-list - association list of CTCP CLIENTINFO help strings.
+
+zenirc-clientinfo - Help string, showing list of CTCP commands supported.
+
+zenirc-debug-mainloop, zenirc-debug-ignore, zenirc-debug-signal,
+zenirc-debug-ctcp, zenirc-debug-commands zenirc-debug-timer -
+debugging flags. If you're using these, then the help file is old news
+as you've read the source.
+
+The client is designed to be extensible and customizable, in the
+spirit of ircII. It uses an extended version of the emacs 19 hook 
+mechanism, dubbed "zenhooks".
+
+The basic idea behind the zenhook mechanism is that we want to be able to
+attach multiple functions to a given hook. Rather than just specifying a 
+single hook by creating a function with a certain name, instead hooks become
+variables which contain a list of functions to be called. You can add a new
+function to a hook variable with the function zenirc-add-hook. If you do
+something like (zenirc-add-hook 'zenirc-timer-hook 'ruru), it will cause
+the function "ruru" to be added to the hook variable, zenirc-timer-hook.
+
+Hooks are removed from a hook variable with the function
+zenirc-delete-hook - ie, (zenirc-delete-hook 'zenirc-timer-hook 'ruru)
+would remove ruru from the list of functions to be called when
+zenirc-timer-hook is run.
+
+zenhooks are run with the function zenirc-run-hook. This function,
+unlike the emacs 19 hook functions, passes any extra arguments to
+zenirc-run-hook to each function in the hook list as it is
+run. In addition, if any function sets zenirc-run-next-hook to nil,
+then remaining hooks in the hooklist are not called, and
+zenirc-run-hook returns immediately.
+
+For the timer code, zenirc uses a hook variable called
+zenirc-timer-hook. This hook is called at most once a minute, and at
+least as often as the irc server pings the client. The functions in
+zenirc-timer-hook take a single argument, a process, the ZenIRC
+process. An example of adding a new function to zenirc-timer-hook is
+scripts/zenirc-stamp.el, which implements Kiwi client style timestamps
+in the ZenIRC buffer.
+
+The signal code is called via a hook variable called
+zenirc-signal-hook. scripts/zenirc-fancy-signal.el shows an example of
+using this hook as well as the variable zenirc-run-next-hook.
+zenirc-signal-hook is called with two arguments, the first is the
+zenirc process, and the second is a string, the unparsed servermessage
+that caused the signal to occur.
+
+In various places in the IRC protocol, the IRC server sends the client
+strings of the form `nick!user@host' where some parts of this are
+optional (see the RFC). The zenhook used to format these is
+`zenirc-format-nickuserhost-hook', and is called with a single argument,
+the string to format. It returns the formatted string.
+
+To add new commands to ZenIRC, you create zenhooks with names of the
+form "zenirc-command-WHATEVER-hook". The hook will be run with
+the arguments "proc" and "parsedcmd". The first argument is the zenirc
+process, and the second argument is a slightly parsed form of what the
+user typed. The "parsedcmd" argument is a list with two elements. The
+first is the first word on the line the user typed, and the second is
+the rest of the line. For instance, if the user issued the command 
+"/FOO BAR", then parsedcmd would be set to ("FOO" "BAR"). Commands
+used to use the old hook mechanism, but that is now obsolete.
+
+CTCP is similarly extensible, only the format of the hook variable
+names are zenirc-ctcp-query-WHATEVER-hook and
+zenirc-ctcp-reply-WHATEVER-hook. A "query" is a CTCP inside a PRIVMSG
+server message, and a "reply" is a CTCP inside a NOTICE server
+message. These hooks are called with four arguments, the zenirc filter
+process, a parsed ctcp message of the form ("CTCP_COMMAND" .
+"ARGUMENTS"), the sender of the ctcp, and the reciever of the ctcp.
+CTCP used to use the old hook mechanism, but that is now obsolete.
+
+All server message handling hook variables have names of the form:
+zenirc-server-MESSAGE-hook, and take two arguments, the zenirc filter
+procedure, and a parsed message, which is an array that looks like
+(sender MESSAGE arg1 arg2 ...). If you want to create a handler for a
+message that does not currently have a handler, create your own
+hook variable with a name of this form that accepts these arguments, and
+ZenIRC will call your subroutine whenever it gets that server message.
+To override or modify the behavior of a server message that already
+has a hook, call zenirc-add-hook to add your subroutine to the hook 
+variable. You can override by setting zenirc-run-next-hook to nil, and
+you can delete your entry in the hook variable with zenirc-delete-hook.
+
+Some documents that may prove helpful in extending the client are the
+RFC protocol specification for IRC and ctcp.doc. these are both included
+in this archive.
+
+Please send any comments, questions, ideas, bugfixes or whatever to
+bed@gnu.ai.mit.edu
+

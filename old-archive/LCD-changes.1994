@@ -1,0 +1,1789 @@
+This file documents the recent changes and updates to the Emacs lisp
+archive on archive.cis.ohio-state.edu.  Unfortunately the the changes
+aren't dated and might be in a hard to read format.  I'm working on it
+though...  If you find this useful, let me know and I'll give fixing
+it up a higher priority.  My eventual plan is to post it as a monthly
+report to comp.emacs.sources.
+
+                                       Dave Brennan (brennan@hal.com)
+
+NEW FILES IN THE ARCHIVE:
+-------------------------
+
+scroll-in-place  (version unknown)  1993-01-21
+  Eric Eide, <eeide@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/scroll-in-place.el.Z
+  Improved vertical scrolling commands
+cl  (Version 3.0)  1993-02-07
+  Cesar Quiroz, <quiroz@cs.rochester.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/cl.el.Z
+  Common-Lisp extensions for GNU Emacs Lisp.
+sccs2  (Version 2.0)  1993-02-23
+  Johnathan Vail, Kevin Rodgers, <vail@tegra.com, kevin@traffic.den.mmc.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/sccs2.el.Z
+  Emacs interface for common SCCS operations.
+sccs-comment  (Version 1.0)  1993-02-23
+  Kevin Rodgers, <kevin@traffic.den.mmc.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/sccs-comment.el.Z
+  sccs-delta-comments customization for sccs.el 2.0.
+line+  (Version 1.1)  1993-02-18
+  Neil Jerram, <nj104@cus.cam.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/line+.el.Z
+  Line numbering and interrupt driven actions.
+querty  (Version 1.0)  1993-02-18
+  Neil Jerram, <nj104@cus.cam.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/querty.el.Z
+  For people who are used to more efficient keyboard layouts.
+modify  (Version 1.37)  1993-02-28
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/modify.el.Z
+  Simple code for maintaining modification tags in files like RCS.
+qwerty  (Version 1.1)  1993-03-01
+  Neil Jerram, <nj104@cus.cam.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/qwerty.el.Z
+  For people who are used to more efficient keyboard layouts.
+complete-fn  (Version 1.1)  1993-02-25
+  Juergen Nickelsen, <nickel@cs.tu-berlin.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/complete-fn.el.Z
+  File name completion in a buffer.
+jka-load  (version unknown)  1992-02-16
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-load.el.Z
+  Support for loading GNU Emacs lisp files through insert-file-contents.
+jka-compr  (version unknown)  1992-02-08
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-compr.el.Z
+  Low level support for reading/writing compressed files
+gnus-mail-vm  (version unknown)  1992-08-16
+  Joe Wells, <jbw@cs.bu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/gnus-mail-vm.el.Z
+  Allow using VM's mail sending instead of the default version from GNUS.
+insert-random-quote  (version unknown)  1992-10-07
+  Joe Wells, <jbw@cs.bu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/insert-random-quote.el.Z
+  Insert a random quote from a file
+overwrite-mode-fix  (version unknown)  1992-10-07
+  Joe Wells, <jbw@cs.bu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/overwrite-mode-fix.el.Z
+  Make backward deletion work properly in overwrite mode.
+xdb  (Version 1.11)  1992-12-12
+  K. Shane Hartman, <shane@ai.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/xdb.tar.Z
+  Run HP PA-RISC symbolic debugger in emacs buffer.
+auto-gc  (Version 1.0)  18-Mar-1993
+  Radey Shouman and Ivan Vazquez, <rshouman@chpc.utexas.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/auto-gc.el.Z
+  Garbage collection in the background.
+crypt++  (Version 2.32)  18-Mar-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+keypad.el|Jeff Morgenthaler|jpmorgen@wisp4.physics.wisc.edu|Support for all the function keys of the vt200 (LK105) keyboard|22-Mar-1993|2.9|~/terms/keypad.el
+expire-kill  (Version 1.6)  23-Mar-1993
+  Ben Liblit, <liblit@cs.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/expire-kill.el.Z
+  expiring kill patterns for GNUS
+arrow-key-fix  (Version 1.1)  22-Mar-1993
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/term/arrow-key-fix.el.Z
+  Turns on the arrow AND function keys.
+vt200.el  (Version 2.9)  22-Mar-1993
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/terms/vt200.el
+  Support for all the function keys of the vt200 keyboard
+fa-extras  (version unknown)  08-Mar-1993
+  Eric Eide, <eeide@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/fa-extras.el.Z
+  Enhancements to Kyle Jones' "filladapt"; hanging lists in Lisp comments
+search-completions  (Version 1.0)  21-Mar-1993
+  Radey Shouman, <rshouman@chpc.utexas.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/search-completions.el.Z
+  Use isearch to select a completion.  Narrow completions with regexps.
+jargon-mode  (Version 0.4a)  04-Apr-1993
+  Sascha Wildner, <swildner@channelz.GUN.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/jargon-mode.el.Z
+  Major mode for browsing through Jargon-style hypertext documents.
+faq  (Version 1.1)  02-Apr-1993
+  Kevin Rodgers, <kevin@traffic.den.mmc.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/faq.el.Z
+  Switch to a buffer visiting an archived Usenet newsgroup FAQ file.
+next-screen-line  (Version 2.0)  31-Mar-1993
+  Govind N. Kamat, <kamat@ece.UC.EDU>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/next-screen-line.el.Z
+  A next-line that moves by screen lines.
+mastermind  (version unknown)  16-Mar-1993
+  Anders Holst, <aho@thalamus.sans.kth.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/mastermind.el.Z
+  The mastermind game.
+animals  (version unknown)  24-Dec-1992
+  Keith Gabryelski, <ag@yoda.omnicron.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/animals.el.Z
+  The ancient game of guess the animal.
+info-bookmark  (Version 0.0)  08-Apr-1993
+  Karl Fogel, Ken Olstad, <kfogel@cs.oberlin.edu, olstad@msc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/info-bookmark.el.Z
+  Setting bookmarks in Info that can be jumped to later.
+jargon-mode.el  (Version 0.4b)  11-Apr-93
+  Sascha Wildner, <swildner@channelz.GUN.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/jargon-mode.el.Z
+  Major mode for reading The Jargon File.
+rs-compile  (Version 1.0)  09-Apr-1993
+  Radey Shouman, <rshouman@chpc.utexas.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rs-compile.el.Z
+  More convenient compiler interface; replaces compile.el.
+ibuff-menu  (Version 2.0)  20-Apr-1993
+  Bernd Petersohn, <muecke@cs.tu-berlin.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/ibuff-menu.el.Z
+  Convenient menu to edit the buffer list and to switch to buffers
+markup  (Version version 1.0)  09-Apr-1993
+  Bill Richardson, <willrich@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/epoch/markup.el.Z
+  Minor mode for electronic editorial markup
+gopher  (Version 1.02)  20-Apr-1993
+  scott snyder, <snyder@fnald0.fnal.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/gopher.el.Z
+  An emacs gopher client.
+reporter  (version unknown)  17-May-1993
+  Barry A. Warsaw, <warsaw@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/reporter.el.Z
+  Customizable bug reporting of lisp programs.
+short-help  (Version 1.1)  19-May-1993
+  Chris Halverson, <halverso@staff.tc.umn.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/short-help.el.Z
+  Makes a 5 line buffer that contains useful Emacs commands
+rmail-to-mail  (version unknown)  19-May-1993
+  Skip Montanaro, Nate Hess, <montanaro@sprite.crd.ge.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/rmail-to-mail.el.Z
+  Convert an rmail babyl file to unix mail.
+describe-perl-symbol  (Version 1.8)  20-May-1993
+  Johan Vromans, <jv@mh.nl>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/perl-descr.el.Z
+  One-line information on a perl symbol.
+yank-match  (version unknown)  20-May-1993
+  Karl Fogel, <kfogel@cs.oberlin.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/yank-match.el.Z
+  Yanks match(es) for REGEXP from kill-ring
+trace  (Version 2.0)  18-May-1993
+  Hans Chalupsky, <hans@cs.buffalo.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/trace.el.Z
+  Tracing facility for Emacs Lisp functions
+advice  (Version 2.1)  26-May-1993
+  Hans Chalupsky, <hans@cs.buffalo.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/advice.el.Z
+  Advice mechanism for Emacs Lisp functions
+pgp  (Version 1.14)  25-May-1993
+  Gray Watson, <gray.watson@antaire.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/pgp.el
+  Pretty Good Privacy Version 2.2+ Interface.
+vt200-esc-fix-19  (Version 4.0)  June 7, 1993
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/terms/vt200-esc-fix-19.el.Z
+  Swaps F11 and ` on vt200 (lk201) keyboards for emacs 19.
+archie  (Version 3.0)  17-May-1993
+  Jack Repenning, <jackr@dblues.wpd.sgi.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/archie.el.Z
+  An Emacs interface to the archie program.
+jka-compr19  (Version 0.4)  08-June-1993
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-compr19.el.Z
+  Low level support for reading/writing/loading compressed files in Emacs V19
+flow-ctrl.el  (Version 3.1)  09-Jun-1993
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/flow-ctrl.el.Z
+  A better wrapper for remapping C-s and C-q for XON-XOFF hobbled terms.
+mmdf  (version unknown)  30-Nov-1992
+  Scott Michel, <scottm@intime.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mmdf.el.Z
+  Alternative to sendmail-send-it, IFF you use MMDF mail transport.
+gnus-cache  (Version 1.5)  16-Jun-1993
+  Rick Sladkey, <jrs@world.std.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/gnus-cache.el.Z
+  GNUS speed-up by caching NNTP article headers to disk
+igrep  (Version 1.0)  22-Jun-1993
+  Kevin Rodgers, <kevin@traffic.den.mmc.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/igrep.el.Z
+  A more convenient interface to grep; plus egrep and fgrep.
+jargon-mode.el  (Version 0.6)  31-May-93
+  Sascha Wildner, <swildner@channelz.GUN.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/jargon-mode.el.Z
+  Major mode for reading the Jargon File.
+kill-fix  (version unknown)  02-Apr-1993
+  Joe Wells and Inge Frick, <inge@nada.kth.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/as-is/kill-fix.el.Z
+  Enhancement to kill-all-local-variables
+easymenu  (Version 0.0)  04-Jul-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/easymenu.el.Z
+  Easy menu support for FSF and Lucid Emacs 19
+min-bind  (Version 1.01)  09-Jun-1993
+  Inge Frick, <inge@nada.kth.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/min-bind.el.Z
+  Bind keymaps, syntax tables and varibales in minor modes
+shadowfile  (Version 2.2)  13-Jul-1993
+  Boris Goldowsky, <boris@cs.rochester.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/shadow-files.el.Z
+  Helps you keep identical copies of files in multiple places.
+vm-frame  (Version 1.01alpha)  24-Jun-1993
+  Paul D. Smith, <psmith@wellfleet.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-frame.el.Z
+  Support for multiple FSF GNU Emacs 19 frames with VM and VM-mail.
+icomplete  (Version 2.12)  02-Jun-1993
+  Ken  Manheimer, <klm@nist.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/icomplete.el.Z
+  Completion enhancement, with incremental feedback in the minibuffer.
+html-view  (Version 0.01)  09-Jul-1993
+  Ron Tapia, <tapia@hydra.unm.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/html-view.el.Z
+  Some routines for communicating with a NCSA Mosaic process
+mabbrev-menu  (Version 1.2)  15-Jul-1992
+  Paul D. Smith, <psmith@wellfleet.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mabbrev-menu.el.Z
+  Adds a menu of mail abbrevs to the mail mode menu bar for FSF GNU Emacs 19
+multi-click  (Version 1.1)  19-Jul-1993
+  Alon Albert, <alon@milcse.rtsg.mot.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/multi-click.el.Z
+  Support for double and triple clicking in Emacs.
+international  (version unknown)  19-Jul-1993
+  Michael Gschwind, <mike@vlsivie.tuwien.ac.at>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/international.el.Z
+  Bind Alt keys for Umlaute and accents.
+kf-bookmark  (Version 0.1)  16-July-1993
+  Karl Fogel, <kfogel@cs.oberlin.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/kf-bookmark.el.Z
+  Setting bookmarks in files, jumping to them later.
+stig-paren.el  (Version 1.10)  24-Jul-1993
+  Jonathan Stigelman, <Stig@netcom.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/stig-paren.el.el.Z
+  Super-cool matching paren/sexp highlighting for emacs 19
+timecard-mode.el  (Version 1.20)  24-Jul-1993
+  Jonathan Stigelman, <Stig@netcom.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/timecard-mode.el.el.Z
+  Super-cool timecard maintenance mode for emacs 18/19.  Does accounting.
+stig-paren  (Version 1.11)  25-Jul-1993
+  Jonathan Stigelman, <Stig@netcom.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/stig-paren.el.Z
+  Super-cool matching paren/sexp highlighting for emacs 19
+hilit19  (Version 2.7)  30-Jul-1993
+  Jonathan Stigelman, <Stig@netcom.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/hilit19.el.Z
+  Comprehensive (and comparatively fast) regex highlighting for Emacs 19
+ftp-quik  (Version 1.0)  28-Jul-1993
+  Terrence Brannon, <tb06@pl122f.eecs.lehigh.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/ftp-quik.el.Z
+  Quik access to dired'ing of ange-ftp and normal paths
+auto-save  (Version 1.19)  01-May-1992
+  Sebastian Kremer, <sk@thp.uni-koeln.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/auto-save.el.Z
+  Safer autosaving with support for ange-ftp and /tmp
+min-out  (Version 1.18)  27-Jul-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/min-out.el.Z
+  Improved outline-minor-mode for Emacs 18 and 19
+min-key  (Version 5.11)  28-Jul-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/min-key.el.Z
+  Remapping the keyboard and character set conversion
+min-ind  (Version 5.5)  27-Jul-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/min-ind.el.Z
+  Minor mode version of indentated-text-mode
+min-ispl  (Version 5.6)  27-Jul-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/min-ispl.el.Z
+  Minor mode to spell words as you type them
+mailcrypt  (Version Version 1.1)  14-Aug-1993
+  Jin S Choi, <jsc@mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/mailcrypt.el
+  Encryption/decryption for mail using RIPEM or PGP. Supports RMAIL and VM.
+elec-c  (Version version 2.0)  10-Jul-1993
+  Mark Davies, <mark@comp.vuw.ac.nz>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/elec-c.el.Z
+  Gosmacs-like electric C code editing mode
+timecard-mode  (Version 1.26)  20-Aug-1993
+  Jonathan Stigelman, <Stig@netcom.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/timecard-mode.el.Z
+  Super-cool timecard maintenance mode for Emacs 18 & 19.  Does accounting.
+pascal-mode  (Version 1.3$)  14-Sep-1993
+  Espen Skoglund, <espensk@stud.cs.uit.no>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/pascal-mode.el.Z
+  Major mode for editing Pascal code
+sun4-keys  (Version v1.0)  8-Jul-1993
+  Ethan Bradford, <ethanb@u.washington.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/term/sun4-keys.el.Z
+  Names and definitions for all the named keys on a Sun4 keyboard
+browse-mode  (version unknown)  1992
+  Raul J. Acevedo, <acevedo@mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/browse-mode.el.Z
+  Buffer browsing facility.
+rcs-clean  (Version 1.16)  19-Sep-1993
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rcs-clean.el.Z
+  replaces the $ around RCS keywords making them inert.
+lookup  (Version 1.19)  18-Sep-1993
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/lookup.el.Z
+  lookup word fragment in dictionary and replace with full word.
+postscript  (version unknown)  4-Sep-1988
+  Chris Maio, <chris@cs.columbia.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/postscript.el.Z
+  Major mode for editing PostScript programs.
+mail-abbrevs  (version unknown)  01-Jul-1993
+  Jamie Zawinski, <jwz@lucid.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mail-abbrevs.el.el.Z
+  Abbrev-expansion of mail aliases.
+lookup  (Version 1.32)  27-Sep-1993
+  Lawrence R. Dodd and Alon Albert, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/lookup.el.Z
+  Lookup word fragment in dictionary and replace with full word.
+mailcrypt  (Version Version 1.2)  15-Aug-1993
+  Jin S Choi, <jsc@mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/nterfaces/mailcrypt.el.Z
+  Encryption/decryption for mail using RIPEM or PGP. Supports RMAIL and VM.
+rat-pgp  (Version 1.4)  08-Oct-1993
+  Michael Hirsch, <hirsch@mathcs.emory.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rat-pgp.el.Z
+  PGP Public Key system front-end for GNU Emacs
+avoid  (Version 1.10)  22-Nov-1993
+  Boris Goldowsky, <boris@cs.rochester.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/avoid.el.Z
+  Keep mouse pointer away from cursor
+shadowfile19  (Version 2.8)  17-Nov-1993
+  Boris Goldowsky, <boris@cs.rochester.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/shadowfile19.el.Z
+  Helps you keep identical copies of files in multiple places.
+vm-auto-fcc  (Version version 1 (beta))  24-Nov-1993
+  Neal Young, <ney@cs.princeton.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-auto-fcc.el.Z
+  Insert fcc field according to vm-auto-folder-alist to file outgoing mail
+simple-hebrew  (Version 1.0)  24-Nov-1993
+  Alex Rezinsky, <alexr@msil.sps.mot.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/hebrew.el.Z
+  Simple Hebrew language support.
+defaultcontent  (Version 1.9)  11-Nov-1993
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/defaultcontent.el.Z
+  Fill new files when visited.
+m68k-mode  (Version 1.0)  26-Nov-1993
+  Espen Skoglund, <espensk@stud.cs.uit.no>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/m68k-mode.el.Z
+  Major mode for editing m680x0 code
+vem  (Version 1.1)  05-Dec-1993
+  Lennart Staflin, <lenst@lysator.liu.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/vem.el.Z
+  Compact display of rwho output
+matlab-mode  (Version 1.06.0)  06-Dec-1993
+  Matt Wette, <mwette@mr-ed.Jpl.Nasa.Gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/matlab-mode.el.Z
+  Major mode for MATLAB dot-m files
+ftpmail.el  (Version 0.2)  07-Dec-1993
+  Sascha Wildner, <swildner@channelz.GUN.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/ftpmail.el.Z
+  Some functions for easy ftpmail editing & saving.
+spread  (Version Version 1.4)  09-Dec-1993
+  Benjamin C. Pierce, <bcp@dcs.ed.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/spread.el.Z
+  A simple spreadsheet for Emacs 
+emacs-vers  (Version 1.0)  31-Dec-1993
+  Eric Eide, <eeide@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/emacs-vers.el.Z
+  Functions for examining and testing the GNU Emacs version number and type
+outln-18  (Version 0.0)  01-Jan-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/outln-18.el.Z
+  Extra support for outline minor mode
+mode-clone  (Version 1.4)  16-Dec-1993
+  David Megginson, <dmeggins@aix1.uottawa.ca>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/mode-clone.el.Z
+  Define new major modes to inherit automatically from existing modes.
+math.el  (Version 1.99)  15-Dec-1993
+  David Jacobson, <jacobson@hpl.hp.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/math.el.el.Z
+  Mode package for running Mathematica
+8bits-mode  (Version 1.4)  20-Dec-93
+  Cedric BEUST, <beust@sophia.inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/8bits-mode.el
+  Mode to type 8 bit characters as diacritics
+dsg-frames  (version unknown)  27-Dec-1993
+  Dave Goldberg, <dsg@blackbird.mitre.org>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/dsg-frames.el.Z
+  Set frame parameters upon creation based on.
+column  (Version 0.3)  31-Dec-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/column.el.Z
+  Display line and column in the mode line
+suffix-template  (Version 1.0)  18-Jan-94
+  Ralf Fassel, <ralf@physik3.gwdg.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/suffix-template.el.Z
+  Load a template file based on file name suffixes.
+rmail-saver.el  (Version 1.01)  31-Jan-1994
+  David L. Sifry, <sifry@pic.melco.co.jp>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rmail-saver.elc.Z
+  automatically create file names based on email addresses for rmail
+foldout  (Version 1.4)  2-Feb-1994
+  Kevin Broadey, <KevinB@bartley.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/foldout.el.Z
+  Folding editor extensions for outline-mode and outline-minor-mode
+russian.el  (Version 1.0)  14-Jan-1994
+  Valery Alexeev, <ava@math.jhu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/russian.el.Z
+  Display, translate and edit buffers containing russian characters.
+maniac  (Version 0.0)  01-Jan-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/maniac.el.Z
+  fill paragraphs like a maniac
+min-map  (Version 5.1)  11-Jan-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/min-map.el.Z
+  Support for FSF emacs 19 style minor mode keymaps
+out-xtra  (Version 5.3)  18-Nov-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/out-xtra.el.Z
+  Extra support for outline minor mode
+ltx-math  (Version 5.5)  18-Nov-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/ltx-math.tar.Z
+  Abbrevations for math symbols in LaTeX
+min-ispl  (Version 5.13)  15-Dec-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/min-ispl.tar.Z
+  Minor mode to spell words as you type them
+edbibtex  (Version 0.22)  20-Dec-1993
+  Michael Burschik, <burschik@uni-bonn.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/edbibtex.tar.Z
+  A BibTeX interface for Michael Ernst's Emacs Database.
+win-vm  (Version 1.10)  19-Jan-1994
+  Paul D. Smith, <psmith@wellfleet.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/win-vm.el.Z
+  Support for FSF GNU Emacs 19 frames, menus, mouse with VM and VM-mail.
+cc-mode  (Version 3.229)  02-Feb-1994
+  Barry A. Warsaw, <cc-mode-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/cc-mode.tar.Z
+  Major mode for editing C++, and ANSI/K&R C code
+rmailgen  (Version 1.18)  17-Feb-1994
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rmailgen.el.Z
+  generates guesses for RMAIL output files and FCC files.
+mh-crypt  (Version 1.7)  07-Feb-1994
+  Fritz Knabe, <knabe@ecrc.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mh-crypt.el
+  Store and retrieve MH messages using encryption.
+tads  (Version 1.0)  Feb-94
+  Darin Johnson, <djohnson@ucsd.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/tads.el.Z
+  Bare bones mode for TADS (Text Adventure Development System)
+double  (Version 5.2)  03-Feh-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/double.el.Z
+  Support keyboard remapping with double clicking
+balance  (version unknown)  09-Feb-1994
+  Jason Baietto, <jason@jade.ssd.csd.harris.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/balance.el.Z
+  Major mode for recording transactions and balancing a bank account
+anon-remail.el  (Version Version 1.4)  07-Mar-1994
+  michael shiplett, <walrus@umich.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/anon-remail.el.Z
+  Interface to ease use of anonymous, encrypting remailers.
+elp  (Version 2.4)  17-Mar-1994
+  Barry A. Warsaw, <tools-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/elp.el.Z
+  Emacs Lisp Profiler
+c-outline  (Version 1.1)  15-Mar-1994
+  Kevin Broadey, <KevinB@bartley.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/c-outline.el.Z
+  outline-minor-mode support for C program editing
+iso-tex  (Version 1.13)  13-Mar-1994
+  Gerd Neugebauer, <gerd@intellektik.informatik.th-darmstadt.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/iso-tex.el.Z
+  Translating TeX to ISO-8859/1 while editing a file.
+scheme-inspector  (Version 1.0)  11-Mar-1994
+  Michael Ernst, <mernst@research.microsoft.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/scheme-inspector.el.Z
+  View values of MIT Scheme expressions under Emacs
+ediff  (Version 1.18.7)  6-Mar-1994
+  Michael Kifer, <kifer@cs.sunysb.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/ediff.el.Z
+  Visual interface to diff(1) and patch(1).
+query  (Version 1.0)  01-Mar-1994
+  Martin Boyer, <gamin@ireq-robot.hydro.qc.ca>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/query.el.Z
+  Functions to query the user.
+global-replace  (Version 1.1)  07-Mar-1994
+  Martin Boyer, <mboyer@ireq-robot.hydro.qc.ca>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/global-replace.el.Z
+  Search and replace strings in multiple files
+ielm  (Version 1.8)  27-Feb-1994
+  Dave M. Smith, <maa036@lancaster.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/ielm.el.gz
+  Comint-based interface to Emacs Lisp
+comint-hilit  (Version 2.2)  01-Mar-1994
+  Dave M. Smith, <maa036@lancaster.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/comint-hilit.el.Z
+  Hilit support for comint buffers (such as *shell*)
+framepop  (Version 2.12)  21-Feb-1994
+  Dave M. Smith, <dsmith@stats.adelaide.edu.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/framepop.el.Z
+  Display temporary buffers in a dedicated frame
+math  (Version 1.103)  30-Mar-1994
+  David Jacobson, <jacobson@hpl.hp.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/math.el.Z
+  Mode package for running Mathematica
+base-conversion  (Version 1.01)  22-03-94
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/base-conversion.el.Z
+  Functions for integer convertion from base to base.
+tcl  (Version 1.3)  06-Apr-1994
+  Tom Tromey, <tromey@busco.lanl.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/tcl.el.Z
+  Major mode for editing Tcl
+moccur  (Version 1.1)  02-Aug-1991
+  Markus Freericks, <mfx@cs.tu-berlin.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/moccur.el.Z
+  multi-buffer occur mode
+pascal  (Version 2.1a)  13-Apr-1994
+  Espen Skoglund, <espensk@stud.cs.uit.no>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/pascal.el.Z
+  Major mode for editing pascal source
+tinyappend  (Version 1.1)  20-March-1994
+  Jari Aalto, <ssjaaa@uta.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinyappend.el.Z
+  Gather text cumulatively to *append* buffer with ease
+radix  (Version 1.03)  19-Apr-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/radix.el.Z
+  Functions for conversion, comparison, etc., of integers in any radix (base)
+pp2  (version unknown)  2-Aug-1993
+  Randal L. Schwartz, <merlyn@ora.com, merlyn@iwarp.intel.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/as-is/pp2.el.Z
+  Lisp pretty printer.
+cust-print  (Version 2.1)  10-Apr-1994
+  Daniel LaLiberte, <liberte@cs.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/cust-print.el.Z
+  Handle print-level, print-circle and more.
+compile-frame  (Version 1.3)  15-Apr-1994
+  Cengiz Alaettinoglu, <ca@cs.umd.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/compile-frame.el
+  Compilation Buffer Frames.
+cite-it  (Version 1.06)  13-Apr-1994
+  Jay Sachs, <sachs@cs.nyu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/cite-it.el.Z
+  Completion,lookup,verification of BibTeX citations in LaTeX files
+madlib  (Version 1.0.1)  7-Feb-1994
+  Michael Ernst, <mernst@theory.lcs.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/madlib.el
+  Mad Lib game
+switch-assoc  (Version 0.5)  5-May-1994
+  Mark A. Plaksin, <mplaksin@ai.uga.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/switch-assoc.el.Z
+  Quick switching to associated buffers (e.g. from a .c file to a .h file).
+mousymacro  (Version 1.4)  03-May-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mousymacro.el.Z
+  Run macros via simple mouse clicks.
+unique  (Version 1.00)  23-Apr-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/unique.el.Z
+  Functions and commands to uniquify lists or buffer text (cf. sort).
+fuzzy-match  (Version 1.01)  23-Apr-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/fuzzy-match.el.Z
+  Approximate/fuzzy string matching functions (e.g. symbol spell-correction).
+lismp  (Version 1.00)  25-Apr-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/lismp.el.Z
+  Functions to manipulate (add and remove) items from lists.
+supertab  (Version 1.2)  08-May-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/supertab.el.Z
+  Enhanced TAB in Lisp-based modes.
+indent-mode  (Version 0.1)  10-May-1994
+  PREINING Norbert, <ep-prei@ophelia.tuwien.ac.at>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/indent-mode.el.Z
+  Minor mode for correct autoindentation and backindentation
+find-file  (Version 1.4)  16-May-1994
+  Henry Guillaume, <henryg@tusc.oz.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/find-file.el.Z
+  Find a file associated with this buffer (from a .cc file to a .hh file).
+nuweb  (Version 1.15)  08-13-1994
+  Dominique de Waleffe, <ddw@sunbim.be>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/nuweb.el.Z
+  Major mode to edit nuweb files with AucTex
+color-lock  (Version 1.00)  27-May-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/color-lock.el.Z
+  Color (colour) for font-lock mode.
+kermit  (Version 1.1)  04-Jun-1994
+  Ben A. Mesander, <ben@gnu.ai.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/kermit.el.Z
+  Transfer buffers to and from Emacs with kermit protocol.
+face-lock  (Version 2.06)  09-Jun-94
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/face-lock.el.Z
+  Colour/color/grayshade/font fontification for font-lock mode.
+empclient  (Version 1.1)  06-Jun-1994
+  Markus Armbruster, <armbru@pond.sub.org>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/empclient.el.Z
+  Simple, extensible, self contained empire client.
+multi-mode  (Version 1.2)  11-Jun-1994
+  Gerd Neugebauer, <gerd@intellektik.informatik.th-darmstadt.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/multi-mode.el.Z
+  Minor mode allowing multiple major modes in a single buffer.
+fast-lock  (Version 1.00)  20-Jun-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/misc-lock.el.Z
+  Automagic text properties caching (for fast font-lock-mode).
+brief  (version unknown)  10-Jun-1994
+  Thomas Huber, <huber@igc.chem.ethz.ch>
+  Archived in: /pub/gnu/emacs/elisp-archive/as-is/brief.el.Z
+  Brief keybindings suitable for use in a .emacs file (ie: not a mode).
+iso-sgml  (Version 1.1)  22-Jun-1994
+  Frederic Lepied, <lepied@cenaath.cena.dgac.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/iso-sgml.el.Z
+  Edit SGML or HTML buffers with iso latin1 display
+fshell  (Version 1.1)  06-Jun-1994
+  Noah Friedman, <friedman@gnu.ai.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/fshell.el.Z
+  Add-ons to shell.el
+manifest  (Version 1.13)  22-Jun-1994
+  Sridhar Anandakrishnan, <sak@essc.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/manifest.el.Z
+  Create and update a MANIFEST file for a directory.
+which-function  (Version 1.3)  03-July-1994
+  Alex Rezinsky, <alexr@msil.sps.mot.com>
+  misc/which-function.el.Z
+  Dynamically print current function in mode line
+email  (Version 1.2)  20-May-1994
+  G. Dinesh Dutt, <brat@htilbom.ernet.in>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/email.el.Z
+  a set of mail-mode extensions for easy cc, fcc and reference addition
+fss  (Version 1.2)  17-Jun-1994
+  G. Dinesh Dutt, <brat@htilbom.ernet.in>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/fss.el.Z
+  Minor mode to write pretty documents and retain settings between sessions
+vm-auto-archive  (Version 5.72)  07-Jun-1994
+  Neal Young, <ney@orie.cornell.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-auto-archive.el
+  Two ways to automatically archive outgoing mail into appropriate VM folders.
+  Supersedes vm-auto-fcc.el
+ps-print  (Version 1.5)  26-Feb-1994
+  James C. Thompson, <thompson@wg2.waii.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/ps-print.el
+  Jim's Pretty-Good PostScript Generator for Emacs 19 (ps-print)
+chastise  (Version 1.1)  20-Jul-1994
+  Michael Ernst, <mernst@theory.lcs.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/chastise.el.Z
+  Remind posters of inappropriate netnews of proper netiquette
+  (was chastize.el)
+rsearch  (Version 1.11)  15-Jul-1994
+  James Berry, <jberry@frb.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rsearch.el.Z
+  Repeatable non-incremental search commands and search/replace menubar.
+find-func  (Version 1.0)  30-Jul-1994
+  Christian Moen, <christim@ifi.uio.no>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/find-func.el.Z
+  Find function definitions from calls
+snake  (Version 1.0)  15-Aug-1994
+  Alex Rezinsky, <alexr@msil.sps.mot.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/snake.el.Z
+  Snake game
+type-break  (Version 1.8)  28-Jul-1994
+  Noah Friedman, <friedman@prep.ai.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/type-break.el.Z
+  encourage rests from typing at appropriate intervals
+cpp  (Version 5.1)  30-Jun-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/cpp.Z
+  Highlight or hide text according to cpp conditionals
+xt-mouse  (Version 5.1)  30-Jul-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/xt-mouse.Z
+  Support the mouse when emacs run in an xterm
+auc-menu  (Version 5.2)  02-Aug-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/auc-menu.el.gz
+  Easy menu support for FSF and Lucid Emacs 19
+all  (Version 0.0)  09-Aug-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/all.el.Z
+  Edit all lines matching a given regexp
+shelldb  (Version 1.02)  10-Aug-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/shelldb.el.Z
+  Customisable context-based database for shell commands.
+shellc  (Version 1.02)  10-Aug-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/shellc.el.Z
+  Customisable context-based completion for the emacs-19 shell buffer.
+shells  (Version 1.01)  10-Aug-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/shells.el.Z
+  Spelling correction for the emacs-19 shell buffer.
+shellt  (Version 1.01)  10-Aug-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/shellt.el.Z
+  Directory etc. tracking for the emacs-19 shell buffer.
+btx-mode  (Version 1.0)  15-Aug-1994
+  Stefan Sch\"of, <schoef@informatik.uni-oldenburg.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/btx-mode.el.Z
+  An enhanced mode to edit BibTeX files
+defaultbanner  (Version 1.6)  30-Aug-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/defaultbanner.el.Z
+  Update banners or headers when files are visited.
+fracc  (Version 1.3)  04-Sep-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/fracc.el.Z
+  French accent towards Latin1, TeX, BibTeX, HTML.
+tinystamp  (Version 1.1)  01-Aug-1994
+  Jari Aalto, <tre@tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinystamp.el.Z
+  Gather text cumulatively to *append* buffer with ease
+make-regexp  (Version 1.00)  25-Jul-94
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/make-regexp.el.Z
+  Generate efficient regexps to match strings.
+mode-compile  (Version 1.05)  13-Sep-1994
+  Heddy Boubaker, <boubaker@cenatls.cena.dgac.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mode-compile.el.Z
+  Smart command for compiling files according to mode.
+lazy-lock  (Version 1.01)  23-Aug-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/lazy-lock.el.Z
+  Lazy Font Lock mode (for fast demand-driven fontification).
+toolbar  (Version 1.3)  30-Aug-1994
+  Andy Piper, <andyp@parallax.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/toolbar.el.Z
+  fake a toolbar in XEmacs
+cc-compat  (Version 1.2)  10-Aug-1994
+  Barry A. Warsaw, <bwarsaw@cen.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/cc-compat.el.Z
+  cc-mode compatibility with c-mode.el confusion
+uil-mode  (Version 1.0)  18-Sep-1994
+  Lionel Cons, E. Jay Berkenbilt, <ejb@ERA.COM>
+  Archived in: /pub/gnu/emacs/elisp-archive/odes/uil-mode.el.Z
+  Major mode and utility functions for editing Motif UIL code
+tcov  (Version 1.4)  20-Sep-1994
+  Tom Tromey, <tromey@busco.lanl.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tcov.el.Z
+  Highlight a buffer according to coverage output
+mqr-replace  (Version 1.0)  02-Nov-1994
+  Christian Moen, <christim@ifi.uio.no>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mqr-replace.el.Z
+  Query replace in multiple buffers
+mrc-lib  (Version 1.17)  21-Nov-1994
+  Michael Walker, <m.d.walker@larc.nasa.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/mrc-lib.el.Z
+  Drive NCSA Mosaic via the remote-control interface
+tinycom  (Version 1.4)  01-Sep-1994
+  Jari Aalto, <jaalto@tre.tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinycom.el.Z
+  Smart comment setting utility
+turing.el  (Version 1.6)  15-Nov-1994
+  David K}gedal, <davidk@lysator.liu.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/turing.el.Z
+  A Turing Machine for GNU Emacs
+tinyff.el  (Version 1.5)  03-Nov-1994
+  Jari Aalto, <tre@tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinyff.el.Z
+  Regexp find file utility
+tinysword  (Version 1.1)  07-Nov-1994
+  Jari Aalto, <tre@tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinysword.el.Z
+  search word under cursor: backward, forward
+ffap  (Version 1.0)  28-Oct-1994
+  Michelangelo Grigni, <mic@cs.ucsd.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/ffap.el.Z
+  find-file-at-point guesses file or URL from text around point
+t-match  (Version 1.3)  0-Oct-1994
+  Tom Kraljevic, <tomk@crhc.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/t-match.el.Z
+  Match parens and other arbitrary strings.
+mview  (Version 1.3)  03-Nov-1993
+  Mike Williams, <mikew@gopher.dosli.govt.nz>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/mview.el.Z
+  Minor view mode
+maple-mode  (Version 1.1)  29-Sep-94
+  Bruno Salvy, <Bruno.Salvy@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/maple.el.Z
+  Maple editing support
+message-buffer-18  (Version 1.0)  03-Oct-1994
+  Ray Nickson, Michael Ernst, <mernst@theory.lcs.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/message-buffer-18.el.Z
+  Log messages in a buffer
+message-buffer  (Version 1.0)  03-Oct-1994
+  Ray Nickson, Michael Ernst, <mernst@theory.lcs.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/message-buffer.el.Z
+  Log messages and errors in their own buffer
+latin1-mode  (Version 2.7)  07-Oct-1994
+  Bernd Petersohn, <muecke@cs.tu-berlin.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/latin1-mode.el.gz
+  Adjustable, language specific floating accents for ISO Latin 1
+listbuf  (version unknown)  05-Jan-1995
+  Noah Friedman, <friedman@prep.ai.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/listbuf.el.gz
+  build buffer menu for use in Buff-menu-mode
+msb|Lars Lindberg  (Version ~/packages/msb.el.Z)  3.22
+  Lars.Lindberg@sypro.cap.se, <Choose buffer with the mouse>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/msb.el.gz
+  12-Dec-1994
+tinyfold  (Version 1.5)  01-Dec-1994
+  Jari Aalto, <jaalto@tre.tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinyfold.el.Z
+  Extra functions for folding.el
+eval-region  (version unknown)  21-Mar-94
+  Daniel LaLiberte, <liberte@cs.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/eval-region.el.Z
+  Redefine eval-region, and subroutines that use it, in Lisp.
+cl-read.el  (Version 1.19)  21-Mar-94
+  Guido Bosch, <Guido.Bosch@loria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/cl-read.el.el.Z
+  Customizable, Common Lisp like reader for Emacs Lisp
+new-dabbrev  (Version 5.2)  08-Dec-1994
+  Lars Lindberg, <Lars.Lindberg@sypro.cap.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/new-dabbrev.el.Z
+  Dynamic abbreviation package
+tinyff  (Version 1.9)  03-Nov-1994
+  Jari Aalto, <jaalto@tre.tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinyff.el.Z
+  Regexp find file utility
+view-window  (Version 1.21)  01-Dec-1994
+  Yasuhiko WATANABE, <ywata@k2.t.u-tokyo.ac.jp>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/view-window.el.Z
+  manipulete other/current windows with less like keybinding
+motif-keys  (version unknown)  11-Nov-1994
+  Pete Forman, <pete.forman@airgun.wg.waii.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/terms/motif-keys.el.Z
+  Key bindings that follow the Motif standard.
+ada-mode  (Version 2.8)  11-Nov-1994
+  Rolf Ebert, <ebert@inf.enst.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/modex/ada-mode-1.8.tar.gz
+  Major-mode for Ada
+---- next new entry ----
+
+
+UPDATED	FILES IN THE ARCHIVE:
+-----------------------------
+
+crypt++  (Version 2.18)  1993-02-08
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+flow-ctrl  (Version 2.1)  93-02-06
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/flow-ctrl.el.Z
+  Flow control adjustments to remap C-s and C-q.
+vt200-esc-fix  (Version 1.1)  93-02-06
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/vt200-esc-fix.el.Z
+  Put ESC key in convenient reach on VT220.
+flow-ctrl  (Version 2.7)  93-02-25
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/flow-ctrl.el.Z
+  Flow control adjustments to remap C-s and C-q.
+isearch-mode  (Version 1.4)  1992-09-14
+  Daniel LaLiberte, <liberte@cs.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/isearch-mode.el.Z
+  A minor mode replacement for isearch.el.
+mode-line  (Version 2.69)  1993-02-20
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mode-line.el.Z
+  Code for including abbreviated file paths in mode line.
+vt200-esc-fix  (Version 3.1)  93-02-12
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/vt200-esc-fix.el.Z
+  Put ESC key in convenient reach on VT220.
+modify  (Version 1.39)  1993-03-04
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/modify.el.Z
+  Simple code for maintaining modification tags in files like RCS.
+flow-ctrl  (Version 2.8)  1993-03-01
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/flow-ctrl.el.Z
+  Flow control adjustments to remap C-s and C-q.
+symlink-fix  (version unknown)  1993-02-23
+  Joe Wells, <jbw@cs.bu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/symlink-fix.el.Z
+  Remove symbolic links from file pathnames
+gnus-mail-vm  (version unknown)  1992-08-16
+  Joe Wells, <jbw@cs.bu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/gnus-mail-vm.el.Z
+  Allow using VM's mail sending instead of the default version from GNUS.
+file-complete  (version unknown)  1992-10-13
+  Ashwin Ram, Joe Wells, <Ram-Ashwin@cs.yale.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/file-complete.el.Z
+  Display file name completions in mod-time order.
+jka-compr  (version unknown)  1993-03-02
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-compr.el.Z
+  Low level support for reading/writing compressed files
+jka-load  (version unknown)  1992-02-23
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-load.el.Z
+  Support for loading GNU Emacs lisp files through insert-file-contents.
+querty  (Version 1.1)  1993-02-18
+  Neil Jerram, <nj104@cus.cam.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/querty.el.Z
+  For people who are used to more efficient keyboard layouts.
+jka-compr  (version unknown)  08-Mar-1993
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-compr.el.Z
+  Low level support for reading/writing compressed files
+hippie-expand  (Version 1.1)  10-Mar-1993
+  Anders Holst, <aho@sans.kth.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/hippie-expand.el.Z
+  Expand text trying various ways to find its expansion.
+scroll-in-place  (version unknown)  26-Feb-1993
+  Eric Eide, <eeide@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/scroll-in-place.el.Z
+  Improved vertical scrolling commands
+harris-tags  (Version 1.9)  25-Mar-1993
+  Ken Laprade, <laprade@trantor.harris-atd.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/harris-tags.el.Z
+  Tags with multiple active files, etags or ctags, completion...
+vt200-esc-fix  (Version 1.0)  23-Mar-1993
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/terms/vt200-esc-fix.el.Z
+  Fixes:  flow control, arrow keys, and vt200 function keys
+flow-ctrl  (Version 1.0)  23-Mar-1993
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/terms/flow-ctrl.el.Z
+  Flow control adjustments to remap C-s and C-q.
+modify  (Version 1.46)  25-Mar-1993
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/modify.el.Z
+  Simple code for maintaining modification tags in files like RCS.
+modify  (Version 1.48)  27-Mar-1993
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/modify.el.Z
+  Simple code for maintaining modification tags in files like RCS.
+crypt++  (Version 2.33)  30-Mar-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+mode-line  (Version 2.75)  31-Mar-1993
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mode-line.el.Z
+  code for including abbreviated file paths in mode line
+expire-kill  (Version 1.8)  30-Mar-1993
+  Ben Liblit, <liblit@cs.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/expire-kill.el.Z
+  expiring kill patterns for GNUS
+faq  (Version 1.1)  02-Apr-1993
+  Kevin Rodgers, <kevin@traffic.den.mmc.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/faq.el.Z
+  Switch to a buffer visiting an archived Usenet newsgroup FAQ file.
+info-bookmark  (Version 0.0)  08-Apr-1993
+  Karl Fogel, Ken Olstad, <kfogel@cs.oberlin.edu, olstad@msc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/info-bookmark.el.Z
+  Setting bookmarks in Info that can be jumped to later.
+expire-kill  (Version 1.7)  29-Mar-1993
+  Ben Liblit, <liblit@cs.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/expire-kill.el.Z
+  expiring kill patterns for GNUS
+c++-mode  (Version 2.309)  04-Apr-1993
+  Barry A. Warsaw, <c++-mode-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/c++-mode.el.Z
+  Mode for editing C++, and ANSI/K&R C code (was Detlefs' c++-mode.el)
+expire-kill  (Version 2.1)  15-Apr-1993
+  Ben Liblit, <liblit@cs.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/expire-kill.el.Z
+  expiring kill patterns for GNUS
+crypt++  (Version 2.36)  16-Apr-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+jargon-mode.el  (Version 0.5)  17-Apr-93
+  Sascha Wildner, <swildner@channelz.GUN.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/jargon-mode.el.Z
+  Major mode for reading the Jargon File.
+jka-load  (version unknown)  11-Apr-1993
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-load.el.Z
+  Load remote or compressed GNU Emacs lisp files.
+jka-compr  (version unknown)  16-Apr-1993
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-compr.el.Z
+  Low level support for reading/writing compressed files
+faq  (Version 1.2.1)  19-Apr-1993
+  Kevin Rodgers, <kevin@traffic.den.mmc.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/faq.el.Z
+  Switch to a buffer visiting an archived Usenet newsgroup FAQ file.
+jka-compr  (version unknown)  19-Apr-1993
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-compr.el.Z
+  Low level support for reading/writing compressed files
+expire-kill  (Version 2.2)  23-Apr-1993
+  Ben Liblit, <liblit@cs.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/expire-kill.el.Z
+  Expiring kill patterns for GNUS.
+jka-load  (Version 0.1)  23-April-1993
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-load.el.Z
+  Load remote or compressed GNU Emacs lisp files.
+crypt++  (Version 2.37)  20-Apr-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+next-screen-line  (Version 2.1)  4-Apr-1993
+  Govind N. Kamat, <kamat@ece.UC.EDU>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/next-screen-line.el.Z
+  A next-line that moves by screen lines.
+expire-kill  (Version 2.3)  7-May-1993
+  Ben Liblit, <liblit@cs.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/expire-kill.el.Z
+  expiring kill patterns for GNUS
+html-mode  (Version 1.25)  06-Dec-1992
+  Marc Andreessen, <marca@ncsa.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/html-mode.el.Z
+  Major mode for editing HTML hypertext files.
+wicos  (Version 1.43)  23-Apr-1993
+  Heikki T. Suopanki, <suopanki@phoenix.oulu.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/wicos.el.Z
+  Save and restore multiple window configurations within Emacs.
+search-completions  (Version 1.01)  21-May-1993
+  Radey Shouman, <rshouman@chpc.utexas.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/search-completions.el.Z
+  Use isearch to select a completion, narrow completions with regexps.
+jargon-mode.el  (Version 0.5a)  22-May-93
+  Sascha Wildner, <swildner@channelz.GUN.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/jargon-mode.el.Z
+  Major mode for reading the Jargon File.
+jka-compr  (Version 0.2)  25-May-1993
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-compr.el.Z
+  Low level support for reading/writing compressed files
+markup  (Version version 1.01)  26-May-1993
+  Bill Richardson, <willrich@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/epoch/markup.el.Z
+  Minor mode for electronic editorial markup
+crypt++  (Version 2.49)  26-May-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+crypt++  (Version 2.50)  01-Jun-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+jargon-mode.el  (Version 0.6)  31-May-93
+  Sascha Wildner, <swildner@channelz.GUN.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/jargon-mode.el.Z
+  Major mode for reading the Jargon File.
+jargon-mode.el  (Version 0.6)  31-May-93
+  Sascha Wildner, <swildner@channelz.GUN.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/jargon-mode.el.Z
+  Major mode for reading the Jargon File.
+folding  (Version 1.6)  08-Jun-1994
+  Jamie Lokier, <u90jl@ecs.ox.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/folding.el.Z
+  A folding-editor-like minor mode.
+crypt++  (Version 2.53)  10-Jun-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+mode-line  (Version 2.82)  11-Jun-1993
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mode-line.el.Z
+  code for including abbreviated file paths in mode line
+gnus-xover-support  (Version 1.5)  09-Jun-1993
+  Felix Lee, <flee@cs.psu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/gnus-xover.tar.Z
+  Replacement for nntp.el in GNUS 3.14 or 3.15 that includes XOVER support.
+folding  (Version 1.6)  08-Jun-1994
+  Jamie Lokier, <u90jl@ecs.ox.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/folding.el.Z
+  A folding-editor-like minor mode.
+modify  (Version 1.58)  16-Jun-1993
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/modify.el.Z
+  Simple code for maintaining modification tags in files like RCS.
+flow-ctrl.el  (Version 3.2)  09-Jun-1993
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/flow-ctrl.el.Z
+  A better wrapper for remapping C-s and C-q for XON-XOFF hobbled terms.
+flow-ctrl.el  (Version 3.1)  9-Jun-1993
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/flow-ctrl.el.Z
+  A better wrapper for remapping C-s and C-q for XON-XOFF hobbled terms.
+vt200-esc-fix-19  (Version 4.0)  June 7, 1993
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/terms/vt200-esc-fix-19.el.Z
+  Swaps F11 and ` on vt200 (lk201) keyboards for emacs 19.
+dunnet  (Version 2.0)  25-Jun-1993
+  Ron Schnell, <ronnie@eddie.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/dunnet.tar.Z
+  Text adventure.
+folding  (Version 1.6.1)  01-Jul-1993
+  Jamie Lokier, <u90jl@ecs.ox.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/folding.el.Z
+  A folding-editor-like minor mode
+folding  (Version 1.6.2)  06-Jul-1993
+  Jamie Lokier, <u90jl@ecs.ox.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/folding.el.Z
+  A folding-editor-like minor mode
+jargon-mode.el  (Version 0.9)  28-June-93
+  Sascha Wildner, <swildner@channelz.GUN.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/jargon-mode.el.Z
+  Major mode for reading the Jargon File.
+hippie-expand  (Version Version 1.2)  22-June-93
+  Anders Holst, <aho@sans.kth.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/hippie-expand.el.Z
+  Expand text trying various ways to find its expansion.
+expire-kill  (Version 2.4)  11-Jun-1993
+  Ben Liblit, <liblit@z-code.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/expire-kill.el.Z
+  expiring kill patterns for GNUS
+flow-ctrl  (Version 3.2)  09-Jun-1993
+  Jeff Morgenthaler, <jpmorgen@wisp4.physics.wisc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/terms/flow-ctrl.el.Z
+  A better wrapper for remapping C-s and C-q for XON-XOFF hobbled terms.
+crypt++  (Version 2.61)  10-Jul-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+vm-frame  (Version 1.3)  13-Jul-1993
+  Paul D. Smith, <psmith@wellfleet.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-frame.el.Z
+  Support for multiple FSF GNU Emacs 19 frames with VM and VM-mail.
+reporter  (Version 1.20)  23-Jun-1993
+  Barry A. Warsaw, <warsaw@cen.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/reporter.el.Z
+  Customizable bug reporting of lisp programs.
+crypt++  (Version 2.62)  14-Jul-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+html-mode  (Version 2.0 beta)  17-Jul-1993
+  Marc Andreessen, <marca@ncsa.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/html-mode.el.Z
+  Major mode for editing HTML hypertext files.
+easymenu  (Version 5.4)  09-Jul-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/easymenu.el.Z
+  Easy menu support for FSF and Lucid Emacs 19
+bookmark  (Version 0.1)  16-July-1993
+  Karl Fogel, <kfogel@cs.oberlin.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/bookmark.el.Z
+  Setting bookmarks in files, jumping to them later.
+multi-click  (Version 1.2)  21-Jul-1993
+  Alon Albert, <alon@milcse.rtsg.mot.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/multi-click.el.Z
+  Support for double and triple clicking in Emacs.
+crypt++  (Version 2.65)  Jul-16-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+bookmark  (Version Version: 1.9.3)  16-July-1993
+  Karl Fogel, <kfogel@cs.oberlin.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/bookmark.el.Z
+  Setting bookmarks in files or directories, jumping to them later.
+vm-frame  (Version 1.4)  23-Aug-1993
+  Paul D. Smith, <psmith@wellfleet.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-frame.el.Z
+  Support for multiple FSF GNU Emacs 19 frames with VM and VM-mail.
+describe-perl-symbol  (Version 1.9)  22-Aug-1993
+  Johan Vromans, <jv@mh.nl>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/perl-descr.el.Z
+  One-line information on a perl symbol.
+bookmark  (Version 1.9.3)  16-July-1993
+  Karl Fogel, <kfogel@cs.oberlin.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/bookmark.el.Z
+  Setting bookmarks in files or directories, jumping to them later.
+stig-paren  (Version 1.12)  16-Aug-1993
+  Jonathan Stigelman, <Stig@netcom.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/stig-paren.el.Z
+  Super-cool matching paren/sexp highlighting for emacs 19
+hilit19  (Version 2.15)  20-Aug-1993
+  Jonathan Stigelman, <Stig@netcom.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/hilit19.el.Z
+  Comprehensive (and comparatively fast) regex-based highlighting for Emacs 19
+sun4-keys  (Version v1.0)  8-Jul-1993
+  Ethan Bradford, <ethanb@u.washington.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/term/sun4-keys.el.Z
+  Names and definitions for all the named keys on a Sun4 keyboard
+sun4-keys  (Version v1.0)  8-Jul-1993
+  Ethan Bradford, <ethanb@u.washington.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/terms/sun4-keys.el.Z
+  Names and definitions for all the named keys on a Sun4 keyboard
+multi-click  (Version 1.3)  27-Jul-1993
+  Alon Albert, <alon@milcse.rtsg.mot.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/multi-click.el.Z
+  Support for double and triple clicking in Emacs.
+add-hook  (Version FSF v19)  14-Sep-1993
+  Dan LaLiberte, <liberte@cs.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/add-hook.el.Z
+  Multiple hooks solution
+crypt++  (Version 2.69)  14-Sep-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+ksh-mode  (Version 2.1)  1-Sep-1993
+  Gary F. Ellison, <Gary_F_Ellison@ATT.COM>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/ksh-mode.el.Z
+  Mode for editing sh/ksh/bash scripts
+search-completions  (Version 1.03)  6-August-1993
+  Radey Shouman, <rshouman@chpc.utexas.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/search-completions.el.Z
+  Use isearch to select a completion, narrow completions with regexps.
+hilit19  (Version Release 2.19)  1993/09/08 18:44:10
+  Jonathan Stigelman, <Stig@netcom.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/hilit19.el.Z
+  Comprehensive (and comparatively fast) regex-based highlighting for Emacs 19
+hippie-expand  (Version Version 1.3)  2-Sept-1993
+  Anders Holst, <aho@sans.kth.se>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/hippie-expand.el.Z
+  Expand text trying various ways to find its expansion.
+GTbuf-men  (Version 1.45)  20-Sep-1993
+  Tom Wurgler and Bill Benedetto, <wurgler@gentire.com, benedett@gentire.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/GTbuf-men.el.Z
+  More dired-like buffer men (for v19)
+jka-compr19  (Version 0.6a)  17-Sept-1993
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-compr19.el.Z
+  Low level support for reading/writing/loading compressed files in GNU Emacs V19
+mode-line  (Version !Revision: 2.88 !)  !Date: 1993/09/18 14:18:23 !
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mode-line.el.Z
+  code for including abbreviated file paths in mode line
+modify  (Version 1.60)  16-Jun-1993
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/modify.el.Z
+  Simple code for maintaining modification tags in files like RCS.
+pascal-mode  (Version 1.4)  16-Sep-1993
+  Espen Skoglund, <espensk@stud.cs.uit.no>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/pascal-mode.el.Z
+  Major mode for editing Pascal code
+capslock  (Version 2.0)  19-Jun-1993
+  Eberhard Mattes, <mattes@azu.informatik.uni-stuttgart.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/capslock.el.Z
+  Reverse Shift state for letter keys
+capslock  (Version 2.0)  19-May-1993
+  Eberhard Mattes, <mattes@azu.informatik.uni-stuttgart.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/capslock.el.Z
+  Reverse Shift state for letter keys
+fa-extras  (version unknown)  23-Sep-1993
+  Eric Eide, <eeide@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/fa-extras.el.Z
+  Enhancements to Kyle Jones' "filladapt"; hanging lists in Lisp comments
+mailcrypt  (Version Version 1.2)  15-Aug-1993
+  Jin S Choi, <jsc@mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/mailcrypt.el.Z
+  Encryption/decryption for mail using RIPEM or PGP. Supports RMAIL and VM.
+context  (version unknown)  06-Oct-1993
+  David Neves, <neves@ils.nwu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/context.el.Z
+  Save some context from previous editing sessions.
+stig-paren  (Version Release 1.17)  01-Oct-1993
+  Jonathan Stigelman, <Stig@netcom.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/stig-paren.el.Z
+  Super-cool matching paren/sexp highlighting for emacs 19
+avoid  (Version 1.10)  22-Nov-1993
+  Boris Goldowsky, <boris@cs.rochester.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/avoid.el.Z
+  Keep mouse pointer away from cursor
+shadowfile  (Version 2.8)  17-Nov-1993
+  Boris Goldowsky, <boris@cs.rochester.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/shadowfile.el.Z
+  Helps you keep identical copies of files in multiple places.
+pascal-mode  (Version 1.5)  25-Nov-1993
+  Espen Skoglund, <espensk@stud.cs.uit.no>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/pascal-mode.el.Z
+  Major mode for editing Pascal code
+jka-compr  (Version 0.5)  30-Nov-1993
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-compr.el.Z
+  Low level support for reading/writing compressed files
+expire-kill  (Version 2.5)  23-Nov-1993
+  Ben Liblit, <liblit@z-code.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/expire-kill.el.Z
+  expiring kill patterns for GNUS
+crypt++  (Version 2.77)  07-Dec-1993
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+mailcrypt  (Version Version 1.3)  5-Dec-1993
+  Jin S Choi, <jsc@mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/mailcrypt.el.Z
+  Encryption/decryption for mail using RIPEM or PGP. Supports RMAIL and VM.
+shadowfile  (Version 2.9)  07-Dec-1993
+  Boris Goldowsky, <boris@cs.rochester.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/shadowfile.el.Z
+  Helps you keep identical copies of files in multiple places.
+add-hook  (Version FSF v19)  14-Jan-1994
+  Dan LaLiberte, <liberte@cs.uiuc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/add-hook.el.Z
+  Multiple hooks solution
+igrep  (Version 1.1)  13-Jan-1994
+  Kevin Rodgers, <kevin@traffic.den.mmc.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/igrep.el.Z
+  A more convenient interface to grep; plus egrep and fgrep.
+scroll-in-place  (Version 1.1)  29-Dec-1993
+  Eric Eide, <eeide@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/scroll-in-place.el.Z
+  Improved vertical scrolling commands
+jka-compr19  (Version 0.7)  21-Dec-1993
+  Jay Adams, <jka@ece.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/jka-compr19.el.Z
+  Low level support for reading/writing/loading compressed files in GNU Emacs V19
+crypt++  (Version 2.78)  1994/01/01 14:35:40
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+dsg-frames  (version unknown)  27-Dec-1993
+  Dave Goldberg, <dsg@blackbird.mitre.org>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/dsg-frames.el.Z
+  Set frame parameters upon creation based on
+reporter  (Version 1.23)  02-Feb-1993
+  Barry A. Warsaw, <bwarsaw@cen.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/reporter.el.Z
+  Customizable bug reporting of lisp programs.
+crypt++  (Version 2.80)  03-Feb-1994
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+vm-auto-fcc  (Version 5.51)  03-Feb-1994
+  Neal Young, <ney@orie.cornell.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-auto-fcc.el
+  Insert fcc field according to vm-auto-folder-alist to file outgoing mail
+comm-regn  (version unknown)  02-Feb-1994
+  cdwilli, <cdwilli@kochab.cs.umbc.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/functions/comm-regn.el.Z
+  Comment-out a region of C or Lisp code.
+pascal-mode  (Version 2.1)  27-Jan-1994
+  Espen Skoglund, <espensk@stud.cs.uit.no>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/pascal-mode.el.Z
+  Major mode for editing Pascal code
+mailcrypt  (Version 1.4)  31-Jan-1994
+  Jin S Choi, <jsc@mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/mailcrypt.el.Z
+  Encryption/decryption for mail using RIPEM or PGP. Supports RMAIL and VM.
+column  (Version 0.3)  31-Dec-1993
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/column.el.Z
+  Display line and column in the mode line
+easymenu  (Version 5.10)  05-Jan-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/easymenu.el.Z
+  Easy menu support for FSF and Lucid Emacs 19
+vm-frame  (Version 1.8)  14-Jan-1994
+  Paul D. Smith, <psmith@wellfleet.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-frame.el.Z
+  Support for multiple FSF GNU Emacs 19 frames with VM and VM-mail.
+foldout  (Version 1.5)  17-Feb-1994
+  Kevin Broadey, <KevinB@bartley.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/foldout.el.Z
+  Folding editor extensions for outline-mode and outline-minor-mode
+vm-auto-fcc  (Version 5.56)  16-Feb-1994
+  Neal Young, <ney@orie.cornell.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-auto-fcc.el
+  Insert fcc field according to vm-auto-folder-alist to file outgoing mail
+out-xtra  (Version 5.6)  01-30-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/out-xtra.el.Z
+  Extra support for outline minor mode
+foldout  (Version 1.9)  15-Mar-1994
+  Kevin Broadey, <KevinB@bartley.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/foldout.el.Z
+  Folding editor extensions for outline-mode and outline-minor-mode
+mailcrypt  (Version 1.5)  02-Apr-1994
+  Jin S Choi, <jsc@mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/mailcrypt.el.Z
+  Encryption/decryption for mail using RIPEM or PGP. Supports RMAIL and VM.
+search-completions  (Version 1.04)  01-April-1994
+  Radey Shouman, <rshouman@chpc.utexas.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/search-completions.el.Z
+  Use isearch to select a completion, narrow completions with regexps.
+crypt++  (Version 2.82)  31-Mar-1994
+  Rod Whitby and Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/crypt++.el.Z
+  Code for handling all sorts of compressed and encrypted files.
+elp  (Version 2.9)  24-Mar-1994
+  Barry A. Warsaw, <tools-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/elp.el.Z
+  Emacs Lisp Profiler
+scheme-inspector  (Version 1.2)  24-Mar-1994
+  Michael Ernst, <mernst@research.microsoft.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/scheme-inspector.el.Z
+  View and navigate among Scheme values under Emacs
+c-outline  (Version 1.3)  23-Mar-1934
+  Kevin Broadey, <KevinB@bartley.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/c-outline.el.Z
+  outline-minor-mode support for C program editing
+igrep  (Version 2.1)  22-Mar-1994
+  Kevin Rodgers, <kevin@traffic.den.mmc.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/igrep.el.Z
+  A more convenient interface to grep/egrep/fgrep; plus recursive versions.
+ielm  (Version 1.15)  21-Mar-1994
+  Dave M. Smith, <maa036@lancaster.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/ielm.el.Z
+  Comint-based interface to Emacs Lisp
+emacs-vers  (Version 1.1)  21-March-1994
+  Eric Eide, <eeide@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/emacs-vers.el.Z
+  Functions for examining and testing the GNU Emacs version number and type
+base-conversion  (Version 1.02)  07-Apr-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/base-conversion.el.Z
+  Functions for integer convertion from base to base.
+defaultcontent  (Version 1.12)  08-Apr-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/defaultcontent.el.Z
+  Fill new files when visited.
+radix  (Version 1.03)  19-Apr-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/radix.el.Z
+  Functions for conversion, comparison, etc., of integers in any radix (base)
+m68k-mode  (Version 1.2)  25-Feb-1994
+  Espen Skoglund, <espensk@stud.cs.uit.no>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/m68k-mode.el.Z
+  Major mode for editing m680x0 code
+c-outline  (Version 1.5)  15-Apr-1994
+  Kevin Broadey, <KevinB@bartley.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/c-outline.el.Z
+  outline-minor-mode support for C program editing
+cite-it  (Version 1.12)  28-Apr-1994
+  Jay Sachs, <sachs@cs.nyu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/cite-it.el.Z
+  Completion,lookup,verification of BibTeX citations in LaTeX files
+ediff  (Version 1.51)  28-Apr-1994
+  Michael Kifer, <kifer@cs.sunysb.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/ediff.el.Z
+  Visual interface to diff(1) and patch(1).
+c-outline  (Version 1.6)  06-May-1994
+  Kevin Broadey, <KevinB@bartley.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/c-outline.el.Z
+  outline-minor-mode support for C program editing
+lismp  (Version 1.02)  09-May-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/lismp.el.Z
+  Functions to manipulate (add, remove, replace) items to/from/in lists.
+mousymacro  (Version 1.6)  04-May-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mousymacro.el.Z
+  Run macros via simple mouse clicks.
+foldout  (Version 1.10)  19-May-1994
+  Kevin Broadey, <KevinB@bartley.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/foldout.el.Z
+  Folding editor extensions for outline-mode and outline-minor-mode
+emacs-vers  (Version 1.1)  21-March-1994
+  Eric Eide, <eeide@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/emacs-vers.el.Z
+  Functions for examining and testing the GNU Emacs version number and type
+win-vm  (Version 1.12)  20-May-1994
+  Paul D. Smith, <psmith@wellfleet.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/win-vm.el.Z
+  Support for FSF GNU Emacs 19 frames, menus, mouse with VM and VM-mail.
+find-file  (Version 1.5)  25-May-1994
+  Henry Guillaume, <henryg@tusc.com.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/find-file.el.Z
+  Find a file associated with this buffer (from a .cc file to a .hh file).
+mailcrypt  (Version 1.6)  2-Jun-1994
+  Jin S Choi, <jsc@mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/mailcrypt.el.Z
+  Encryption/decryption for mail using RIPEM or PGP. Supports RMAIL, VM, mh-e
+find-file  (Version 2.0)  6-Jun-1994
+  Henry Guillaume, <henryg@tusc.com.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/find-file.el.Z
+  Find a file associated with this buffer (from a .cc file to a .hh file).
+vm-auto-fcc  (Version 5.72)  06-Jun-1994
+  Neal Young, <ney@orie.cornell.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-auto-fcc.el
+  Insert fcc field according to vm-auto-folder-alist to file outgoing mail
+win-vm  (Version 1.13)  06-Jun-1994
+  Paul D. Smith, <psmith@wellfleet.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/win-vm.el.Z
+  Support for GNU Emacs 19 frames, menus, mouse with VM and VM-mail.
+find-file  (Version 2.1)  8-Jun-1994
+  Henry Guillaume, <henryg@tusc.com.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/find-file.el.Z
+  Find a file associated with this buffer (from a .cc file to a .hh file).
+kermit  (Version 1.4)  04-Jun-1994
+  Ben A. Mesander, <ben@gnu.ai.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/kermit.el.Z
+  Transfer buffers to and from Emacs with kermit protocol.
+ediff  (Version 1.62)  10-Jun-1994
+  Michael Kifer, <kifer@cs.sunysb.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/ediff.el.Z
+  Visual interface to diff and patch.
+ksh-mode  (Version 2.4)  14-Jun-1994
+  Gary F. Ellison, <Gary_F_Ellison@ATT.COM>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/ksh-mode.el.Z
+  Mode for editing sh/ksh/bash scripts
+elp  (Version 2.11)  6-Jun-1994
+  Barry A. Warsaw, <tools-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/elp.el.Z
+  Emacs Lisp Profiler
+fast-lock  (Version 1.01)  22-Jun-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/fast-lock.el.Z
+  Automagic text properties caching (for fast font-lock-mode).
+mh-crypt  (Version 1.18)  14-Jun-1994
+  Fritz Knabe, <knabe@ecrc.de>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mh-crypt.el.Z
+  Store and retrieve MH messages in encrypted or compressed form.
+rmailgen  (Version 1.37)  09-Jun-1994
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rmailgen.el.Z
+  Generates guesses for RMAIL output files and FCC files.
+igrep  (Version 2.14)  24-Jun-1994
+  Kevin Rodgers, <kevinr@ihs.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/igrep.el.Z
+  An improved interface to grep/egrep/fgrep; plus recursive versions.
+animals  (Version 1.01)  27-Jun-1994
+  Keith Gabryelski, <ag@yoda.omnicron.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/animals.el
+  The ancient game of guess the animal.
+nuweb  (Version 1.93)  24-Jun-1994
+  Dominique de Waleffe, <ddw@sunbim.be>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/nuweb.el.Z
+  Major mode to edit nuweb files with AucTex
+dsg-frames  (Version 2.0)  30-Jun-1994
+  Dave Goldberg, <dsg@mitre.org>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/dsg-frames.el.Z
+  Set frame parameters based on major mode
+fuzzy-match  (Version 1.03)  28-Jun-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/fuzzy-match.el.Z
+  Approximate/fuzzy string matching functions (e.g. lisp symbol spelling).
+radix  (Version 1.05)  28-Jun-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/radix.el.Z
+  Functions for the manipulation of integers in any radix (or base).
+unique  (Version 1.01)  28-Jun-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/unique.el.Z
+  Functions and commands to uniquify lists or buffer text (cf. sort).
+face-lock  (Version 3.03)  18-Jul-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/face-lock.el.Z
+  Colour/color/grayshade/font fontification for font-lock mode.
+fast-lock  (Version 2.00)  18-Jul-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/fast-lock.el.Z
+  Automagic text properties caching (for fast font-lock-mode).
+tcl  (Version 1.21)  15-July-1994
+  Tom Tromey, <tromey@busco.lanl.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/tcl.el.Z
+  Major mode for editing Tcl
+nuweb  (Version 1.103)  10-Aug-1994
+  Dominique de Waleffe, <ddw@sunbim.be>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/nuweb.el.Z
+  Major mode to edit nuweb files with AucTex
+nuweb  (Version 1.103)  10-Aug-1994
+  Dominique de Waleffe, <ddw@sunbim.be>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/nuweb.el.Z
+  Major mode to edit nuweb files with AucTex
+vm-auto-archive  (Version 5.72)  01-Aug-1994
+  Neal Young, <ney@orie.cornell.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-auto-archive.el
+  Two ways to automatically archive outgoing mail into appropriate VM folders.  Supersedes vm-auto-fcc.el
+ediff  (Version 1.65c)  08-Aug-1994
+  Michael Kifer, <kifer@cs.sunysb.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/ediff.el.Z
+  Visual interface to diff and patch.
+find-file  (Version 2.3)  25-Aug-1994
+  Henry Guillaume, <henryg@qbd.com.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/find-file.el.Z
+  Find a file associated with this buffer (from a .cc file to a .hh file).
+elp  (Version 2.15)  05-Jul-1994
+  Barry A. Warsaw, <tools-help@anthem.nlm.nih.gov>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/elp.el.Z
+  Emacs Lisp Profiler
+reporter  (Version 2.12)  06-Jul-1994
+  Barry A. Warsaw, <bwarsaw@cen.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/reporter.el.Z
+  Customizable bug reporting of lisp programs.
+nuweb  (Version 1.103)  10-Aug-1994
+  Dominique de Waleffe, <ddw@sunbim.be>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/nuweb.el.Z
+  Major mode to edit nuweb files with AucTex
+rmailgen  (Version 1.38)  13-Jun-1994
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rmailgen.el.Z
+  Generates guesses for RMAIL output files and FCC files.
+mode-line  (Version 2.95)  16-Jul-1994
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mode-line.el.Z
+  code for including abbreviated file paths in mode line
+ltx-math  (Version 5.8)  30-Jul-1994
+  Per Abrahamsen, <abraham@iesd.auc.dk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/ltx-math.el.Z
+  Abbrevations for math symbols in LaTeX
+scroll-in-place  (Version 1.2)  03-Aug-1994
+  Eric Eide, <eeide@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/scroll-in-place.el.Z
+  Improved vertical scrolling commands
+empclient  (Version 1.5)  25-Jul-1994
+  Markus Armbruster, <armbru@pond.sub.org>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/empclient.el.Z
+  Simple, extensible, self contained empire client.
+supertab  (Version 1.3)  30-Aug-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/supertab.el.Z
+  Enhanced TAB in Lisp-based modes.
+mousymacro  (Version 1.7)  30-Aug-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mousymacro.el.Z
+  Run macros via simple mouse clicks.
+defaultcontent  (Version 1.14)  30-Aug-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/defaultcontent.el.Z
+  Fill new files when visited.
+find-file  (Version 2.4)  01-Sep-1994
+  Henry Guillaume, <henryg@qbd.com.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/find-file.el.Z
+  Find a file associated with this buffer (from a .cc file to a .hh file).
+defaultcontent  (Version 1.13)  21-Aug-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/defaultcontent.el.Z
+  Fill new files when visited.
+face-lock  (Version 3.04)  18-Aug-94
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/face-lock.el.Z
+  Colour/color/grayshade/font fontification for font-lock mode.
+fast-lock  (Version 3.04)  02-Sep-94
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/fast-lock.el.Z
+  Automagic text properties caching (for fast font-lock-mode).
+find-file  (Version 2.5)  13-Sep-1994
+  Henry Guillaume, <henryg@qbd.com.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/find-file.el.Z
+  Find a file associated with this buffer (from a .cc file to a .hh file).
+defaultbanner  (Version 1.7)  11-Sep-1994
+  Christian Queinnec, <Christian.Queinnec@inria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/defaultbanner.el.Z
+  Update banners or headers when files are visited.
+rmailgen  (Version 1.42)  16-Sep-1994
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rmailgen.el.Z
+  Generates guesses for RMAIL output files and FCC files.
+expire-kill  (Version 2.6)  19-Sep-1994
+  Ben Liblit, <liblit@z-code.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/expirekill.el.Z
+  expiring kill patterns for GNUS
+mode-line  (Version 2.94)  15-Jul-1994
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mode-line.el.Z
+  code for including abbreviated file paths in mode line
+simple-menu  (Version 1.2)  20-Sep-1994
+  Frank Ritter, <ritter@cs.cmu.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/simple-menu.el.Z
+  Command-line menus made declaratively (rev of Ward's procedural version)
+lazy-lock  (Version 1.03)  20-Sep-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/lazy-lock.el.Z
+  Lazy Font Lock mode (for fast demand-driven fontification).
+lazy-lock  (Version 1.07)  25-Nov-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/lazy-lock.el.Z
+  Lazy Font Lock mode (for fast demand-driven fontification).
+iso-sgml  (Version 1.2)  24-Nov-1994
+  Frederic Lepied, <lepied@cenaath.cena.dgac.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/iso-sgml.el.Z
+  Edit SGML or HTML buffers with ISO 8859-1 (Latin-1) display
+scroll-in-place  (Version 1.3)  18-Nov-1994
+  Eric Eide, <eeide@cs.utah.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/scroll-in-place.el.Z
+  Improved vertical scrolling commands
+c-outline  (Version 1.9)  24-Nov-1994
+  Kevin Broadey, <KevinB@bartley.demon.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/c-outline.el.Z
+  outline-minor-mode support for C program editing
+find-file  (Version 3.3)  15-Nov-1994
+  Henry Guillaume, <henry@qbd.com.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/find-file.el.Z
+  Find a file associated with this buffer (from a .cc file to a .hh file).
+archie  (Version 3.0.1)  17-May-1993
+  Jack Repenning, <jackr@dblues.wpd.sgi.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/archie.el.Z
+  An Emacs interface to the archie program.
+mode-compile  (Version 2.7)  26-Oct-1994
+  Heddy Boubaker, <boubaker@dgac.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mode-compile.el.Z
+  Smart command for compiling files according to major-mode.
+snake  (Version 1.1)  13-Oct-1994
+  Alex Rezinsky, <alexr@msil.sps.mot.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/games/snake.el.Z
+  Snake game
+vm-auto-archive  (Version version 5.72a)  20-Oct-1994
+  Neal Young, <ney@research.att.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/vm-auto-archive.el
+  Two ways to automatically archive outgoing mail into appropriate VM folders.  Supersedes vm-auto-fcc.el
+fast-lock  (Version 3.05)  12-Oct-94
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/fast-lock.el.Z
+  Automagic text properties caching (for fast font-lock-mode).
+archie  (Version 3.0.2)  11-Oct-1994
+  Jack Repenning, <jackr@dblues.wpd.sgi.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/archie.el.Z
+  An Emacs interface to the archie program.
+tinystamp  (Version 1.2)  04-Oct-1994
+  Jari Aalto, <tre@tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc
+  A simple document stamping tool
+tinystamp  (Version 1.2)  04-Oct-1994
+  Jari Aalto, <tre@tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinystamp.el.Z
+  A simple document stamping tool
+hideshow  (Version 3.4)  18-Oct-1994
+  Thien-Thi Nguyen, <ttn@netcom.com>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/hideshow.el.Z
+  minor mode commands to selectively display blocks of code
+toolbar  (Version 1.3.4)  26-Sep-1994
+  Andy Piper, <andyp@parallax.co.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/toolbar.el.Z
+  fake a toolbar in XEmacs
+rmailgen  (Version 1.50)  01-Oct-1994
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rmailgen.el.Z
+  Generates guesses for RMAIL output files and FCC files.
+tinycom  (Version 1.12)  01-Sept-1994
+  Jari Aalto, <jaalto@tre.tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinycom.el.Z
+  Smart comment setting utility
+listbuf  (Version 1.4)  05-Jan-1995
+  Noah Friedman, <friedman@prep.ai.mit.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/listbuf.el.gz
+  build buffer menu for use in Buff-menu-mode
+rmailgen  (Version 2.1)  12-Dec-1994
+  Lawrence R. Dodd, <dodd@roebling.poly.edu>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/rmailgen.el.Z
+  Generates guesses for RMAIL output files and FCC files.
+cl-read.el  (Version 1.19)  21-Mar-94
+  Guido Bosch, <Guido.Bosch@loria.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/interfaces/cl-read.el.Z
+  Customizable, Common Lisp like reader for Emacs Lisp
+lazy-lock  (Version 1.09)  19-Dec-94
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/lazy-lock.el.Z
+  Lazy Font Lock mode (for fast demand-driven fontification).
+find-file  (Version 3.7)  14-Dec-1994
+  Henry Guillaume, <henry@qbd.com.au>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/find-file.el.Z
+  Find a file associated with this buffer (from a .cc file to a .hh file).
+mode-compile  (Version 2.12)  23-Dec-1994
+  Heddy Boubaker, <boubaker@dgac.fr>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/mode-compile.el.Z
+  Smart command for compiling files according to major-mode.
+folding  (Version 1.7)  06-Jul-1993
+  Jamie Lokier, <u90jl@ecs.ox.ac.uk>
+  Archived in: /pub/gnu/emacs/elisp-archive/modes/folding.el.Z
+  A folding-editor-like minor mode
+tinystamp  (Version 1.7)  01-August-1994
+  Jari Aalto, <jaalto@tre.tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinystamp.el.Z
+  A simple document stamping tool
+shelldb  (Version 1.03)  06-Dec-1994
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/shelldb.el.Z
+  Customisable context-based database for shell commands.
+shellc  (Version 1.03)  06-Dec-94
+  Simon Marshall, <Simon.Marshall@mail.esrin.esa.it>
+  Archived in: /pub/gnu/emacs/elisp-archive/packages/shellc.el.Z
+  Customisable context-based completion for the emacs-19 shell buffer.
+tinysword  (Version 1.7)  7-Nov-1994
+  Jari Aalto, <jaalto@tre.tele.nokia.fi>
+  Archived in: /pub/gnu/emacs/elisp-archive/misc/tinysword.el.Z
+  emacs 18-19, search word under cursor: backward, forward
+suffix-template|Ralf Fassel  (Version ~/misc/suffix-template.el.Z)  1.5
+  ralf@physik3.gwdg.de, <Load a template file based on file name suffixes.>
+  18-Jan-94
+---- next updated entry ----

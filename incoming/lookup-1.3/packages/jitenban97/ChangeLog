@@ -1,0 +1,149 @@
+1999-01-17  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0 released.
+
+1999-01-15  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* stem.el: Remove file.
+	* chujiten.el (lookup-package-dictionary-options): Reset the
+	option `stemmer' to the value `stem-english'.
+
+1999-01-10  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* jitenban97.el: Renamed from main.el for package version 1.1.
+
+1998-12-27  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* chujiten.el (chujiten-gaiji-table): Make not to use `compose-string'.
+	(chujiten-menu-entry-p): New function.
+	(chujiten-arrange-references): Call `lookup-arrange-references'
+	when the entry is a menu.
+
+	* iwakoku.el, chujiten.el, chiezo.el, mypaedia.el: Update for
+	Lookup 1.0.
+
+1998-12-04  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre5 released.
+
+	* TODO: New file.
+
+	* chujiten.el (chujiten-arrange-references): Fixed a missing.
+
+1998-11-12  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre4 released.
+
+	* mypaedia.el: Delete function `mypaedia-fix-by-black-list'.
+	These are EB library's bugs.
+	(mypaedia-arrange-references): Update for ndtp/ndeb-1.0pre5.
+
+	* chujiten.el: Delete function `chujiten-fix-by-black-list'.
+	These are EB library's bugs.
+	(chujiten-arrange-references): Update for ndtp/ndeb-1.0pre5.
+
+1998-11-04  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* iwakoku.el (iwakoku-gaiji-table): Add replacements for code
+	"za67c" and "za67d".
+
+1998-10-31  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* main.el (lookup-package-dictionary-options-alist): Set
+	dictionary name for ndtp by default.
+
+1998-10-29  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre3 released.
+
+	* chujiten.el (chujiten-eiwa-entry-p): Check the code strictly.
+
+1998-10-24  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre2 released.
+
+	* main.el: Add comment for using with NDTPD.
+
+1998-10-14  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre1 released.
+
+1998-09-06  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* stem.el: New file.
+	* chujiten.el: Use stem.el.
+
+	* main.el, iwakoku.el, chujiten.el, chiezo.el, mypaedia.el: Update
+	to package version 1.0.  Delete file `main.el.ndtp'.
+
+1998-08-12  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* mypaedia.el (mypaedia-internal-arrange-references): Fixed making
+	reference.
+
+1998-07-23  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.11.1 released.
+
+1998-07-21  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* iwakoku.el (iwakoku-arrange-headings): Add level 3.
+
+	* iwakoku.el, chujiten.el, chiezo.el, mypaedia.el: Updated for
+	Lookup 0.11.x.
+
+1998-06-29  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* chujiten.el (chujiten-waei-arrange-levels): Make heading of
+	level 6 if the example line has a prefix.
+
+1998-06-14  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.7 released.
+
+	* chujiten.el, mypaedia.el: Updated for Lookup 0.9.1.
+
+1998-06-10  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.6 released.
+
+	* iwakoku.el (iwakoku-fix-by-black-list): New arrange function.
+	* chujiten.el (chujiten-fix-by-black-list): New arrange function.
+
+	* main.el, main.el.ndtp: Rename the agent option `title' to `name'.
+
+1998-05-31  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.5 released.
+
+	* chujiten.el, mypaedia.el: Updated for the rename of entry
+	"heading" to "headword".
+
+1998-05-30  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Rename files `jitenban97.el*' to `main.el*' because of the
+	package format version 0.9.1.
+
+1998-05-30  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.4 released.
+
+	* mypaedia.el (mypaedia-fix-by-black-list): Fixed and add new entries.
+
+1998-05-22  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.3 released.
+
+	* chujiten.el (chujiten-arrange-references-1): Fixed regexp to
+	match waei references.
+
+1998-05-18  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.2 released.
+
+	* chujiten.el: Good support for the variations.
+
+1998-05-17  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.1 released.
+

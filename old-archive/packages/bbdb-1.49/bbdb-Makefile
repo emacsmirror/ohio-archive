@@ -1,0 +1,131 @@
+# Makefile for the Insidious Big Brother Database.
+# last change 24-jul-93. jwz.
+
+# If you don't have my optimizing byte-compiler, uncomment the following
+# lines.  A better idea would be to get it from archive.cis.ohio-state.edu
+# in the file pub/gnu/emacs/elisp-archive/packages/bytecomp.tar.Z.  It is
+# also included with Emacs 19 (both Lucid and FSF versions.)
+#
+# DEFSUBST_SRC=	 defsubst.el
+# DEFSUBST_BIN=	 defsubst.elc
+# DEFSUBST_LOAD= -l ./$(DEFSUBST_BIN)
+#
+# If the VM, GNUS, or MH-E source is not in the standard emacs library 
+# (that is, it's not on the load-path by default in a -q emacs) then
+# set these variables to point at them.  You need to do this because
+# otherwise "require" won't work in the batch emacs.
+#
+# If you don't have VM, the "VM=" line *must* be commented out.
+
+VMDIR   	= /u/jwz/lemacs/lisp/vm/
+# GNUSDIR 	= /u/jwz/lemacs/lisp/gnus/
+# MHEDIR  	= /u/jwz/lemacs/lisp/
+
+# use this line for VM versions 5.31 and earlier
+#VM	= -l $(VMDIR)vm-version.elc -l $(VMDIR)vm-vars.elc -l $(VMDIR)vm.elc
+
+# use this line for VM versions 5.32 and later
+VM	= -l $(VMDIR)vm.elc
+
+GNUS	= -l $(GNUSDIR)nntp.elc -l $(GNUSDIR)gnus.elc
+MHE	= -l $(MHEDIR)mh-e.elc
+
+EMACS=	emacs
+TAR=	gnutar
+
+# You shouldn't need to change anything after this point.
+
+.SUFFIXES: .elc .el .tar .Z .uu
+
+DEPSRCS=	bbdb-com.el  bbdb-hooks.el  bbdb-gnus.el  bbdb-mhe.el \
+		bbdb-rmail.el  bbdb-vm.el bbdb-415-510.el bbdb-213-310.el \
+		bbdb-ftp.el  bbdb-whois.el  bbdb-lucid.el  bbdb-print.el
+DEPBINS=	bbdb-com.elc bbdb-hooks.elc bbdb-gnus.elc bbdb-mhe.elc \
+		bbdb-rmail.elc bbdb-vm.elc bbdb-415-510.elc bbdb-213-310.elc \
+		bbdb-ftp.elc bbdb-whois.elc bbdb-lucid.elc bbdb-print.elc
+SRCS=		$(DEFSUBST_SRC) bbdb.el  $(DEPSRCS) mail-abbrevs.el \
+		mail-extr.el
+BINS=		$(DEFSUBST_BIN) bbdb.elc $(DEPBINS) mail-abbrevs.elc \
+		mail-extr.elc
+
+syntax:
+	@echo "" ;\
+	echo "*** make one or more of: rmail vm mhe gnus all bbdb" ;\
+	echo "" ;\
+	exit 1
+
+all:	rmail gnus vm mhe
+
+defsubst.elc: defsubst.el
+	$(EMACS) -batch -q -f batch-byte-compile $(@:.elc=.el)
+
+mail-extr.elc: mail-extr.el
+	$(EMACS) -batch -q -f batch-byte-compile $(@:.elc=.el)
+
+mail-abbrevs.elc: mail-abbrevs.el
+	$(EMACS) -batch -q -f batch-byte-compile $(@:.elc=.el)
+
+bbdb.elc:	$(DEFSUBST_BIN) bbdb.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -f batch-byte-compile ./bbdb.el
+
+
+#$(DEPBINS):
+#	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc $(OLOADS) -f batch-byte-compile $(@:.elc=.el)
+
+
+bbdb-com.elc:	bbdb.elc bbdb-com.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc -f batch-byte-compile $(@:.elc=.el)
+
+bbdb-gnus.elc:	bbdb.elc bbdb-gnus.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc $(GNUS) -f batch-byte-compile $(@:.elc=.el)
+bbdb-mhe.elc:	bbdb.elc bbdb-mhe.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc $(MHE) -f batch-byte-compile $(@:.elc=.el)
+bbdb-rmail.elc:	bbdb.elc bbdb-rmail.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc $(RMAIL) -f batch-byte-compile $(@:.elc=.el)
+bbdb-vm.elc:	bbdb.elc bbdb-vm.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc $(VM) -f batch-byte-compile $(@:.elc=.el)
+
+bbdb-lucid.elc:	bbdb.elc bbdb-com.elc bbdb-lucid.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc -l ./bbdb-com.elc -f batch-byte-compile $(@:.elc=.el)
+bbdb-print.elc:	bbdb.elc bbdb-com.elc bbdb-print.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc -l ./bbdb-com.elc -f batch-byte-compile $(@:.elc=.el)
+bbdb-ftp.elc:	bbdb.elc bbdb-com.elc bbdb-ftp.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc -l ./bbdb-com.elc -f batch-byte-compile $(@:.elc=.el)
+bbdb-whois.elc:	bbdb.elc bbdb-com.elc bbdb-whois.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc -l ./bbdb-com.elc -f batch-byte-compile $(@:.elc=.el)
+
+# bbdb-hooks uses VM macros if it can find VM.  If you don't have VM,
+# then the $(VM) makefile variable should be undefined or empty.
+bbdb-hooks.elc:  bbdb.elc bbdb-hooks.el
+	$(EMACS) -batch -q $(DEFSUBST_LOAD) -l ./bbdb.elc $(VM) -f batch-byte-compile $(@:.elc=.el)
+
+
+extras: bbdb-print.elc bbdb-ftp.elc bbdb-whois.elc mail-abbrevs.elc bbdb-lucid.elc
+bbdb:	bbdb.elc bbdb-com.elc bbdb-hooks.elc mail-extr.elc extras
+rmail:	bbdb bbdb-rmail.elc
+vm:	bbdb bbdb-vm.elc
+mhe:	bbdb bbdb-mhe.elc
+gnus:	bbdb bbdb-gnus.elc
+# aliases
+mh:	mhe
+mh-e:	mhe
+
+clean:
+	$(RM) bbdb.elc bbdb-*.elc mail-extr.elc mail-abbrevs.elc $(DEFSUBST_BIN)
+
+tarclean:
+	$(RM) bbdb.tar bbdb.tar.Z bbdb.tar.Z.uu
+
+TARFILES=	bbdb-Makefile bbdb.texinfo bbdb.el $(DEPSRCS) \
+		defsubst.el mail-abbrevs.el mail-extr.el bbdb-print.tex
+
+bbdb.tar:	$(TARFILES)
+	$(RM) $@ ; $(TAR) -chf bbdb.tar $(TARFILES)
+
+bbdb.tar.Z:	$(TARFILES)
+	$(RM) $(@:.Z=) $@ ;\
+	$(TAR) -chf $(@:.Z=) $(TARFILES) ;\
+	compress $(@:.Z=)
+
+bbdb.tar.Z.uu:	bbdb.tar.Z
+	$(RM) $@ ; uuencode $@ < $? > $@

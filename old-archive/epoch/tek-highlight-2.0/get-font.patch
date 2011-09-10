@@ -1,0 +1,35 @@
+*** ../../epoch-3.2.2/src/xutil.c	Fri Jul 19 09:36:33 1991
+--- xutil.c	Fri Aug 23 16:31:07 1991
+***************
+*** 566,571 ****
+--- 566,573 ----
+  {
+    Font font;
+    BLOCK_INPUT_DECLARE();
++   char **tempfontlist;
++   int tempfontcount;
+  
+    if (XRESOURCEP(name) && XXRESOURCE(name)->type == XA_FONT) return name;
+  
+***************
+*** 572,578 ****
+    CHECK_STRING(name,0);
+  
+    BLOCK_INPUT();
+!   font = XLoadFont(XD_display,XSTRING(name)->data);
+    UNBLOCK_INPUT();
+  
+    return font ? make_Xresource(XD_display,XD_plane,font,XA_FONT) : Qnil;
+--- 574,585 ----
+    CHECK_STRING(name,0);
+  
+    BLOCK_INPUT();
+!   tempfontlist = XListFonts(XD_display,XSTRING(name)->data,1,&tempfontcount);
+!   if (tempfontcount)
+!       font = XLoadFont(XD_display,XSTRING(name)->data);
+!   else
+!       font = 0;
+!   XFreeFontNames(tempfontlist);
+    UNBLOCK_INPUT();
+  
+    return font ? make_Xresource(XD_display,XD_plane,font,XA_FONT) : Qnil;

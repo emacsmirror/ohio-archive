@@ -1,0 +1,27 @@
+%%% exercise2.tex --- file with header style 2, 2000
+
+%% Full date in a template specific format: Thu 08 Jun 2000, 08:16 AM
+
+\documentclass{exercise}
+
+\begin{document}
+
+%%%% The last way of deriving the comment style  Level 4: ####################
+%%%  is a bit different if `comment-start' is a  Level 3: ====================
+%%   string of length 1: level = #repetitions    Level 2: --------------------
+                                %                Level 1: --------------------
+%%----------------------------------------------------------------------------
+%%  Here, a block comment consists of all neighboring lines which start with
+%%% spaces and `comment-start', nearly the same as is TEMPLATE.cc.tpl...
+%%----------------------------------------------------------------------------
+
+%%  It is a bit different here where `comment-start' is a string of length 1:
+%%%---------------------------------------------------------------------------
+%%% only lines where the number of repetitions of `comment-start' is the same
+%%% or larger than in the line where the command is invoked from, is considered
+%%%---------------------------------------------------------------------------
+%%  to be part of the block.
+
+%% Note that the template commands in this template are safe!
+
+\end{document}

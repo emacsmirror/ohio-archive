@@ -1,0 +1,224 @@
+                      XDB SYMBOLIC DEBUGGER ON-LINE HELP   
+
+Setting breakpoints:   
+b [location] [\count] [commands]   Set breakpoint.  
+ba [address] [\count] [commands]   Set breakpoint at code address. 
+bb [depth] [\count] [commands]     Set breakpoint at procedure beginning. 
+bi expr.proc [\count] [commands]   Set an instance breakpoint. 
+bi [-c|-C] expr [commands]         Set an instance breakpoint. 
+bp [commands]                      Set procedure breakpoints. 
+bpc [-c|-C] class [commands]       Set a class breakpoint. 
+bpo [[class]::]proc [commands]     Set breakpoints on overloaded functions. 
+bpt [commands]                     Set procedure trace breakpoints.
+bpx [commands]                     Set procedure exit breakpoints. 
+bt [(depth | proc)] [\count] [commands]      Trace procedure. 
+bu [depth] [\count] [commands]     Set up-level breakpoint. 
+bx [depth] [\count] [commands]     Set breakpoint at procedure exit. 
+bpg [commands]                     Set paragraph breakpoints.       (MPE-only) 
+tpg [commands]                     Set paragraph trace breakpoints. (MPE-only)
+   
+View and modify breakpoint status:   
+lb                            List all breakpoints. 
+db [number | *]               Delete one or all breakpoints.  
+dp                            Delete procedure breakpoints. 
+Dpx                           Delete procedure exit breakpoints. 
+Dpt                           Delete procedure trace breakpoints.
+dpg                           Delete paragraph [trace] breakpoints.(MPE-only)
+ab [number | *]               Activate one or all breakpoints. 
+sb [number | *]               Suspend one or all breakpoints. 
+tb                            Toggle overall breakpoints state. 
+abc commands                  Global breakpoint commands.  
+dbc                           Delete global breakpoint commands.  
+bc number expr                Set a breakpoint count.  
+   
+i expr {commands} [{commands}]     Conditionally execute commands.  (Also: if)
+{ }                           Group commands. 
+;                             Separate commands. 
+Q                             Quiet breakpoint reporting. 
+ "any string"                 Print string. 
+   
+View and modify data:   
+p expr [\format]              Print value of expression using format.  
+p expr?format                 Print address of expression using format.  
+p -[\format]                  Print value of prev memory location using format.  
+p +[\format]                  Print value of next memory location using format.  
+p class::                     Print static members of class. 
+l [[class]::][proc[:depth]]   List all parameters and locals of proc.
+t [depth]                     Trace stack. 
+T [depth]                     Trace stack and show local variables. 
+lr [string]                   List all (or matching) registers. 
+lc [string]                   List all (or matching) commons. (PA-RISC only) 
+lg [string]                   List all (or matching) globals. 
+ls [string]                   List all (or matching) special variables. 
+mm [string]                   Show memory-map of all (or matching) loaded
+                              shared-libraries
+f ["printf-style-format"]     Set address printing format. 
+disp item [\format]           Display Cobol data item value using format.(MPE- 
+                              only) 
+move val to item              Move value "val" to cobol data item "item" (MPE- 
+                              only) 
+pq <<same as p>>              Print quietly.  Evaluate without printing. 
+ll [string]                   List all (or matching) labels.
+lz                            List all signals. 
+z [number] [i][r][s][Q]       Toggle flags (ignore, report, stop, Quiet) for  
+                              signal.  
+Process control:   
+r [arguments]                 Run child process with arguments.  
+R                             Run child process with no arguments.  
+c [location]                  Continue from breakpoint with no signal, set
+                              temporary breakpoint at location.
+C [location]                  Continue with current signal, set temporary
+                              breakpoint at location.
+s [number]                    Single step, follow procedure calls.  
+S [number]                    Single step, step over procedure calls.  
+g (line | #label)             Go to line in current procedure.  
+g (+|-) [lines]               Go forward/back 1 or given number of lines.  
+k                             Kill child process, if any.  
+   
+Source viewing:   
+L                             Show current location and its source line.  
+v [location]                  View source at location in source window.  
+va [address]                  View address in disassembly window. 
+V [depth]                     View procedure at depth in source window.
+top                           View procedure at top of stack.
+up [number]                   View procedure number levels higher in stack.
+down [number]                 View procedure number levels lower in stack.
++[number]                     Move forward in sourcefile.  
+-[number]                     Move backward in sourcefile.  
+/[string]                     Search forwards in sourcefile for string.  
+?[string]                     Search backwards for string.  
+n                             Repeat previous search.  
+N                             Repeat previous search in opposite direction.  
+apm old_path [new_path]       Add (prefix) path map for source files.  
+dpm [index | *]               Delete path map(s) for source files.  
+lpm                           List path maps in order of precedence.  
+D "dir"                       Add a directory search path for source files.  
+ld                            List all directories. 
+lf [string]                   List all (or matching) files. 
+lp [[class]::][string]        List all (or matching) procedures. 
+lo [[class]::][string]        List all (or matching) overloaded functions.
+   
+Screen modes:   
+am                            Activate more (turn on pagination). 
+sm                            Suspend more (turn off pagination). 
+w number                      Set size of source window.  
+td                            Toggle disassembly mode.
+ts                            Toggle split-screen mode.
+fr                            Display floating point registers.
+gr                            Display general registers.
+tf                            Toggle float register display precision (PA-RISC
+                              only).
+sr                            Display special registers.      (PA-RISC only)
+u                             Update screen.  
+U                             Refresh source & location windows on screen.  
++r                            Scroll floating point registers forward. 
+-r                            Scroll floating point registers backward. 
+   
+Assertions:   
+a commands                    Create a new assertion with a command list.  
+aa (number | *)               Activate one or all assertions. 
+da (number | *)               Delete one or all assertions.  
+la                            List all assertions. 
+sa (number | *)               Suspend one or all assertions. 
+ta                            Toggle overall assertions state. 
+x [expr]                      Exit assertion mode, possibly aborting the 
+                              assertion command list. 
+Macros:   
+def name [replacement-text]   Define a macro name.  
+lm [string]                   List all (or matching) macros. 
+tm                            Toggle the macro substitution mechanism. 
+undef (name | *)              Remove the macro definition for name or all.  
+   
+Record and playback:   
+tr [@]                        Toggle the record [record-all] mechanism. 
+< file                        Playback from file.  
+<< file                       Playback from file with single stepping.  
+> file                        Record commands to file.  
+>> file                       Append commands to file.  
+>@ file                       Record-all debugger commands & output to file.  
+>>@ file                      Append all debugger commands & output to file.  
+                   ">>" is equivalent to ">" for the next four commands.   
+>                             Show status of current recording file.  
+>@                            Show status of current record-all file.  
+>(t | f | c)                  Turn recording on (t), or off (f), or close the  
+                              recording file (c).  
+>@(t | f | c)                 Turn record-all on (t), or off (f), or close the  
+                              record-all file (c).  
+   
+Misc:   
+ss file                       Save (breakpoint, macro, assertion) state.
+tc                            Toggle case sensitivity in searches. 
+<carriage-return>             Repeat previous command.  
+~                             Repeat previous command.  
+! [command-line]              Execute shell (with or without commands).  
+q                             Quit debugger.  
+$addr                         Unary operator, address of object.  
+$sizeof                       Unary operator, size of object.  
+$in                           Unary boolean operator, execution in procedure.  
+# [text]                      A comment.  
+I                             Print debugger status. 
+M [(t | c) [expr [; expr ...]]]    Print or set (text or core) maps. 
+   
+VARIABLES   
+var                                     Search current procedure and globals.   
+class::var                              Search class for variable.   
+[[class]::]proc:[class::]var            Search procedure for variable.   
+[[class]::]proc:depth:[class::]var      Search procedure at depth on stack.   
+:var or ::var                           Search for global variable only.   
+.                                       Shorthand for last thing you looked at.   
+$var                                    Define or use special variable.   
+   
+$result                       Return value of last cmd line procedure call.  
+$signal                       Current child process signal number. 
+$lang                         Current language for expression evaluation.  
+$depth                        Default stack depth for local variables.  
+$print                        Display mode for character data.  
+$line                         Current source line number.  
+$malloc                       Debugger memory allocation (bytes).  
+$step                         Instr. count in non-debug before free-run.  
+$cplusplus                    C++ feature control flags.  
+$regname                      Hardware registers. 
+$fpa                          Treat fpa sequence as one instruction.(S300 only) 
+$fpa_reg                      Address register for fpa sequences.   (S300 only)
+   
+LOCATIONS   
+line                                    source line & code address (if any)   
+#label                                  "   
+file[:line]                             "   
+[file:]proc[:proc[...]][:line|#label]   "   
+[class]::proc[:line|#label]             "   
+proc#line                               code address (if any)   
+[class]::proc#line                      "   
+name@shared_lib                         Address of name in shared library   
+   
+FORMATS   
+          A format has the form [count]formchar[size].  formchar's are:   
+ a                  Address of first byte of string.   
+(b | B)             Byte in decimal (either way).   
+(c | C)             (Wide) character.   
+(d | D)             (Long) decimal.   
+(e | E)             E floating point notation (as double).   
+(f | F)             F floating point notation (as double).   
+(g | G)             G floating point notation (as double).   
+ i                  Machine instruction (disassembly).   
+(k | S)             Formatted structure display.   
+     K              Formatted structure display with base classes.   
+ n                  "Normal" format, based on type.   
+(o | O)             (Long) octal.   
+ p                  Print name of procedure containing address.   
+ s                  String.   
+ t                  Print type of object.   
+     T              Print type of object with base classes.   
+(u | U)             (Long) unsigned decimal.   
+ w                  Wide character string.   
+     W              Address of wide character string.   
+(x | X)             (Long) hexadecimal.   
+(z | Z)             (Long) binary.   
+          Size can be a number or one of the following:   
+ b                 1 byte (char)   
+ s                 2 bytes (short)   
+ l                 4 bytes (long)   
+ D                 8 bytes (double - floating point formats only)   
+ L                 16 bytes (long double - floating point only)   
+
+@(#) A.08.07   HP-UX SYMBOLIC DEBUGGER (xdb.help)   $Revision: 70.1 $

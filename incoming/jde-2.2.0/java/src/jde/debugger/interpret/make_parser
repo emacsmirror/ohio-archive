@@ -1,0 +1,4 @@
+#! /bin/sh
+# java -classpath d:/javaCC1.1/JavaCC.zip COM.sun.labs.jjtree.Main expression.jjt
+java "-Dinstall.root=d:/jtb1.2.1" -classpath "d:/jtb1.2.1/jtb.jar;.;d:/jar/juice.jar;" EDU.purdue.jtb.JTB -p jde.debugger.interpret -jd -f expression.jj
+java -classpath d:/javaCC1.1/JavaCC.zip COM.sun.labs.javacc.Main jtb.out.jj

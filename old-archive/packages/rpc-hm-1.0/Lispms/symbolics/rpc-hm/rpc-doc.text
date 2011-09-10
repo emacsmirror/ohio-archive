@@ -1,0 +1,10 @@
+-*- Mode: Text -*-
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; This is a simple implementation of the remote procedure call facility inspired by the 
+;;; description found in:
+;;;    Tanenbaum, Andrew
+;;;    Computer Networks, 2nd Ed.
+;;;    Prentice-Hall International Inc., 1989.
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+

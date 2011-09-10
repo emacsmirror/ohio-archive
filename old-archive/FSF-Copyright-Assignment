@@ -1,0 +1,119 @@
+Date: Sun, 15 Mar 92 13:19:29 EST
+Subject: Assignment of code to FSF
+
+Could you place this somewhere appropriate in the Lisp Code Directory?
+It's the form that an author must sign in order to have his code
+incorporated in GNU Emacs.  It would probably be useful to have at some ftp
+site.
+					 Thanks,
+
+					-Michael Ernst
+					 mernst@theory.lcs.mit.edu
+
+---------------- cut here ----------------
+The way to assign copyright to the Foundation is to sign an assignment
+contract.
+
+In addition, if you are employed to do programming (even at a
+university), or have made an agreement with your employer or school
+saying it owns programs you write, then you and we need a signed piece
+of paper from your employer or school, disclaiming rights to the program.
+
+The disclaimer should be signed by a vice president or general manager
+of the company.  If you can't get at them, it is almost as good to
+find someone who signs licenses for software that is purchased.  Here
+is a sample wording:
+
+  Digital Stimulation Corporation hereby disclaims all copyright interest
+  in the program "seduce" (a program to direct assemblers to make passes
+  at compilers under GNU Emacs) written by Hugh Heffner.
+
+  <signature of Ty Coon>, 1 April 1987
+  Ty Coon, President of Vice, Digital Stimulation Corp.
+
+The description of what the program does is just to make it clearer
+what the disclaimer covers.
+
+Below is the assignment contract that we usually use.  You would need
+to print it out, sign it, and snail it to:
+
+Richard Stallman
+545 Tech Sq rm 430
+Cambridge, MA 02139
+
+Snail a copy of the employer's disclaimer as well.
+
+Please send me email about what you decide to do.  If you have any
+questions, or would like something to be changed, ask rms@ai.mit.edu via email.
+			    ASSIGNMENT
+
+   For good and valuable consideration, receipt of which I acknowledge, I,
+NAME OF PERSON, hereby transfer to the Free Software Foundation, Inc. (the
+"Foundation") my entire right, title, and interest (including all rights
+under copyright) in my computer program NAME OF PROGRAM (the "Program"),
+subject to the conditions below.  The work hereby assigned shall further
+include any future changes and/or enhancements hereafter made by me and
+transmitted by me to the Foundation for the Foundation's use, whether at
+the request of the Foundation or on my own initiative.
+
+   Upon thirty days' prior written notice, the Foundation agrees to grant me
+non-exclusive rights to use the Program as I see fit; (and the Foundation's
+rights shall otherwise continue unchanged).
+
+   For the purposes of this contract, a work "based on the Program" means any
+work that in whole or in part incorporates or is derived from all or part of
+the Program.
+
+   The Foundation promises that all distribution of the Program, or of any
+work "based on the Program", that takes place under the control of the
+Foundation or its agents or assignees, shall be on terms that explicitly and
+perpetually permit anyone possessing a copy of the work to which the terms
+apply, and possessing accurate notice of these terms, to redistribute copies
+of the work to anyone on the same terms.  These terms shall not restrict which
+members of the public copies may be distributed to.  These terms shall not
+require a member of the public to pay any royalty to the Foundation or to
+anyone else for any permitted use of the work they apply to, or to communicate
+with the Foundation or its agents in any way either when redistribution is
+performed or on any other occasion.
+
+   The Foundation promises that any program "based on the Program" offered to
+the public by the Foundation or its agents or assignees shall be offered in
+the form of machine-readable source code, in addition to any other forms of
+the Foundation's choosing.  However, the Foundation is free to choose at its
+convenience the media of distribution for machine-readable source code.
+
+   The Foundation promises to give or send me, upon reasonable prior notice
+and payment of a fee no more than twenty times the cost of the necessary
+materials and postage, a copy of any or all of the works "based on the
+Program" that it offers to the public or that it has offered within the past
+six months, or that it distributed for the first time within the past six
+months.  For works that are programs, the machine-readable source code shall
+be included.  My request shall detail whether I wish to receive all such works
+or specific works.  My choice of works to request may affect the cost and
+therefore the fee.
+
+   I hereby represent and warrant that I am the sole copyright holder for the
+Program and that I have the right and power to enter into this contract.  I
+hereby indemnify and hold harmless the Foundation, its officers, employees,
+and agents against any and all claims, actions or damages (including
+attorney's reasonable fees) asserted by or paid to any party on account of a
+breach or alleged breach of the foregoing warranty.  I make no other express
+or implied warranty (including without limitation, in this disclaimer of
+warranty, any warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE).
+
+Agreed:  [signature and date]
+
+
+For the Free Software Foundation,
+Richard Stallman, President:
+
+
+
+[For the copyright registration, what country are you a citizen of?
+What year were you born?  Please write the information here; sending
+it separately (eg. in a message) makes extra clerical work for us.]
+
+
+[Please write your snail address here, so we can snail a copy back to you.]
+
+

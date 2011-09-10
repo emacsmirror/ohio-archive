@@ -1,0 +1,35 @@
+  (let ((car (car object))
+	(cdr (cdr object)))
+    (cons (if (consp car) (deepcopy-cons car) car)
+	  (if (consp cdr) (deepcopy-cons cdr) cdr))))
+
+(defun make-command-work-for-read-only (command)
+  "Modify the definition of COMMAND so that it will work in read-only buffers."
+  (let* ((func (deepcopy-cons (symbol-function command)))
+	 (interactive (assq 'interactive func))
+	 (string (if interactive (car (setq interactive (cdr interactive)))
+		   (signal 'wrong-type-argument
+			   (cons 'commandp (cons command nil)))))
+	 (star (string-match "\\*" string)))
+    (and star
+	 (setcar interactive
+		 (concat (substring string 0 star)
+			 (substring string (1+ star))))
+	 (fset command func))
+    ))
+
+
+(make-command-work-for-read-only 'kill-region)
+(make-command-work-for-read-only 'kill-line)
+(make-command-work-for-read-only 'kill-word)
+(make-command-work-for-read-only 'kill-sexp)
+(make-command-work-for-read-only 'kill-sentence)
+(make-command-work-for-read-only 'kill-paragraph)
+(make-command-work-for-read-only 'backward-kill-word)
+(make-command-work-for-read-only 'backward-kill-sexp)
+(make-command-work-for-read-only 'backward-kill-sentence)
+(make-command-work-for-read-only 'backward-kill-paragraph)
+;--
+;	Roland McGrath
+;	Free Software Foundation, Inc.
+;roland@wheaties.ai.mit.edu, mit-eddie!wheaties.ai.mit.edu!roland

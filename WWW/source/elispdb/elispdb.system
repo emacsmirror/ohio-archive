@@ -1,0 +1,12 @@
+;;; -*- mode: lisp -*- 
+
+(defsystem elispdb
+  :source-pathname "src:cvs/elispdb"
+  :depends-on ("pcre" "brkdb")
+  :components ((:file "defpackage")
+	       (:file "filesys-util" :depends-on ("defpackage"))
+	       (:file "elispdb-gen" :depends-on ("defpackage" "elispdb" "filesys-util"))
+	       (:file "elispdb" :depends-on ("defpackage"))))
+
+		     
+  

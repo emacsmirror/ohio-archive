@@ -1,0 +1,32 @@
+
+    **  Announcing TPU-edt 3.2 -- emacs emulating TPU emulating EDT  **
+
+    TPU-edt features the following TPU/edt functionality:
+
+     .  EDT keypad
+     .  On-line help
+     .  Repeat counts
+     .  Scroll margins
+     .  Learn sequences
+     .  Free cursor mode
+     .  Rectangular cut and paste
+     .  Multiple windows and buffers
+     .  TPU line-mode REPLACE command
+     .  Wild card search and substitution
+     .  Configurable through an initialization file
+     .  History recall of search strings, file names, and commands
+
+    Including support for:
+
+     .  Emacs version 19
+     .  X-windows (with emacs version 19)
+
+    TPU-edt works on any VT-series compatible terminal or emulator, is
+    easy to install and use, and even comes with  an UNDO function not
+    available in TPU.  Try TPU-edt today.   We think you'll agree that
+    it does a lot better TPU/edt emulation than vi!
+
+    Please note that TPU-edt does NOT emulate TPU.   It emulates TPU's
+    EDT emulation.  Very few TPU line-mode commands are supported.
+
+    tpu-doc.el contains installation and usage instructions.

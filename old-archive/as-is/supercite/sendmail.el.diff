@@ -1,0 +1,37 @@
+*** sendmail.el.orig	Thu Jun 29 22:38:16 1989
+--- sendmail.el	Fri Jul 28 19:06:33 1989
+***************
+*** 378,386 ****
+  	(if (consp arg)
+  	    nil
+! 	  (mail-yank-clear-headers start (mark))
+! 	  (indent-rigidly start (mark)
+! 			  (if arg (prefix-numeric-value arg) 3)))
+  	(exchange-point-and-mark)
+  	(if (not (eolp)) (insert ?\n)))))
+  
+  (defun mail-yank-clear-headers (start end)
+--- 378,400 ----
+  	(if (consp arg)
+  	    nil
+! 	  ;; mod 28-Jul-1989 baw: warsaw@cme.nist.gov, uunet!cme-durer!warsaw
+! 	  ;; generalized, hookified citations
+! 	  (run-hooks 'mail-yank-hooks))
+  	(exchange-point-and-mark)
+  	(if (not (eolp)) (insert ?\n)))))
++ 
++ ;; added 28-Jul-1989 baw: warsaw@cme.nist.gov, uunet!cme-durer!warsaw
++ ;; generalized, hookified citations
++ (defvar mail-indention-spaces 3
++   "Set to number of spaces to indent when yanking a reply.")
++ 
++ ;; added 28-Jul-1989 baw: warsaw@cme.nist.gov, uunet!cme-durer!warsaw
++ ;; generalized, hookified citations
++ (defvar mail-yank-hooks
++   '(lambda ()
++      (indent-rigidly (point) (mark) mail-indention-spaces))
++   "Hook to run citation function.  Expects POINT and MARK to be set to the
++ region to cite.")
++ 
+  
+  (defun mail-yank-clear-headers (start end)

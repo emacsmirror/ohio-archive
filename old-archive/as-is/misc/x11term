@@ -1,0 +1,313 @@
+From utgpu!watmath!watdragon!watsol!tbray@jarvis.csri.toronto.edu Fri May  5 14:09:03 1989
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Date: 1 May 89 22:38:23 GMT
+From: utgpu!watmath!watdragon!watsol!tbray@jarvis.csri.toronto.edu  (Tim Bray)
+Organization: U. of Waterloo, Ontario
+Subject: Fix enclosed generalizes handling of function keys for X11R3
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+
+I run GNUmacs 18.52, and recently replaced the overpriced, oversized, noisy
+Sun3 on my desk with a nice NCD16 X terminal.  Will review it on comp.windows.x
+sometime soon.  Had no end of trouble teaching Emacs about it though; the
+function keys are quite a bit like those on a DEC screen, but a lot of them
+were generating unhelpful things like ^[[-1z.  Went and looked at x11term.c and
+was suprised by the way keys are handled; a hardcoded case statement mapping X
+keysyms to a totally non-intuitive non-mnemonic set of funny numbers; further,
+the case statement was conditionalized based on whether this was a Sun or not;
+further, the arrow keysyms were mapped to C-N, C-P, etc.  hardcoded at the C
+level, sigh...
+
+A bit of thought and I couldn't see any reason why it wouldn't be better just
+to return the CSI-map prefix with the X keysyms.  So x11term.c became 174 lines
+shorter, and now when I press F3, emacs sees '^[[F3', and when I press
+'Insert', emacs sees '^[[Insert'.  I have a term-ncd file that has intelligent
+lines such as
+
+     (define-key CSI-map "Insert" 'copy-region-as-kill)
+     (define-key CSI-map "Home"   'execute-extended-command)
+     (define-key CSI-map "F4" 'split-window-vertically)
+
+There was one gotcha; since F1 is a prefix of F10 through F12, I had to use
+xmodmap in my X startup to cause F1 to generate an unused keysym, in my case
+KP_F1, and to set F1, I have:
+
+     (define-key CSI-map "KP_F1" 'other-window) ;;; F1
+
+One other gotcha.  So far, the `num lock' key, in the position which I have
+always used for universal-argument, is set so that it alternately generates
+KeyPressed and KeyReleased events (STUPID STUPID STUPID); maybe there's a way
+to fix this but I haven't found it.
+
+My apologies if this is a well-known problem fixed in a subsequent version.
+But I would really appreciate hearing if what I'm doing here is Totally Wrong
+and a Danger to the People.  Anyhow, at the end of a message is a diff -cb
+against 18.52 x11term.c.  But it's easier to describe what to do:
+
+1. Around line 1051 is the function stringFuncVal.  Nuke the whole thing.
+
+2. Around line 1322, in the function internal_socket_read, in the big switch on
+the X event type, in `case Keypress:', The stock version sez:
+
+      /* Someday this will be unnecessary as we will
+	 be able to use XRebindKeysym so XLookupString
+	 will have already given us the string we want. */
+      if (IsFunctionKey(keysym) ||
+	  IsMiscFunctionKey(keysym)) {
+	strcpy(mapping_buf,"[");
+...many more lines....
+	case XK_Down:
+	  strcpy(mapping_buf,"\016");
+	  nbytes = 1;
+	  break;
+	}
+      }
+
+Replace this with:
+      /* Someday this will be unnecessary as we will
+	 be able to use XRebindKeysym so XLookupString
+	 will have already given us the string we want. */
+      /* Perhaps, but why not just use the keysym, since that's what's on
+	 top of the key and makes setting up term-XXX files nice and
+	 intuitive? */
+      if (IsFunctionKey(keysym) ||
+	  IsMiscFunctionKey(keysym) ||
+	  IsPFKey(keysym) ||
+	  IsKeypadKey(keysym) ||
+	  IsCursorKey(keysym)) {
+	strcpy(mapping_buf,"\033[");
+	strcat(mapping_buf,XKeysymToString(keysym));
+	nbytes = strlen(mapping_buf);
+      }
+
+Cheers, Tim Bray, New OED Project, tbray@watsol.waterloo.edu
+
+-------------For completeness, here's the diff -cb-----------------
+*** /usr/software/emacs/src/x11term.c	Wed Dec  7 20:28:00 1988
+--- x11term.c	Mon May  1 18:18:18 1989
+***************
+*** 1049,1210 ****
+  	return (internal_socket_read (bufp, numchars));
+  }
+  
+- /*
+-  * Interpreting incoming keycodes. Should have table modifiable as needed
+-  * from elisp.
+-  */
+- 
+- #ifdef sun
+- char *stringFuncVal(keycode)
+- 	KeySym keycode;
+- {
+- 	switch (keycode) {
+- 	case XK_L1:
+- 		return("192");
+- 	case XK_L2:
+- 		return("193");
+- 	case XK_L3:
+- 		return("194");
+- 	case XK_L4:
+- 		return("195");
+- 	case XK_L5:
+- 		return("196");
+- 	case XK_L6:
+- 		return("197");
+- 	case XK_L7:
+- 		return("198");
+- 	case XK_L8:
+- 		return("199");
+- 	case XK_L9:
+- 		return("200");
+- 	case XK_L10:
+- 		return("201");
+- 
+- 	case XK_R1:
+- 		return("208");
+- 	case XK_R2:
+- 		return("209");
+- 	case XK_R3:
+- 		return("210");
+- 	case XK_R4:
+- 		return("211");
+- 	case XK_R5:
+- 		return("212");
+- 	case XK_R6:
+- 		return("213");
+- 	case XK_R7:
+- 		return("214");
+- 	case XK_R8:
+- 		return("215");
+- 	case XK_R9:
+- 		return("216");
+- 	case XK_R10:
+- 		return("217");
+- 	case XK_R11:
+- 		return("218");
+- 	case XK_R12:
+- 		return("219");
+- 	case XK_R13:
+- 		return("220");
+- 	case XK_R14:
+- 		return("221");
+- 	case XK_R15:
+- 		return("222");
+- 
+- 	case XK_Break:			/* Sun3 "Alternate" key */
+- 		return("223");
+- 
+- 	case XK_F1:
+- 		return("224");
+- 	case XK_F2:
+- 		return("225");
+- 	case XK_F3:
+- 		return("226");
+- 	case XK_F4:
+- 		return("227");
+- 	case XK_F5:
+- 		return("228");
+- 	case XK_F6:
+- 		return("229");
+- 	case XK_F7:
+- 		return("230");
+- 	case XK_F8:
+- 		return("231");
+- 	case XK_F9:
+- 		return("232");
+- 
+- 	default:
+- 		return("-1");
+- 	}
+- }
+- #else
+- char *stringFuncVal(keycode)
+- 	KeySym keycode;
+- {
+- 	switch (keycode) {
+- 	case XK_F1:
+- 		return("11");
+- 	case XK_F2:
+- 		return("12");
+- 	case XK_F3:
+- 		return("13");
+- 	case XK_F4:
+- 		return("14");
+- 	case XK_F5:
+- 		return("15");
+- 	case XK_F6:
+- 		return("17");
+- 	case XK_F7:
+- 		return("18");
+- 	case XK_F8:
+- 		return("19");
+- 	case XK_F9:
+- 		return("20");
+- 	case XK_F10:
+- 		return("21");
+- 	case XK_F11:
+- 		return("23");
+- 	case XK_F12:
+- 		return("24");
+- 	case XK_F13:
+- 		return("25");
+- 	case XK_F14:
+- 		return("26");
+- 	case XK_F15:
+- 		return("28");
+- 	case XK_Help:
+- 		return("28");
+- 	case XK_F16:
+- 		return("29");
+- 	case XK_Menu:
+- 		return("29");
+- 	case XK_F17:
+- 		return("31");
+- 	case XK_F18:
+- 		return("32");
+- 	case XK_F19:
+- 		return("33");
+- 	case XK_F20:
+- 		return("34");
+- 	
+- 	case XK_Find :
+- 		return("1");
+- 	case XK_Insert:
+- 		return("2");
+- 	case XK_Delete:
+- 		return("3");
+- 	case XK_Select:
+- 		return("4");
+- 	case XK_Prior:
+- 		return("5");
+- 	case XK_Next:
+- 		return("6");
+- 	default:
+- 		return("-1");
+- 	}
+- }
+- #endif /* not sun */
+- 	
+  internal_socket_read(bufp, numchars)
+  	register unsigned char *bufp;
+  	register int numchars;
+--- 1049,1054 ----
+***************
+*** 1326,1362 ****
+        /* Someday this will be unnecessary as we will
+  	 be able to use XRebindKeysym so XLookupString
+  	 will have already given us the string we want. */
+        if (IsFunctionKey(keysym) ||
+! 	  IsMiscFunctionKey(keysym)) {
+! 	strcpy(mapping_buf,"[");
+! 	strcat(mapping_buf,stringFuncVal(keysym));
+! #ifdef sun
+! 	strcat(mapping_buf,"z");
+! #else
+! 	strcat(mapping_buf,"~");
+! #endif /* sun */
+  	nbytes = strlen(mapping_buf);
+        }
+!       else {
+! 	switch (keysym) {
+! 	case XK_Left:
+! 	  strcpy(mapping_buf,"\002");
+! 	  nbytes = 1;
+! 	  break;
+! 	case XK_Right:
+! 	  strcpy(mapping_buf,"\006");
+! 	  nbytes = 1;
+! 	  break;
+! 	case XK_Up:
+! 	  strcpy(mapping_buf,"\020");
+! 	  nbytes = 1;
+! 	  break;
+! 	case XK_Down:
+! 	  strcpy(mapping_buf,"\016");
+! 	  nbytes = 1;
+! 	  break;
+! 	}
+!       }
+        if (nbytes) {
+  	if (event.xkey.state & Mod1Mask)
+  	  *mapping_buf |= METABIT;
+--- 1170,1188 ----
+        /* Someday this will be unnecessary as we will
+  	 be able to use XRebindKeysym so XLookupString
+  	 will have already given us the string we want. */
++       /* Perhaps, but why not just use the keysym, since that's what's on
++ 	 top of the key and makes setting up term-XXX files nice and
++ 	 intuitive? */
+        if (IsFunctionKey(keysym) ||
+! 	  IsMiscFunctionKey(keysym) ||
+! 	  IsPFKey(keysym) ||
+! 	  IsKeypadKey(keysym) ||
+! 	  IsCursorKey(keysym)) {
+! 	strcpy(mapping_buf,"\033[");
+! 	strcat(mapping_buf,XKeysymToString(keysym));
+  	nbytes = strlen(mapping_buf);
+        }
+! 
+        if (nbytes) {
+  	if (event.xkey.state & Mod1Mask)
+  	  *mapping_buf |= METABIT;
+
+

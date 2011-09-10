@@ -1,0 +1,323 @@
+; Newsgroups: gnu.emacs.sources
+; Path: dg-rtp!uunet!uunet!cis.ohio-state.edu!uvm-gen.uvm.edu!wollman
+; From: wollman@uvm-gen.uvm.edu
+; Subject: A new, improved mail auto-filer
+; Organization: Source only  Discussion and requests in gnu.emacs.help.
+; Date: Mon, 9 Dec 1991 20:09:12 GMT
+; 
+; This message contains patches which will modify sendmail.el,
+; loaddefs.el (yes, you will have to re-dump your Emacs, although you
+; could get around it by putting these into sendmail instead), and
+; vm-save.el, with path-names like the way I have my GNU sources set up.
+; (You can always leave the -p off and let patch prompt you for the
+; exact file name...)
+
+; These patches, put together, install a more intelligent, more
+; customizable, auto-filer for sendmail mode, and modify VM to use the
+; same (so that you don't have to write everything twice).  Modification
+; of other mail and news systems to use the new saver should be quite
+; straightforward: simply call (mail-find-auto-save HEADER) where HEADER
+; is the (string) value of some appropriate header file---I use To: in
+; sendmail and From: or To: (whichever is present) in VM.  The return
+; value is a list of folders to which the message should be saved, or
+; nil if nothing appropriate was found.
+; 
+; The actual system used to determine where to file what is completely
+; user-customizable (in fact, if the user doesn't customize anything,
+; then the behavior will be just as it was before).  Here are some
+; samples from my .emacs file:
+
+;; LCD Archive Entry:
+;; auto-filer|Garrett Wollman|wollman@uvm-gen.uvm.edu
+;; |Patche to improve mail auto-filing
+;; |91-12-09||~/patches/auto-filer.patch.Z|
+
+;;
+;; This tells VM to use the new auto-filer.  If this is inetgrated
+;; into Emacs (as I would love to see happen), \(.*\)-auto-save should
+;; probably be changed to \1-auto-file, to avoid confusion.  I got a
+;; bit confused myself, at some points.
+;;
+(setq vm-use-mail-auto-save t)
+
+;;
+;; set up mail auto-filing
+;;
+;; This works somewhat like, but much better than, the auto-save
+;; feature in the Elm mailer, which is where I'm coming from as a
+;; a new convert to VM and sendmail.
+;;
+
+;; the folders of last resort
+(setq mail-auto-save-default (list "~/Mail/misc"))
+
+;;
+;; Note that the keys in this alist are *regexps*.  The function
+;; mail-regex-assq in sendmail.el is a prime target for
+;; optimization.
+;;
+(setq mail-auto-save-alist '(("Tom\\.Emerson" "~/Mail/tree")
+			     ("Tim\\.Raymond" "~/Mail/raymond")
+			     ("Internet\\.Drafts" "~/Mail/ietf")
+			     ("Steve\\.Ackerman" "~/Mail/steve")))
+
+;;
+;; Basic logic... if we already have a mailbox for mail from to-name,
+;; then use that.  Otherwise, if the message looks like it is coming
+;; from inside UVM, save it in the mailbox uvm-folk.  Then we punt
+;; back to mail-find-auto-save, which will do the default.
+;;
+(defun my-mail-saver (to-name)
+  (if (> (length to-name) 0)
+      (let* ((off (string-match "@" to-name))
+	     (prospective (concat (expand-file-name "~/Mail/")
+				  (substring to-name 0 off))))
+	(if (file-exists-p prospective)
+	    (list prospective)
+	  (if (string-match "^[^!@%]+$" to-name)
+	      (list "~/Mail/uvm-folk")
+	    (if (string-match "uvm.edu"
+			      (substring to-name off nil))
+		(list "~/Mail/uvm-folk")))))))
+
+(setq mail-auto-save-hook 'my-mail-saver)
+
+
+- ----------------------------------------
+Some other notes:
+
+If you include a line like
+[no save]
+in your message, it won't be saved by sendmail; this has no effect in
+VM, where saving is presumed to be a voluntary action anyway.  This is
+also like in Elm.
+
+The function mail-first-address, provided by my good friend Tom
+Emerson, works for most reasonable addresses, but like anything in
+RFC-822 land, it can probably be confused by pathological cases
+involving quotation.  Since most people don't do such mean things to
+their addresses, I'm not worrying about it.
+
+mail-regex-assq should be re-written to operate iteratively, as
+suggested in the Lisp Reference Manual.  It should also be re-named
+regex-assq and added to the standard lisp routines which are dumped
+with Emacs.  (Allow me to take this moment to plug Ange-ftp; it really
+is so useful that you should dump it with your Emacs, and don't care
+how much pure space it eats up.  I dump both ange-ftp and calc.el (the
+"main" module of calc-mode), and it requires about 280k of pure space
+on an RS/6000, but I think that it's worth it.)
+
+I've been using this system for about two weeks now, and it works
+great for me, with the exception that VM loses the "~/" during saves,
+which eventually causes it to go into an infinite loop if you don't
+add it back, while manually over-riding the suggested location.  I
+probably need to put a (save-foo ...) form around the VM code below,
+but it's only a minor irritation.  Perhaps someday I'll figure out
+what's really going on down there.
+
+Questions, comments, suggestions, code, etc. should be sent to
+wollman@UVM.EDU.
+
+Now for the diffs...
+- ------------------------------------------------------------
+
+Index: emacs-18.57/lisp/loaddefs.el
+- --- loaddefs.el~	Wed Jan  9 17:01:26 1991
++++ loaddefs.el	Thu Nov 28 22:36:24 1991
+@@ -1126,6 +1126,24 @@
+ Alias of mail address aliases,
+ or t meaning should be initialized from .mailrc.")
+ 
++;;
++;; mail-auto-save variables - GW
++;;
++(defvar mail-auto-save-alist nil "\
++*An associative list of regexps and file names used to automatically
++save outgoing messages into specific folders.  The key is an un-anchored
++regular expression, and the value is a list of folders.")
++
++(defvar mail-auto-save-hook nil "\
++*A function which is called during auto-save after mail-auto-save-alist
++is queried.  It is passed one argument, the value of the From: field.
++Technically, this does not quite count as a hook, so anyone who can think
++of a better name is welcome to change it.")
++
++(defvar mail-auto-save-default nil "\
++*This variable contains a list of folders to which mail is automatically saved
++as a last resort by mail-do-auto-save.")
++
+ (autoload 'mail-other-window "sendmail"
+   "\
+ Like `mail' command, but display mail buffer in another window."
+
+Index: emacs-18.57/lisp/sendmail.el
+- --- sendmail.el.orig	Wed Jan  9 17:04:09 1991
++++ sendmail.el	Mon Dec  2 13:16:16 1991
+@@ -17,8 +17,14 @@
+ ;; along with GNU Emacs; see the file COPYING.  If not, write to
+ ;; the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
++;; Modifications by Garrett Wollman to provide Elm-like automatic outbound
++;; mail-filing, based on either mail-auto-save-alist or mail-auto-save-hook,
++;; if the user has defined them.
+ 
++;; The function "mail-first-address" was written by Tom Emerson <tree@uvm.edu>
++
+ (provide 'sendmail)
++(require 'mail-utils)			; needed for auto-saving
+ 
+ ;(defconst mail-self-blind nil
+ ;  "Non-nil means insert BCC to self in messages to be sent.
+@@ -209,6 +215,7 @@
+ 	    (goto-char (point-min))
+ 	    (if (re-search-forward "^FCC:" delimline t)
+ 		(mail-do-fcc delimline))
++	    (mail-do-auto-save delimline) ;GW
+ 	    ;; If there is a From and no Sender, put it a Sender.
+ 	    (goto-char (point-min))
+ 	    (and (re-search-forward "^From:"  delimline t)
+@@ -302,6 +309,105 @@
+ 	(setq fcc-list (cdr fcc-list))))
+     (kill-buffer tembuf)))
+ 
++;;
++;; This function based on mail-do-fcc, but it grabs the first "To" name
++;; and passes that through mail-find-auto-save to figure out which file
++;; to append to.
++;;
++(defun mail-do-auto-save (header-end)
++  (let (fcc-list
++	(rmailbuf (current-buffer))
++	(tembuf (generate-new-buffer " rmail output"))
++	(case-fold-search t))
++    (save-excursion
++      (goto-char (point-min))
++      (if (re-search-forward "^To:[ \t]*" header-end t)
++	  (let ((adr (mail-first-address (mail-strip-quoted-names
++					  (mail-fetch-field "To")))))
++	    (setq fcc-list (mail-find-auto-save adr))))
++      (goto-char (marker-position header-end))
++
++      ; if we specified "[no save]" somewhere in the message,
++      ; then don't save it.  This is not quite elm's behavior,
++      ; but it is close enough for most people.
++      (if (re-search-forward "^\\[no save\\]" nil t)
++	  (setq fcc-list nil))
++      (set-buffer tembuf)
++      (erase-buffer)
++      (insert "\nFrom " (user-login-name) " "
++	      (current-time-string) "\n")
++      (insert-buffer-substring rmailbuf)
++      ;; Make sure messages are separated.
++      (goto-char (point-max))
++      (insert ?\n)
++      (goto-char 2)
++      ;; ``Quote'' "^From " as ">From "
++      ;;  (note that this isn't really quoting, as there is no requirement
++      ;;   that "^[>]+From " be quoted in the same transparent way.)
++      (let ((case-fold-search nil))
++	(while (search-forward "\nFrom " nil t)
++	  (forward-char -5)
++	  (insert ?>)))
++      (while fcc-list
++	(let ((buffer (get-file-buffer (car fcc-list))))
++	  (if buffer
++	      ;; File is present in a buffer => append to that buffer.
++	      (let ((curbuf (current-buffer))
++		    (beg (point-min)) (end (point-max)))
++		(save-excursion
++		  (set-buffer buffer)
++		  (goto-char (point-max))
++		  (insert-buffer-substring curbuf beg end)))
++	    ;; Else append to the file directly.
++	    (write-region (point-min) (point-max) (car fcc-list) t)))
++	(setq fcc-list (cdr fcc-list))))
++    (kill-buffer tembuf)))
++
++;;
++;; mail-find-auto-save looks at the argument string and tries
++;; to find a way to auto-save it.
++;;
++(defun mail-find-auto-save (to-field)
++  "Try to find a reasonable place to auto-save a message to TO-FIELD.
++This function first checks mail-auto-save-alist, then it tries calling
++mail-auto-save-hook, and then it returns the value of mail-auto-save-default."
++  (if to-field
++      (let ((one-try (mail-regex-assq to-field mail-auto-save-alist)))
++	(if (null one-try)
++	    (or (null mail-auto-save-hook)
++		(setq one-try
++		      (apply mail-auto-save-hook
++			     (list to-field)))))
++	(if (null one-try)
++	    (setq one-try mail-auto-save-default))
++	one-try)
++    nil))
++
++;;
++;; mail-regex-assq is like assq, but uses string-match as the testing
++;; predicate
++;;
++(defun mail-regex-assq (key alist)
++  "Acts like assq, but using string-match as the key-comparison predicate."
++  (if (null alist)
++      nil
++    (if (string-match (car (car alist)) key)
++	(cdr (car alist))
++      (mail-regex-assq key (cdr alist)))))
++
++
++;;; This function written by Tom Emerson...
++;;; Given a string containing a group of comma separated addresses
++;;; (such as that returned by mail-fetch-field) the following
++;;; function returns the first address in the list.
++(defun mail-first-address (addresses)
++  (let* ((clean (substring addresses 
++			   (or (string-match "[^ \t]" addresses) 0)))
++	 (pos (string-match "[ \t]*,[ \t]*" clean)))
++    (if (not pos) clean
++      (substring clean 0 pos))))
++
++
+ (defun mail-to ()
+   "Move point to end of To-field."
+   (interactive)
+
+Index: vm-4.41/vm-save.el
+- --- vm-save.el.orig	Fri Nov 29 01:05:56 1991
++++ vm-save.el	Mon Dec  2 12:44:16 1991
+@@ -15,8 +15,15 @@
+ ;;; along with this program; if not, write to the Free Software
+ ;;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
++;; changes by Garrett Wollman to use mail-find-auto-save if
++;; vm-use-mail-auto-save is defined
++
+ (require 'vm)
+ 
++(defvar vm-use-mail-auto-save nil "\
++Tells VM to use the auto-save routine built into our version of
++sendmail for selecting which buffer to save messages in.")
++
+ ;; (match-data) returns the match data as MARKERS, often corrupting
+ ;; it in the process due to buffer narrowing, and the fact that buffers are
+ ;; indexed from 1 while strings are indexed from 0. :-(
+@@ -28,6 +35,18 @@
+ 		       '(0 1 2 3 4 5 6 7 8 9)))))
+ 
+ (defun vm-auto-select-folder (mp)
++  (if vm-use-mail-auto-save
++      (progn
++	(require 'sendmail)
++	(new-vm-auto-select-folder mp))
++    (old-vm-auto-select-folder mp)))
++
++(defun new-vm-auto-select-folder (mp)
++  (car-safe (mail-find-auto-save
++	     (or (vm-get-header-contents (car mp) "From")
++		 (vm-get-header-contents (car mp) "To")))))
++
++(defun old-vm-auto-select-folder (mp)
+   (condition-case ()
+       (catch 'match
+ 	(let (header alist tuple-list)

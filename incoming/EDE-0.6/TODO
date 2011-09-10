@@ -1,0 +1,18 @@
+*General items:
+
+** Speedbar menu items for manipulating project files.
+** Smaller custom buffers for specific detail configurations.
+
+*EDE Project:
+
+** Automake support.
+** Better subproject handling.
+
+*EDE Automake:
+
+** Generate fresh makefiles from scratch.
+
+*Tool oriented features:
+
+** Symbol/object database generation based on included files.
+** Interface tables based on known associations between files.

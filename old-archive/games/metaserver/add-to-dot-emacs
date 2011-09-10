@@ -1,0 +1,16 @@
+(setq load-path (cons "THELISPDIR" load-path))
+(autoload 'metaserver-refresh "METASERVERPROG" "Netrek info" t)
+(autoload 'metaserver-restore-from-file "METASERVERPROG" "Old netrek info" t)
+(global-set-key "\C-c\C-n" 'metaserver-refresh)
+
+;;; Uncomment the next line to use telnet instead of open-network-stream
+;;; (setq metaserver-use-telnet t)
+
+;;; Uncomment the next 2 lines to use the background.el package
+;;; (autoload 'background "BACKGROUNDPROG" "Background Processes" t)
+;;; (setq metaserver-use-background t)
+
+;;; Uncomment the next 2 lines to use the ck_players program if you have it
+;;; installed:
+;;; (setq metaserver-auto-fallback t)
+;;; (setq metaserver-ck-players-program "ck_players")

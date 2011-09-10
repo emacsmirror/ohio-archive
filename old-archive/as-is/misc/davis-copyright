@@ -1,0 +1,30 @@
+From davis@scr.slb.com Fri May  5 13:27:03 1989
+Return-Path: <@relay.cs.net:davis@scr.slb.com>
+Date: Wed, 26 Apr 89 10:32 EST
+From: Paul Davis <davis@scr.slb.com>
+Subject: copyright notice
+To: INFO-GNU-EMACS@prep.ai.mit.edu
+X-Vms-To: prep.ai.mit.edu::info-gnu-emacs
+
+
+
+Uh-oh - I blurbed again. Following some helpful suggestions from RMS,
+please note that all e-lisp code posted by me in the last few days is
+subject to the following copyright:
+	
+	Copyright (C) Schlumberger Cambridge Research, 1989
+
+although as previously noted, under the same conditions as the GNU public
+license. I'd like that to have my name there, but contracts are
+contracts :-(
+
+Sorry for the confusion, and I'm not on the list any more either ...
+
+Paul
+
+                             Paul Davis at Schlumberger Cambridge Research
+                                <davis%scr.slb.com@relay.cs.net>
+
+                              "to shatter tradition makes us feel free ..."
+
+

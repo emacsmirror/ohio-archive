@@ -1,0 +1,183 @@
+This is the documentation for "emerge.el", an Emacs package that
+allows you to combine two versions of a file by selecting, for each
+place where they differ, which version of the difference you prefer.
+It is similar to Sun's "filemerge".
+
+Written by Dale R. Worley, drw@math.mit.edu.
+
+- Starting
+
+To start Emerge, you must run one of four commands:
+
+	emerge-files
+	emerge-files-with-ancestor
+	emerge-buffers
+	emerge-buffers-with-ancestor
+
+The "files" versions prompt you for two file names (the "A" and "B"
+files), the "buffers" versions prompt you for two buffer names (the
+"A" and "B" buffers).  Emerge then runs a "diff" of the two entities
+(emerge-buffers writes the buffers into temporary files for input to
+diff) and digests the output to form a list of the differences between
+the two files.  Then three buffers are set up: two containing the
+entities (emerge-files does a find-file (C-x C-f) on the files to get
+them into buffers), and one, the "merge buffer", which contains the
+working copy of the merged file that you are constructing.  The three
+buffers are put up in a nice three-window display, showing the A and B
+buffers in the upper half and the merge buffer in the lower half.
+
+The versions of the command that say "with-ancestor" ask for a third
+name, that of an entity which is a common ancestor from which the
+versions being merged were derived.  These commands use "diff3" to
+compare all three versions.  If one version of a difference agrees
+with the ancestor, then it is presumed that the other version is the
+"correct" version, and is said to be "preferred".
+
+(Note that if you use emerge-files, there is no guarantee that the
+disk version of a file agrees with its buffer version -- find-file
+doesn't check.  So make sure you save the files first!)
+
+During the merge, the A and B buffers are read-only, so you don't
+damage them.  (This is because the A and B versions of the differences
+are extracted from these buffers.)  When you quit the merge, the
+read-only/read-write status and modified flag on the A and B buffers
+are restored.  In addition, auto-saving of the A and B buffers is
+suppressed during the merge.  This is because Emerge modifies the A
+and B buffers to point out the text of the differences, and it would
+be useless to save these changes.  (Just before suppressing
+auto-saving, Emerge forces an auto-save.)
+
+You can have any number of merges going at once -- just don't use any
+one buffer as input to more than one merge at once, since that will
+cause the read-only/modified/auto-save status save-and-restore to
+screw up.
+
+- Merging
+
+Once you have started the merge, you manipulate the merge buffer with
+special commands issued in the merge buffer.  You may also edit the
+buffer with ordinary Emacs commands.  Emerge keeps track of each
+difference between the A and B buffers and the corresponding section
+of the merge buffer.  Initially, all differences show the A version,
+except those for which B is preferred (because A agrees with the
+ancestor), which show the B version.  Emerge always has its attention
+focused on one particular difference, which is marked off in the three
+buffers by "vvvvvvvvvvvvvvvvvvvv" above and "^^^^^^^^^^^^^^^^^^^^"
+below.  The number of the difference is shown in the mode line.
+
+A merge buffer can be in two modes: "fast" mode and "edit" mode.  In
+fast mode, emerge commands are single characters, and ordinary Emacs
+commands are disabled.  This makes Emerge operations fast, but
+prevents you from doing more than selecing the A or the B version of
+differences.  In edit mode, all emerge commands must be prefixed with
+C-c, and all (non-conflicting) Emacs commands are available.  This
+allows editing the merge buffer, but slows down Emerge operations.
+Edit and fast modes are indicated by "F" and "E" in the minor modes in
+the mode line.
+
+The Emerge commands are:
+
+	p	go to the previous difference
+	n	go to the next difference
+	a	select the A version of this difference
+	b	select the B version of this difference
+	j	go to a particular difference (prefix argument
+		specifies which difference)
+	q	quit - finish the merge*
+	f	go into fast mode
+	e	go into edit mode
+	C-a	set/clear auto-advance mode*
+	C-s	set/clear skip-prefers mode*
+	C-l	recenter (C-l) all three windows*
+	- and 0-9
+		numeric arguments
+	M-a	select the A version as the default from here down in
+		the merge buffer*
+	M-b	select the B version as the default from here down in
+		the merge buffer*
+
+* - more details on these commands are given below
+
+- Differences and their states
+
+A difference can have one of six states:
+
+A:  the difference is showing the A version.
+
+B:  the difference is showing the B version.
+
+default-A and default-B: the difference is showing the A or B state,
+but has never been selected by the user.  All differences start in the
+default-A state (and thus the merge buffer is a copy of the A buffer),
+except those for which one buffer or another is preferred.  When the
+user selects the difference, it changes to the A or B state.
+
+prefer-A and prefer-B: the difference is showing the A or B state.  In
+addition, the other buffer (that is, for prefer-A, the B buffer; for
+prefer-B, the A buffer) agrees with the ancestor buffer.  Thus,
+presumably, the displayed version is the correct one.  The "a" and "b"
+commands override these states, and turn them into the A and B states.
+
+The state of the currently selected difference is shown in the mode
+line of the merge window:
+
+	state		display
+
+	A		A
+	B		B
+	prefer-A	A*
+	prefer-B	B*
+
+- Select default commands (M-a and M-b)
+
+The M-a and M-b commands change all default-A's to default-B's (or
+vice-versa) from the selected difference on down to the end of the
+file to default-A or default-B, respectively.  Thus, a difference that
+has been selected will never be affected by M-a or M-b.  This leads to
+the unexpected result that M-a or M-b never affects the difference
+selected at the moment, but prevents differences that you have already
+looked at from changing unexpectedly.
+
+If you work your way down from the top of the file, using M-a and M-b
+at judicious points, you can effectivly make the A version the default
+for some sections of the merge buffer and the B version the default
+for others.
+
+- Exiting (q)
+
+The quit command finishes the merge session by restoring the state of
+the A and B buffers and removing the markers around the currently
+selected difference.  It also disables the Emerge commands in the
+merge buffer, since executing them later could damage the contents of
+the various buffers.
+
+If "q" is given a prefix argument, Emerge attempts to replace the
+contents of the file that the A buffer is visiting with the contents
+of the merge buffer.  The A buffer is given a temporary name, the
+merge buffer is named after the file (and set to visit the file), and
+the merge buffer is written to disk.
+
+- Auto-advance mode (C-a)
+
+If auto-advance mode is set, the "a" and "b" commands perform an "n"
+(select next difference) afterward.  When auto-advance mode is set,
+it is indicated by "A" in the minor modes in the mode line.
+"C-a" with a positive argument sets auto-advance, with a non-positive
+argument clears it, and with no argument toggles it.
+
+- Skip-prefers mode (C-a)
+
+If skip-prefers mode is set, the "n" and "p" commands skip over
+differences with states prefer-A and prefer-B.  Thus you will only see
+differences for which one version isn't presumed "correct".  When
+skip-prefers mode is set, it is indicated by "S" in the minor modes in
+the mode line.  "C-s" with a positive argument sets auto-advance, with
+a non-positive argument clears it, and with no argument toggles it.
+
+- Recenter (C-l)
+
+The Emerge "C-l" command causes the "recenter" command (C-l) to be
+executed in all three windows.  Any prefix argument is passed to each
+recenter.  Particularly useful is "0 C-l", which causes the points
+(pointing to the first lines of the difference texts) to be positioned
+to the top lines of the windows.

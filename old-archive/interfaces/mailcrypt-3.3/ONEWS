@@ -1,0 +1,156 @@
+;;{{{ Change Log
+;;{{{ Changes from 3.0:
+;; * Generate a warning if some public keys are found while others
+;;   are not during encryption.
+;; * Rewrite calls like (message msg) to (message "%s" msg), in case
+;;   msg includes a "%".
+;; * Handle case in mc-pgp-decrypt-region when signature verifies, but
+;;   key has not been certified.
+;; * Put save-excursion around each top-level function.
+;; * Handle case in mc-pgp-decrypt-region when signature fails to verify
+;;   because you don't have the necessary public key.
+;; * Locally bind mc-encrypt-for-me to nil before encrypting in
+;;   mc-remail.
+;; * Include "+encrypttoself=off" in PGP command line flags.
+;; * Include "+verbose=1" in PGP command line flags (finally).
+;; * Hacked mc-rmail-verify-signature to make sure rmailkwd is loaded
+;;   before message is verified.
+;; * (require 'gnus) when compiling.  Thanks to Peter Arius
+;;    <arius@immd2.informatik.uni-erlangen.de>
+;;}}}
+;;{{{ Changes from 2.0:
+;; * C-u to mc-encrypt-message now prompts for an ID to use
+;;   for signing.  C-u C-u also prompts for scheme to use.
+;; * Signing now uses the From line (pseudonym) to choose key.
+;; * Support for multiple secret keys added.  Many internal interfaces
+;;   changed.
+;; * autoload remailer support for mc-remail.el and set default keybindings.
+;; * mc-pgp-always-sign now has a 'never option.
+;; * mc-pgp-encrypt-region returns t on success.
+;; * Added mc-vm-snarf-keys, from Joe Reinhardt
+;;   <jmr@everest.radiology.uiowa.edu>.
+;; * Changed mc-snarf-keys to actually snarf all keys in the buffer instead
+;;   of just the first one.
+;; * In VM, not replacing a message puts the message into its own VM buffer
+;;   so you can reply to it, forward it, etc. Thanks to Pat Lopresti
+;;   <patl@lcs.mit.edu> for the suggestion.
+;; * Abort edit mode in VM and RMAIL decrypt functions if no encrypted 
+;;   message was found. 
+;; * Added version string.
+;; * Applied some new patches from stig adding autoloads and minor additions.
+;; * Made check for window-system generic, and only for emacs versions > 19.
+;; * Added option to mc-sign-message to disable clearsig when signing messages.
+;;   From Stig <stig@hackvan.com>.
+;; * Fixed extra comma bug when offering default recipients to encrypt for.
+;;}}}
+;;{{{ Changes from 1.6:
+;; * Decrypting a signed message in RMAIL adds a verified tag to the message.
+;; * mc-sign-message takes an optional argument specifying which key to use,
+;;   for people who have multiple private keys.
+;; * Added mc-{pre,post}-{de,en}cryption-hooks.
+;; * Additions to docstrings of the major functions and `mailcrypt-*' aliases
+;;   for the same.
+;; * Added cleanup for possible temp files left over if a process was
+;;   interrupted.
+;; * Easier installation instructions.
+;; * Lots of little bug fixes from all over. Too many to list
+;;   individual credits, but I've tried to include all of them. Thanks
+;;   to all who sent them in, especially to John T Kohl who fixed an
+;;   especially trying problem.
+;; * Another optional argument to mc-insert-public-key that allows the
+;;   user to specify which public key to insert when called with a
+;;   prefix argument.
+;; * Tons of changes from Paul Furnanz <paul_furnanz@rainbow.mentorg.com>:
+;; 1) Use the itimer package instead of the timer package if it exists.
+;;    This makes the password deactivation code work for Lemacs as well
+;;    as emacs 19.
+;; 2) Fractured the code, so that there is a single function to use
+;;    when calling the encryption program.  The new function is
+;;    mc-process-region.  The function copies all data to a temporary
+;;    buffer, and does the work there.  This way if you do an undo after
+;;    an encryption or signing, your password is not visible on the
+;;    screen. 
+;; 3) All process output goes to the *MailCrypt* buffer.  No longer use
+;;    a separate buffer for decryption, encryption, verification, ...
+;;    This allows the user to always look at the *MailCrypt* buffer to
+;;    see what pgp or ripem said.
+;; 4) No longer call mc-temp-display.  Use display-buffer if there is a
+;;    reason to show the buffer (like an error occured).
+;; 5) Try to print more useful messages.
+;; 6) If an error occurs on encryption, the message is left unchanged.
+;;    No reason to undo.
+;;}}}
+;;{{{ Changes from 1.5:
+;; * Changed mc-temp-display to just dump into a temp buffer, without
+;;   any fancy display stuff. Pick up show-temp.el if you liked the
+;;   display stuff (or uncomment the old mc-temp-buffer and remove the
+;;   new version).
+;; * Provided a generic read mode function to call in hooks, like the
+;;   generic write mode function that was already there.
+;; * Fixed bug in regexp that prevented compilation under recent
+;;   versions of FSF emacs.
+;; * Narrow to headers when extracting default recipients for encryption
+;;   to avoid pulling in recipients of included messages.
+;; * Use `fillarray' to overwrite passwords with nulls before deactivation
+;;   for increased security.
+;; * Load mail-extr.el to get mail-extract-address-components defined.
+;; Thanks to Kevin Rodgers <kevin@traffic.den.mmc.com> for the following
+;; improvements.
+;; * Quoted an unquoted lambda expression that prevented optimized 
+;;   compilation under emacs 18.
+;; * Used `nconc' instead of `append' in various places to save on 
+;;   garbage collection.
+;; * Modified mc-split to run more efficiently.
+;;}}}
+;;{{{ Changes from 1.4:
+;; * Call mail-extract-address-components on the recipients if we guessed
+;;   them from the header fields.
+;; * If you don't replace a message with its decrypted version, it will now
+;;   pop you into a view buffer with the contents of the message.
+;; * Added support for mh-e, contributed by Fritz Knabe <Fritz.Knabe@ecrc.de>
+;; * Fixed bug in snarfing keys from menubar under GNUS.
+;; * Fixed RIPEM verification problem, thanks to Sergey Gleizer
+;;   <sgleizer@cs.nmsu.edu>.
+;;}}}
+;;{{{ Changes from 1.3:
+;; * Temp display function does not barf on F-keys or mouse events.
+;;     Thanks to Jonathan Stigelman <stig@key.amdahl.com>
+;; * Lucid emacs menu support provided by William Perry <wmperry@indiana.edu>
+;; * Cited signed messages would interfere with signature 
+;;	verification; fixed.
+;;}}}
+;;{{{ Changes from 1.2:
+;; * Added menu bar support for emacs 19.
+;; * Added GNUS support thanks to Samuel Druker <samuel@telmar.com>.
+;;}}}
+;;{{{ Changes from 1.1:
+;; * Added recipients field to mc-encrypt-message.
+;;}}}
+;;{{{ Changes from 1.0:
+;; * Fixed batchmode bug in decryption, where unsigned messages would return
+;;   with exit code of 1.
+;;}}}
+;;{{{ Changes from 0.3b:
+;; * Only set PGPPASSFD when needed, so PGP won't break when used
+;;   in shell mode.
+;; * Use call-process-region instead of shell-command-on-region in order
+;;   to detect exit codes.
+;; * Changed mc-temp-display to not use the kill ring.
+;; * Bug fixes.
+;;}}}
+;;{{{ Changes from 0.2b:
+;; * Prompts for replacement in mc-rmail-decrypt-message.
+;; * Bug fixes.
+;;}}}
+;;{{{ Changes from 0.1b:
+;; * Several bug fixes.
+;; Contributed by Jason Merrill <jason@cygnus.com>:
+;; * VM mailreader support
+;; * Support for addresses with spaces and <>'s in them
+;; * Support for using an explicit path for the pgp executable
+;; * Key management functions
+;; * The ability to avoid some of the prompts when encrypting
+;; * Assumes mc-default-scheme unless prefixed
+;;}}}
+
+;;}}}

@@ -1,0 +1,52 @@
+To: unix-emacs@bbn.com
+Date: 20 Feb 89 04:10:31 GMT
+From: Skip Gilbrech <pwcmrd!skipnyc!skip@uunet.uu.net>
+Subject: Re: do-auto-save bug/feature
+
+In article <50852@yale-celray.yale.UUCP> Ram-Ashwin@cs.yale.edu (Ashwin Ram) writes:
+>GNU Emacs 18.52.26 of Wed Feb 15 1989 on leo.ring.cs.yale.edu (Domain/OS)
+>
+>Sometimes while auto-saving, I see the following message:
+>
+>    Buffer <...> has shrunk a lot; not autosaving it
+>
+>I consider this a bug since I would like my files to be auto-saved regardless
+>of whether Emacs thinks I have deleted too much stuff from them.  As long as
+>auto-save-mode is on, I consider the file valuable enough to be auto-saved.
+>
+>Regardless of whether this is a bug or a feature, however, how do I turn it
+>off?
+
+You have to patch the source to shut this off.  I got so annoyed with this
+'feature' that I did so a couple of weeks ago (this patch is for fileio.c
+from GNU Emacs 18.52):
+
+*** fileio.c~	Sat Aug 20 12:14:24 1988
+--- fileio.c	Sun Feb 19 22:48:03 1989
+***************
+*** 1922,1927 ****
+--- 1922,1931 ----
+  	  && b->save_modified < b->text.modified
+  	  && b->auto_save_modified < b->text.modified)
+  	{
++ #if 0
++ 	    /* sg - it's a stupid assumption that the contents of a
++ 	     * shrunken file aren't worth saving...
++ 	     */
+  	  if ((XFASTINT (b->save_length) * 10
+  	       > (b->text.size1 + b->text.size2) * 13)
+  	      /* These messages are frequent and annoying for `*mail*'.  */
+***************
+*** 1933,1938 ****
+--- 1937,1943 ----
+  	      Fsleep_for (make_number (1));
+  	      continue;
+  	    }
++ #endif	/* 0 */
+  	  SetBfp (b);
+  	  if (!auto_saved && NULL (nomsg))
+  	    message1 ("Auto-saving...");
+-- 
+Skip Gilbrech                           UUCP: uunet!pwcmrd!skip
+PaineWebber, NYC                              attmail!skipnyc!skip
+

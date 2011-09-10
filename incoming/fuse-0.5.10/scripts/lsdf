@@ -1,0 +1,16 @@
+#!/bin/sh  
+#
+#  automated lsfile -- display contents of a uwxafs binary file to STDOUT
+# read command line and pass argument to lsfile
+# requires that lsfile be in the path
+# adapted from a script by Matt Newille
+# by Bruce Ravel  Sep 27 1997
+# 
+# This file is part of FUSE, the Feff/UWXAFS System for Emacs
+#
+if [ $# -gt 0 ]; then
+    echo $1 | lsfile
+else
+    echo '# no inputs to lsdf'
+fi
+

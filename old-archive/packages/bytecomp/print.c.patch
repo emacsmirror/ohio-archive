@@ -1,0 +1,233 @@
+*** old-print.c	Sun Jul 28 14:57:00 1991
+--- print.c	Mon Oct 28 23:46:18 1991
+***************
+*** 52,59 ****
+--- 52,61 ----
+  /* Nonzero means print newlines in strings as \n.  */
+  
+  int print_escape_newlines;
++ int print_readably;
+  
+  Lisp_Object Qprint_escape_newlines;
++ Lisp_Object Qprint_readably;
+  
+  /* Nonzero means print newline before next minibuffer message.
+     Defined in xdisp.c */
+***************
+*** 608,613 ****
+--- 610,617 ----
+  #endif
+      {
+      default:
++       if (print_readably)
++ 	error ("printing illegal data type #o%3o", (int) XTYPE (obj));
+        /* We're in trouble if this happens!
+  	 Probably should just abort () */
+        strout ("#<EMACS BUG: ILLEGAL DATATYPE ", -1, printcharfun);
+***************
+*** 670,675 ****
+--- 674,693 ----
+  	register unsigned char *end = p + XSYMBOL (obj)->name->size;
+  	register unsigned char c;
+  
++ #if 0
++ 	/* This is a dangerous and certainly-doesn't-do-what-you-meant kind of
++ 	   thing to do, but there's quite a lot of code out there that does this,
++ 	   so let it slide for now...
++ 	 */
++ 
++ 	if (print_readably) {
++ 	  Lisp_Object tem = oblookup (Vobarray, p, end-p);
++ 	  if (!EQ (tem, obj))
++ 	    /* (read) would return a new symbol with the same name. */
++ 	    error ("printing an uninterned symbol named \"%s\"", p);
++ 	}
++ #endif
++ 
+  	if (p != end && (*p == '-' || *p == '+')) p++;
+          if (p == end)
+  	  confusing = 0;
+***************
+*** 706,711 ****
+--- 724,739 ----
+  	  break;
+  	}
+  
++       /* If Vprint_readably is on, print (quote -foo-) as '-foo- */
++       if (print_readably &&
++ 	  EQ (XCONS (obj)->car, Qquote) &&
++ 	  XTYPE (XCONS (obj)->cdr) == Lisp_Cons &&
++ 	  NULL (XCONS (XCONS (obj)->cdr)->cdr)) {
++ 	PRINTCHAR ('\'');
++ 	print (XCONS (XCONS (obj)->cdr)->car, printcharfun, escapeflag);
++ 	break;
++       }
++ 
+        PRINTCHAR ('(');
+        {
+  	register int i = 0;
+***************
+*** 735,741 ****
+        break;
+  
+      case Lisp_Compiled:
+!       strout ("#<byte-code ", -1, printcharfun);
+      case Lisp_Vector:
+        PRINTCHAR ('[');
+        {
+--- 763,769 ----
+        break;
+  
+      case Lisp_Compiled:
+!       strout ((print_readably ? "#" : "#<byte-code "), -1, printcharfun);
+      case Lisp_Vector:
+        PRINTCHAR ('[');
+        {
+***************
+*** 749,755 ****
+  	  }
+        }
+        PRINTCHAR (']');
+!       if (XTYPE (obj) == Lisp_Compiled)
+  	PRINTCHAR ('>');
+        break;
+  
+--- 777,783 ----
+  	  }
+        }
+        PRINTCHAR (']');
+!       if (!print_readably && XTYPE (obj) == Lisp_Compiled)
+  	PRINTCHAR ('>');
+        break;
+  
+***************
+*** 757,762 ****
+--- 785,794 ----
+      case Lisp_Interval:
+        if (escapeflag)
+  	{
++ 	  if (print_readably)
++ 	    error ("printing unreadable object #<interval [%d %d]>",
++ 		   XINTERVAL (obj)->position, XINTERVAL (obj)->my_length);
++ 	  
+  	  strout ("#<interval ", -1, printcharfun);
+  	  sprintf (buf, "[%d, %d]", XINTERVAL (obj)->position,
+  		   XINTERVAL (obj)->my_length);
+***************
+*** 779,784 ****
+--- 811,823 ----
+        break;
+  
+      case Lisp_Buffer:
++       if (print_readably) {
++ 	if (NULL (XBUFFER (obj)->name))
++ 	  error ("printing unreadable object #<killed buffer>");
++ 	else
++ 	  error ("printing unreadable object #<buffer %s>",
++ 		 XSTRING (XBUFFER (obj)->name)->data);
++       }
+        if (NULL (XBUFFER (obj)->name))
+  	strout ("#<killed buffer>", -1, printcharfun);
+        else if (escapeflag)
+***************
+*** 794,799 ****
+--- 833,842 ----
+      case Lisp_Process:
+        if (escapeflag)
+  	{
++ 	  if (print_readably)
++ 	    error ("printing unreadable object #<process %s>",
++ 		   XSTRING (XPROCESS (obj)->name)->data);
++ 	  
+  	  strout ("#<process ", -1, printcharfun);
+  	  strout (XSTRING (XPROCESS (obj)->name)->data, -1, printcharfun);
+  	  PRINTCHAR ('>');
+***************
+*** 803,808 ****
+--- 846,855 ----
+        break;
+  
+      case Lisp_Window:
++       if (print_readably)
++ 	error ("printing unreadable object #<window %d>",
++ 	       XFASTINT (XWINDOW (obj)->sequence_number));
++ 
+        strout ("#<window ", -1, printcharfun);
+        sprintf (buf, "%d", XFASTINT (XWINDOW (obj)->sequence_number));
+        strout (buf, -1, printcharfun);
+***************
+*** 816,826 ****
+--- 863,880 ----
+        break;
+  
+      case Lisp_Window_Configuration:
++       if (print_readably)
++ 	error ("printing unreadable object #<window-configuration>");
+        strout ("#<window-configuration>", -1, printcharfun);
+        break;
+  
+  #ifdef MULTI_SCREEN
+      case Lisp_Screen:
++       if (print_readably)
++ 	error ("printing unreadable object #<screen %s 0x%x>",
++ 	       XSTRING (XSCREEN (obj)->name)->data,
++ 	       XFASTINT (XSCREEN (obj)));
++       
+        strout ("#<screen ", -1, printcharfun);
+        strout (XSTRING (XSCREEN (obj)->name)->data, -1, printcharfun);
+        sprintf (buf, " 0x%x", XFASTINT (XSCREEN (obj)));
+***************
+*** 830,835 ****
+--- 884,892 ----
+  #endif /* MULTI_SCREEN */
+  
+      case Lisp_Marker:
++       if (print_readably)
++ 	error ("printing unreadable object #<marker>");
++       
+        strout ("#<marker ", -1, printcharfun);
+        if (!(XMARKER (obj)->buffer))
+  	strout ("in no buffer", -1, printcharfun);
+***************
+*** 845,850 ****
+--- 902,911 ----
+  #endif /* standalone */
+  
+      case Lisp_Subr:
++       if (print_readably)
++ 	error ("printing unreadable object #<subr %s>",
++ 	       XSUBR (obj)->symbol_name);
++       
+        strout ("#<subr ", -1, printcharfun);
+        strout (XSUBR (obj)->symbol_name, -1, printcharfun);
+        PRINTCHAR ('>');
+***************
+*** 859,864 ****
+--- 920,927 ----
+  {
+    staticpro (&Qprint_escape_newlines);
+    Qprint_escape_newlines = intern ("print-escape-newlines");
++   staticpro (&Qprint_readably);
++   Qprint_readably = intern ("print-readably");
+  
+    DEFVAR_LISP ("standard-output", &Vstandard_output,
+      "Output stream `print' uses by default for outputting a character.\n\
+***************
+*** 903,908 ****
+--- 966,981 ----
+    DEFVAR_BOOL ("print-escape-newlines", &print_escape_newlines,
+      "Non-nil means print newlines in strings as backslash-n.");
+    print_escape_newlines = 0;
++ 
++   DEFVAR_BOOL ("print-readably", &print_readably,
++     "If non-nil, then compiled-function objects will be written with\n#\
++ [...] syntax instead of #<byte-code [...]> syntax.  Lists of the form\n\
++ (quote -symbol-) will be printed with the more compact representation of\n\
++ '-symbol- instead.  Also, an error will be signalled if there is an\n\
++ attempt to write out any object whose printed representation is not\n\
++ readable (such as things that print in #<...> form).\n\
++ Do not SET this variable; bind it instead.");
++   print_readably = 0;
+  
+    /* prin1_to_string_buffer initialized in init_buffer_once in buffer.c */
+    staticpro (&Vprin1_to_string_buffer);

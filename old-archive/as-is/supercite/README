@@ -1,0 +1,91 @@
+This is the distribution of SUPERCITE 2.0, an elisp utility to do nice
+citing of reply messages for GNUemacs.
+
+supercite.el is the main file containing the citing functions, it
+calls functions defined in baw-alist.el so be sure both are on your
+load-path.
+
+supercite 2.0 should run as is with VM 4.37+ after you make the hook
+bindings as described in the documentation.  To run it with RMAIL
+(emacs 18.54 & 18.55), or with GNUS 3.12, you need to either install
+the sendmail and rnewspost context diffs, or use the overload
+functions in sc-misc.el.  To run it with mh-e, also either install the
+context diff or use the overload function.
+
+Once you've got it installed and loaded, you can type "M-x sc-describe"
+to get documentation on how to use it.  Below I've included the
+pertinent information from the documentation on how to link supercite
+in with the mail/news reader of your choice.
+
+==from supercite.el==============================
+
+Finally, some discussion on how to interface supercite with the
+various mail/news readers you might be using is in order.  This
+discussion is also useful for those who might be writing a mail/news
+reader and want to let your users take advantage of Supercite.
+
+The author runs a Supercite mailing list on which a number of
+mail/news reader authors and other Supercite users participate.  A
+while back some discussion was held and an interface between these
+readers and Supercite was agreed upon.  The ancestor to this package,
+SUPERYANK 1.11 was designed along an old inteface and this package,
+SUPERCITE 2.0 conforms to this new standard.  As of the date of this
+writing (12-Oct-1989) only VM 4.37 conforms to this standard as
+distributed. GNUS 3.12, RMAIL and MH-E all use functions distributed
+with EMACS 18.55 and patches are available to the appropriate files,
+distributed along with Supercite as: 
+
+     {rnewspost,sendmail,mh-e}.el.diff
+
+If you do not want to install the diffs, or are not able to install
+them, check the file sc-misc.el.  This file contains overload
+functions which can be selectively loaded to provide the necessary
+functionality.  If you decide to go the overload route, be sure to set
+`sc-load-hook' to something like:
+
+     (setq sc-load-hook '(lambda () (load \"sc-misc\")))
+
+The variables controlling overloading should be rather self
+explanatory in the sc-misc.el file.  This file also contains some
+miscellaneous extension to RMAIL. Also, in superyank version 1.11, the
+function `mail-yank-original' was overloaded and bound to \"\\C-c
+\\C-y\". This functionality is provided in this release, but will no
+longer be supported.
+
+Now, with Supercite version 2.0, a hook is provided called
+`mail-yank-hooks' which is run *after* the text is yanked.  This way,
+the particular mail/news reader handles setting up the reply buffer
+and yanking the appropriate text into the buffer, but leaves citing
+the lines up to external functions. Most readers will provide a simple
+citation function hooked in by default, for those who haven't yet
+discovered this superior citation package.  Mh-e users should use
+`mh-yank-hooks' instead of `mail-yank-hooks'.  For these to work you
+must have installed diffs to {rnewspost,sendmail,mh-e}.el or used the
+overloaded functions supplied in sc-misc.el.
+
+The mail/news reader should put the verbose mail headers at the top of
+the yanked text and leave POINT at the beginning of the headers.  MARK
+should point to the end of the yanked text.  Then it should run
+`mail-yank-hooks'.
+
+Add some of this code to your .emacs file to use supercite 2.0:
+
+     (autoload 'sc-cite-original \"supercite\" \"Hookified Supercite 2.0\" t)
+     (autoload 'sc-cite          \"supercite\" \"Interactive Supercite 2.0\" t)
+     (autoload 'sc-describe      \"supercite\" \"Describe Supercite 2.0\" t)
+     (setq mail-yank-hooks 'sc-cite-original)
+     (setq mh-yank-hooks 'sc-cite-original)
+
+==================================================
+
+NAME: Barry A. Warsaw                USMAIL: National Institute of Standards
+TELE: (301) 975-3460                         and Technology (formerly NBS)
+UUCP: {...}!uunet!cme-durer!warsaw           Rm. B-124, Bldg. 220
+ARPA: warsaw@cme.nist.gov                    Gaithersburg, MD 20899
+
+This mailing list covers issues related to the advanced mail/news
+citation package called SUPERCITE.
+
+Send articles to supercite@cme.nist.gov or uunet!cme-durer!supercite
+Send administrative queries/requests to supercite-request@cme.nist.gov
+	or uunet!cme-durer!supercite-request

@@ -1,0 +1,1116 @@
+Name|Author|Contact|Description|Date|Version|Archive
+1char|Bard Bloom|bard@cs.cornell.edu|Commands to fix typos in the previous word with minimal typing.|13-Jul-1990||~/misc/1char.el.Z
+24-hour-time|Johan Vromans|jv@mh.nl|Adds 24 time display capability to time.el.|18-Nov-1992||~/patches/24-hour-time.el.Z
+8-bit-pat|Christopher A. North-Keys|harp@mcc.com|Gives Emacs 18.55 8-bit compatibility|11-May-1990||~/misc/8-bit.patches.Z
+8bits-mode|Cedric BEUST|beust@sophia.inria.fr|Mode to type 8 bit characters as diacritics|20-Dec-93|1.4|~/modes/8bits-mode.el.gz
+AUC TeX|Kresten Krab Thorup, Per Abrahamsen, Lars Peter Fischer|auc-tex_mgr@iesd.auc.dk|TeX and LaTeX support|1992|6.1d|ftp.iesd.auc.dk:/pub/emacs-lisp/auctex.tar.Z
+BBDB|Jamie Zawinski|jwz@lucid.com|A rolodex-like database, tightly integrated with several mail/news readers|18-Feb-1994|1.50|~/packages/bbdb-1.49.tar.Z
+GTbuf-men|Tom Wurgler and Bill Benedetto|wurgler@gentire.com, benedett@gentire.com|More dired-like buffer men (for v19)|20-Sep-1993|1.45|~/modes/GTbuf-men.el.Z
+J-Shell|James C. Thompson|jimt@neosoft.com|Jim's Pretty-Good Shell Mode for GNU Emacs|12-July-1994|2.1|~/modes/J-Shell-2.1.tar.Z
+S-mode|Doug Bates, Ed Kademan, Frank Ritter, David Smith|dsmith@stats.adelaide.edu.au|Interface to the S/Splus statistical software packages|29-Jun-1992|3.4|~/modes/S-mode.tar.Z
+abbrevlist|Stephen Gildea|18.55 dist|List one abbrev table alphabetically ordered.|29-Apr-1987||
+abbrev|FSF|18.55 dist|Abbrev mode commands.|04-Aug-1988||
+ada-mode|Rolf Ebert|ebert@inf.enst.fr|Major-mode for Ada|11-Nov-1994|2.8|~/modex/ada-mode-1.8.tar.gz
+ada|Vincent Broman|18.55 dist|Ada editing support package.|09-Apr-1988|1.0|
+add-doc|Mike Heavin|littlei!omepd!mgh@uunet.uu.net|Function to add documentation to mode descriptions.|25-Apr-1989||~/as-is/add-doc.el.Z
+add-hook|Dan LaLiberte|liberte@cs.uiuc.edu|Multiple hooks solution|14-Jan-1994|FSF v19|~/functions/add-hook.el.Z
+add-log|FSF|18.55 dist|Change log maintenance commands.|15-Aug-1988||
+advice|Hans Chalupsky|hans@cs.buffalo.edu|Advice mechanism for Emacs Lisp functions|26-May-1993|2.1|~/packages/advice.el.Z
+ag-compile|Andy Glew|aglew@urbana.mcd.mot.com|Skip around in the compilation window.|30-Aug-1989||~/functions/ag-compile.el.Z
+aixterm|unknown|baron@bnlux1.bnl.gov (Ed Baron)|AIX key bindings for HFT and X|23-Apr-1991||~/terms/aixterm.el.Z
+align-equals|Paul Hudson|ukc!acorn!moncam!paul|Align equals signs in C code.|18-Nov-1988||~/as-is/align-eq.el.Z
+allout|Ken Manheimer|klm@cme.nist.gov|A more thorough outline-mode|05-Jul-1992|V 2.1|~/modes/allout.el.Z
+all|Per Abrahamsen|abraham@iesd.auc.dk|Edit all lines matching a given regexp|09-Aug-1994|0.0|~/misc/all.el.Z
+alt-dabbrev|Mark Swanson|utah-cs!swanson|Dynamic abbrev expander.|||
+alt-mouse|Eirik Fuller|eirik@elf.tn.cornell.edu|Alternative to X11 mouse support provided with Emacs.|24-Jul-1990||~/interfaces/alt-mouse.el.Z
+ange-crypt|Andy Norman|ange@hplb.hpl.hp.com|Simple encrypt/decrypt support.|14-Aug-1989|1.6|~/modes/ange-crypt.el.Z
+ange-ftp|Andy Norman|ange@hplb.hpl.hp.com|transparent FTP Support for GNU Emacs|15-Jul-1992|4.18|~/packages/ange-ftp.tar.Z
+ange-tags|Andy Norman|ange@hplb.hpl.hp.com|Simple support for multiple tags files.|07-Aug-1989|1.11|~/misc/ange-tags.el.Z
+animals|Keith Gabryelski|ag@yoda.omnicron.com|The ancient game of guess the animal.|27-Jun-1994|1.01|~/games/animals.el.gz
+anon-remail|michael shiplett|walrus@umich.edu|Interface to ease use of anonymous, encrypting remailers.|07-Mar-1994|Version 1.4|~/interfaces/anon-remail.el.Z
+apollo|Mark Weissman||Package for ZMACS functionality with GNU Emacs and Common Lisp.|||labrea.stanford.edu(36.8.0.47):pub/gnu/apollo_emacs_support.tar.Z
+appt|Neil Mager|neilm@juliet.ll.mit.edu|Appointment support for Reingold's calendar.|08-Oct-1990||~/misc/appt.el.Z
+archie|Jack Repenning|jackr@dblues.wpd.sgi.com|An Emacs interface to the archie program.|11-Oct-1994|3.0.2|~/interfaces/archie.el.Z
+array|David M. Brown|morgoth!dmb|Array mode.|||~/as-is/array.el.Z
+arrow-key-fix|Jeff Morgenthaler|jpmorgen@wisp4.physics.wisc.edu|Turns on the arrow AND function keys.|22-Mar-1993|1.1|~/terms/arrow-key-fix.el.Z
+asm-mode|Martin Neitzel|neitzel@ips.cs.tu-bs.de|Major mode for assembler.|03-Jan-1989||~/modes/asm-mode.el.Z
+atc|Neil Jerram|nj104@cus.cam.ac.uk|Air Traffic Control|28-Jan-1993|1.0|~/games/atc.tar.Z
+auc-menu|Per Abrahamsen|abraham@iesd.auc.dk|Easy menu support for GNU Emacs and XEmacs|24-Jan-1995|5.8|~/misc/auc-menu.el.gz
+auto-buffmen|Michael Meissner|meissner@osf.org|Improved auto-buffer-menu.|08-Oct-1989||~/functions/auto-buffmen.el.Z
+auto-carbon|Kevin Broadey|kevin@edscom.demon.co.uk|Automatically write buffer contents to "carbon copy" file on saves.|04-Nov-1992||~/misc/auto-carbon.el.Z
+auto-filer|Garrett Wollman|wollman@uvm-gen.uvm.edu|Patche to improve mail auto-filing|09-Dec-1991||~/patches/auto-filer.patch.Z
+auto-gc|Radey Shouman and Ivan Vazquez|rshouman@chpc.utexas.edu|Garbage collection in the background.|18-Mar-1993|1.0|~/misc/auto-gc.el.Z
+auto-include|Charlie Martin|crm@cs.duke.edu, mcnc!duke!crm|Automatically include files.|01-Jun-1988||~/auto-incl.el.Z
+auto-indent|Alan Stebbens|aks@hub.ucsb.edu|Auto-indent minor mode.|||~/as-is/auto-indent.el.Z
+auto-insert-tkld|Kevin Davidson|tkld@cogsci.ed.ac.uk|An automatic file template package with keyword expansion for Emacs.|09-Aug-1994|1.20|~/packages/auto-insert.tar.Z
+auto-save|Sebastian Kremer|sk@thp.uni-koeln.de|Safer autosaving with support for ange-ftp and /tmp|01-May-1992|1.19|~/misc/auto-save.el.Z
+auto-show|Pete Ware|ware@cis.ohio-state.edu|Automatically scroll horizontally|95-02-28|1.9|~/misc/auto-show.el.gz
+auto-template|Kevin Broadey|kevin@edscom.demon.co.uk|Auto insert templates with macro replacement based on file extension.|02-Nov-1992|1.0|~/misc/auto-template.el.Z
+auto-unmap-screens|Ken Laprade|laprade@trantor.harris-atd.com|Unmap the minibuffer when the last normal screen is unmapped.|06-Nov-1990||~/epoch/auto-unmap-screens.el.Z
+autosave-fix|Skip Gilbrech|pwcmrd!skip,attmail!skipnyc!skip|Source patch to force autosave of shrunken buffers.|19-Feb-1989||~/as-is/misc/autosave-fix.Z
+avoid-split|Thomas M. Breuel|tmb@AI.MIT.EDU|Avoid splitting window if another screen is displaying target buffer.|30-Jul-1990||~/epoch/avoid-split.el.Z
+avoid|Boris Goldowsky|boris@cs.rochester.edu|Keep mouse pointer away from cursor|22-Nov-1993|1.10|~/misc/avoid.el.Z
+awk-mode|Nelson Beebe|Beebe@science.utah.edu|Awk variation of C-mode.|17-Oct-1988||~/as-is/awk-mode.el.Z
+babyl-vm|Ken Manheimer|klm@cme.nist.gov|Babyl-to-vm convertor.|10-Aug-1989||~/misc/babyl-vm.el.Z
+background|Joe Keane|jk3k+@andrew.cmu.edu|Csh-like background jobs.|28-Jan-1988||~/as-is/background.el.Z
+backquote|Dick King|18.55 dist|Rudimentary backquote package.|19-Mar-1988||
+backtrace-c|Mark Tucker|mct@philabs.Philips.Com|Print (if ...) args in backtrace|19-Nov-1987||~/as-is/backtrace.c.Z
+balance-wins|Eric Raible, Ashwin Ram|raible@orville.nas.nasa.gov|Make all visible windows the same size.|18-Jan-1989||~/as-is/bal-wins.el.gz
+balance|Jason Baietto|jason@jade.ssd.csd.harris.com|Major mode for recording transactions and balancing a bank account|09-Feb-1994||~/modes/balance.el.Z
+basic-mode|Fred White|fwhite@world.std.com|A mode for editing Visual Basic programs.|18-Apr-1997|1.0|~/modes/basic-mode.el.gz
+batch-doc|Randal Schwartz|merlyn@iwarp.intel.com|Batch DOC processor.|09-Sep-1988||~/as-is/batch-doc.el.Z
+batch-where|Randal Schwartz|merlyn@agora.hf.intel.com|Batch cross-reference processor.|01-May-1989||~/as-is/batch-where.el.Z
+baw-tracker|Barry A. Warsaw|bwarsaw@cen.com|better shell interaction with pushd, popd, etc.|90-3-1||~/misc/baw-tracker.el.Z
+better-keypd|Stephen Gildea|gildea@bbn.com|Handle VT200-mode keyboard.|1988||
+bg-shell|Johan Vromans|jv@mh.nl|Backgrounds shell commands|13-Jun-1990||~/functions/bg-shell.el.Z
+bib-cite|Peter Galbraith|galbraith@mixing.qc.dfo.ca|Display \cite, \ref or \label / Extract refs from BiBTeX file.|20-Mar-1997|2.31|~/misc/bib-cite.el.gz
+bib-mode|Henry Kautz|kautz@allegra.att.com, allegra!kautz|UNIX bibliography mode.|24-Jun-1987||~/as-is/bib-mode.el.Z
+bibtex-db|Thorsten Ohl|ohl@physics.harvard.edu|BibTeX interface for EDB.|14-Jan-1993|0.2|chich.harvard.edu:btxdb-0.2.tar.Z
+bibtex-mode|Bengt Martensson, Marc Shapiro, Aaron Larson|alarson@src.honeywell.com|Support for maintaining BibTeX format bibliography databases|01-Apr-1992|version 1.2|~/modes/bibtex-mode.el.Z
+bibtex|Denise Draper|ddraper@cs.washington.edu|Major mode for editing bibtex files|18-Mar-1995|1.2|~/modes/bibtex.el.gz
+bison-mode|Brandon Allbery|allbery@ncoast.org|Bison/yacc mode.|21-Dec-1989||~/modes/bison-mode.el.Z
+blackbox-patch|Pat Lashley|pml@Holmes.case.com|Patch to Blackbox game.|27-Jun-1987||~/as-is/blackbox-patch.Z
+blackbox|F. Thomas May|18.55 dist|Blackbox game.|30-Jun-1987||
+blink-match|Gildea,Hess,Sylvan|gildea@bbn.com,woodstck@espresso.ebay.sun.com,mrspoc!guinan!kayvan@apple.com|Variations on a theme: blinking matching delimiter.|10-Mar-1989||~/as-is/blink-mtch.el 
+block-cmnt|Stergios|stergios@portia.portia.stanford.edu|Makes comments into block comments|26-Feb-1990||~/packages/block-cmnt.el.Z
+bm-toggle|Rob Austein|sra@lcs.mit.edu|Toggle read-only in Buffer Menu|31-Aug-1989||~/functions/bm-toggle.el.Z
+bmark|Ken Laprade|laprade@trantor.harris-atd.com|Interbuffer mark ring.|20-Sep-1990||~/misc/bmark.el.Z
+bookmark-tvr|T. V. Raman|raman@cs.cornell.edu|Bookmark position in a file so you may return to where you left off.|18-Feb-1992||~/misc/bookmark-tvr.el.Z
+bookmark|Karl Fogel|kfogel@cs.oberlin.edu|Setting bookmarks in files or directories, jumping to them later.|16-July-1993|1.9.3|~/misc/bookmark.el.Z
+boss|Masanobu Umeda|umerin@mse.kyutech.ac.jp|Boss screen for getris.|16-Sep-1989||~/games/boss.el.Z
+box-comments|John Sturdy|mcvax!ukc!icdoc!qmc-cs!harlqn!jcgs@uunet.uu.net|Draws "boxed comments" suitable for headings in programs.|16-May-1989||~/as-is/box-commnt.el.Z
+brief|Alex Rezinsky|alexr@msil.sps.mot.com|Brief editor emulation|07-Feb-1995|1.1|~/modes/brief.el.Z
+brief|Thomas Huber|huber@igc.chem.ethz.ch|Brief keybindings suitable for use in a .emacs file (ie: not a mode).|10-Jun-1994||~/as-is/brief.el.Z
+browse-kill|Dave Emme|daveemme@uts.amdahl.com|Browse the kill-ring.|20-Sep-1988||~/as-is/browsekill.el.Z
+browse-mode|Raul J. Acevedo|acevedo@mit.edu|Buffer browsing facility.|1992||~/modes/browse-mode.el.Z
+browse-yank|Robert Mende|mende@rutgers.edu|Kill-ring browse mode.|1986||
+btx-mode|Stefan Sch\"of|schoef@informatik.uni-oldenburg.de|An enhanced mode to edit BibTeX files|15-Aug-1994|1.0|~/modes/btx-mode.el.Z
+buf-sel|Tomn Horsley|thorsley@ssd.csd.harris.com|Interactive buffer-list in the minibuffer.|25-Mar-1992||~/misc/buf-sel.el.Z
+buff-mark|Bud Boman|ecb@utrccm.smc.utc.com|Kill buffers with tags files in them after a tags search|16-Aug-1989||~/misc/buff-mark.el.Z
+buff-menu+|Bob Weiner|rsw@cs.brown.edu|Improved with electric-buffer-menu like features but no functionality limitations.|28-Apr-1989||~/as-is/bob-weiner/buff-menu.el.Z
+buff-menu|FSF|18.55 dist|Buffer menu main function and support functions.|16-Sep-1987||
+buffer-exists|Terrence Brannon|brannon@jove.cs.caltech.edu|invoke to check if a buffer is currently in emacs memory before creating|08-Mar-1992|0.0|~/functions/buffer-exists.el.Z
+bugtrack|Per Cederqvist|ceder@lysator.liu.se|Bug tracking - storing and retrieving bug reports, with RMAIL interface|1993-12-13|1.0|~/packages/bugtrack-1.0.tar.Z
+bytecomp2|Jamie Zawinski|jwz@lucid.com|Optimizing byte-compiler for Emacs Lisp|09-Feb-1992|2.04|~/packages/bytecomp.tar.Z
+bytecomp|FSF|18.55 dist|Compilation of Lisp code into byte code.|19-Mar-1988||
+c*-mode|Erik Bailey|ebail@ctp.com|C* (Connection Manchine C) mode.|23-Nov-1992||~/modes/c*-mode.el.Z
+c++-mode-2|Bruce Eckel,Thomas Keffer|eckel@beluga.ocean.washington.edu,uw-beaver!beluga!eckel,keffer@sperm.ocean.washington.edu|Another C++ major mode.|08-Dec-1987|1.0|~/as-is/c++-mode-2.el.Z
+c-comment-edit2|Kyle E. Jones|kyle_jones@wonderworks.com, jari.aalto@poboxes.com|C Comment Edit in separate window.|26-Feb-1997|1.9|~/misc/c-comment-edit2.el.Z
+c-comment-edit|Kyle E. Jones|kyle_jones@wonderworks.com|C Comment Edit|08-Jun-1995|1.1|~/misc/c-comment-edit.el.Z
+c-comment|Kyle Jones|kyle_jones@wonderworks.com|C comment editing package.|12-Jan-1989||~/as-is/c-comment.el.Z
+c-fill|Robert Mecklenburg, George Hartzell|18.55 dist|An auto-filled comment mode for c-mode.|18-Jul-1988||
+c-macexp|Jonathan Segal|jsegal@oracle.com|This is a modified version of the c-macro-expand|22-Jun-1991||~/functions/c-macexp.el.Z
+c-mode|FSF|18.55 dist|C code editing commands.|27-May-1988||
+c-outline|Kevin Broadey|KevinB@bartley.demon.co.uk|outline-minor-mode support for C program editing|24-Nov-1994|1.9|~/misc/c-outline.el.Z
+c-prologue|K. Eriksson, D. LaLiberte|Kjell_Eriksson@nokia.se,liberte@cs.uiuc.edu|C-mode funtion prologues.|02-Sep-1987||~/as-is/c-prologue.el.Z
+c-src-doc|Vincent Broman|broman@nosc.mil|Format doc strings from C source.|Dec-1987||~as-is/c-src-doc.el.Z
+c-style|D. LaLiberte|liberte@cs.uiuc.edu|C-mode indentation.|27-Aug-1987||~/as-is/c-src-doc.el.Z
+c-style|Daniel LaLiberte|liberte@cs.uiuc.edu|Sets c-style control variables|27-Feb-1992|Version: 2.1|~/as-is/c-style.el.Z
+c-support|Lynn Slater|lrs@indetech.com|Partial support for team C/C++ development.|04-Nov-1989|46|~/misc/c-support.el.Z
+cachealias|Skip Montanaro|montanaro@sprinte.crd.ge.com|Mail-alias alist caching for large alias files.|24-Aug-1989||~/misc/cachealias.el.Z
+caesar|Christopher J. Madsen|ac608@yfn.ysu.edu|Caesar cipher routines (including rot13)|19-Jan-1996|1.4|~/misc/caesar.el.gz
+calc|Dave Gillespie|daveg@csvax.caltech.edu|Advanced Desk Calculator for Emacs|07-Feb-1992|2.02|csvax.caltech.edu:pub/calc-2.02.tar.Z
+calendar.texinfo|Edward Reingold|reingold@cs.uiuc.edu|Documentation for calendare., diary.el, and holiday.el.|19-Aug-1991||emr.cs.uiuc.edu:pub/emacs/calendar/calendar.texinfo
+calendar|Edward Reingold|reingold@cs.uiuc.edu|Extensive calendar package; see also "diary" and "holiday".|19-Aug-1991||emr.cs.uiuc.edu:pub/emacs/calendar/calendar.el.gz
+cal|Edward Reingold|18.55 dist|Calendar.|20-Apr-1988||
+capslock|Eberhard Mattes|mattes@azu.informatik.uni-stuttgart.de|Reverse Shift state for letter keys|19-May-1993|2.0|~/misc/capslock.el.Z
+cc-compat|Barry A. Warsaw|bwarsaw@cen.com|cc-mode compatibility with c-mode.el confusion|10-Aug-1994|1.2|~/misc/cc-compat.el.Z
+cc-mode|Barry A. Warsaw|cc-mode-help@anthem.nlm.nih.gov|Major mode for editing C++, and ANSI/K&R C code|29-Aug-1995|4.241|~/modes/cc-mode.tar.gz
+cdpath|Michael Meissner|meissner@osf.org|Fix to cd for cmushell|19-Jun-1990||~/misc/cdpath.el.Z
+change-tag|Lars Pensji|lars@myab.se|Change TAGS table w/completion.|01-Nov-1988||~/as-is/misc/change-tag.Z
+chastise|Michael Ernst|mernst@theory.lcs.mit.edu|Remind posters of inappropriate netnews of proper netiquette (was chastize.el)|20-Jul-1994|1.1|~/misc/chastise.el.Z
+chistory|FSF|18.55 dist|List command history.|18-Mar-1988||
+cite-it|Jay Sachs|sachs@cs.nyu.edu|Completion,lookup,verification of BibTeX citations in LaTeX files|28-Apr-1994|1.12|~/modes/cite-it.el.Z
+cl-cadr|Randal Schwartz|merlyn@iwarp.intel.com|Lisp cadr, cddr, etc.|||~/as-is/cl-cadr.el.Z
+cl-indent|Richard Mlynarik|18.55 dist|Common Lisp mode, and its idiosyncratic commands.|19-Apr-1988||
+cl-orig|Cesar Quiroz|18.55 dist|Common-Lisp extensions for GNU Emacs Lisp.|88-04-09||
+cl-read|Guido Bosch|Guido.Bosch@loria.fr|Customizable, Common Lisp like reader for Emacs Lisp|21-Mar-94|1.19|~/interfaces/cl-read.el.Z
+cl-shell|Eero Simoncelli|eero@media-lab.media.mit.edu|A shell for Common Lisp sub-processes|||whitechapel.media.mit.edu:/pub/Emacs-cl-shell.tar.Z
+clari-clean|David N. Blank-Edelman|dnb@meshugge.media.mit.edu|Clean up GNUS buffers when reading ClariNet news groups|31-Jan-1991||~/functions/clari-clean.el.Z
+clean-buffers|Michael A. Petonic|petonic@hal.com|Buffer list cleanup stuff.|12-Nov-1992||~/functions/clean-buffers.el.Z
+clisp|A.Segre/D.Hubbell|segre@gvax.cs.cornell.edu,decvax!cornell!segre|Common Lisp interface.|18-Dec-1988||~/as-is/clisp.shar.Z
+cl|Cesar Quiroz|quiroz@cs.rochester.edu|Common-Lisp extensions for GNU Emacs Lisp.|07-Feb-1993|3.0|~/packages/cl.el.Z
+cmacexp2|Francesco Potorti`|pot@cnuce.cnr.it|cmacexp.el with corrections and improvements|15-Sep-1992|1.2|~/misc/cmacexp.el.Z
+cmacexp|FSF|18.55 dist|Display the result of expanding all C macros occurring in the region.|10-Apr-1988||
+cmd-menus|Bob Weiner|rsw@cs.brown.edu|Support functions for my local 'cmd-menus' info file.|28-Apr-1989||~/as-is/bob-weiner/cmd-menus.el.Z
+cmuscheme|Olin Shivers|shivers@cs.cmu.edu|Scheme, TeX, and T process modes based on comint.|09-Feb-1989||~/as-is/misc/cmuscheme
+cmushell-patch|Michael Meissner|meissner@osf.org|Release two of CMU process modes patch|13-Jun-1990|2|~/modes/cmushell.patch.Z
+cmushell-shar|Olin Shivers|shivers@a.gp.cs.cmu.edu|New version of CMU Shell (4 shar files)|12-Jun-1990|2|~/modes/cmushell.shar.?.Z
+cmushell|Olin Shivers|shivers@cs.cmu.edu|Shell and Lisp process modes based on comint.|09-Feb-1989||~/as-is/cmushell.el.Z
+colors|Kinstrey|kinstrey@wsqtba.crd.ge.com|Define some standard color names for use with Epoch.|19-Apr-1991||~/epoch/colors.el.Z
+column|Per Abrahamsen|abraham@iesd.auc.dk|Display line and column in the mode line|1995-01-11|0.5|~/misc/column.el.Z
+comint-adds|Dale Worley|worley@compass.com|Allows multiple similar processes.|24-Feb-1989||~/as-is/misc/comint-adds.Z
+comint-hilit|Dave M. Smith|maa036@lancaster.ac.uk|Hilit support for comint buffers (such as *shell*)|01-Mar-1994|2.2|~/misc/comint-hilit.el.Z
+comint-isearch|Terry Glanfield|tg.southern@rxuk.xerox.com|Command line incremental searching for comint.|10-Apr-1992|Version 1.0|~/packages/comint-isearch.el.Z
+comint-popup|Noah Friedman|friedman@prep.ai.mit.edu|maybe show comint process output windows|24-Mar-1995|1.1|~/misc/comint-popup.el.gz
+comint|Olin Shivers|shivers@cs.cmu.edu|Process mode for general command interpreters.|09-Feb-1989||~/as-is/comint.el.Z
+comm-align|John Sturdy|jcgs@harlqn.co.uk|Align the right-hand edges of a comment.|11-Sep-1989||~/misc/comm-align.el.Z
+comm-regn|cdwilli|cdwilli@kochab.cs.umbc.edu|Comment-out a region of C or Lisp code.|02-Feb-1994||~/functions/comm-regn.el.Z
+command-other-frame|Heddy Boubaker|boubaker@dgac.fr|Run commands in another frame.|29-Aug-1995|1.6|~/misc/command-other-frame.el.gz
+comment|Noah Friedman|friedman@prep.ai.mit.edu|comment out regions of buffers|18-Feb-1995|1.2|~/misc/comment.el.gz
+compare-w|FSF|18.55 dist|Compare text between windows for Emacs.|30-Sep-1986||
+compile-dir|Roland McGrath|mcgrath@paris.berkeley.edu|Directory tracking for compile-mode.|13-Apr-1989||~/as-is/misc/compile-dir.Z
+compile-frame|Cengiz Alaettinoglu|ca@cs.umd.edu|Compilation Buffer Frames.|15-Apr-1994|1.3|~/misc/compile-frame.el.gz
+compile-plus|W. Rupprecht|wolfgang@mgm.mit.edu|Faster, more general compile.el|27-Oct-1987||~/as-is/compile-plus.el.Z
+compile|FSF|18.55 dist|Run compiler as inferior of Emacs, and parse its error messages.|18-Jul-1988||
+complete-fn|Juergen Nickelsen, |nickel@cs.tu-berlin.de|File name completion in a buffer.|25-Feb-1993|1.1|~/functions/complete-fn.el.Z
+complete-menu|Alon Albert,Jari Aalto|alon@milcse.rtsg.mot.com,jari.aalto@poboxes.com|Pops up X-menu for possible completions.|05-Dev-1996|1.7|~/misc/complete-menu.el.Z
+completer|Chris McConnell|ccm@cs.cmu.edu|Partial completion for commands and pathname components.|17-Mar-1992|3.03|katmandu.mt.cs.cmu.edu:/pub/ilisp/completer.el.gz
+complete|Dave Gillespie|daveg@csvax.caltech.edu|Partial completion mechanism for GNU Emacs.|1.04|30-Jun-1992|~/misc/complete-1.04.el.Z
+compress2|Mark J Hewitt|mjh@kernel.co.UK|Edit compressed files transparently|01-Feb-1989||~/misc/compress2.el.Z
+compress|Stephen Gildea|gildea@bbn.com|Automatically handle .Z files.|15-Feb-1989||~/as-is/compile.el.Z
+config|Brian Marick|marick@cs.uiuc.edu|Version control front-end|17-Jun-1990||~/interfaces/config.shar.Z
+console-buffer|Ben Mesander|ben@piglet.cr.usgs.gov|Puts system console output into an emacs buffer.|30-Sep-1993|1.4|brrcrftp.cr.usgs.gov:/pub/ben/console-buffer.tar.Z
+context|David M. Neves|neves@ai.cs.wisc.edu|Keep track of files/buffers.|||~/as-is/context.el.Z
+context|David Neves|neves@ils.nwu.edu|Save some context from previous editing sessions.|06-Oct-1993||~/misc/context.el.Z
+conv-babl|John Kohl|jtkohl@athena.mit.edu|Pretty-print Babyl buffers.|17-Jul-1989||~/functions/conv-babl.el.Z
+copy-char2|Randal Schwartz|dsill@relay.nswc.navy.mil|Untested, simpler copy-character...|17-Feb-1989||~/as-is/copy-char2.el.Z
+copy-char|Mike Heavin|ogccse!littlei!omepd!intelob.biin.com!mgh|Copy character above cursor onto currenty line.|17-Feb-1989||~/as-is/copy-char.el.Z
+copy-kill|Roland McGrath|mcgrath@PARIS.BERKELEY.EDU|Perform killing commands without killing.|07-Aug-1990||~/functions/copy-kill.el.Z
+counter|Rod Whitby|rwhitby@research.canon.oz.au|Provides a counter for use in keyboard macros|12-Nov-1992|1.4|~/functions/counter.el.Z
+cpp|Per Abrahamsen|abraham@iesd.auc.dk|Highlight or hide text according to cpp conditionals|30-Jun-1994|5.1|~/misc/cpp.el.Z
+crypt++|Rod Whitby and Lawrence R. Dodd|dodd@roebling.poly.edu|Code for handling all sorts of compressed and encrypted files.|31-Mar-1994|2.82|~/misc/crypt++.el.Z
+crypt|Kyle Jones|kyle@wendy-fate.uu.net|Handle crypt/compress/compact files.|09-Jan-1990||~/misc/crypt.el.Z
+cscope|Bill Carpenter|William_J_Carpenter@ATT.COM|Interface to cscope browser|11-Nov-1991|1|~/interfaces/cscope.el.Z
+csh-mode2|Jari Aalto|jaalto@tre.tele.nokia.fi|csh-mode , Editing tcsh, csh files |25-May-1995|1.0|~/modes/csh-mode2.el.Z
+csh-mode|Thomas W. Strong, Jr.|strong+@cmu.edu|C-Shell mode.|15-Nov-1992||~/modes/csh-mode.el.Z
+ctl-meta-pfx|Stephen Gildea|gildea@bbn.com|Control-Meta prefix key.|1987||~/as-is/c-m-prefix.el.Z
+curr-word|?|reingold@m.cs.uiuc.edu|Fixes part of webster.el|17-May-1990||~/functions/curr-word.el.Z
+current-line|Paul Dworkin|paul@media-lab.media.mit.edu|Various current-line functions.|18-Mar-1989||~/as-is/curr-line.el.Z
+cust-print|Daniel LaLiberte|liberte@cs.uiuc.edu|Handle print-level, print-circle and more.|10-Apr-1994|2.1|~/misc/cust-print.el.Z
+cvs|Frederic Lepied|fred@sugix.frmug.fr.net|Light cvs support for emacs (ediff + mode line).|11-Sep-1995|1.9|~/modes/cvs.el.gz
+cycle-mini|Joe Reiss|jreiss@vt.edu|Make arrow keys cycle through completions in minibuffer.|07-Apr-1995|1.03|~/misc/cycle-mini.el.Z
+dabbrev|Spencer Thomas, Richard Stallman|18.55 dist|Dynamic abbreviation package.|08-Dec-1987||
+date2|John Sturdy|jcgs@harlqn.co.uk|Insert mod date and author.|||
+date|C. Rasmussen|cdr@sun.com,sun!cdr|Insert modification date and author.|27-Dec-1988||~/as-is/date.el.Z
+db-mode|Paul Davis|davis%scr.slb.com@relay.cs.net|Generic database facility|25-Apr-1989||
+db-sample|Paul Davis|davis%scr.slb.com@relay.cs.net|Sample db for generic database facility|25-Apr-1989||
+dbfrobs|Noah Friedman|friedman@gnu.ai.mit.edu|useful enhancements for debugging|12-Nov-1995|1.5|~/functions/dbfrobs.el.gz
+dbx+|Robert Lupton|uhccux!lupton@humu.nosc.mil|Enhanced dbx-mode.|26-Jul-1989||~/modes/dbx+.el.Z
+dbx-fixed|Robert Lupton|lupton@uhccux.uhcc.hawaii.edu|Minor dbx-mode fixes; includes dbx-use.|05-Mar-1989||~/modes/dbx-fixed.el.Z
+dbx|Masanobu Umeda|18.55 dist|Run dbx under Emacs.|12-Feb-1988||
+debug|FSF|18.55 dist|Debuggers and related commands.|14-Apr-1988||
+defaultbanner|Christian Queinnec|Christian.Queinnec@inria.fr|Update banners or headers when files are visited.|18-Dec-1994|1.9|~/misc/defaultbanner.el.Z
+defaultcontent|Christian Queinnec|Christian.Queinnec@inria.fr|Fill new files when visited.|28-Jun-1995|1.24|~/misc/defaultcontent.el.Z
+defer-lock|Simon Marshall|simon@gnu.ai.mit.edu|Defer Font Lock mode (with fast on-the-fly fontification).|13-Nov-1995|1.01|~/modes/defer-lock.el.Z
+define-fkey|Rob Peck|dana!rap|Assign functions to function keys interactively.|||
+define-macros|Dick King|king@kestrel.edu|Suggestions and start at #ifdef hiding interface.|26-Jul-1990||~/functions/define-macros.el.Z
+describe-perl-symbol|Johan Vromans|jv@mh.nl|One-line information on a perl symbol.|22-Aug-1993|1.9|~/misc/perl-descr.el.Z
+describe|Tom Ekberg|ekberg@csc.ti.com|Describe elisp object.|||~/as-is/describe.el.Z
+detex|B. Martensson|bengt@mathematik.uni-Bremen.de,unido!mathematik.uni-Bremen.de!bengt|Remove TeX commands.|18-Aug-1987||~/as-is/detex.el.Z
+diary|Edward M. Reingold|reingold@cs.uiuc.edu|Diary functions to go with calendar.el|19-Aug-1991||emr.cs.uiuc.edu:pub/emacs/calendar/diary.el.gz
+dired-adds|Mark D. Baushke|mdb@esd.3com.com|Make dired-listing-switches buffer-local|01-Feb-1990||~/misc/dired-adds.el.Z
+dired-batch|Karsten Wenger|kw@cis.uni-muenchen.de|dired extension to evaluate elisp programs|11-Mar-1997|1|~/misc/dired-batch.el.gz
+dired-delete|Philippe Schnoebelen|phs@lifia.imag.fr|delete a file immediately (without needing to expunge)|13-Nov-1990||~/functions/dired-delete.el.Z
+dired-erase|David Gudeman|gudeman@arizona.edu|Remove files matching completion-ignored-extensions.|15-Feb-1989||~/as-is/dir-erase.el.Z
+dired-exit|Erik Murrey,?|erik@mpx2.UUCP,MAP@lcs.mit.edu|Exit dired session.|07-Jan-1989||~/as-is/dired-exit.el.Z
+dired-ffro|Rob Austein|sra@lcs.mit.edu|Find a file and make it read only|31-Aug-1989||~/functions/dired-ffro.el.Z
+dired-fns|Root Boy Jim|rbj@dsys.ncsl.nist.gov|Rename files in dired|31-Aug-1989||~/misc/dired-fns.el.Z
+dired-hook|Root Boy Jim|rbj@nav.icst.nbs.gov|YADE (Yet Another Dired Enhancement)|10-Mar-1989||~/as-is/dired-hook.el.Z
+dired-links|Bob Weiner|rsw@cs.brown.edu|Properly resolves UNIX (and Apollo variant) links under dired.|26-Oct-1989||~/misc/dired-links.el.Z
+dired-man|Charlie S. Lindahl|lindahl@cse.uta.edu|Man command invocation from within dired|01-Jun-1991||~/functions/dired-man.el.Z
+dired-rcs|Christopher B. Liebman|liebman.lsbgegpcad@Xerox.Com,uunet!smsdpg!ra!liebman, sundc!ra!liebman|RCS hack for dired.|19-May-1989||~/as-is/dired-rcs.el.Z
+dired-updir|Rodney Peck II|rodney@sun.ipl.rpi.edu|Patch to dired.el; add the '<' key to go up a dir.|26-Aug-1989||~/functions/dired-updir.Z
+dired|FSF|18.55 dist|Directory editing commands.|08-Aug-1988||
+disass|Doug Cutting|18.55 dist|Disassembler for compiled Emacs Lisp code.|19-Mar-1987||
+dismal|Ritter & Fox|ritter@psyc.nott.ac.uk|Spreadsheet or column-based text editor|27-Feb-94|0.92| ~/packages/dismal-0.92.tar.Z
+disp-ln-nos|Richard Mlynarik|wheaties.ai.mit.edu!mly@eddie.mit.edu|Momentarily display line numbers.|31-Dec-1988||~/as-is/disp-line.el.Z
+display-swascii|Lennart Staflin|lenst@lysator.liu.se|Set current display table to display ISO 646-SE (aka swascii) on a ISO 8859-1 display|21-May-1995|1.2|~/misc/display-swascii.el.gz
+dissociate|FSF|18.55 dist|Scramble text amusingly.|30-Sep-1986||
+docstring|Michael D. Ernst|mernst@theory.lcs.mit.edu|Keep documentation consistent with Lisp code by substituting doc strings.|02-20-1993|1.2|~/misc/docstring.el.Z
+doctex|Kyle Jones, Tor Lillqvist|18.55 dist|Grind GNU Emacs DOC file into LaTeX input.|08-Jul-1988||
+doctor|FSF|18.55 dist|Psychological help for frustrated users.|21-Jan-1987||
+doit|Randal Schwartz|merlyn@iwarp.intel.com|Emacs source cross-reference generator.|08-May-1989||~/as-is/doit.el.Z
+dos-mode|Andy Norman|ange@hplb.hpl.hp.com|MSDOS minor mode for GNU Emacs|03-Oct-1992|1.9|~/modes/dos-mode.el.Z
+double|Per Abrahamsen|abraham@iesd.auc.dk|Support keyboard remapping with double clicking|03-Feh-1994|5.2|~/modes/double.el.Z
+dragbar-time|Travis J.I. Corcoran|tjic@icd.teradyne.com|Displays time and date in an x-windows drag bar|30-Apr-95|0.9|~/packages/dragbar-time.el.gz
+drop-menus|Brian L. Kahn|blk@vanity.mitre.org|Drop down menus and scrollbars for Epoch under GWM.|15-Jul-1992||
+dsg-frames|Dave Goldberg|dsg@mitre.org|Set frame parameters based on major mode|30-Jun-1994|2.0|~/misc/dsg-frames.el.Z
+du-sort|Lynn Slater|pacbell!indetech!lrs|Unix disk space mgmt.|21-Oct-1988||~/as-is/du-sort.el.Z
+dump-my-emacs|Juergen Nickelsen|nickel@cs.tu-berlin.de|Interactive Emacs dump function.|16-Jan-1993||~/misc/dump-my-emacs.el.Z
+dunnet|Ron Schnell|ronnie@eddie.mit.edu|Text adventure.|25-Jun-1993|2.0|~/games/dunnet.tar.Z
+dvorak-map|George Drapeau|drapeau@sioux.stanford.edu|Dvorak keyboard layout for Xmodmap|28-Jun-1990||~/functions/dvorak-map.el.Z
+dvorak|Byron Rakitizis|tbrakita@phoenix.princeton.edu|Dvorak keyboard minor mode|30-Apr-1990||~/modes/dvorak-mode.el.Z
+dw-edt|Charlie Wickham|wickham@decwet.enet.dec.com|improved EDT emulation and keypad support for x11term.c|18-Jul-1989||~/modes/dw-edt.Z
+dylan-hilit19|David Lim|david@ndc.com|hilit19 mode patterns for Dylan.|14-Jun-1995|1.1|~/modes/dylan-hilit19.el.Z
+e-mh-alias|Peter Galbraith|galbraith@mixing.qc.dfo.ca|MH mail alias expansion and substitution.|20-Mar-1997|2.10|~/misc/e-mh-alias.el.gz
+easymenu|Per Abrahamsen|abraham@iesd.auc.dk|Easy menu support for FSF and Lucid Emacs 19|05-Jan-1994|5.10|~/misc/easymenu.el.Z
+easymenu|Richard M. Stallman|rms@prep.ai.mit.edu|Easy menu support for GNU Emacs 19|1995-01-25|19.29-pre|~/misc/easymenu.el.Z
+ebuff-menu|Richard Mlynarik|18.55 dist|Electric buffer menu.|11-Jan-1987||
+ebuttons|Terry Jones|terry@nambe.santafe.edu|X11 interface to issue commands to an Emacs session.|18-Nov-1992|1.0|~/interfaces/ebuttons.el.Z
+echistory|K. Shane Hartman|18.55 dist|Electric Command History Mode.|20-Nov-1986||
+edbibtex|Michael Burschik|burschik@uni-bonn.de|A BibTeX interface for Michael Ernst's Emacs Database.|20-Dec-1993|0.22|~/misc/edbibtex.tar.Z
+edbm|Kresten Krab Thorup|m.s.phillips@bnr.co.uk|Simple minded dbm-like facility for emacs|14-Feb-1995|1.4|~/misc/edbm.el.Z
+edb|Michael Ernst|mernst@theory.lcs.mit.edu|Customizable database program for Emacs; replaces forms editing modes|Jul-18-1995|1.21|~/packages/edb-1.21.tar.gz
+edebug|D. LaLiberte|liberte@cs.uiuc.edu|Electric-debug mode or elisp-debug mode.|23-Mar-1992|2.7|~/packages/edebug.tar.Z
+ediff|Michael Kifer|kifer@cs.sunysb.edu|Visual interface to diff and patch.|08-Aug-1994|1.65c|~/packages/ediff.el.Z
+edit-doc|Chris McConnell|ccm@warhol.ads.com|Allows changes to the doc string of a function|11-Jul-1990||~/functions/edit-doc.el.Z
+editvar|Lennart Staflin|lenst@lysator.liu.se|Edit a variable|21-May-1995|1.1|~/misc/editvar.el.gz
+edt-doc|Mike Clarkson|18.55 dist|Documentation for EDT emulation.|29-May-1987||
+edt-mode|Jesse Heines|heines@ulowell.edu|Edt-mode replacement.|||swan.ulowell.edu:gnu/edtkeys.el.shar
+edt-new|Kevin Gallagher|kgallagh@digi.lonestar.org|Substantially enhanced version of the original EDT|91-?-?|Beta 0.5|~/modes/edt.tar.Z
+edt|Mike Clarkson|18.55 dist|EDT emulation.|22-Jan-1988||
+eexec|Randal Schwartz|merlyn@iwarp.intel.com|Postscript eexec support routines.|19-May-1989||~/misc/eexec.shar.Z
+egames|Eric M. Ludlam|zappo@titan.ucc.umas.edu|Games for use with etalk.|2-Feb-1993|0.6|~/games/egames0.6.tar.Z
+egrep|Ashwin Ram|Ram-Ashwin@yale.arpa|egrep addition to compile.el.|11-Apr-1989||~/as-is/egrep.el.Z
+ehelp|FSF|18.55 dist|Electric help mode.|16-May-1987||
+eiffel|Stephen M. Omohundro,Bob Weiner|rsw@cs.brown.edu|Major mode for editing Eiffel programs.|01-Dec-1989||~/modes/eiffel.el.Z
+eldoc|Noah Friedman|friedman@prep.ai.mit.edu|show function arglist or variable docstring in echo area|13-Nov-1995|1.2|~/misc/eldoc.el.gz
+elec-c|Mark Davies|mark@comp.vuw.ac.nz|Gosmacs-like electric C code editing mode|10-Jul-1993|version 2.0|~/modes/elec-c.el.Z
+elec-m2-mode|Tom Lord|lord+@andrew.cmu.edu|Electric Modula-2 mode.|06-Jan-1989|1.0|
+elec-mini|?|koomen@cs.rochester.edu|Add -yank-next- and -yank-previous- to completing reads.|13-Jun-1989||~/as-is/elec-mini.el.Z
+electric|K. Shane Hartman|18.55 dist|Window maker and command loop for `electric' modes.|16-May-1987||
+elp|Barry A. Warsaw|tools-help@anthem.nlm.nih.gov|Emacs Lisp Profiler|05-Jul-1994|2.15|~/misc/elp.el.Z
+em-config|Bob Weiner|rsw@cs.brown.edu|Save and restore Emacs configurations between sessions|12-Jul-1990||~/packages/em-config.el.Z
+emacs-tags|Bob Weber, et al|jr@bbn.com|Look up tags of Emacs.|||~/as-is/emacs-tags.el.Z
+emacs-vers|Eric Eide|eeide@cs.utah.edu|Functions for examining and testing the GNU Emacs version number and type|01-Sep-1994|1.3|~/misc/emacs-vers.el.Z
+emacsbug|K. Shane Hartman|18.55 dist|Command to report Emacs bugs to appropriate mailing list (Internet hosts).|11-Nov-1986||
+email|G. Dinesh Dutt|brat@htilbom.ernet.in|a set of mail-mode extensions for easy cc, fcc and reference addition|20-May-1994|1.2|~/modes/email.el.Z
+email|G. Dinesh Dutt|brat@htilbom.ernet.in|a set of mail-mode extensions for easy cc, fcc and reference addition|20-May-1994|1.2|~/modes/email.el.Z
+emerge-pat|Dan Pierson|pierson@xenna.encore.com|Epoch patches for emerge.el|23-Jul-1990||~/epoch/emerge-pat.el.Z
+emerge|Dale R. Worley|drw@math.mit.edu|Merge files/buffers like Sun filemerge (see also emerge.doc.Z|||~/as-is/emerge.el.Z
+empclient|Markus Armbruster|armbru@pond.sub.org|Simple, extensible, self contained empire client.|25-Jul-1994|1.5|~/games/empclient.el.Z
+enable-me|Roland McGrath|roland@ai.mit.edu|Called when a disabled command is executed.  Enable and reexecute it.|26-Dec-1990||~/functions/enable-me.el.Z
+enh-compile|Montanaro, LaLiberte, Robinson|jr@bbn.com|Enhanced compile.el, includes find-this-error and show-nth-error.|27-Feb-1989||~/as-is/e-compile.el.Z
+enh-isearch|Dick King|king@kestrel.arpa|Improved isearch for 1200 baud.|||
+enh-lpr|Stephen Gildea|gildea@bbn.com|Enhanced lpr.el; more modular.|Dec-1988||
+enh-scribe|Lynn Slater|pacbell!indetech!lrs|Enhanced scribe mode.|||
+enh-telnet|Stephen Gildea|gildea@bbn.com|Better password handling.|21-Feb-1989||
+enh-time|Kyle Jones|kyle@wendy-fate.uu.net|Enhanced time.el.|30-Dec-1988||
+enh-uncomp|Joe Wells|jbw@cs.bu.edu|Enhanced uncompress.|||
+enhanced-mouse|Ken Laprade|laprade@trantor.harris-atd.com|Enhanced version of Epoch's mouse.el.|09-Oct-1990||~/epoch/enhanced-mouse.el.Z
+enscript|Graham Gough|graham@cs.man.ac.uk|Version of lpr.el for use with enscript.|05-Jun-1992|1.1|~/misc/enscript.el.Z
+env|Noah Friedman|friedman@gnu.ai.mit.edu|putenv and getenv functions for accessing process-environment.|15-Jul-1992||~/functions/env.el.Z
+env|Noah S. Friedman|friedman@prep.ai.mit.edu|getenv and putenv functions that work with process-environment.|15-Jul-1992|1.0|~/functions/env.el.Z
+env|W. Rupprecht|wolfgang@mgm.mit.edu|Manipulate child's environment.|||~/as-is/env.el.Z
+epoch-config|Salvador Pinto Abreu|spa@fct.unl.pt|Save and restore Epoch screen/window configurations|30-May-1991||~/epoch/epoch-config.el.Z
+epoch-help|David Carlton|carlton@linus.mitre.org|Make help under Epoch bring up a new screen each time help is invoked.|06-Nov-1990||~/epoch/epoch-help.el.Z
+epoch-info.shar.Z|David Carlton|carlton@linus.mitre.org|Code to add mouse/button support for info in Epoch.|06-Nov-1990|Epoch 3.2beta|~/epoch/epoch-info.shar.Z
+epoch-pop|Chris McConnell|ccm@cs.cmu.edu|Automatic pop-up/down of shrink-wrapped temporary windows for Epoch.|08-May-1991|2.02|katmandu.mt.cs.cmu.edu:/pub/ilisp/epoch-pop.el.gz
+epoch-profile|Colas Nahaboo|colas@avahi.inria.fr|Sample Epoch initialization file.  Mouse functions abort isearches.|27-Sep-1990||~/epoch/epoch-profile.el.Z
+escreen|Noah Friedman|friedman@gnu.ai.mit.edu|emacs window session manager|11-Dec-1995|1.7|~/misc/escreen.el.gz
+etags2ctags|Roland McGrath|roland@ai.mit.edu|Convert etags output to ctags output|17-Aug-1989||~/packages/etags2ctags.el.Z
+etalk|Eric M. Ludlam|zappo@gnu.ai.mit.edu|BSD ntalk & otalk interface w/ games|30-Jul-1994|0.8B|~/packages/etalk-0.8B.tar.gz
+eval-region|Daniel LaLiberte|liberte@cs.uiuc.edu|Redefine eval-region, and subroutines that use it, in Lisp.|21-Mar-94||~/misc/eval-region.el.Z
+evi|Jeffrey R. Lewis|jlewis@cse.ogi.edu|Emulate Vi - enhanced emacs vi emulator for vi-heads|23-Jun-1993|0.99.8|~/modes/evi.tar.Z
+exec-extnd|Evan Bigall, Kyle Jones|sun!plx!evan|execute-extended-for-dummys, shows binding.|01-Jun-1989||~/as-is/exec-extnd.el.Z
+execcmd|Kyle Jones, Jari Aalto|kyle_jones@wonderworks.com, jari.aalto@ntc.nokia.com|After M-x COMMAND, shows you which keys the command is bound to|15-Aug-1995|2.1|~/packages/execcmd.el.gz
+execcmd|Kyle Jones|kyle@wendy-fate.uu.net|New Execute extended command|02-Jan-1990||~/packages/execcmd.el.Z
+execute-unix-command|Darryl Okahata|darrylo@sr.hp.com|Execute a command, wait for finish, and return exit status|04-Jun-1991||~/functions/execute-unix-command.el.Z
+expand|Frederic Lepied|fred@sugix.frmug.fr.net|A minor mode to make abbreviations more usable.|25-Feb-1995|1.3|~/modes/expand.el.gz
+expire-kill|Ben Liblit|liblit@z-code.com|expiring kill patterns for GNUS|19-Sep-1994|2.6|~/misc/expirekill.el.Z
+fa-extras|Eric Eide|eeide@cs.utah.edu|Enhancements to Kyle Jones' "filladapt"; hanging lists in Lisp comments|23-Sep-1993||~/packages/fa-extras.el.Z
+face-lock|Simon Marshall|Simon.Marshall@mail.esrin.esa.it|Colour/color/grayshade/font fontification for font-lock mode.|18-Aug-94|3.04|~/misc/face-lock.el.Z
+fan-scribe|Sean Engelson|spe@cad.cs.cmu.edu|Fancy scribe mode.|||~/as-is/fan-scribe.el.Z
+fancy-lisp|Lynn Slater|pacbell!indetech!lrs|Enhanced lisp mode.|||
+fancy-spell|B. Martensson|bengt@mathematik.uni-Bremen.de|Improved spell interface.|||~/as-is/fancy-spell.shar.Z
+faq|Kevin Rodgers|kevin@traffic.den.mmc.com|Switch to a buffer visiting an archived Usenet newsgroup FAQ file.|19-Apr-1993|1.2.1|~/interfaces/faq.el.Z
+fast-apropos|Joe Wells|jbw@cs.bu.edu|Fast version of apropos|17-Apr-1991||~/misc/fast-apropos.el.Z
+fast-lock|Simon Marshall|Simon.Marshall@mail.esrin.esa.it|Automagic text properties caching (for fast font-lock-mode).|12-Oct-94|3.05|~/modes/fast-lock.el.Z
+fax-mode|Ralph Schleicher|rs@purple.IN-Ulm.DE|Fax sending commands for GNU Emacs.|31-Dec-1995|1.1|~/modes/fax-mode.tar.gz
+feedmail|Bill Carpenter|William_J_Carpenter@ATT.COM|Outbound mail handling|05-Apr-1991||~/misc/feedmail.el.Z
+ff-paths|Peter Galbraith|galbraith@mixing.qc.dfo.ca|find-file-using-paths searches certain paths to find files|20-March-1996|3.02|~/misc/ff-paths.el.gz
+ffap|Michelangelo Grigni|mic@mathcs.emory.edu|find-file-at-point guesses file or URL from text around point|09-Apr-1995|1.4|~/misc/ffap.el.Z
+file-comp-2|Paul Davis|davis%scr.slb.com@relay.cs.net|Filename completion for anywhere in Emacs|24-Apr-1989||~/as-is/file-comp-2.el.Z
+file-complete|Ashwin Ram, Joe Wells|Ram-Ashwin@cs.yale.edu|Display file name completions in mod-time order.|13-Oct-1992||~/misc/file-complete.el.Z
+file-comp|Bard Bloom|bard@theory.lcs.mit.edu|Expand filenames for shell.|||
+file-decl|Lynn Slater|pacbell!indetech!lrs|More on the Mode: line.|09-Sep-1988||~/as-is/file-dec.el.Z
+file-log|Frederic Lepied|Frederic.Lepied@sugix.frmug.org|Manage a log file per file for version control.|02-Mar-1997|1.7|~/modes/file-log.el.gz
+file-menu|Steven Grady|grady@postgres.berkeley.edu|X-windows files menu.|||~/as-is/file-menu.el.Z
+filebrowser|Glenn Moloney|glenn@physics.unimelb.edu.au|file browser mode commands for Emacs|09-Jun-1995|0.3|~/misc/filebrowser.el.gz
+filec|Kyle Jones|kyle@wendy-fate.uu.net|Filename completion for the minibuffer keymap|21-Mar-1990||~/packages/filec.el.Z
+files|FSF|18.55 dist|File input and output commands.|08-Aug-1988||
+fill-para|Richard Caley|rjc@cstr.ed.ac.uk|Filling based on syntax class|20-Jun-1990||~/functions/fill-para.el.Z
+filladapt|Kyle Jones|kyle@wendy-fate.uu.net|Adaptive fill commands|07-Sep-1989||~/packages/filladapt.el.Z
+fill|FSF|18.55 dist|Fill commands.|18-Aug-1988||
+find-alt|Dale Worley|compass!worley|Improved find-alternate-file.|17-Oct-1988||~/as-is/find-alt.el.Z
+find-comp|Joel Spolsky|spolsky-joel@yale.arpa|Find-file w/auto uncompress.|||~/as-is/find-comp.el.Z
+find-dir|Juha Sarlin|juha@tds.kth.se|Find directory using cd-path.|25-Oct-1989||~/misc/find-dir.el.Z
+find-file|Henry Guillaume|henry@qbd.com.au|Find a file associated with this buffer.|21-Dec-1994|4.0|~/misc/find-file.el.Z
+find-func|Christian Moen|christim@ifi.uio.no|Find function definitions from calls|30-Jul-1994|1.0|~/misc/find-func.el.Z
+finger-2|Bill Trost,  Bruce Krulwich|trost@crl.labs.tek.com, krulwich@ils.nwu.edu|Show who's on, or get mail alias.|21-Jun-1990||~/as-is/finger-2.el.Z
+finger-int|Bruce Krulwich|krulwich@ils.nwu.edu|Bug fix for finger.el|21-Jun-1990||~/interfaces/finger.el.Z
+finger|Keith Gabryelski|ag@wheaties.ai.mit.edu|Show who's on the system.|16-Jan-1989||~/as-is/finger.el.Z
+fix-x-mouse|Jean-Francois Lamy|lamy@ai.utoronto.ca|Fix mouse-based cuts and pastes.|21-Sep-1988||~/as-is/fix-x-mouse.el.Z
+fixwd|John Salmon|johns@macondo.ccsf.caltech.edu|Fix the working directory in buffers|03-Mar-1990||~/packages/fixwd.el.Z
+flame|Ian G. Batten|18.55 dist|Generate sentences of half-crazed gibberish.|21-Jan-1987||
+flashparen|Noah Friedman|friedman@prep.ai.mit.edu|flash matching parens a la Zmacs|12-Nov-1995|1.8|~/misc/flashparen.el.gz
+float-sort-pat|Skip Montanaro|montnaro@mosse.crd.ge.com|Sorting floating point fields|25-Jun-1990||~/misc/float-sort.patch.Z
+float-sup.patch|Wolfgang Rupprecht, Bjorn Gronvall|wolfgang@mgm.mit.edu, bg@bg.nada.kth.se|True floating point lisp data type for Emacs 18.57 (source code patch)|13-Aug-1991||~/patches/float-sup.patch.Z
+float|Bill Rosenblatt|18.55 dist|Floating point arithmetic package.|02-Dec-1986||
+flow-ctl|Jeffrey Templon|iuvax!silver!templon|Keyboard-trans-table flow control workaround.|25-Apr-1989||~/as-is/flow-ctl.el.Z
+flow-ctrl|Jeff Morgenthaler|jpmorgen@wisp4.physics.wisc.edu|A better wrapper for remapping C-s and C-q for XON-XOFF hobbled terms.|09-Jun-1993|3.2|~/terms/flow-ctrl.el.Z
+flow-loss|Jason Venner|kadmon!jason@mtxinu.com|Toggle bindings of C-s and C-q using flow-lossage.|28-Feb-1989||~/as-is/flow-loss.el.Z
+fnexpand|eirik, trost, Jari Aalto|jari.aalto@poboxes.com|finename expansion anywhere|19-Mar-1997|1.5|~/misc/fnexpand.el.gz
+folding|Jamie Lokier|u90jl@ecs.ox.ac.uk|A folding-editor-like minor mode|06-Jul-1993|1.7|~/modes/folding.el.Z
+foldout|Kevin Broadey|KevinB@bartley.demon.co.uk|Folding editor extensions for outline-mode and outline-minor-mode|19-May-1994|1.10|~/misc/foldout.el.Z
+fold|Christian Queinnec|Christian.Queinnec@inria.fr|A minor folding mode with mouse/menu/face support.|02-Jan-1996|1.13|~/modes/foldingo.el.gz
+follow-0.1|Anders Lindgren|andersl@csd.uu.se|Make several windows act like one. (Wide screen => Twice the workspace)|27-May-1995|0.1|~/misc/follow-0.1.el.gz
+font-latex|Peter Galbraith|galbraith@mixing.qc.dfo.ca|LaTeX fontification for font-lock|19-Nov-1996|0.403|~/modes/font-latex.el
+food-menu-mode|Karl Fogel|kfogel@cs.oberlin.edu|Major mode for planning restaurant meals|14-June-1993|1.00|~/modes/food-menu-mode.tar.Z
+format-date|Damian Cugley|pdc@hplb.lb.hp.co.uk|Prettify ctime() strings.|||~/as-is/format-date.el.Z
+format-shar|Ronald Florence|ron@mlfarm.uucp|Work with proff, troff, and nroff in emacs|24-Oct-1989||~/packages/format.shar.Z
+forms|Johan Vromans|jv@mh.nl|Major mode for working with plain-text databaes in forms-oriented manner|14-Jan-1992|1.2.9|~/modes/forms.tar.Z
+fort-clean|Lawrence R. Dodd|dodd@roebling.poly.edu|Code for cleaning and stylizing fortran code|14-Nov-1992|3.41|~/misc/fort-clean.el.Z
+fort-font|Ulrik Dickow|dickow@nbi.dk|A Font Lock setup for Fortran mode (Emacs <19.29 or any XEmacs).|11-Sep-1995|2.2|~/misc/fort-font.el.Z
+fortran|Michael D. Prange|18.55 dist|Fortran mode.|01-Sep-1988|1.21|
+fracc|Christian Queinnec|Christian.Queinnec@inria.fr|French accent towards Latin1, TeX, BibTeX, HTML.|18-Dec-1994|1.18|~/misc/fracc.el.Z
+framepop|Dave M. Smith|dsmith@stats.adelaide.edu.au|Display temporary buffers in a dedicated frame|21-Feb-1994|2.12|~/misc/framepop.el.Z
+framing|Benjamin Chase|bbc@rice.edu|Frame the buffer in the window|09-May-1990||~/packages/framing.el.Z
+franz-lisp|Kevin Layer|ucbvax!franz!layer|Franz Inc. GNU Emacs/Lisp interface.|17-Feb-1989|1.3|ucbarpa.berkeley.edu:pub/fi/gnudist_1_3.tar.Z
+free-space|Ashwin Ram|Ram-Ashwin@cs.yale.edu|Display disk usage in modeline.|12-Jan-1989|2.0|~/as-is/free-space.el.Z
+friedman-mail-utils|Noah Friedman|friedman@gnu.ai.mit.edu|random mail frobnication utilities|28-Oct-1993|1.2|~/misc/friedman-mail-utils.el.gz
+fshell|Noah Friedman|friedman@prep.ai.mit.edu|Enhancements to shell.el|15-Mar-1995|1.4|~/misc/fshell.el.Z
+fss|G. Dinesh Dutt|brat@htilbom.ernet.in|Minor mode to write pretty documents and retain settings between sessions|17-Jun-1994|1.2|~/modes/fss.el.Z
+ftelnet|Noah Friedman|friedman@gnu.ai.mit.edu|remote login interface|12-Nov-1995|1.6|~/misc/ftelnet.el.gz
+ftp+|?|tb06@pl118g.cc.lehigh.edu|FTP interface with database of ftpable software.|11-Nov-1991|0.2|~/interfaces/ftp+.el.Z
+ftp+|Terrence Brannon|brannon@jove.cs.caltech.edu|FTP interface with database of ftpable software. Multiple connects at once.|20-Feb-1992|0.6|~/interfaces/ftp+.el.Z
+ftp-quik|Terrence Brannon|tb06@pl122f.eecs.lehigh.edu|Quik access to dired'ing of ange-ftp and normal paths|28-Jul-1993|1.0|~/modes/ftp-quik.el.Z
+ftpmail|Sascha Wildner|swildner@channelz.GUN.de|Some functions for easy ftpmail editing & saving.|07-Dec-1993|0.2|~/functions/ftpmail.el.Z
+ftp|Richard Mlynarik|18.55 dist|File input and output over Internet using FTP.|19-Jul-1988||
+func-doc|Peter Galbraith|Galbraith@mixing.qc.dfo.ca|Get Info on command under point; completion for commands.|09-August-1996|1.07|~/misc/func-doc.el
+function-keys|Rod Whitby|rwhitby@research.canon.oz.au|Provides define-function-key for Epoch and X Emacs.|28-Oct-1992|1.3|~/functions/function-keys.el.Z
+fuzzy-match|Simon Marshall|Simon.Marshall@mail.esrin.esa.it|Approximate/fuzzy string matching functions (e.g. lisp symbol spelling).|28-Jun-1994|1.03|~/packages/fuzzy-match.el.Z
+gdbsrc|Debra L. Ayers|ayers@asc.slb.com|execute gdb-mode commands from source code buffer|13-Nov-1990||~/interfaces/gdbsrc.el.Z
+gdb|W. Schelter, Richard Stallman|18.55 dist|Run gdb under Emacs.|22-May-1988||
+gen-comp|Paul Davis|davis%scr.slb.com@relay.cs.net|Generic completion/expansion functions|24-Apr-1989||~/as-is/gen-comp.el.Z
+gen-help|paul Davis|davis%scr.slb.com@relay.cs.net|GNU Emacs help/database facility|25-Apr-1989||~/as-is/gen-help.el.Z
+gendoc|Brian Wallis|brw@jim.odr.oz|Produce LaTeX doc. of functions.|||~/as-is/gendoc.shar.Z
+gener-code|Cesar Quiroz|quiroz@cs.rochester.edu|Generic code mode|22-Jul-1989||~/modes/gener-code.el.Z
+generate|Ciaran A Byrne|ciaran@gec-rl-hrc.co.uk|Macro-to-elisp converter.|02-Sep-1987|2.0|~/as-is/generate.el.Z
+generic-code|Cesar Quiroz|quiroz@cs.rochester.edu|Editing generic block structured files.|18-Jun-1989||~/as-is/generic.el.Z
+genmouse|Adam de Boor|bsw!promethium.bsw.com!adam|General mouse support. Used both for com43 and x.|01-Mar-1989|1.2|~/as-is/misc/genmouse.Z
+genric-bind|Ken Laprade|laprade@trantor.harris-atd.com|Generically setup function key definitions,|18-Sep-1990||~/epoch/generic-bind.el.Z
+getris|MAEDA Atusi|mad@math.keio.JUNET|Clone of a famous Russian game program.|05-Jul-1989||~/games/gettris.el.Z
+gin-mode|Martin Neitzel|neitzel@ips.cs.tu-bs.de|Set up minor mode with guess-indent stuff.|16-May-1989||~/modes/gin-mode.el.Z
+global-replace|Martin Boyer|mboyer@ireq-robot.hydro.qc.ca|Search and replace strings in multiple files|07-Mar-1994|1.1|~/packages/global-replace.el.Z
+gnews|M. Wiener|ucbvax!garnet!weemba|NNTP rn interface.  (229359 bytes)||2.0|ucbvax.berkeley.edu:/pub/gnews-2.0-tar.Z
+gnus-auto-save|Skip Montanaro|montnaro@sprite.crd.ge.com|In Gnus, save .newsrc file every now and again.|17-Oct-1989||~/functions/gnus-auto-save.el.Z
+gnus-cache|Rick Sladkey|jrs@world.std.com|GNUS speed-up by caching NNTP article headers to disk|16-Jun-1993|1.5|~/misc/gnus-cache.el.Z
+gnus-hide|Bj Krawchuk|krawchuk@cpsc.UCalgary.ca|A quote, signature and reference hider for the GNUS news reader|19-Jun-1991|1.04|~/misc/gnus-hide.el.Z
+gnus-hier|Jim Kingdon|kingdon@east-wind.ORG|Patches to make GNUS a hierarchical newsreader.|21-Nov-1992||~/patches/gnus-hier.el.Z
+gnus-jds|Jeff Sparkes|jeff1@garfield.mun.edu|Mark and read only "interesting" articles|18-Jul-1989||~/interfaces/gnus-jds.shar.Z
+gnus-kill-fix|Skip Montanaro|montnaro@sprite.crd.ge.com|adds consistency between GNUS 'k' and 'K' commands|17-Oct-1989||~/patches/kill-fix.Z
+gnus-mail-mods|Rich Kaul|kaul@icarus.eng.ohio-state.edu|additions to Kleinpaste's gnus-mail package|05-Jul-1990||~/patches/gnus-mail-mods.shar.Z
+gnus-mail-vm|Joe Wells|jbw@cs.bu.edu|Allow using VM's mail sending instead of the default version from GNUS.|13-Oct-1992||~/functions/gnus-mail-vm.el.Z
+gnus-mail|Karl Kleinpaste|karl@godiva.cis.ohio-state.edu|turns GNUS into a mail reader|05-Jul-1990||~/interfaces/gnus-mail.shar.Z
+gnus-mark|Jamie Zawinski|jwz@lucid.com|Operate on more than one news article at a time|28-Jun-1991||~/misc/gnus-mark.el.Z
+gnus-topic|Bj Krawchuk|krawchuk@cpsc.UCalgary.ca|Topics mode for GNUS for organizing newsgroups|29-Jun-1991|1.0|~/packages/gnus-topic.el.Z
+gnus-xover-support|Felix Lee|flee@cse.psu.edu|Version of nntp.el for GNUS 3.14 or 4.1 that includes XOVER support.|18-May-1994|1.7|~/packages/gnus-xover.tar.Z
+gnuserv|Andy Norman|ange@hplb.hpl.hp.com|Clients to pass edit and lisp eval requests to a running Emacs.|17-Jun-1991||~/packages/gnuserv.tar.Z
+gnuslive|Travis J.I. Corcoran|tjic@icd.teradyne.com|In gnus, highlights your favorite topics and people in color|30-Apr-95|0.9|~/packages/gnuslive.el.gz
+gnus|Masanobu Umeda|umerin@mse.kyutech.ac.jp|Usenet news reader with NNTP.|15-Aug-1993|4.1|~/packages/gnus-4.1.tar.Z
+gomoku|P. Schnoebelen|phs@lifia.imag.fr|Gomoku game.|13-Sep-1988||~/as-is/gomoku.el.Z
+gopher|scott snyder|snyder@fnald0.fnal.gov|An emacs gopher client.|20-Apr-1993|1.02|~/interfaces/gopher.el.Z
+gosmacs|FSF|18.55 dist|Rebindings to imitate Gosmacs.|07-Dec-1986||
+goto-address|Eric Ding|ericding@mit.edu|Click to browse URL or to send to e-mail address|29-Sep-1995|1.0|~/misc/goto-addr.el.gz
+grab-ftp|Rodney Peck II|rodney@sun.ipl.rpi.edu|Determine ftp archive for a file in a text|07-Feb-1990|1.2|~/packages/grab-ftp.el.Z
+grade-mode|Chris Welty|weltyc@cs.rpi.edu|Mode for editing grades.|30-Oct-1988|1.2|
+grind-DOC|Kyle Jones|kyle@wendy-fate.uu.net|DOC file->troff.|1987||~/as-is/grind-DOC.el.Z
+grow-vers|FSF|18.55 dist|Add a new level to the Emacs version number.|30-Sep-1986||
+hack-locals|Carl Witty, Mike Williams|cwitty@csli.stanford.edu,mike-w@cs14b.cs.aukuni.ac.nz|Show local variables when present, more options for inhibit-local-variables|26-Apr-1991||~/misc/hack-locals.el.Z
+hack-locals|Carl Witty|cwitty@csli.stanford.edu|Show local variables on screen|04-Dec-1988||~/misc/hack-locals.el.Z
+hanoi|Damon Anton Permezel|18.55 dist|Towers of Hanoi.|30-May-1988||
+harris-tags|Ken Laprade|laprade@trantor.harris-atd.com|Tags with multiple active files, etags or ctags, completion...|18-Sep-1990||~/misc/harris-tags.el.Z
+hateful-mini|Andy Gaynor|gaynor@rutgers.edu|Workaround for yes-or-no-p allowing y/n.|07-Feb-1989||~/as-is/misc/hateful-mini.Z
+headers|Lynn Slater|lrs@indetech.com|Support for creation and automatic update of file headers|01-Nov-1989||~/packages/headers.Z
+header|Lynn Slater|pacbell!indetech!lrs|Auto File headers.|06-Sep-1988||~/as-is/header.el.Z
+hebrew|Joseph Friedman|yossi@DEShaw.COM|Support for editing Hebrew files in Emacs.|22-Aug-1992|$Revision: 1.4 $|~/misc/hebrew.tar.Z
+help-macro|Lynn Slater|lrs@indetech.com|Macro to make keymap help screens like that of help-for-help|05-Jun-1990||~/misc/help-macro.el.Z
+help.tar|Lynn Slater|pacbell!indetech!lrs|Let C-h be backspace.|||
+helper|K. Shane Hartman|18.55 dist|Help package for modes: doesn't relinquish control.|30-May-1988||
+help|FSF|18.55 dist|Help commands.|28-May-1988||
+hexl-mode|Keith Gabryelski|ag@cbmvax.commodore.com|Edit a file in a hex dump format.|24-May-1989||~as-is/misc/hexl-mode.el.Z
+hexlify-buffer|Francesco Potorti`|pot@cnuce.cnr.it|Convert a binary buffer to hexl format.|12-Nov-1992||~/functions/hexlify-buffer.el.Z
+hex|andy@ernie.berkeley.edu|slcpi!treed, treed@shearson.com|Binary editing mode.|29-May-1989|1.0|~/as-is/misc/hex.Z
+hiddn-bak|Silver|gaynor@busboys.rutgers.edu|Hide autosave backup files|09-Nov-1989||~/packages/hiddn-bak.el.Z
+hide-sexp|Sean Boisen|sboisen@bbn.com|Selective display on sexp's|06-Dec-1988||~/as-is/hide-sexp.el.Z
+hideif|Brian Marick, Daniel LaLiberte|18.55 dist|Hides selected code within ifdef.|19-Mar-1988||
+hideshow|Thien-Thi Nguyen|ttn@netcom.com|minor mode commands to selectively display blocks of code|18-Oct-1994|3.4|~/modes/hideshow.el.Z
+hilit-LaTeX|Peter Galbraith|galbraith@mixing.qc.dfo.ca|Enhancements for LaTeX highlighting w/ hilit19.el or hl319.el|06-Sep-1995|1.17|~/modes/hilit-LaTeX.el.gz
+hilit19|Jonathan Stigelman|Stig@netcom.com|Comprehensive (and comparatively fast) regex-based highlighting for Emacs 19|1993/09/08 18:44:10|Release 2.19|~/packages/hilit19.el.Z
+hilit|Paul Nakada|pnakada@us.oracle.com|Mode switched highlighting of regions of buffers with colors and fonts.|02-Apr-1992|v1.3|~/epoch/hilit.el.Z
+hippie-expand|Anders Holst|aho@sans.kth.se|Expand text trying various ways to find its expansion.|13-Sept-1995|Version 1.4|~/misc/hippie-expand.el.Z
+history|David C. Howland|dch%ccird3.uucp|A history package.|10-Apr-1989||~/as-is/history.el.Z
+holiday|Edward M. Reingold|reingold@cs.uiuc.edu|Display holidays; works in conjunction with calendar.el|19-Aug-1991||emr.cs.uiuc.edu:pub/emacs/calendar/holiday.el.gz
+hooks|Mark Weissman|apollo!weissman|Add hooks to existing functions.|||
+html-font|Ulrik Dickow|dickow@nbi.dk|Adds Font Lock support to HTML helper mode.|19-Sep-1995|4.01|~/misc/html-font.el.Z
+html-helper-mode|Nelson Minar|nelson@reed.edu|Major mode for editing HTML.|16-Mar-1994|2.0|ftp.reed.edu:/pub/src/html-helper-mode.tar.Z
+html-mode|Marc Andreessen|marca@ncsa.uiuc.edu|Major mode for editing HTML hypertext files.|17-Jul-1993|2.0 beta|~/modes/html-mode.el.Z
+html-view|Ron Tapia|tapia@hydra.unm.edu|Some routines for communicating with a NCSA Mosaic process|09-Jul-1993|0.01|~/interfaces/html-view.el.Z
+hun|Zoltan Kiraly|kiraly@cs.elte.hu|Convenient buffer-local minor mode for editing Hungarian documents|10-Jan-1996|1.1|~/modes/hun.el.gz
+hyperbole|Bob Weiner|hyperbole@hub.ucsb.edu|Everyday Info Manager|21-Sep-1995|3.19.09|ftp.cs.uiuc.edu:/pub/xemacs/infodock/
+hyperbutton|Mike Williams|mike-w@cs.aukuni.ac.nz|Run lisp code when arbitrary text patterns are clicked on|25-Jun-1991|$Revision: 1.14 $|~/interfaces/hyperbutton.shar.Z
+ibuff-menu|Bernd Petersohn|muecke@cs.tu-berlin.de|Convenient menu to edit the buffer list and to switch to buffers|20-Apr-1993|2.0|~/modes/ibuff-menu.el.Z
+icomplete|Ken  Manheimer|klm@nist.gov|Completion enhancement, with incremental feedback in the minibuffer.|02-Jun-1993|2.12|~/misc/icomplete.el.Z
+icon|Chris Smith|18.55 dist|Icon code editing commands.|03-May-1988||
+idl-shell|Chris Chase|chris.chase@jhuapl.edu|Run an IDL process in an emacs buffer using comint.el|1995/04/25 14:26:55|1.19|~/misc/idl-shell.el.Z
+idl|Chris Chase|chris.chase@jhuapl.edu|Editing Mode for IDL and PV-Wave procedure files.|26-Jan-1995|1.18|~/misc/idl.el.gz
+ielm|Dave M. Smith|maa036@lancaster.ac.uk|Comint-based interface to Emacs Lisp|21-Mar-1994|1.15|~/interfaces/ielm.el.Z
+if-jump|Alex Rezinsky|alexr@msil.sps.mot.com|Jump to matching #if/#else/#endif C-preprocessor directive|02-Jul-1992|1.0|~/misc/if-jump.el.gz
+igrep|Kevin Rodgers|kevinr@ihs.com|An improved interface to grep/egrep/fgrep; plus recursive `find` versions.|10-Feb-1997|2.56|~/misc/igrep.el.gz
+ile-info|Dave Emme|daveemme@uts.amdahl.com|ls -l to minibuf after find-file|28-Oct-1988||~/as-is/file-info.el.Z
+ilisp|Ivan Vazquez, Chris McConnell|ivan@darwin.bu.edu|Fancy LISP interface that supports multiple dialects.|30-Jun-1993|5.3|haldane.bu.edu:/pub/ilisp/ilisp.tar.Z
+inc-vers|FSF|18.55 dist|Increment the recorded Emacs version number.|30-Sep-1986||
+indent-mode|PREINING Norbert|ep-prei@ophelia.tuwien.ac.at|Minor mode for correct autoindentation and backindentation|10-May-1994|0.1|~/misc/indent-mode.el.Z
+indent|FSF|18.55 dist|Indentation commands.|19-Nov-1986||
+infer-mode|Ashwin Ram|Ram-Ashwin@cs.yale.edu|Infer file mode based on contents.|05-Nov-1988||~/as-is/infer-mode.el.Z
+info+|Bob Weiner|rsw@cs.brown.edu|Ehnanced info w/insert, command menu and execute-only supprt|28-Apr-1989||
+info-Z|Dirk Grunwald|grunwald@foobar.colorado.edu|allow for compressed info files|20-Jul-1989||~/packages/info-Z.el.Z
+info-dg|Dave Gillespie|daveg@synaptics.com|Info reader with many enhancements; replaces standard info.el.|04-Mar-1992|1.04|~/modes/info.el.Z
+info-mouse|Bob Weiner|rsw@cs.brown.edu|Walks through Info networks using one mouse button.|06-Mar-1989||~/as-is/info-mouse.el.Z
+infodock|Bob Weiner|infodock@hub.ucsb.edu|Integrated Toolset for Engineers|22-Sep-1995|3.2|ftp.cs.uiuc.edu:/pub/xemacs/infodock/
+inform-mode|Gareth Rees|gdr11@cl.cam.ac.uk|Major mode for editing Inform programs|06-Dec-1994|Version 0.2|~/modes/inform-mode.el.Z
+informat+|Bob Weiner|rsw@cs.brown.edu|Expanded info command reference syntax.|28-Apr-1989||~/as-is/bob-weiner/informat.el.Z
+informat|FSF|18.55 dist|Info support functions.|20-Apr-1988||
+info|FSF|18.55 dist|Info, documentation browser.|26-Jul-1988||
+init-error|Joe Wells|jbw@cs.bu.edu|Better error messages in init files through print-error|17-Mar-1989||~/as-is/misc/init-error.el.Z
+input-remapping|Paul Raveling|raveling@venera.isi.edu|Input remapping|22-Jul-1989||~/packages/input-remapping.el.Z
+ins-frm-abov|Andy Gaynor|gaynor@rutgers.edu|Insert character at same column from previous line.|17-Feb-1989||~/as-is/insfromabv.el.Z
+insert-box|Lynn Slater|indetech!lrs@ai.mit.edu|Alternative to prefix-region|04-Aug-1989||~/functions/insert-box.el.Z
+insert-file+|Henry Kautz|allegra!kautz|Better insert-file function|12-Sep-1987||
+insert-hooks|Noah Friedman|friedman@nutrimat.gnu.ai.mit.edu|Insert pre- and post- hooks in an arbitrary function.|22-Nov-1991||~/functions/insert-hooks.el.Z
+insert-printf|Jason Baietto|jason@ssd.csd.harris.com|Help constructing C printf statements|20-Nov-1989||~/as-is/insert-printf.el.Z
+insert-random-quote|Joe Wells|jbw@cs.bu.edu|Insert a random quote from a file|07-Oct-1992||~/functions/insert-random-quote.el.Z
+insert-signature|Dylan Kaufman|morgan@chaos.cs.brandeis.edu|Choose signature based on address and intelligently place in mail file.|15-Aug-1990||~/functions/insert-signature.el.Z
+insert-stamp|Wayne Mesard|wmesard@leland.stanford.edu|Insert time stamp.|08-Sep-1988||~/as-is/insert-stamp.el.Z
+international|Michael Gschwind|mike@vlsivie.tuwien.ac.at|Bind Alt keys for Umlaute and accents.|19-Jul-1993||~/misc/international.el.Z
+iquery|John Robinson|jr@bbn.com|Interactive query-replace.|||~as-is/iquery.el.Z
+irc|David C Lawrence|tale@uunet.uu.net|A user interface for the Internet Relay Chat|19-Jul-1990|2.5|~/interfaces/irc.el.Z
+iris-ansi|Scott Henry|scotth@sgi.com,sgi!shinobu!scotth|Map Iris 4D function key escape sequences|13-Mar-1989||~/as-is/misc/iris-ansi.Z
+iris4d|Larry E. Carroll|larryc@jpl-devvax.jpl.nasa.gov|Silicon Graphics function key bindings|15-May-1990||~/misc/iris4d.el.Z
+isearch-mode|Daniel LaLiberte|liberte@cs.uiuc.edu|A minor mode replacement for isearch.el.|14-Sep-1992|1.4|~/modes/isearch-mode.el.Z
+isearch|FSF|18.55 dist|Incremental search.|08-Dec-1987||
+iso-sgml|Frederic Lepied|lepied@cenaath.cena.dgac.fr|Edit SGML or HTML buffers with ISO 8859-1 (Latin-1) display|10-May-1995|1.4|~/misc/iso-sgml.el.Z
+iso-tex|Gerd Neugebauer|gerd@intellektik.informatik.th-darmstadt.de|Translating TeX to ISO-8859/1 while editing a file.|11-Jun-1994|1.14|~/modes/iso-tex.el.Z|
+ispell|Ashwin Ram|Ram-Ashwin@cs.yale.edu|Ispell interface.|26-Jun-1988||~/as-is/ispell.el.Z
+iswitchb|Stephen Eglen|<stephene@cogs.susx.ac.uk>|switch between buffers using substrings|30-Dec-1996|1.13|~/packages/iswitchb.el
+ivd|Jason Baietto|jason@ssd.harris.com|Insert Variable Dump (the poor person's debugger).|21-Nov-1989||~/misc/ivd.el.Z
+jargon-mode|Sascha Wildner|swildner@channelz.GUN.de|Major mode for browsing through Jargon-style hypertext documents.|04-Apr-1993|0.4a|~/modes/jargon-mode.el.Z
+jargon-mode|Sascha Wildner|swildner@channelz.GUN.de|Major mode for reading the Jargon File.|28-June-93|0.9|~/modes/jargon-mode.el.Z
+jka-compr19|Jay Adams|jka@ece.cmu.edu|Low level support for reading/writing/loading compressed files in GNU Emacs V19|21-Dec-1993|0.7|~/misc/jka-compr19.el.Z
+jka-compr|Jay Adams|jka@ece.cmu.edu|Low level support for reading/writing compressed files|30-Nov-1993|0.5|~/misc/jka-compr.el.Z
+jka-load|Jay Adams|jka@ece.cmu.edu|Load remote or compressed GNU Emacs lisp files.|23-April-1993|0.1|~/misc/jka-load.el.Z
+jnews|Kim Letkeman|uunet!mitel!spock!kim|A news reader|18-May-1990||~/interfaces/jnews.shar.Z
+just-curln|Ashwin Ram|ashwin@cs.yale.edu|Justify the current line|16-Nov-1987||~/functions/just-curln.el.Z
+kbuff-enh|Deven T. Corzine|deven@rpi.edu|Confirm kill of buffers with processes|05-Dec-1989||~/packages/kbuff-enh.el.Z
+kermit|Ben A. Mesander|ben@gnu.ai.mit.edu|Transfer buffers to and from Emacs with kermit protocol.|04-Jun-1994|1.4|~/misc/kermit.el.Z
+kermit|Jeff Norden|18.55 dist|Additions to shell mode for use with kermit, etc.|22-Apr-1988||
+keypad|FSF|18.55 dist|Terminal-independent keypad and function key bindings.|12-Jun-1988||
+keypad|Jeff Morgenthaler|jpmorgen@wisp4.physics.wisc.edu|Support for all the function keys of the vt200 (LK105) keyboard|22-Mar-1993|2.9|~/terms/keypad.el.gz
+kill-buf-n-save|Julian Cowley|julian@uhccux.uhcc.hawaii.edu|Kill buffer and its auto-save.|14-Jun-1989||~/as-is/kill-buf-n-sav.el.Z
+kill-fix|Joe Wells and Inge Frick|inge@nada.kth.se|Enhancement to kill-all-local-variables|02-Apr-1993||~/as-is/kill-fix.el.Z
+kill-fix|Joe Wells|jbw@cs.bu.edu|Enhancement to kill-all-local-variables.|18-Jan-1989||~/as-is/kill-fix.el.Z
+kill-ro|Roland McGrath|roland@wheaties.ai.mit.edu, mit-eddie!wheaties.ai.mit.edu!roland|Make kill commands work for read-only buffers by copying.|01-Apr-1989||~/as-is/misc/kill-ro.Z
+killbf-hks|Roland McGrath|mcgrath%paris.berkeley.edu@ginger.berkeley.edu|Kill buffer hooks|26-Nov-1989||~/misc/killbf-hks.el.Z
+killbuf|Noah Friedman|friedman@gnu.ai.mit.edu|Emacs 19--style kill-buffer for emacs 18|21-Jun-1994|1.1|~/misc/killbuf.el.gz
+ksh-mode|Gary F. Ellison|Gary_F_Ellison@ATT.COM|Mode for editing sh/ksh/bash scripts|14-Jun-1994|2.4|~/modes/ksh-mode.el.Z
+kumac-mode|David P. Morrison|morrison@orph01.phy.ornl.gov|Major mode for editing Kumac (CERN KUIP macro) files.|09-Mar-1997|2.4|~/modes/kumac-mode.el.gz
+latex-close|Ashwin Ram|Ram-Ashwin@cs.yale.edu|Allow latex blocks in tex-mode.|||~/as-is/latex-close.el.Z
+latex-misc|Paul Davis|davis@blue.sdr.slb.com|A few misc. functions I use ALL the time in LaTeX mode.|26-Apr-1989||~/as-is/latex-misc.el.Z
+latex-outln|Paul Davis|davis@blue.sdr.slb.com|Outline mode for LaTeX.|26-Apr-1989||~/as-is/latex-outl.el.Z
+latexinfo-patch|Mike Clarkson|mike@ists.ists.ca|Patches to LaTexinfo (2 Shar files)|22-Jun-1990||~/packages/LaTeXinfo.patch.?.Z
+latexinfo-shar|Mike Clarkson|mike@ists.ists.ca|LaTeX Info package (10 Shar files)|04-Jun-1990|1.3|~/packages/LaTeXinfo.shar.*.Z
+latexinfo-structure|Richard Caley|R.Caley@ed.ac.uk|Make latexinfo node and menu entries automatically|23-Jan-1992|1.4|~/misc/latexinfo-structure.el.Z
+latin1-mode|Bernd Petersohn|muecke@cs.tu-berlin.de|Adjustable, language specific floating accents for ISO Latin 1|07-Oct-1994|2.7|~/modes/latin1-mode.el.gz
+layout|Lennart Staflin|lenst@lysator.liu.se|Switching between named window configurations|21-May-1995|1.5|~/misc/layout.el.gz
+lazy-lock|Simon Marshall|simon@gnu.ai.mit.edu|Lazy Font Lock mode (with fast demand-driven fontification).|13-Nov-1995|1.15|~/modes/lazy-lock.el.Z
+ledit|FSF|18.55 dist|Major mode for editing text and stuffing it to a Lisp job.|30-Sep-1986||
+lib-complete|Mike Williams|mike-w@cs.aukuni.ac.nz|Completion on a search path|18-Jun-1991|1.7|~/misc/lib-complete.el.Z
+life|Kyle Jones|18.55 dist|Conway's `Life' cellular automaton.|23-Aug-1988||
+lightbrite|Marc Andreessen|marca@ncsa.uiuc.edu|Source highlighting for Epoch and Lucid Emacs|13 Sep 1992|1.1.2|~/epoch/lightbrite-1.1.2.tar.Z
+line+|Neil Jerram|nj104@cus.cam.ac.uk|Line numbering and interrupt driven actions.|18-Feb-1993|1.1|~/misc/line+.el.Z
+line-nos|Wayne Mesard, Jari Aalto|bbn.com!mesard@bbn.com, jari.aalto@ntc.nokia.com|line numbers for emacs|10-Mar-1997|1.3|~/misc/line-nos.el.Z
+line-numbers|Wayne Mesard|wmesard@leland.stanford.edu|Two approaches to displaying line numbers.|06-Feb-1989||~/as-is/line-nos.el.Z
+linenumbers|Ajay Shekhawat|ajay@cs.Buffalo.EDU|Continuous display of current line number in the status line|23-Sep-1992|1.0|~/misc/linenumbers.el.gz
+lint-convert|Lars Pensj|mcvax!kth!draken!chalmers!myab!lars@uunet.uu.net|Convert output of lint for next-error.|19-Apr-1989||~/as-is/lint-convert.el.Z
+lismp|Simon Marshall|Simon.Marshall@mail.esrin.esa.it|Functions to manipulate (add, remove, replace) items to/from/in lists.|09-May-1994|1.02|~/misc/lismp.el.Z
+lisp-mode|FSF|18.55 dist|Lisp mode, and its idiosyncratic commands.|09-Apr-1988||
+lispdir|Dave Brennan|dbrennan@microsoft.com|Lisp Code Directory formatter and apropos|19-Dec-1995|4.4|~lispdir.el
+lispref|Shinichirou Sugou|shin@sgtp.apple.juice.or.jp|One line lisp reference help|01-Feb-1990||~/packages/lispref.el.Z
+lisp|FSF|18.55 dist|Lisp editing commands.|01-Jun-1987||
+listbuf|Noah Friedman|friedman@prep.ai.mit.edu|build buffer menu for use in Buff-menu-mode|10-Apr-1995|1.8|~/misc/listbuf.el.gz
+live-find-file|David Gillespie|daveg@csvax.cs.caltech.edu|View a file with "live" updates as the file grows on disk|29-Jun-1991||~/functions/live-find-file.el.Z
+lk201-X|Johan Vromans|jv@mhres.mh.nl|LK201 support for X11 Emacs|30-Aug-1989||~/misc/lk201-X.shar.Z
+lk201-bindings|Jeff Morgenthaler|jpmorgen@wisp4.physics.wisc.edu|Sets up bindings for DEC function keys in emacs 19.|11-Nov-1993|1.2|~/terms/lk201-bindings.el.Z
+load-hooks|Dale Worley|compass!worley@think.com|Mods to add load-hooks variable.|10-Jan-1989||~/as-is/misc/load-hooks.Z
+load-z|Hallvard B Furuseth|hallvard@ifi.uio.no|As load-file, but looks for .Z files too|23-Jul-1991||~/functions/load-z.el.Z
+loadable-p|Bill Janssen|janssen@titan.sw.mcc.com|Is a file loadable?|||~/as-is/loadable-p.el.Z
+loaddefs|FSF|18.55 dist|Define standard autoloads and keys of other files.|15-Aug-1988||
+loadup|FSF|18.55 dist|Load up standardly loaded Lisp files.|05-Jul-1988||
+local-tags|Dan LaLiberte|liberte@cs.uiuc.edu|Buffer-local tag finding.|07-Apr-1989||~/as-is/local-tags.el.Z
+locate-mode|Peter Breton|pbreton@cs.umb.edu|Search a database of files and run dired commands on results|17-Sept-1995|1.0|~/misc/locate-mode.el.gz
+location|Lynn Slater|lrs@indetech.com|Enhancements to find-tab that allow backtracking path|28-Oct-1988||~/packages/location.el.Z
+location|Lynn Slater|pacbell!indetech!lrs|Backout of tags.|06-Sep-1988||~/packages/location.el.Z
+log-messages|Robert Potter|rpotter@grip.cis.upenn.edu|Log minibuffer messages to a buffer.|18-Oct-1990||~/misc/log-messages.el.Z
+lookup|John Maraist|maraist@ira.uka.de|Small major and minor modes to facilitate manually translating documents from one language to another.|30-Aug-1995|1.0|~/modes/lookup.el.gz
+lookup|Lawrence R. Dodd and Alon Albert|dodd@roebling.poly.edu|Lookup word fragment in dictionary and replace with full word.|27-Sep-1993|1.32|~/misc/lookup.el.Z
+lookup|Lawrence R. Dodd|dodd@roebling.poly.edu|lookup word fragment in dictionary and replace with full word.|18-Sep-1993|1.19|~/misc/lookup.el.Z
+loop-funcs|Jerry Jackson|esosun!jackson@seismo.css.gov|Lisp editing functions.|17-Dec-1988||~/as-is/loop-funcs.el.Z
+love22|Michael D. Ernst|mernst@theory.lcs.mit.edu|Support for writing and recognizing text in the style of Love 22.|18-Oct-1990|1.0|~/games/love22.el.Z
+lpr|FSF|18.55 dist|Print Emacs buffer on line printer.|1988||~/as-is/lpr.el.Z
+ltx-math|Per Abrahamsen|abraham@iesd.auc.dk|Abbrevations for math symbols in LaTeX|30-Jul-1994|5.8|~/modes/ltx-math.el.Z
+m68k-mode|Espen Skoglund|espensk@stud.cs.uit.no|Major mode for editing m680x0 code|25-Feb-1994|1.2|~/modes/m68k-mode.el.Z
+mabbrev-menu|Paul D. Smith|psmith@wellfleet.com|Adds a menu of mail abbrevs to the mail mode menu bar for FSF GNU Emacs 19|15-Jul-1992|1.2|~/misc/mabbrev-menu.el.Z
+macedit|David Gillespie|daveg@cit-vax.caltech.edu|Keyboard macro editor|11-Jun-1990|1.01|~/packages/macedit.el.Z
+macros|FSF|18.55 dist|Non-primitive commands for keyboard macros.|21-Jan-1987||
+madlib|Michael Ernst|mernst@theory.lcs.mit.edu|Mad Lib game|7-Feb-1994|1.0.1|~/games/madlib.el.gz
+mail-Re-patch|Joe Keane|jgk@osc.com|Adding `Re:' to replies|27-Jun-1990||~/misc/mail-Re.patch.Z
+mail-abbrevs|Jamie Zawinski|jwz@lucid.com|Abbrev-expansion of mail aliases.|01-Jul-1993||~/misc/mail-abbrevs.el.Z
+mail-add-header|Mike Williams|mike-w@cs.aukuni.ac.nz|Functions to add and remove named mail headers|03-Jul-1991||~/functions/mail-add-header.el.Z
+mail-beep|Franklin A. Davis|fad@leander.think.com|Notify on mail arrival in mode-line|21-Nov-1989||~/misc/mail-beep.el.Z
+mail-beep|John Robinson|jr@bbn.com|Beep when mail arrives.|02-Jun-1989||~/as-is/mail-beep.el.Z
+mail-dofcc|Dale Worley|worley@compass.com|Convert File-Carbon-Copy to RMAIL format|09-Apr-1990||~/functions/mail-dofcc.el.Z
+mail-log|Paul Davis|davis%scr.slb.com@relay.cs.net|Provide logging of outgoing mail messages|25-Apr-1989||~/as-is/mail-log.el.Z
+mail-plus|Michael Littman|mlittman@wind.bellcore.com|Allows multiple active outgoing mail messages.|Nov-1988||~/as-is/mail-plus.el.Z
+mail-secure|Travis J.I. Corcoran|tjic@icd.teradyne.com|funcs to make secure mail and News easier: autosign, autoverify, anon, etc.|30-Apr-95|0.9|~/packages/mail-secure.el.gz
+mail-syntax|Dale Worley|compass!worley|mail-mode-syntax-table which defines "%" to be "punctuation".|01-Jun-1989||~/as-is/mail-synt.el.Z
+mail-utils|FSF|18.55 dist|Utility functions used both by rmail and rnews.|12-Sep-1987||
+mail-verify|Dirk Grunwald|grunwald@m.cs.uiuc.edu|Verify mail address.|1989||~/as-is/mail-verify.el.Z
+mail-yankpfx|Ashwin Ram|Ram-Ashwin@cs.yale.edu|Enhancements for yanking original messages.|14-Feb-1989||~/as-is/ml-ynk-pfx.el.Z
+mail-yank|Neitzel, Ram, Lawrence|tale@uunet.uu.net|Enhanced enhancements for citing messages.|12-Apr-1989||~/as-is/mail-yank.el.Z
+mailaliasloc|Marc Shapiro|shapiro@sor.inria.fr,mcvax!inria!shapiro|Expand aliases in mail header.|03-Feb-1989||~/as-is/ml-alias.el.Z
+mailalias|FSF|18.55 dist|Expand mailing address aliases defined in ~/.mailrc.|31-Oct-1987||
+mailcrypt|Jin Choi and Pat LoPresti|jin@atype.com, patl@lcs.mit.edu|PGP interface (plus anonymous remailer support) RMAIL, VM, mh-e, GNUS|20-Jun-1995|3.2|~/interfaces/mailcrypt-3.3.tar.gz
+maillist|Lee Short|short@asf.com|Mailing list utilities.|20-Nov-1992||~/misc/maillist.el.Z
+mailpost|Gary Delp|18.55 dist|Sendmail interface for rmail using /usr/uci/post.|18-Sep-1986||
+maintain-lcd|David Brennan|brennan@hal.com|Useful functions for LCD maintenance work|23-Mar-1992|2.13|~/misc/maintain-lcd.el.Z
+make-local|Gregory N. Bond|gnb@bby.oz|Make multiple local variables|21-Aug-1989||~/functions/make-local.el.Z
+make-regexp|Simon Marshall|simon@gnu.ai.mit.edu|Generate efficient regexps to match strings.|11-Jul-1995|1.02|~/functions/make-regexp.el.gz
+make-send|Dale Worley|compass!worley|RMAIL make-send-via-send-and-exit.|17-Oct-1988||~/as-is/make-send.el.Z
+makefilemode|John Sturdy|jcgs@harlqn.co.uk|Simple makefile mode.|13-Oct-1988||~/as-is/mkfilemode.el.Z
+makesum|FSF|18.55 dist|Generate key binding summary.|30-Sep-1986||
+man+|Alan Stebbens|aks@hub.ucsb.edu|Enhanced manual-entry|18-May-1990||~/packages/man+.el.Z
+man-enh-patch|Joe Wells|jbw@cs.bu.edu|Enhancements to M-x manual-page|06-Apr-1990||~/misc/man-enh.patch.Z
+man.el.patch.Z|Frank P. Bresz|fpb@ittc.wec.com|Various enhancements to 18.55 man.el.|17-Aug-1990||~/patches/man.el.patch.Z
+maniac|Per Abrahamsen|abraham@iesd.auc.dk|fill paragraphs like a maniac|01-Jan-1994|0.0|~/misc/maniac.el.Z
+manifest|Sridhar Anandakrishnan|sak@essc.psu.edu|Create and update a MANIFEST file for a directory.|22-Jun-1994|1.13|~/misc/manifest.el.Z
+manpath|Rich Berlin|rberlin@birdland.sun.com|Use a path environment variable for man|24-Jul-1990||~/misc/manpath.el.Z
+man|FSF|18.55 dist|Read in and display parts of Unix manual.|08-May-1988||
+maple-mode|Bruno Salvy|Bruno.Salvy@inria.fr|Maple editing support|29-Sep-94|1.1|~/modes/maple.el.Z
+maple|Bruno Salvy|salvy@inriz.inria.fr|Maple mode|29-May-1990||~/modes/maple.el.Z
+mapping-rep|Kyle Jones|kyle@wendy-fate.uu.net|Mapping replace commands for GNU Emacs|25-Apr-1989||~/as-is/mapping-rep.el.Z
+markup|Bill Richardson|willrich@cs.utah.edu|Minor mode for electronic editorial markup|26-May-1993|version 1.01|~/epoch/markup.el.Z
+massive-backup|Terry Brannon|brannon@jove.cs.caltech.edu|Automatically tar and copy directories to remote machines.|04-Jul-1992|1.00|~/misc/massive-backup.el.Z
+mastermind|Anders Holst|aho@thalamus.sans.kth.se|The mastermind game.|16-Mar-1993||~/games/mastermind.el.Z
+math-mode|Daniel LaLiberte|liberte@cs.uiuc.edu|GNU Emacs interface to Mathematica|24-May-1989|1.5|~/modes/math.tar.Z
+math|David Jacobson|jacobson@hpl.hp.com|Mode package for running Mathematica|20-Jun-1994|1.104|~/modes/math.el.Z
+matlab-mode|Matt Wette|mwette@mr-ed.Jpl.Nasa.Gov|Major mode for MATLAB dot-m files|06-Dec-1993|1.06.0|~/modes/matlab-mode.el.Z
+matlab|Matt Wette|mwette@alumni.caltech.edu|Major mode for MATLAB dot-m files|07-Mar-1997|1.09.0|~/modes/matlab.el.gz
+md4|Johan Vromans|jv@mh.nl|MD4 support for GNUS|16-Jun-1992|1.5|~/misc/md4.el.Z
+md5|Gareth Rees|gdr11@cl.cam.ac.uk|MD5 cryptographic message digest algorithm|13-Nov-95|1.0|~/misc/md5.el.Z
+medit|K. Shane Hartman|18.55 dist|Lisp interface between GNU Emacs and MEDIT package. Emacs under MDL.|30-Sep-1986||
+meese|Richard Stallman|18.55 dist|protect-innocence-hook for etc/sex.6.|20-May-1988||
+menu|Mark Ardis|encore!pierson,pierson@encore.com|Menu mode for all terminals; part of template package.|1987||~/as-is/menu.el.Z
+meshook|Mark Weissman|apollo!weissman|Save all messages and errors in a buffer.|||~/as-is/meshook.el.Z
+message-buffer-18|Ray Nickson, Michael Ernst|mernst@theory.lcs.mit.edu|Log messages in a buffer|03-Oct-1994|1.0|~/misc/message-buffer-18.el.Z
+message-buffer|Ray Nickson, Michael Ernst|mernst@theory.lcs.mit.edu|Log messages and errors in their own buffer|03-Oct-1994|1.0|~/misc/message-buffer.el.Z
+meta-server|William M. Perry|wmperry@indiana.edu|Major mode for watching netrek site info.|01-Jan-1993|2.0|~/games/meta-server.tar.Z
+mf-mode|Stephen Gildea|gildea@bbn.com|Major mode for METAFONT.|07-Feb-1989||
+mfe|Peter Mroz|mroz@ge-crd.arpa|Forms entry mode.|||~/as-is/mfe.el.Z
+mh-crypt|Fritz Knabe|knabe@ecrc.de|Store and retrieve MH messages in encrypted or compressed form.|14-Jun-1994|1.18|~/misc/mh-crypt.el.Z
+mh-e|James Larus, Stephen Gildea|18.58 dist|Front end to the MH mail system.|21-Jan-1992|3.8|
+mh-hook|David C Lawrence|tale@uunet.uu.net|Patch to mh-e, fixes modeline "Mail".|15-May-1989||~/as-is/mh-hook.el.Z
+mh-pack|Kevin H. Joyce|niven@sequent.uucp|Pack mh-e folders|04-Dec-1989|1.1|~/misc/mh-pack.el.Z
+mh-scraps|John Robinson|jr@bbn.com|Some utilities for mh-e.el|05-Jun-1990||~/misc/mh-scraps.Z
+mh-unshar|Darryl Okahata|darrylo@sr.hp.com|Patch to mh-e.el which adds mh-unshar function to unshar mail in Emacs|11-Jun-1991||~/patches/mh-unshar.patch.Z
+mh-util|Alan Stebbens|aks@somewhere.berkeley.edu|Some utilities for mh-e.el|04-Jun-1990||~/misc/mh-util.el.Z
+mim-mode|K. Shane Hartman|18.55 dist|Mim (MDL in MDL) mode.|09-Apr-1988||
+mim-syntax|K. Shane Hartman|18.55 dist|Syntax checker for Mim (MDL).|30-Sep-1986||
+mime-compose|Marc Andreessen|marca@ncsa.uiuc.edu|MIME-compliant message generation utilities.|21-Nov-1992|1.47|~/misc/mime-compose.el.Z
+min-bind|Inge Frick|inge@nada.kth.se|Bind keymaps, syntax tables and varibales in minor modes|09-Jun-1993|1.01|~/misc/min-bind.el.Z
+min-ispl|Per Abrahamsen|abraham@iesd.auc.dk|Minor mode to spell words as you type them|15-Dec-1993|5.13|~/modes/min-ispl.tar.Z
+min-map|Per Abrahamsen|abraham@iesd.auc.dk|Support for FSF emacs 19 style minor mode keymaps|11-Jan-1994|5.1|~/misc/min-map.el.Z
+mini-compl|John Robinson|jr@bbn.com|Minibuffer completion with backup|17-Apr-1990||~/packages/mini-compl.el.Z
+mini-comp|David Gudeman, Bruce Israel|gudeman@arizona.edu,israel@tove.umd.edu|Enhanced minibuf completion.|17-Nov-1987||~/as-is/mini-comp.el.Z
+mini-length|Joe Wells|jbw@cs.bu.edu|Function to determine the length of the minibuffer prompt.|19-Apr-1989||~/as-is/mini-len.el.Z
+minibufmem|Bard Bloom|bard@brigid.cs.cornell.edu|Memory for the minibuffer|24-Mar-1990||~packages/minibufmem.el.Z
+minibuf|Skip Montanaro|montnaro@moose.crd.ge.com|Expand and shrink the minibuffer window|13-Dec-1989||~/packages/minibuf.el.Z
+mipsdbx|Egil Pedersen|egilp@ulrik.uio.no|Run MIPS dbx under Emacs.|16-Nov-1992||~/modes/mipsdbx.el.Z
+miranda|Stuart Clayman|S.Clayman@cs.ucl.ac.uk|Miranda mode for GNU Emacs|09-Mar-1990||~/modes/miranda.el.Z
+mity-mouse|Tom Horsley|tom@ssd.csd.harris.com|Additional X mouse functions.|90-08-01||~/interfaces/mity-mouse.tar.Z
+mlconvert|FSF|18.55 dist|Convert buffer of Mocklisp code to real lisp.|30-May-1988||
+mlsupport|FSF|18.55 dist|Run-time support for mocklisp code.|30-Sep-1986||
+mmdf|Scott Michel|scottm@intime.com|Alternative to sendmail-send-it, IFF you use MMDF mail transport.|30-Nov-1992||~/misc/mmdf.el.Z
+moccur|Markus Freericks|mfx@cs.tu-berlin.de|multi-buffer occur mode|02-Aug-1991|1.1|~/modes/moccur.el.Z
+mode-clone|David Megginson|dmeggins@aix1.uottawa.ca|Define new major modes to inherit automatically from existing modes.|16-Dec-1993|1.4|~/packages/mode-clone.el.Z
+mode-compile|Heddy Boubaker|boubaker@dgac.fr|Smart command for compiling files according to major-mode.|1995/01/27 10:38:46|2.14|~/misc/mode-compile.el.Z
+mode-line|Lawrence R. Dodd|dodd@roebling.poly.edu|code for including abbreviated file paths in mode line|15-Jul-1994|2.94|~/misc/mode-line.el.Z
+modeln-menus|Paul Davis|davis%scr@sdr.slb.com|Mapping replace commands for GNU Emacs|89-04-25||~/as-is/mode-menu.el.Z
+modify|Lawrence R. Dodd|dodd@roebling.poly.edu|Simple code for maintaining modification tags in files like RCS.|16-Jun-1993|1.60|~/misc/modify.el.Z
+modula-enh|Andrew Macpherson|mcvax!stl.stc.co.uk!Andrew@uunet.uu.net|Slight enhancements to modula-2 mode.|29-Mar-1989||~/as-is/misc/modula-enh.Z
+modula2|Jordan, Robinson, Schmidt, Perrine|18.55 dist|Modula-2 editing support package.|30-May-1988||
+modula3|Eric Muller|muller@src.dec.com|Modula-3 mode.|17-Apr-1992||~/modes/modula3.el.Z
+monkey-glue|Randal Schwartz|merlyn@iwarp.intel.com|Makes dired use monkey-mode.|26-Mar-1989||~/as-is/monk-glue.el.Z
+monkey-mode|Thomas Lord|lord+@andrew.cmu.edu|Dired replacement.|89-01-25||~/as-is/monkeymode.el.Z
+more|Wolgang Rupprecht|wolgang@mgm.mit.edu,mit-eddie!mgm.mit.edu!wolfgang|Just like more(1). Doesn't do a recursive edit.|19-Nov-1987||~/as-is/more.el.Z
+motif-keys|Pete Forman|pete.forman@airgun.wg.waii.com|Key bindings that follow the Motif standard.|11-Nov-1994||~/terms/motif-keys.el.Z
+mouscroll|Theodore A. Camus|tac@cs.brown.edu|Easy mouse scrolling|27-Feb-1990||~/misc/mouscroll.el.Z
+mouse-help|Ken Laprade|laprade@trantor.harris-atd.com|Print documention for mouse button bindings (requires enhanced-mouse.el).|09-Oct-1990||~/epoch/mouse-help.el.Z
+mouse-menu|Russel Ritchie|russel@uk.ac.strath.hci|Mouse menus for Emacs|||~packages/mouse-menu.tar.Z
+mousymacro|Christian Queinnec|Christian.Queinnec@inria.fr|Run macros via simple mouse clicks.|03-Jan-1995|1.10|~/misc/mousymacro.el.Z
+mqr-replace|Christian Moen|christim@ifi.uio.no|Query replace in multiple buffers|02-Nov-1994|1.0|~/misc/mqr-replace.el.Z
+mrc-lib|Michael Walker|m.d.walker@larc.nasa.gov|Drive NCSA Mosaic via the remote-control interface|21-Nov-1994|1.17|~/interfaces/mrc-lib.el.Z
+msb|Lars Lindberg|Lars.Lindberg@sypro.cap.se|Choose buffer with the mouse|12-Dec-1994|3.22|~/packages/msb.el.Z|~/packages/msb.el.gz
+msdos|Stephen Martin|smartin@iemisi.UUCP, {uunet,suncan}!jtsv16!marsal1!iemisi!smartin|Try to find and handle PC files.|13-Jun-1989||~/as-is/msdos.el.Z
+msgs-check|Kyle us-ma|yle@wendy-fate.uu.net|Check for new messages with the msgs(1) system.|25-Jul-1990||~/misc/msgs-check.el.Z
+muddy|Darin Johnson|djohnson@ucsd.edu|MUD client, not necessarily user friendly|Nov-93|version 1.0|~/games/muddy.tar.Z
+mult-compile|Wolfgang S. Rupprecht|wolfgang@wsrcc.com|Gnu compile.el with multiple process interface|06-Jun-1991||~/misc/mult-compile.el.Z
+multi-click|Alon Albert|alon@milcse.rtsg.mot.com|Support for double and triple clicking in Emacs.|27-Jul-1993|1.3|~/misc/multi-click.el.Z
+multi-forms-mode|Frank Ritter|ritter@cs.cmu.edu|Mode to edit file of records, displaying multiple records per buffer.|92-6-25|1.4.0|~/modes/multi-forms-mode.tar.Z
+multi-line|Jay Adams|jka@hpfcso.hp.com|Multiple line messages in the minibuffer|14-Dec-1989||~/misc/multi-line.el.Z
+multi-mode|Gerd Neugebauer|gerd@intellektik.informatik.th-darmstadt.de|Minor mode allowing multiple major modes in a single buffer.|11-Jun-1994|1.2|~/misc/multi-mode.el.Z
+multi-shell|Aamod Saneesos|ne@cs.uiuc.edu|Multiple simultaneous shells|21-Jul-1991||~/misc/multi-shell.el.Z
+multishell|Dale Worley|worley@compass.com|Multiple shell buffers|22-Jul-1991||~/functions/multishell.el.Z
+mutant-isrch|Bard Bloom|bard@theory.lcs.mit.edu|Hacked-up incremental search.|19-Jan-1989|1.0|~/as-is/mutant-isrch.el.Z
+mview|Mike Williams|mikew@gopher.dosli.govt.nz|Minor view mode|03-Nov-1993|1.3|~/modes/mview.el.Z
+mvi|Doug Scofea|osu-cis!nimbus3!djs|VI emulator for emacs (3 shar files)|26-Mar-1990|1.0|~packages/mvi.shar.*.Z
+my-info|William Setzer|setzer@nails.gsfc.nasa.gov|Small front end to info|03-Jul-1989||~/misc/my-info.el.Z
+my-mail-aliases|Dale DePriest|daled@cadence.com|Expand aliases in outgoung mail headers.|20-Jan-1993||~/functions/my-mail-aliases.el.Z
+my-scommand|Johan Vromans|jv@mh.nl,{mcvax,hp4nl}!mh.nl!jv|Enhanced shell-command.|21-May-1989||~/as-is/myscommand.el.Z
+my-time|Mark D. Baushke|{3comvax,auspex,sun}!bridge2!mdb,mdb@bridge2.ESD.3Com.COM|Full-featured time.el|09-Mar-1989||~/as-is/my-time.el.Z
+mymud|Carl Edman|unknown|Another mud client in Emacs|14-May-1991|1.20|~/games/mymud.el.Z
+namedmarks|Ken Manheimer|klm@nist.gov|Per-buffer marks referred to by name, with completion|15-Nov-1993|V 1.6|~/misc/namedmarks.el.Z
+new-backquote|Rick Sladkey|jrs@world.std.com|New, improved version of the backquote macro.|26-Mar-1992||~/functions/new-backquote.el.Z
+new-buffer|Michael Ernst|mernst@theory.lcs.mit.edu|Better buffer-menu|11-Aug-1995|1.1|~/misc/new-buffer.el.Z
+new-dabbrev|Lars Lindberg|Lars.Lindberg@sypro.cap.se|Dynamic abbreviation package|08-Dec-1994|5.2|~/packages/new-dabbrev.el.Z
+new-saveconf|Dirk Grunwald|grunwald@flute.cs.uiuc.edu|Enhanced saveconf.|03-May-1989||~/as-is/misc/new-saveconf.Z
+new-shell|Robert Wells|rwells@bbn.com|Named shell buffers; better send-input.|||~/as-is/new-shell.el.Z
+new-stuff|John Sturdy|jcgs@harlqn.co.uk,mcvax!ukc!harlqn!jcgs|Miscellaneous handy "oddments".|10-Jan-1989||~/as-is/new-stuff.el.Z
+new-view|Alan Stebbens|aks@hub.ucsb.edu|Modified View|31-May-1990||~modes/new-view.el.Z
+newpara|Bruce Israel|israel@brillig.umd.edu|Fill paragraph properly.|||~/as-is/newpara.el.Z
+next-line-2|Tom Horsley|tahorsley@ssd.harris.com|Another next-line that avoids adding blank lines.|06-Apr-1989||~/as-is/next-line2.el.Z
+next-line-3|Bill Wohler|wohler@spam.istc.sri.com,akhanna@alexander.bbn.com|next-line that doesn't add blank lines.|05-Apr-1989||~/as-is/next-line3.el.Z
+next-line|Mark D. Baushke|mdb@kosciusko.esd.3com.com|Keep C-n from adding lines to a file|06-Mar-1989||~/as-is/next-line.el.Z
+next-screen-line|Govind N. Kamat|kamat@ece.UC.EDU|A next-line that moves by screen lines.|4-Apr-1993|2.1|~/functions/next-screen-line.el.Z
+nmail-extn|Lynn Slater|pacbell!indetech!lrs|User specified Mboxes.|||
+nmail-print|Rich Salz|rsalz@bbn.com|Command to print message.|01-May-1989||~/as-is/misc/rmail-print.Z
+nnspool|Scott Ballantyne|sdb@ssr.com|Spool access using NNTP in-sEmacs.|17-Nov-1992||~/interfaces/nnspool.el.Z
+nodify.shar.Z|Rene' Seindal|seindal@skinfaxe.diku.dk|simplifies construction of texinfo nodes|09-Nov-1990||~/misc/nodify.shar.Z
+novice|FSF|18.55 dist|Handling of disabled commands ("novice mode").|21-Jan-1987||
+npc-hm|Eyvind Ness|Eyvind.Ness@HRP.No|Networking library for interfacing GNU Emacs with remote Lisp Machines|20-Jul-1992|1.0|ugle.unit.no:/pub/gnu/emacs-lisp/rpc-hm-1.0.tar.Z
+nqueens|Daniel Quinlan|quinlan@gnu.ai.mit.edu|Produce a solution for the N queens problem.|27-Dec-94|1.2|~/games/nqueens.el.gz
+nrnews|Thomas Narten|narten@cs.purdue.edu|Improved rnews.el.|||~/as-is/nrnews.el.Z
+nroff-mode|FSF|18.55 dist|Major mode for editing nroff source.|22-Jun-1988||
+num-outline|Andrew Watson|ajw@ansa.co.uk|A numbered outline mode|12-Jul-1990||~/misc/num-outline.el.Z
+nuweb|Dominique de Waleffe|ddw@sunbim.be|Major mode to edit nuweb files with AucTex|10-Aug-1994|1.103|~/modes/nuweb.el.Z
+objective-C-mode|Kenneth Persson|benneth@eb.se|Major mode for editing Objective-C programs.|28-Nov-1991|3.02|~/modes/objective-C-mode.el.Z
+occam-mode|Tony Curtis, Martin Ferrier|mfe@cs.exeter.ac.uk|Occam major-mode.|13-May-1989||~/as-is/misc/occam-mode.Z
+old-ada-mode|Lynn Slater|pacbell!indetech!lrs|Ada-mode and environment.||1.05|
+oo-browser|Bob Weiner|oo-browser@hub.ucsb.edu|Multi-Language Object-oriented Browser|21-Sep-1995|2.9.10|ftp.cs.uiuc.edu:/pub/xemacs/infodock/
+open-line|Richard Stallman|rms@prep.ai.mit.edu|Use fill-prefix when opening lines.|||
+options|FSF|18.55 dist|Edit Options command.|04-Dec-1987||
+out-indent|Bard Bloom|bard@theory.lcs.mit.edu|Indented outline-mode.|13-Jun-1989||~/as-is/out-indent.el.Z
+out-xtra|Per Abrahamsen|abraham@iesd.auc.dk|Extra support for outline minor mode|01-30-1994|5.6|~/misc/out-xtra.el.Z
+outline|FSF|18.55 dist|Outline mode commands.|26-Jul-1988||
+outln-18|Per Abrahamsen|abraham@iesd.auc.dk|Extra support for outline minor mode|01-Jan-1994|0.0|~/misc/outln-18.el.Z
+overwrite-mode-fix|Joe Wells|jbw@cs.bu.edu|Make backward deletion work properly in overwrite mode.|07-Oct-1992||~/misc/overwrite-mode-fix.el.Z
+page-menu|David Eppstein|eppstein@cs.columbia.edu|Create a menu of pages in a buffer.|||~/as-is/page-menu.el.Z
+page|FSF|18.55 dist|Page motion commands.|22-Nov-1987||
+par-align|Bob Weiner|rsw@cs.brown.edu|Align and fill paragraphs and program comments properly.|28-Apr-1989||~/as-is/bob-weiner/par-align.el.Z
+paraform|Tom Horsley|tom@ssd.harris.com|Replacement fill-paragraph|08-Sep-1989||~/functions/paraform.el.Z
+paragraphs|FSF|18.55 dist|Paragraph and sentence parsing.|15-Apr-1988||
+partial-comp|David Gillespie|daveg@csvax.caltech.edu|Extended completion for the Emacs minibuffer|02-Jul-1990|1.04|~/packages/partial-comp.el.Z
+pascal-mode|Espen Skoglund|espensk@stud.cs.uit.no|Major mode for editing Pascal code|27-Jan-1994|2.1|~/modes/pascal-mode.el.Z
+pascal-mode|Mosur Mohan|mntgfx!mosurm|Pascal major mode.|15-Apr-1988||~/as-is/pascal-mode.el.Z
+pascal-mode|Vincent Broman|broman@nosc.mil|Pascal major mode.|Feb-1988|2.1|~/as-is/pascal.el.Z
+pathsearch|Christopher J. Madsen|ac608@yfn.ysu.edu|Find a file on a specified path (esp. C include files)|18-Jan-1996|1.6|~/misc/pathsearch.el.gz
+paths|FSF|18.55 dist|Define pathnames for use by various Emacs commands.|12-Jul-1988||
+patn-insert|Bard Bloom|bard@cs.cornell.uucp|Quickly generate patterned text|11-Jun-1990||~/packages/patn-insert.el.Z
+pb-popup|Noah Friedman|friedman@prep.ai.mit.edu|ensure display of a process buffer when new output arrives|25-Mar-1995|1.2|~/misc/pb-popup.el.gz
+pcl-cvs|Per Cederqvist|ceder@lysator.liu.se|Front-end to CVS version 1.3|31-May-1993|1.05|~/interfaces/pcl-cvs-1.05.tar.Z
+pcmail|Mark L. Lambert|markl@us.oracle.com|Yet Another Mail Reader for GNU Emacs.|05-Oct-1993|4.3|~/packages/pcmail.tar.Z
+perl-descr|Johan Vromans|jv@mh.nl|Describe perl symbol|30-Jun-1990|1.5|~/functions/perl-descr.shar.Z
+perl|Bill Mann|bill@ksr.com|Perl mode|20-Mar-1990||~/modes/perl.el.Z
+picture|K. Shane Hartman|18.55 dist|"Picture mode" -- editing using quarter-plane screen model.|09-Dec-1987||
+pidired-extn|Lynn Slater|pacbell!indetech!lrs|Yet more for dired.|11-Jul-1988||~/as-is/dired-extn.el.Z
+ping|Bruce Krulwich|krulwich@ils.nwu.edu|Ping other machines on the network|04-Mar-1990||~/interfaces/e dis.el.Z
+pk-dc|Pete Krautscheid|krauts@icd.teradyne.com|Mode to interface emacs with dc, the desk calculator.|19-Sep-1995|0.07|~/packages/pk-dc.el.Z
+point-macros|Ray Nickson|nickson@comp.vuw.ac.nz|Macros returning point.|11-Jun-1989||~/as-is/point-macros.el.Z
+pop-mail|Martin Neitzel|neitzel@ips.cs.tu-bs.de|When new mail arrives, pop-up RMAIL buffer and get new mail|06-Jun-1991|for 18.57|~/misc/pop-mail.el.Z
+popmail|W. Rupprecht|wolfgang@mgm.mit.edu|Pop up mail buffer for new mail.|17-Sep-1987||~/as-is/popmail.el.Z
+popper|Chris McConnell|ccm@cs.cmu.edu|Automatic pop-up/down of shrink-wrapped temporary windows.|17-Mar-1992|2.11|katmandu.mt.cs.cmu.edu:/pub/ilisp/popper.el.gz
+pos-help|Bard Bloom|bard@theory.lcs.mit.edu|Restore windows after help.|26-Jan-1989||~/as-is/pos-help.el.Z
+positions|Bard Bloom|bard@theory.lcs.mit.edu|Enhanced registers, motion undo.|25-Jan-1989||
+postman|M. Cenkl|cenkl%linus@mitre-bedford.arpa|Mode-line "biff".||1.0|
+postscript-avail|Chris Maio|?|Postscript mode available|||columbia.edu:/pub/ps-emacs.tar.Z
+postscript|Chris Maio|chris@cs.columbia.edu|Major mode for editing PostScript programs.|4-Sep-1988||~/modes/postscript.el.Z
+pp2|R. Schwartz (?)|merlyn@iwarp.intel.com|Lisp pretty printer.|||~/as-is/pp2.el.Z
+pp2|Randal L. Schwartz|merlyn@ora.com, merlyn@iwarp.intel.com|Lisp pretty printer.|2-Aug-1993||~/as-is/pp2.el.Z
+pp|Root Boy Jim|rbj@nav.icst.nbs.gov|Lisp pretty printer.|||~/as-is/pp.el.Z
+prefix-cntrl|Neal Ziring|hotlg!nz|Multicharacter sequences instead of chords.|||~/as-is/prefix-cntrl.el.Z
+prefix-reg2|Christopher North-Keys|erlkonig@walt.cc.utexas.edu|Prefix each line in a region.|03-Aug-1989||~/misc/prefix-reg2.el.Z
+prefix-regn|Ashwin Ram|Ram-Ashwin@cs.yale.edu|Prefix each line in region.|||~/as-is/prefix-reg.el.Z
+prettymodeln|Andy Gaynor|gaynor@topaz.rutgers.edu|Prettier mode line with long filenames.|||~/as-is/prettymodeln.el.Z
+prev-buffer|Stephen Gildea|gildea@bbn.com|Select Nth previous buffer.|13-Feb-1989||~/as-is/prev-buff.el.Z
+print-pack|Olin Shivers|shivers@cs.cmu.edu|Enhanced printing of buffers and regions.|11-Nov-1987||~/as-is/print-pack.el.Z
+print-select|John Sturdy|jcgs@harlqn.co.uk,mcvax!ukc!harlqn!jcgs|Printer, printer flag, and banner control.|05-Apr-1988||~/as-is/print-sel.el.Z
+printers|Kevin Rodgers|kevinr@ihs.com|An interface to `lpstat` (SysV) and /etc/printcap (BSD).|21-Aug-1995|1.6|~/misc/printers.el.gz
+printify-buffer|Roland McGrath|mcgrath@tully.Berkeley.EDU|Make nonprinting characters in the current buffer printable.|23-Jul-1990||~/functions/printify-buffer.el.Z
+print|Ronald Florence|mlfarm!ron|Proofing and printing a buffer using formatters.|28-Jul-1989||~/misc/print.el.Z
+profiler|Root Boy Jim|rbj@dsys.icst.nbs.gov|Crude elisp profiler.|11-May-1989||~/as-is/profiler.el.Z
+profile|Boaz Ben-Zvi|boaz@lcs.mit.edu|Program to generate run time measurements of elisp functions.|07-Feb-1992|1.0|~/misc/profile.el.Z
+prolog-etags|Shinichirou Sugou|wheaties.ai.mit.edu!mieko|Mods to make etags recognize .pl as Prolog source.|06-Jan-1989||
+prolog2|Kenichi Handa|handa@etlhit.etl.go.jp|Modified version of original prolog mode|13-Jun-1990||~/modes/prolog.el.Z
+prolog|Masanobu Umeda|18.55 dist|Major mode for editing and running Prolog.|09-Apr-1988||
+ps-mode|Dirk Grunwald|grunwald@m.cs.uiuc.edu|Major mode for signalling processes.|19-Dec-1988||~/as-is/ps-mode.el.Z
+ps-print|James C. Thompson|thompson@wg2.waii.com|Jim's Pretty-Good PostScript Generator for Emacs 19 (ps-print)|26-Feb-1994|2.0|~/packages/ps-print.el.gz
+pt-wysiwyg|Lynn Slater|lrs@indetech.uucp|Automatic horizontal scrolling and other features|23-Aug-1989||~/misc/pt-wysiwyg.el.Z
+purity|Robert Mende|mende@aramis.rutgers.edu|The purity test.|05-May-1989||~/games/purity.el.Z
+putenv|Randal Schwartz|merlyn@iwarp.intel.com|Set the value of environment variable.|27-Apr-1989||~/as-is/putenv.el.Z
+pyimenu|Perry A. Stoll|stoll@atr-sw.atr.co.jp|Python addition for imenu|17-Jul-1995|1.1|~/misc/pyimenu.el.gz
+query|Martin Boyer|gamin@ireq-robot.hydro.qc.ca|Functions to query the user.|01-Mar-1994|1.0|~/packages/query.el.Z
+qwerty|Neil Jerram|nj104@cus.cam.ac.uk|For people who are used to more efficient keyboard layouts.|01-Mar-1993|1.1|~/misc/qwerty.el.Z
+radix|Simon Marshall|Simon.Marshall@mail.esrin.esa.it|Functions for the manipulation of integers in any radix (or base).|28-Jun-1994|1.05|~/misc/radix.el.Z
+randomize|Mark Buda|hermit%dastari.uucp@devon.lns.pa.us|Randomize a rectangle or region by replacing letters and numbers randomly.|26-Mar-1992||~/functions/randomize.el.Z
+random|?|jr@bbn.com|Random number routines for Gosmacs.|||
+rat-pgp|Michael Hirsch|hirsch@mathcs.emory.edu|PGP Public Key system front-end for GNU Emacs|08-Oct-1993|1.4|~/misc/rat-pgp.el.Z
+rbj-mail|Root Boy Jim|rbj@dsys.icst.nbs.gov|Rmail enhancements.|02-May-1989||~/as-is/misc/rbj-mail.Z
+rcp|Michael Tran|umn-cs!tran|Remote edit with rcp.|||~/as-is/rcp.el.Z
+rcs-ci-co|Ed Simpson|evs@cs.duke.edu|RCS ci/co interface.|05-Aug-1987|1.4|~/interfaces/rcs.shar.Z
+rcs-cks|Chris Siebenmann|cks@white.toronto.edu|RCS interface|24-May-1990|1.35|~/interfaces/rcs-cks.el.Z
+rcs-clean|Lawrence R. Dodd|dodd@roebling.poly.edu|replaces the $ around RCS keywords making them inert.|19-Sep-1993|1.16|~/misc/rcs-clean.el.Z
+rcs-supt|?|guttman@linus.mitre.org|RCS Interface|02-Mar-1990||~/interfaces/rcs-supt.el.Z
+rcs|Pehong Chen|phc@renoir.berkeley.edu|RCS interface.|||
+re-isearch|K. Manheimer|klm@cme-durer.arpa|Isearch w/regexp toggle.|18-Feb-1988||
+rebind|Ben Chase, Randal L. Schwartz|bbc@rice.edu,merlyn@agora.hf.intel.com|Really rebind keys.|07-Apr-1989||~/as-is/rebind.el.Z
+rec-edit|John Sturdy|jcgs@uk.co.harlqn|Wander-safe, in-one-window.|30-Sep-1988||~/as-is/rec-edit.el.Z
+rect|FSF|18.55 dist|Rectangle functions.|30-Sep-1986||
+redisp_win|Lloyd Zusman|ljz@fxgrp.fx.com,ames!fxgrp!ljz|Scroll-step not ignored when inserting text.|14-Feb-1989||~/as-is/misc/redisp_win.Z
+redraw-line|Stephen Gildea|gildea@bbn.com|Redraw current line.|Dec-1988||
+reduce|Neal Ziring|wucs!nz|Replace numeric expression by its value.|08-Apr-1986||~/as-is/reduce.el.Z
+refer2bibtex|Henry Kautz|kautz%allegra.att.com@research.att.com,allegra!kautz|Convert refer-style bibliographic entries to ones usable by latex bib.|11-Jan-1989||~/as-is/refer2bibtex.el.Z
+refer|Ashwin Ram|Ram-Ashwin@cs.yale.edu|Look up references in bibliography files.|08-Oct-1989|1.0|~/as-is/refer.el.Z
+region-key|Aaron Larson|alarson@src.honeywell.com|Region specific modes for emacs.|18-Jan-1993|version 1.0|~/misc/region-key.el.Z
+register|FSF|18.55 dist|Register commands.|30-Sep-1986||
+remote|N.Tran,E.Raible,W.Carpenter|raible@orville.nas.nasa.gov,wjc@ho5cad.att.com|Remote editing via rcp.|07-Jan-1989|2.6+|~/as-is/remote.el.Z
+rename|Kayvan Sylvan|mrspoc!kayvan@apple.com|Functions to rename buffers.|16-Mar-1989||~/as-is/rename.el.Z
+rep-region|Bob Weiner|rsw@cs.brown.edu|Replace things in region only.|02-Apr-1992||~/functions/rep-region.el.Z
+repl-occur|Dave Gentzel|GENTZEL@cpwsca.psc.edu|Minor occur-mode fix; replace.el enhancements.|16-Apr-1989||~/as-is/misc/repl-occur.Z
+replace-mv|Keiji Kanazawa|kgk@cs.brown.edu|Make replace functions leave point where it was.|19-Apr-19||~/as-is/replace-mv.el.Z
+replace|FSF|18.55 dist|Replace commands.|02-May-1988||
+reporter|Barry A. Warsaw|bwarsaw@cen.com|Customizable bug reporting of lisp programs.|06-Jul-1994|2.12|~/misc/reporter.el.Z
+reportmail|Benjamin Pierce|bcp@CS.CMU.EDU|Report incoming main in the mode line.|21-Jul-1990||~/misc/reportmail.el.Z
+results-of-command|Rich Berlin|rberlin%birdland@Sun.COM|Return command results in a string.|25-Oct-1988||~/as-is/results-of-command.el.Z
+resume|Joe Wells|jbw@cs.bu.edu|Resuming suspended Emacs with command line arguments.|13-Jun-1989||~/packages/resume.el.Z
+resync|Olin Shivers|shivers@cs.cmu.edu|Refresh buffers that have changed on disk|08-Jun-1990||~/functions/resync.el.Z
+rev-lines|Nate Hess|woodstck@espresso.ebay.sun.com,intelca!mipos!nate|Reverse order of lines in region.|07-Feb-1989||~/as-is/rev-lines.el.Z
+rexx|Anders Lindgren|d91ali@csd.uu.se|REXX language edit and debugging mode.|20-Mar-93|1.0|~/packages/rexx-1.0.tar.Z
+rfc822|Richard Mlynarik|18.55 dist|Hairy rfc822 parser for mail and news and suchlike.|02-Sep-1987||
+rmail+|Bob Weiner|rsw@cs.brown.edu|Automatically update the summary buffer when needed, bind 'e' to edit current message.|28-Apr-1989||~/as-is/bob-weiner/rmail.el.Z
+rmail-apply|Dan Pierson|pierson@multimax.encore.com,encore!pierson|Apply function to all messages, babyl-to-mail.|03-Feb-1989||~/as-is/rmailapply.el.Z
+rmail-extr|Eric Raible|raible@orville.nas.nasa.gov|Extract rejected rmail message.|29-Nov-1988||~/as-is/rmail-extr.el.Z
+rmail-file|Rusty Wright|rusty@garnet.berkeley.edu|Create new rmail file.|05-Apr-1989||~/as-is/misc/rmail-file.Z
+rmail-filt|Lynn Slater|pacbell!indetech!lrs|Filters of mail.|||
+rmail-fund|David Eppstein|garfield!eppstein@columbia.edu|Find undeleted messages after a delete|22-Mar-1989||~/as-is/nmail-fund.el.Z
+rmail-reply-cc|Lee Short|short@asf.com|Automatically CC the author of replies to GNU Emacs rmail messages.|20-Nov-1992||~/misc/rmail-reply-cc.el.Z
+rmail-saver|David L. Sifry|sifry@pic.melco.co.jp|automatically create file names based on email addresses for rmail|31-Jan-1994|1.01|~/misc/rmail-saver.el.Z
+rmail-subj|Ashwin Ram|Ram-Ashwin@cs.yale.edu|Subject search in rmail.|23-Nov-1987||~/as-is/rmail-subj.el.Z
+rmail-to-mail|Skip Montanaro, Nate Hess|montanaro@sprite.crd.ge.com|Convert an rmail babyl file to unix mail.|19-May-1993||~/functions/rmail-to-mail.el.Z
+rmailedit|FSF|18.55 dist|"RMAIL edit mode"  Edit the current message.|28-Feb-1987||
+rmailgen|Lawrence R. Dodd|dodd@roebling.poly.edu|Generates guesses for RMAIL output files and FCC files.|12-Dec-1994|2.1|~/misc/rmailgen.el.Z
+rmailkwd|FSF|18.55 dist|Rmail keyword stuff.|21-Mar-1988||
+rmailmsc|FSF|18.55 dist|Rmail miscellanea.|06-Jan-1987||
+rmailout|FSF|18.55 dist|"RMAIL" mail reader: output message to a file.|14-Apr-1988||
+rmailsort|Masanobu UMEDA|umerin@mse.kyutech.ac.jp|Rmail: sort messages.|26-Jan-1993|1.4|~/misc/rmailsort.el.Z
+rmailsum+|Bob Weiner|rsw@cs.brown.edu|Enhanced summary: more permanent delete, most rmail funcs available|28-Apr-1989||
+rmailsum-top|Raymond A. Schnitzler|needle1!ras@bellcore.bellcore.com|rmail-summary-by-topic.|23-May-1989||~/as-is/rmailsumtp.el.Z
+rmailsum|FSF|18.55 dist|Rmail summary things.|31-Jul-1988||
+rmail|?, K. Shane Hartman|18.55 dist|"RMAIL" mail reader.|04-Jul-1988||
+rnews+|Richard L. Hess|cimshop!rhess@uunetAdd bt|bug fixed rnews reader|20-Apr-1990||~/packages/rnews+.el.Z
+rnews-wsum|Richard Hess|cimshop!rhess|Rnews with summary-mode.|27-Dec-1988||
+rnewspost|Tower, et al|18.55 dist|USENET news poster/mailer.|15-Jun-1988||
+rnews|Len Tower, ADS, Sundar, King, Mlynarik|18.55 dist|USENET news reader.|22-May-1988||
+rolo-2|Bob Weiner|rsw@cs.brown.edu|Feature-laden rolodex system.|17-Jun-1989||~/as-is/misc/rolo-2.Z
+rolo|Paul Davis|davis%scr@sdr.slb.com|An e-lisp version of Ron Hitchins rolo program|24-Apr-1989||~/as-is/misc/rolo.Z
+rs-compile|Radey Shouman|rshouman@chpc.utexas.edu|More convenient compiler interface; replaces compile.el.|09-Apr-1993|1.0|~/misc/rs-compile.el.Z
+rsearch|James Berry|jberry@frb.gov|Repeatable non-incremental search commands and search/replace menubar.|15-Jul-1994|1.11|~/misc/rsearch.el.Z
+russian|Valery Alexeev|ava@math.jhu.edu|Display, translate and edit buffers containing russian characters.|14-Jan-1994|1.0|~/packages/russian.el.Z
+s-mode|Doug Bates, Ed Kademan|bates@stat.wisc.edu, kademan@stat.wisc.edu|S mode for GNU Emacs|24-Apr-1989||~/modes/S.shar.Z
+sable|Saumen Dutta|skdutta@ucs.att.com|Front end code for using Sable from GNU Emacs|09-Nov-1919|1.0|~/interfaces/sable.el.Z
+safe-rmail|Dale Worley|worley@compass.com|Protect Rmail files from unintentional expunges|06-Jun-1990||~/misc/safe-rmail.el.Z
+sample-.emacs|David C. Lawrence|tale@uunet.uu.net|A Sample, Verbose .emacs file|24-May-1989||~/misc/sample-.emacs.Z
+sample-dot-emacs|Christopher North-Keys|harp@cadillac.CAD.MCC.COM|A sample Emacs initialization file with various useful functions.|19-Jul-1990||~/functions/sample-dot-emacs.Z
+save-help|Dale Worley|compass!worley|Save *Help* buffers.|17-Oct-1988||~/as-is/save-help.el.Z
+save-match|Lawrence, Robinson, Quiroz, Jones|kyle@wendy-fate.uu.net|Preserve match-data macro.|03-Jun-1989||~/as-is/save-match.el.Z
+saveconf|Kyle E. Jones|18.55 dist|Save buffer and window configuration between editing sessions.|03-May-1989||~/as-is/saveconf.el.Z
+sccs-comment|Kevin Rodgers|kevin@traffic.den.mmc.com|sccs-delta-comments customization for sccs.el 2.0.|23-Feb-1993|1.0|~/misc/sccs-comment.el.Z
+sccs2|Johnathan Vail, Kevin Rodgers|vail@tegra.com, kevin@traffic.den.mmc.com|Emacs interface for common SCCS operations.|23-Feb-1993|2.0|~/packages/sccs2.el.Z
+sccs|Eric S. Raymond|eric@snark.uu.net|SCCS User Interface|04-Mar-1990|2.0|~/interfaces/sccs.Z
+scheme-comp|Mike Clarkson|mike@ists.ists.ca,yunexus!ists!mike|C-Scheme co|92-03-| completion for shell and Scheme modes.|Jan-1989||~/as-is/schemecomp.el.Z
+scheme-inspector|Michael Ernst|mernst@research.microsoft.com|View and navigate among Scheme values under Emacs|24-Mar-1994|1.2|~/interfaces/scheme-inspector.el.Z
+scheme|Bill Rozas|18.55 dist|Scheme mode, and its idiosyncratic commands.|15-Jul-1988||
+sco-mouse|Ronald Florence|ron@mlfarm.uucp|Emacs mouse driver for SCO Xenix or Unix|22-May-1990||~/misc/sco-mouse.shar.Z
+sco|92-03-||Theodore Ts'o|tytso@athena.mit.edu|New and improved shell-command.|04-Mar-1989||~/as-is/sco|mand.el.Z
+scr-title|Heinz Schmidt|hws@ICSI.Berkeley.EDU|Automatically title screens based on the current buffer.|05-Dec-1990||~/epoch/scr-title.el.Z
+screen|Kyle E. Jones|kyle@uunet.uu.net|Tools to configure your GNU Emacs windows.|1991||~/misc/screen.el.Z
+scribe|FSF|18.55 dist|Scribe mode, and its ideosyncratic commands.|22-Jan-1987||
+scroll-fix|Joe Wells|jbw@cs.bu.edu|Improved scroll commands.|21-Apr-1989||~/as-is/scroll-fix.el.Z
+scroll-in-place|Eric Eide|eeide@cs.utah.edu|Improved vertical scrolling commands|18-Nov-1994|1.3|~/misc/scroll-in-place.el.Z
+search+|charles@hpcvca.cv.hp.com|Charles Brown|Enhanced searching, with full editing|08-Jan-1990||~/packages/search+.el.Z
+search-buf|?|allegra!tk@research.att.com|Search multiple buffers|26-Aug-1989||~/functions/search-buf.el.Z
+search-completions|Radey Shouman|rshouman@chpc.utexas.edu|Use isearch to select a completion, narrow completions with regexps.|01-April-1994|1.04|~/misc/search-completions.el.Z
+see-chars|Randal Schwartz|merlyn@iwarp.intel.com|Displays characters typed.|01-May-1989||~/as-is/see-chars.el.Z
+select-buf|Bill Leonard|tahorsley@ssd.harris.com|Interactive buffer selection.|30-Mar-1989||~/as-is/select-buf.el.Z
+sendmail|FSF|18.55 dist|Mail sending commands.|02-Jun-1988||
+sendml-enh|Nate Hess|woodstck@espresso.ebay.sun.com|Sendmail enhancements|06-Aug-1989||~/misc/sendml-enh.el.Z
+server-num2|richael S. Balenger|msb@ho5cad.att.com|fix to server.el to allow line numbers|26-Oct-1989||~/misc/server-num.el.Z
+server-num|?|msb@ho5cad.att.com,att!ho5cad!msb|Server that handles +line_number.|21-Mar-1989||~/as-is/server-num.el.Z
+server|William Sommerfeld, Peck, Stallman|18.55 dist|Lisp code for Emacs running as server process.|04-Aug-1988||
+setf|Miles Bader|miles@cogsci.ed.ac.uk|Complete implementation of setf and friends including let-binding optimizer.|22-Apr-1992||~/misc/setf.tar.Z
+setup-term|Joe Wells|jbw@uswest.com|Convert key bindings for different terminals|19-Jul-1989||~/functions/setup-term.el.Z
+sexp-history|Takeyuki Sakaguchi|saka@train.ncl.omron.co.jp|S-exp history substitution in GNU Emacs lisp-interaction-mode|01-Dec-1991|1.0|~/packages/sexp-history.tar.Z
+sh-mode|Thomas W. Strong, Jr.|strong+@cmu.edu|Beginning of an sh mode.|15-Nov-1992||~/modes/sh-mode.el.Z
+shadow-load|Hallvard B Furuseth|hallvard@ifi.uio.no|Load "file" from first dir in load-path from which "file" is not loading|18-Apr-1991|1.5|~/functions/shadow-load.el.Z
+shadowfile19|Boris Goldowsky|boris@cs.rochester.edu|Helps you keep identical copies of files in multiple places.|17-Nov-1993|2.8|~/misc/shadowfile19.el.Z
+shadowfile|Boris Goldowsky|boris@cs.rochester.edu|Helps you keep identical copies of files in multiple places.|07-Dec-1993|2.9|~/misc/shadowfile.el.Z
+shel-comp2|Rob Austein|sra@lcs.mit.edu|Filename completion in a shell-mode buffer|15-Mar-1990||~/packages/shel-comp2.el.Z
+shell-buffer|Dale Worley|compass!worley|Shell-command-on-buffer.|17-Oct-1988||~/as-is/shell-buff.el.Z
+shell-command|John Sturdy|jcgs@harlqn.co.uk|Build and use list of command in shell.|||~/as-is/shell-command.el.Z
+shell-comp|Shinichirou Sugou|shi@sgtp.apple.juice.or.jp|File name completion in a shell|14-Jun-1990|Final|~/packages/shell-comp.el.Z
+shell-expand|Mark Ardis|maa@sei.cmu.edu|Expand filenames in shell.|||~/as-is/shell-expand.el.Z
+shell-filter|Andy Gaynor|gaynor@topaz.rutgers.edu|Filter password echos from shell.|15-Dec-1989||~/as-is/shell-filter.el.Z
+shell-filt|Silver|gaynor@topaz.rutgers.edu|Shell filters|15-Dec-1989||~/packages/shell-filt.el.Z
+shell-patch|Tom Horsley|tahorsley@ssd.harris.com|Patches to shell.el for better directory tracking.|30-Jan-1989||~/as-is/misc/shell-patch.Z
+shell-util|Comor Rafferty|conor@sierra.stanford.edu|Csh-like shell.|||
+shell_mung|Jym Dyer|jym@wheaties.ai.mit.edu|Shell-like I/O redirection/globbing mods for VMS.|09-Jan-1989|1.1|
+shellc|Simon Marshall|Simon.Marshall@mail.esrin.esa.it|Customisable context-based completion for the emacs-19 shell buffer.|06-Dec-94|1.03|~/packages/shellc.el.Z
+shelldb|Simon Marshall|Simon.Marshall@mail.esrin.esa.it|Customisable context-based database for shell commands.|06-Dec-1994|1.03|~/packages/shelldb.el.Z
+shellext|W. Rupprecht|wolfgang@mgm.mit.edu|Ksh-like extensions to shell.|12-Oct-1987||~/as-is/shellext.el.Z
+shells|Simon Marshall|Simon.Marshall@mail.esrin.esa.it|Spelling correction for the emacs-19 shell buffer.|10-Aug-1994|1.01|~/packages/shells.el.Z
+shellt|Simon Marshall|Simon.Marshall@mail.esrin.esa.it|Directory etc. tracking for the emacs-19 shell buffer.|10-Aug-1994|1.01|~/packages/shellt.el.Z
+shell|FSF|18.55 dist|Run subshell under Emacs.|03-Jul-1988||
+short-help|Chris Halverson|halverso@staff.tc.umn.edu|Makes a 5 line buffer that contains useful Emacs commands|19-May-1993|1.1|~/misc/short-help.el.Z
+show-bufs|Wayne Mesard|wmesard@cs.stanford.edu|Put some or all buffers in equally-sized windows|30-Nov-1992|1.3|~/as-is/show-bufs.el.Z
+show-lines|Nelson Beebe|Beebe@science.utah.edu|Add and remove line numbers in a buffer.|26-Dec-1988||~/as-is/show-lines.el.Z
+show-temp|Joe Wells|jbw@cs.bu.edu|Display buffer in window of appropriate size.|20-Mar-1989||~/as-is/show-temp.el.Z
+show-time|Randal Schwartz|merlyn@iwarp.intel.com|Digital clock.|25-Nov-1988||~/as-is/show-time.el.Z
+showdiff|W. Rupprecht|wolfgang@mgm.mit.edu|Put diff-file differences in two windows.|||~/as-is/showdiff.el.Z
+shrink2reg|?|macrakis@ri.osf.fr|Shrink window to region|20-Jun-1990||~/functions/shrink2reg.el.Z
+simple+|Dave Gentzel|gentzel@godot.psc.edu|Enhanced basic editing commands.|03-May-1989||~/as-is/misc/simple+.Z
+simple-hebrew|Alex Rezinsky|alexr@msil.sps.mot.com|Simple Hebrew language support.|24-Nov-1993|1.0|~/misc/hebrew.el.Z
+simple-line-numbers|?|?|Simple line number in the mode line.|17-Sep-1992||~/functions/simp-lnum.el.Z
+simple-menu|Frank Ritter|ritter@cs.cmu.edu|Command-line menus made declaratively (rev of Ward's procedural version)|20-Sep-1994|1.2|~/interfaces/simple-menu.el.Z
+simple|FSF|18.55 dist|Basic editing commands.|22-Jul-1988||
+simula|Ole Bjorn Hessen|18.55 dist|Simula mode.|15-Mar-1988||
+slowsplit|John Robinson|jr@bbn.com|Split window with minimal redisplay.|05-Apr-1989||~/as-is/slowsplit.el.Z
+smart-address|John Robinson|jr@bbn.com|Rewrite to: field from replied-to .sig.|21-Jun-1989||~/as-is/smart-address.el.Z
+smart-info|Bob Weiner|rsw@cs.brown.edu|Browse Info networks with one key and its corresponding meta-key.|28-Apr-1989||~/as-is/bob-weiner/smart-info.el.Z
+smart-menu|Bob Weiner|rsw@cs.brown.edu|Menu interface to Emacs subsystems that works with smart-key.el.|28-Apr-1989||~/as-is/bob-weiner/smart-menu.el.Z
+sml-mode|Lars Bo Nielsen|mcvax!diku!iesd!lbn@uunetAuu.net|Major mode for Standard ML.|25-Jan-1989|2.0|~/as-is/sml-mode.el.Z
+snake|Alex Rezinsky|alexr@msil.sps.mot.com|Snake game|13-Oct-1994|1.1|~/games/snake.el.Z
+sokoban|Boaz Ben-Ziv|boaz@lcs.mit.edu|Sokoban game: push packets into goal positions throughout 50 game screens.|09-Jan-1992|1.3|~/games/sokoban.tar.Z
+sort-active|David C Lawrence|tale@uunet.uu.net|Sort the USENET active group file.|06-Jun-1989||~/as-is/sortactive.el.Z
+sort-fix|Roland Roberts|rbr4@uhura.cc.rochester.edu|Fixes to sort.el.|02-Dec-1988||~/as-is/sort-fix.dif.Z
+sort20|Howie Kaye|Sy.Howie@cu20b.arpa|Sort like Tops20 TECO.|15-Jan-1986||~/as-is/sort20.el.Z
+sort|FSF|18.55 dist|Commands to sort text in a buffer.|30-May-1988||
+speak|Dave Brennan|brennan@hal.com|Make Emacs speak on Sun Sparc (requires speak from wilma.cs.brown.edu).|13-Feb-1992|1.0|~/misc/speak.el.Z
+spell-dict|John Peterson|?|Access to online dict.|16-Dec-1986||~/as-is/spell-dict.el.Z
+spell|FSF|18.55 dist|Spelling correction interface.|18-Aug-1988||
+spook|Not Steve Strassmann|18.55 dist|Spook phrase utility.|09-Apr-1988||
+spread|Benjamin C. Pierce|bcp@dcs.ed.ac.uk|A simple spreadsheet for Emacs |09-Dec-1993|Version 1.4|~/modes/spread.el.Z
+sql-mode|Rob Riepel|riepel@networking.stanford.edu|Mode for editing and testing SQL.|12-Feb-1994|2.0|~/modes/sql-mode.el.Z
+sqlplus|Jim Lange|jlange@us.oracle.com|SQL*PLUS mode.|27-Mar-1990|1.2|~/modes/sqlplus.tar.Z
+sql|Lynn Slater|lrs@indetech.com|SQL mode|03-Nov-1989||~/modes/sql.el.Z
+stardate|Mark Eichin|eichin@athena.mit.edu|Generate unique time stamps.|||~/as-is/stardate.el.Z
+startup-2|Johan Vromans|jv@mh.nl|Automatic services performed upon startup.|19-Jul-1989||~/misc/startup-2.el.Z
+startup-patch|Barry A. Warsaw|bwarsaw@cen.com|Mods to startup.el for settable command line arguments, among others|05-Sep-1989||~/misc/startup.patch.Z
+startup|FSF|18.55 dist|Process Emacs shell arguments.|10-Jul-1988||
+stig-paren|Jonathan Stigelman|Stig@netcom.com|Super-cool matching paren/sexp highlighting for emacs 19|01-Oct-1993|Release 1.17|~/misc/stig-paren.el.Z
+strip|Lawrence R. Dodd|dodd@roebling.poly.edu|Hook for removing trailing blanks from files|11-May-1993|1.4|~/misc/strip.el.gz
+studly|FSF|18.55 dist|StudlyCaps package.|12-Sep-1986||
+su-command|John Robinson|jr@bbn.com|Run command as root.|16-Dec-1988||~/as-is/su-command.el.Z
+subr|FSF|18.55 dist|Basic lisp subroutines.|16-May-1987||
+suffix-template|Ralf Fassel|ralf@physik3.gwdg.de|Load a template file based on file name suffixes.|18-Jan-94|1.5|~/misc/suffix-template.el.Z|
+sum-column|Bard Bloom, Dan Pierson|bard@theory.lcs.mit.edu|sum-column and sum-region functions.|20-Mar-1989||~/as-is/sum-column.el.Z
+summarize-ls-lR|Karl Fogel|kfogel@occs.cs.oberlin.edu|Prune useful information from an ls -lR listing.|24-Jan-1993||~/functions/summarize-ls-lR.el.Z
+sun-cursors|Jeff Peck|18.55 dist|Cursor definitions for Sun windows.|13-Mar-1987||
+sun-fkeys|Graham Gough|graham@cs.man.ac.uk|makes Sun and X function-key binding consistent|08-May-1991||~/misc/sun-fkeys.el.Z
+sun-fkeys|Paul Davis|davis%scrsu1%sdr.slb.com@relay.cs.net|Enhanced support for Sun function keys.|07-Apr-1989||~/as-is/sun-fkeys.el.Z
+sun-fns|Peck, Jefferson, Greenbaum|18.55 dist|Subroutines of Mouse handling for Sun windows.|14-Aug-1987||
+sun-keys|Ian G. Batten|18.55 dist|Clean support for Sun function keys.|03-Jan-1987||
+sun-mouse|Peck, Jefferson|18.55 dist|Mouse handling for Sun windows.|14-Aug-1987||
+sun3-x-arrws|Chris Lott|bob@cis.ohio-state.edu|Arrow key bindings for Sun 3s under X.|04-Jan-1989||~/as-is/sun3xarrws.el.Z
+sun4-keys|Ethan Bradford|ethanb@u.washington.edu|Names and definitions for all the named keys on a Sun4 keyboard|8-Jul-1993|v1.0|~/terms/sun4-keys.el.Z
+sup-mouse|Rupprecht, Robinson|18.55 dist|supdup mouse support for lisp machines.|22-Nov-1986||
+superapropos|Lynn Slater|pacbell!indetech!lrs|Hackers hound dog.|15-Jun-1988||
+supercite|Barry A. Warsaw|supercite-help@anthem.nlm.nih.gov|Mail and news reply citation package|22-Sep-1993|3.1|~/packages/sc3.1.tar.Z
+superman|Barry A. Warsaw|bwarsaw@cen.com|Background Un*x manual page formatter and mode.|17-Jul-1991|1.0|~/misc/superman.tar.Z
+supertab|Christian Queinnec|Christian.Queinnec@inria.fr|Enhanced TAB in Lisp-based modes.|09-Feb-1995|1.6|~/misc/supertab.el.Z
+superyank|Barry A. Warsaw|bwarsaw@cen.com|Inserts the message being neplied to in various citation styles.|19-Jun-1989|1.1|~/as-is/superyank.el.Z
+suprss-keymp|Stephen Gildea|gildea@bbn.com|A better suppress-keymap; doesn't clobber all printing characters.|13-Feb-1989||~/as-is/suprskeymp.el.Z
+surprise|?|jr@bbn.com|Merry Xmas from hanoi.|20-Dec-1988||~/as-is/surprise.el.Z
+swap-bsdel|Deven T. Corzine|deven@rpi.edu|Swap Backspace and Delete|10-Feb-1990||~/functions/swap-bsdel.el.Z
+swap-keys|Jim Driscoll|hao!boulder!driscoll|Swap key meanings.|16-Sep-1987||
+swap-windows|Stephen Gildea|gildea@bbn.com|Swap window positions.|Nov-1988||~/as-is/swap-wins.el.Z
+swifTeX|Matt Swift|swift@bu.edu|Major modes for LaTeX and LaTeX doc.sty documents|21-Apr-1995|1.23|~/modes/swiftex.el.gz
+switch-assoc|Mark A. Plaksin|mplaksin@ai.uga.edu|Quick switching to associated buffers (e.g. from a .c file to a .h file).|5-May-1994|0.5|~/misc/switch-assoc.el.Z
+symlink-fix|Joe Wells|jbw@cs.bu.edu|Removes symbolic links from pathnames.|16-Aug-1992||~/packages/symlink-fix.el.Z
+syntax-decode|Rod Whitby|rwhitby@research.canon.oz.au|Decode comment characteristics from the syntax table.|22-Nov-1992|1.13|~/functions/syntax-decode.el.Z
+t-match|Tom Kraljevic|tomk@crhc.uiuc.edu|Match parens and other arbitrary strings.|0-Oct-1994|1.3|~/misc/t-match.el.Z
+tabify|FSF|18.55 dist|Tab conversion commands.|30-Sep-1986||
+tads|Darin Johnson|djohnson@ucsd.edu|Bare bones mode for TADS (Text Adventure Development System)|Feb-94|1.0|~/games/tads.el.Z
+tag-comp|Henry Kautz|kautz@allegra.att.com|Completion of tag names.|02-May-1988||~/as-is/tag-comp.el.Z
+tag-query|Rene' Seindal|seindal@diku.dk|Shell script for empty TAGS file for tag-query-replace|26-Aug-1988||~/as-is/tag-query.sh.Z
+tag-trail|Duke Briscoe|briscoe-duke@cs.yale.edu|Modifications to tag with a trail|20-Apr-1990||~/packages/tag-trail.el.Z
+tagify|Dan LaLiberte|liberte@cs.uiuc.edu|Make TAGS files.|16-Jun-1989||~/packages/tagify.el.Z
+tagring|Barry N. Nelson|barryn@world.std.com|Remember and undo searches with find-tag.|12-Nov-1992||~/misc/tagring.el.Z
+tags-helper|John Sturdy|jcgs@harlqn.co.uk|Help completing tag names.|31-Oct-1988||
+tags-occur|macrakis@osf.org||Show tags entries in *Occur* buffer|20-Jun-1991||~/packages/tags-occur.el.Z
+tags|FSF|18.55 dist|Tags facility.|29-Jul-1988||
+tar-mode|Jamie Zawinski|jwz@lucid.com|Simple editing of tar files from GNU Emacs|15-Jan-1993|1.26|~/modes/tar-mode.el.Z
+tcl|Tom Tromey|tromey@busco.lanl.gov|Major mode for editing Tcl|15-July-1994|1.21|~/modes/tcl.el.Z
+tcov|Tom Tromey|tromey@busco.lanl.gov|Highlight a buffer according to coverage output|20-Sep-1994|1.4|~/misc/tcov.el.Z
+teco|Dale R. Worley|drw@math.mit.edu|Teco interpreter|19-Jun-1991|1.0|~/packages/teco.el.Z
+tegra|Johnathan Vail|vail@tegra.uucp|Code documenting and formatting functions|05-Sep-1989||~/packages/tegra.el.Z
+tek-epoch-stuff|Ken Wood|kwood@austek.oz.au|Highlighting: source code, info & manual browsers, mail, news, mouse.|12-Dec-1991|Version: 1.1|~/epoch/tek-epoch-stuff-1.1.tar.Z
+tek-highlight|Rod Whitby|rwhitby@research.canon.oz.au|Epoch highlighting: source code, dired, info, mail, news, motion.|18-Aug-1992|Version: 2.0|~/epoch/tek-highlight-2.0.tar.Z
+tek4404-mouse|Eirik Fuller|eirik@elf.tn.cornell.edu|Mouse support for Tek 4404 terminals (requires alt-mouse.el).|24-Jul-1990||~/terms/tek4404-mouse.el.Z
+telnet-rsh|Michael McNamara|mac@ardent.com,ubvax!ardent!mac|Enhancement to telnet.el; rsh mode.|11-Jan-1989||~/as-is/misc/telnet-rsh.Z
+telnet|William Schelter|18.55 dist|Telnet mode.|10-Apr-1988||
+templatemode|Mark A. Ardis|comp.sources.unix v11i92|Template minor mode - well-designed; Context-Free-Grammar model.|31-Jul-1987||~/modes/templatemode.tar.Z
+templatemode|Mark Ardis|comp.sources.unix v11i92|Template minor mode.|1987||
+template|Tom Lord|lord+@andrew.cmu.edu|Create new files from templates.|||~/as-is/template.el.Z
+term-lock|Nate Hess|woodstck@espresso.ebay.sun.com|Terminal lock program|05-Feb-1990||~/packages/term-lock.el.Z
+terminal|Richard Mlynarik|18.55 dist|Terminal emulator.|15-Apr-1988||
+terminfo|Brian Tompsett|briant@spider.co.uk|Terminal emulator which uses terminfo|01-Mar-1990||~/packages/terminfo.el.Z
+test-fun|Alan Katz|katz@venera.isi.edu|Test interactive or non-interactive functions|12-Feb-1990||~/functions/test-fun.el.Z
+test|Mark Ardis|comp.sources.unix v11i??|Functions for testing elisp packages.|||
+tet-1.3|Tom Herman|mail11325@pop.net|Sample .emacs file with function key/ keypad bindings and template for Linux.|21-Mar-1997|Version 1.3| ~/packages/tet-1.3.tar.gz|
+tex-compile|Jacob Gore|Gore@EECS.NWU.Edu|Parse TeX error messages.|27-Apr-1989||~/as-is/texcompile.el.Z
+tex-complete|Sebastian Kremer|sk@thp.uni-koeln.de|Minibuffer name completion for TeX and LaTex macros and environments.|08-Jul-1990|1.0|~packages/tex-complete.shar.Z
+tex-mode|Schelter, King, Gildea, Prange|18.55 dist|TeX mode commands.|88-05-19||
+tex-start|FSF|18.55 dist|Allow switching to Emacs at given line number.|11-Aug-1986||
+tex-stuff|Skip Montanaro|montanaro@sprite.crd.ge.com|spell in a (la)tex buffer|07-Aug-1989||~/misc/tex-stuff.shar.Z
+texinfmt|FSF|18.55 dist|Convert texinfo files to info files.|21-Jul-1988||
+texinfo|FSF|18.55 dist|Major mode for editing texinfo files.|03-Aug-1988||
+texmatch|Mark Eichin|eichin@athena.mit.edu|Insert matching TeX close.|||~/as-is/texmatch.el.Z
+text-mode|FSF|18.55 dist|Text mode, and its ideosyncratic commands.|02-Jul-1988||
+thing|Joshua Guttman|guttman@mitre.org|Thing-oriented procedures for GNU emacs.|31-May-1989||~/misc/thing.el.Z
+time-auto-save|Kyle Jones|kyle@wendy-fate.uu.net|Auto save after a while|07-Aug-1987||
+timecard-mode|Jonathan Stigelman|Stig@hackvan.com|Super-cool timecard maintenance mode for Emacs 18 & 19.  Does accounting.|1995/01/22 08:51:36|Release 1.37|~/modes/timecard-mode.el.Z
+timer|Kyle Jone|kyle@wendy-fate.uu.net|Interval timers for Emacs-LISP|06-Dec-1989||~/packages/timer.shar.Z
+timezone|Masanobu UMEDA|umerin@mse.kyutech.ac.jp|Timezone package for GNU Emacs|26-Jan-1993|1.4|~/misc/timezone.el.Z
+time|FSF|18.55 dist|Display time and load in mode line.|21-Jan-1987||
+tinyappend|Jari Aalto|jaalto@tre.tele.nokia.fi|Gather text cumulatively to *append* buffer with ease|20-March-1994|1.5|~/misc/tinyappend.el.Z
+tinycb|Jari Aalto|jari.aalto@ntc.nokia.com|Circulate buffers easily in current window. Back, fwd, skipping unwanted.|09-May-1996|1.3|~/misc/tinycb.el.gz
+tinycom|Jari Aalto|jari.aalto@ntc.nokia.com|Smart comment setting utility, better than std emacs M-; |12-Sep-1995|1.21|~/misc/tinycom.el.Z
+tinydesk|Jari Aalto|jari.aalto@ntc.nokia.com|Saves/restores files of emacs session|17-Nov-1995|1.14|~/misc/tinydesk.el.Z
+tinyeat|Jari Aalto|jari.aalto@ntc.nokia.com|Eating blocks of text forward, backward. No more ESC-d or or DEL/BACKSPACE|28-Sep-1995|1.11|~/misc/tinyeat.el.Z
+tinyezip|Jari Aalto|jari.aalto@ntc.nokia.com|Support for compressed elisp files: require, load, load-library,load-file..|18-Sep-1995|1.18|~/misc/tinyezip.el.Z
+tinyff.el|Jari Aalto|tre@tele.nokia.fi|Regexp find file utility|03-Nov-1994|1.5|~/misc/tinyff.el.Z
+tinyff|Jari Aalto|jaalto@tre.tele.nokia.fi|Regexp find file utility|03-Nov-1994|1.11|~/misc/tinyff.el.Z
+tinyfh|Jari Aalto|jaalto@tre.tele.nokia.fi|Collection of file handling functions:easy read-only edit|29-Mar-1995|1.1|~/misc/tinyfh.el.Z
+tinyfold|Jari Aalto|jaalto@tre.tele.nokia.fi|Extra functions for folding.el|01-Dec-1994|1.5|~/misc/tinyfold.el.Z
+tinyhotlist|Jari Aalto|jaalto@tre.tele.nokia.fi|Hotlist of buffers in X, easy add, easy remove|19-May-1995|1.4|~/misc/tinyhotlist.el.Z
+tinyindent|Jari Aalto|jari.aalto@ntc.nokia.com|TAB indentation minor-mode, like indented-text-mode but in minor mode form|02-Sep-1995|1.12|~/misc/tinyindent.el.Z
+tinylock|Jari Aalto|jari.aalto@ntc.nokia.com|Simple emacs locking utility|01-Sep-1995|1.5|~/misc/tinylock.el.Z
+tinymacro|Jari Aalto|jaalto@tre.tele.nokia.fi|Fast way to assign newly created macro to key|24-Mar-1995|1.2|~/misc/tinymacro.el.Z
+tinymatch|Jari Aalto|jari.aalto@ntc.nokia.com|Highlight matched text in a buffer easily, re-search-fwd, re-search-bck ..|08-Nov-1995|1.7|~/misc/tinymatch.el.Z
+tinymenu|Jari Aalto|jari.aalto@ntc.nokia.com|Simple echo-area menus for calling less used functions easily.|21-Jan-1996|1.6|~/misc/tinymenu.el.gz
+tinypair|Jari Aalto|jari.aalto@ntc.nokia.com|self insert character pairs () "" '' <> etc. User configurable|12-Dec-1995|1.18|~/misc/tinypair.el.Z
+tinypatch|Jari Aalto|jaalto@tre.tele.nokia.fi|Emacs 19.28 std distrib. corrections |08-Jun-1995|1.8|~/misc/tinypatch.el.Z
+tinyreply|Jari Aalto|tre@tele.nokia.fi|A mail reply formatting package for rmail and gnus, n'thing like supercite|11-Apr-1995|1.70|~/misc/tinyreply.el.Z
+tinystamp|Jari Aalto|jari.aalto@ntc.nokia.com|A simple document stamping tool|25-Aug-1995|1.12|~/misc/tinystamp.el.Z
+tinysword|Jari Aalto|jaalto@tre.tele.nokia.fi|emacs 18-19, search word under cursor: backward, forward|07-Nov-1994|1.10|~/misc/tinysword.el.Z
+tinytab|Jari Aalto|jari.aalto@ntc.nokia.com|TAB handling minor mode, eg. step 4 chars bck/fwd , insert/del 4 spaces |02-Nov-1995|1.10|~/misc/tinytab.el.Z
+tinyxreg|Jari Aalto|jari.aalto@ntc.nokia.com|Stores point/win cfg to X-POPUP LIST while storing it to register|13-Oct-1995|1.12|~/misc/tinyxreg.el.Z
+toolbar|Andy Piper|andyp@parallax.co.uk|fake a toolbar in XEmacs|26-Sep-1994|1.3.4|~/misc/toolbar.el.Z
+tpu-edt|Rob Riepel|riepel@networking.stanford.edu|Emulation of DEC's TPU emulating the EDT editor.|03-Dec-1993|3.2|~/modes/tpu-edt-3.2.tar.Z
+tpu|Jeffrey Kowalski|kowalski@svax.cs.cornell.edu|EDT/TPU Emulator|01-Nov-1988||~/packages/tpu.el.Z
+trace|Hans Chalupsky|hans@cs.buffalo.edu|Tracing facility for Emacs Lisp functions|18-May-1993|2.0|~/packages/trace.el.Z
+tracker|Barry A. Warsaw|bwarsaw@cen.com|Better Directory Tracking Engine|01-Mar-1990||~/packages/tracker.el.Z
+trains|John Sturdy|jcgs@harlqn.co.uk|Train schedule lookup.|30-Nov-1988||~/as-is/trains.el.Z
+transparnt|Brian Tompsett|briant@spider.co.uk|A transparent process window|01-Mar-1990||~/packages/transparnt.el.Z
+ttpgp|Jack Repenning|jackr@sgi.com|Pretty Good Privacy Version 2.2+ Interface|10-Aug-1995|197|~/packages/pgp-el.tar.gz                  
+turing.el|David K}gedal|davidk@lysator.liu.se|A Turing Machine for GNU Emacs|15-Nov-1994|1.6|~/packages/turing.el.Z
+twinkle|Barry Shein|bu-cs!shein|Create twinkling buffer.|||~/as-is/twinkle.el.Z
+twirl|Terrence Brannon|brannon@jove.cs.caltech.edu|this will twirl the cursor until you hit C-g|07-Mar-1992|1.0|~/games/twirl.el.Z
+two-column|Daniel Pfeiffer|pfeiffer@irit.fr|Support for editing of a two-column text.|14-May-1991||~/interfaces/two-column.el.Z
+two-window|D. LaLiberte|liberte@cs.uiuc.edu|Modified compare-windows.|1988||~/as-is/two-window.el.Z
+type-break|Noah Friedman|friedman@prep.ai.mit.edu|encourage rests from typing at appropriate intervals|28-Jul-1994|1.8|~/misc/type-break.el.Z
+uil-mode|Lionel Cons, E. Jay Berkenbilt|ejb@ERA.COM|Major mode and utility functions for editing Motif UIL code|18-Sep-1994|1.0|~/modes/uil-mode.el.Z
+uncompress|FSF|18.55 dist|Temporary major mode used for .Z files.|20-Jul-1988||
+underline|FSF|18.55 dist|Insert or remove underlining (done by overstriking).|30-May-1988||
+undigest|FSF|18.55 dist|Rmail undigestifying stuff.|04-Aug-1988||
+undo-with-space|Thomas Narten|narten@cs.albany.edu|After one undo use space to continue undoing.|18-Oct-1990||~/functions/undo-with-space.el.Z
+undoc|Paul Stygar|inco!pauls|Pretty-up the DOC file.|||~/as-is/undoc.el.Z
+unique-hooks|Rod Whitby|rwhitby@research.canon.oz.au|Prepend, postpend and delete unique hook functions.|23-Sep-1992||~/functions/unique-hooks.el.Z
+unique|Simon Marshall|Simon.Marshall@mail.esrin.esa.it|Functions and commands to uniquify lists or buffer text (cf. sort).|28-Jun-1994|1.01|~/misc/unique.el.Z
+uniquify|Dick King, Stephen Gildea|king@kestrel.arpa,gildea@bbn.com|Better unique buffer names.|01-Jun-1989||~/as-is/uniquify.el.Z
+uniquify|Michael Ernst|mernst@theory.lcs.mit.edu|Unique buffer names dependent on file name.|03-Mar-1997||~/as-is/uniquify.el.Z
+unix-apropos|Henry Kautz|allegra!kautz|Man -k interface.|06-Sep-1988||~/as-is/unix-aprop.el.Z
+unix|W. Rupprecht|wolfgang@mgm.mit.edu|Interfaces to grep, gid, etc.|||~/as-is/unix.el.Z
+unshar-2|Dirk Grunwald|grunwald@flute.cs.uiuc.edu|Unpack `shar' files under Emacs.|30-May-1989||~/as-is/unshar-2.el.Z
+unshar|Dave Sill|dsill@relay.nswc.navy.mil|Safely unpack shar archives.|14-Apr-1989||~/as-is/unshar.el.Z
+unused|FSF|18.55 dist|Editing commands that turned out not to be used.|14-Dec-1985||
+up-comment|Rob Austein|sra@lcs.mit.edu|Twenex-style comment up- and down-comment|30-Jun-1989||~/as-is/up-comment.el.Z
+useful-macros|Bard Bloom|bard@theory.lcs.mit.edu|Silly emacs hack.|15-Dec-1988||~/as-is/useful-macros.el.Z
+userlock|FSF|18.55 dist|Autoloaded code to handle certain file-locking conditions.|26-May-1987||
+users|Bill Trost|trost@reed.UUCP|List system users.|1988||~/as-is/users.el.Z
+vem|Lennart Staflin|lenst@lysator.liu.se|Compact display of rwho output|05-Dec-1993|1.1|~/interfaces/vem.el.Z
+version|FSF|18.55 dist|Record version number of your Emacs.|?||
+vi-tag|Rich Berlin|rberlin@birdland.sun.com|find-tag function using vi tags file|20-Jul-1990||~/packages/vi-tag.el.Z
+view-buffer|Julian Cowley|julian@uhccux.uhcc.hawaii.edu|Simple mode for viewing the current buffer.|29-Jan-1989||~/as-is/view-buff.el.Z
+view-window|Yasuhiko WATANABE|ywata@k2.t.u-tokyo.ac.jp|manipulete other/current windows with less like keybinding|01-Dec-1994|1.21|~/misc/view-window.el.Z
+viewless|David Gudeman|gudeman@arizona.edu|Make view-mode like "less".|||~/as-is/view-less.el.Z
+view|K. Shane Hartman|18.55 dist|Peruse file or buffer without editing.|21-Aug-1988||
+vip-default|David J. MacKenzie|djm@ENG.UMD.EDU|Get into vip-mode from the command line|30-May-1991||~/functions/vip-default.el.Z
+vip-mode|Aamod Sane|sane@cs.uiuc.edu|Much improved vip mode - minor mode vi emulation|01-Oct-1991|4.3|~/modes/vip-mode.tar.Z
+vip|Masahiko Sato|18.55 dist|A VI package.|11-Feb-1988||
+vi|Neal Ziring, Felix Wu|18.55 dist|Major mode for emulating "vi" editor.|07-Jan-1987||
+vkill|Kyle uones|kyle@wendy-fate.uu.net|View and kill UNIX processes.|25-Apr-1989||~/as-is/vkill.el.Z
+vm-auto-archive|Neal Young|ney@research.att.com|Two ways to automatically archive outgoing mail into appropriate VM folders.  Supersedes vm-auto-fcc.el|20-Oct-1994|version 5.72a|~/misc/vm-auto-archive.el.gz
+vm-auto-fcc|Neal Young|ney@orie.cornell.edu|Insert fcc field according to vm-auto-folder-alist to file outgoing mail|06-Jun-1994|5.72|~/obsolete/vm-auto-fcc.el.gz
+vm-enh-patch|Skip Montanaro|montanaro@sprite.crd.ge.com|VM enhancement patch to allow grouping by recipient|20-Aug-1989||~/misc/vm-enh.patch.Z
+vm-frame|Paul D. Smith|psmith@wellfleet.com|Support for multiple FSF GNU Emacs 19 frames with VM and VM-mail.|14-Jan-1994|1.8|~/misc/vm-frame.el.Z
+vm-hack|Joseph Friedman|yossi@neon.stanford.edu|Mods to vm summary mode|07-Dec-1989||~/misc/vm-hack.el.Z
+vms-patch|FSF|18.55 dist|Override parts of files.el for VMS.|06-May-1988||
+vmsproc|Mukesh Prasad|18.55 dist|Run asynchronous VMS subprocesses.|29-Sep-1986||
+vn|Steve Murphy|oakhill!murf|Vn newsreader.|||~/as-is/vn.el.Z
+vt200-esc-fix-19|Jeff Morgenthaler|jpmorgen@wisp4.physics.wisc.edu|Swaps F11 and ` on vt200 (lk201) keyboards for emacs 19.|June 7, 1993|4.0|~/terms/vt200-esc-fix-19.el.Z
+vt200-esc-fix|Jeff Morgenthaler|jpmorgen@wisp4.physics.wisc.edu|Fixes:  flow control, arrow keys, and vt200 function keys|23-Mar-1993|1.0|~/terms/vt200-esc-fix.el.Z
+vt200|Darrell Lipman|prls!philabs!ttidca!retix!derrell|Example bindings for vt200 terminals|09-Mar-1989||~/as-is/vt200.el.Z
+vt200|Jeff Morgenthaler|jpmorgen@wisp4.physics.wisc.edu|Support for all the function keys of the vt200 keyboard|22-Mar-1993|2.9|~/terms/vt200.el.gz
+w3-mode|William M. Perry|wmperry@spry.com|Major mode for browsing World Wide Web (WWW) nodes. A replacement for Mosaic/Lynx|05-Jul-1994|2.1p41|ftp.cs.indiana.edu:/pub/elisp/w3
+wconfig|Bob Weiner|rsw@cs.brown.edu|Maintains a save ring of window configurations for later recall.|28-Apr-1989||~/as-is/bob-weiner/wconfig.el.Z
+webster|Glasgow, Grunwald, Ram, Sill, Zawinski|jwz@lucid.com|Look up a word in Webster's 7th Ed.|14-Sep-1991||~/interfaces/webster.el.Z
+webster|Glasgow, Grunwald, Ram, Sill|dsill@relay.nswc.navy.mil|Look up a word in Webster's 7th Ed.|20-Mar-1989||~/as-is/webster.el.Z
+webster|Noah Friedman|friedman@gnu.ai.mit.edu|emacs interface to webster servers|04-Jan-1995|1.2|~/interfaces/webster.el.gz
+which-function|Alex Rezinsky|alexr@msil.sps.mot.com|Dynamically print current function in mode line|03-Jul-1994|1.3|~/misc/which-function.el.Z
+which-load|Randal Schwartz|merlyn@iwarp.intel.com|Find which file will load.|||
+which|Bill Janssen|janssen@titan.sw.mcc.com|Which file would be loaded?|31-Aug-1988||~/as-is/which.el.Z
+whinify|Bard Bloom|bard@theory.lcs.mit.edu|Silly emacs hack.|||
+whist|Gilbert Harrus|inria!bdblues!gh|Source code change history command.|25-May-1989||~/as-is/misc/whist-patch.Z
+whitespace|Noah Friedman|friedman@gnu.ai.mit.edu|strip trailing whitespace from buffers|11-Feb-1995|1.2|~/misc/whitespace.el.gz
+wicos|Heikki T. Suopanki|suopanki@phoenix.oulu.fi|Save and restore multiple window configurations within Emacs.|23-Apr-1993|1.43|~/misc/wicos.el.Z
+wimpy-delete|Bard Bloom|bard@theory.lcs.mit.edu|A cautious form of delete-region.|14-Jun-1989||~/as-is/wimpy-del.el.Z
+win-config|Dave Emme|daveemme@uts.amdahl.com|Save/restore window configurations.|28-Oct-1988||~/as-is/win-config.el.Z
+win-vm|Paul D. Smith|psmith@wellfleet.com|Support for GNU Emacs 19 frames, menus, mouse with VM and VM-mail.|06-Jun-1994|1.13|~/misc/win-vm.el.Z
+window|FSF|18.55 dist|Window commands aside from those written in C.|21-Dec-1987||
+wordstar|Jim Frost|jimf@saber.com|Wordstar keycap definitions.|90-1-31||~/misc/wordstar.el.Z
+wy50|Lynn Slater|lrs@indetech.com|Drives wy50 with softkeys|21-Apr-1991||~/terms/wy50.el.Z
+x-menu|FSF|18.55 dist|Major mode for creating permanent menus for use with X.|15-Sep-1987||
+x-mouse-drag|Peter X Moore|moore@cad.berkeley.edu|Dragging with X mouse.|||~/as-is/x-mouse-drag.el.Z
+x-mouse|FSF|18.55 dist|Mouse support for X window system.|24-Mar-1988||
+x-mouse|Rick Murphey|rich@rice.edu|Cut and paste with XWindows in emacs|20-Apr-1990||~/misc/x-mouse.el.Z
+x-rebind-keysym|Nick Ruprecht|ruprecht@ISLAND.INFORMATIK.UNI-FREIBURG.DE|Rebind keysyms under X|04-Jun-1991||~/patches/x-rebind-keysym.patch.Z
+x-rebind|Denys Duchier|Duchier-Denys@yale.arpa|Mods to provide x-rebind-keysim.|18-Mar-1989||~/as-is/misc/x-rebind.Z
+x-sb-mouse|Sullivan Beck|beck@qtp.ufl.edu|Better mouse support for X.  Allows vertical/horizontal resizing.|02-Jul-1992|1.6|~/misc/x-sb-mouse.tar.Z
+x11term|Tim Bray|tbray@watsol.waterloo.edu|Fix for generalized X11R3 function keys.|01-May-1989||~/as-is/misc/x11term.Z
+xdb|K. Shane Hartman|shane@ai.mit.edu|Run HP PA-RISC symbolic debugger in emacs buffer.|12-Dec-1992|1.11|~/packages/xdb.tar.Z
+xfile|Bruse Israel|israel@starbase.mitre.org|Find-file using X menus|11-Oct-1989||~/packages/xfile.el.Z
+xmr|Ik Su Yoo|ik@ctt.bellcore.com|Mode for WCL (X/Motif) resource files.|20-Mar-1992|2.3|~/modes/xmr.tar.Z
+xscheme|CPH|18.55 dist|Run Scheme.|11-Aug-1988|1.19|
+xt-mouse|Per Abrahamsen|abraham@iesd.auc.dk|Support the mouse when emacs run in an xterm|30-Jul-1994|5.1|~/interfaces/xt-mouse.Z
+y-or-n-p|Bard Bloom|bard@theory.lcs.mit.edu|Enhanced y-or-n-p, paranoid-confirm.|07-Feb-1989||~/as-is/y-or-n-p.el.Z
+yank-match|Karl Fogel|kfogel@cs.oberlin.edu|Yanks match(es) for REGEXP from kill-ring|20-May-1993||~/misc/yank-match.el.Z
+yankorig|Barry Warsaw, Joel Spolsky|spolsky-joel@yale.ARPA|Yet another enhanced mail-yank, further enhanced.|16-Feb-1989||~/as-is/yankorig.el.Z
+yes-no-keys|Charles Buckley|mcvax!cernvax!ethz!ceb|Functions that reply to yes-or-no-p questions.|05-Aug-1988||~/as-is/yes-no-key.el.Z
+yic-buffer|Young-il Choo|choo@cs.yale.edu|Functions to visit files by circling through the buffers.|07-Aug-1990||~/functions/yic-buffer.el.Z
+yow|FSF|18.55 dist|Important pinheaddery.|21-Jan-1987||
+z-mode|Alan Stebbens|aks@hub.ucsb.edu|Auto-uncompress.|19-May-1988||~/as-is/z-mode.el.Z
+zcat|Graham Gough|graham@r3.cs.man.ac.uk|Automatic decompression of .Z files|13-May-1987||~/packages/zcat.el.Z
+zephyr|Scott Draves|spot@cs.cmu.edu|Interface to the Zephyr message system.|25-Jan-1993|2.0|~/interfaces/zephyr.tar.Z
+zload|Kresten Krab Thorup|krab@iesd.auc.dk|Load and execute compressed elisp files.|03-Mar-1993|1.15|iesd.auc.dk:zload.el
+zload|Kresten Krab Thorup|krab@iesd.auc.dk|Load and execute compressed elisp files|13-Feb-1995||~/misc/zload.el.Z

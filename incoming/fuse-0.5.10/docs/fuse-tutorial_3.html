@@ -1,0 +1,178 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse-tutorial.texi on 28 July 1998 -->
+
+<TITLE>FUSE Tutorial - Running Feff</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_2.html">previous</A>, <A HREF="fuse-tutorial_4.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC9" HREF="fuse-tutorial_toc.html#TOC9">Running Feff</A></H1>
+
+
+
+<H2><A NAME="SEC10" HREF="fuse-tutorial_toc.html#TOC10">The FEFF Input File</A></H2>
+
+<P>
+<A NAME="IDX24"></A>
+<A NAME="IDX25"></A>
+@fuse{} has a quick way of jumping to the FEFF input file generated
+by an ATOMS run.  Type <KBD>C-c C-f l</KBD>, select <CODE>Open
+feff.inp</CODE> from the <CODE>Atoms</CODE> menu, or click <CODE>mouse-1</CODE> on the
+third icon from the top of the toolbar.  The <TT>`feff.inp'</TT> file will be
+displayed in place of the <TT>`atoms.inp'</TT> file.  Notice that the mode
+line and the menu bar have both changed to reflect the fact that you are
+now editing a feff input file.
+
+</P>
+
+<P>
+<A NAME="IDX26"></A>
+<A NAME="IDX27"></A>
+For the sake of this tutorial, you will need to alter <TT>`feff.inp'</TT> in
+only one way.  Change the value of the <SAMP>`PRINT'</SAMP> keyword to <SAMP>`1 0
+0 0'</SAMP>.  This is done to be sure that the <TT>`misc.dat'</TT> file is written
+to disk by FEFF.  Of course FEFF has many more options for
+altering its behavior, but exploring them is beyond the scope of this
+tutorial.  We will now run FEFF.  This is done is exactly the same
+way as we ran ATOMS.  In fact, the manner in which a program can be
+run is independent of which program will be run.  The key sequence
+<KBD>C-c C-r r</KBD> always runs the appropriate program for the current
+file.  There is always an option in the program specific menu labeled
+<SAMP>`Run program, this file'</SAMP>.  Also the <CODE>Input</CODE> menu has an option
+labeled <SAMP>`Run this program, this file'</SAMP> which also works.  Finally,
+there is always a red exclamation point toolbar icon in XEmacs.
+
+</P>
+
+<P>
+<STRONG>Figure 4:</STRONG> The first few lines of the FEFF input
+file for copper
+<P>
+@ifnotinfo
+<img src="feff-inp.jpg" alt="**image file feff-inp.jpg**">
+
+</P>
+<P>
+Notice that the run-time messages from FEFF are appearing in the
+run-time buffer after those from ATOMS.  During your analysis
+session, this buffer serves as a log of your work.  When you are
+finished with analysis and exit Emacs, the contents of this
+buffer<A NAME="DOCF2" HREF="fuse-tutorial_foot.html#FOOT2">(2)</A> will be
+automatically saved in a file called <TT>`~/.fuse-run.log'</TT>.
+
+</P>
+<P>
+Running FEFF takes a few minutes, so this is a good time to stretch
+your legs.
+
+</P>
+
+
+
+<H2><A NAME="SEC11" HREF="fuse-tutorial_toc.html#TOC11">Other Features of FEFF mode</A></H2>
+
+<P>
+<A NAME="IDX28"></A>
+<A NAME="IDX29"></A>
+<A NAME="IDX30"></A>
+<A NAME="IDX31"></A>
+<A NAME="IDX32"></A>
+<A NAME="IDX33"></A>
+<A NAME="IDX34"></A>
+<A NAME="IDX35"></A>
+<A NAME="IDX36"></A>
+<A NAME="IDX37"></A>
+If you do a directory listing on the <SAMP>`feff'</SAMP> subdirectory, you will
+see that FEFF has written out many files.  @fuse{} has several
+tools for examining the output of your <SAMP>`feff'</SAMP> run.  In the
+<SAMP>`Feff'</SAMP> menu is a sub-menu labeled <SAMP>`Look at output files'</SAMP>.  In
+that sub-menu you can choose to examine any of <TT>`misc.dat'</TT>,
+<TT>`paths.dat'</TT>, <TT>`files.dat'</TT>, or <TT>`list.dat'</TT>.  The key sequences
+for these are <KBD>C-c C-f</KBD> followed by <KBD>m</KBD>, <KBD>p</KBD>, <KBD>f</KBD>, or
+<KBD>s</KBD> respectively.  Choosing any of these will cause that file to be
+visited and displayed in a read-only buffer.  @fuse{} assumes that files
+jumped-to in this manner are are log files and thus should not be
+casually altered.  That is why they are placed in read-only buffers.  If
+you want to edit one of these jumped-to files, type <KBD>M-x
+toggle-read-only</KBD>.
+
+</P>
+<P>
+<A NAME="IDX38"></A>
+<A NAME="IDX39"></A>
+Because these files are all rather cryptic, @fuse{} comes with a handy
+perl script called INTRP.  INTRP reads <TT>`feff.inp'</TT>,
+<TT>`paths.dat'</TT>, and <TT>`files.dat'</TT> and writes a summary of all of
+the scattering paths from the FEFF calculation.  INTRP can be
+run from the <SAMP>`Look at output files'</SAMP> submenu or by hitting <KBD>C-c
+C-f i</KBD>.  The INTRP buffer is very useful for setting up a
+FEFFIT input file.
+
+</P>
+<P>
+<A NAME="IDX40"></A>
+<A NAME="IDX41"></A>
+<A NAME="IDX42"></A>
+@fuse{} will display FEFF results graphically by constructing
+scripts for the GNUPLOT program then sending those scripts to
+GNUPLOT.  These scripts are generated automatically, usually using
+information contained ni the input file itself.  We can examine the
+total @greek{chi,k} from the FEFF calculation by selecting
+<SAMP>`Plot chi'</SAMP> from the <SAMP>`Feff'</SAMP> menu, typing <KBD>C-c C-p c</KBD>, or
+clicking on the graph icon labeled <CODE>chi</CODE>.  When you do this, a new
+frame will appear on the screen containing the GNUPLOT script.  The
+buffer containing the script will be in a major mode specifically
+designed for GNUPLOT scripts (see section <A HREF="fuse-tutorial_6.html#SEC20">Plotting with Gnuplot</A>).  After
+a short time, a window displaying the GNUPLOT plot will appear.
+This is shown in Figure 5.
+
+</P>
+<P>
+<A NAME="IDX43"></A>
+<A NAME="IDX44"></A>
+Notice that, in the plot, @greek{chi,k} is weighted by <I>k</I>.
+Examinnig the script, you see that the <TT>`chi.dat'</TT> file was filtered
+through two scripts.  GNUFIX is a SED script which comments
+out the header material in <TT>`chi.dat'</TT> so that it will plot properly
+in GNUPLOT.  KW is an AWK script that actually applies
+the <I>k</I>-weighting.  Both of these scripts are found in the
+<TT>`scripts/'</TT> subdirectory of the @fuse{} distribution and are
+available for your use outside of @fuse{}.
+
+</P>
+
+<P>
+@ifnotinfo
+<P>
+<STRONG>Figure 5:</STRONG> Plotting the calculation
+<P>
+<img src="feff-plot.jpg" alt="**image file feff-plot.jpg**">
+
+</P>
+
+<P>
+<A NAME="IDX45"></A>
+You can change the <I>k</I>-weighting easily by selecting <SAMP>`Set
+k-weight'</SAMP> from the <SAMP>`Input'</SAMP> menu or typing <KBD>C-c C-d k</KBD>.  You
+will asked for a k-weight value in the minibuffer.  Answer with 2 or any
+other number then replot chi with the new k-weight.
+
+</P>
+<P>
+<A NAME="IDX46"></A>
+The other plotting option in FEFF mode is to plot
+@greek{mu,E} together with the background function.  This can only be
+done is the <CODE>XANES</CODE> keyword is set in the input file and a version
+of FEFF is used that calculates XANES.  This was not done in this
+tutorial, but feel free to play with this later.
+
+</P>
+
+<P><HR><P>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_2.html">previous</A>, <A HREF="fuse-tutorial_4.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+</BODY>
+</HTML>

@@ -1,0 +1,22 @@
+#!/usr/bin/awk -f
+#
+# read a two column data file and multiply the second column
+# by a power of the first colum.  Used for k-weighting chi(k) data
+# This is an awk script
+# By Bruce Ravel 29 Sep 1997
+#
+# usage in gnuplot '<kw w=1 filename'
+#
+# This file is part of FUSE, the Feff/UWXAFS System for Emacs
+#  
+#---skip blanks and hashed lines
+{
+if ($0 ~ /^#/)
+	{print $0}
+else if ( ($0 ~ /^ *#/) || ($0 ~ /^$/) ) 
+	{}
+#---write 2 columns
+else
+	{print $1 OFS $2*$1^w}
+}
+

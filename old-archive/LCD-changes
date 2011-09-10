@@ -1,0 +1,41 @@
+This file documents the recent changes and updates to the Emacs lisp
+archive on archive.cis.ohio-state.edu.  Unfortunately the the changes
+aren't dated and might be in a hard to read format.  I'm working on it
+though...  If you find this useful, let me know and I'll give fixing
+it up a higher priority.
+
+                               Dave Brennan (brennan@acm.org)
+
+NEW FILES IN THE ARCHIVE:
+-------------------------
+
+font-latex|Peter Galbraith|galbraith@mixing.qc.dfo.ca|LaTeX fontification for font-lock|19-Nov-1996|0.403|~/modes/font-latex.el
+func-doc|Peter Galbraith|Galbraith@mixing.qc.dfo.ca|Get Info on command under point; completion for commands.|09-August-1996|1.07|~/misc/func-doc.el
+iswitchb|Stephen Eglen|<stephene@cogs.susx.ac.uk>|switch between buffers using substrings|30-Dec-1996|1.13|~/packages/iswitchb.el
+complete-menu|Alon Albert,Jari Aalto|alon@milcse.rtsg.mot.com,jari.aalto@poboxes.com|Pops up X-menu for possible completions.|05-Dev-1996|1.7|~/misc/complete-menu.el.Z
+fnexpand|eirik, trost, Jari Aalto|jari.aalto@poboxes.com|finename expansion anywhere|19-Mar-1997|1.5|~/misc/fnexpand.el.gz
+matlab|Matt Wette|mwette@alumni.caltech.edu|Major mode for MATLAB dot-m files|07-Mar-1997|1.09.0|~/modes/matlab.el.gz
+file-log|Frederic Lepied|Frederic.Lepied@sugix.frmug.org|Manage a log file per file for version control.|02-Mar-1997|1.7|~/modes/file-log.el.gz
+caesar|Christopher J. Madsen|ac608@yfn.ysu.edu|Caesar cipher routines (including rot13)|19-Jan-1996|1.4|~/misc/caesar.el.gz
+dired-batch|Karsten Wenger|kw@cis.uni-muenchen.de|dired extension to evaluate elisp programs|11-Mar-1997|1|~/misc/dired-batch.el.gz
+tinymenu|Jari Aalto|jari.aalto@ntc.nokia.com|Simple echo-area menus for calling less used functions easily.|21-Jan-1996|1.6|~/misc/tinymenu.el.gz
+basic-mode|Fred White|fwhite@world.std.com|A mode for editing Visual Basic programs.|18-Apr-1997|1.0|~/modes/basic-mode.el.gz
+tinycb|Jari Aalto|jari.aalto@ntc.nokia.com|Circulate buffers easily in current window. Back, fwd, skipping unwanted.|09-May-1996|1.3|~/misc/tinycb.el.gz
+uniquify|Michael Ernst|mernst@theory.lcs.mit.edu|Unique buffer names dependent on file name.|03-Mar-1997||~/as-is/uniquify.el.Z
+---- next new entry ----
+
+
+UPDATED	FILES IN THE ARCHIVE:
+-----------------------------
+
+bib-cite|Peter Galbraith|galbraith@mixing.qc.dfo.ca|Display \cite, \ref or \label / Extract refs from BiBTeX file.|29-July-1996|2.22|~/misc/bib-cite.el.gz
+e-mh-alias|Peter Galbraith|galbraith@mixing.qc.dfo.ca|MH mail alias expansion and substitution.|29-Sep-1995|2.04|~/misc/e-mh-alias.el
+ff-paths|Peter Galbraith|galbraith@mixing.qc.dfo.ca|find-file-using-paths searches certain paths to find files|20-March-1996|3.02|~/misc/ff-paths.el.gz
+hilit-LaTeX|Peter Galbraith|galbraith@mixing.qc.dfo.ca|Enhancements for LaTeX highlighting w/ hilit19.el or hl319.el|06-Sep-1995|1.17|~/modes/hilit-LaTeX.el.gz
+c-comment-edit2|Kyle E. Jones|kyle_jones@wonderworks.com, jari.aalto@poboxes.com|C Comment Edit in separate window.|26-Feb-1997|1.9|~/misc/c-comment-edit2.el.Z
+line-nos|Wayne Mesard, Jari Aalto|bbn.com!mesard@bbn.com, jari.aalto@ntc.nokia.com|line numbers for emacs|10-Mar-1997|1.3|~/misc/line-nos.el.Z
+e-mh-alias|Peter Galbraith|galbraith@mixing.qc.dfo.ca|MH mail alias expansion and substitution.|20-Mar-1997|2.10|~/misc/e-mh-alias.el.gz
+bib-cite|Peter Galbraith|galbraith@mixing.qc.dfo.ca|Display \cite, \ref or \label / Extract refs from BiBTeX file.|20-Mar-1997|2.31|~/misc/bib-cite.el.gz
+kumac-mode|David P. Morrison|morrison@orph01.phy.ornl.gov|Major mode for editing Kumac (CERN KUIP macro) files.|09-Mar-1997|2.4|~/modes/kumac-mode.el.gz
+igrep|Kevin Rodgers|kevinr@ihs.com|An improved interface to grep/egrep/fgrep; plus recursive `find` versions.|10-Feb-1997|2.56|~/misc/igrep.el.gz
+---- next updated entry ----

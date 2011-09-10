@@ -1,0 +1,361 @@
+Although SQL*Plus is a powerful tool for producing ad hoc queries and
+interacting with an Oracle database, the user interface is less than
+state-of-the-art.
+
+I am now pleased to announce a new utility available to users of Emacs and
+SQL*Plus that allows SQL*Plus to run in an Emacs buffer.  Even if you don't
+know Emacs, this utility makes SQL*Plus so much friendlier that you may want
+to learn the basics of Emacs just to take advantage of the improvements.  For
+those of you who have been using the current version, this version includes
+many significant enhancements (see below).
+
+If anyone receives this message that does not yet have access to this utility
+but would like to use it, send me a mail message and I can send you the
+appropriate files with instructions.
+
+If you are not familiar with Emacs, some of the terms used below may be
+foreign to you (buffers, modes, key sequences, etc.).  However, Emacs comes
+with an excellent tutorial that will teach you the basics (just press
+Control-H, then the letter "T", 'C-h t', after starting Emacs) as well as full
+on-line documentation (C-h i).
+
+
+Description
+===========
+
+Here is a brief description of the enhancements that this utility adds to 
+SQL*Plus (features added since version 1.1 are indicated with NEW!):
+
+        * Fully compatible with SQL*Plus.  If none of the new features
+          are accessed, SQL*Plus looks and behaves exactly like it
+          does normally.  You can enter commands one line at a time and
+          use all the awkward line editing commands you've become
+          accustomed to. 
+
+        * Full history buffer.  All text entered and received in the 
+          current session is stored so you can scroll forward and back
+          to examine prior results.
+
+NEW!    * Save history between sessions.  You have the option of saving
+          your sessions automatically so that the next time SQL*Plus
+          is invoked, you are returned to where you left off--with all
+          prior input and output intact!
+
+        * Full command line editing.  All of Emacs' editing commands
+          may be used to correct errors in the current input line before
+          pressing RETURN.  When entering multi-line statements you may
+          easily move up to prior lines to change them before executing
+          the entire statement.
+
+        * Recall, edit, and re-execute prior commands.  Any prior command
+          entered in the buffer may be modified and re-executed.  Also, 
+          full cut and paste of commands or parts or commands is supported
+          using standard Emacs features.
+
+        * Entry shortcuts.  Single letter abbreviations are provided for
+          commonly used keywords.  For example, typing S<space> inserts 
+          "SELECT ".  Also, any other keyword, table, or column name
+          used earlier may be abbreviated with the first few letters
+          (see dynamic expansion below).
+
+NEW!    * Powerful "word grab" feature.  Position the cursor on a column
+          or table name and with the press of a key, the text is appended
+          to the end of the current SQL statement.  Commas are even inserted
+          automatically when appropriate!
+
+NEW!    * Run multiple SQL*Plus sessions simultaneously.  Using Emacs'
+          multiple buffer/window features, two or more sessions may be
+          active concurrently--each attached to a different database if
+          desired.
+
+        * Edit SQL*Plus batch files and execute them with a keystroke.
+          You no longer need to use the EDIT or HOST commands to move
+          in and out of a full screen editor while refining SQL scripts.  
+          Just edit in one Emacs window and with the press of a key, the 
+          commands will be executed with the output appearing in a second 
+NEW!      window. You can even execute SQL statements imbedded in a 
+          SQL*Report, SQL*Forms (.inp), or Pro*C (Fortran, COBOL, etc.) file!
+
+        * On-line help.  Help is available in any mode by pressing C-h m.
+          (This is true of all Emacs modes, not just the new SQL modes.) 
+          You can also get help on any key sequence with C-h k <key sequence>.
+
+        * Multi-tasking!  Since you are in Emacs, you can perform
+          other tasks while you wait for a complex SQL statement to finish
+          executing.  Switch to another document, open a new window, 
+          compose a letter, run an operating system shell, and if Emacs
+          is run from the Unix c-shell, it can be "suspended" and you 
+          can return to it later.
+
+This utility is implemented as an Emacs "major mode" for editing text. There
+are actually two new major modes.  The first is sqlplus-mode which runs a
+SQL*Plus session in a buffer called *sqlplus* and allows you to edit and
+re-execute prior commands, as well as providing a history of all interaction.
+This mode is similar to shell-mode (and is, in fact, based upon it), but with
+additional features specific to SQL*Plus.
+
+Another mode called sql-mode can be used to edit SQL*Plus batch programs which
+can then be executed with a keypress with the output appearing in another
+window.
+
+Like most other special Emacs modes, the commands unique to these new modes
+are accessed using a keystroke sequence of Control-C followed by another
+control character.
+
+
+SQL*Plus Mode
+=============
+
+To experiment with the interactive SQL*Plus mode, invoke Emacs with these
+options: 
+
+        emacs -l sql-mode -f sqlplus
+
+You will be prompted to enter a username/password combination to access an
+Oracle database.  Interaction in the *sqlplus* buffer is exactly like normal
+SQL*Plus, including its limited editing capabilities, if all commands are
+entered at the end of the buffer.  Prior commands may be recalled, edited, and
+re-executed in the following ways.
+
+        1) Manually cursor back up to the command to be edited, make changes,
+           then press [Return] when the cursor is on any line of a multi-line
+           statement.  This is convenient after a command that produces a
+           small amount of output or after a LIST command.
+
+        2) Use C-c C-b and C-c C-f (back/forward command) to move the cursor to
+           the previous or next command in the buffer.  Then edit and
+           re-execute by pressing [Return].  C-c C-b is also useful after a
+           command has produced several pages of output and you wish to begin
+           reviewing it from the beginning.  I have these commands bound to
+           ESC up-arrow and ESC down-arrow in my .emacs file.
+
+        3) Use C-c C-p and C-c C-n (previous/next command) to recall the prior
+           commands directly after the last prompt at the end of the buffer.
+           When the desired command has been recalled, press [Return] to
+           execute, or edit and then re-execute with [Return].
+
+
+Typing Shortcuts
+----------------
+
+A powerful feature which is built into Emacs is the use of abbreviations.  In
+sqlplus-mode, standard abbreviations are automatically available for common
+keywords such as DESCRIBE, SELECT, FROM, WHERE, ORDER BY, etc. by entering the
+first letter followed by space or tab.  You may add to or modify this table
+and save it for later use (consult an Emacs manual or the on-line
+documentation for more information on using abreviations).
+
+Dynamic abbreviations are also very useful.  Entering the first few characters
+of a table or column name (or any other word) included anywhere in the buffer
+and typing M-/ (note: M = ESC) will complete the name; successive M-/'s will
+cycle through all matches.  I use this after "DESCRIBE table" so that all
+column names are conveniently available.
+
+Another way to quickly and easily build queries after using DESCRIBE is to
+position the cursor over (or after) the first column name you wish to SELECT
+and press C-c C-w (copy word).  If the command line at the end of the buffer
+is blank, "SELECT" will be inserted, followed by the column name.  Repeat this
+for each column to be selected and the names will be appended to the line with
+commas separating each entry.  This technique may also be used to copy words
+from an earlier line of the same statement while entering expressions,
+comparisons, or ORDER BY clauses.  Building SELECT statements has never been
+so easy!
+
+
+Saving Your Session
+-------------------
+
+Since all output is saved in the buffer, you can easily scroll back to review
+prior queries, without having to re-execute them.  You may also save your
+session with C-c C-s (or M-x sqlplus-save-session) to any file and re-load it
+later with C-x i (insert-file).  A better option is to have Emacs do this
+for you when you exit.  By setting the the Emacs variable sqlplus-keep-history
+to a non-nil value in your .emacs file, your session will saved in the file
+.sqlhist in your home directory and automatically loaded the next time sqlplus
+is run (an example of how to set this variable is included later).
+
+Since your .sqlhist file is likely to grow very large after only a few
+sessions, I have provided some ways of preventing the history buffer from
+growing too large.  When you exit SQL*Plus by typing EXIT or QUIT, the number
+of lines in the buffer is compared with the variable sqlplus-lines-to-keep,
+which defaults to 1000.  If it is larger, you will be asked if you wish to
+tuncate the buffer to the indicated size before saving (the oldest lines will
+be deleted).  You can also perform this truncation at any time during your
+session with the command C-c C-d (delete old lines).  If you wish to exit
+without saving the session, use C-x k (kill-buffer).
+
+Another way to drastically shrink the buffer is with C-c C-x which deletes all
+output lines in the buffer, keeping only the commands that have been entered.
+This way you still have access to prior commands for re-execution.  
+
+After entering a SQL command that generates an error, or produces a report
+that still is not quite correct, rather than recall the command to edit and
+re-execute it, use C-c C-k (kill) which deletes either the last output
+generated by SQL*Plus or the current command being entered, depending on where
+the cursor is when it is used.  If executed while the cursor is within a SQL
+statement, the statement and any text after it are deleted.  If the cursor is
+within or at the end of output generated by SQL*Plus, the output is deleted
+and the cursor is positioned at the end of the SQL statement that generated
+the output.  Thus, it can be used like an undo command to alternately delete
+commands and output from the end of the buffer.  This helps prevent the buffer
+from growing as a result of several "false starts" and makes finding prior
+valid commands easier (because you don't have to wade through several bad
+commands and their associated output).
+
+
+
+which will also kill the process (but will not save your session).
+
+
+Summary of Commands
+-------------------
+
+        C-c C-p   Recall previous command.
+        C-c C-n   Recall next command.
+        C-c C-b   Back one command.
+        C-c C-f   Forward one command.
+        C-c C-e   Move end of buffer (like M->, but does not set the mark.)
+        C-c C-r   Return to beginning of last output produced by SQL*Plus.
+        C-c C-c   Send ^C to interrupt current command execution.
+NEW!    C-c C-k   Kill current SQL statement or last output.
+NEW!    C-c C-x   Delete all output lines.
+NEW!    C-c C-d   Drop old lines (truncate to value of sqlplus-lines-to-keep).
+NEW!    C-c C-w   Copy word to end.
+NEW!    C-c C-s   Save session to file.
+
+You can generate a list like this while in sqlplus-mode by typing C-h m (Help
+with current Mode) or C-h b (Help keyBindings).  You can also get help on any
+specific command with C-h k (Help Key) followed by the key sequence.
+
+
+SQL Edit Mode
+=============
+
+In a text buffer, the command 'M-x sql-mode' will enable SQL text editing
+mode.  The keyword abbreviations described above are also available in this
+mode.  Two special commands are provided to execute the SQL*Plus statements
+contained in a sql-mode buffer.  C-c C-x will send the entire buffer to
+SQL*Plus.  The output is displayed in the *sqlplus* buffer in a second window
+(if SQL*Plus is not currently running, a new buffer is created and the process
+started).  C-c C-r will send the commands in the currently defined region
+(between point and mark).  This feature may be useful to Pro*C programmers who
+need to test SQL statements imbedded in their code.
+
+If the SQL statements to be executed contain variables prefixed with colons
+or INTO clauses, the colons are converted into ampersands and the INTO clauses
+are removed before being sent to SQL*Plus.  This provides compatibility with
+Pro*C, SQL*Report, and SQL*Forms (.inp files).  For example,
+
+     SELECT SYSDATE + :days_added INTO :variable FROM SYSTEM.DUAL
+
+is converted to
+
+     SELECT SYSDATE + &days_added FROM SYSTEM.DUAL
+
+and the user is prompted to enter the value of days_added.  This substitution
+process can be prevented by using a prefix argument with the
+sqlplus-send-region command.  In practice, this is done by typing 'C-u C-c
+C-r'.  Also, variables of the form :block_name.field_name are converted to
+&block_name_field_name for convenience when editing .inp files.
+
+In the future, this mode may automatically indent your SQL*Plus code based on
+Oracle standards (if they have been defined).  Your suggestions are welcome.
+
+
+Accessing the New Modes
+=======================
+
+If Emacs is started normally, the new modes will not be available until the
+new library is loaded with the command:
+
+         M-x load-library RET sql-mode RET      (RET = the RETURN key)
+
+Or Emacs can be invoked with the option '-l sql-mode'.
+
+Once the library is loaded, the commands 'M-x sqlplus' and 'M-x sql-mode' can
+be used.  This can be automated by including the following commands in your
+.emacs file:
+
+        (autoload 'sql-mode "sql-mode" "SQL editing mode" t)
+        (autoload 'sqlplus "sql-mode" "Run SQL*Plus interactively" t)
+
+This will load the sql-mode library the first time either of these commands is
+used.
+
+Sql-mode can be invoked automatically whenever a file ending in .sql is edited
+by including this command in .emacs:
+
+   (setq auto-mode-alist (cons '("\\.sql$" . sql-mode) auto-mode-alist))
+
+Note: The above statements may eventually be added to the global
+initialization files used on each machine where Emacs is loaded
+(i.e. site-init.el).
+
+
+Customizing Your Environment
+============================
+
+When sqlplus is initially executed, you will be prompted to enter a username
+and password to access an Oracle database.  If you always use the same
+username/password combination, this can be suppressed by setting a special
+variable in your .emacs file as follows:
+
+        (setq sqlplus-username-password "myname/mypassword")
+
+You may also wish to assign some of the special functions to more convenient
+keys on your keyboard.  Each of these modes calls a "hook" routine (like all
+other Emacs modes).  By assigning custom routines to these hooks, you can add
+additional functionality.  Below are some statements that will assign common
+commands used in sqlplus and sql-mode to VT320 function keys.
+
+(global-unset-key "\e\e"              ; allow ESC as a prefix to function keys
+(setq sql-mode-hook 'set-sql-keys)
+(setq sqlplus-mode-hook 'set-sqlplus-keys)
+
+(defun set-sql-keys ()
+  "Customize sql-mode keys."
+  (local-set-key "\eOM" 'sql-send-buffer)                 ; Enter
+  (local-set-key "\e\eOM" 'sql-send-region))              ; ESC Enter
+
+(defun set-sqlplus-keys ()
+  "Customize sqlplus-mode keys."
+  (local-set-key "\e\eOA" 'sqlplus-back-command)          ; ESC up-arrow
+  (local-set-key "\e\eOB" 'sqlplus-forward-command)       ; ESC down-arrow
+  (local-set-key "\e\eOD" 'sqlplus-previous-command)      ; ESC left-arrow
+  (local-set-key "\e\eOC" 'sqlplus-next-command)          ; ESC right-arrow
+  (local-set-key "\e\r" 'sqlplus-end-of-buffer))          ; ESC Return
+
+These key bindings will only be active in the buffers running the new modes
+and thus will not affect other functions assigned to the same keys in other
+buffers.
+
+SQL*Plus reads and executes the contents of the file login.sql in your home
+directory when it starts up.  If you have modified the default parameters you
+may need to make changes to this file for compatibility with sqlplus-mode.
+
+The current version requires that the SQL*Plus prompt be "SQL> " and that
+continuation prompts are numbered lines (the default), so do not change the
+settings of the SQL*Plus variables 'sqlprompt' or 'sqlnumber'.  Page pause
+should be left OFF (set pause off) since you can page forward and back using
+Emacs commands (although setting pause ON will still work).
+
+Since Emacs automatically wraps long lines you can set the line length used by
+SQL*Plus to the maximum value (set linesize 500).  Then if your terminal
+supports wide displays or variable size windows, long lines will always wrap
+to fit (however, this will also affect the centering of titles).
+
+
+Known Bugs 
+==========
+
+When entering a new command, if you move up to a prior line (of the same
+multi-line statement), make a change, then move back to the last line and
+finish entering it, SQL*Plus will not see the change--it will only process the
+last line entered.  However, if you move up to any line except the last one
+before pressing [Return], all lines will be re-evaluated when the command is
+executed.
+
+If you discover additional bugs or think of some good enhancements, send them
+via email to jlange@us.oracle.com, or call me at (415) 506-4669.
+
+    -Jim Lange

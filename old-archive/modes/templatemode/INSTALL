@@ -1,0 +1,48 @@
+This file describes how to install template-mode, a minor mode of GNU
+Emacs.
+
+1)  Decide where you want to put the template files.  These are data
+files that define the form and content of templates.  Users will
+probably want to know where they are, even if all of the load paths
+are set correctly.  For the purposes of this description, let us call
+the directory containing the templates "TEMPLATES".
+
+2)  Find the variable "tpl-load-path" in "tplvars.el" and change its
+default value to:
+
+        (list nil "TEMPLATES")
+
+(The "nil" stands for "default directory", similarly to "load-path".)
+
+3)  Put the template-mode code files ("*.el") in the standard GNU
+Emacs Lisp directory.  (The main problem you want to avoid is failure
+to "autoload" files.)
+
+4)  Go to a buffer in "Fundamental" mode.  (Actually, any buffer will
+do, but this avoids loading some templates twice.)
+
+5)  (load "template.el") -- If you see any messages about missing
+properties, then check to make sure that all of the files were loaded.
+(The beginning of "template.el" contains a list of "requires".)  Once
+you are satisfied that everything can be "autoloaded", you can
+"byte-compile" all of the source code files.
+
+6)  (template-mode)  -- You should see a message to the effect that no
+templates were found for this mode, and the symbol "Template" should
+appear in the mode line.
+
+7)  (tpl-recompile-templates) -- This function compiles templates for
+several different modes.  It is not necessary, but will significantly
+speed-up loading of standard templates.
+
+8)  (find-file "template.texinfo")
+
+9)  (texinfo-format-buffer) -- Save the results in
+"INFOROOT/template", where "INFOROOT" is the directory containing the
+Info nodes for GNU Emacs.
+
+10)  Add the menu entry for template-mode found in "dir" to the
+top-level menu of the "Info" tree.
+
+You don't have to compile anything to start using the package.  (In
+fact, you can stop at step 6.)  See the user manual for a tutorial.

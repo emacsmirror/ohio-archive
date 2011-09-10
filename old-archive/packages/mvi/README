@@ -1,0 +1,73 @@
+This is yet another vi emulator for GNU Emacs named mvi for "my vi".
+Hopefully, you will find it useful.
+
+1. Background
+
+I was a commited vi user for some time until I decided that I couldn't
+live without some of emacs' features.  So, one day I decided to make
+the big switch to GNU emacs.  After switching, I noticed that my speed
+of editing had dropped drastically.  I figured that it was because I
+needed to get used to the new keystrokes.  After a couple of months of
+this I decided that I would never be able to edit as fast as I could
+with vi because of the different editing model they employed (moded
+vs. non-moded).  Not to set off a flame war, but I liked modedness.
+At this point I tried the vi emulators that are distributed with GNU.
+They helped, but I still didn't like the feel of the cursor motion.
+At that point I started to hack on GNU to make a *REAL* vi emulator.
+I decided that what was really necessary was to get the low level
+cursor motion correct, with reasonable speed, I was going to have to
+add some C code.  Thus, to use this package, you're going to have to
+patch the emacs source and rebuild it :-(.
+
+2. Implementation
+
+This is not a vi clone.  Vi has plenty of brain damage floating around
+in its code and I felt no need to carry that forward.  In the manual,
+I'll try to explain the differences between mvi and real vi.  Mvi
+supports none of the ex commands.  It seemed pointless, since emacs
+has far more powerful versions of everything I ever did with ex.
+Thus, you can't escape learning some emacs if you want to use this
+package.  DON'T PANIC, in most respects, emacs is far more consistent
+and powerful than vi, I just couldn't deal with all the keystrokes it
+took to do trivial editing chores.
+
+3. Manifest
+
+As distributed, you should have the folowing files:
+
+README - this file
+mvi.man - a quick and dirty manual for mvi.
+mvi.el.1 - part 1 of the mvi emacs lisp code.
+mvi.el.2 - part 2 of the mvi emacs lisp code.
+mvi.patch - the c source patches.
+loadup.patch - a patch for loadup.el to make mvi part of the compiled code.
+dot.emacs - some stuff out of my .emacs to make it a little nicer.
+doug-misc.el - some miscelanious stuff that might prove useful.
+
+4. Building
+
+You're going to need the source to GNU emacs.  I recommend 18.55 since
+that was the version that the patches were generated from.  If for
+some reason you want to leave an already existing emacs unadulterated,
+you can build another version of emacs and call it something else and
+use all the same support code/texinfo from the other version.  This
+can be done by reusing the same paths.h file that was used to build
+the distributed version.  Then you will have two executables sharing
+the same support files.  You will however need to save the
+etc/DOC-18.??.? file that is built at compile time and move it into
+the etc directory for the online help to work.
+
+To build mvi, follow these instructions:
+
+1. cat mvi.el.1 mvi.el.2 > mvi.el
+2. Edit mvi.el.  Search for the function mvi-dump-emacs.  Edit the path
+   name to point to the source directory where temacs will be.
+3. move mvi.el into the emacs lisp directory
+4. use emacs to byte compile mvi.el into mvi.elc, try ESC-x 
+   byte-compile-file; that is, escape followed by x followed by 
+   byte-compile-file.
+5. use patch < loadup.patch in the emacs lisp directory.
+6. Increase PURESIZE in config.h to about 180000.
+7. go to the src directory. use patch < mvi.patch to apply the patches.
+8. in the source directory, type make.  Hopefully, this will build
+   a working emacs.

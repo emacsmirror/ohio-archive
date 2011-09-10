@@ -1,0 +1,1281 @@
+JDE-2.2.0 Release Notes
+
+***************************************************************
+*                         PLEASE READ                         *
+***************************************************************
+*                                                             *
+* This release requires semantic 1.2.1 (or later) and         *
+* speedbar 0.11.1 or later. You can obtain both at            *
+*  http://www.ultranet.com/~zappo/semantic.shtml              *
+*                                                             *
+*                                                             *
+*                                                             *
+***************************************************************
+
+* You can now specify a list of packages to exclude from import
+  into a source file. See jde-wiz-import-excluded-packages for
+  more information. Thanks to "Jim Loverde" <loverde@str.com>
+  for this enhancement.
+
+* Changed name of jde-wiz-insert-excluded-packages-regexp to
+  jde-wiz-import-excluded-packages.
+
+  Update your .emacs and prj.el files to reflect this change.
+
+* The CLI interface buffer of JDEbug now accepts output from
+  the debuggee application that does not end in an end-of-line
+  character, i.e., System.out.print() works as well as 
+  System.out.println()
+
+* The JDE has a new wizard: the Delegate Wizard. This wizard
+  creates methods that cause an object to delegate tasks
+  to another object. See the JDE user's guide for more
+  information. Thanks to Charles Hart <cfhart@Z-TEL.com>
+  for this enhancement.
+
+* All JDE templates now provide a choice of coding styles:
+
+  class A {
+  }  // Kerningham & Ritchie Style
+
+  or 
+ 
+  class A
+  {
+  }
+
+  Thanks to Stephane Nicolas <s.nicolas@videotron.ca> for
+  extending this coding style support.
+
+* Templates now indent correctly when inserted in a buffer. 
+  Thanks to el mono <mono@utp.edu.co> for this enhancement.
+
+* This release includes many enhancements to the JDE's completion wizard,
+  including support for
+
+  - this and super keywords
+
+    The JDE will now complete
+
+      this.
+
+   and
+
+      super.
+   
+  - completion of static fields and methods
+
+    For example, completing
+
+      System.o
+
+   results in
+
+      System.out
+
+  - completion of variables declared in a method's argument list, e.g.,
+
+    void foo(String s) {
+      s.g
+         ^
+      // The JDE now completes this expression.
+    }
+
+  - completion of object and class fields to any depth
+
+    For example, completing
+
+    System.out.
+
+    lists all the methods of the out stream object.
+
+    Similarly,
+
+    Toolkit.getDefaultToolkit().getScreenSi
+
+    completes to Toolkit.getDefaultToolkit().getScreenSize();
+
+  - .x --> this.x
+
+    Completing on
+
+    .
+
+    is the same as completing on
+
+    this.
+
+    Thanks to Stephane Nicolas <s.nicolas@videotron.ca> for these extensive
+    enhancements to the JDE's completion facility.
+
+* The new command jde-stat-loc-report generates a lines-of-code report for the
+  current Java source buffer. The report lists the number of code, comment, javadoc,
+  and blank lines in the buffer. Thanks to Stephane Nicolas <s.nicolas@videotron.ca>
+  for contributing the initial version of this command.
+
+* This release includes a new subdirectory:
+
+  JDEROOT/java/bsh-commands/bsh/commands
+
+  for storing BeanShell command scripts. To create a Beanshell command, write
+  the command as a Beanshell script and store the script in this directory.
+
+* This release provides a new BeanShell command
+
+   whichClass(String className);
+
+  that returns the first instance of a class found on the classpath
+  specified by jde-global-classpath. Thanks to 
+  Niranjan Rao <NRao@usinteractive.com> for contributing this script.
+
+* This release provides support for displaying line numbers in the left hand 
+  margin of Java source buffers. Two customization variables control the line
+  number display. Line numbers appear in a buffer only if 
+  jde-setnu-mode-enable is non-nil and the number of characters 
+  in the buffer is less than jde-setnu-threshhold. The reason for disabling
+  line number display in large buffers is that it makes the buffer 
+  slow to respond to insertions and deletions. To override the threshhold,
+  enter the setnu-mode command with the buffer active.
+
+
+JDE-2.1.9 Release Notes
+
+* Simplified and rationalized the way JDEbug connects Emacs to 
+  the debuggee app's standard I/O.
+
+  The new implementation eliminates the spurious "input error"
+  message when an application ends.
+
+* jde-sort-imports now works on XEmacs.
+
+  Thanks to "Dr. Volker Zell" <Dr.Volker.Zell@oracle.com> for
+  this fix.
+
+* Replaced current semantic bovinator Java parser with a more rigorous parser modeled
+  on that included in the Java CUP package.
+
+  Thanks to David Ponce <david@dponce.com>  for contributing the new grammar.
+
+* Get/set pair template now generates correct method name for getting 
+  the value of boolean variables. 
+
+  Thanks to Stephane <s.nicolas@videotron.ca> for contributing this fix.
+
+* Added sort option to Classes index menu. 
+
+  Thanks to David Ponce for this contribution.
+
+* The JDE now sets the variable abbrevs-changed to nil after initializing
+  the abbrev-mode table for a Java source buffer. This is intended to
+  prevent Emacs from thinking that the abbreviations need to be save
+  the next time you save the source file.
+
+* Added a section on the Classes menu to the JDE User's Guide.
+
+
+JDE-2.1.8 Release Notes
+
+* The javadoc command now works for class fields as well as methods
+  and classes. Thanks to David Ponce for <david@dponce.com>
+  for this enhancement.
+
+* The JDE's Lisp-based Java grammar has been extended to cover many
+  more Java constructs. 
+
+  This results in more complete indexing of Java buffers, especially fields. 
+  Thanks to David Ponce for contributing many of the grammar improvements.
+
+* The JDE's import and other wizards now work for Java extension classes.
+
+  Thanks to Mark Gibson <mark@markg.co.uk> for this improvement.
+
+* The import wizard dialog now uses radio buttons rather than check boxes
+  to select the class to import.
+
+  Thanks to Mark Gibson for this enhancement.
+
+* The Classes index menu now can include (default) or omit
+  the types of fields as well as method signatures of all 
+  classes in the current buffer. 
+
+  USe the variable jde-imenu-include-signature to enable/disable this
+  feature.
+
+  Thanks to David Ponce for this enhancement.
+
+* The Classes index menu now includes (the default) or omits an index
+  for each class declaration in the current buffer.
+
+  Use the variable jde-imenu-include-classdef to include/omit class def
+  entries.
+
+  Thanks to David Ponce for this enhancement.
+
+* Changed the name of jde-enable-index-menu to jde-imenu-enable and 
+  jde-enable-full-method-signatures-index-menu to 
+  jde-imenu-include signature.
+
+
+
+JDE-2.1.7 Release Notes
+
+* Added an entry to the JDEbug user guide about the need to set 
+  jde-run-classic-mode-vm on when using JDK 1.3
+
+* Added transient to the list of variable modifiers in the 
+  java.bnf grammar.
+
+  Thanks to Mike Bowler for reporting this problem and thanks to
+  David Ponce for providing a fix.
+
+* Classes index menu now shows full signatures of methods. 
+  
+  Thanks to Ittay Freiman <ittay@vigiltech.com> for suggesting this
+  enhancement and to David Ponce <david@dponce.com> for implementing it.
+
+* Added automatic generation of javadoc comment skeletons.
+
+  To generate a skeleton for the method or class at point, 
+  select JDE->Document or type C-C C-v j. To customize the
+  skeletons, select JDE->Project->Options->Javadoc.
+
+  Thanks to David Ponce <david@dponce.com> for providing this
+  feature.
+
+* The import wizard now checks whether an import statement already
+  exists for the class at point and if so does not generate an
+  unnecessary duplicate.
+
+  Thanks to Jim LoVerde<loverde@str.com> for contributing this
+  enhancement.
+
+* Parser now handles arrays in field declarations.
+
+  Thanks to Ittay Freiman <ittay@vigiltech.com> for reporting this bug.
+
+
+JDE-2.1.6 Release Notes
+
+=====================================================================
+NOTE: This releases requires version 0.10 (or later) of Eric Ludlam's 
+speedbar and version 1.1beta (or later) of Eric's semantic bovinator.
+You can download both packages from
+
+http://www.ultranet.com/~zappo/semantic.shtml
+=====================================================================
+
+* The *Rescan* item on the Classes menu now works.
+
+* Updated grammar to handle argument variables with modifiers 
+  and array arguments.
+
+* Updated grammar to handle final methods.
+
+* Fixed user guide's table of contents to work in browsers that
+  do not support Java.
+
+* Added variable jde-bug-raise-frame-p to allow a user to 
+  specify whether the Emacs window should pop up when a
+  breakpoint is hit.
+
+* Fixed compatiblity bug that prevented JDEbug menu from appearing 
+  in the XEmacs menubar.
+
+* Fixed stepping bug cause by missing jde-bug-install-jdebug-menu.
+
+* Completion menu now works on XEmacs.
+
+* Adds jde-sort-imports command contributed by 
+  David Ponce <david_ponce@mail.schneider.fr>.
+
+  This command sorts the import statements in the current buffer
+  in ascending or descending order by package name.
+
+* Abbreviations now disabled in comments and strings.
+
+  Thanks to Eric D. Friedman <friedman@lmi.net> for this fix.
+
+* Adds control flow templates contributed by Eric D. Friedman <friedman@lmi.net>.
+
+  The templates provide completion for the following control flow statements:
+
+  Statement                  Abbreviation
+  ----------------------------------------
+  if-then                    if
+  else                       else
+  if-then-else               ife
+  while                      while
+  for                        for
+  for (int I=0;I<UL;I++)     fori
+  main method                main
+  switch                     switch
+  case                       case
+
+  NOTE: you must enable the JDE's abbreviation mode to use the templates.
+  See jde-enable-abbrev-mode.
+  
+  To use a template, enter the abbreviation followed by a space. Some
+  templates optionally prompt you to fill in the skeleton. To enable 
+  prompting, set the variable tempo-interactive to a non-nil value in
+  your .emacs file.
+
+  You can customize the templates to suit your indentation style. To 
+  customize the templates, select Project->Options->Autocode from the
+  JDE menu.
+
+* Added customization variable jde-bug-debugger-host-address.
+
+  The value of this variable defaults to the Emacs variable system-name.
+  JDEbug uses this variable to setup a socket connection with the debugger
+  for transporting the standard I/O of the debuggee process. You can set
+  this variable to an IP address if necessary. (This variable was added
+  at the request of a user whose network does not have a DNS for host name
+  resolution.)
+
+
+JDE-2.1.6beta24 Release Notes
+
+=====================================================================
+NOTE: This releases requires version 0.10 (or later) of Eric Ludlam's 
+speedbar and version 1.1beta (or later) of Eric's semantic bovinator.
+You can download both packages from
+
+http://choochoo.ultranet.com/~zappo/fsf.shtml
+=====================================================================
+
+* Adds a Classes index menu to the Emacs menubar.
+
+  The index lists all methods, fields, and inner classes for all
+  classes in the current Java source buffer. Click any entry to
+  scroll the buffer to the corresponding class member.
+
+  Set jde-enable-classes-menu-index off to disable the Classes menu.
+
+* Fixed lisp regression error in listen and attach commands for JDEbug.
+
+* The JDEbug process launch command now uses the value of system-name 
+  to specify the local host  when connecting to the debuggee process
+  SIO socket. This cures the launch failures some users are experiencing 
+  on NT and Linux.
+
+* Added a jde-complete-at-point-menu command that displays a popup menu of
+  completions for the method or field at point. The command is bound
+  to  the C-c C-v C-. keystroke combination. The old minibuffer functionality
+  continues to be available as jde-complete-at-point. It is bound to the
+  C-c C-v . combination.
+
+  Thanks to Howard Spector <howard@howardsp.com> for this very useful
+  enhancement.
+
+* JDE now displays or hide the JDEbug menu when you select or deselect JDEbug as 
+  the current debugger.
+
+* The JDE now uses a grammar-based (instead of regular-expression-based) parser
+  to generate the index used by the speedbar.
+
+JDE-2.1.6beta23 Release Notes
+
+* Define jde-mode abbreviations only when jde-enable-abbrev-mode is on.
+
+* Fixed listp bug in thread stack display.
+
+* Fixed display of NaN, Infinity, and -Infinity FP values on local variables buffer.
+
+* The currently selected Emacs frame now pops to the top when JDEBug hits a breakpoint.
+
+* Compile command now accepts Cygwin-style classpaths.
+
+* Local variables buffer now includes the "this" object for the corresponding stack frame.
+
+* Fixed Lisp eval error when a local string variable includes unbalanced parentheses.
+
+* Menus no longer freeze when you use JDEbug's Launch Process command.
+
+* Adds jde-imenu-recognize-tag-comments-p option. 
+  
+  When on, this option causes the imenu symbol declaration indexer to 
+  recognize variables and method declarations witn prefixed tag comments.
+
+
+JDE-2.1.6beta22 Release Notes
+
+* JDEbug now correctly represents byte values and int and long values greater
+  than 24 bits in length. Thanks to Charles Hart <cfhart@Z-TEL.com> for this fix.
+
+* History now works for interactively entered vm, jdb, and application arguments.
+  Thanks to Andy Wilson <drew@media.mit.edu> for reporting this bug.
+
+* Exception tracing now works correctly. Thanks to Matthew Conway <matt_conway@i2.com>
+  for reporting this bug.
+
+* Fixes Lisp error caused by unescaped quotes within strings.
+
+  Thanks to Mark Gibson, Doug Beal, and Martin Dickau for reporting this bug. Thanks to
+  David Hay, Mark Gibson, Steve Haflich, David Dagon, and Charles Hart for creating 
+  an efficient Java method for escaping strings.
+
+* Fixes several bugs with setting key bindings.
+
+* Added a JDEbug option to the jde-db-debugger customization variable.
+
+  This obsoletes the old method of selecting the debugger by
+  selecting the debugger class type and setting the Name option to jdebug.
+
+* You can now specify vm and app command-line arguments interactively when launching an 
+  application from JDEbug.
+
+  Thanks to Steve Haflich for providing this enhancement.
+
+* Display threads now includes the stack for each thread. 
+
+  Thanks to Paul Michael Reilly <pmr@pajato.com> for implementing this. Note that a 
+  future release will allow you to click on a frame and see the source and local
+  variables for the frame.
+
+* JDE now sets the working directory to jde-run-working-directory before starting JDEbug.
+
+  Note. The debugger launches all processes from this directory. You can not set the working
+  directory on a per-process basis.
+
+* The JDE documentation now includes the beginnings of a JDEbug User's Guide.
+
+JDE-2.1.6beta21 Release Notes
+
+* Added key bindings for JDEbug.
+
+  Note. You can customize the key bindings to suit your own preferences.
+  See JDEbug->Preferences.
+
+* Fixes an infinite recursion bug that can occur when stepping through code.
+
+* Fixes scrolling in process debug message window. 
+
+  Thanks to "Martin Dickau" <mdickau@byallaccounts.com> for this fix.
+
+* Fixed bug in process launch error message.
+
+* Fixed bug in JDE->Debug App where Debug App tries to set breakpoints
+  even though it has failed to launch the app.
+
+* Do not try to set persistent breakpoints in Java buffers not associated
+  with a file.
+
+* Moved "Browse JDK doc" menu item to Help menu.
+
+
+JDE-2.1.6beta20 Release Notes
+
+* Implemented color customization of the JDEbug breakpoint marker.
+
+  To customize the color, select JDEbug->Preferences or type
+  M-x customize-variable jde-bug-breakpoint-marker-colors. Enter
+  the desired foreground and background colors and set the variable.
+
+* Implemented persistent breakpoints.
+
+  To save a breakpoint, select JDEbug->Preferences or enter
+  M-x customize-variable jde-bug-saved-breakpoints. Select
+  the INS button in the variable's customization area to
+  add a breakpoint. Enter the name of the source file and
+  line number where you want the breakpoint to occur. Then
+  set the variable.
+
+  Note that setting breakpoints by file name can lead to
+  ambiguities when the same file name occurs in different
+  packages. A future release will allow you to specify a
+  qualified class name to resolve such ambiguities.
+
+* Fixed a number of Cygwin/XEmacs incompatibilities.
+
+  Thanks to Fred Hart <cfhart@Z-TEL.com> for providing the
+  fixes.
+
+* Fixed "search-end-post" error when setting jdb breakpoints.
+
+
+JDE-2.1.6beta19 Release Notes
+
+* When displaying local variables, the debugger was incorrectly 
+  quoting characters, causing Lisp errors. Thanks to 
+  Adam_Ambrose@geoworks.com for reporting this bug.
+
+* Implemented workaround for JPDA bug that was preventing breakpoints
+  from being set in inner classes. 
+
+  Note: I have tested this workaround only on JDK 1.3rc1.
+
+* Implemented stack up and down commands.
+
+  These commands work only for the thread on which a breakpoint or
+  step point has occurred. A future release will provide a
+  stack navigator that will allow you to navigate the stack of
+  any thread.
+
+
+JDE-2.1.6beta18 Release Notes
+
+
+* Fixed bug that caused completion on private methods and fields.
+
+  Thanks to Jean-Baptiste Nizet" <jean-baptiste.nizet@s1.com> for
+  reporting this and thd following bug.
+
+* Now completes on inherited as well as declared fields and methods.
+
+* Fixed "Wrong type argument: sequencep, 0" bug that occurs when 
+  using completion with XEmacs. Thanks to Dr. Volker Zell for 
+  reporting this bug.
+
+* Now supports completion of fields declared at the end of a class 
+  as well as those declared at the beginning of a class.
+
+* Replaced jde-help-class with jde-help-symbol method. The new method
+  gets help for the symbol at point. 
+
+  The symbol may refer to a class, an object, or a method or field. 
+  This method has some limitations. It works only for symbols declared
+  in the current buffer. For example, it works for
+
+     String msg = new String();
+     msg.length()
+
+  but not for
+
+    Status status = new Status();
+    status.msg.length()
+
+  Also, this method does not scroll the class file to the place where the
+  method or field is documented. These capabilities will come later.
+
+  Thanks to Geoff Borgggaard, borggaard@syncrasystems.com, for suggesting
+  this enhancement.
+
+* Fixed bug where Display->Threads command was not enabled when debugger
+  was attached to a process.
+
+Note: for instructions on installing and using JDEbug, read this
+entire file from back to front, starting at beta5.
+
+
+JDE-2.1.6beta17 Release Notes
+
+* Added Processes->Listen commands to the JDEBug menu.
+
+  These commands cause the debugger to listen on a socket or in shared
+  memory (the latter option available only on Windows) for applications
+  requesting debug services. To use these commands, you
+  must specify the following vm options when starting the debuggee
+  application:
+
+  -Xdebug
+  -Xnoagent
+
+  -Xrunjdwp:transport=TRANSPORT,address=ADDRESS,server=n,suspend=y
+
+   where TRANSPORT is either dt_shmem (shared memory connection) or
+   dt_socket (socket) connection and ADDRESS is an arbitrary string
+   for shared memory connections or a port number for socket 
+   connections. 
+
+   JDEBug prompts you to enter ADDRESS when you execute
+   the JDEbug->Processes->Listen command.
+
+   In addition, if you are using JDK1.3 to launch the debuggee client,
+   you must use the -Xbootclasspath to include the JPDA tools in the
+   debuggee vm's classpath.
+
+   -Xbootclasspath:e:/jdk1.3/jre/lib/rt.jar;e:/jdk1.3/lib/tools.jar
+
+   Here is an example of a typical command line to launch a debuggee
+   client, using JDK1.3:
+
+   java -classpath d:/myapp/myapp.jar -Xdebug -Xnoagent
+     -Xrunjdwp:transport=dt_shmem,address=myapp,server=y,suspend=n
+     -Xbootclasspath:e:/jdk1.3/jre/lib/rt.jar;e:/jdk1.3/lib/tools.jar
+     com.myorg.myapp.Main
+  
+  When you launch a Java application with these options, the vm
+  halts before running the app's main method and attempts to connect
+  with a debugger. Once the connection is made, the debugger is in
+  complete control of the app. For example, the app won't run until
+  the debugger issues a continue command. This means you can set
+  breakpoints in the debuggee apps startup code. 
+
+  This debugger server mode option is particularly useful if you
+  are developing a non-Java application that embeds a Java vm.
+  For example, you can put a command line switch on your app that
+  causes it to start its internal vm in debuggee client mode. The
+  internal vm will then immediately connect to the debugger allowing
+  you to debug the app's Java startup code.  
+
+* Moved Bootstrap.virtualMachineManager().getConnectors() off command thread
+  as this is suspected of causing launch problems on some Windows/NT systems.
+
+* Provide choice of coding styles for code generated by templates.
+
+  The styles are Modern (new line before opening brace) and
+  Kernighan & Ritchie (no new line).
+
+  Type C-h v jde-gen-k&r for more information.
+
+  Note that if you are using project files, you must set jde-gen-k&r on
+  or off, restart Emacs, and reset each of the template variables to
+  there default settings and then resave your project file.
+
+  Thanks to Jari Aalto for this enhancement.
+
+* Modified the Jdb->Set Breakpoint command to set breakpoints correctly in
+  inner classes.
+
+  This command generates the correct jdb command
+
+    stop at A.$B:L#
+
+  where A is the name of the outer class and B is the name of the inner class.
+
+  NOTE: this applies to JDE's support for jdb, the debugger that comes with the
+  JDK. It does not apply to JDEbug, the JDE's own built-in debugger.
+
+  Thanks to Francois Cogne <cogne@col.bsf.alcatel.fr> for providing this 
+  enhancement.
+
+* Fixed beanshell startup bug on Unix platforms.
+
+* You can now use the notation [f1], [f2], etc.,  to specify function keys
+  when customizing jde-key-bindings.
+
+* Fixed several incompatibilities between JDEbug and XEmacs.
+
+
+JDE-2.1.6beta16 Release Notes
+
+* Added a local variables buffer to JDEbug. 
+
+  This buffer displays the values of local variables whenever the program halts
+  at a breakpoint or is stepped. Trees are used to display objects and arrays.
+  Expanding an object shows its fields. If any of its fields are objects, you
+  can expand those too. Expanding an array shows the values of its elements.
+  If the elements are arrays (i.e., the array is multidimensional), you can
+  expand each of them until you get to the actual values. The local variables
+  buffer shows java.lang.String objects as strings rather than as objects.
+
+
+* Added a Show Buffers command to JDEbug.
+
+  This command shows the selected buffer, e.g., the local variables buffer
+  or the threads buffer,  in the middle window of the debugger frame.
+
+* Added a jde-show-class-source (C-c C-v C-y) command. This command finds
+  and displays the source for the (unqualified) class name at point. 
+  This command finds only classes whose source is in the paths specified by 
+  jde-db-source-directories. Thanks to Phil Lord for providing the 
+  initial implementation of this command.
+
+* Fixed numerous small problems found by Michael Ernst. Thanks Michael.
+
+
+
+JDE-2.1.6beta15 Release Notes
+
+* Added Attach Process on Local Host and Remote Host commands.
+
+* Added an Attach Process Via Shared Memory command for Windows apps.
+
+* Enhanced the JDE->Run App command to run the executable specified by jde-run-executable
+  with the arguments specified by jde-run-executable-args.
+
+  This is useful when you are developing an application consisting of an executable program
+  that launches a Java virtual machine.
+
+* Fixed jde-bug-debug-app command so that it gives a meaningful error message 
+  if JPDA is not properly installed.
+
+* Added JDEbug commands for setting and clearing watchpoints.
+
+* Fixed JDEbug stepping logic so that each source buffer is always loaded into 
+  the same window.
+
+* The JDE now suspends project context-switching while JDEbug is running a debugee
+  process. This avoids the debugger losing track of its current position in the source
+  code due to a change in the setting of jde-db-source-directories when switching
+  among projects that define this variable differently.
+
+* The submit bug report command now includes environment variables.
+
+* Added a Project menu to the JDE menu.
+
+* Moved the Options menu to the Project Menu.
+
+* Added a Project Files submenu to the new Project menu.
+
+* Moved the Save Project item to the Project Files menu.
+
+* Added Load and Load All commands to the Project Files menu. The first command 
+  loads the project file for the current Java source buffer. The Load All 
+  command loads the project file for each open source buffer.
+
+* Added a jde-project-context-switching-enabled-p customization variable. You can use
+  this variable to turn off automatic loading of project files. This allows you to 
+  manage project file loading manually.
+
+
+
+
+JDE-2.1.6beta14 Release Notes
+
+* JDE->Run Applet now looks in the current Java source directory for an html file having the
+  same root name as the current Java source buffer. If it finds such a file, it runs it. 
+  Otherwise, it runs the first html file that it encounters in the directory. Thanks to
+  Richard Y. Kim <ryk@coho.net> for providing a patch implementing this change.
+
+* Changed key binding for jde-help-class from C-c C-v C-h to C-c C-v C-w because C-h
+  is a reserve binding. Thanks to Richard Y. Kim <ryk@coho.net> for suggesing this change.
+
+  Don't forget to reset the value of jde-key-bindings to the standard setting if you
+  are using project files.
+  
+* Added command, JDEbug->Processes->Remove Dead Processes, that removes all objects 
+  associated with dead processes, including their buffers.
+
+* Fixed the debugger's launch process command so that it fails gracefully, 
+  without producing a Lisp backtrace.
+
+* Recompiled the debugger, using javac. Previous versions were compiled with jikes. The jikes 
+  version results in a mysterious null pointer exception when stepping through source code.
+
+* Added the variable jde-bug-jre-home. This variable specifies the home directory of the Java 
+  runtime environment containing the executable, e.g., java,  to be used to launch processes 
+  (see next note). If you do not specify a home directory, the home directory is the same as 
+  that of the executable used to run the debugger itself.
+
+* Added the variable jde-bug-vm-executable. This variable specifies the name of the executable to 
+  use to launch debuggee processes. This defaults to java on Unix platforms and javaw on Windows
+  platforms.
+
+
+JDE-2.1.6beta13 Release Notes
+
+* Include source for Completion class.
+
+* Fixed bug in trace methods command where the inclusion filter overwrote the exclusion filter.
+
+* Added jde-bug-vm-includes-jpda-p
+
+  Set this variable on if you are using JDK 1.3.
+
+* Added jde-bug-jdk-directory
+
+  Set this variable if you are using JDK 1.3.
+
+* Added JDEbug->Trace Exceptions command.
+
+* Added JDEbug->Display->Loaded Classes command.
+
+  This command lists the classes currently loaded by the target process.
+
+* Added JDEbug->Display->Path Info command.
+
+  This command displays the base directory, root classpath, and application classpath
+  of the target process.
+
+JDE-2.1.6beta12 Release Notes
+
+* Added trace classes commands: JDEbug->Trace Class Prep and
+  JDEBug->Trace Class Unload.
+
+  These commands cause the debugger to display a message each time a class
+  is prepared (loaded?) or unloaded. Options include whether to suspend execution
+  of the process and filters for restricting the trace to a specified set of
+  classes.
+
+* Added trace methods commands: JDEbug->Trace Method Entry and 
+  JDEBug->Trace Method Exit
+
+  These commands cause the debugger to display a message each time a method is
+  entered or exited. Options include restricting the trace request to a specified
+  thread, specifying whether to suspend the process when a method is entered or
+  exited, and restricting the trace request to methods of a specified class or
+  set of classes or a specified set of methods.
+
+* Added method completion command contributed by Rodrigo Reyes <reyes@chez.com>
+
+  This package adds smart completion to the JDE. Here is how it works:
+  put the cursor at the end of a statement "under
+  construction", eg. "myVariable.rem<CURSOR HERE> and call the
+  jde-complete-at-point emacs-lisp function (this is by default
+  C-c C-v C-.). A completion is then inserted. If multiple completions are
+  possible, calling the completion function again will cycle through
+  all the possibilities (as dabbrev-mode does).
+
+;; To retrieve all the possible completions, it uses the java code in
+;; jde.util.Completion.getClassInfo(), called by beanshell. That
+;; need the class to be compiled (but that's not worst than an etag
+;; call).
+
+
+* Added jde-submit-bug-report command contributed by Phillip Lord <plord@hgmp.mrc.ac.uk>
+
+* Added jde-browse-class command contributed by Rohit Namjoshi <Rohit_Namjoshi@trilogy.com>
+
+  This command displays the class at point in the BeanShell class browser. The class browser shows  the method signatures and fields of the specified class.
+
+* Fixed bug in JDEbug->Display->String where strings with backslashes caused a Lisp 
+  evaluation error.
+
+* Amended jde-db-make-qualified-class-name-regexp to permit package names to begin
+  with underscores. Contributed by  "Patrick J. McNerthney" <pat@mcnerthney.com>.
+
+JDE-2.1.6beta11 Release Notes
+
+* Adds Stop and Interrupt thread commands to JDEbug.
+
+* Fixed a line in jde-wiz.el, where an int is concat'd with some
+  strings.  This is not allowed by XEmacs 21.1. Fix provided by
+  "Mike Woolley" <mike@bulsara.com>.
+
+* Fixed bugs in JDEbug->Exit Debugger.
+
+* Adds Resume Process and Resume Thread commands.
+
+* Adds Suspend Process and Suspend Thread commands to JDEbug.
+
+* Adds JDEBug->Show Threads command.
+
+* Adds jde-help-class command to Help menu
+
+* Adds command to update JDE class list. Contributed by Phillip Lord.
+  
+  See jde-wiz-update-class-list for usage. Wizards->Update Class List
+  invokes this function.
+
+* JDE now caches list of jde- symbols. This speeds switching among
+  projects. Contributed by David Biesack.
+
+* Fixed "c-find-expr undefined" bug.
+
+
+JDE-2.1.6beta10 Release Notes
+
+This release is a first. It consists entirely of contributions
+of JDE users. Thanks to all who contributed.
+
+This release adds two EJB templates contributed by 
+Brendan Burns <Brendan.Burns@tfn.com>.
+
+It fixes the following bugs:
+
+* Beanshell does not work with JDK 1.1.x on Windows platforms.
+  Fix contributed by "Mike Woolley" <mike@bulsara.com>
+
+* -classic switch is not first on the command line of applications
+  launched by JDEBug. Fix contributed by David Ponce
+  <David_PONCE@mail.schneider.fr>.
+
+* "Symbol's value as variable is void: list" error when jde-db-option-classpath
+  or jde-run-option-classpath is defined. Fix contributed by
+  Danny Siu <dsiu@Adobe.COM>.
+
+
+
+JDE-2.1.6beta9 Release Notes
+
+Note. This release requires and includes the latest development 
+version of the eieio.el library. You should 
+remove any earlier versions from your Emacs load-path.
+
+This release comprises new JDEBug debugger features plus 
+bug fixes.
+
+New Debugger Features
+=====================
+
+(See release notes for beta 7 and 8 below for information on
+installing and running JDEBug.)
+
+This release implements the following new features and commands:
+
+* JDEBug->Display->Variable
+
+  This command displays the value of the variable at point.
+  If the value is a primitive, this command displays
+  the primitive's value. If the value is an object, the command
+  displays 
+
+    <TYPE:ID> 
+
+  where TYPE is the type of object and ID is an ID assigned
+  to the object by the debugger. Use the following commands
+  to display the fields of instances of user-defined types
+  and the elements of arrays.
+
+  This command works only if the variable is defined in the
+  target process. It displays the value in the debugger
+  output buffer for the target process.
+
+  Note: this command works by evaluating the expression at point.
+  If the expression is not a variable, the command will still
+  attempt to evaluate it.
+
+* JDEBug->Display->Array
+
+  Displays the elements of a specified array. The command prompts you
+  to enter the array's ID. 
+
+* JDEBug->Display->Object
+
+  Displays the fields of a specified object. The command prompts
+  you to enter the object's ID in the minibuffer.
+
+* JDEBug->Display->String
+
+  Displays the contents of a specified string, i.e., an object
+  of type java.lang.String. This command allows you to display 
+  the string's value without displaying its other fields.
+
+* JDEBug->Display->Local Variables
+
+  Displays the variables local to the point where the target
+  process is currently stopped. Note: on Windows 95, this
+  command sometimes crashes the application being debugged.
+  I can't detect any pattern. If you experience similar 
+  crashes, I'd appreciate hearing from you, especially if
+  you can detect any pattern to the crashes.
+
+* JDEBug->Evaluate Expression
+
+  This command evaluates any Java expression. The expression may
+  include variables. However, the variables must be defined
+  in the current stack frame of the target process.
+
+* JDEBug now remembers the initial 3-pane window configuration for a process
+  and restores the configuration when you invoke the JDEBug->Set Target
+  command.
+
+* Fixed the jde-find-data-directory to return the JDE directory on XEmacs if
+  it cannot find the JDE data in the XEmacs's data directory. This should allow
+  you to use JDE versions later than that packaged with XEmacs.
+
+
+Bug Fixes
+=========
+
+This release fixes the following bugs:
+
+* JDEBug->Set Breakpoint command should set the breakpoint at the
+  line containing point but instead sets the breakpoint at the
+  next line.
+
+* The Interface Wizard puts quotes around the code that it inserts
+  into a buffer.
+
+* Emacs queries the user whether to quit when the BeanShell is running.
+
+* The JDE->Wizards->Import Class command invokes the old, less
+  intelligent version of the import class command.
+
+* The jde-show-help command now works with Internet Explorer on Windows/NT.
+
+* Fixed bug in the JDEbug launch-process command where the command was failing
+  to convert the application arguments from a list of arguments to a
+  string of arguments. Thanks to "Matthew
+  Weymar"<mweymar@hamilton-partners.com> for reporting the bug.
+
+* The jde-help-class command now converts doc file paths to URLs. This should
+  ensure compatibility with browsers on various platforms. Thanks to
+  Satish Annapureddy <satish@mmsi.com> for reporting this problem.
+
+
+JDE2.1.6beta8 Release Notes
+
+This release continues implementation of the debugger.
+New features include:
+
+* Multiprocess debugging
+
+  You can now launch and have multiple processes running
+  concurrently in the same session. Processes are numbered
+  sequentially to permit identification even when multiple
+  instances of the same app are running. The Processes->Set Target
+  command allows you to designate any one of the processes
+  as the target process. Thenceforth all process-related 
+  commands affect that target, until you select another
+  target.
+
+* Window configuration management
+
+  When you launch a process, the JDE configures the frame
+  into three windows from top to bottom: source window,
+  app command-line interface window, and debugger message
+  window. The JDE remembers this configuration. Whenever
+  you select the process, the JDE restores the initial
+  configuration. Depending on your feedback, the JDE
+  may provide you with the option to save and restore
+  configurations of your choosing.
+
+There is a lot of work to be done. Some of the things
+I plan to work on for beta 9 include:
+
+* Updating the breakpoint highlights and breakpoint cursor
+  when you switch processes.
+
+* expression evaluator
+
+* local variable window
+
+My plan is to make releases at least once a week until the
+debugger implementation is complete.
+  
+
+JDE2.1.6beta7 Release Notes
+
+This release fixes two debugger bugs on Windows NT
+
+* Debugger apparently fails to respond to debugger commands. (Actually,
+  the problem is with standard I/O not flushing its buffer. The fix is
+  to but two linefeeds instead of one after each command.)
+
+* Continue command on the JDEBug Menu is greyed out when a process
+  is suspended. This happens because the debugger on NT returns
+  a process state of "unknown" instead of "waiting".
+
+Please note that I have updated the JDEBug screen shot on the JDE web site.
+It gives a good idea of what to expect when you run the debugger.
+
+
+JDE2.1.6b6 Release Notes
+
+This releases fixes the Interface Wizard, which was broken by a
+regression error in a previous release.
+
+It reimplements the JDEbug Lisp interface to use Eric Ludlam's
+Lisp object system and provides a customization variable for
+specifying the location of the JPDA package required to 
+run JDEbug.
+
+Finally, it reorganizes the JDE hierarchy, moving all Lisp files
+into a separate subdirectory, among other changes.
+
+REQUIREMENTS
+
+* eieio Lisp object system for Emacs. 
+  
+  You can download the package from
+
+    http://www.ultranet.com/~zappo/eieio.shtml
+
+   Please be sure to include the eieio package in your Emacs
+   load-path.
+
+*  The JDE lisp files now reside in the lisp subdirectory of
+   the JDE distribution. So you must update the load-path in your
+    .emacs file, accordingly, e.g.,
+
+   (setq load-path
+      (nconc
+        '("~/emacs/site/jde-2.1.6b6/lisp)
+         load-path))
+
+* Java Platform Debug Architecture distribution from Sun 
+  MicroSystems to run JDEbug, the JDE's new debugger. You can 
+  download the package from JavaSoft's website.
+
+  Important: you must include the JPDA's bin directory in your
+  path.
+
+
+
+JDE2.1.6beta5 Release Notes
+
+This beta contains an early release of JDEBug, the new
+debugger being developed for the JDE by Paul Kinnucan and
+Amit Kumar, with the support of Sun Microsystems. The new
+debugger is based on Sun's Java Platform Debug Architecture 
+and is designed specifically to work with Emacs, which
+serves as its user interface. The new release requires
+a JDK 1.2-compatible vm.
+
+To debug a project with JDEbug, you must first select
+it as the debugger for the project. You do this by customizing the
+variable jde-db-debugger. To customize this variable,
+select Project->Options->General from the JDE menu to display 
+the project customization buffer. Then edit the jde-db-debugger
+entry in the buffer to read as follows:
+
+Jde Db Debugger: [Hide]
+Name: jdebug
+Debugger type is  
+( ) Executable
+(*) Class
+   [State]: you have set this option, but not saved it for future sessions.
+Specify debugger. [More]
+
+Finally, save the setting. If you want to use the debugger 
+only on the current project, select "Set for current session"
+from the customization buffer's State menu and then select
+Options->Save Project from the JDE menu to save the setting
+in the project's project file. Otherwise, select
+the "Save for future sessions" options to save the setting
+in your .emacs file.
+
+After you have saved the setting, open a Java source file
+from the current project (or any source file if you save the
+jde-db-debugger setting in your .emacs file). You should now
+see the JDEbug menu in the Emacs menu bar. Note that most of
+the menu items are grayed. Some items are grayed because they
+are not yet implemented; others, because they require an 
+application to be running.
+
+Before proceeding further, first check that you have set
+jde-db-source-directories to specify the directories containing
+source files for the application you want to debug.
+
+Now, to debug an application, first set a breakpoint somewhere
+in your application. To set the breakpoint, open the source
+file for the breakpoint selection, click the line at which
+you want the debugger to halt execution of the application, and
+the select Set Breakpoint from the JDEbug menu. The JDE highlights
+the selected line in yellow (you can customize the highlight color).
+
+Once you have set the breakpoint, close all Emacs windows except
+the one containing the source file with the breakpoints. Then, select 
+Debug App from the JDE menu. After a short pause, the Emacs frame
+divides into three windows. The top window contains your source file.
+You should see a debug arrow pointing at the breakpoint line,
+indicating that the debugger has halted your application at the breakpoint.
+The middle window contains a window for interacting with your 
+application. Application standard output appears in this window.
+You can enter application input in this window also (not tested). The bottom
+window shows debug output from the JDE and the debugger. You can
+now use the debugger's step and continue commands to step through
+your program. To abort the application and exit the debugger, select
+Exit from the JDEbug menu.
+
+As you will quickly discover, the current release is limited to setting
+breakpoints and stepping through an application. Subsequent releases
+will add support for displaying variables, setting watchpoints, 
+controlling threads, debugging multiple processes, browsing objects,
+etc. Much of this functionality is already implemented in the debugger
+and only needs to be exposed via the JDE interface. So new features
+should come pretty quickly.
+
+Your feedback regarding bugs and usability is welcome. We are particularly
+interested in input on user interface issues, especially related to
+the problem of managing multiple processes and debugger output window
+configuration.
+
+JDE2.1.6beta4 Release Notes
+
+This release generalizes the jde-help-class command to work with
+class API doc of any type, including the Java 1 and Java2 versions
+of javadoc. To do this, it replaces the variable jde-help-javadoc-dirs
+with the variable jde-help-docsets. The new variable allows you to
+specify the format of the documentation (javadoc or "other") and
+a search function for searching docsets that are not javadoc.
+
+This release also fixes a long-standing bug with the Save Project
+command. The command now kills the buffer containing the project
+file after saving its contents. This should reduce the chance of
+two project file buffers being open simultaneously, which can
+lead to corruption of the files. Note that it is perfectly okay
+to have multiple projects open.
+
+JDE 2.1.6beta3 Release Notes
+
+This releases adds context-sensitive help for class names. To
+use this facility, first customize the variable jde-help-javadoc-dirs
+to specify a list of the directories containing javadoc class
+documentation on your system. Once you have done this, typing
+C-c C-v C-h causes the JDE to display the javadoc for the class
+at point in the current buffer. The command uses the browser that you 
+have specifed with Emacs browse-url package to display the
+class documentation. The default browse-url browser is Netscape.
+See the browse-url documentation for information on specifying
+another browser, such as w3. Thanks to Phillip Lord <plord@hgmp.mrc.ac.uk>
+for reviewing and enhancing the code for this command.
+
+
+This release includes enhancements to the jde-wiz-find-and-import
+command, which imports the class whose name appears at point in the
+current buffer. The command now has a customization variable
+jde-wiz-insert-excluded-packages-regexp that allows you to prevent
+specified classes from being considered for import into a buffer.
+This variable is useful if the same class name is declared in
+multiple packages and you only want some of the classes to be
+considered for import. If the jde-wiz-find-and-import command finds
+multiple import candidates in your classpath, it now prompts you
+to choose a class instead of silently importing all the candidates.
+Thanks to Phillip Lord <plord@hgmp.mrc.ac.uk> for providing these
+enhancements.
+
+This release also fixes a bug in the Java code used by the
+jde-find-and-import command. As a result, you no longer need
+to include the core JDK 1.2 classes, i.e., rt.jar, in your classpath.
+Thanks to David_PONCE@mail.schneider.fr for providing this fix.
+
+
+JDE 2.1.6beta2 Release Notes
+
+This release fixes the following bugs:
+
+* JDE does not require jde-parse.el.
+
+* ImportWizard incorrectly replaces path separators with periods.
+
+
+JDE 2.1.6beta1 Release Notes
+
+This releases incorporates the following changes:
+
+New Features
+============
+
+* Java parser
+
+  The JDE now comes with its own Java parser implemented in Java. You can invoke
+  the parser from the BeanShell or via the jde-parse command (see next). The 
+  parser was generated by JavaCC and the Java Tree Builder. The source for 
+  the parser and the grammar from which it was generated are in the JDE's
+  java directory.
+
+* jde-parse command
+
+  Checks the current buffer for syntax errors, using the JDE's Java parser.
+
+* jde-wiz-find-and-import command
+
+  Generates an import statement for a class in the current buffer. Unlike 
+  jde-wiz-import, which requires a fully qualified class name, this new 
+  command does not require the class name to be qualified. Indeed, it 
+  should not be qualified. The command searches the classpath for the
+  name you enter (by default the name at point) and imports any classes
+  by that name that it finds. (A future version will let you choose which
+  class to import.) This command uses the BeanShell and a new JDE Java class,
+  jde.wizards.ImportWizard. Thanks to Len Trigg <trigg@cs.waikato.ac.nz>
+  for implementing this class.
+
+* C-c C-v C-z is now bound to jde-wiz-find-and-import instead of jde-wiz-import
+
+  If you prefer the old command, you can customize the keybinding in your .emacs
+  or prj.el files.
+
+* The make version of jde-build now allows interactive entry of make arguments. 
+  Thanks to Yarek J. Kowalik <jgk@klg.com> for providing this enhancement.
+
+
+Bug Fixes
+=========
+
+* Changed jde-run-parse-args to accept any substring enclosed in single or double
+  quotes or that does not contain white space as an arg. Thanks
+  to Changzhou Wang <cwang@osf1.gmu.edu>.
+
+* Added missing java-font-lock-keywords-3 for XEmacs. Thanks to
+  Stephane <informagician@lunatech.com> for spotting this bug.
+
+
+
+
+
+
+
+

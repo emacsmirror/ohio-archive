@@ -1,0 +1,75 @@
+<HTML>
+<HEAD>
+<TITLE>Normal: Introduction</TITLE>
+</HEAD>
+<BODY>
+Previous
+<A HREF="normal-2.html">Next</A>
+<A HREF="normal.html#toc1">Table of Contents</A>
+<HR>
+<H2><A NAME="s1">1. Introduction</A></H2>
+
+
+
+<P><SF>Normal</SF> takes multiple, raw xmu data sets as its input and returns
+them with a pre-edge line subtracted, normalized to the value of the
+edge step, and aligned in energy.  <SF>NOrmal</SF> can also calculate
+numerical derivatives of the normalized data.  <SF>Normal</SF> requires an
+input file which is a simple text file containing instructions for the
+normalization and alignment.  It also requires data in either the
+UWXAFS binary or ASCII format.  It will write the output data to
+either file format.</P>
+<P>The pre-edge subtraction of each of the input data sets is performed
+in the standard fashion for XAFS data.  A line is chosen by regression
+from data before the absorption edge.  This line is subtracted from
+the entire data range, leaving data that is zero-valued before the
+edge. </P>
+<P>Alignment in energy requires that one data set be chosen as the
+standard and that all other data sets be shifted in energy to best
+match that standard.  The standard is normalized to the height of the
+edge step.  The edge step is found by regressing a line to the data in
+some energy range after the edge.  This line is extrapolated back to
+the edge energy and the value of the intercept at the edge energy is
+used as the edge step.  The data is divided at all points by this
+number.  Thus the data starts at zero and rises values near one.  The
+normalization for all other data sets is chosen as part of the
+alignment algorithm. </P>
+<P>A Levenberg-Marquardt non-linear least-squares minimization is used to
+align each individual data set to the standard.  Three variables are
+used to minimize the difference between the data set and the standard.
+These variables are an energy shift, an edge step, and the slope of a
+line added to the region after the edge.  The best-fit value for the
+energy shift is added to the output data so that the standard and all
+other files lie on grids referenced to the same energy origin.  Each
+data set is normalized to the best fit value of the edge step.  A line
+which is zero at the edge energy is subtracted from the data set in
+the region after the edge to compensate for any differences in, say,
+the detector responses in the data and the standard.  The slope of
+this subtracted line is the third fitting variable. </P>
+<P>The results of the alignment fit are written to the header of the
+output file.  (See 
+<A HREF="normal-2.html#header">below</A> for a description of
+the file formats.)  The original data can be reconstructed from the
+normalized and aligned data using the fit results.   The energy scale
+is shifted by subtracting the best-fit e0 shift, then the xmu data is
+modified by this formula: 
+<BLOCKQUOTE><CODE>
+<PRE>
+xmu(normalized) = xmu(original) / step + [theta(e-e0)*slope*(e-e0)]
+</PRE>
+</CODE></BLOCKQUOTE>
+ 
+Here theta indicates a step function, theta(e-e0)=0 when e&gt;e0 and
+theta(e-e0)=1 when e&lt;e0.  The e0 value is relative to the shifted
+energy scale. </P>
+<P>The numerical derivative is performed by Ridder's method of polynomial
+extraction.  This is somewhat slower than an n-point difference, but
+much less prone to error.</P>
+
+
+<HR>
+Previous
+<A HREF="normal-2.html">Next</A>
+<A HREF="normal.html#toc1">Table of Contents</A>
+</BODY>
+</HTML>

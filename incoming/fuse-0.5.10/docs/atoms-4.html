@@ -1,0 +1,145 @@
+<HTML>
+<HEAD>
+<TITLE>Atoms: Absorption Calculation and Experimental Corrections</TITLE>
+</HEAD>
+<BODY>
+<A HREF="atoms-3.html">Previous</A>
+<A HREF="atoms-5.html">Next</A>
+<A HREF="atoms.html#toc4">Table of Contents</A>
+<HR>
+<H2><A NAME="s4">4. Absorption Calculation and Experimental Corrections</A></H2>
+
+
+
+<P>Included in <SF>atoms</SF> is data from <I>Compilation of X-Ray Cross
+Sections</I> by McMaster, et al.  Using this and the crystallographic
+information from <CODE>atoms.inp</CODE>, <SF>atoms</SF> is able to make several
+calculations useful for XAFS analysis.  It approximates the absorption
+depth and edge step size of the material at the edge energy of the
+core atom and estimates three corrections needed for the analysis of
+XAFS data.  These corrections are the ``McMaster correction'', the
+energy response of the I0 chamber in a fluorescence experiment, and
+the self-absorption of a thick material in a fluorescence experiment.
+All of these numbers are written at the top of the output file.  For
+more information on these calculations consult Chapter 10 of
+<I>Handbook of Synchrotron Radiation, v.1.</I></P>
+
+
+<H2><A NAME="ss4.1">4.1 Absorption Calculation</A></H2>
+
+
+<P>Proper sample preparation for an XAFS experiment requires knowledge of
+the absorption depth and edge step size of the material of interest.
+The statistics of data collection can be optimized by choosing the
+correct sample thickness.  It is also necessary to avoid distortions
+to the data due to thickness and large particle size effects. </P>
+<P><SF>atoms</SF> calculates the total cross section of the material above
+the edge energy of the central atom and divides by the unit cell
+volume.  The number obtained, <I>mu_total</I>, has units of
+cm&circ;-1.  Thus, if x is the thickness of the sample in cm, the
+x-ray beam passing through the sample will be attenuated by
+<I>exp(-mu_total * x)</I>.</P>
+<P><SF>atoms</SF> also calculates the change in cross section of the central
+atom below and above the absorption edge and divides by the unit cell
+volume.  This number, delta_mu, multiplied by the sample
+thickness in cm gives the approximate edge step in a transmission
+experiment.</P>
+<P>The density of the material is also reported.  This number assumes
+that the bulk material will have the same density as the unit cell.
+It is included as an aid to sample preparation.</P>
+
+
+
+
+<H2><A NAME="ss4.2">4.2 McMaster Correction</A></H2>
+
+
+<P>Typically, XAFS data is normalized to a single number representing the
+size of the edge step.  While there are compelling reasons to use this
+simple normalization, it can introduce an important distortion to the
+amplitude of the chi(k) extracted from the absorption data.  This
+distortion comes from energy response of the bare atom absorption of
+the central atom. This is poorly approximated away from the edge by a
+single number.  Because this affects the amplitude of chi(k)
+and not the phase, it can be corrected by including a Debye-Waller
+factor and a fourth cumulant in the analysis of the data. These two
+``McMaster corrections'' are intended to be additive corrections to any
+thermal or structural disorder included in the analysis of the XAFS. </P>
+<P><SF>atoms</SF> uses data from McMaster to construct the bare atom
+absorption for the central atom. <SF>atoms</SF> then regresses a quadratic
+polynomial in energy to the natural logarithm of the constructed
+central atom absorption.  Because energy and photo-electron wave
+number are simply related, E is proportional to k&circ;2, the
+coefficients of this regression can be related to the XAFS
+Debye-Waller factor and fourth cumulant. The coefficient of the term
+linear in energy equals <I>2*sigma_MM&circ;2</I> and the
+coefficient of the quadratic term equals <I>4</I>3 *
+sigma_MM&circ;4/.  The values of <I>sigma_MM&circ;2</I> and
+<I>sigma_MM&circ;2</I> are written at the top of the output file.</P>
+
+
+
+
+<H2><A NAME="ss4.3">4.3 I0 Correction.</A></H2>
+
+
+
+<P>The response of the I0 chamber varies with energy during an XAFS
+experiment.  In a fluorescence experiment, the absorption signal is
+obtained by normalizing the IF signal by the I0 signal.  There is no
+energy response in the IF signal since all atoms fluoresce at set
+energies.  The energy response of I0 is ignored by this normalization.
+At low energies this can be a significant effect.  Like the McMaster
+correction, this effect attenuates the amplitude of chi(k) and is is
+well approximated by an additional Debye-Waller factor and fourth
+cumulant. </P>
+<P><SF>atoms</SF> uses the values of the nitrogen, argon and krypton keywords
+in <CODE>atoms.inp</CODE> to determine the content of the I0 chamber by
+pressure.  It assumes that the remainder of the chamber is filled with
+helium. It then uses McMaster's data to construct the energy response
+of the chamber and regresses a polynomial to it in the manner
+described above.  <I>sigma_I0&circ;2</I> and
+<I>sigma_I0&circ;4</I> are also written at the top of the output
+file and intended as additive corrections in the analysis.</P>
+
+
+
+
+<H2><A NAME="ss4.4">4.4 Self-Absorption Correction.</A></H2>
+
+
+
+<P>If the thickness of a sample is large compared to absorption length of
+the sample and the absorbing atom is sufficiently concentrated in the
+sample, then the amplitude of the chi(k) extracted from the data taken
+on it in fluorescence will be distorted by self-absorption effects in
+a way that is easily estimated.  The absorption depth of the material
+might vary significantly through the absorption edge and the XAFS
+wiggles.  The correction for this effect is well approximated as
+<BLOCKQUOTE>
+<I>1 + mu_abs / (mu_background+mu_fluor)</I>
+</BLOCKQUOTE>
+</P>
+<P>where <I>mu_background</I> is the absorption of the non-resonant
+atoms in the material and <I>mu_fluor</I> is the total absorption
+of the material at the fluorescent energy of the absorbing atom.
+<SF>atoms</SF> constructs this function using the McMaster tables then
+regresses a polynomial to it in the manner described above.
+<I>sigma_self&circ;2</I> and <I>sigma_self&circ;4</I> are
+written at the top of the output file and intended as additive
+corrections in the analysis. Because the size of the edge step is
+affected by self-absorption, the amplitude of chi(k) is attenuated
+when normalized to the edge step.  Since the amplitude is a measure of
+<I>S0&circ;2</I>, this is an important effect.  The number reported in
+<CODE>feff.inp</CODE> as the amplitude factor is intended to be a
+multiplicative correction to the data or to the measured
+<I>S0&circ;2</I>.</P>
+
+
+
+<HR>
+<A HREF="atoms-3.html">Previous</A>
+<A HREF="atoms-5.html">Next</A>
+<A HREF="atoms.html#toc4">Table of Contents</A>
+</BODY>
+</HTML>

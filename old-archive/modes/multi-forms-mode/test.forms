@@ -1,0 +1,51 @@
+;; -*- mode: forms -*-
+;; test.forms test for forms-mode
+;; This demo does some protocol data.
+
+(setq forms-field-sep "#")
+
+;  NAME         LABEL           FIELD  DFLT      SIZE  LINE-SIZE
+;         VISIBLE                           NEWLINE-P  
+
+(setq forms-format-list    '(
+   (timestamp t "TIME: "           1   "1"  nil  8   nil)
+   (visible   t "  Vis: "          2   "t"  nil  3   nil)
+   (type      t "   TYPE: "        3  "nil" nil  5   nil)
+   (v         t "V?: "             6   nil  t    1   nil)
+   (vcount    t "  VNUM: "         7   nil  nil  3   nil)
+   (duration  t " DURATION: "      4   nil  nil  5   nil)
+   (verbal    t "  VERBAL>>: "     5   nil  t    t   nil)
+   (mm        t "MM?: "           12   nil  1    1   nil)
+   (mmcount   t "  MNUM: "        13   nil  nil  3   nil)
+   (mba       t "  MBA?: "        14   nil  nil  1   nil)
+   (mbacount  t "  MBANUM: "      15   nil  nil  3   nil)
+   (mouse     t "  MOUSE>>: "     16   nil  1    t   nil)
+  
+   (allcorres t "B EVID FOR:  "    9   nil  1    25  nil)
+   (vcorres   t "  V EVID FOR: "   8   nil  t    25  nil)
+   (mcorres   t "  M EVID FOR:  " 10   nil  t    25  nil)
+   (11        t "        MNECC: " 11   nil  nil   t  nil)
+  
+   (soar-act  t "Soar Trace: "    17   nil  1    t  t)
+   (comments  t "Comments: "      18   nil  1    t  t)
+       ))
+;**** end of forms header ****
+
+This was originally protocol data taken here at CMU on browsing behavior.
+
+vapeck   25-Sep-91
+Redone in soar/pa mode 15-Oct-91 -FER
+
+"from original transcription by dcr, 26-Apr-90, and
+  verbal transcription by s.esch,  Jun-91"
+
+Transcription of the 15-Jun-89 cT browser tape 1
+"Browsing for information about programming 'scalex', 'scaley', 
+   'labelx' and 'labely' /with programming"
+
+total behaviors 28
+;**** end of forms comment header ****
+8163000 #   #     #927  #What happens is...# #   #                         #                         #                         ## #   # #   ###############
+8165000 #   #     #869  #Nothing shows up.  # #   #                         #                         #                         ## #   # #   ###############
+8166000 #   #     #201  #So..#v#1  #                         #                         #                         ## #   # #   ###############
+8167000 #   #     #1369 #'scale' has nothing to do#v#2  #gsc                      #gsc                      #                         ## #   # #   ###############

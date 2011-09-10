@@ -1,0 +1,33 @@
+<HTML><TITLE>The Ohio State Emacs Lisp Archive - Search Notes</TITLE>
+<BODY bgcolor = "#FFFFFF" text = "#000000" link = "#0000FF" vlink =
+"#0000C8">
+<H3>Notes about the current search engine:</H3>
+<UL>
+<LI>If you're not getting any results, please keep in mind that the
+"main" archive is the (currently rather small) set of Emacs Lisp
+programs which have been formally submitted to the archive.  The
+"incoming" archive, which is a lot larger, is code that has been
+collected from various places on the web, and is in most cases out of
+date.  If you're looking for a specific piece of code, your best bet
+is to search both archives.</LI>
+<LI>The search algorithm weights words by their frequency, position in
+the file, and how large the file itself is.</LI>
+<LI>No word stemming is performed; For example, to find information
+about buffers, you'll probably want to search for both "buffer" and
+"buffers".</LI>
+</UL>
+<H3>About the search engine:</H3>
+
+<P>The search engine is running on an independent machine at my
+apartment, because the CIS department is a bit edgy about allowing
+dynamic content on their servers.  This might change in the
+future.</P>
+
+<P>The server machine is a 120MHz Pentium with 64MB of RAM running <A
+HREF="http://www.debian.org"> Debian GNU/Linux</A> (potato).  The
+search engine is written in <A HREF="http://www.lisp.org">Common
+Lisp</A>, using the excellent <A
+HREF="http://cmucl.cons.org">CMUCL</A> implementation, and the <A
+HREF="http://araneida.telent.net">Araneida</A> web server.</P>
+</BODY>
+</HTML>

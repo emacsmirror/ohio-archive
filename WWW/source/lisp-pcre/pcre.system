@@ -1,0 +1,7 @@
+;;; -*- mode: lisp -*-
+
+(defsystem pcre
+  :source-pathname "src:cvs/lisp-pcre"
+  :initially-do #+CMU (alien:load-foreign "/usr/lib/libpcre.so.2") #-CMU t
+  :components ((:file "pcre")))
+

@@ -1,0 +1,34 @@
+*** x-mouse.el.orig	Tue Apr 30 14:26:17 1991
+--- x-mouse.el	Tue Apr 30 14:13:46 1991
+***************
+*** 107,112 ****
+--- 107,113 ----
+  (define-key global-map "\C-c\C-m" 'x-flush-mouse-queue)
+  (define-key global-map "\C-x\C-@" 'x-flush-mouse-queue)
+  
++ ; yossi-- modified x-mouse-select to support reverse displays.
+  (defun x-mouse-select (arg)
+    "Select Emacs window the mouse is on."
+    (let ((start-w (selected-window))
+***************
+*** 120,126 ****
+        (if (eq w start-w)
+  	  (setq done t)))
+      (select-window w)
+!     rel-coordinate))
+  
+  (defun x-mouse-keep-one-window (arg)
+    "Select Emacs window mouse is on, then kill all other Emacs windows."
+--- 121,132 ----
+        (if (eq w start-w)
+  	  (setq done t)))
+      (select-window w)
+!     (set-buffer (window-buffer w))
+!     (and rel-coordinate
+! 	 (if (null display-reversed)
+! 	     rel-coordinate
+! 	   (cons (- (window-width) (car rel-coordinate) 1)
+! 		 (cdr rel-coordinate))))))
+  
+  (defun x-mouse-keep-one-window (arg)
+    "Select Emacs window mouse is on, then kill all other Emacs windows."

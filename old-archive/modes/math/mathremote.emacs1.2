@@ -1,0 +1,48 @@
+#! /bin/sh -f
+# mathremote.emacs for Mathematica 1.2
+
+# machine dependent 
+mathdir=/usr/local/Mathematica/V1.2.new
+
+# end of machine dependence
+machdir=Bin.`/bin/arch`
+
+if [ $machdir = Bin.sun3 ]; then
+	machdir=$machdir.`$mathdir/Install/foption`
+fi
+
+PATH=$PATH:$mathdir/$machdir/MathTalk:$mathdir/$machdir/Display:$mathdir/$machdir/Init
+export PATH
+
+case "$1" in
+-crc)
+	if tty -s; then
+		stty raw -tandem -echo
+	fi
+	lastproc=leftcrc
+	shift
+	;;
+*)
+	if tty -s; then
+		stty -raw tandem cbreak -echo
+	fi
+	lastproc=rightend
+	;;
+esac
+
+# should be conditional on something
+lastproc="-core emacsfrontend"
+
+twoway -e -nowait $mathdir/$machdir/mathexe -remote \
+	-pwpath '{"'$mathdir/Install'"}' \
+	-run '$Path = Join[
+		$Path,
+		{
+			".",
+			"~",
+			"'$mathdir/Packages'",
+			"'$mathdir/Install'"
+		}
+	]; Get["init.m"]' "$@" \| control \| $lastproc
+
+stty -raw tandem -cbreak echo

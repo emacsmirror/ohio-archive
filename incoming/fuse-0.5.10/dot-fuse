@@ -1,0 +1,30 @@
+;;-*-emacs-lisp-*-
+;; This example is trivial in that it sets all user-configurable
+;; variables to their default values.  See the documentation for an
+;; explanation of the meanings of these variables.
+
+
+;; here are examples of the correct way to add functions to the
+;; various hooks.  Never ever (setq ) a hook as you may delete other
+;; functions from the hook in doing so.
+(add-hook 'input-mode-hook      '(lambda () nil))
+(add-hook 'input-after-run-hook '(lambda () nil))
+
+;; Here are the same variables set to their default values as shown in
+;; the dot-emacs file in the FUSE distribution.  It is only necessary
+;; to set these in one of .emacs and .fuse, but it is even more
+;; convenient to use the customization package.
+(setq fuse-base-directory              "/home/bruce/xlisp/fuse/")
+(setq input-stanza-indent              0)
+(setq input-intrp-buffer-name          "intrp.dat")
+(setq input-gnuplot-r-column           4)
+
+;; Here is a nice thing to add to your .fuse file if you use Speedbar
+(add-hook 'speedbar-load-hook
+	  '(lambda ()
+	     (speedbar-add-supported-extension ".inp")))
+
+;; define a single key stroke key for quick 'n' dirty individual path
+;; plots in feffit mode.  this function steps forward by one path and
+;; plots it with the data.
+(define-key input-mode-map [(f11)] 'Feffit-quick-plot-path)

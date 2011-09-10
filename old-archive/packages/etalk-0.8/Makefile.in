@@ -1,0 +1,237 @@
+# etalk makefile
+#
+# Copyright (C) 1994 Free Software Foundation
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, you can either send email to this
+# program's author (see below) or write to:
+#
+#              The Free Software Foundation, Inc.
+#              675 Mass Ave.
+#              Cambridge, MA 02139, USA. 
+#
+# Please send bug reports, etc. to zappo@gnu.ai.mit.edu.
+#
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+DISTNAME=etalk-0.8
+
+CC = @CC@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+INSTALL_DATA = $(INSTALL) -m 444
+
+EMACS_PRG = emacs -batch
+EMACS_FLAGS = 
+
+MAKINFO=makeinfo
+
+TEXI2DVI=texi2dvi
+
+UNINSTALL=rm -f
+
+# GNU cp has -f, meaning force over old versions
+COPYFLAGS=-p -f
+
+DEFS = @DEFS@
+
+SHELL=/bin/sh
+
+CFLAGS = -g
+LDFLAGS = -g
+
+prefix = /usr/local
+exec_prefix = $(prefix)
+
+bindir = $(exec_prefix)/bin
+libdir = $(exec_prefix)/lib
+emacsdir = $(libdir)/emacs
+lispdir = $(emacsdir)/site-lisp
+# use this if you install parts in sub-directories.
+# lispdir = $(emacsdir)/site-lisp/$(DISTNAME)
+
+infodir = $(prefix)/info
+mandir = $(prefix)/
+manext = 1
+
+SHELL = /bin/sh
+
+ETALKLSP=etalk-18.el etalk-edit.el etalk-lgame.el etalk-mail.el \
+	 etalk-mini.el etalk-proc.el etalk-spec.el etalk-tcp.el \
+	 etalk-tyrn.el etalk-x.el etalk-yorn.el etalk.el finger.el \
+	 sformat.el tyrn-ai.el etalk-error.el etalkcomp.el
+
+ETALKLSPC=etalk-18.elc etalk-edit.elc etalk-lgame.elc etalk-mail.elc \
+	  etalk-mini.elc etalk-proc.elc etalk-spec.elc etalk-tcp.elc \
+	  etalk-tyrn.elc etalk-x.elc etalk-yorn.elc etalk.elc finger.elc \
+	  sformat.elc tyrn-ai.elc etalk-error.elc etalkcomp.elc
+
+GAMELSP=games/game-lib.el games/card-lib.el games/4-by-4.el games/ataxx.el \
+	games/drop4.el games/checkers.el games/china-check.el \
+	games/talk-tac-toe.el games/gofish.el games/dots.el games/reversi.el \
+	games/gofish-ai.el games/word-thing.el games/hangman.el \
+	games/order-chaos.el games/README
+
+GAMELSPC=games/game-lib.elc games/card-lib.elc games/4-by-4.elc \
+	 games/ataxx.elc games/drop4.elc games/checkers.elc \
+	 games/china-check.elc games/talk-tac-toe.elc games/gofish.elc \
+	 games/dots.elc games/reversi.elc games/gofish-ai.elc \
+	 games/word-thing.elc games/hangman.elc games/order-chaos.elc
+
+ETALKMSC=COPYING INSTALL README LCD-entry ChangeLog etalk.texinfo Makefile.in \
+	configure.in configure etalkcomp.el autoloads
+
+ETALKHSRC=config.h etalk.h etalklib.h gtalk.h otalk.h talk.h
+
+ETALKLS=etl_udp.c etl_tcp.c etl_dev.c etl_host.c
+ETALKLO=etl_udp.o etl_tcp.o etl_dev.o etl_host.o
+
+ETALKS=etalk.c et_rc.c et_user.c et_daemn.c et_strm.c et_proto.c et_local.c et_cmd.c
+ETALKO=etalk.o et_rc.o et_user.o et_daemn.o et_strm.o et_proto.o et_local.o et_cmd.o
+
+#
+# Targets
+#
+all: etalk etalk.elc info
+
+.c.o:
+	$(CC) $(CFLAGS) $(DEFS) -c $(srcdir)/$<
+
+etalk: $(ETALKO) $(ETALKLO)
+	$(CC) $(LDFLAGS) -o $(srcdir)/$@ $(ETALKO) $(ETALKLO)
+
+# This uses etalk.el as the driving force for recompilation since
+# byte-compile-directory automatically knows who to redo
+etalk.elc: $(ETALKLSP) $(GAMELSP)
+	$(EMACS_PRG) -l etalkcomp.el $(EMACS_FLAGS)
+
+install: check $(bindir)/etalk $(infodir)/etalk.info $(lispdir)/etalk.elc
+
+$(bindir)/etalk: etalk
+	# Make the install dir if it doesn't already exist
+	-if test -d $(prefix); then echo prefix dir exists; \
+	    else mkdir $(prefix); fi;
+	# Make bin subdirectory if it doesn't already exist
+	-if test -d $(bindir); then echo bin dir exists; \
+	    else mkdir $(bindir); fi;
+	-if test -f etalk; then d=.; else d=$(srcdir); fi; \
+	$(INSTALL_PROGRAM) $$d/etalk $@
+
+$(lispdir)/etalk.elc: etalk.elc
+	# Make lisp subdirectory if it doesn't exist yet
+	-if test -d $(lispdir); then echo lisp dir exists; \
+	    else mkdir $(lispdir); fi;
+	-if test -f etalk.elc; then d=.; else d=$(srcdir); fi; \
+	$(INSTALL_DATA) $$d/*.el* $(lispdir)
+	# Make games subdirectory as the gamebin if it does not exist
+	-if test -d $(lispdir)/games; then echo games dir exists; \
+	    else mkdir $(lispdir)/games; fi;
+	#
+	# There will be a usage error if games was not correctly made
+	#
+	-if test -f games/talk-tac-toe.elc; then d=.; else d=$(srcdir); fi; \
+	$(INSTALL_DATA) $$d/games/*.el* $(lispdir)/games
+
+$(infodir)/etalk.info: etalk.info
+	# Make info subdir if it does not already exist
+	-if test -d $(infodir); then echo info dir exists; \
+	    else mkdir $(infodir); fi;
+	-if test -f etalk.info; then d=.; else d=$(srcdir); fi; \
+	$(INSTALL_DATA) $$d/etalk.info $@
+
+# remove all files moved into interesting places
+uninstall:
+	cd $(bindir); $(UNINSTALL) etalk
+	cd $(infodir); $(UNINSTALL) etalk.info
+	cd $(lispdir); $(UNINSTALL) $(ETALKLSP) $(ETALKLSPC)
+	cd $(lispdir); $(UNINSTALL) $(GAMELSP) $(GAMELSPC) 
+
+clean: mostlyclean
+	rm -f etalk.info
+
+distclean: realclean
+	rm -f etalk
+
+mostlyclean: 
+	rm -f *.o *~ *.dvi games/*~
+
+realclean: clean
+	rm -f config.status *.elc games/*.elc Makefile
+
+info: etalk.info
+
+etalk.info: etalk.texinfo
+	$(MAKINFO)  -I$(srcdir) $(srcdir)/$< --no-split --output=$@
+
+dvi: etalk.dvi
+          
+etalk.dvi: etalk.texinfo
+	$(TEXI2DVI) $(srcdir)/etalk.texinfo
+
+# Note about dist:  I use gnu-tar with the gnu-zip option.  This is because
+# I personally have a very small tmp space.  If you know any unix, you should
+# be able to fix this for your system
+dist:
+	# Make info subdir if it does not already exist
+	-if test -d /tmp/$(DISTNAME);  \
+	    then echo Distribution directory exists; \
+	    else mkdir /tmp/$(DISTNAME); fi;
+	cp $(COPYFLAGS) $(ETALKS) /tmp/$(DISTNAME)
+	cp $(COPYFLAGS) $(ETALKLS) /tmp/$(DISTNAME)
+	cp $(COPYFLAGS) $(ETALKHSRC) /tmp/$(DISTNAME)
+	cp $(COPYFLAGS) $(ETALKLSP)  /tmp/$(DISTNAME)
+	-if test -d /tmp/$(DISTNAME)/games;  \
+	    then echo Distribution games directory exists; \
+	    else mkdir /tmp/$(DISTNAME)/games; fi;
+	cp $(COPYFLAGS) $(GAMELSP) /tmp/$(DISTNAME)/games
+	cp $(COPYFLAGS) $(ETALKMSC) /tmp/$(DISTNAME)
+	-if test -f /tmp/$(DISTNAME).tar.gz; \
+	    then rm /tmp/$(DISTNAME).tar.gz; fi;
+	cd /tmp; tar -czf $(DISTNAME).tar.gz $(DISTNAME)/*
+
+check: etalk
+	echo test | etalk
+
+#
+# chain of rebuilding when things change in the making routines
+#
+# uncomment dependancy of configure if you wish to use it.
+#
+configure: # configure.in
+	autoconf
+
+config.status: configure
+	configure
+
+Makefile: config.status Makefile.in
+	config.status
+
+et_cmd.o: etalklib.h etalk.h config.h Makefile
+et_daemn.o: etalklib.h etalk.h otalk.h talk.h gtalk.h config.h Makefile
+et_local.o: etalklib.h etalk.h config.h Makefile
+et_proto.o: etalklib.h etalk.h otalk.h talk.h gtalk.h config.h Makefile
+et_rc.o: etalklib.h etalk.h config.h Makefile
+et_strm.o: etalklib.h etalk.h config.h Makefile
+et_user.o: etalklib.h etalk.h config.h Makefile
+etalk.o: etalklib.h etalk.h config.h Makefile
+etl_dev.o: etalklib.h etalk.h config.h Makefile
+etl_host.o: etalklib.h etalk.h config.h Makefile
+etl_tcp.o: etalklib.h etalk.h config.h Makefile
+etl_udp.o: etalklib.h etalk.h config.h Makefile
+
+
+# end of makefile
+

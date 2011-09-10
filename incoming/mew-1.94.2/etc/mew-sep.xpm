@@ -1,0 +1,35 @@
+/* XPM */
+/*
+ * Copyright (C) 1997 Kazuhiko Yamamoto <kazu@is.aist-nara.ac.jp>
+ */
+static char * mew_sep_xpm[] = {
+"2 28 1 1",
+" 	s backgroundToolBarColor	c None",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  ",
+"  "};

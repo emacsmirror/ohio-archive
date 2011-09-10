@@ -1,0 +1,111 @@
+
+Python version 1.0, VM version Intel x86 on 21 JAN 01 02:11:44 pm.
+Compiling: /usr/src/cvs/elispdb/filesys-util.lisp 20 JAN 01 07:35:57 pm
+
+Converted FILE-NAME-NONDIRECTORY.
+Compiling DEFUN FILE-NAME-NONDIRECTORY: 
+Converted WITH-CURRENT-DIRECTORY.
+Compiling DEFMACRO WITH-CURRENT-DIRECTORY: 
+
+File: /usr/src/cvs/elispdb/filesys-util.lisp
+
+In: DEFUN IN-DIRECTORY
+  (DEFUN IN-DIRECTORY (DIR FILE)
+    (DECLARE (SIMPLE-BASE-STRING DIR FILE))
+    (WHEN (EQL # 0) (SETF DIR "/"))
+    ...)
+Note: Abbreviated type declaration: (SIMPLE-BASE-STRING DIR FILE).
+
+Converted IN-DIRECTORY.
+Compiling DEFUN IN-DIRECTORY: 
+Converted DO-DIRECTORY-ENTRIES.
+Compiling DEFMACRO DO-DIRECTORY-ENTRIES: 
+Converted MAP-DIRECTORY.
+Compiling DEFUN MAP-DIRECTORY: 
+
+File: /usr/src/cvs/elispdb/filesys-util.lisp
+
+In: DEFUN FILL-TEMPORARY-NAME
+  (DEFUN FILL-TEMPORARY-NAME (STR START LEN)
+    (DECLARE (SIMPLE-BASE-STRING STR) (FIXNUM START LEN) (OPTIMIZE #))
+    (DOTIMES (J LEN) (SETF # #)))
+Note: Abbreviated type declaration: (SIMPLE-BASE-STRING STR).
+
+Converted FILL-TEMPORARY-NAME.
+Compiling DEFUN FILL-TEMPORARY-NAME: 
+
+File: /usr/src/cvs/elispdb/filesys-util.lisp
+
+In: DEFUN FILL-TEMPORARY-NAME
+  (SVREF #(#\0 #\1 #\2 #\3 #\4...) (RANDOM 62))
+--> AREF LET* 
+==>
+  (KERNEL:%CHECK-BOUND ARRAY #:DIM-0 #:INDEX-0)
+Note: Doing unsigned word to integer coercion (cost 20), for:
+      The first argument of CHECK-FIXNUM.
+
+  (SETF (CHAR STR (+ J START)) (SVREF #(#\0 #\1 #\2 #\3 #\4...) (RANDOM 62)))
+--> COMMON-LISP::%CHARSET COMMON-LISP::%ASET LET* 
+==>
+  (KERNEL:%CHECK-BOUND ARRAY #:DIM-0 #:INDEX-0)
+Note: Doing signed word to integer coercion (cost 20), for:
+      The first argument of CHECK-FIXNUM.
+
+
+File: /usr/src/cvs/elispdb/filesys-util.lisp
+
+In: DEFUN MAKE-TEMPORARY-FILE
+  (DEFUN MAKE-TEMPORARY-FILE (DIR &KEY (PREFIX "temp-") (MODE 384))
+    (DECLARE (SIMPLE-BASE-STRING DIR PREFIX) (TYPE # MODE))
+    (LET (# #)
+      (DOTIMES # # #)
+      (ERROR "Could not create temporary file in ~A" DIR)))
+Note: Abbreviated type declaration: (SIMPLE-BASE-STRING DIR PREFIX).
+
+Converted MAKE-TEMPORARY-FILE.
+Compiling DEFUN MAKE-TEMPORARY-FILE: 
+Converted WITH-OPEN-TEMPORARY-FILE.
+Compiling DEFMACRO WITH-OPEN-TEMPORARY-FILE: 
+
+File: /usr/src/cvs/elispdb/filesys-util.lisp
+
+In: DEFUN MAKE-TEMPORARY-DIRECTORY
+  (DEFUN MAKE-TEMPORARY-DIRECTORY (DIR &KEY (PREFIX "temp-") (MODE 448))
+    (DECLARE (SIMPLE-BASE-STRING DIR PREFIX) (TYPE # MODE))
+    (LET (# #)
+      (DOTIMES # # #)
+      (ERROR "Could not create temporary directory in ~A" DIR)))
+Note: Abbreviated type declaration: (SIMPLE-BASE-STRING DIR PREFIX).
+
+Converted MAKE-TEMPORARY-DIRECTORY.
+Compiling DEFUN MAKE-TEMPORARY-DIRECTORY: 
+
+File: /usr/src/cvs/elispdb/filesys-util.lisp
+
+In: DEFUN RM-RF
+  (DEFUN RM-RF (DIR)
+    (DECLARE (SIMPLE-BASE-STRING DIR))
+    (DO-DIRECTORY-ENTRIES (FILE DIR)
+                          (LET #
+                            #)) ..)
+Note: Abbreviated type declaration: (SIMPLE-BASE-STRING DIR).
+
+Converted RM-RF.
+Compiling DEFUN RM-RF: 
+Converted WITH-TEMPORARY-DIRECTORY.
+Compiling DEFMACRO WITH-TEMPORARY-DIRECTORY: 
+Byte Compiling Top-Level Form: 
+Converted PROCESS-SUCCESS-OR-LOSE.
+Compiling DEFUN PROCESS-SUCCESS-OR-LOSE: 
+Converted EXTRACT-TAR-FILE.
+Compiling DEFUN EXTRACT-TAR-FILE: 
+Converted EXTRACT-ZIP-FILE.
+Compiling DEFUN EXTRACT-ZIP-FILE: 
+Byte Compiling Top-Level Form: 
+
+Compilation unit finished.
+  7 notes
+
+
+src:cvs/elispdb/filesys-util.x86f written.
+Compilation finished in 0:00:01.

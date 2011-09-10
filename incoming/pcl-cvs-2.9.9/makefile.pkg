@@ -1,0 +1,5 @@
+PACKAGE = pcl-cvs
+ELFILES = cvs-compat.el pcl-cvs-util.el pcl-cvs-defs.el \
+	pcl-cvs-info.el pcl-cvs-parse.el \
+	cvs-status.el cvs-edit.el cvs-log.el \
+	pcl-cvs.el

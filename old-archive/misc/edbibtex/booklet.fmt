@@ -1,0 +1,20 @@
+******************************** BOOKLET *******************************
+         Code: \BibTeX-tag
+................................................................Required
+        Title: \title
+................................................................Optional
+       Author: \author
+ Howpublished: \howpublished
+      Address: \address
+        Month: \month
+         Year: \year
+         Note: \note
+          Key: \key
+     Crossref: \crossref
+.................................................................Ignored
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+******************************** BOOKLET *******************************

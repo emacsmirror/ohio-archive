@@ -1,0 +1,194 @@
+From ark1!uakari.primate.wisc.edu!brutus.cs.uiuc.edu!usc!cs.utexas.edu!uunet!bu.edu!nntp-read!jbw Mon Apr 16 09:11:29 1990
+Article 891 of gnu.emacs.bug:
+Path: ark1!uakari.primate.wisc.edu!brutus.cs.uiuc.edu!usc!cs.utexas.edu!uunet!bu.edu!nntp-read!jbw
+>From jbw@bucsf.bu.edu (Joe Wells)
+Newsgroups: gnu.emacs.bug
+Subject: Re: Manual Page
+Message-ID: <JBW.90Apr6180140@bucsf.bu.edu>
+Date: 6 Apr 90 22:01:40 GMT
+References: <9004052251.AA19736@zurich.ai.mit.edu>
+Sender: news@bu.edu.bu.edu
+Distribution: gnu
+Organization: Boston University Computer Science Department
+Lines: 177
+In-reply-to: arthur@ZURICH.AI.MIT.EDU's message of 5 Apr 90 22:51:08 GMT
+
+In article <9004052251.AA19736@zurich.ai.mit.edu> arthur@ZURICH.AI.MIT.EDU (Arthur Gleckler) writes:
+
+   Here is a one-line change suggestion that would make M-x manual-entry
+   MUCH nicer:
+
+   The line in the definition of manual-entry which reads
+
+     (with-output-to-temp-buffer "*Manual Entry*"
+
+   could be changed to
+
+     (with-output-to-temp-buffer (concat "*" topic " Manual Entry*")
+
+Along these lines are some modifications for man.el that I am using.  One
+of the fixes is to name manual buffers more nicely.  The other is a big
+improvement in removing excess nroff-produced headers and footers from
+manual pages.  I'm including these modifications after my signature.
+
+-- 
+Joe Wells <jbw@bu.edu>
+jbw%bucsf.bu.edu@cs.bu.edu
+...!harvard!bu-cs!bucsf!jbw
+----------------------------------------------------------------------
+*** /usr14/gnu/dist-18.55/lisp/man.el	Tue Jul  4 20:27:21 1989
+--- man.el	Fri Apr  6 17:58:04 1990
+***************
+*** 18,23 ****
+--- 18,33 ----
+  ;; file named COPYING.  Among other things, the copyright notice
+  ;; and this notice must be preserved on all copies.
+  
++ ;; Modifications by mdb (whoever that is!)
++ ;; More mods by Joe Wells <jbw@bu.edu>
++ ;; Added better choice of buffer name so we don't erase previous man page.
++ ;; Added better stripping of headers and footers.
++ 
++ (defconst manual-entry-prefix-topic t "\
++ *Non-nil means M-x manual-entry should output the manual entry for TOPIC into
++  a buffer named *TOPIC Manual Entry*, otherwise, it should name the buffer
++  *Manual Entry*.")
++ 
+  (defun manual-entry (topic &optional section)
+    "Display the Unix manual entry for TOPIC.
+  TOPIC is either the title of the entry, or has the form TITLE(SECTION)
+***************
+*** 29,35 ****
+  				     (match-end 2))
+  	    topic (substring topic (match-beginning 1)
+  				   (match-end 1))))
+!   (with-output-to-temp-buffer "*Manual Entry*"
+      (buffer-flush-undo standard-output)
+      (save-excursion
+        (set-buffer standard-output)
+--- 39,49 ----
+  				     (match-end 2))
+  	    topic (substring topic (match-beginning 1)
+  				   (match-end 1))))
+! ;; \(with-output-to-temp-buffer "*Manual Entry*" ;; original line
+!   (with-output-to-temp-buffer	    	    	;; added by mdb
+!       (if manual-entry-prefix-topic 	    	;; added by mdb
+! 	  (concat "*" topic " Manual Entry*")	;; added by mdb
+! 	"*Manual Entry*")  	    	    	;; added by mdb
+      (buffer-flush-undo standard-output)
+      (save-excursion
+        (set-buffer standard-output)
+***************
+*** 85,96 ****
+  		  (end-of-line)
+  		  (error (buffer-substring 1 (point)))))))
+  
+-       (message "Cleaning manual entry for %s..." topic)
+-       (nuke-nroff-bs)
+        (set-buffer-modified-p nil)
+        (message ""))))
+  
+! ;; Hint: BS stands form more things than "back space"
+  (defun nuke-nroff-bs ()
+    (interactive "*")
+    ;; Nuke underlining and overstriking (only by the same letter)
+--- 99,108 ----
+  		  (end-of-line)
+  		  (error (buffer-substring 1 (point)))))))
+  
+        (set-buffer-modified-p nil)
+        (message ""))))
+  
+! ;; Hint: BS stands for more things than "back space"
+  (defun nuke-nroff-bs ()
+    (interactive "*")
+    ;; Nuke underlining and overstriking (only by the same letter)
+***************
+*** 108,135 ****
+  	     ;; \b_
+  	     (delete-region (1- (point)) (1+ (point)))))))
+  
+!   ;; Nuke headers: "MORE(1) UNIX Programmer's Manual MORE(1)"
+    (goto-char (point-min))
+!   (while (re-search-forward "^ *\\([A-Za-z][-_A-Za-z0-9]*([0-9A-Z]+)\\).*\\1$" nil t)
+!     (replace-match ""))
+    
+!   ;; Nuke footers: "Printed 12/3/85	27 April 1981	1"
+!   ;;    Sun appear to be on drugz:
+!   ;;     "Sun Release 3.0B  Last change: 1 February 1985     1"
+!   ;;    HP are even worse!
+!   ;;     "     Hewlett-Packard   -1- (printed 12/31/99)"  FMHWA12ID!!
+!   ;;    System V (well WICATs anyway):
+!   ;;     "Page 1			  (printed 7/24/85)"
+!   ;;    Who is administering PCP to these corporate bozos?
+    (goto-char (point-min))
+!   (while (re-search-forward
+! 	   (cond ((eq system-type 'hpux)
+! 		  "^[ \t]*Hewlett-Packard\\(\\| Company\\)[ \t]*- [0-9]* -.*$")
+! 		 ((eq system-type 'usg-unix-v)
+! 		  "^ *Page [0-9]*.*(printed [0-9/]*)$")
+! 		 (t
+! 		  "^\\(Printed\\|Sun Release\\) [0-9].*[0-9]$"))
+! 	   nil t)
+      (replace-match ""))
+  
+    ;; Crunch blank lines
+--- 120,151 ----
+  	     ;; \b_
+  	     (delete-region (1- (point)) (1+ (point)))))))
+  
+!   ;; Zap headers and footers
+! 
+!   ;; Note: this handles all kinds of headers and footers.  It determines
+!   ;; where the page breaks are by checking for the man-page name in the
+!   ;; first column.  There is no longer any need to add code to handle
+!   ;; specific headers and footers.
+! 
+    (goto-char (point-min))
+!   (cond ((looking-at "\n*\\([A-Za-z][-_A-Za-z0-9.]*([0-9A-Z]+)\\)")
+! 	 (setq man-page-name (buffer-substring (match-beginning 1)
+! 					       (match-end 1)))
+! 	 (setq target (concat "\n\n.+\n\n+" man-page-name ".*\n\n"))
+! 	 (while (re-search-forward target nil t)
+! 	   ;;(setq begin (match-beginning 0) end (match-end 0))
+! 	   (replace-match
+! 	    (progn
+! 	      (goto-char (1- (match-beginning 0)))
+! 	      (if (not (eq (char-after (point)) ?.))
+! 		  "\n"
+! 		"\n\n"))
+! 	    t t))))
+    
+!   ;; Zap ESC7,  ESC8, and ESC9
+!   ;; This is for Sun man pages like "man 1 csh"
+    (goto-char (point-min))
+!   (while (re-search-forward "\e[789]" nil t)
+      (replace-match ""))
+  
+    ;; Crunch blank lines
+***************
+*** 144,149 ****
+--- 160,166 ----
+  
+  
+  (defun insert-man-file (name)
++   (narrow-to-region (point) (point))
+    ;; Insert manual file (unpacked as necessary) into buffer
+    (if (or (equal (substring name -2) ".Z")
+  	  (string-match "/cat[0-9][a-z]?\\.Z/" name))
+***************
+*** 150,153 ****
+        (call-process "zcat" name t nil)
+      (if (equal (substring name -2) ".z")
+  	(call-process "pcat" nil t nil name)
+!       (insert-file-contents name))))
+--- 167,173 ----
+        (call-process "zcat" name t nil)
+      (if (equal (substring name -2) ".z")
+  	(call-process "pcat" nil t nil name)
+!       (insert-file-contents name)))
+!   (message "Cleaning manual entry for %s..." topic)
+!   (nuke-nroff-bs)
+!   (widen))
+
+

@@ -1,0 +1,290 @@
+Date: 14 Jan 89 01:44:51 GMT
+From: Wolfgang Rupprecht <apple!bloom-beacon!mgm.mit.edu!wolfgang@bbn.com>
+Subject: Re: Spreadsheet Mode
+Reply-To: Wolfgang Rupprecht <wolfgang%mgm.mit.edu.uucp@PIZZA.BBN.COM>
+Organization: Freelance Software Consultant, Boston, Ma.
+
+In article <1707@bingvaxu.cc.binghamton.edu> umrigar@bingvaxu.cc.binghamton.edu (Zerksis D. Umrigar) writes:
+>Has anyone developed a spreadsheet mode for GNU Emacs?
+
+I have.  But it exists no longer.  (Lost to the poor back-up policy,
+coupled with a mean-time to drastic failure of exactly a year and few
+days (!!!)  on these RA-81's ... boy these disks are junk...  $13k to
+fix them each year!)
+
+I still do have the floating-point code for the spread-sheet.  It 
+will add a real (native C type "double") to your favorite GnuEmacs lisp
+interpreter.  It will allow all lib-math operations from GnuEmacs.  
+Want to balance your checkbook from the scratch-buffer?  This patch is
+for you...
+
+The patches are freely available for anonymous FTP from mgm.mit.edu
+"/pub/WOLFGANG/float-emacs.diff".  Tapes for $150 bucks. ;-)
+
+-wolfgang
+
+###############################################################################
+##									     ##
+##	File:     FLONUMS						     ##
+##	Author:   Wolfgang Rupprecht					     ##
+##	Created:  Tue Oct 27 15:58:53 EST 1987				     ##
+##	Contents: Documentation File for GnuEmacs with floats		     ##
+##									     ##
+##	Copyright (c) 1988 Free Software Foundation			     ##
+##	Copyright (c) 1987 Wolfgang Rupprecht.				     ##
+##	All rights reserved.						     ##
+##									     ##
+##	$Log$								     ##
+###############################################################################
+
+INTRO
+
+I have added a true floating point data type (flonum in lisp jargon)
+to the lisp interpreter of GnuEmacs.  This allows one to do emacs-lisp
+calculations using floating point numbers as well as integers.  In
+addition, GnuEmacs now has hooks to call all of the common
+trigonometric functions from lisp.  One may now, for example, use the
+*scratch* buffer as a real scientific calculator (programable even!!).
+It is not that hard to write a super spreadsh
+
+NEW FEATURES
+
+The basic features features provided are:
+
+*	a lisp float data type, that uses the C type "double" for it's
+	basic storage
+*	upgrading of the built-in math subroutines to allow manipulation
+	of floats
+*	conversion routines to convert to and from floats and ints
+*	predicates for testing if a number is a float, float-or-int,
+	or float-or-int-or-marker
+*	trig math routines. (sin, cos, tan, exponentials, logs, bessels, etc.)
+*	upgrading of int-to-string, string-to-int, and the basic printing
+	and reading routines to allow float reading/printing.
+*	changes to garbage-collect to also collect old floats.
+
+The lisp reader will interpret strings of one of the following three
+forms as a float:
+
+	 <number>.<number>
+	 <number>e<number>
+	 <number>.<number>e<number>
+
+The mantissa and the exponent may both have a single + or - sign
+prefixed.  All other strings are treated as symbols.  This is
+intentional, and meant to prevent numbers and dotted pairs of 
+ints from looking too much like one another. 
+
+     legal numbers:
+	  (0 . 1)  	a doted pair of integers 0 and 1
+	  (0.1)		a list of one float with value 1/10
+
+	  0.0		the floating pt. zero
+	  1.0		the floating point one
+	  1e0		also floating pt. one
+	  0e0		also floating pt. zero
+
+         (0. 1)		a list of symbol "0\." and integer 0
+	 (0 .1)		a list of integer 0 and symbol "\.1"
+          0.		symbol "0\."
+	  .1		symbol "\.1"
+
+The built in math functions promote the type of the calculation from
+integer to float at the first encounter with a float.
+
+	(+ 1 2 3 4 5 6.0 7 8 9)
+
+The above expression will be done in integer math for the addition of
+1, 2, 3, 4 and 5.  The rest of the calculation is done in floating
+point math with the result being a float.  This allows an integer 
+calculation to still return an integer.  To force a floating point
+calculation, convert the first argument to a float.
+
+Ints can be converted to floats by using the function "float".
+Floats can be converted to ints by one of several functions, 
+depending on the type of rounding desired.
+
+       round		returns the closest integer
+       ceiling		returns the largest integer that is not larger 
+			than the arg (round towards -infinity)
+       floor		returns the smallest integer that is not smaller
+			than the arg (round towards +infinity)
+       truncate		returns the integer corresponding to the mantissa
+			of the float. (round towards zero)
+
+On most machines that gnuemacs runs on, lisp integers are only 24 bits
+long.  One must be careful when convering large floats to integers that
+one doesn't exceed the storage capacity of integers.  Integers (of 24
+bit size) can only have a range of slightly over +/- 8 million.  The
+same caution applies when performing mathematical operations on
+integers.  If you need to work with large numbers, it's safest to use 
+floats.
+
+The math trig functions sin/cos/tan all take their arguments in
+radians.  Values can be converted to the desired radix with the
+functions degrees-to-radians and radians-to-degrees.
+
+Some of the new functions (or functions with new args/return values):
+
+abs acosh asin asinh atan atanh ceiling cos cosh cube-root erf erfc
+exp expm1 expt fceiling ffloor float floor fround ftruncate
+garbage-collect int-to-string integer-or-float-or-marker-p
+integer-or-floatp j0 j1 jn log log-gamma log10 log1p round sin sinh
+sqrt tan tanh truncate y0 y1 yn
+
+The full documentations for these functions is on-line under C-h f
+<function-name> and at the end of this document. 
+
+The lisp variable float-output-format controls the printed
+representation of floats.  The available print formats are:
+
+       <number>.<number>	     with a 'd' specifier
+       <number>.<number>e<number>    with an 'e' specifier
+       (or data dependent switching 
+        between the above two)	     with no letter specifier
+
+The field width may be contolled by an optional numeric field
+preceeding the above format specifier. 
+
+
+MAKING FLOAT-EMACS:
+
+To make emacs with flonums (ie. lisp floats) define LISP_FLOAT_TYPE in
+your conf.h file.  The resultant emacs will be less than 6% larger.
+This has been tested on a Vax-750 running BSD 4.3.
+
+	text	data	bss	dec	hex
+	369664	180224	0	549888	86400	emacs-18.49
+	391168	187392	0	578560	8d400	float-emacs-18.49
+
+PORTING to other machines:
+
+If you aren't running with a BSD/vax style printf, you may no be able
+to use the optional runtime selectable floating point print-width stuff.
+(I'll probably fix this soon.)
+
+If you don't have some of the math-lib functions that emacs wants
+linked in, don't worry.  These are all entirely optional.  Just #ifdef
+the math routines out, stub them up, or find a copy of the 4.3 BSD
+routines. (Check the 4.3 BSD math(3) man page for details on copying
+the math-lib routines.)
+
+Appendix A: floating pt. docstrings
+
+abs
+   Function: Return the absolute value of ARG.
+acosh
+   Function: Return the inverse hyperbolic cosine of ARG.
+asin
+   Function: Return the inverse sine of ARG.
+asinh
+   Function: Return the inverse hyperbolic sine of ARG.
+atan
+   Function: Return the inverse tangent of ARG.
+atanh
+   Function: Return the inverse hyperbolic tangent of ARG.
+ceiling
+   Function: Return the smallest integer no less than ARG. (round toward +inf)
+cos
+   Function: Return the cosine of ARG.
+cosh
+   Function: Return the hyperbolic cosine of ARG.
+cube-root
+   Function: Return the cube root of ARG.
+erf
+   Function: Return the mathematical error function of ARG.
+erfc
+   Function: Return the complementary error function of ARG.
+exp
+   Function: Return the exponential base e of ARG.
+expm1
+   Function: Return the exp(x)-1 of ARG.
+expt
+   Function: Return the exponential x ** y.
+fceiling
+   Function: Return the smallest integral floating pt. number no less than ARG.
+   (round towards +inf)
+ffloor
+   Function: Return the largest floating pt number no greater than ARG.
+   (round towards -inf)
+float
+   Function: Return the floating pt. number equal to ARG.
+floatp
+   Function: T if OBJECT is a floating pt. number.
+float-output-format
+   Variable: The format descriptor string (or nil) that lisp uses to print out
+   floats.  Nil means use built-in defaults.
+   The descriptor string consists of an optional field-width spec,
+   followed by an optional output-style descriptor.
+   
+   Valid field-widths specs are:
+   The empty string for default precision.
+   0-20 for exponential notation, or 1-20 for decimal point notation.  A 0
+   field spec causes the printing of the decimal point to be supressed.
+   Using an out of bounds specs cause the closest valid spec to be used.
+   
+   Valid ouput-styles may be one of the following:
+   The letter 'e' for exponential notation "<number>.<number>e<number>"
+   The letter 'd' for decimal point notation "<number>.<number>".
+   The empty string, for the defaulted output style.  This may print in
+   either format in a data-dependent manner, choosing whatever produces
+   the shortest string.
+   
+floor
+   Function: Return the largest integer no greater than ARG. (round towards -inf)
+fround
+   Function: Return the nearest integral floating pt. number to ARG.
+ftruncate
+   Function: Truncate a floating point number, returns a float.
+   (Truncates towards zero.) Will fail for floats > max integer.
+garbage-collect
+   Function: Reclaim storage for Lisp objects no longer needed.
+   Returns info on amount of space in use:
+    ((USED-CONSES . FREE-CONSES) (USED-SYMS . FREE-SYMS)
+     (USED-MARKERS . FREE-MARKERS) (USED-FLOATS . FREE-FLOATS) 
+     USED-STRING-CHARS USED-VECTOR-SLOTS)
+   Garbage collection happens automatically if you cons more than
+   gc-cons-threshold  bytes of Lisp data since previous garbage collection.
+int-to-string
+   Function: Convert INT to a string by printing it in decimal, with minus sign if negative.
+integer-or-float-or-marker-p
+   Function: T if OBJECT is a floating pointt, normal number, or marker.
+integer-or-floatp
+   Function: T if OBJECT is a floating pt. or normal number.
+j0
+   Function: Return the bessel function j0 of ARG.
+j1
+   Function: Return the bessel function j1 of ARG.
+jn
+   Function: Return the bessel function jN of ARG.
+log
+   Function: Return the natural logarithm of ARG.
+log-gamma
+   Function: Return the log gamma of ARG.
+log10
+   Function: Return the logarithm base 10 of ARG.
+log1p
+   Function: Return the log(1+x) of ARG.
+round
+   Function: Return the nearest integer to ARG.
+sin
+   Function: Return the sine of ARG.
+sinh
+   Function: Return the hyperbolic sine of ARG.
+sqrt
+   Function: Return the square root of ARG.
+tan
+   Function: Return the tangent of ARG.
+tanh
+   Function: Return the hyperbolic tangent of ARG.
+truncate
+   Function: Truncate a floating point number to an int.
+   (Truncates toward zero.)
+y0
+   Function: Return the bessel function y0 of ARG.
+y1
+   Function: Return the bessel function y1 of ARG.
+yn
+   Function: Return the bessel function yN of ARG.
+Wolfgang Rupprecht	ARPA:  wolfgang@mgm.mit.edu (IP 18.82.0.114)
+TEL: (617) 267-4365	UUCP:  mit-eddie!mgm.mit.edu!wolfgang

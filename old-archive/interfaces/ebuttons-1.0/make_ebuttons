@@ -1,0 +1,38 @@
+#!/bin/sh
+
+buttons=ebuttons.h
+
+case $# in
+	1) ;;
+	*) echo usage: `basename $0` num_buttons; exit 1;;
+esac
+
+if [ -f $buttons ]
+then
+	existing_buttons="`grep COMMAND $buttons | wc -l`"
+	
+	if [ $1 -eq `expr $existing_buttons - 2` ]
+	then
+		exit 0
+	fi
+fi
+
+cat >$buttons <<EOT
+#define LABEL(x)   "Label", XtRString, sizeof(String), XtOffsetOf(AppResources, labels[(x)]), XtRString, NULL
+#define COMMAND(x) "Command", XtRString, sizeof(String), XtOffsetOf(AppResources, commands[(x)]), XtRString, NULL
+
+static XtResource resources[] = {
+EOT
+
+awk <&- >> $buttons 'BEGIN { \
+     for (; i < '$1'; i++) \
+       printf "    { \"label%d\", LABEL(%d) },\n    { \"command%d\", COMMAND(%d) },\n", i, i, i, i}'
+
+cat >>$buttons <<EOT
+};
+
+#undef LABEL
+#undef COMMAND
+EOT
+
+exit 0

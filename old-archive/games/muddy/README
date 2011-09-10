@@ -1,0 +1,21 @@
+This is my emacs mud client.  This is NOT designed to be simple for
+emacs novices!  It was designed for my own use, but I figured that
+I should document things and let other people have a chance to use it.
+Novices can probably get things going by just defining a list of
+servers, but adding aliases and stuff won't be easy.
+
+Two files besides this are included:
+
+  muddy.el       - the client
+  muddy-init.el  - sample configuration
+
+Instructions on use are at the top of muddy.el.
+
+If you find it useful, a short line letting me know would be
+nice (as well as amazing me, since I expect everyone to dump
+it immediately).  Also, send along nifty aliases and actions,
+additions, simplified interfaces, and so forth.
+
+Darin Johnson
+  Nov 1993
+  djohnson@ucsd.edu

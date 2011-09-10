@@ -1,0 +1,39 @@
+To: unix-emacs@bbn.com
+Date: 25 Nov 88 00:42:37 GMT
+From: Rich Messenger <wiley!rich@uunet.uu.net>
+Subject: elec-c bug fix
+
+Thanks to Mark Davies for his reecently posted elec-c mode.  I found
+one minor bug -- here is a context diff:
+
+*** elec-c.el	Thu Nov 24 16:30:10 1988
+--- elec-c.el.fixed	Thu Nov 24 16:24:08 1988
+***************
+*** 255,264 ****
+  	(insert ? ))
+      (insert ?{)
+      (c-indent-line)
+!     (insert "\n\n}"))
+      (c-indent-line)
+      (next-line -1)
+!     (c-indent-line))
+        
+  (defun elec-c-opening-brac ()
+    "For one of (, [ insert it and its pair, and postion point in the centre"
+--- 255,264 ----
+  	(insert ? ))
+      (insert ?{)
+      (c-indent-line)
+!     (insert "\n\n}")
+      (c-indent-line)
+      (next-line -1)
+!     (c-indent-line)))
+        
+  (defun elec-c-opening-brac ()
+    "For one of (, [ insert it and its pair, and postion point in the centre"
+-- 
+     _ __
+    ' )  )      /                      ... Rich Messenger
+     /--' o _. /_                          {uunet,cit-vax,trwrb}!wiley!rich
+    /  \_(_(__/ /_                         wiley!rich@csvax.caltech.edu
+

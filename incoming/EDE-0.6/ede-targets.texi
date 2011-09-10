@@ -1,0 +1,703 @@
+@c -*-texinfo-*-
+@c
+@c $Id$
+@c
+
+@c The next line is for the back-search to see what node this one
+@c resides in.
+
+@c @node Targets,
+@c @chapter Target Listing
+
+@c This command is a convenience to help rebuild this file.  Use C-x C-e
+@c on the expression below to rebuild the entire widget index (but only
+@c after loading in the dialog tool.)
+
+@c (eieiodoc-class ede-target "tg")
+
+
+@menu
+* ede-target ::
+*  ede-proj-target ::
+*   ede-proj-target-makefile ::
+*    ede-proj-target-makefile-objectcode ::
+*     ede-proj-target-makefile-program ::
+*     ede-proj-target-makefile-archive ::
+*    ede-proj-target-makefile-info ::
+*    ede-proj-target-lisp ::
+*   ede-proj-target-scheme ::
+*   ede-proj-target-aux ::
+*  project-am-target ::
+*   project-am-objectcode ::
+*    project-am-program ::
+*    project-am-lib ::
+*   project-am-lisp ::
+*   project-am-texinfo ::
+*   project-am-man ::
+@end menu
+
+
+@node ede-target, ede-proj-target,  , Targets
+@comment  node-name,  next,  previous,  up
+@section ede-target
+@tgindex ede-target
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item ede-target
+@table @asis
+@item Children:
+@w{@xref{ede-proj-target}}, @w{@xref{project-am-target}}
+@end table
+
+@end table
+@end table
+
+  A top level target to build.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :name
+Default Value: @code{nil}
+
+Name of this target.
+@refill
+
+@item :path
+Default Value: @code{nil}
+
+The path to this target.
+@refill
+
+@item :takes-compile-command
+Default Value: @code{nil}
+
+Non-nil@code{Non-} if this target requires a user approved command.
+@refill
+
+@item :source
+Default Value: @code{nil}
+
+Source files in this target.
+@refill
+
+@end table
+
+@end table
+
+@node ede-proj-target, ede-proj-target-makefile, ede-target, Targets
+@comment  node-name,  next,  previous,  up
+@section ede-proj-target
+@tgindex ede-proj-target
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item ede-proj-target
+@table @asis
+@item Children:
+@w{@xref{ede-proj-target-makefile}}, @w{@xref{ede-proj-target-scheme}}, @w{@xref{ede-proj-target-aux}}
+@end table
+
+@end table
+
+@end table
+@end table
+
+  Abstract class for ede-proj targets.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :auxsource
+Default Value: @code{nil}
+
+Auxilliary source files included in this target.
+Each of these is considered equivalent to a source file, but it is not
+distributed, and each should have a corresponding rule to build it.
+@refill
+
+@end table
+
+@end table
+
+@node ede-proj-target-makefile, ede-proj-target-makefile-objectcode, ede-proj-target, Targets
+@comment  node-name,  next,  previous,  up
+@section ede-proj-target-makefile
+@tgindex ede-proj-target-makefile
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{ede-proj-target}}
+@table @code
+@item ede-proj-target-makefile
+@table @asis
+@item Children:
+@w{@xref{ede-proj-target-makefile-objectcode}}, @w{@xref{ede-proj-target-makefile-info}}, @w{@xref{ede-proj-target-lisp}}
+@end table
+
+@end table
+
+@end table
+
+@end table
+@end table
+
+  Abstract class for Makefile based targets.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :makefile
+Default Value: @code{"Makefile"}
+
+File name of generated Makefile.
+@refill
+
+@item :configuration-variables
+Default Value: @code{nil}
+
+Makefile variables appended to use in different configurations.
+These variables are used in the makefile when a configuration becomes active.
+Target variables are always renamed such as foo_CFLAGS, then included into
+commands where the variable would usually appear.
+@refill
+
+@item :rules
+Default Value: @code{nil}
+
+Arbitrary rules and dependencies needed to make this target.
+@refill
+
+@end table
+
+@end table
+
+@node ede-proj-target-makefile-objectcode, ede-proj-target-makefile-program, ede-proj-target-makefile, Targets
+@comment  node-name,  next,  previous,  up
+@section ede-proj-target-makefile-objectcode
+@tgindex ede-proj-target-makefile-objectcode
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{ede-proj-target}}
+@table @code
+@item @w{@xref{ede-proj-target-makefile}}
+@table @code
+@item ede-proj-target-makefile-objectcode
+@table @asis
+@item Children:
+@w{@xref{ede-proj-target-makefile-program}}, @w{@xref{ede-proj-target-makefile-archive}}
+@end table
+
+@end table
+
+@end table
+
+@end table
+
+@end table
+@end table
+
+  Abstract class for Makefile based object code generating targets.
+Belonging to this group assumes you could make a .o from an element source
+file.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :configuration-variables
+Default Value: @code{("debug" ("CFLAGS" . "-g") ("LDFLAGS" . "-g"))}
+
+@xref{ede-proj-target-makefile}
+@item :headers
+Default Value: @code{nil}
+
+Header files included in the distribution.
+EDE generated Makefiles make all sources dependent on all header files.
+In automake mode, these headers are ignored, but automake generates
+dependencies automatically.
+@refill
+
+@end table
+
+@end table
+
+@node ede-proj-target-makefile-program, ede-proj-target-makefile-archive, ede-proj-target-makefile-objectcode, Targets
+@comment  node-name,  next,  previous,  up
+@section ede-proj-target-makefile-program
+@tgindex ede-proj-target-makefile-program
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{ede-proj-target}}
+@table @code
+@item @w{@xref{ede-proj-target-makefile}}
+@table @code
+@item @w{@xref{ede-proj-target-makefile-objectcode}}
+@table @code
+@item ede-proj-target-makefile-program
+No children
+@end table
+
+@end table
+
+@end table
+
+@end table
+
+@end table
+@end table
+
+  This target is an executable program.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :ldlibs
+Default Value: @code{nil}
+
+Libraries, such as "m" or "Xt" which this program dependso on.
+The linker flag "-l" is automatically prepended.  Do not include a "lib"
+prefix, or a ".so" suffix.
+@refill
+
+@end table
+
+@end table
+
+@node ede-proj-target-makefile-archive, ede-proj-target-makefile-info, ede-proj-target-makefile-program, Targets
+@comment  node-name,  next,  previous,  up
+@section ede-proj-target-makefile-archive
+@tgindex ede-proj-target-makefile-archive
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{ede-proj-target}}
+@table @code
+@item @w{@xref{ede-proj-target-makefile}}
+@table @code
+@item @w{@xref{ede-proj-target-makefile-objectcode}}
+@table @code
+@item ede-proj-target-makefile-archive
+No children
+@end table
+
+@end table
+
+@end table
+
+@end table
+
+@end table
+@end table
+
+  This target generates an object code archive.
+
+@table @asis
+@end table
+
+@node ede-proj-target-makefile-info, ede-proj-target-lisp, ede-proj-target-makefile-archive, Targets
+@comment  node-name,  next,  previous,  up
+@section ede-proj-target-makefile-info
+@tgindex ede-proj-target-makefile-info
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{ede-proj-target}}
+@table @code
+@item @w{@xref{ede-proj-target-makefile}}
+@table @code
+@item ede-proj-target-makefile-info
+No children
+@end table
+
+@end table
+
+@end table
+
+@end table
+@end table
+
+  Target for a single info file.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :mainmenu
+Default Value: @code{""}
+
+The main menu resides in this file.
+All other sources should be included independently.
+@refill
+
+@end table
+
+@end table
+
+@node ede-proj-target-lisp, ede-proj-target-scheme, ede-proj-target-makefile-info, Targets
+@comment  node-name,  next,  previous,  up
+@section ede-proj-target-lisp
+@tgindex ede-proj-target-lisp
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{ede-proj-target}}
+@table @code
+@item @w{@xref{ede-proj-target-makefile}}
+@table @code
+@item ede-proj-target-lisp
+No children
+@end table
+
+@end table
+
+@end table
+
+@end table
+@end table
+
+  This target consists of a group of lisp files.
+A lisp target may be one general program with many separate lisp files in it.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :load-path
+Default Value: @code{nil}
+
+Additional load-path arguments.
+When compiling from the command line, these are added to the makefile.
+When compiling from within emacs, these are ignored.
+@refill
+
+@item :requirements
+Default Value: @code{nil}
+
+Additional packages that should be loaded before building.
+When using eieio, tools generally need to be loaded before you can compile
+them safely.
+@refill
+
+@end table
+
+@end table
+
+@node ede-proj-target-scheme, ede-proj-target-aux, ede-proj-target-lisp, Targets
+@comment  node-name,  next,  previous,  up
+@section ede-proj-target-scheme
+@tgindex ede-proj-target-scheme
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{ede-proj-target}}
+@table @code
+@item ede-proj-target-scheme
+No children
+@end table
+
+@end table
+
+@end table
+@end table
+
+  This target consists of scheme files.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :interpreter
+Default Value: @code{"guile"}
+
+The preferred interpreter for this code.
+@refill
+
+@end table
+
+@end table
+
+@node ede-proj-target-aux, project-am-target, ede-proj-target-scheme, Targets
+@comment  node-name,  next,  previous,  up
+@section ede-proj-target-aux
+@tgindex ede-proj-target-aux
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{ede-proj-target}}
+@table @code
+@item ede-proj-target-aux
+No children
+@end table
+
+@end table
+
+@end table
+@end table
+
+  This target consists of aux files such as READMEs and COPYING.
+
+@table @asis
+@end table
+
+@node project-am-target, project-am-objectcode, ede-proj-target-aux, Targets
+@comment  node-name,  next,  previous,  up
+@section project-am-target
+@tgindex project-am-target
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item project-am-target
+@table @asis
+@item Children:
+@w{@xref{project-am-objectcode}}, @w{@xref{project-am-lisp}}, @w{@xref{project-am-texinfo}}, @w{@xref{project-am-man}}
+@end table
+
+@end table
+
+@end table
+@end table
+
+  Base target class for everything in project-am.
+
+@table @asis
+@end table
+
+@node project-am-objectcode, project-am-program, project-am-target, Targets
+@comment  node-name,  next,  previous,  up
+@section project-am-objectcode
+@tgindex project-am-objectcode
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{project-am-target}}
+@table @code
+@item project-am-objectcode
+@table @asis
+@item Children:
+@w{@xref{project-am-program}}, @w{@xref{project-am-lib}}
+@end table
+
+@end table
+
+@end table
+
+@end table
+@end table
+
+  A target which creates object code, like a C program or library.
+
+@table @asis
+@end table
+
+@node project-am-program, project-am-lib, project-am-objectcode, Targets
+@comment  node-name,  next,  previous,  up
+@section project-am-program
+@tgindex project-am-program
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{project-am-target}}
+@table @code
+@item @w{@xref{project-am-objectcode}}
+@table @code
+@item project-am-program
+No children
+@end table
+
+@end table
+
+@end table
+
+@end table
+@end table
+
+  A top level program to build
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :ldadd
+Default Value: @code{nil}
+
+Additional LD args.
+@refill
+
+@end table
+
+@end table
+
+@node project-am-lib, project-am-lisp, project-am-program, Targets
+@comment  node-name,  next,  previous,  up
+@section project-am-lib
+@tgindex project-am-lib
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{project-am-target}}
+@table @code
+@item @w{@xref{project-am-objectcode}}
+@table @code
+@item project-am-lib
+No children
+@end table
+
+@end table
+
+@end table
+
+@end table
+@end table
+
+  A top level library to build
+
+@table @asis
+@end table
+
+@node project-am-lisp, project-am-texinfo, project-am-lib, Targets
+@comment  node-name,  next,  previous,  up
+@section project-am-lisp
+@tgindex project-am-lisp
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{project-am-target}}
+@table @code
+@item project-am-lisp
+No children
+@end table
+
+@end table
+
+@end table
+@end table
+
+  A group of Emacs Lisp programs to byte compile.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :lisp
+Default Value: @code{nil}
+
+List of lisp files to build.
+@refill
+
+@end table
+
+@end table
+
+@node project-am-texinfo, project-am-man, project-am-lisp, Targets
+@comment  node-name,  next,  previous,  up
+@section project-am-texinfo
+@tgindex project-am-texinfo
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{project-am-target}}
+@table @code
+@item project-am-texinfo
+No children
+@end table
+
+@end table
+
+@end table
+@end table
+
+  A top level texinfo file to build.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :include
+Default Value: @code{nil}
+
+Additional texinfo included in this one.
+@refill
+
+@end table
+
+@end table
+
+@node project-am-man,  , project-am-texinfo, Targets
+@comment  node-name,  next,  previous,  up
+@section project-am-man
+@tgindex project-am-man
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-target}}
+@table @code
+@item @w{@xref{project-am-target}}
+@table @code
+@item project-am-man
+No children
+@end table
+
+@end table
+
+@end table
+@end table
+
+  A top level man file to build.
+
+@table @asis
+@end table

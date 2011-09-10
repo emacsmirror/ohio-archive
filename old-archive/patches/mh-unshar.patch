@@ -1,0 +1,127 @@
+Path: dg-rtp!rock.concert.net!mcnc!stanford.edu!bu.edu!lll-winken!elroy.jpl.nasa.gov!usc!zaphod.mps.ohio-state.edu!cis.ohio-state.edu!tut.cis.ohio-state.edu!unreplyable!garbage
+From: darrylo@HPNMXX.SR.HP.COM (Darryl Okahata)
+Newsgroups: gnu.emacs.sources
+Subject: Another mh-e.el enhancement
+Date: 11 Jun 91 00:24:43 GMT
+Organization: Source only  Discussion and requests in gnu.emacs.help.
+
+
+     Here is a patch to V18.57 mh-e.el that allows you to unshar mailed
+shar files from within mh-e.  In the scan window, you simply move the
+cursor to the message that containing the shar file and press M-n (for
+"uNshar" -- I'm sorry that I couldn't find a better keybinding, but all
+the others were taken).  You will be prompted for the name of the
+directory in which to unshar the archive.
+
+     This function works by searching for the beginning of the shar file
+in the mail message, using the following technique:
+
+1. Look for the regexp "^#![ \t]*/bin/sh".
+
+2. If that is not found, look for the regexp "^[^a-z0-9\"]*cut here".
+   This regexp will, hopefully, only match the real "cut here" line, and
+   not the phrase "cut here" in a preamble.
+
+3. If that is not found, look for a line that begins with "#".
+
+4. If that is not found, look for a line that begins with ":".
+
+     The only problem is that this function does the unshar in the
+foreground.  It would be nice if it could occur in the background.
+
+     Note also that these patches are relative to my modified version of
+mh-e.el, whose patches I posted earlier (if anyone missed them, and
+would like a copy, send email).  I don't think that these patches will
+apply to vanilla V18.57 mh-e.el, but I haven't tried it (fortunately,
+these patches are trivial to apply by hand).
+
+     -- Darryl Okahata
+	Internet: darrylo@sr.hp.com
+
+DISCLAIMER: this message is the author's personal opinion and does not
+constitute the support, opinion or policy of Hewlett-Packard or of the
+little green men that have been following him all day.
+
+===============================================================================
+*** mh-e.el.~5~	Thu May 30 10:49:09 1991
+--- mh-e.el	Thu Jun  6 14:21:39 1991
+***************
+*** 2960,2965
+      )
+    )
+  
+  
+  
+  ;;; Build the folder-mode keymap:
+
+--- 2960,3012 -----
+      )
+    )
+  
++ 
++ (defun mh-unshar (dir)
++   "Unshar the current message in the directory given by DIR."
++   (interactive "DUnshar in directory: ")
++   (let ((default-directory default-directory)
++         (errbuf " *Unshar Output*")
++ 	(curbuf (current-buffer))
++ 	(show-buffer mh-show-buffer)
++ 	start
++ 	)
++     (setq dir (expand-file-name dir))
++     (if (not (eq system-type 'vax-vms))
++ 	(setq dir (file-name-as-directory dir)))
++     (mh-show nil)		;;; force showing of current message
++     (save-excursion
++       (set-buffer show-buffer)
++       (goto-char (point-min))
++       (message "Looking for start of shar package ...")
++       (if (or (re-search-forward "^#![ \t]*/bin/sh" nil t)
++ 	      (and (re-search-forward "^[^a-z0-9\"]*cut here" nil t)
++ 		   (forward-line 1))
++ 	      (re-search-forward "^#" nil t)
++ 	      (re-search-forward "^: " nil t)
++ 	      )
++ 	  (progn
++ 	    (beginning-of-line)
++ 	    (setq start (point))
++ 	    (set-buffer curbuf)
++ 	    (pop-to-buffer errbuf)
++ 	    (kill-region (point-max) (point-min))
++ 	    (insert (format "Unsharing in directory \"%s\" ...\n\n" dir))
++ 	    (message "Please wait ...")
++ 	    (sit-for 0)
++ 	    (set-buffer show-buffer)
++ 	    (setq default-directory dir)
++ 	    (call-process-region start (point-max)
++ 				 "/bin/sh" nil errbuf t)
++ 	    (pop-to-buffer curbuf)
++ 	    (message "Unshar done")
++ 	    )
++ 	(error "Can't find start of shar file")
++ 	)
++       )
++     )
++   )
++ 
++ 
+  
+  
+  ;;; Build the folder-mode keymap:
+***************
+*** 2984,2989
+  (define-key mh-folder-mode-map "\ef" 'mh-visit-folder)
+  (define-key mh-folder-mode-map "\ek" 'mh-kill-folder)
+  (define-key mh-folder-mode-map "\el" 'mh-list-folders)
+  (define-key mh-folder-mode-map "\eo" 'mh-write-msg-to-file)
+  (define-key mh-folder-mode-map "\ep" 'mh-pack-folder)
+  (define-key mh-folder-mode-map "\eq" 'mh-list-sequences)
+
+--- 3031,3037 -----
+  (define-key mh-folder-mode-map "\ef" 'mh-visit-folder)
+  (define-key mh-folder-mode-map "\ek" 'mh-kill-folder)
+  (define-key mh-folder-mode-map "\el" 'mh-list-folders)
++ (define-key mh-folder-mode-map "\en" 'mh-unshar)
+  (define-key mh-folder-mode-map "\eo" 'mh-write-msg-to-file)
+  (define-key mh-folder-mode-map "\ep" 'mh-pack-folder)
+  (define-key mh-folder-mode-map "\eq" 'mh-list-sequences)

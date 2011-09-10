@@ -1,0 +1,34 @@
+ZenIRC-2.1 - Wed Apr 24 20:41:48 MET DST 1996 - Per Persson <pp@sno.pp.se>
+
+KNOWN BUGS:
+
+See the BUGS file.
+For missing features, look in the TODO file.
+
+
+KNOWN FEATURES AND INSTRUCTIONS:
+
+See the INSTALL file for help on how to compile and install ZenIRC.
+
+Look at zenirc-example.el for help on how to set up ZenIRC for daily
+usage. If you want more information about ZenIRC internals, read
+doc/README (beware, this file is out of date). In time ZenIRC will
+come with a texinfo manual.
+
+Found a new bug? Report it with "zenirc-bug" and we'll fix it!
+
+
+FURTHER INSTRUCTIONS:
+
+The most current versions of ZenIRC can always be found at;
+
+ ftp://ftp.splode.com:/pub/zenirc
+
+There are three email addresses for ZenIRC you might be interested in;
+
+ zenirc@splode.com     (List for annoucments and important mails.)
+	send mail to zenirc-request@splode.com to subscribe.
+ zenirc-dev@splode.com (List for ZenIRC developers.)
+	send mail to zenirc-dev-request@splode.com to subscribe.
+ zenirc-bug@splode.com (List for bug reports.)
+	this list is not interesting for you, unless you find a bug.

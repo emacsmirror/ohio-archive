@@ -1,0 +1,24 @@
+Changes to dunnet for version 2:
+
+Very few changes to game content except for the movement of one
+object which makes the game a little easier, and a small section added.
+Not really worth playing again if you have already finished it.
+
+Fixed to work with version 19 keymaps.
+
+Many bugfixes and code style fixes.
+
+Spelling fixes.
+
+Now uses rot13 instead of /bin/crypt to encrypt the saved games and
+global data.
+
+You can now write over old saved files.
+
+In dunnet.window it now correctly fixes the screen when it would have
+jump-scrolled the screen up before.
+
+You can now type random control characters in batch mode without it 
+erroring out (not control-c).
+
+Old saved games are incompatible.

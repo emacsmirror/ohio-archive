@@ -1,0 +1,47 @@
+#
+#  sample ~/.mew-mimerc for mew-mime.cmd
+#
+#    by OKUNISHI Fujikazu <fuji0924@mbox.kyoto-inet.or.jp>
+#
+#---------------------   ------  -------------------------   -------
+# C-T:                   suffix  progname                    parameters
+#---------------------   ------  -------------------------   -------
+# [basic]
+audio/basic               au     MMBrowse.exe                -pos 1,100 -vol_w 100
+#image/gif                 gif    d:/tool/pmview/pmview.exe  /Wpos=(,,,,For)
+image/gif                 gif    MMBrowse.exe                -pos 1,100
+#image/gif                 gif    d:/tool/pmjpeg.exe
+image/jpg                 jpg    MMBrowse.exe                -pos 1,100
+image/jpeg                jpg    MMBrowse.exe                -pos 1,100
+image/png                 png    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/xwd                 xwd    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+#image/xbm                 xbm    d:\tool\gbm\gbmv.exe
+image/xbm                 xbm    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/x-xbm               xbm    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/x-xpm               xpm    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/x-bmp               bmp    MMBrowse.exe                -pos 1,100
+image/oth                 $$$    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+video/mpeg                mpg    PMmpeg.exe
+application/postscript    ps     d:\gstools\gsview\gvpm.exe
+# [mew-os2-ct.el]
+text/html                 htm    nsclient.exe                -a
+audio/x-wav               wav    MMBrowse.exe                -pos 1,100 -vol_w 100
+audio/x-aiff              aif    MMBrowse.exe                -pos 1,100 -vol_w 80
+audio/x-mid               mid    MMBrowse.exe                -pos 1,100 -vol_m 75
+audio/x-midi              mid    MMBrowse.exe                -pos 1,100 -vol_m 75
+image/tiff                tif    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/x-tiff              tif    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/x-pic               pic    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/x-pcx               pcx    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/x-prm               prm    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/x-pgm               pgm    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/x-meta              met    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+image/x-os2-bmp           bmp    MMBrowse.exe                -pos 1,100
+image/x-os2-meta          met    d:\tool\pmview\PMView.exe   /Wpos=(,,,,For)
+video/x-msvideo           avi    PMmpeg.exe
+video/quicktime           mov    PMmpeg.exe
+application/mac-binhex40  hqx    xbin.exe
+application/x-os2-inf     inf    view.exe
+application/x-os2-hlp     hlp    viewhelp.exe
+application/pdf           pdf    acroread.exe
+

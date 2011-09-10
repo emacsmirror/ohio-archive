@@ -1,0 +1,120 @@
+<HTML>
+<HEAD>
+<TITLE>Normal: Input and Output Files</TITLE>
+</HEAD>
+<BODY>
+<A HREF="normal-1.html">Previous</A>
+<A HREF="normal-3.html">Next</A>
+<A HREF="normal.html#toc2">Table of Contents</A>
+<HR>
+<H2><A NAME="s2">2. Input and Output Files</A></H2>
+
+
+
+<H2><A NAME="ss2.1">2.1 Input Files</A></H2>
+
+
+<P><SF>Normal</SF> uses the input file <CODE>normal.inp</CODE> to control
+the running of the program.  If this file cannot be found in either
+lower case or upper case characters, <SF>Normal</SF> will stop and
+complain.  The form and contents of <CODE>normal.inp</CODE> will be
+discussed further in Chapter 3.  <SF>Normal</SF> also needs a list
+of input data files for normalization and alignment.  The input data
+should be xmu data, that is absorption data as a function of energy.
+There are no constraints on the input energy grid.  The data file name
+can be up to 72 characters long and can contain a directory path.  The
+file name and path must be allowed by your operating system. </P>
+
+
+
+<H2><A NAME="ss2.2">2.2 Running Normal, Output Messages, Warnings, and Errors</A></H2>
+
+
+
+<P><SF>Normal</SF> is a compiled program, so should be executable from
+the command interface on your computer.  <SF>Normal</SF> writes the
+name of each file containing the data as it is processed.  If
+<SF>Normal</SF> encounters a problem, the run-time messages will
+describe it.  If the problem is serious, <SF>Normal</SF> will
+complain and stop running.  The error messages that <SF>Normal</SF>
+writes should supply enough information to correct the problems
+encountered.  If this is not true, contact 
+<A HREF="http://krazy.phys.washington.edu/~bruce/bruce.html">the author</A>. </P>
+
+
+
+
+<H2><A NAME="ss2.3">2.3 Output Files</A></H2>
+
+
+<P>As soon as each data set is processed it will be written to the output
+file.  If the output is a UWXAFS binary file, the data set will be
+appended as a new record.  If it is an ASCII file, that file will be
+written to disk. </P>
+<P>This is the naming convention for the output files:
+<OL>
+<LI> If an output file name is specified in the input file and the the
+UWXAFS binary format is chosen for the output file, that name will
+be used verbatim.
+</LI>
+<LI> If no output file name is specified and the UWXAFS binary
+format is chosen, the extension of the input file will be replaced
+with the extension <CODE>nor</CODE> for the normalized data and with <CODE>der</CODE>
+for the derivative data.  The extension is defined as all characters
+after the final dot (.) in the file name.  This definition of
+extension is unambiguous on all operating systems.
+</LI>
+<LI> If an output file name is specified and the ASCII format is
+chosen, then successive output files are differentiated by adding
+numeric extensions.  The standard will have the extension
+<CODE>001</CODE>, the next data set will have <CODE>002</CODE>, and so on. 
+</LI>
+<LI> If no output file name is specified and the ASCII format is
+chosen, each output file will be named by appending <CODE>_norm</CODE> or
+<CODE>_der</CODE> to the filename before the extension.  Note that on MS DOS
+machines, this may cause the file name to exceed eight characters.
+</LI>
+</OL>
+</P>
+
+
+
+<H2><A NAME="header"></A> <A NAME="ss2.4">2.4 Data File Formats</A></H2>
+
+
+
+<P>As for all UWXAFS3.0 data analysis programs, there are two options for
+the format of the data files.  The data may be in either a specially
+formatted binary file known as a UWXAFS file (also called an RDF
+file), or in a specially formatted ASCII column file.  More
+information on these file formats, including the format specifications
+and a discussion of the relative merits of the two file formats can be
+found in the UWXAFS3.0 document <CODE>fileh.doc</CODE>.  The two file
+handling formats can be mixed in <SF>Normal</SF>, so that the input data
+can be in the UWXAFS format and the output data can be in the ASCII
+format, or vice versa. </P>
+<P>If the input data is in UWXAFS format, it must be in a file of file
+type <CODE>xmu</CODE>.  Both the file name and record key (either nkey or
+skey) must be specified for the input.  Output files in the UWXAFS
+format will be written to a single file.  Output files in the ASCII
+format will be written to files named by the convention described
+above. </P>
+<P>If the input data is in ASCII format, it must be in a file with one or
+more document lines, followed by a required line of minus signs ( - ),
+followed by an ignored line containing column labels, and then columns
+of numerical data for x, and y(x). </P>
+<P>Output files in the ASCII format will each contain only one set of data,
+and will be named as described above.  They will be written to a two
+column file with a header like that described above.  Each line in the
+header will begin with a hash (#), which is the character denoting a
+comment line in the plotting program <SF>Gnuplot</SF>. </P>
+
+
+
+
+<HR>
+<A HREF="normal-1.html">Previous</A>
+<A HREF="normal-3.html">Next</A>
+<A HREF="normal.html#toc2">Table of Contents</A>
+</BODY>
+</HTML>

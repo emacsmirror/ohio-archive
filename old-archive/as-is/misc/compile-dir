@@ -1,0 +1,161 @@
+From mcgrath@paris.berkeley.edu Thu Apr 20 13:48:16 1989
+Return-Path: <bug-gnu-emacs-request@prep.ai.mit.edu>
+Date: 13 Apr 89 05:08:58 GMT
+From: mcgrath@paris.berkeley.edu  (Roland McGrath)
+Organization: Hackers Anonymous International, Ltd., Inc. (Applications welcome)
+Subject: Directory-change tracking for compile.el
+Sender: bug-gnu-emacs-request@prep.ai.mit.edu
+To: bug-gnu-emacs@prep.ai.mit.edu
+
+Add the following two defconsts and one defvar to compile.el and replace
+compilation-parse-errors with the defun below to get directory-change
+tracking.  This means that if, from the two regexps below, it can figure out
+what directories were moved to, next-error (C-x `) will look for files
+referenced by error messages in the right places.
+
+The default regexps are for GNU make with the `-w' switch.
+I didn't make it look for "cd dir" because there is no good way to tell when
+it returned to the parent directory.  You will have problems if GNU make
+remakes its makefiles, because it will write more `Entering' than `Leaving'
+messages and screw up the directory stack.  The next release of GNU Make
+will probably arrange not to do this.  Until then, you can always edit the
+*compilation* buffer and kill one of the doubled messages.
+
+Enjoy,
+Roland
+
+(defconst compilation-enter-directory-regexp
+  "^.*: Entering directory `\\\(.*\\\)'$"
+  "Regular expression for a line in the compilation log that
+changes the current directory.  This must contain one \\\(, \\\) pair
+around the directory name.")
+
+(defconst compilation-leave-directory-regexp
+  "^.*: Leaving directory `\\\(.*\\\)'$"
+  "Regular expression for a line in the compilation log that
+changes the current directory to a previous value.  This may
+contain one \\\(, \\\) pair around the name of the directory
+being moved from.  If it does not, the last directory entered
+\(by a line matching  compilation-enter-directory-regexp \) is assumed.")
+
+(defvar compilation-directory-stack nil
+  "Stack of directories entered by lines matching
+ compilation-enter-directory-regexp  and not yet left by lines matching
+ compilation-leave-directory-regexp .  The tail element is the directory
+the compilation was started in.")
+
+(defun compilation-parse-errors ()
+  "Parse the current buffer as error messages.
+This makes a list of error descriptors, compilation-error-list.
+For each source-file, line-number pair in the buffer,
+the source file is read in, and the text location is saved in compilation-error-list.
+The function next-error, assigned to \\[next-error], takes the next error off the list
+and visits its location."
+  (setq compilation-error-list nil)
+  (message "Parsing error messages...")
+  (let (text-buffer
+	last-filename last-linenum
+	eol)
+    ;; Don't reparse messages already seen at last parse.
+    (goto-char compilation-parsing-end)
+    ;; Don't parse the first two lines as error messages.
+    ;; This matters for grep.
+    (if (bobp)
+	(forward-line 2))
+    (while (not (eobp))
+      (end-of-line)
+      (setq eol (point))
+      (beginning-of-line)
+      (if (re-search-forward compilation-enter-directory-regexp eol t)
+	  (let ((dir (buffer-substring (match-beginning 1) (match-end 1))))
+	    (setq dir (file-name-as-directory (expand-file-name dir)))
+	    (setq compilation-directory-stack
+		  (cons dir compilation-directory-stack))
+	    (and (file-directory-p dir)
+		 (setq default-directory dir)))
+	(if (re-search-forward compilation-leave-directory-regexp eol t)
+	    (let (beg)
+	      (setq beg (match-beginning 1))
+	      (if beg
+		  (let ((dir (buffer-substring beg (match-end 1)))
+			(stack compilation-directory-stack))
+		    (setq dir (file-name-as-directory (expand-file-name dir)))
+		    (while (and stack (not (equal (car stack) dir)))
+		      (setq stack (cdr stack)))
+		    (if stack
+			(setq compilation-directory-stack (cdr stack)))
+		    )
+		(setq compilation-directory-stack
+		      (cdr compilation-directory-stack)))
+	      (setq default-directory (car compilation-directory-stack)))
+	  (if (re-search-forward compilation-error-regexp eol t)
+	      (let (linenum filename
+			    error-marker text-marker)
+		;; Extract file name and line number from error message.
+		(save-restriction
+		  (narrow-to-region (match-beginning 0) (match-end 0))
+		  (goto-char (point-max))
+		  (skip-chars-backward "[0-9]")
+		  ;; If it's a lint message, use the
+		  ;; last file(linenum) on the line.
+		  ;; Normally we use the first on the line.
+		  (if (= (preceding-char) ?\()
+		      (progn
+			(narrow-to-region (point-min) (1+ (buffer-size)))
+			(end-of-line)
+			(re-search-backward compilation-error-regexp)
+			(skip-chars-backward "^ \t\n")
+			(narrow-to-region (point) (match-end 0))
+			(goto-char (point-max))
+			(skip-chars-backward "[0-9]")))
+		  ;; Are we looking at a "filename-first"
+		  ;; or "line-number-first" form?
+		  (if (looking-at "[0-9]")
+		      (progn
+			(setq linenum (read (current-buffer)))
+			(goto-char (point-min)))
+		    ;; Line number at start, file name at end.
+		    (progn
+		      (goto-char (point-min))
+		      (setq linenum (read (current-buffer)))
+		      (goto-char (point-max))
+		      (skip-chars-backward "^ \t\n")))
+		  (setq filename (compilation-grab-filename)))
+		;; Locate the erring file and line.
+		(if (and (equal filename last-filename)
+			 (= linenum last-linenum))
+		    nil
+		  (beginning-of-line 1)
+		  (setq error-marker (point-marker))
+		  ;; text-buffer gets the buffer containing this error's file.
+		  (if (not (equal filename last-filename))
+		      (setq text-buffer
+			    (and (file-exists-p (setq last-filename filename))
+				 (find-file-noselect filename))
+			    last-linenum 0))
+		  (if text-buffer
+		      ;; Go to that buffer and find the erring line.
+		      (save-excursion
+			(set-buffer text-buffer)
+			(if (zerop last-linenum)
+			    (progn
+			      (goto-char 1)
+			      (setq last-linenum 1)))
+			(forward-line (- linenum last-linenum))
+			(setq last-linenum linenum)
+			(setq text-marker (point-marker))
+			(setq compilation-error-list
+			      (cons (list error-marker text-marker)
+				    compilation-error-list)))))
+		))))
+      (forward-line 1))
+    (setq compilation-parsing-end (point-max)))
+  (message "Parsing error messages...done")
+  (setq compilation-error-list (nreverse compilation-error-list))))
+--
+	Roland McGrath
+	Free Software Foundation, Inc.
+roland@wheaties.ai.mit.edu, mit-eddie!wheaties.ai.mit.edu!roland
+Copyright 1989 Roland McGrath, under the GNU General Public License, version 1.
+
+

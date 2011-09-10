@@ -1,0 +1,426 @@
+File:  edt-user.doc, v 1.5
+
+               -----   -----------   -------   -----------------
+               E D T   K e y p a d   M o d e   E m u l a t i o n
+               -----   -----------   -------   -----------------
+
+                       -------   -----------------------
+                       U s e r   I n s t r u c t i o n s
+                       -------   -----------------------
+
+                        BETA Distribution Version 0.5
+                      Copyright (C) 1991 Kevin Gallagher
+                         (kgallagh@digi.lonestar.org)
+
+STARTING EDT EMULATION:
+
+Start up emacs and enter "M-x edt-emulation-on" to begin the emulation.  If
+you placed the file edt-user.el in your load path, then a message will appear
+stating that your User Custom EDT emulation has been enabled.  If you do not
+have an edt-user.el in your load path, then a message will appear stating that
+the default EDT emulation has been enable.  (See CUSTOMIZING section, below.)
+
+Of course, you can have this done automatically, when you start emacs, by
+adding the following line to your .emacs file:
+
+        (setq term-setup-hook 'edt-emulation-on)
+
+A reference sheet is included in this file (edt-user.doc) listing the default
+EDT Emulation key bindings.  This sheet is also accessible on line from within
+Emacs (PF2 or GOLD H, in the EDT Default Mode).
+
+
+
+HOW DOES THIS EDT EMULATION DIFFER FROM REAL EDT?:
+
+In general, you will find that this emulation of EDT replicates most, but not
+all, of EDT's most used editing functions and behavior.  It is not perfect,
+but most agree that it is good enough to make it easy for die-hard EDT users
+to move over to using GNU Emacs.
+
+Here's a list of SOME of the most important differences between EDT and this
+GNU Emacs EDT Emulation.
+
+1.  Entering repeat counts works a little differently than in EDT.
+
+    EDT allows users to enter a repeat count before entering a command that
+    accepts repeat counts.  For example, when in EDT, pressing these three
+    keys in sequence, GOLD 5 KP1, will move the cursor in the current
+    direction 5 words.
+
+    Emacs provides two ways to enter repeat counts, though neither involves
+    using the GOLD key.  In Emacs, repeat counts can be entered by using the 
+    ESC key.  For example, pressing these keys in sequence, ESC 1 0 KP1, will
+    move the cursor in the current direction 10 words. 
+
+    Emacs provides another command called universal-argument that can do the
+    same thing, plus a few other things.  Normally, Emacs has this bound to
+    C-u.  But this conflicts with the EDT binding to C-u.  So, unless one
+    chooses to customize a binding of the command universal-argument to a key,
+    EDT emulation users can use ESC.
+
+2.  The EDT SUBS command is NOT supported.  The built-in Emacs query-replace
+    command is bound to GOLD ENTER, instead.  It is more convenient to use
+    than SUBS.
+
+3.  EDT's line mode commands and nokeypad mode commands are NOT supported.
+    Although, at first, this may seem like a big omission, the set of built-in
+    Emacs commands provides a much richer set of capabilities which more than
+    make up for this omission.
+
+    To enter Emacs commands not bound to keys, press GOLD KP7.  This provides
+    the Meta-x (M-x) prompt, which accepts any valid Emacs command.  (The
+    normal Emacs way to get this prompt is to press ESC x, by the way.)
+
+4.  Selected text is not highlighted.  Support for highlighting selected text
+    requires code changes to the GNU Emacs C source.  This support has been
+    added to the X windows beta test version of GNU Emacs (Epoch) and is
+    planned for Emacs 19.  So, right now, the EDT Emulation does not highlight
+    selected text.
+
+5.  Just like TPU/EVE, The ENTER key is NOT used to terminate input when the
+    editor prompts you for input.  The RETURN key is used, instead.  (KP4 and
+    KP5 do terminate input for the FIND command, just like in EDT, however.)
+
+
+
+
+SOME HIGHLIGHTS IN THIS EDT EMULATION, AND SOME COMPARISONS TO THE ORIGINAL
+GNU EMACS EDT EMULATION:
+
+1.  The EDT define key command is supported (edt-define-key) and is bound to
+    C-k in the default EDT mode.  The TPU/EVE learn command is supported but
+    not bound to a key at this time.  (But unlike the TPU/EVE learn command,
+    which uses one command to begin the learn sequence (usually C-l) and
+    another command to remember the sequence (usually C-r), the same command
+    (edt-learn) is used as a toggle to both begin and to remember the learn
+    sequence.
+
+    We also supply a restore key command which will restore the last replaced
+    definition to a key (whether done by edt-define-key or edt-learn).  It is
+    bound to GOLD C-k in the default EDT mode.
+
+2.  Direction support is fully supported.  It is no longer accomplished by
+    re-defining keys each time the direction is changed.  Thus, commands
+    sensitive to the current direction setting may be bound easily to any key.
+
+3.  All original emacs bindings are fully restored when EDT emulation is
+    turned off.
+
+4.  User custom EDT bindings are kept separate from the default EDT bindings.
+    One can toggle back and forth between the custom EDT bindings and default
+    EDT bindings.
+
+5.  The Emacs functions in edt.el attempt to emulate, where practical, the
+    exact behavior of the corresponding EDT keypad mode commands.  In a few
+    cases, the emulation is not exact, but we hope you will agree it is close
+    enough.  In a very few cases, we chose to use the Emacs way of handling
+    things.  For example, we do not emulate the EDT SUBS command.  Instead, we
+    chose to use the Emacs query-replace function, which we find to be easier
+    to use.
+
+6.  Emacs uses the regexp assigned to page-delimiter to determine what
+    marks a page break.  This is normally "^\f", which causes the edt-page
+    command to ignore form feeds not located at the beginning of a line.  To
+    emulate the EDT PAGE command exactly, page-delimiter is set to "\f" when
+    EDT emulation is turned on, and restored to "^\f" when EDT emulation is
+    turned off.  But this can be overridden if the EDT definition is not
+    desired by placing
+
+            (setq edt-keep-current-page-delimiter t)
+
+    in your .emacs file.
+
+7.  EDT definitions of a section is hardwired to be 16 lines of its one and
+    only 24-line window.  That's two-thirds of the window at a time.  Since
+    Emacs, like TPU/EVE, can handle window of sizes of other than 24 lines,
+    our definition of section is set to two-thirds of the current window.
+    (There is also an edt-scroll-window function which you may prefer over the
+    SECT emulation.)
+
+8.  Cursor movement and deletion involving word entities is identical to EDT.
+    An emulation of EDT's SET ENTITY WORD command is provided.
+
+9.  FIND and FNDNXT are supported.
+
+10. EDT's APPEND and REPLACE commands are supported.
+
+11. CHNGCASE is supported.  It works on individual characters or selected
+    text, if SELECT is active.  In addition, two new commands are provided:
+    edt-lowercase and edt-uppercase.  They work on individual WORDS or
+    selected text, if SELECT is active.
+
+12. Form feed and tab insert commands are supported.
+
+13. Movement by sentences and paragraphs is supported, a feature not supported
+    in EDT.
+
+14. A new command, edt-duplicate-word, is provided.  I find it to be
+    surprisingly useful.
+
+15. Retangular Cut and Paste in both insert and overwrite modes is supported.
+    Another feature not supported in EDT.
+
+16. The original EDT emulation package set up many default regular and GOLD
+    bindings.  We tried to preserve most (but not all!) of these, so users of
+    the original emulation package will feel more at home.  Many GOLD key
+    sequences are not bound to functions.  We are open to suggestions here.
+    There are several commands in edt.el not bound to any key, at this time.
+    So, you may find it worthwhile to look through edt.el for functions you
+    may wish to use in your personal customized bindings.
+
+17. The VT200/VT300 series terminals steal the function keys F1 to F5 for
+    their own use.  These do not generate signals which are sent to the host.
+    So, edt.el does not assign any default bindings to F1 through F5.
+
+    In addition, our VT220 terminals generate an interrupt when the F6 key is
+    pressed (^C or ^Y, can't remember which) and not the character sequence
+    documented in the manual.  So, binding emacs commands to F6 will not work
+    if your terminal behaves the same way.
+
+18. The VT220 terminal has no ESC, BS, nor LF keys, as does a VT100.  So the
+    default EDT bindings adopt the standard DEC convention of interpreting
+    F11 as ESC, F12 as BS, and F13 as LF on VT200 series terminals.  (See
+    vt-esc-sub.el for more information.)
+
+19. Each user, through the use of a private edt-user.el file, can customize
+    his/her own EDT emulation bindings to suit their own personal preferences.
+
+20. The EDT SELECT and RESET functions are supported.  However, unlike EDT,
+    pressing RESET to cancel text selection does NOT affect the setting of the
+    current direction.
+
+    We also provide a TPU/EVE like version of SELECT/RESET called
+    edt-toggle-select which makes the EDT SELECT function into a toggle on/off
+    switch.  That is, if selection is ON, pressing SELECT again turns
+    selection off (cancels selection).
+
+
+
+CUSTOMIZING:
+
+Most EDT users, at one time or another, make some custom key bindings, or
+use someone else's custom key bindings, which they come to depend upon just as
+if they were built-in bindings.  This EDT Emulation for GNU Emacs is designed
+to make it easy to customize bindings.
+
+If you wish to customize the EDT Emulation to use some of your own key
+bindings, you need to make a private version of edt-user.el in your own
+private lisp directory.  There are two sample files edt-user.el-1 and
+edt-user.el-2 for you to use for ideas.  Look at edt-user.el-1
+first.  Unless you will be using two or more very different types of
+terminals, you need not look at edt-user.el-2.
+
+First, you need to add your private lisp directory to the Emacs load path in
+your .emacs setup file.
+
+For example, if "~/lisp" is your personel emacs lisp directory, then the
+following line in your .emacs file will work:
+
+        (set-variable 'load-path '("~/lisp" "/emacs/lisp" ))
+
+If, on your system, Emacs fails to expand ~ correctly, then try
+
+    (set-variable 'load-path '((expand-file-name "~/lisp") "/emacs/lisp" ))
+
+VMS users will find that the following line will work after one replaces
+"userdisk" and "username" with the appropriate information:
+
+ (set-variable 'load-path '("userdisk:[username.LISP]" "EMACS_LIBRARY:[LISP]"))
+
+
+NOTE:  A few sites have different load-path requirements, so the above
+       directions may need some modification if your site has such special
+       needs. 
+
+
+CREATING YOUR OWN EDT-USER.EL FILE:
+
+You should use the edt-user.el-1 file as a guide to learn how you can
+customize EDT emulation bindings to your own liking.  Names used to identify
+the set of VT100/VT200 keypad and function keys are:
+
+Keypad Keys:   
+                PF1 PF2 PF3 PF4
+                KP7 KP8 KP9 KP-
+                KP4 KP5 KP6 KP,
+                KP1 KP2 KP3 
+                KP0     KPP KPE
+
+Arrow Keys:
+                LEFT RIGHT DOWN UP
+
+Function Keys:
+                F6 F7 F8 F9 F10  F11 F12 F13 F14  DO HELP  F17 F18 F19 F20
+                FIND   INSERT   REMOVE 
+                SELECT PREVIOUS NEXT
+
+There are three basic functions that do the EDT emulation bindings:
+edt-bind-standard-key, edt-bind-gold-key, and edt-bind-function-key.
+
+The first two are for binding keys standard across most keyboards, so they are
+keyboard independent and are defined in edt.el.
+
+The first, edt-bind-standard-key, is used typically to bind emacs commands to
+control keys, although some people use it to bind commands to other keys, as
+well.  (For example, some people use it to bind the VT200 seldom used
+back-tick key (`) to the function "ESC-prefix" so it will behave like an ESC
+key.)  The second function, edt-bind-gold-key, is used to bind emacs commands
+to gold key sequences involving alpha-numeric keys, special character keys,
+and control keys.
+
+The third function, edt-bind-function-key, is terminal dependent and is
+defined in the terminal specific file (see edt-vt100.el and edt-apollo.el for
+examples).  It is used to bind emacs commands to function keys, to keypad
+keys, and to gold sequences of those keys.
+
+WARNING:  Each of these three functions has an optional last argument.  The
+          optional argument should NOT be used in edt-user.el!  When the
+          optional argument is missing, each function knows to make the
+          key binding part of the user's EDT custom bindings.
+
+	  The EDT default bindings are set up in edt.el by calling these same
+	  functions with the optional last argument set to "t".  So, if you
+	  decide to copy such function calls from edt.el to edt-user.el, BE
+	  SURE TO DELETE THE "t" AT THE END OF EACH PARAMETER LIST!
+
+
+SPECIFYING WORD ENTITIES:
+
+The variable edt-word-entities is used to emulate EDT's SET ENTITY WORD
+command.  It contains a list of characters to be treated as words in
+themselves.  If the user does not define edt-word-entities in his/her .emacs
+file, then it is set up with the EDT default containing only TAB.
+
+The characters are stored in the list by their numerical values, not as
+strings.  Emacs supports several ways to specify the numerical value of a
+character.  One method is to use the question mark: ?A means the numerical
+value for A, ?/ means the numerical value for /, and so on.  Several
+unprintable characters have special representations:
+
+            ?\b  specifies  BS, C-h
+            ?\t  specifies  TAB, C-i
+            ?\n  specifies  LFD, C-j
+            ?\v  specifies  VTAB, C-k
+            ?\f  specifies  FF, C-l
+            ?\r  specifies  CR, C-m
+            ?\e  specifies  ESC, C-[
+            ?\\  specifies  \
+
+Here are some examples:
+
+     (setq edt-word-entities '(?\t ?- ?/)) ;; Specifies TAB, - , and /
+     (setq edt-word-entities '(?\t)        ;; Specifies TAB, the default
+
+You can also specify characters by their decimal ascii values:
+
+     (setq edt-word-entities '(9 45 47))   ;; Specifies TAB, - , and /
+
+
+PRESERVING ORIGINAL GNU EMACS CONTROL KEY SEQUENCE BINDINGS:
+
+Some users of GNU Emacs, who miss primarily the use of their EDT keypad
+trained right hand, prefer to have access to all the standard Emacs key
+bindings and just want the EDT Emulation to bind commands to the keypad keys,
+PF keys, and the other function keys.  So, where EDT bindings and GNU Emacs
+bindings conflict (control key sequences) these users perfer to retain the
+Emacs bindings.
+
+If the variable edt-use-emacs-control-sequence-bindings is set to true in
+a user's .emacs file, then the default EDT Emulation mode will retain all
+the original GNU Emacs control key sequence bindings.  If you wish to do this,
+add the following line to your .emacs file:
+
+        (setq edt-use-emacs-control-sequence-bindings t)
+
+
+
+The following page contains some solutions to problems encountered by some GNU
+Emacs users.  Though not specifically EDT Emulation related, they are often
+needed by those who are interested in using the EDT Emulation.
+
+HANDLING FLOW CONTROL PROBLEMS:
+
+If you are using a DEC VT-series terminal, or similar terminal, which insists
+upon using ^S and ^Q for flow control, then you will probably want to add the
+following to your .emacs file:
+
+        (setq terminal-uses-flow-control-chars
+              '("vt200" "vt100" "vt102"))
+
+after modifying it to contain the list of terminals you expect to use which
+have this flow control problem.  This causes a special Emacs function,
+evade-flow-control, to be called when you are using any of the terminals
+specified in the list.  This function does two things: it tells Emacs to pass
+all ^S and ^Q characters received from the terminal onto the OS for handling
+AND it sets up a translate table which causes Emacs to treat a ^\ as if a ^S
+were entered from the keyboard and to treat a ^^ as if a ^Q were entered.
+This frees up ^S and ^Q to be used exclusively as flow control characters.
+
+
+VT TERMINALS WITH NO ESC KEY:
+
+Support for using F11 as an ESC key is provided.  See vt-esc-sub.el for
+details. 
+
+
+                              DEFAULT EDT Keypad
+
+   F7: Copy Rectangle             +----------+----------+----------+----------+
+   F8: Cut Rect Overstrike        |Prev Line |Next Line |Bkwd Char |Frwd Char |
+ G-F8: Paste Rect Overstrike      |   (UP)   |  (DOWN)  |  (LEFT)  | (RIGHT)  |
+   F9: Cut Rect Insert            |Window Top|Window Bot|Bkwd Sent |Frwd Sent |
+ G-F9: Paste Rect Insert          +----------+----------+----------+----------+
+  F11: ESC                       
+  F12: Begining of Line           +----------+----------+----------+----------+
+G-F12: Delete Other Windows       |   GOLD   |   HELP   |  FNDNXT  |  DEL L   |
+  F13: Delete to Begin of Word    |   (PF1)  |   (PF2)  |   (PF3)  |  (PF4)   |
+ HELP: Emacs Help                 |Mark Wisel|Desc Funct|   FIND   |  UND L   |
+   DO: Execute extended command   +----------+----------+----------+----------+
+                                  |   PAGE   |   SECT   |  APPEND  |  DEL W   |
+  C-g: Keyboard Quit              |    (7)   |    (8)   |    (9)   |   (-)    |
+G-C-g: Keyboard Quit              |Ex Ext Cmd|Fill Regio| REPLACE  |  UND W   |
+  C-h: Beginning of Line          +----------+----------+----------+----------+
+G-C-h: Emacs Help                 |  ADVANCE |  BACKUP  |   CUT    |  DEL C   |
+  C-i: Tab Insert                 |    (4)   |    (5)   |    (6)   |   (,)    |
+  C-j: Delete to Begin of Word    |   BOTTOM |    TOP   |   Yank   |  UND C   |
+  C-k: Define Key                 +----------+----------+----------+----------+
+G-C-k: Restore Key                |   WORD   |    EOL   |   CHAR   |   Next   |
+  C-l: Form Feed Insert           |    (1)   |    (2)   |    (3)   |  Window  |
+  C-n: Set Screen Width 80        | CHNGCASE |  DEL EOL |Quoted Ins|          !
+  C-r: Isearch Backward           +---------------------+----------+  (ENTER) |
+  C-s: Isearch Forward            |         LINE        |  SELECT  |          !
+  C-t: Display the Time           |         (0)         |    (.)   |   Query  |
+  C-u: Delete to Begin of Line    |      Open Line      |  RESET   |  Replace |
+  C-v: Redraw Display             +---------------------+----------+----------+
+  C-w: Set Screen Width 132       
+  C-z: Suspend Emacs                    +----------+----------+----------+
+G-C-\: Split Window                     |  FNDNXT  |   Yank   |   CUT    |
+                                        |  (FIND)) | (INSERT) | (REMOVE) |
+  G-b: Buffer Menu                      |   FIND   |          |   COPY   |
+  G-c: Compile                          +----------+----------+----------+
+  G-d: Delete Window                    |SELECT/RES|SECT BACKW|SECT FORWA|
+  G-e: Exit                             | (SELECT) |(PREVIOUS)|  (NEXT)  |
+  G-f: Find File                        |          |          |          |
+  G-g: Find File Other Window           +----------+----------+----------+
+  G-h: Keypad Help
+  G-i: Insert File
+  G-k: Toggle Capitalization Word
+  G-l: Lowercase Word or Region
+  G-m: Save Some Buffers
+  G-n: Next Error
+  G-o: Switch to Next Window
+  G-q: Quit
+  G-r: Revert File
+  G-s: Save Buffer
+  G-u: Uppercase Word or Region
+  G-v: Find File Other Window
+  G-w: Write file
+  G-y: EDT Emulation OFF
+  G-z: Switch to User EDT Key Bindings
+  G-1: Delete Other Windows
+  G-2: Split Window
+  G-%: Go to Percentage
+  G- : Undo  (GOLD Spacebar)
+  G-=: Go to Line
+  G-`: What line

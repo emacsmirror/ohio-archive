@@ -1,0 +1,59 @@
+This is the README file for Bugtrack 1.0.
+
+
+Bugtrack is...
+--------------
+
+Bugtrack is a support system for tracking bug reports.  As a new
+bug report arrive, you create a ``bug'', assigning it a priority,
+severity and difficulty.  The bug reports are collected in folders,
+much like RMAIL folders.  You can get a summary of the bug reports,
+sorted by priority, severity, difficulty or chronological.  The
+summary normally excludes ``closed'' bugs, but if you give a prefix
+argument the summary will also include inactive bug reports.
+
+Bugtrack is tightly coupled to RMAIL.  When you receive a bug
+report, you only have to press ``C'' and answer a few questions to
+create the bug.  Later on, you can find the email that corresponds
+to the bug with a single keystroke.  More than one email can be
+associated with a bug, making it easy to review all emails about
+this particular bug when you finally decide to do something about
+it.
+
+Bugtrack is distributed under the GNU General Public License.
+
+
+Bugtrack is not...
+------------------
+
+Bugtrack probably does not work very well in development groups.  You
+will have to rely on Emacs file locking.  You cannot store this file
+under e.g. CVS -- if two developpers simultaneously create a bug
+report it is not easy to merge the revisions (you have to change the
+bug id manually).  If you work on your own on a project, or if it is
+your responsibility to handle the bug reports and distribute them
+among the programmers, this will probably be useful for you.
+
+
+Feedback
+--------
+
+Send bug reports to ceder@lysator.liu.se.
+
+If there is enough interrest I will create a mailing list for bugtrack
+related questions.  Send mail to ceder@lysator.liu.se if you want to
+be added to it.
+
+Bugtrack requires FSF GNU Emacs 19.x.  I don't know if it works with
+Lucid GNU Emacs.  See bugtrack.el for installation instructions.  See
+COPYING for copying conditions.  See NEWS for info about recent
+changes.  See BUGS for an example Bugtrack file.
+
+If you evaluate this package and decide that it is *not* useful for
+you, please tell me why, so that I can either improve Bugtrack or add
+a warning message to future releases, so that other people don't have
+to waste as much time on figuring out if this package suits them.
+
+I hope you enjoy this package.
+
+				/ceder

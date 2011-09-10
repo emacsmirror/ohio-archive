@@ -1,0 +1,945 @@
+Path: dg-rtp!rock.concert.net!mcnc!stanford.edu!agate!ucbvax!cis.ohio-state.edu!tut.cis.ohio-state.edu!unreplyable!garbage
+From: ruprecht@ISLAND.INFORMATIK.UNI-FREIBURG.DE (Nick Ruprecht)
+Newsgroups: gnu.emacs.help,comp.emacs
+Subject: New function x-rebind-keysym etc
+Date: 4 Jun 91 12:01:36 GMT
+Organization: Gatewayed from the GNU Project mailing list help-gnu-emacs@prep.ai.mit.edu
+
+I have written a couple of functions to enable rebinding of Keysyms
+under X. These functions have been successfully installed on Sun3 and
+Sun4 under SunOS 4.1 and X Windows Release X11R4. Now someone else can
+go ahead and port it to other systems.
+
+-----------------------------------------------------------------------
+LCD Archive Entry:
+x-rebind-keysym|Nick Ruprecht|ruprecht@ISLAND.INFORMATIK.UNI-FREIBURG.DE
+|Rebind keysyms under X
+|91-06-04||~/patches/x-rebind-keysym.patch.Z
+
+The function x-rebind-keysym (in x11fns.c) allows the specification of
+a STRING of up to 64 characters length to be bound to KEYSYM if the
+given MODIFIERS are present.
+
+KEYSYM is the name of a keysym. For a list of all keysyms, see the
+file /usr/include/X11/keysymdef.h (remove the leading "XK_" to obtain
+the keysym names). Case is significant.
+
+MODIFIERS is a comma separated list of modifier combinations. Each
+list element consists of a combination of the letters n, s, l, c, m
+(or 1), 2, 3, 4, 5, specifying none, shift, lock, control, meta (or
+mod1), mod2, mod3, mod4, mod5, respectively.
+
+STRING is the replacement string. It can be up to MAPPING_BUF_SIZE
+long (defined in x11term.h as 64). The special character '^'
+controlifies the following character. '\' acts as an escape
+introducer. See the documentation of x-rebind-keysym for details.
+
+To rebind keysyms during the startup phase of emacs, do something
+along the following lines in the startup file ~/.emacs:
+
+   (defun my-x-rebindings ()
+        "example for a function to rebind some keys."
+        (x-rebind-padkeys)                      ; see below
+        (x-rebind-keysym "Alt_L" "n,sl,s,l" "^X")
+        (x-rebind-keysym "Alt_R" "n,sl,s,l" "^X4")
+        (x-rebind-keysym "Super_R" "n,sl,s,l" "^C")
+        (x-rebind-keysym "L1" "n,sl,s,l" "^X^S")
+        (x-rebind-keysym "L2" "n,sl,s,l" "^U")
+        (x-rebind-keysym "L4" "n,sl,s,l" "^_"))
+
+   ;; call only if running under X windows
+   (if (eq window-system 'x)
+        (setq term-setup-hook 'my-x-rebindings))
+
+The function x-rebind-defaults (in x-win.el) imitates the behaviour of
+the previous Emacs on a Sun by rebinding keysyms to "ESC [ nnn z"
+escape sequences. Non-Suns will need a different x-rebind-defaults.
+
+The function x-rebind-padkeys (in x-win.el) creates a complex keypad
+for Suns.
+
+To make full use of these functions, the keys must generate the
+expected keysyms. If they don't, you'll have to modify the functions
+or the server keymap using xmodmap, e.g. with the following commands:
+
+   ! in keysymdef.h, F11=L1, F12=L2. Therefore F11 and F12 have
+   ! to be moved to other keysyms, e.g. KP_F1 and KP_F2
+   keycode 16      = KP_F1
+   keycode 18      = KP_F2
+
+   ! To use the Sun keyboard keys Compose and AltGraph, they must
+   ! be assigned to keysyms
+   keycode 20      = Alt_R
+   keycode 74      = Super_R
+
+   ! On Suns, keycode 57 (./Del on the keypad) produces "Delete"
+   ! and is therefore undistinguishable from the Delete key.
+   ! This is changed by
+   keycode 57      = KP_Decimal
+
+The function x-rebind-list (in x-win.el, calling functions in
+x11fns.c) outputs the list of current rebindings in the *Help* buffer.
+
+The following pages contain scripts for the editor ed produced by
+"diff -e" to generate the modified x11term.h, x11term.c, x11fns.c, and
+x-win.el from the emacs-18.57 distribution. After these follow
+excerpts from our local site-init.el file containing some additional
+functions. I hope this is of use for you. Best regards,
+
+Nick Ruprecht
+
+e x11term.h
+24a
+/* 21-MAY-1991/Ru: size of mapping_buf, used in x11term.c and x11fns.c */
+#define MAPPING_BUF_SIZE 64
+.
+0a
+/*
+ * Modified by Nick Ruprecht, Institut fuer Informatik, Freiburg, Germany
+ *	define MAPPING_BUF_SIZE for common use in x11fns.c and x11term.c
+ *
+ * 28-MAY-1991/Ru: release
+ */
+
+.
+
+e x11term.c
+1441a
+#endif  /* 0 (23-May-1991/Ru) */
+.
+1402,1405c
+      nbytes = XLookupString (&event.xkey, mapping_buf, MAPPING_BUF_SIZE,
+			      &keysym, 0); /* use MAPPING_BUF_SIZE */
+#if 0			/* 23-MAY-1991/Ru: now done with x-rebind-keysym */
+.
+1282c
+  char mapping_buf[MAPPING_BUF_SIZE]; /* 23-MAY-1991/Ru: see x11term.h */
+.
+1274c
+#endif /* 0 (23-MAY-1991/Ru) */	
+
+.
+1121c
+#if 0			/* 23-MAY-1991/Ru: now done with x-rebind-keysym */
+.
+24a
+ * Modified by Nick Ruprecht, Institut fuer Informatik, Freiburg, Germany
+ *	x11fns.c now contains the function x-rebind-keysym which allows
+ *	dynamic rebinding of KeySyms. For this reason I have ifdef'd out
+ *	the function stringFuncVal and the hardwired key translations in the
+ *	function internal_socket_read. Also increased size of mapping_buf to
+ *	accomodate long rebindings.
+ *
+ *	28-MAY-1991/Ru: release
+ */
+
+/*
+.
+
+e x11fns.c
+927a
+  defsubr (&Sx_rebind_keysym);	/* 15-MAY-1991/Ru: added */
+  defsubr (&Sx_rebind_list_start);
+  defsubr (&Sx_rebind_list_next);
+.
+142a
+/*
+ * x-rebind-keysym(keysym, modifiers, string)
+ * 
+ * call XRebindKeysym to rebind the specified KeySym for the specified 
+ * combinations of modifiers to string
+ *
+ * KeySyms are entered as strings containing a valid KeySym name.
+ *
+ * Modifiers are entered as a comma separated list where each element
+ * can contain the letters n, s, l, c, m (or 1), 2, 3, 4, 5 (for none, 
+ * shift, lock, control, mod1 (usually meta), mod2, mod3, mod4, mod5,
+ * respectively).
+ *
+ * In the replacement string, the caret (^) controlifies the following
+ * character, the backslash (\) produces special characters. This is
+ * done in str_controlify().
+ *
+ * XRebindKeysym is called through the routine RebindKeysym. This routine
+ * checks whether the requested Keysym/modifier combination has already
+ * been rebound. If so, it just replaces the string.
+ *
+ * 22-MAY-1991/Ru: new
+ */
+
+/*
+ * controlify string in place and return resulting length.
+ * modification in place is ok as string never grows.
+ * return length of resulting string.
+ *
+ * caret (^) controlifies the following character,
+ * backslash (\) produces special characters.
+ */
+static int str_controlify(string)
+char *string;
+{
+    register char *old, *new;	/* input and output string pointers */
+    int num, numidx;		/* for \ooo */
+
+    new = old = string;
+    do
+    {
+	switch ( *old )
+	{
+	case '^':
+	    if ( *++old == '?' )
+		*new++ = '\177';	/* delete */
+	    else
+		*new++ = *old & 0x9F;	/* controlify */
+	    break;
+	case '\\':
+	    switch ( *++old )
+	    {
+	    case 'b':
+		*new++ = '\b';
+		break;
+	    case 'e':	/* escape */
+		*new++ = '\033';
+		break;
+	    case 'f':
+		*new++ = '\f';
+		break;
+	    case 'n':
+		*new++ = '\n';
+		break;
+	    case 'r':
+		*new++ = '\r';
+		break;
+	    case 't':
+		*new++ = '\t';
+		break;
+	    case 'v':
+		*new++ = '\v';
+		break;
+	    case '0':	/* \ooo 1 to 3 digit octal number sequence */
+	    case '1':
+	    case '2':
+	    case '3':
+	    case '4':
+	    case '5':
+	    case '6':
+	    case '7':
+		num = *old++ - '0';
+		for ( numidx = 1; 
+		     (numidx < 3) && ('0' <= *old) && (*old <= '7');
+		     numidx++ )
+		    num = num * 8 + *old++ - '0';
+		old--;	/* adjust */
+		*new++ = num;
+		break;
+	    default:
+		*new++ = *old;
+		break;
+	    }
+	    break;
+	default:
+	    *new++ = *old;
+	    break;
+	}
+    }
+    while ( *old++ );
+
+    return(new-string-1);
+}
+
+/*
+ * definitions copied from XKeyBind.c
+ * sadly missing in /usr/include/X11/*.h
+ */
+#define AllMods (ShiftMask|LockMask|ControlMask| \
+		 Mod1Mask|Mod2Mask|Mod3Mask|Mod4Mask|Mod5Mask)
+
+struct XKeytrans {
+	struct XKeytrans *next;/* next on list */
+	char *string;		/* string to return when the time comes */
+	int len;		/* length of string (since NULL is legit)*/
+	KeySym key;		/* keysym rebound */
+	unsigned int state;	/* modifier state */
+	KeySym *modifiers;	/* modifier keysyms you want */
+	int mlen;		/* length of modifier list */
+};
+
+/*
+ * macro to find matching KeySym for a modifier index.
+ */
+#define ComputeKeysymFromMapindex(dpy, index) \
+  XKeycodeToKeysym(dpy, \
+		   ((dpy)->modifiermap)->modifiermap \
+		   [(index)*((dpy)->modifiermap)->max_keypermod], \
+		   0)
+
+/*
+ * shell around XRebindKeysym: check whether KeySym is already rebound.
+ * If it is, just replace the string. XRebindKeysym should do this,
+ * but it doesn't.
+ *
+ * RebindKeysym also translates the modifier state into a modifier list
+ * as required by XRebindKeysym. XRebindKeysym then translates this back
+ * into a modifier state (What a waste of time!). The current implementation
+ * of XLookupString only checks the modifier state, so calling XRebindKeysym
+ * once with the generated modifier list is sufficient.
+ * If a later implementation of XLookupString actually checks pressed
+ * modifier keys, it will become necessary to call XRebindKeysym repeatedly
+ * for all left and right modifier keys (e.g. Shift_L and Shift_R).
+ * Rebinding combinations of modifiers will then become quite awkward.
+ */
+static void RebindKeysym(dpy, keysym, modmask, str, nbytes)
+    Display *dpy;
+    KeySym keysym;
+    unsigned int modmask;
+    char *str;
+    int nbytes;
+{
+    register struct XKeytrans *p; /* pointer into rebind list */
+    KeySym modlist[8];		/* Modifier array for XRebindKeysym */
+    register int modcnt = 0;	/* Number of Modifiers in array */
+    register int modidx;	/* Index into modmask */
+    static char *modnames[] = { 
+	"shift", "lock", "control", "mod1", "mod2", "mod3", "mod4", "mod5" 
+    };
+
+    /* see if already rebound. if it is, just replace string */
+    for ( p = dpy->key_bindings; p; p = p->next )
+    {
+	if ( ( (modmask & AllMods) == p->state ) && ( keysym == p->key ) )
+	{
+	    Xfree(p->string);
+	    p->len = 0;
+	    if ( p->string = (char *)Xmalloc((unsigned)nbytes) )
+	    {
+		bcopy((char *)str, p->string, nbytes);
+		p->len = nbytes;
+	    }
+	    else
+	    {
+		error("RebindKeysym: out of memory!");
+	    }
+	    return;
+	}
+    }
+
+    /* create list of keysyms from modmask so XRebindKeysym can recompute
+     * a modmask from it. */
+    for ( modidx = 0; modidx <= Mod5MapIndex; modidx++ )
+    {
+	if ( ( modmask & (1<<modidx) ) && 
+	    ( NoSymbol == ( modlist[modcnt++] = 
+			   ComputeKeysymFromMapindex(dpy, modidx))))
+	  error("Modifier %02s is not on any key.", 
+		modnames[modidx]);
+    }
+    XRebindKeysym(dpy, keysym, modlist, modcnt, str, nbytes);
+
+    return;
+}
+
+
+DEFUN("x-rebind-keysym", Fx_rebind_keysym, Sx_rebind_keysym, 1, 3,
+      "sKeySym: \nsModifiers: \nsString: ",
+      "Rebind KEYSYM with combination of MODIFIERS to STRING.\n\n\
+KEYSYM is a string containing a valid keysym name. Case is significant.\n\n\
+MODIFIERS is a comma separated list of modifier combinations containing\n\
+the letters n, s, l, c, m (or 1), 2, 3, 4, and 5 for none, shift, lock,\n\
+control, mod1 (meta), mod2, mod3, mod4, and mod5, respectively.\n\n\
+STRING is a string up to 64 characters long. The caret (^) character can be\n\
+used to controlify the following character. The backslash (\\) produces\n\
+special characters (\\b=backspace, \\e=escape, \\f=form feed, \\n=newline,\n\
+\\r=carriage return, \\t=tab, \\v=vertical tab, \\ooo=1 to 3 digit octal code.\n\
+Other \\x=character x, e.g. \\^ gives ^).")
+
+  (keysym, modifiers, string)
+    register Lisp_Object keysym;
+    register Lisp_Object modifiers;
+    register Lisp_Object string;
+{
+    KeySym sym;			/* KeySym for string keysym */
+    int modmask = 0;		/* Modifiers to set in array */
+    int stringlen;		/* Length of string */
+    char *modptr;		/* pointer into modifier string */
+
+    /* check whether we understand X and whether the arguments are valid */
+    check_xterm();
+
+    CHECK_STRING(keysym, 1);
+    if ( NoSymbol == ( sym = XStringToKeysym(XSTRING(keysym)->data) ) )
+	error("Invalid keysym.");
+
+    if ( !NULL(string) )
+    {
+        CHECK_STRING(string, 3);
+	/* controlify. length limit comes from mapping_buf in x11term.c */
+	if ( ( stringlen = str_controlify( (char *)XSTRING(string)->data ) )
+							> MAPPING_BUF_SIZE )
+	    error("String must not be longer than %d characters.", 
+		  MAPPING_BUF_SIZE);
+    }
+    else
+        stringlen = 0;
+
+    if ( !NULL(modifiers) )
+    {
+        CHECK_STRING(modifiers, 2);
+	modptr = (char *)(XSTRING(modifiers)->data);
+
+	do			/* scan modifier string */
+	{
+	    switch ( *modptr )
+	    {
+	    case 'n':		/* keyletter n (for none) is a dummy */
+	    case 'N':		/* don't be so case sensitive */
+	    case ' ':		/* skip blanks */
+	        break;
+	    case 's':
+	    case 'S':
+	        modmask |= ShiftMask;
+		break;
+	    case 'l':
+	    case 'L':
+		modmask |= LockMask;
+		break;
+	    case 'c':
+	    case 'C':
+		modmask |= ControlMask;
+		break;
+	    case 'm':
+	    case 'M':
+	    case '1':		/* synonym */
+		modmask |= Mod1Mask;
+		break;
+	    case '2':
+		modmask |= Mod2Mask;
+		break;
+	    case '3':
+		modmask |= Mod3Mask;
+		break;
+	    case '4':
+		modmask |= Mod4Mask;
+		break;
+	    case '5':
+		modmask |= Mod5Mask;
+		break;
+	    case ',':		/* comma or end -> rebind */
+	    case '\0':
+		RebindKeysym(XXdisplay, sym, modmask, 
+			     stringlen ? (char *)XSTRING(string)->data : "",
+			     stringlen);
+		modmask = 0;
+		break;
+	    default:
+		if ( isprint(*modptr) )
+		    error("Invalid modifier \'%c\'.", *modptr);
+		else
+		    error("Invalid modifier (0x%x).", *modptr);
+		break;
+	    }
+	} while ( *modptr++ );
+    }
+    else			/* no modifiers */
+        RebindKeysym(XXdisplay, sym, 0, 
+		      stringlen ? (char *)XSTRING(string)->data : "",
+		      stringlen);
+
+    return;
+}
+
+/*
+ * display the current list of key rebindings.
+ * x-rebind-list-start initializes the list pointer
+ * x-rebind-list-next  returns a string containing a key rebinding.
+ */
+static struct XKeytrans *_x_rebind_list_p; /* should be initialized to 0,
+					    * but that makes it a const??? */
+
+DEFUN ("x-rebind-list-start", Fx_rebind_list_start, Sx_rebind_list_start, 
+       0, 0, 0, "Initialize pointer into key rebind list.")
+     ()
+{
+    check_xterm ();
+
+    if ( _x_rebind_list_p = XXdisplay->key_bindings )
+	return(Qt);
+    else
+	return (Qnil);
+}
+
+DEFUN ("x-rebind-list-next", Fx_rebind_list_next, Sx_rebind_list_next,
+       0, 0, 0, "Return next line of key bindings.")
+     ()
+{
+    char str[2*MAPPING_BUF_SIZE+32]; /* string to contain line */
+    char *strptr;		/* pointer to current string position */
+    char *ptr;			/* general purpose character pointer */
+    int idx;			/* index for decoding modifier state */
+    static char modchars[] = "slcm2345"; /* modifier chars */
+
+    check_xterm ();
+
+    if ( _x_rebind_list_p )
+    {
+	strcpy(str, XKeysymToString(_x_rebind_list_p->key));
+	strptr = str + strlen(str);
+	if ( ( strptr - str ) < 8 )
+	    *strptr++ = '\t';
+	*strptr++ = '\t';
+
+	/* decode modifier state */
+	ptr = strptr;
+	if ( _x_rebind_list_p->state )
+	{
+	    for ( idx = 0; idx <= Mod5MapIndex; idx++ )
+	    {
+		if ( _x_rebind_list_p->state & (1<<idx) )
+		    *strptr++ = modchars[idx];
+	    }
+	}
+	else
+	    *strptr++ = 'n';
+
+	/* if following entries have the same keysym and string, add
+	 * their modifier states as comma separated list
+	 */
+	while ( _x_rebind_list_p->next &&
+	       ( _x_rebind_list_p->key == _x_rebind_list_p->next->key ) &&
+	       ( _x_rebind_list_p->len == _x_rebind_list_p->next->len ) &&
+	       ( 0 == bcmp(_x_rebind_list_p->string,
+			   _x_rebind_list_p->next->string,
+			   _x_rebind_list_p->len) ) )
+	{
+	    _x_rebind_list_p = _x_rebind_list_p->next;
+	    *strptr++ = ',';
+	    if ( _x_rebind_list_p->state )
+	    {
+		for ( idx = 0; idx <= Mod5MapIndex; idx++ )
+		{
+		    if ( _x_rebind_list_p->state & (1<<idx) )
+			*strptr++ = modchars[idx];
+		}
+	    }
+	    else
+		*strptr++ = 'n';
+	}
+	if ( ( strptr - ptr ) < 8 )
+	    *strptr++ = '\t';
+	*strptr++ = '\t';
+    
+	/* uncontrolify string */
+	*strptr++ = '\"';
+	for ( ptr = _x_rebind_list_p->string;
+	     ptr < _x_rebind_list_p->string + _x_rebind_list_p->len;
+	     ptr++ )
+	{
+	    if ( isprint(*ptr) )
+		*strptr++ = *ptr;
+	    else 
+	    {
+		*strptr++ = '^';
+		if ( *ptr < ' ')
+		    *strptr++ = *ptr + '@';
+		else
+		    *strptr++ = '?';
+	    }
+	}
+	*strptr++ = '\"';
+	*strptr = '\0';
+	_x_rebind_list_p = _x_rebind_list_p->next;
+    }
+    else
+        *str = '\0';
+
+    return(build_string(str));
+}
+/* end of x-rebind-... functions */
+
+.
+23a
+/*
+ * Modified by Nick Ruprecht, Institut fuer Informatik, Freiburg, Germany
+ *
+ * Added functions to rebind keysyms (x-rebind-keysym etc)
+ * Note: This works on a Sun under SunOS 4.1.1 with X11R4.
+ * 	 The routines make use of internal X data structures to make up
+ *	 for some missing functionality in X. This will probably make it
+ *	 necessary to review the code to make it portable.
+ *
+ * 28-MAY-1991/Ru: release
+ */
+
+/*
+ * The following includes and the macro toupper are needed for x-rebind-keysym.
+ * Xlibos.h must be included before lisp.h - it redefines NULL.
+ */
+#include <sys/types.h>		/* needed by Xlibos.h */
+#include <X11/Xlibos.h>		/* for Xmalloc, Xfree */
+#include <ctype.h>
+
+.
+
+e x-win.el
+221a
+
+      ;; 23-MAY-1991/Ru: additional mouse buttons missing in x-mouse.el
+      (define-key mouse-map x-button-s-left 'x-mouse-set-mark)
+      (define-key mouse-map x-button-c-left 'x-mouse-select)
+
+      ;; 23-MAY-1991/Ru: set default keysym bindings if not already done
+      (if (not x-rebind-defaults-done)
+	  (x-rebind-defaults))
+.
+177a
+;; 16-MAY-1991/Ru: define function for setting default rebindings for Suns.
+;;	This might have to be changed if the keys produce different keysyms.
+(defun x-rebind-defaults ()
+  "Set X key bindings for function keys to match previous version.
+The following table shows all key bindings (can be shifted, locked or both):
+
+L1 ... L10 :	M-[ 192 z ... M-[ 201 z
+R1 ... R15 :	M-[ 208 z ... M-[ 222 z
+F1 ... F10 :	M-[ 224 z ... M-[ 233 z
+KP_F1 .. KP_F4:	M-[ 234 z ... M-[ 237 z	(for F11, F12, ...)
+Break :		M-[ 223 z		(for backward compatibility)
+Left :		C-b
+Right :		C-f
+Up :		C-p
+Down :		C-n
+Help :		C-h"
+
+  (interactive)
+  (x-rebind-keysym "F1" "n,sl,s,l" "\e[224z")
+  (x-rebind-keysym "F2" "n,sl,s,l" "\e[225z")
+  (x-rebind-keysym "F3" "n,sl,s,l" "\e[226z")
+  (x-rebind-keysym "F4" "n,sl,s,l" "\e[227z")
+  (x-rebind-keysym "F5" "n,sl,s,l" "\e[228z")
+  (x-rebind-keysym "F6" "n,sl,s,l" "\e[229z")
+  (x-rebind-keysym "F7" "n,sl,s,l" "\e[230z")
+  (x-rebind-keysym "F8" "n,sl,s,l" "\e[231z")
+  (x-rebind-keysym "F9" "n,sl,s,l" "\e[232z")
+  (x-rebind-keysym "F10" "n,sl,s,l" "\e[233z")
+  (x-rebind-keysym "L1" "n,sl,s,l" "\e[192z")
+  (x-rebind-keysym "L2" "n,sl,s,l" "\e[193z")
+  (x-rebind-keysym "L3" "n,sl,s,l" "\e[194z")
+  (x-rebind-keysym "L4" "n,sl,s,l" "\e[195z")
+  (x-rebind-keysym "L5" "n,sl,s,l" "\e[196z")
+  (x-rebind-keysym "L6" "n,sl,s,l" "\e[197z")
+  (x-rebind-keysym "L7" "n,sl,s,l" "\e[198z")
+  (x-rebind-keysym "L8" "n,sl,s,l" "\e[199z")
+  (x-rebind-keysym "L9" "n,sl,s,l" "\e[200z")
+  (x-rebind-keysym "L10" "n,sl,s,l" "\e[201z")
+  (x-rebind-keysym "R1" "n,sl,s,l" "\e[208z")
+  (x-rebind-keysym "R2" "n,sl,s,l" "\e[209z")
+  (x-rebind-keysym "R3" "n,sl,s,l" "\e[210z")
+  (x-rebind-keysym "R4" "n,sl,s,l" "\e[211z")
+  (x-rebind-keysym "R5" "n,sl,s,l" "\e[212z")
+  (x-rebind-keysym "R6" "n,sl,s,l" "\e[213z")
+  (x-rebind-keysym "R7" "n,sl,s,l" "\e[214z")
+  (x-rebind-keysym "R8" "n,sl,s,l" "\e[215z")
+  (x-rebind-keysym "R9" "n,sl,s,l" "\e[216z")
+  (x-rebind-keysym "R10" "n,sl,s,l" "\e[217z")
+  (x-rebind-keysym "R11" "n,sl,s,l" "\e[218z")
+  (x-rebind-keysym "R12" "n,sl,s,l" "\e[219z")
+  (x-rebind-keysym "R13" "n,sl,s,l" "\e[220z")
+  (x-rebind-keysym "R14" "n,sl,s,l" "\e[221z")
+  (x-rebind-keysym "R15" "n,sl,s,l" "\e[222z")
+  (x-rebind-keysym "KP_F1" "n,sl,s,l" "\e[234z")
+  (x-rebind-keysym "KP_F2" "n,sl,s,l" "\e[235z")
+  (x-rebind-keysym "KP_F3" "n,sl,s,l" "\e[236z")
+  (x-rebind-keysym "KP_F4" "n,sl,s,l" "\e[237z")
+  (x-rebind-keysym "Break" "n,sl,s,l" "\e[223z")
+  (x-rebind-keysym "Left" "n,sl,s,l" "^B")
+  (x-rebind-keysym "Right" "n,sl,s,l" "^F")
+  (x-rebind-keysym "Up" "n,sl,s,l" "^P")
+  (x-rebind-keysym "Down" "n,sl,s,l" "^N")
+  (x-rebind-keysym "Help" "n,sl,s,l" "^H")
+
+  (setq x-rebind-defaults-done t))
+
+;; 28-MAY-1991/Ru: rebind keypad on the right of the keyboard for Suns.
+;;	This might have to be changed if the keys produce different keysyms.
+;;	Some rebindings are made comments as XLookupString already returns
+;;	the correct character.
+(defun x-rebind-padkeys ()
+  "Set standard X key bindings for keypad keys.
+With no modifier, or lock+shift, the numeric keys give simple motion commands.
+With shift or lock, the keys produce the indicated characters.
+With meta, the numeric keys and the minus key form part of a numeric argument
+for the next command.
+With control, the numeric keys produce additional motion commands. The other
+keypad keys produce commands deemed useful, see table for details.
+The following table shows all keypad key bindings produced by this function:
+
+modifrs.| n,sl		| s,l	| c,cl			| m,ml
+--------|---------------|-------|-----------------------|---------------
+R1	| C-x C-b	| C-xC-b|			|
+R2	| electric-comm.| elect.|			|
+R3	| C-g		| C-g	|			|
+Num_Lock| C-u		| C-u	|			|
+R4	| what-line	| =	| what-cursor-position	| M-=
+R5	| C-s		| /	| C-r			| re-search-forward
+R6	| auto-fill-mode| *	| toggle-read-only	| revert-buffer
+KP_Subt.| C-k		| -	| M-k			| M--
+R7	| M-<		| 7	| backward-beg-of-line	| M-7
+Up	| C-p		| 8	| backward-paragraph	| M-8
+R9	| M-v		| 9	| backward-end-of-line	| M-9
+KP_Add	| C-x o		| +	| C-x 1			| C-x 2
+Left	| C-b		| 4	| M-b			| M-4
+R11	| C-l		| 5	| back-to-indentation	| M-5
+Right	| C-f		| 6	| M-f			| M-6
+R13	| M->		| 1	| forward-beg-of-line	| M-1
+Down	| C-n		| 2	| forward-paragraph	| M-2
+R15	| C-v		| 3	| forward-end-of-line	| M-3
+Insert	| C-@		| 0	| forward-to-indentation| M-0
+KP_Deci.| C-d		| .	| M-d			| M-.
+KP_Enter| C-m		| C-m	| C-m			| C-m"
+
+  (interactive)
+  (x-rebind-keysym "R1" "n,sl,s,l" "^X^B")
+  (x-rebind-keysym "R2" "n,sl,s,l" "\exelectric-command-history\r")
+  (x-rebind-keysym "R3" "n,sl,s,l" "^G")
+  (x-rebind-keysym "Num_Lock" "n,sl,s,l" "^U")
+  (x-rebind-keysym "R4" "n,sl" "\exwhat-line\r")
+  (x-rebind-keysym "R4" "s,l" "=")
+  (x-rebind-keysym "R4" "c,cl" "\exwhat-cursor-position\r")
+  (x-rebind-keysym "R4" "m,ml" "\e=")
+  (x-rebind-keysym "R5" "n,sl" "^S")
+  (x-rebind-keysym "R5" "s,l" "/")
+  (x-rebind-keysym "R5" "c,cl" "^R")
+  (x-rebind-keysym "R5" "m,ml" "\exre-search-forward\r")
+  (x-rebind-keysym "R6" "n,sl" "\exauto-fill-mode\r")
+  (x-rebind-keysym "R6" "s,l" "*")
+  (x-rebind-keysym "R6" "c,cl" "\extoggle-read-only\r")
+  (x-rebind-keysym "R6" "m,ml" "\exrevert-buffer")
+  (x-rebind-keysym "KP_Subtract" "n,sl" "^K")
+;  (x-rebind-keysym "KP_Subtract" "s,l" "-")
+  (x-rebind-keysym "KP_Subtract" "c,cl" "\ek")
+  (x-rebind-keysym "KP_Subtract" "m,ml" "\e-")
+  (x-rebind-keysym "KP_Add" "n,sl" "^Xo")
+;  (x-rebind-keysym "KP_Add" "s,l" "+")
+  (x-rebind-keysym "KP_Add" "c,cl" "^X1")
+  (x-rebind-keysym "KP_Add" "m,ml" "^X2")
+;  (x-rebind-keysym "KP_Enter" "n,sl" "\r")
+;  (x-rebind-keysym "KP_Enter" "s,l" "\r")
+;  (x-rebind-keysym "KP_Enter" "c,cl" "\r")
+;  (x-rebind-keysym "KP_Enter" "m,ml" "\r")
+  (x-rebind-keysym "KP_Decimal" "n,sl" "^D")
+;  (x-rebind-keysym "KP_Decimal" "s,l" ".")
+  (x-rebind-keysym "KP_Decimal" "c,cl" "\ed")
+  (x-rebind-keysym "KP_Decimal" "m,ml" "\e.")
+  (x-rebind-keysym "Insert" "n,sl" "^@")
+  (x-rebind-keysym "Insert" "s,l" "0")
+  (x-rebind-keysym "Insert" "c,cl" "\exforward-to-indentation\r")
+  (x-rebind-keysym "Insert" "m,ml" "\e0")
+  (x-rebind-keysym "R13" "n,sl" "\e>")
+  (x-rebind-keysym "R13" "s,l" "1")
+  (x-rebind-keysym "R13" "c,cl" "\exforward-beg-of-line\r")
+  (x-rebind-keysym "R13" "m,ml" "\e1")
+  (x-rebind-keysym "Down" "n,sl" "^N")
+  (x-rebind-keysym "Down" "s,l" "2")
+  (x-rebind-keysym "Down" "c,cl" "\exforward-paragraph\r")
+  (x-rebind-keysym "Down" "m,ml" "\e2")
+  (x-rebind-keysym "R15" "n,sl" "^V")
+  (x-rebind-keysym "R15" "s,l" "3")
+  (x-rebind-keysym "R15" "c,cl" "\exforward-end-of-line\r")
+  (x-rebind-keysym "R15" "m,ml" "\e3")
+  (x-rebind-keysym "Left" "n,sl" "^B")
+  (x-rebind-keysym "Left" "s,l" "4")
+  (x-rebind-keysym "Left" "c,cl" "\eb")
+  (x-rebind-keysym "Left" "m,ml" "\e4")
+  (x-rebind-keysym "R11" "n,sl" "^L")
+  (x-rebind-keysym "R11" "s,l" "5")
+  (x-rebind-keysym "R11" "c,cl" "\exback-to-indentation\r")
+  (x-rebind-keysym "R11" "m,ml" "\e5")
+  (x-rebind-keysym "Right" "n,sl" "^F")
+  (x-rebind-keysym "Right" "s,l" "6")
+  (x-rebind-keysym "Right" "c,cl" "\ef")
+  (x-rebind-keysym "Right" "m,ml" "\e6")
+  (x-rebind-keysym "R7" "n,sl" "\e<")
+  (x-rebind-keysym "R7" "s,l" "7")
+  (x-rebind-keysym "R7" "c,cl" "\exbackward-beg-of-line\r")
+  (x-rebind-keysym "R7" "m,ml" "\e7")
+  (x-rebind-keysym "Up" "n,sl" "^P")
+  (x-rebind-keysym "Up" "s,l" "8")
+  (x-rebind-keysym "Up" "c,cl" "\exbackward-paragraph\r")
+  (x-rebind-keysym "Up" "m,ml" "\e8")
+  (x-rebind-keysym "R9" "n,sl" "\ev")
+  (x-rebind-keysym "R9" "s,l" "9")
+  (x-rebind-keysym "R9" "c,cl" "\exbackward-end-of-line\r")
+  (x-rebind-keysym "R9" "m,ml" "\e9"))
+
+;; Output list of rebound keys in Help window
+;; 28-MAY-1991/Ru
+(defun x-rebind-list ()
+  "Show list of keys that are rebound."
+  (interactive)
+  (if (x-rebind-list-start)
+      (with-output-to-temp-buffer "*Help*"
+	(princ "KeySym		Modifiers	String")
+	(terpri)
+	(princ "------		---------	------")
+	(terpri) (terpri)
+	(while (string< "" (princ (x-rebind-list-next)))
+	  (terpri))
+	(print-help-return-message))
+    (message "List of rebound keys is empty.")))
+
+.
+19a
+;; Modified by Nick Ruprecht, Institut fuer Informatik, Freiburg, Germany
+;;	Support x-rebind-keysym. Define some simple functions for
+;;	collections of default keysym rebindings for Suns.
+;;	Define function x-rebind-list to show rebindings.
+;;
+;; 28-MAY-1991/Ru: release
+
+;; 28-MAY-1991/Ru: rebind defaults if not inhibited by user
+(defvar x-rebind-defaults-done nil
+  "*Non-NIL means x-rebind-defaults has been executed successfully.")
+
+.
+
+;; site-init.el
+;; Created by Nick Ruprecht, Institut fuer Informatik, Freiburg, Germany
+;;
+;; 28-MAY-1991/Ru: release
+
+;; insert date and name at point.
+;; define insert-date-name-string in default.el, e.g. to
+;; (defconst insert-date-name-string (user-full-name)
+;;   "*String to insert after the current date in function insert-date-name.
+;; Default is user-full-name.")
+;; To insert \"date/Initial: \", enter the following lines in your .emacs file:
+;; (setq insert-date-name-string
+;;     (concat (capitalize (substring (user-real-login-name) 0 2)) \": \"))")
+;;
+(defun insert-date-name ()
+  "Insert current date and user name at cursor (format dd-mmm-yyyy/user-name). 
+For customization of user-name, see variable insert-date-name-string."
+  (interactive "*")
+  (let ((time (current-time-string)))
+    (insert (substring time 8 10) "-"		; day
+	    (upcase (substring time 4 7)) "-"	; month
+	    (substring time 20 24))		; year
+	    (if insert-date-name-string		; name 
+		(insert "/" insert-date-name-string))))
+
+;; advanced move commands
+(defun forward-beg-of-line (arg)
+  "Move forward to the beginning of the next line. With ARG, move ARG lines."
+  (interactive "p")
+  (if (< arg 0)
+      (backward-beg-of-line (- 0 arg))
+    (end-of-line arg)
+    (forward-char)))
+
+(defun backward-beg-of-line (arg)
+  "Move backward to previous beginning of line. With ARG, move ARG lines."
+  (interactive "p")
+  (if (< arg 0)
+      (forward-beg-of-line (- 0 arg))
+    (backward-char)
+    (beginning-of-line (- 2 arg))))
+
+(defun forward-end-of-line (arg)
+  "Move forward to the next end of line. With ARG, move ARG lines."
+  (interactive "p")
+  (forward-char)
+  (end-of-line arg))
+
+(defun backward-end-of-line (arg)
+  "Move backward to the previous end of line. With ARG, move ARG lines."
+  (interactive "p")
+  (if (< arg 0)
+      (forward-end-of-line (- 0 arg))
+    (beginning-of-line (- 2 arg))
+    (backward-char)))
+
+;; undelete things just deleted. Sort of an un-undo.
+(defun undelete ()
+  "Undeletes what has just been deleted in current buffer. (Uses undo
+on last batch of delete entries in buffer-undo-list.)"
+  (interactive "*")
+
+  ;; initialize for undo
+  (undo-start)
+  (undo-more 1)
+  (setq this-command 'undo)
+
+  ;; check whether we can undelete or uninsert, else signal user
+  (if (eq pending-undo-list nil)
+      (error "Nothing to undelete"))
+  (if (not (stringp (car (car pending-undo-list))))
+      (error "Nothing to undelete. To uninsert, use undo."))
+
+  ;; undo until no more deleted chars
+  (while (stringp (car (car pending-undo-list)))
+    (undo-more 1))
+  (if (eq pending-undo-list nil)
+      (message "Undelete!")
+    (message "Undelete! (To uninsert, use undo)")))
+
+;; insert a template, see also autoinsert.el
+(defvar insert-template-alist '(("\\.tex$" . "template.tex")
+                            ("\\.c$" . "template.c")
+                            ("\\.h$" . "template.h")
+                            ("[Mm]akefile" . "template.Makefile")
+                            ("\\.bib$" . "template.tex"))
+  "Alist specifying names of template files inserted with the command
+insert-template. See also auto-insert-alist.")
+
+(defvar insert-template-directory "~/insert/"
+  "Directory from which templates are taken.")
+
+(defun insert-template (arg)
+  "Insert template from template file into file.
+Matches the visited file name against `insert-template-alist'.
+With ARG, concatenates `-ARG' to template file name."
+  (interactive "*P")
+  (let ((alist insert-template-alist)
+	(name (file-name-sans-versions buffer-file-name))
+	(insert-file nil))
+    (while (and (not insert-file) alist)
+      (if (string-match (car (car alist)) name)
+	  (setq insert-file (cdr (car alist)))
+	(setq alist (cdr alist))))
+
+    (if insert-file
+        (let ((file (concat insert-template-directory insert-file)))
+	  (if arg
+	      (setq file (concat file "-" arg)))
+	  (if (file-readable-p file)
+		(insert-file-contents file)
+            (error "insert-template: file %s not found" file))))))
+
+;; a few functions I find useful and think maybe some others might too
+
+;; Save buffers silently, then kill emacs. Put this on C-x 4 C-c.
+(defun save-buffers-silently-kill-emacs ()
+  "Silently save all file-visiting buffers, then kill this Emacs fork."
+  (interactive)
+  (save-buffers-kill-emacs t))
+
+(define-key ctl-x-4-map "\C-c" 'save-buffers-silently-kill-emacs)
+
+;; Open a new line after the current line.
+;; Put key definition on mode-hooks for modes where desired.
+(defun newline-and-indent-at-eol (arg)
+  "Insert a newline at end of current line (or at beginning of line if point
+is within indentation) and indent. With arg, insert that many newlines."
+  (interactive "*p")
+  (if (> (point) (save-excursion (back-to-indentation) (point)))
+      (end-of-line)
+    (beginning-of-line))
+  (newline arg)
+  (indent-according-to-mode))
+
+(defun newline-at-eol (arg)
+  "Insert a newline at end of current line (or at beginning of line if point
+is within indentation). With arg, insert that many newlines."
+  (interactive "*p")
+  (if (> (point) (save-excursion (back-to-indentation) (point)))
+      (end-of-line)
+    (beginning-of-line))
+  (newline arg))

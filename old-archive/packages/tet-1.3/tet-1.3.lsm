@@ -1,0 +1,37 @@
+Begin3
+Title:          Tom's Emacs Toolkit & Template
+Version:        1.3
+Entered-date:   March 21, 1997
+Description:    Emacs init file for 101-key keyboards (and X Windows).
+                This toolkit can be used as a default keyboard configuration
+                for Emacs running under X-Windows.  It binds keypad and
+                function keys to Emacs editting commands.
+                Copy the sample.emacs file to your home directory as .emacs
+                customize it, smile.
+Keywords:       Tom Emacs Toolkit Template .emacs init setup
+                keypad keyboard binding X-Windows
+Author:         mail11325@pop.net
+Maintained-by:  Internet: mail11325@pop.net
+                Packet:   N4OOJ @ WR4AGC.#DUR.NC.USA.NA
+Primary-site:   sunsite.unc.edu /pub/Linux/apps/editors/emacs
+Alternate-site: cc.gatech.edu /pub/Linux/apps/editors/emacs
+Original-site:
+Platform:       Linux 2.0.29, Solaris & Intergraph (with modifications).
+Copying-policy: GPL
+Purpose:  Enable the keypad and functions keys for selected
+          editing commands.  Emacs is a very powerful, configurable
+          editor.  But I found it hard for new users to use because
+          it has so many commands and features.
+
+          This toolkit will hopefully allow new users to rapidly become
+          more familar and comfortable with Emacs running under
+          X-windows.
+
+          It can also become a starting point for a user to configure
+          an initial editing environment as one sees fit.
+
+          To Unzip: gzip -d tet-1.3.tar.gz
+                    tar xvf tet-1.3.tar
+                            OR
+                    tar zxvf tet-1.3.tar.gz
+End

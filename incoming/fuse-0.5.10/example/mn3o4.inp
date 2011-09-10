@@ -1,0 +1,18 @@
+%% This file is part of FUSE, The FEFF/UWXAFS System for Emacs This
+%% file demonstrates the use of simple fractions in definition and
+%% evaluation lines in an atoms input file
+
+title  Mn3O4, hausmannite structure from Wycoff 
+a  5.75         c  9.42		core	mn2
+rmax=7.0    Space  i 41/a m d
+atom
+! At.type  x        y       z      tag
+!+ Mn     0.0      3/4     1/8   mn1
+!+ Mn     0.0      0.0     1/2   mn2
+!+ O      0.0      1/4     3/8
+
+
+!!&& Local Variables:
+!!&& input-program-name: "atoms"
+!!&& End:
+%# Input-mode Time-stamp: <98/07/15 13:36:36 bruce>

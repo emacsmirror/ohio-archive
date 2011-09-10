@@ -1,0 +1,28 @@
+
+;; dunnet - elisp text adventure game.  The following applies to
+;;           these files contained in this archive:
+;;              dun-batch.el
+;;              dun-commands.el
+;;              dun-dos.el
+;;              dun-globals.el
+;;              dun-main.el
+;;              dun-save.el
+;;              dun-unix.el
+;;              dun-util.el
+
+;; Copyright (C) 1992, 1993 by Ron Schnell
+;; (ronnie@media.mit.edu)
+
+;; This software is not part of GNU Emacs.
+
+;; It is distributed in the hope that it will be fun.
+;; It is without any warranty.  No author or distributor
+;; accepts responsibility to anyone for the consequences of using it
+;; or for whether it serves any particular purpose, or works at all.
+
+;; Everyone is granted permission to copy, modify, and redistribute
+;; this software, but only so long as it is not for commercial
+;; purposes.
+
+;; This file must be distributed along with all copies, in an unmodified
+;; form.

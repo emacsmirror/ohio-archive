@@ -1,0 +1,104 @@
+From grunwald@garcon.cso.uiuc.edu Fri May  5 14:28:31 1989
+Return-Path: <bug-gnu-emacs-request@prep.ai.mit.edu>
+Date: 4 May 89 17:54:39 GMT
+From: grunwald@garcon.cso.uiuc.edu
+Organization: University of Illinois, Urbana-Champaign
+Subject: Re: saveconf.el
+References: <PEARCE.89May4085439@tycho.yerkes.uchicago.edu>
+Sender: bug-gnu-emacs-request@prep.ai.mit.edu
+To: bug-gnu-emacs@prep.ai.mit.edu
+
+
+Right, I have the same problems with saveconf.el; I use the following
+to avoid the problem:
+
+(require 'saveconf)
+(setq auto-save-and-recover-context t)
+(setq save-context-predicate
+      (function
+       (lambda (w)
+	 (and
+	  ; nil?
+	  (buffer-file-name (window-buffer w))
+	  ; /usr/tmp or /tmp?
+	  (not (string-match "^\\(/usr\\)?/tmp/"
+			       (buffer-file-name (window-buffer w))))
+	  ; rmail mode?
+	  (let
+	      ((isok t))
+	    (save-excursion
+	      (set-buffer (window-buffer w))
+	      (setq isok
+		    (not (or (eq major-mode 'rmail-mode)
+			     (eq major-mode 'mail-mode)))))
+	    isok))
+	  )))
+
+Also, attached are some patches useful when you have multiple hosts
+viewing the same file-system via NFS & you want to have different
+configurations saved for the different hosts (trust me, this is
+actually useful). These are w.r.t. the recently posted saveconf.el
+
+*** new-saveconf.el	Wed May  3 17:42:05 1989
+--- saveconf.el	Wed May  3 17:49:54 1989
+***************
+*** 55,60 ****
+--- 55,71 ----
+  value of this variable the `recover-context' command will ignore the file's
+  contents.")
+  
++ (defvar save-context-per-host t
++   "Flag to determine if contexts should be defined per-host
++    or per-user")
++ 
++ (defvar save-context-file-postfix
++   (if save-context-per-host
++       (concat ".emacs-" (system-name) "-" (user-login-name))
++     (concat ".emacs-" (user-login-name)))
++   "*Buffer file name postfix for saveconf, providing individual configurations
++    in a multi-machine NSF environment")
++ 
+  (defvar auto-save-and-recover-context nil
+    "*If non-nil the `save-context' command will always be run before Emacs is
+  exited.  Also upon Emacs startup, if this variable is non-nil and Emacs is
+***************
+*** 121,127 ****
+    (condition-case error-data
+        (let (context-buffer mark save-file-name)
+  	(setq save-file-name (concat (original-working-directory)
+! 				     ".emacs_" (user-login-name)))
+  	(if (not (file-writable-p save-file-name))
+  	    (if (file-writable-p (original-working-directory))
+  		(error "context is write-protected, %s" save-file-name)
+--- 132,138 ----
+    (condition-case error-data
+        (let (context-buffer mark save-file-name)
+  	(setq save-file-name (concat (original-working-directory)
+! 				     save-context-file-postfix))
+  	(if (not (file-writable-p save-file-name))
+  	    (if (file-writable-p (original-working-directory))
+  		(error "context is write-protected, %s" save-file-name)
+***************
+*** 213,219 ****
+        ;;
+        (let (sexpr context-buffer recover-file-name)
+  	(setq recover-file-name (concat (original-working-directory)
+! 					".emacs_" (user-login-name)))
+  	(if (not (file-readable-p recover-file-name))
+  	    (error "can't access context, %s" recover-file-name))
+  	;;
+--- 224,230 ----
+        ;;
+        (let (sexpr context-buffer recover-file-name)
+  	(setq recover-file-name (concat (original-working-directory)
+! 					save-context-file-postfix))
+  	(if (not (file-readable-p recover-file-name))
+  	    (error "can't access context, %s" recover-file-name))
+  	;;
+
+--
+Dirk Grunwald
+Univ. of Illinois
+grunwald@flute.cs.uiuc.edu
+
+

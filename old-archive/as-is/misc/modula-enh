@@ -1,0 +1,236 @@
+Organization: STC Technology Ltd, Harlow, England
+Reply-To: Andrew Macpherson <mcvax!stl.stc.co.uk!Andrew@uunet.uu.net>
+To: bug-gnu-emacs@prep.ai.mit.edu
+Subject: Slight enhancements to modula-2 mode
+Status: RO
+
+This message contains a context diff relative to emacs18.53 of some
+changes I have found useful in modula-2 mode.  I hope you also will
+find them useful.
+*** dist-18.53/lisp/modula2.el	Mon May 30 21:45:26 1988
+--- modula2.el.new	Wed Mar 29 19:02:13 1989
+***************
+*** 65,70
+      (define-key map "\C-cy" 'm2-import)
+      (define-key map "\C-c{" 'm2-begin-comment)
+      (define-key map "\C-c}" 'm2-end-comment)
+      (define-key map "\C-c\C-z" 'suspend-emacs)
+      (define-key map "\C-c\C-v" 'm2-visit)
+      (define-key map "\C-c\C-t" 'm2-toggle)
+
+--- 65,71 -----
+      (define-key map "\C-cy" 'm2-import)
+      (define-key map "\C-c{" 'm2-begin-comment)
+      (define-key map "\C-c}" 'm2-end-comment)
++     (define-key map "\C-j"  'm2-newline)
+      (define-key map "\C-c\C-z" 'suspend-emacs)
+      (define-key map "\C-c\C-v" 'm2-visit)
+      (define-key map "\C-c\C-t" 'm2-toggle)
+***************
+*** 153,162
+  (defun m2-case ()
+    "Build skeleton CASE statment, prompting for the <expression>."
+    (interactive)
+!   (insert "CASE " (read-string ": ") " OF")
+!   (m2-newline)
+!   (m2-newline)
+!   (insert "END (* case *);")
+    (end-of-line 0)
+    (m2-tab))
+  
+
+--- 154,164 -----
+  (defun m2-case ()
+    "Build skeleton CASE statment, prompting for the <expression>."
+    (interactive)
+!   (let ((name (read-string "Case-Expression: ")))
+!     (insert name " OF")
+!     (m2-newline)
+!     (m2-newline)
+!     (insert "END (* case " name " *);"))
+    (end-of-line 0)
+    (m2-tab))
+  
+***************
+*** 180,187
+  (defun m2-for ()
+    "Build skeleton FOR loop statment, prompting for the loop parameters."
+    (interactive)
+!   (insert "FOR " (read-string "init: ") " TO " (read-string "end: "))
+!   (let ((by (read-string "by: ")))
+      (if (not (string-equal by ""))
+  	(insert " BY " by)))
+    (insert " DO")
+
+--- 182,193 -----
+  (defun m2-for ()
+    "Build skeleton FOR loop statment, prompting for the loop parameters."
+    (interactive)
+!   (insert "FOR ")
+!   (let ((name (read-string "Loop Initialiser: ")) limit by)
+!     (insert name " TO ")
+!     (setq limit (read-string "Limit: "))
+!     (insert limit)
+!     (setq by (read-string "Step: "))
+      (if (not (string-equal by ""))
+  	(insert " BY " by))
+      (insert " DO")
+***************
+*** 183,193
+    (insert "FOR " (read-string "init: ") " TO " (read-string "end: "))
+    (let ((by (read-string "by: ")))
+      (if (not (string-equal by ""))
+! 	(insert " BY " by)))
+!   (insert " DO")
+!   (m2-newline)
+!   (m2-newline)
+!   (insert "END (* for *);")
+    (end-of-line 0)
+    (m2-tab))
+  
+
+--- 189,199 -----
+      (insert limit)
+      (setq by (read-string "Step: "))
+      (if (not (string-equal by ""))
+! 	(insert " BY " by))
+!     (insert " DO")
+!     (m2-newline)
+!     (m2-newline)
+!     (insert "END (* for " name " to " limit " *);"))
+    (end-of-line 0)
+    (m2-tab))
+  
+***************
+*** 206,215
+  (defun m2-if ()
+    "Insert skeleton IF statment, prompting for <boolean-expression>."
+    (interactive)
+!   (insert "IF " (read-string "<boolean-expression>: ") " THEN")
+!   (m2-newline)
+!   (m2-newline)
+!   (insert "END (* if *);")
+    (end-of-line 0)
+    (m2-tab))
+  
+
+--- 212,223 -----
+  (defun m2-if ()
+    "Insert skeleton IF statment, prompting for <boolean-expression>."
+    (interactive)
+!   (insert "IF ")
+!   (let ((thecondition (read-string "<boolean-expression>: ")))
+!     (insert thecondition " THEN")
+!     (m2-newline)
+!     (m2-newline)
+!     (insert "END (* if " thecondition " *);"))
+    (end-of-line 0)
+    (m2-tab))
+  
+***************
+*** 228,235
+    (interactive)
+    (insert "IMPLEMENTATION MODULE ")
+    (let ((name (read-string "Name: ")))
+!     (insert name ";\n\n\n\nEND " name ".\n"))
+!   (previous-line 3))
+  
+  (defun m2-or ()
+    (interactive)
+
+--- 236,254 -----
+    (interactive)
+    (insert "IMPLEMENTATION MODULE ")
+    (let ((name (read-string "Name: ")))
+!     (insert name ";\n\n\n\nEND " name ".\n")
+!     (previous-line 3)
+!     (m2-header)
+!     (m2-type)
+!     (newline)
+!     (m2-var)
+!     (newline)
+!     (m2-begin)
+!     (m2-begin-comment)
+!     (insert " Module " name " Initialisation Code "))
+!   (m2-end-comment)
+!   (newline)
+!   (m2-tab))
+  
+  (defun m2-or ()
+    (interactive)
+***************
+*** 263,273
+  (defun m2-with ()
+    (interactive)
+    (insert "WITH ")
+!   (insert (read-string ": "))
+!   (insert " DO")
+!   (m2-newline)
+!   (m2-newline)
+!   (insert "END (* with *);")
+    (end-of-line 0)
+    (m2-tab))
+  
+
+--- 282,293 -----
+  (defun m2-with ()
+    (interactive)
+    (insert "WITH ")
+!   (let ((name (read-string "Record-Type: ")))
+!     (insert name)
+!     (insert " DO")
+!     (m2-newline)
+!     (m2-newline)
+!     (insert "END (* with " name " *);"))
+    (end-of-line 0)
+    (m2-tab))
+  
+***************
+*** 306,312
+    (m2-newline)
+    (m2-newline)
+    (insert "UNTIL ")
+!   (insert (read-string ": ") ";")
+    (end-of-line 0)
+    (m2-tab))
+  
+
+--- 326,332 -----
+    (m2-newline)
+    (m2-newline)
+    (insert "UNTIL ")
+!   (insert (read-string "<boolean-expression>: ") ";")
+    (end-of-line 0)
+    (m2-tab))
+  
+***************
+*** 320,330
+  (defun m2-while ()
+    (interactive)
+    (insert "WHILE ")
+!   (insert (read-string ": "))
+!   (insert " DO")
+!   (m2-newline)
+!   (m2-newline)
+!   (insert "END (* while *);")
+    (end-of-line 0)
+    (m2-tab))
+  
+
+--- 340,350 -----
+  (defun m2-while ()
+    (interactive)
+    (insert "WHILE ")
+!   (let ((name (read-string "<boolean-expression>: ")))
+!     (insert " DO")
+!     (m2-newline)
+!     (m2-newline)
+!     (insert "END (* while " name " *);"))
+    (end-of-line 0)
+    (m2-tab))
+--   
+Andrew Macpherson         | God bless the King! --- I mean the Faith's Defender
+PSI%234237100122::andrew  | God bless (no harm in blessing) the Pretender!
+andrew@stl.stc.co.uk      | But who Pretender is, or who the King, ---
+...mcvax!ukc!stl!andrew   | God bless us all!  That's quite another thing.
+

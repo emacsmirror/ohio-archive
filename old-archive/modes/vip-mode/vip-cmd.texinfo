@@ -1,0 +1,1046 @@
+@node Commands,,Customization,Top,Top
+@chapter Commands
+
+This section is a semi-automatically bowdlerized version of the Vi 
+reference created by @* @samp{maart@@cs.vu.nl} and others. It can be 
+found on the Vi archives. Very little has been changed for VIP.@refill
+
+@menu
+* Groundwork::			Textual Conventions and VIP basics
+* Text Handling::		Moving, Editing, Undoing.
+* Display::			Scrolling.
+* File Handling::		Editing, Writing and Quitting.
+* Mapping::			Mapping Keys, Keyboard Macros
+* Shell Commands::		Accessing Shell Commands, Processing Text
+* Options::			Ex options, the @kbd{:set} commands
+* Emacs Related Commands::	Meta Keys, Windows
+@end menu
+
+@node Groundwork, Text Handling, Commands, Commands
+@comment  node-name,  next,  previous,  up
+@section Groundwork
+
+The VI command set is based on the idea of combining motion commands
+with other commands. The motion command is used as a text region
+specifier for other commands.
+We classify motion commands into @dfn{point commands} and
+@dfn{line commands}.@refill
+
+@cindex point commands
+The point commands are:
+
+@quotation
+@kbd{h}, @kbd{l}, @kbd{0},  @kbd{$}, @kbd{w}, @kbd{W}, @kbd{b}, @kbd{B},
+@kbd{e}, @kbd{E}, @kbd{(}, @kbd{)}, @kbd{/}, @kbd{?}, @kbd{`}, @kbd{f},
+@kbd{F}, @kbd{t}, @kbd{T}, @kbd{%}, @kbd{;}, @kbd{,}, @kbd{^}
+@end quotation
+
+@cindex line commands
+The line commands are:
+
+@quotation
+@kbd{j}, @kbd{k}, @kbd{+}, @kbd{-}, @kbd{H}, @kbd{M}, @kbd{L}, @kbd{@{},
+@kbd{@}}, @kbd{G}, @kbd{'},  @kbd{[[}, @kbd{]]}, @kbd{[]}
+@end quotation
+@noindent
+
+Text Deletion Commands (@pxref{Deleting Text}.), Change commands
+(@pxref{Changing Text}.), even Shell Commands (@pxref{Shell Commands})
+use these commands to describe a region of text to operate on.
+
+@cindex r and R region specifiers
+VIP adds the two region descriptors, @kbd{r} and @kbd{R}. These describe
+the Emacs regions (@pxref{Basics}), but are not movement commands.
+
+The command description uses angle brackets @samp{<>} to indicate
+metasyntactic variables, since the normal conventions of using simple
+text can be confusing with VIP where the commands themselves are
+characters. Watch out where @kbd{<} shift commands and @kbd{<count>} are
+mentioned together!!!.
+
+@kindex <move>
+@kindex <a-z>
+@kindex <address>
+@cindex <move>
+@cindex <a-z>
+@cindex <address>
+@cindex movements
+@samp{<move>} refers to the above movement commands, and @samp{<a-z>}
+refers to registers or textmarkers from @samp{a} to @samp{z}. Note
+that the @samp{<move>}  is described by full move commands, that is to
+say they will take counts, and otherwise behave like normal move commands.
+@cindex ex addresses
+@samp{<address>} refers to Ex line addresses, which include
+
+@table @kbd
+@item . <No address>
+	Current line
+@item .+n .-n
+	Add or subtract for current line
+@item number
+	Actual line number, use @kbd{.=} to get the line number
+@item '<a-z>
+	Textmarker
+@item $
+	Last line
+@item x,y
+	Where x and y are one of the above
+@item %
+@cindex % (Ex address)
+	For the whole file, same as (1,$).
+@item /pat/ ?pat?
+        Next or previous line with pattern pat
+@end table
+
+@cindex % (Current file)
+Note that @samp{%} is used in Ex commands to mean current file. If you
+want a @samp{%} in your command, it must be escaped as @samp{\%}.
+@cindex # (Previous file)
+Similarly, @samp{#} expands to the previous file. The previous file is
+the first file in @kbd{:args} listing. This defaults to previous window
+in the VI sense if you have one window only.
+
+@kindex <args>
+@kindex <cmd>
+@cindex <args>
+@cindex <cmd>
+@noindent
+Others like @samp{<args> -- arguments}, @samp{<cmd> -- command} etc.
+should be fairly obvious.
+
+@noindent
+Common characters referred to include:
+
+@table @kbd
+@item <sp>
+	Space 
+@item <ht>
+	Tab 
+@item <lf>
+	Linefeed 
+@item <esc>
+	Escape
+@item <cr>
+	Return, Enter
+@end table
+@cindex <cr>
+@cindex <esc>
+@cindex <lf>
+@cindex <ht>
+@cindex <sp>
+
+@cindex words
+@cindex WORDS
+@cindex char
+@cindex CHAR
+We also use @samp{word} for alphanumeric/non-alphanumeric words, and 
+@samp{WORD} for whitespace delimited words. @samp{char} refers to any
+ascii character, @samp{CHAR} to non-whitespace character. 
+Brackets @samp{[]} indicate optional parameters; @samp{<count>} also 
+optional, usually defaulting to 1. Brackets are elided for
+@samp{<count>} to eschew obfuscation.
+
+The usual Emacs convention is used to indicate Control Characters, i.e
+C-h for Control-h. @emph{Do not confuse this to mean the separate
+characters C - h!!!}. The @kbd{^} is itself, never used to indicate a
+Control character.
+
+@node Text Handling, Display,Groundwork,Commands
+@section Text Handling
+
+@menu
+* Move Commands::		Moving, Searching
+* Marking::		        Textmarkers in VIP and the Emacs Mark.
+* Appending Text::		Text insertion, Shifting, Putting
+* Editing in Insert Mode::	Autoindent, Quoting etc.
+* Deleting Text::		Deleting
+* Changing Text::		Changing, Replacement, Joining
+* Search and Replace::		Searches, Query Replace, Pattern Commands
+* Yanking::			Yanking, Viewing Registers
+* Undoing::			Multiple Undo, Backups
+@end menu
+
+@node Move Commands,Marking,,Text Handling
+@subsection Move Commands
+
+@cindex movement commands
+@cindex searching
+@cindex textmarkers
+@cindex markers
+@cindex column movement
+@cindex paragraphs
+@cindex headings
+@cindex sections
+@cindex sentences
+@cindex matching parens
+@cindex paren matching
+@c
+@table @kbd
+@item <count>  h  C-h
+ <count> chars to the left.
+@item <count>  j  <lf> C-n
+ <count> lines downward.
+@item <count>  l  <sp>
+ <count> chars to the right.
+@item <count>  k  C-p
+ <count> lines upward.
+@item <count>  $
+ To the end of line <count> from the cursor.
+@item <count>  ^
+ To the first CHAR <count> - 1 lines lower.
+@item <count>  -
+ To the first CHAR <count> lines higher.
+@item <count>  +  <cr>
+ To the first CHAR <count> lines lower.
+@item  0
+ To the first char of the line.
+@item <count> |
+ To column <count>
+@item <count>  f<char>
+ <count> <char>s to the right (find).
+@item <count>  t<char>
+ Till before <count> <char>s to the right.
+@item <count>  F<char>
+ <count> <char>s to the left.
+@item <count>  T<char>
+ Till after <count> <char>s to the left.
+@item <count>  ;
+ Repeat latest @kbd{f t F T} <count> times.
+@item <count>  ,
+ Repeat latest @kbd{f t F T}
+ <count> times in opposite direction.
+@item <count>  w
+ <count> words forward.
+@item <count>  W
+ <count> WORDS forward.
+@item <count>  b
+ <count> words backward.
+@item <count>  B
+ <count> WORDS backward.
+@item <count>  e
+ To the end of word <count> forward.
+@item <count>  E
+ To the end of WORD <count> forward.
+@item <count>  G
+ Go to line <count> (default end-of-file).
+@item <count>  H
+ To line <count> from top of the screen (home).
+@item <count>  L
+ To line <count> from bottom of the screen (last).
+@item  M
+ To the middle line of the screen.
+@item <count>  )
+ <count> sentences forward.
+@item <count>  (
+ <count> sentences backward.
+@item <count>  @}
+ <count> paragraphs forward.
+@item <count>  @{
+ <count> paragraphs backward.
+@item <count>  ]]
+ To the <count>th heading.
+@item <count>  [[
+ To the <count>th previous heading.
+@item <count>  []
+ To the end of <count>th heading.
+@item  m<a-z>
+ Mark the cursor position with a letter.
+@item  `<a-z>
+ To the mark.
+@item  '<a-z>
+ To the first CHAR of the line with the mark.
+@item [<a-z>
+ Show contents of textmarker.
+@item ]<a-z>
+ Show contents of register.
+@item  ``
+ To the cursor position before the latest absolute
+ jump (of which are examples @kbd{/} and @kbd{G}).
+@item  ''
+ To the first CHAR of the line on which the cursor
+ was placed before the latest absolute jump.
+@item <count>  /<string>
+ To the <count>th occurrence of <string>.
+@item <count>  /<cr>
+ To the <count>th occurrence of <string> from previous @kbd{/ or ?}.
+@item <count>  ?<string>
+ To the <count>th previous occurrence of <string>.
+@item <count>  ?<cr>
+ To the <count>th previous occurrence of <string> from previous @kbd{? or /}.
+@item  n
+ Repeat latest @kbd{/} @kbd{?} (next).
+@item  N
+ Idem in opposite direction.
+@item  %
+ Find the next bracket and go to its match.
+@end table
+@kindex @kbd{%}
+@kindex @kbd{N}
+@kindex @kbd{n}
+@kindex @kbd{?<cr>}
+@kindex @kbd{/<cr>}
+@kindex @kbd{?<string>}
+@kindex @kbd{/<string>}
+@kindex @kbd{''}
+@kindex @kbd{``}
+@kindex @kbd{]<a-z>}
+@kindex @kbd{[<a-z>}
+@kindex @kbd{'<a-z>}
+@kindex @kbd{`<a-z>}
+@kindex @kbd{m<a-z>}
+@kindex @kbd{[]}
+@kindex @kbd{[[}
+@kindex @kbd{]]}
+@kindex @kbd{@{}
+@kindex @kbd{@}}
+@kindex @kbd{(}
+@kindex @kbd{)}
+@kindex @kbd{M}
+@kindex @kbd{L}
+@kindex @kbd{H}
+@kindex @kbd{G}
+@kindex @kbd{E}
+@kindex @kbd{e}
+@kindex @kbd{B}
+@kindex @kbd{b}
+@kindex @kbd{W}
+@kindex @kbd{w}
+@kindex @kbd{,}
+@kindex @kbd{;}
+@kindex @kbd{T<char>}
+@kindex @kbd{F<char>}
+@kindex @kbd{t<char>}
+@kindex @kbd{f<char>}
+@kindex @kbd{|}
+@kindex @kbd{0}
+@kindex @kbd{<cr>}
+@kindex @kbd{+}
+@kindex @kbd{-}
+@kindex @kbd{^}
+@kindex @kbd{$}
+@kindex @kbd{C-p}
+@kindex @kbd{<lf>}
+@kindex @kbd{<sp>}
+@kindex @kbd{C-n}
+@kindex @kbd{C-h}
+@kindex @kbd{h}
+@kindex @kbd{j}
+@kindex @kbd{k}
+@kindex @kbd{l}
+
+@node Marking,Appending Text,Move Commands,Text Handling
+@subsection Marking
+
+Emacs mark is referred to in the region specifiers @kbd{r} and @kbd{R}.
+@xref{Emacs Preliminaries} and @pxref{Basics} for explanation. Also
+see @ref{Mark,,Mark,emacs,The GNU Emacs manual}, for an explanation of
+the Emacs mark ring.
+
+@cindex marking
+@table @kbd
+@item m<a-z>
+ Mark the current file and position with the specified letter.
+@item m .
+ Set the Emacs mark (@pxref{Emacs Preliminaries}) at point.
+@item m <
+ Set the Emacs mark at beginning of buffer.
+@item m >
+ Set the Emacs mark at end of buffer.
+@item m ,
+ Jump to the Emacs mark.
+@item ``
+ Exchange point and mark.
+@item ''
+ Exchange point and mark and go to the first CHAR on line.
+@item '<a-z>
+ Go to specified VIP mark.
+@item
+ Go to specified VIP mark and go to the first CHAR on line.
+@end table
+@kindex @kbd{m<a-z>}
+@kindex @kbd{m.}
+@kindex @kbd{m>}
+@kindex @kbd{m<}
+@kindex @kbd{m,}
+@kindex @kbd{''}
+@kindex @kbd{``}
+@kindex @kbd{`<a-z>}
+@kindex @kbd{'<a-z>}
+
+@node  Appending Text, Editing in Insert Mode, Marking,Text Handling
+@subsection Appending Text
+
+@xref{Options} to see how to change tab and shiftwidth size. See the GNU
+Emacs manual, or try @kbd{C-ha tabs} (If you have turned Emacs help on).
+Check out the variable @code{indent-tabs-mode} to put in just spaces.
+Also see options for word-wrap.
+
+@cindex inserting
+@cindex appending
+@cindex paste
+@cindex put
+@table @kbd
+@item <count>  a
+ <count> times after the cursor.
+@item <count>  A
+ <count> times at the end of line.
+@item <count>  i
+ <count> times before the cursor (insert).
+@item <count>  I
+ <count> times before the first CHAR of the line
+@item <count>  o
+ On a new line below the current (open).
+ The count is only useful on a slow terminal.
+@item <count>  O
+ On a new line above the current.
+ The count is only useful on a slow terminal.
+@item <count>  ><move>
+ Shift the lines described by <count><move> one
+ shiftwidth to the right (layout!).
+@item <count>  >>
+ Shift <count> lines one shiftwidth to the right.
+@item <count>  ["<a-z1-9>]p
+ Put the contents of the (default undo) buffer
+ <count> times after the cursor. The register will
+ be automatically downcased.
+@item <count>  ["<a-z1-9>]P
+ Put the contents of the (default undo) buffer
+ <count> times before the cursor. The register will
+@item [<a-z>
+ Show contents of textmarker.
+@item ]<a-z>
+ Show contents of register.
+@item <count>  .
+ Repeat previous command <count> times. For destructive
+ commands as well as undo.
+@end table
+@kindex @kbd{.}
+@kindex @kbd{]<a-z>}
+@kindex @kbd{[<a-z>}
+@kindex @kbd{P}
+@kindex @kbd{p}
+@kindex @kbd{"<a-z1-9>p}
+@kindex @kbd{"<a-z1-9>P}
+@kindex @kbd{>>}
+@kindex @kbd{><move>}
+@kindex @kbd{O}
+@kindex @kbd{o}
+@kindex @kbd{i}
+@kindex @kbd{A}
+@kindex @kbd{a}
+
+@node Editing in Insert Mode, Deleting Text, Appending Text,Text Handling
+@subsection Editing in Insert Mode
+
+The Minibuffer can be edited in the same way as Insert mode.
+
+@cindex Insert mode
+@table @kbd
+@item C-v
+ Deprive the next char of its special meaning (quoting).
+@item C-d
+ One shiftwidth to the left.
+@item 0C-d
+ Remove all indentation on the current line
+ (there must be no other chars on the line).
+@item ^C-d
+ Idem, but it is restored on the next line.
+@item C-t
+ one shiftwidth to the right
+@item C-h
+ One char back.
+@item C-w
+ One word back.
+@item C-u
+ Back to the begin of the change on the
+ current line.
+@item C-c
+ like <esc>.
+
+@end table
+@kindex @kbd{C-c}
+@kindex @kbd{C-u}
+@kindex @kbd{C-w}
+@kindex @kbd{C-t}
+@kindex @kbd{^C-d}
+@kindex @kbd{0C-d}
+@kindex @kbd{C-d}
+@kindex @kbd{C-v}
+
+@node Deleting Text, Changing Text, Editing in Insert Mode,Text Handling
+@subsection Deleting Text
+
+@cindex shifting text
+@table @kbd
+@item <count>  x
+ Delete <count> chars under and after the cursor.
+@item <count>  X
+ <count> chars before the cursor.
+@item <count>  d<move>
+ From begin to endpoint of <count><move>.
+@item <count>  dd
+ <count> lines.
+@item  D
+ The rest of the line.
+@item <count>  <<move>
+ Shift the lines described by <count><move> one
+ shiftwidth to the left (layout!).
+@item <count>  <<
+ Shift <count> lines one shiftwidth to the left.
+@end table
+@kindex @kbd{<<}
+@kindex @kbd{<<move>}
+@kindex @kbd{D}
+@kindex @kbd{dd}
+@kindex @kbd{d<move>}
+@kindex @kbd{X}
+@kindex @kbd{x}
+
+@node Changing Text, Search and Replace, Deleting Text,Text Handling
+@subsection Changing Text
+
+@cindex joining lines
+@cindex changing case
+@cindex quoting regions
+@cindex substitution
+@table @kbd
+@item <count>  r<char>
+ Replace <count> chars by <char> - no <esc>.
+@item <count>  R
+ Overwrite the rest of the line,
+ appending change @var{count - 1} times.
+@item <count>  s
+ Substitute <count> chars.
+@item <count>  S
+ <count> lines.
+@item <count>  c<move>
+ Change from begin to endpoint of <count><move>.
+@item <count>  cc
+ <count> lines.
+@item <count>  C
+ The rest of the line and <count> - 1 next lines.
+@item <count>  =<move>
+ Reindent the region described by move.
+@item <count>  ~
+ Switch lower and upper cases.
+@item <count>  J
+ Join <count> lines (default 2).
+@item  :[x,y]s/<p>/<r>/<f>
+ Substitute (on lines x through y) the pattern
+ <p> (default the last pattern) with <r>.  Useful
+ flags <f> are @samp{g} for @samp{global} (i.e. change every
+ non-overlapping occurrence of <p>) and @samp{c} for
+ @samp{confirm} (type @samp{y} to confirm a particular
+ substitution, else @samp{n} ).  Instead of @kbd{/} any
+ punctuation CHAR unequal to <space> <tab> and <lf> can be used as
+ delimiter.
+@item  &
+ Repeat latest ex substitute command, e.g.
+ @kbd{:s/wrong/good}.
+@item #c<move>
+ Change upper case characters in the region to lower case.
+@item #C<move>
+ Change lower case characters in the region to upper case.
+@item #q<move> 
+ Insert specified string at the beginning of each line in the region
+@end table
+@kindex @kbd{#q<move> }
+@kindex @kbd{#C<move>}
+@kindex @kbd{#c<move>}
+@kindex @kbd{&}
+@kindex @kbd{:[x,y]s/<p>/<r>/<f>}
+@kindex @kbd{J}
+@kindex @kbd{~}
+@kindex @kbd{=<move>}
+@kindex @kbd{C}
+@kindex @kbd{cc}
+@kindex @kbd{c<move>}
+@kindex @kbd{S}
+@kindex @kbd{s}
+@kindex @kbd{R}
+@kindex @kbd{r<char>}
+
+@node Search and Replace, Yanking, Changing Text,Text Handling
+@subsection Search and Replace
+
+@xref{Groundwork}, for Ex address syntax. @xref{Options} to see how to
+get literal (non-regular-expression) search and how to stop search from
+wrapping around.
+
+@table @kbd
+@item <count>  /<string>
+ To the <count>th occurrence of <string>.
+@item <count>  ?<string>
+ To the <count>th previous occurrence of <string>.
+@item <count>  g<move>
+ Search for the text described by move. (off by default)
+@item n
+ Repeat latest @kbd{/} @kbd{?} (next).
+@item N
+ Idem in opposite direction.
+@item %
+ Find the next bracket and go to its match
+@item :[x,y]g/<string>/<cmd>
+@cindex text processing
+ Search globally [from line x to y] for <string>
+ and execute the ex <cmd> on each occurrence.
+@item :[x,y]v/<string>/<cmd>
+ Execute <cmd> on the lines that don't match.
+@item #g<move>
+ Execute the last keyboard macro for each line in the region.
+ @xref{Macros and Registers}, for more info.
+@item Q
+ Query Replace.
+@item :ta <name>
+ Search in the tags file where <name> is
+ defined (file, line), and go to it.
+@item  :[x,y]s/<p>/<r>/<f>
+ Substitute (on lines x through y) the pattern
+ <p> (default the last pattern) with <r>.  Useful
+ flags <f> are @samp{g} for @samp{global} (i.e. change every
+ non-overlapping occurrence of <p>) and @samp{c} for
+ @samp{confirm} (type @samp{y} to confirm a particular
+ substitution, else @samp{n}).  Instead of @kbd{/} any
+ punctuation CHAR unequal to <space> <tab> and <lf> can be used as
+ delimiter.
+@item  &
+ Repeat latest ex substitute command, e.g. @kbd{:s/wrong/good}.
+@end table
+@kindex @kbd{&}
+@kindex @kbd{:[x,y]s/<p>/<r>/<f>}
+@kindex @kbd{Q}
+@kindex @kbd{#g<move>}
+@kindex @kbd{:[x,y]v/<string>/<cmd>}
+@kindex @kbd{:[x,y]g/<string>/<cmd>}
+@kindex @kbd{:ta <name>}
+@kindex @kbd{%}
+@kindex @kbd{N}
+@kindex @kbd{n}
+@kindex @kbd{g<move>}
+@kindex @kbd{?<string>}
+@kindex @kbd{/<string>}
+
+@node Yanking,Undoing,Search and Replace,Text Handling
+@subsection Yanking
+
+@cindex cut and paste
+@cindex paste
+@table @kbd
+@item <count>  y<move>
+ Yank from begin to endpoint of <count><move>.
+@item <count>  "<a-z>y<move>
+ Yank from begin to endpoint of <count><move> to register.
+@item <count>  "<A-Z>y<move>
+ Yank from begin to endpoint of <count><move> and append
+ to register.
+@item <count>  yy
+ <count> lines.
+@item <count>  Y
+ Idem (should be equivalent to @kbd{y$} though).
+@item  m<a-z>
+ Mark the cursor position with a letter.
+@item [<a-z>
+ Show contents of textmarker.
+@item ]<a-z>
+ Show contents of register.
+@item <count>  ["<a-z1-9>]p
+ Put the contents of the (default undo) buffer
+ <count> times after the cursor. The register will
+ be automatically downcased.
+@item <count>  ["<a-z1-9>]P
+ Put the contents of the (default undo) buffer
+ <count> times before the cursor. The register will
+@end table
+@kindex @kbd{P}
+@kindex @kbd{p}
+@kindex @kbd{"<a-z1-9>p}
+@kindex @kbd{"<a-z1-9>P}
+@kindex @kbd{]<a-z>}
+@kindex @kbd{[<a-z>}
+@kindex @kbd{m<a-z>}
+@kindex @kbd{Y}
+@kindex @kbd{yy}
+@kindex @kbd{"<A-Z>y<move>}
+@kindex @kbd{"<a-z>y<move>}
+@kindex @kbd{y<move>}
+
+@node Undoing,, Yanking,Text Handling
+@subsection Undoing
+
+@cindex undo
+@cindex backup files
+@table @kbd
+@item  u U
+ Undo the latest change.
+@item  .
+ Repeat undo.
+@item :q!
+ Quit vi without writing.
+@item :e!
+ Re-edit a messed-up file.
+@item :rec
+ recover file from autosave. VIP also creates backup files
+ that have a @samp{~} appended to them.
+@end table
+@kindex @kbd{:rec}
+@kindex @kbd{:e!}
+@kindex @kbd{:q!}
+@kindex @kbd{.}
+@kindex @kbd{U}
+@kindex @kbd{u}
+
+@node Display,File Handling,Text Handling,Commands
+@section Display
+
+@cindex scrolling
+@table @kbd
+@item C-g
+ Give file name, status, current line number
+ and relative position.
+@item C-l
+ Refresh the screen. 
+@item <count> C-e
+ Expose <count> more lines at bottom, cursor
+ stays put (if possible).
+@item <count> C-y
+ Expose <count> more lines at top, cursor
+ stays put (if possible).
+@item <count> C-d
+ Scroll <count> lines downward
+ (default the number of the previous scroll;
+ initialization: half a page).
+@item <count> C-u
+ Scroll <count> lines upward
+ (default the number of the previous scroll;
+ initialization: half a page).
+@item <count> C-f
+ <count> pages forward.
+@item <count> C-b
+ <count> pages backward (in older versions @kbd{C-b} only
+ works without count).
+@item <count> z<cr> zH
+ Put line <count> at the top of the window
+ (default the current line).
+@item <count> z- zL
+ Put line <count> at the bottom of the window
+ (default the current line).
+@item <count> z. zM
+ Put line <count> in the center of the window
+ (default the current line).
+@end table
+@kindex @kbd{zM}
+@kindex @kbd{zL}
+@kindex @kbd{zH}
+@kindex @kbd{z<cr>}
+@kindex @kbd{z.}
+@kindex @kbd{z-}
+@kindex @kbd{z<cr>}
+@kindex @kbd{C-b}
+@kindex @kbd{C-f}
+@kindex @kbd{C-u}
+@kindex @kbd{C-d}
+@kindex @kbd{C-y}
+@kindex @kbd{C-e}
+@kindex @kbd{C-l}
+@kindex @kbd{C-g}
+
+
+@node File Handling, Mapping, Display,Commands
+@section File Handling
+
+@cindex multiple files
+@table @kbd
+@item :q
+ Quit buffer except if modified.
+@item :q!
+ Quit buffer without checking.
+@item :susp :stop
+ Suspend VIP
+@item :w
+ Write the file.
+@item :w <name>
+ Write to the file <name>.
+@item :w >> <name>
+ Append the buffer to the file <name>.
+@item :w! <name>
+ Overwrite the file <name>.
+@item :x,y w <name>
+ Write lines x through y to the file <name>.
+@item :wq
+ Write the file and kill buffer.
+@item ZZ
+ Save buffers and kill Emacs.
+@item :x [<file>]
+ Save and kill buffer.
+@item :x! [<file>]
+ @kbd{:w![<file>]} and @kbd{:q}.
+@item :pre
+ Preserve the file - autosave buffers.
+@item :rec
+ recover file from autosave.
+@item :f
+ Print file name and lines.
+@item :cd [<dir>]
+ Set the working directory to <dir>
+ (default home directory).
+@item :pwd
+ Print present working directory.
+@item :e [+<cmd>] <files>
+ Edit files. If no filename is given,
+ dired current directory.
+@item :q!
+ Quit vi without writing.
+@item :e!
+ Re-edit a messed-up file.
+@item :e! [+<cmd>] <files>
+ Edit file. If no filename, reedit current file.
+@item C-^
+ Edit the alternate (normally the previous) file.
+@item :rew
+ Obsolete
+@item :args
+ List files not shown anywhere with counts for next
+@item :n [count]  [+<cmd>] [<files>]
+ Edit <count> file, or edit files.
+ The count comes from :args
+@item :<address>r <name>
+ Read the file <name> into the buffer after the line <address>.
+@item v V
+ Edit a file in current or another window. File name is typed in minibuffer.
+@end table
+@kindex @kbd{v}
+@kindex @kbd{V}
+@kindex @kbd{:args}
+@kindex @kbd{:rew}
+@kindex @kbd{C-^}
+@kindex @kbd{:e! [<files>]}
+@kindex @kbd{:e [<files>]}
+@kindex @kbd{:q!}
+@kindex @kbd{:q}
+@kindex @kbd{:f}
+@kindex @kbd{:rec}
+@kindex @kbd{:pre}
+@kindex @kbd{ZZ}
+@kindex @kbd{:wq}
+@kindex @kbd{:w <file>}
+@kindex @kbd{:w! <file>}
+@kindex @kbd{:w >> <file>}
+@kindex @kbd{:x}
+@kindex @kbd{:x!}
+@kindex @kbd{:susp}
+@kindex @kbd{:stop}
+@kindex @kbd{:q!}
+@kindex @kbd{:q}
+@kindex @kbd{:n [<count> | <file>]}
+@kindex @kbd{:cd [<dir>]}
+@kindex @kbd{:pwd}
+
+@node Mapping, Shell Commands, File Handling, Commands
+@section Mapping
+
+@cindex keybindings
+@cindex keymapping
+@table @kbd
+@item :map <char> <seq>
+ <char> is interpreted as <seq>
+ `:map C-c :!wc %' to run wc on current file.
+ (vi replaces @samp{%} with the current file name).
+@item :unmap <char>
+ Deprive <char> of its mappings.
+@item :map! <char> <seq>
+ Mapping in Insert mode.
+@item :unmap! <char>
+ Deprive <string> of its mapping (see @kbd{:unmap}).
+@item @@<a-z>
+ Execute the contents of register as a command.
+@item @@@@
+ Repeat last register command.
+@item @@#
+ Begin keyboard macro. End with @@<a-z>. This will
+ put the macro in the proper register. Register will
+ be automatically downcased.
+ @xref{Macros and Registers}, for more info.
+@item @@!<a-z>
+ Yank anonymous macro to register
+@item *
+ Execute anonymous macro (defined by C-x( and C-x )). 
+@item #g<move>
+ Execute the last keyboard macro for each line in the region.
+ @xref{Macros and Registers}, for more info.
+@item [<a-z>
+ Show contents of textmarker.
+@item ]<a-z>
+ Show contents of register.
+@end table
+@kindex @kbd{]<a-z>}
+@kindex @kbd{[<a-z>}
+@kindex @kbd{#g<move>}
+@kindex @kbd{*}
+@kindex @kbd{@@!<a-z>}
+@kindex @kbd{@@#}
+@kindex @kbd{@@@@}
+@kindex @kbd{@@<a-z>}
+@kindex @kbd{:unmap <char>}
+@kindex @kbd{:map <char> <seq>}
+@kindex @kbd{:unmap! <char>}
+@kindex @kbd{:map! <char> <seq>}
+
+@node Shell Commands, Options, Mapping, Commands
+@section Shell Commands
+
+@cindex % (Current file)
+Note that % is used in Ex commands to mean current file. If you want a %
+in your command, it must be escaped as @samp{\%}. 
+@cindex % (Ex address)
+However if % is the
+first character, it stands as the address for the whole file.
+@cindex # (Previous file)
+Similarly, @samp{#} expands to the previous file. The previous file is
+the first file in @kbd{:args} listing. This defaults
+to the previous file in the VI sense if you have one window.@refill
+
+@cindex shell commands
+@table @kbd
+@item :sh
+ Execute a subshell in another window
+@item :[x,y]!<cmd>
+ Execute a shell <cmd> [on lines x through y;
+ % is replace by current file, \% is changed to %
+@item :[x,y]!! [<args>]
+ Repeat last shell command [and append <args>].
+@item :!<cmd>
+ Just execute command and display result in a buffer.
+@item :!! <args>
+ Repeat last shell command and append <args>
+@item <count> !<move><cmd>
+ The shell executes <cmd>, with standard
+ input the lines described by <count><move>,
+ next the standard output replaces those lines
+ (think of @samp{cb}, @samp{sort}, @samp{nroff}, etc.).
+@item <count> !!<cmd>
+ Give <count> lines as standard input to the
+ shell <cmd>, next let the standard output
+ replace those lines.
+@item :x,y w !<cmd>
+ Let lines x to y be standard input for <cmd>
+ (notice the <sp> between @kbd{w} and @kbd{!}).
+@item :<address>r !<cmd>
+ Put the output of <cmd> after the line <address> (default current).
+@item :<address>r <name>
+ Read the file <name> into the buffer after the line <address> (default current).
+@end table
+@kindex @kbd{:<address>r <name>}
+@kindex @kbd{:<address>r !<cmd>}
+@kindex @kbd{!<cmd>}
+@kindex @kbd{!!<cmd>}
+@kindex @kbd{!<move><cmd>}
+@kindex @kbd{:w !<cmd>}
+@kindex @kbd{:x,y w !<cmd>}
+@kindex @kbd{:!! <args>}
+@kindex @kbd{:!<cmd>}
+@kindex @kbd{:sh}
+
+@node Options,Emacs Related Commands,Shell Commands,Commands
+@section Options
+
+@cindex Vi options
+@table @kbd
+@item ai
+@cindex autoindent
+ autoindent - In append mode after a <cr> the
+ cursor will move directly below the first
+ CHAR on the previous line.  
+@item ic
+@cindex case and searching
+ ignorecase - No distinction between upper and
+ lower cases when searching.
+@item magic
+@cindex literal searching
+ Regular expressions used in searches.
+ nomagic means no regexps.
+@item ro
+@cindex readonly files
+ readonly - The file is not to be changed.
+ However, @kbd{:w!} will override this option.
+@item sh=<string>
+@cindex shell
+ shell - The program to be used for shell escapes
+ (default @samp{$SHELL} (default @file{/bin/sh})).
+@item sw=<count>
+@cindex layout
+@cindex shifting text
+ shiftwidth - Gives the shiftwidth (default 8
+ positions).
+@item sm
+@cindex paren matching
+@cindex matching parens
+ showmatch - Whenever you append a @kbd{)}, vi shows
+ its match if it's on the same page; also with
+ @kbd{@{} and @kbd{@}}.  If there's no match, vi will beep.
+@item ts=<count>
+@cindex changing tab width
+@cindex tabbing
+ tabstop - The length of a <ht>; warning: this is
+ only IN the editor, outside of it <ht>s have
+ their normal length (default 8 positions).
+@item wm=<count>
+@cindex auto fill
+@cindex word wrap
+ wrapmargin - In append mode vi automatically
+ puts a <lf> whenever there is a <sp> or <ht>
+ within <wm> columns from the right margin.
+@item ws
+@cindex searching
+ wrapscan - When searching, the end is
+ considered @samp{stuck} to the begin of the file.
+@item :set <option>
+ Turn <option> on.
+@item :set no<option>
+ Turn <option> off.
+@item :set <option>=<value>
+ Set <option> to <value>.
+@end table
+@kindex @kbd{:set <option>=<value>}
+@kindex @kbd{:set no<option>}
+@kindex @kbd{:set <option>}
+@kindex @kbd{:se ws}
+@kindex @kbd{:se wm=<count>}
+@kindex @kbd{ts=<count>}
+@kindex @kbd{:se ts=<count>}
+@kindex @kbd{:se sm}
+@kindex @kbd{:se sw=<count>}
+@kindex @kbd{:se sh=<string>}
+@kindex @kbd{:se ro}
+@kindex @kbd{:se magic}
+@kindex @kbd{:se ic}
+@kindex @kbd{:se ai}
+
+@node Emacs Related Commands,,Options,Commands
+@section Emacs Related Commands
+
+@table @kbd
+@item _
+ Begin Meta command in Vi mode. Most often used as _x (M-x).
+@item C-z
+ Begin Meta command in Insert mode.
+@item C-z
+ Switch between Emacs and Vi modes.
+@item C-x0
+ Close Window
+@item C-x1
+ Close Other Windows
+@item C-x2
+ Split Window
+@item C-xo
+ Move among windows
+@item C-xC-f
+ Emacs find-file, useful in Insert mode
+@end table
+@kindex @kbd{C-xC-f}
+@kindex @kbd{C-xo}
+@kindex @kbd{C-x2}
+@kindex @kbd{C-x1}
+@kindex @kbd{C-x0}
+@kindex @kbd{C-z}
+@kindex @kbd{C-z}
+@kindex @kbd{_}

@@ -1,0 +1,2 @@
+(setq vip-expert-level '2)
+(setq vip-inhibit-startup-message 't)

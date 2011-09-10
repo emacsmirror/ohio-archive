@@ -1,0 +1,125 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse-tutorial.texi on 28 July 1998 -->
+
+<TITLE>FUSE Tutorial - Closing Remarks</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_6.html">previous</A>, <A HREF="fuse-tutorial_8.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC21" HREF="fuse-tutorial_toc.html#TOC21">Closing Remarks</A></H1>
+
+<P>
+There are many features of @fuse{} that I have not covered in this
+tutorial.  This tutorial is only intended as an introduction to @fuse{}.
+Once you have worked through the tutorial, I encourage you play around
+with @fuse{}.  Try out the various functions in the <SAMP>`Input'</SAMP> and
+program menus.  Click on things and see what happens.  I guarantee that
+you will find nifty little features that you will end up using on a
+regular basis.
+
+</P>
+<P>
+Here is an incomplete and unordered list of things to explore:
+<DL COMPACT>
+
+<DT><STRONG>Customization</STRONG>
+<DD>
+<A NAME="IDX102"></A>
+ <A NAME="IDX103"></A>
+ 
+Versions of Emacs and XEmacs numbered in the 20's come with a
+hypertextual customization package.  With it, you can point and click to
+customize Emacs packages.  Hit <KBD>C-c C-b c</KBD> or choose <SAMP>`Customize
+FUSE'</SAMP> from the <SAMP>`Input - Miscellaneous'</SAMP> menu.  This will open up a
+customization buffer for variables in @fuse{}.  Customizing these
+variables will allow you to control dozens of features regarding the
+appearence and behavior of @fuse{} and it interaction with other
+packages and programs.
+
+<A NAME="IDX104"></A>
+<DT><STRONG>The FUSE command wrapper</STRONG>
+<DD>
+Although FEFF and the UWXAFS programs require that input files
+be named according to their program, @fuse{} does not require this.  You
+can call you input files anything you want.  For example, you might have
+called the FEFFIT input file from this tutorial <TT>`cu.inp'</TT>.
+Before executing the program, @fuse{} will rename the input to the name
+exected by the program.  When the program is finished, @fuse{} renames
+it back.  Care is taken not to overwrite any existing files.  @fuse{}
+also renames the log files<A NAME="DOCF6" HREF="fuse-tutorial_foot.html#FOOT6">(6)</A> does <EM>not</EM>
+currently rename the output files from FEFF.} written by the
+programs.  In the case of <TT>`cu.inp'</TT>, @fuse{} would rename the log
+and prm files <TT>`cu.log'</TT> and <TT>`cu.prm'</TT>.
+
+<A NAME="IDX105"></A>
+<A NAME="IDX106"></A>
+<A NAME="IDX107"></A>
+<DT><STRONG>Include files</STRONG>
+<DD>
+FEFFIT and AUTOBK allow the use of include files.  @fuse{} has
+many features for working with include files.  Most importantly, it
+allows you to assign a master file to each include file using <KBD>C-c
+C-d m</KBD> or <SAMP>`Set master file'</SAMP> from the <SAMP>`Imput - Set variables'</SAMP>
+menu.  Once the master file is assigned, functions for running programs,
+looking at log files, and others do <EM>the right thing</EM>.
+
+<A NAME="IDX108"></A>
+<A NAME="IDX109"></A>
+<A NAME="IDX110"></A>
+<DT><STRONG>Tag files</STRONG>
+<DD>
+When using include files in FEFFIT, it can be easy to forget in
+which file variables are defined.  In <SAMP>`feffit mode'</SAMP> you can create
+a tag file which cross references variables with their location of
+definition.  Once the tag file is created with <KBD>C-c C-f t</KBD>, you can
+place the screen cursor on a variable name in a math expression and type
+<KBD>M-.</KBD>.  The display will switch to the place where that variable is
+defined.
+
+<A NAME="IDX111"></A>
+<DT><STRONG>Paragraph manipulation</STRONG>
+<DD>
+In the chapter on FEFFIT (see section <A HREF="fuse-tutorial_5.html#SEC16">Running Feffit</A>) we used the
+paragraph manipulation function for adding a parameter to each
+paragraph.  There are also functions for renumbering paragraphs,
+deleting parameters, and commenting out and uncommenting parameters.
+These functions work on every paragraph in the file.  If you preceed the
+key sequence or menu selection with <KBD>C-u</KBD> then the paragraph
+manipulation function will start working from the current screen
+position rather than on the entire file.
+
+<A NAME="IDX112"></A>
+<DT><STRONG>Cleaning</STRONG>
+<DD>
+@fuse offers functions for standardizing the appearence of your input
+files by indenting lines and separating columns as specified by the
+appropriate variables.
+
+<A NAME="IDX113"></A>
+<A NAME="IDX114"></A>
+<A NAME="IDX115"></A>
+<DT><STRONG>Editing shortcuts</STRONG>
+<DD>
+Lots of repetitive tasks are automated by @fuse{}.  In AUTOBK and
+FEFFIT there are functions for filling in keyword values by
+snagging values from similar keywords in surrounding stanzas and
+paragraphs.  There are also functions for swapping the words <SAMP>`set'</SAMP>
+and <SAMP>`guess'</SAMP> in a FEFFIT input file, for swapping boolean
+values, and for commenting and uncommenting single lines or blocks of
+text.
+
+</DL>
+
+<P>
+<EM>HEY!</EM> Have fun.
+
+</P>
+
+<P><HR><P>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_6.html">previous</A>, <A HREF="fuse-tutorial_8.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+</BODY>
+</HTML>

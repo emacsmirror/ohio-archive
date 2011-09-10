@@ -1,0 +1,210 @@
+<HTML>
+<HEAD>
+<TITLE>Phit: Acknowledgments, References, and Program Notes</TITLE>
+</HEAD>
+<BODY>
+<A HREF="phit-6.html">Previous</A>
+<A HREF="phit-8.html">Next</A>
+<A HREF="phit.html#toc7">Table of Contents</A>
+<HR>
+<H2><A NAME="s7">7. Acknowledgments, References, and Program Notes</A></H2>
+
+
+<H2><A NAME="ss7.1">7.1 Acknowledgments</A></H2>
+
+<P>I mostly want to thank Matt Newville.  He suggested writing the
+program in this manner and offered me several subroutines from
+<SF>Feffit</SF> for my use here.  Matt and Daniel Haskel
+helped me test the code from its earliest incarnations.</P>
+
+
+<H2><A NAME="ss7.2">7.2 Bibliography</A></H2>
+
+<P>
+<OL>
+<LI> Bevington, Philip R., <I>Data Reduction and Error Analysis for
+the Physical Sciences</I>, McGraw-Hill, New York, (1969)</LI>
+<LI> 
+<A HREF="ftp://netlib.att.com/netlib/master/readme.html"><it/Netlib/</A> software archive, AT&amp;T</LI>
+<LI> Newville, M, Documentation for <SF>Feffit</SF>, 
+<A HREF="http://krazy.phys.washington.edu/Docs/feffit.ps"><sf/Feffit/</A>, UWXAFS Project.</LI>
+<LI> Press, W.H., S.A. Teukolsky, W.T. Vettering, B.P. Flannery
+<I>Numerical Recipes in Fortran, The Art of Scientific
+Programming</I>, Cambridge University Press, (1992)</LI>
+</OL>
+</P>
+
+
+
+
+<H2><A NAME="ss7.3">7.3 Copyright Issues</A></H2>
+
+<P><SF>Phit</SF> uses the <CODE>MINPACK</CODE> package of subroutines
+from AT&amp;T's Netlib repository.  This is freely available software.
+Several other algorithms are taken from <I>Numerical Recipes</I>
+by Press, <I>et al.</I>  By the terms stated in that book, the
+algorithms contained therein are freely available to anyone who
+transcribes them.  The rest of routines in <SF>Phit</SF> are copyright
+of the University of Washington.  Version numbers below 1.0 are not
+licensed software, but are only released to holders of the UWXAFS3.0
+software license.  The terms of that agreement apply. </P>
+
+
+
+
+
+<H2><A NAME="ss7.4">7.4 Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs</A></H2>
+
+<P>If you do not have a license to use FEFF or the UWXAFS analysis
+programs and are interested in obtaining one contact: </P>
+<P>
+<PRE>
+Ed Stern
+c/o UWXAFS Project 
+University of Washington 
+Department of Physics, FM-15 
+Seattle WA, 98195, USA 
+phone: (206) 543-2023 
+fax: (206) 543-0635 
+electronic mail: stern@phys.washington.edu 
+URL: http://krazy.phys.washington.edu/people/ed.html
+</PRE>
+ </P>
+<P>or </P>
+<P>
+<PRE>
+John Rehr
+c/o FEFF Project 
+University of Washington 
+Department of Physics, FM-15 
+Seattle WA, 98195, USA 
+phone: (206) 543-8593 
+fax: (206) 543-0635 
+electronic mail: jjr@phys.washington.edu 
+URL: http://pauli.phys.washington.edu/~jjr/
+</PRE>
+ </P>
+<P>You should request copies of the licensing agreements for FEFF and the
+UWXAFS programs.  These are licensed separately.  ATOMS is distributed
+with both packages. </P>
+
+
+
+<H2><A NAME="ss7.5">7.5 To Do</A></H2>
+
+<P>
+<UL>
+<LI> Zeros of functions.</LI>
+<LI> Check that guess values are used (explicitly or implicitly) in
+functions.</LI>
+<LI> Add more line shapes, possibly integer factorial, Bessel's functions,
+Legendre polynomial, Hermite polynomials, Gamma function, Airy
+integrals, erf and erfc, Sine and Cosine Integrals, etc., etc, etc.
+minimized using named columns.</LI>
+<LI> Complex valued data and line shapes (ugh!)</LI>
+<LI> Crystallography applications.</LI>
+<LI> Improve quality of log file.</LI>
+<LI> Update appendix of this document.</LI>
+</UL>
+ </P>
+
+<P>If you have any good suggestions for expanding the functionality of
+Phit, please contact 
+<A HREF="mailto:ravel@u.washington.edu">the author</A>.  </P>
+
+
+
+<H2><A NAME="ss7.6">7.6 Source Code Parameters</A></H2>
+
+<P>Phit is shipped with the following hard-wired parameters:
+<BLOCKQUOTE><CODE>
+<PRE>
+      parameter (ndatx=2**13, nrangx=10, ndocx=19)
+      parameter (ntitx=19, nfunx=100, nconx=300)
+      parameter (nguesx=50, nsetx=300)
+</PRE>
+</CODE></BLOCKQUOTE>
+
+These parameters are defined as follows: 
+<OL>
+<LI> <CODE>ndatx</CODE>:  max number of input data points</LI>
+<LI> <CODE>nrangx</CODE>: max number of fitting range delimiters in input data</LI>
+<LI> <CODE>ndocx</CODE>:  max number of documents in i/o data</LI>
+<LI> <CODE>ntitx</CODE>:  max number of title lines</LI>
+<LI> <CODE>nfunx</CODE>:  max number of input functions</LI>
+<LI> <CODE>nconx</CODE>:  max number of constants to be encoded</LI>
+<LI> <CODE>nguesx</CODE>: max number of guessed values</LI>
+<LI> <CODE>nsetx</CODE>:  max number of set values</LI>
+</OL>
+ 
+If any of these are too small, they can be changed in the source code
+and the source code can be recompiled. </P>
+
+
+
+<H2><A NAME="ss7.7">7.7 Code Portability and Code Compilation</A></H2>
+
+<P>The 1977 ANSI Standard for Fortran has been followed closely, so that
+<SF>Phit</SF> should easily compile on any machine and run without
+any problems.  The only significant departures from Fortran 77 are the
+assumption of the ASCII character set and the use of
+<CODE>integer*2</CODE> variables for the UWXAFS binary file handling
+routines. </P>
+<P>There are, unfortunately, aspects of Fortran which are machine- and
+compiler-dependent by design.  One such aspect occurs in <SF>Phit</SF> in
+the form of a compiler-dependent dimension for the ``word-length'' of
+the data in the UWXAFS binary files.  The code cannot easily be made
+truly standard without significant changes to the UWXAFS binary file
+handling routines.  The distributed code will, however, work on most
+machines, with the notable exception of a Vax or Alpha running VMS.
+Changing the second executable statement of <SF>Phit</SF> from <CODE>vaxflg
+= .false.</CODE> to <CODE>vaxflg = .true.</CODE> will optimize the code for a VMS
+machine.</P>
+<P>The UWXAFS binary file handling routines also use character strings
+which are 2048 characters long.  Though standard, some compilers need
+to be told to accept character strings this long.  The notable example
+of such a compiler is <I>xlf</I> (for AIX, IBM's Unix flavor), which
+needs the compiler switch <CODE>-qcharlen=2048</CODE>.  While compiling on any
+machine, we recommend including some form of array bounds checking.
+If you have any problems with the compilation, it may be worthwhile to
+turn off compiler optimization flags.  There may be some persistent,
+benign compiler warnings when you compile <SF>Phit</SF>.  There may also
+be ``comparison is always false'' warnings when using <I>f2c</I>.  These
+can both be safely ignored.</P>
+
+
+
+<H2><A NAME="ss7.8">7.8 Adding More Data Formats to Phit</A></H2>
+
+<P>If the two data file formats (UWXAFS, ASCII) are not acceptable or
+convenient to your needs (that is, if you prefer using some other
+format), other choices could be added with a minimal amount of coding.
+The input and output of data files is fairly well-isolated, with
+subroutine <CODE>inpdat</CODE> and <CODE>outdat</CODE> controlling
+which data format to use.  If you'd like another file format either
+contact us about it or follow the example of the routines
+<CODE>inpcol</CODE> and <CODE>outcol</CODE>, which read and write
+files in the ASCII column data format. </P>
+
+
+<H2><A NAME="ss7.9">7.9 About this document.</A></H2>
+
+<P>This document was composed using a mark-up language called
+<CODE>linuxdoc-sgml</CODE>.  This is the documentation standard of the
+<A HREF="ftp://ftp.cc.gatech.edu//pub/linux/docs/linux-doc-project/LDP-Manifesto">Linux Documentation Project</A>.  <CODE>linuxdoc-sgml</CODE> is an
+adaptation of the QWERTZ document type definition written by Tom
+Gordon.  <CODE>linuxdoc-sgml</CODE> is available on 
+<A HREF="ftp://ftp.cc.gatech.edu//pub/linux/utils/text/linuxdoc-sgml-1.2.tar.gz">the net</A>.</P>
+<P>The value of a Standard Generalized Markup Language (SGML) is that it
+can be processed into any number of formats from a common source.
+Using <CODE>linuxdoc-sgml</CODE>, a single marked up file can be used to produce
+LaTeX, PostScript, plain ASCII, HTML, TeXinfo, or dvi
+documentation.</P>
+
+
+<HR>
+<A HREF="phit-6.html">Previous</A>
+<A HREF="phit-8.html">Next</A>
+<A HREF="phit.html#toc7">Table of Contents</A>
+</BODY>
+</HTML>

@@ -1,0 +1,82 @@
+1. With what version of Emacs does PCL-CVS work ?
+
+  PCL-CVS should work with any recent (X)Emacs as well as on NTEmacs.
+  "recent" means something like "from 19.34 onward".  It might work with earlier
+  Emacsen, but if it doesn't we don't necessarily consider it as a bug.
+
+
+2. Faces don't quite work with Emacs-19.34
+
+  This is because 19.34 has an old version of custom.el which PCL-CVS
+  works around by disabling some of its code.  You can try installing
+  a newer version of custom.el from http://www.dina.kvl.dk/~abraham/custom/
+  or you can set up the faces in your own .emacs file.
+
+
+3. The TeXinfo document seems out-of-date and/or unclear !
+
+  Well spotted!  Please tell us what parts are outdated and give us
+  some sample replacement text for the unclear parts.
+
+
+4. How can I use Customize on Emacs 19.34 ?
+
+  The customize package bundled with 19.34 is out-dated and PCL-CVS
+  is only careful to work around it.  If you want better support, download
+  and install a newer customize from http://www.dina.kvl.dk/~abraham/custom/
+
+
+5. PCL-CVS gives me error messages about files with '/' !
+
+  It hopefully also mentioned to consult this file.  If it didn't, it's a bug.
+  Now the reason for that message goes as follows:  cvs-1.10 has a new
+  feature used by PCL-CVS which allows to reduce the number of executions of
+  the cvs command.  Sadly, this feature depends on the cvs server rather than
+  the cvs client, so even if you have a cvs-1.10 for client, you might need to
+  disable this feature.  To disable this feature, add thje following in your
+  .emacs (after complaining to the administrator of the repository):
+
+	(setq cvs-execute-single-dir t)
+
+  If you later on stop using that "old" repository or if the repository's
+  server gets updated, it is recommanded to remove the above line from
+  your .emacs in order to enjoy zippier interaction.
+
+
+6. I put `cvs-status-cvstrees' in `cvs-status-mode-hook' but it doesn't work !
+
+  This is usually due to the fact that `cvs-status-mode' is called when
+  the *cvs-info* buffer is created, at which point the buffer is empty.
+  If you want to run something that depends on the output of CVS, you
+  want to put it in the fourth element of `cvs-buffer-name-alist':
+
+	(add-to-list 'cvs-buffer-name-alist
+	  '("status" "*cvs-info*" cvs-status cvs-status-cvstrees))
+
+  This will make sure that `cvs-status-cvstrees' is only run once
+  CVS is done.
+
+
+7. I get complaints about `easy-mmode-define-minor-mode' !
+
+  XEmacs does not provide easy-minor-mode.  You have to use Emacs'
+  version of it.  You can find a copy at
+  <URL:ftp://rum.cs.yale.edu/pcl-cvs/easy-mmode.el>.  Copy it into the
+  directory and then retry the compilation (the package is only needed
+  for compiling the .el files).
+
+
+8. I get `conflict' for a file that should say `need-merge'.
+
+  Earlier CVS versions had an ambiguous output when run with
+  `cvs -n update'.  There's nothing PCL-CVS can do about that.  Upgrade
+  (the CVS server) to the latest CVS and the problem should disappear.
+
+
+NN. My problem was not answered by this FAQ!
+
+  Maybe it will be answered by the BUGS file.  Else, you can always
+  send your gripes to the PCL-CVS mailing-list: pcl-cvs@cyclic.com.
+
+
+#ident @(#)v2_9_9:FAQ,v 1.5 2000/03/03 20:58:08 monnier Exp

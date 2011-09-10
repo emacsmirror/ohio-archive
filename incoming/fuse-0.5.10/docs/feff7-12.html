@@ -1,0 +1,104 @@
+<HTML>
+<HEAD>
+<TITLE>Feff : Appendix F.   Changes from previous versions</TITLE>
+</HEAD>
+<BODY>
+<A HREF="feff7-11.html">Previous</A>
+<A HREF="feff7-13.html">Next</A>
+<A HREF="feff7.html#toc12">Table of Contents</A>
+<HR>
+<H2><A NAME="s12">12. Appendix F.   Changes from previous versions</A></H2>
+
+
+
+<H2><A NAME="ss12.1">12.1 Changes from FEFF 6</A></H2>
+
+
+
+<P>The most significant change is that LDA atomic code was replaced by
+Dirac-Fock code. FEFF 7 includes both dipole transitions (l----&gt; l +/-- 1).</P>
+<P>The changes have been made for the following cards:
+<DL>
+<DT><B> PRINT </B><DD><P>FEFF 7.00 will write files phminNN.dat, whenever phaseNN.dat is written,
+which has real part
+of phase shifts for l=0,1,2. So, they have reduced information of corresponding
+phaseNN.dat, which is conveniently arranged in columns for plotting.</P>
+
+<DT><B> XANES </B><DD><P>If XANES card is specified, then core hole lifetime is taken into account by
+convolution with Lorentzian in ff2chi. Otherwise, core hole life time is
+included into imaginary part of optical potential, as in FEFF 6.10.
+Minor differences for chi.dat files calculated by two methods in XANES
+region are expected. The FEFF7 code includes a fully relativistic calculation of
+atomic cross section.</P>
+
+<DT><B> EXCHANGE </B><DD><P>New self energy models are available: a) broadened
+plasmon model (ixc \gt 10) and b) partly nonlocal model (ixc=5) which
+calculates for the photoelectron DF exchange term for core
+electrons and LDA exchange-correlation for valence electrons.
+Core-valence separation can be easily changed in getorb.f.</P>
+<P>New expert user only cards are introduced:</P>
+<DT><B> MBCONV </B><DD><P>Makes convolution with model excitation spectrum.</P>
+<DT><B> JUMPRM </B><DD><P>Removes jumps in potentials at muffin tin radii.</P>
+</DL>
+</P>
+
+<P>Also, we made several adjustments to fix some minor problems
+reported by FEFF users.</P>
+
+
+<H2><A NAME="ss12.2">12.2 Changes from FEFF 5.04</A></H2>
+
+
+<P>We have made some minor changes to the input files
+and code.  For complete descriptions of the
+new cards and modifications of old ones, see section III.
+With the exception of POLARIZATION and XANES capabilities,
+and improved path finder and degeneracy checks, FEFF 6 is
+nearly identical to FEFF5. </P>
+<P>Two cards are no longer recognized.  These are: 
+<UL>
+<LI> KLIMIT  (replaced by NEMAX) </LI>
+<LI> REQUIRE</LI>
+<LI> CSIG 
+Code now always uses complex momentum in Debye-Waller factors</LI>
+</UL>
+</P>
+<P>There are several changes and new options.  These are: 
+<DL>
+<DT><B> CORRECTIONS </B><DD><P>Adds real and imaginary part to energy</P>
+<DT><B> CRITERIA </B><DD><P>The importance criteria are now formulated differently</P>
+<DT><B> NEMAX </B><DD><P>Max number of energy grid points (replaces KLIMIT)</P>
+<DT><B> PCRITERIA </B><DD><P>The path finder criteria are now formulated differently</P>
+<DT><B> PRINT </B><DD><P>Several new options</P>
+<DT><B> POTENTIALS </B><DD><P>Now has optional labels for unique potentials</P>
+</DL>
+</P>
+
+<P>XANES spectra, absolute energies and Atomic Background absorption 
+can be calculated with the new option 
+<DL>
+<DT><B> XANES </B><DD><P>For now, please, do not use chiNNNN.dat or feffNNNN.dat files for
+EXAFS analysis (such as feffit), when XANES card is used.</P>
+</DL>
+</P>
+
+<P>Polarization dependent feff can be calculated with the help of the
+following new cards: 
+<DL>
+<DT><B> POLARIZATION </B><DD><P>Specifies polarization vector</P>
+<DT><B> ELLIPTICITY </B><DD><P>Ellipticity and direction of the incident beam for the elliptical
+polarization. </P>
+</DL>
+</P>
+<P>FEFF 6.10 adds several new cards, uses a slightly finer k grid internally,
+and replaces the feff.dat files with one feff.bin to speed execution and
+reduce disk space.</P>
+
+
+
+<HR>
+<A HREF="feff7-11.html">Previous</A>
+<A HREF="feff7-13.html">Next</A>
+<A HREF="feff7.html#toc12">Table of Contents</A>
+</BODY>
+</HTML>

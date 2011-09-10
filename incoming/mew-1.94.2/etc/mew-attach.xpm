@@ -1,0 +1,39 @@
+/* XPM */
+/*
+ * Copyright (C) 1997 Yuuichi Teranishi <teranisi@isl.ntt.co.jp> 
+ * Copyright (C) 1997 Kazuhiko Yamamoto <kazu@is.aist-nara.ac.jp>
+ */
+static char * mew_attach_xpm[] = {
+"28 28 4 1",
+" 	c black",
+".	s backgroundToolBarColor	c None",
+"X	c white",
+"o	c Gray60",
+"             ...............",
+" XXXXXXXXXXX ...............",
+" XXXXXXXXXXX ...............",
+" X  . . .  X ...............",
+" XXXXXXXXXXX ...............",
+" X  .              .........",
+" XXXX ............ .........",
+" X  . ..o......... .........",
+" XXXX ..o.X ..  .. .........",
+" XXXX .XooX . XX . .........",
+"      .Xoo               ...",
+".oooo .Xoo ooo ooooo ooo ...",
+"..... .    ooo  ooo  ooo ...",
+"..... .... ooo X   X ooo ...",
+"..... .... ooo XXXXX ooo ...",
+".....      ooo X X X ooo ...",
+".......... oo XX X XX oo ...",
+".......... ooo XX XX ooo ...",
+".......... oooo     oooo ...",
+".......... ooo XXXXX ooo ...",
+"..........               ...",
+"............................",
+"...... ... ..... .. .. .....",
+"......  .  . . . .   .......",
+"...... . . . . . .. .. .....",
+"...... . . . . . .. .. .....",
+"...... . . ..  . .. .. .....",
+"............................"};

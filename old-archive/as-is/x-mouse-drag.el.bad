@@ -1,0 +1,306 @@
+;;;Date: 7 Jan 87 04:53:45 GMT
+;;;From: Peter X Moore <moore@CAD.Berkeley.EDU>
+;;;Organization: UC Berkeley, CAD group
+;;;Subject: Dragging with the mouse
+
+;;;Well, if gnuemacs is now supporting both up and down mouse events,
+;;;then hopefully the following will prove useful to some.  It is set 
+;;;of x-mouse bindings that allows you to drag over a region in order 
+;;;to delete it, drag the mode-line to change window size, etc..
+
+;;;Peter Moore
+;;;ucbvax!moore
+;;;moore@Berkeley
+
+;; Mouse support for X window system.
+;; Copyright (C) 1985 Richard M. Stallman.
+
+;; This file is part of GNU Emacs.
+
+;; GNU Emacs is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY.  No author or distributor
+;; accepts responsibility to anyone for the consequences of using it
+;; or for whether it serves any particular purpose or works at all,
+;; unless he says so in writing.  Refer to the GNU Emacs General Public
+;; License for full details.
+
+;; Everyone is granted permission to copy, modify and redistribute
+;; GNU Emacs, but only under the conditions described in the
+;; GNU Emacs General Public License.   A copy of this license is
+;; supposed to have been given to you along with GNU Emacs so you
+;; can know your rights and responsibilities.  It should be in a
+;; file named COPYING.  Among other things, the copyright notice
+;; and this notice must be preserved on all copies.
+
+
+(provide 'x-mouse)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;									     ;;
+;;	Bindings to allow dragging, requires up events to be sent	     ;;
+;;	by x-proc-mouse-event, which seems to be in version 18-35.	     ;;
+;;									     ;;
+;;	Terminology:							     ;;
+;;	  To click a button is press it down and then release without	     ;;
+;;	      moving the mouse						     ;;
+;;	  To drag a button is to press it down, move the mouse, and	     ;;
+;;	      then release it.						     ;;
+;;	  mouse position: position of the mouse cursor, as opposed to	     ;;
+;;	      the text cursor.						     ;;
+;;									     ;;
+;;	The bindings set up here are:					     ;;
+;;									     ;;
+;;	Inside a window:						     ;;
+;;									     ;;
+;;	    left button click:  Set the mark at the current point and then   ;;
+;;	       move the to the mouse position. Thus clicking the right	     ;;
+;;	       button at two points marks the region between those points.   ;;
+;;									     ;;
+;;	    middle button click: sets point to the mouse position and does a ;;
+;;	       yank at that point.					     ;;
+;;									     ;;
+;;	    right button click: sets point to the mouse position and then    ;;
+;;	       scrolls that line to the top of the window.  If the mouse is  ;;
+;;	       currently on the top line then the window is scrolled down.   ;;
+;;									     ;;
+;;	    left button drag: do a copy-region-as-kill of the region dragged ;;
+;;									     ;;
+;;	    middle button drag: do a kill-region of the region dragged	     ;;
+;;									     ;;
+;;	    right button drag: do a indent-region of the region dragged	     ;;
+;;									     ;;
+;;	    shift left button click - Copy from point to end of line in to   ;;
+;;	        the X cut buffer and then insert it back into the buffer     ;;
+;;									     ;;
+;;	    shift middle button drag - Copy the region dragged into the X    ;;
+;;		cut buffer						     ;;
+;;									     ;;
+;;	    shift right button click - insert the X cut buffer at the mouse  ;;
+;;	        point							     ;;
+;;									     ;;
+;;	Inside the mode-line of a window:				     ;;
+;;									     ;;
+;;	    left button click - do a (beginning-of-defun) from the current   ;;
+;;	        point							     ;;
+;;									     ;;
+;;	    right-button click - call (end-of-defun) from the current point  ;;
+;;									     ;;
+;;	    left button drag - resize the window so the mode line moves to   ;;
+;;	        the new mouse position. I.e. `drag' the mode line.	     ;;
+;;									     ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defconst x-button-right (char-to-string 0))
+(defconst x-button-u-right (char-to-string 4))
+(defconst x-button-middle (char-to-string 1))
+(defconst x-button-u-middle (char-to-string 5))
+(defconst x-button-left (char-to-string 2))
+(defconst x-button-u-left (char-to-string 6))
+
+(defconst x-button-s-right (char-to-string 16))
+(defconst x-button-s-u-right (char-to-string 20))
+(defconst x-button-s-middle (char-to-string 17))
+(defconst x-button-s-u-middle (char-to-string 21))
+(defconst x-button-s-left (char-to-string 18))
+(defconst x-button-s-u-left (char-to-string 22))
+
+(defconst x-button-m-right (char-to-string 32))
+(defconst x-button-m-u-right (char-to-string 36))
+(defconst x-button-m-middle (char-to-string 33))
+(defconst x-button-m-u-middle (char-to-string 37))
+(defconst x-button-m-left (char-to-string 34))
+(defconst x-button-m-u-left (char-to-string 38))
+
+(defconst x-button-c-right (char-to-string 64))
+(defconst x-button-c-u-right (char-to-string 68))
+(defconst x-button-c-middle (char-to-string 65))
+(defconst x-button-c-u-middle (char-to-string 69))
+(defconst x-button-c-left (char-to-string 66))
+(defconst x-button-c-u-left (char-to-string 70))
+
+(defconst x-button-m-s-right (char-to-string 48))
+(defconst x-button-m-s-u-right (char-to-string 52))
+(defconst x-button-m-s-middle (char-to-string 49))
+(defconst x-button-m-s-u-middle (char-to-string 53))
+(defconst x-button-m-s-left (char-to-string 50))
+(defconst x-button-m-s-u-left (char-to-string 54))
+
+(defconst x-button-c-s-right (char-to-string 80))
+(defconst x-button-c-s-u-right (char-to-string 84))
+(defconst x-button-c-s-middle (char-to-string 81))
+(defconst x-button-c-s-u-middle (char-to-string 85))
+(defconst x-button-c-s-left (char-to-string 82))
+(defconst x-button-c-s-u-left (char-to-string 86))
+
+(defconst x-button-c-m-right (char-to-string 96))
+(defconst x-button-c-m-u-right (char-to-string 100))
+(defconst x-button-c-m-middle (char-to-string 97))
+(defconst x-button-c-m-u-middle (char-to-string 101))
+(defconst x-button-c-m-left (char-to-string 98))
+(defconst x-button-c-m-u-left (char-to-string 102))
+
+(defconst x-button-c-m-s-right (char-to-string 112))
+(defconst x-button-c-m-s-u-right (char-to-string 116))
+(defconst x-button-c-m-s-middle (char-to-string 113))
+(defconst x-button-c-m-s-u-middle (char-to-string 117))
+(defconst x-button-c-m-s-left (char-to-string 114))
+(defconst x-button-c-m-s-u-left (char-to-string 118))
+
+
+(defvar x-process-mouse-hook nil
+  "Hook to run after each mouse event is processed.  Should take two
+arguments; the first being a list (XPOS YPOS) corresponding to character
+offset from top left of screen and the second being a specifier for the
+buttons/keys.
+
+This will normally be set on a per-buffer basis.")
+
+(defun x-flush-mouse-queue ()
+  "Process all queued mouse events."
+  ;; A mouse event causes a special character sequence to be given
+  ;; as keyboard input.  That runs this function, which process all
+  ;; queued mouse events and returns.
+  (interactive)
+  (while (> (x-mouse-events) 0)
+    (x-proc-mouse-event))
+  (and (boundp 'x-process-mouse-hook)
+       (symbol-value 'x-process-mouse-hook)
+       (funcall x-process-mouse-hook x-mouse-pos x-mouse-item)))
+
+(define-key global-map "\C-c\C-m" 'x-flush-mouse-queue)
+(define-key global-map "\C-x\C-@" 'x-flush-mouse-queue)
+
+(defun x-mouse-select (arg)
+  "Select Emacs window the mouse is on."
+  (let ((start-w (selected-window))
+	(done nil)
+	(w (selected-window))
+	(rel-coordinate nil))
+    (while (and (not done)
+		(null (setq rel-coordinate
+			    (coordinates-in-window-p arg w))))
+      (setq w (next-window w))
+      (if (eq w start-w)
+	  (setq done t)))
+    (select-window w)
+    rel-coordinate))
+
+(defvar x-mouse-last-pos (list -1 -1) "position of the last mouse down event")
+(defvar x-mouse-last-dot 0 "Value of dot BEFORE the last mouse down event")
+(defvar x-mouse-doing-title-drag nil
+  "Are we in the middle of a window resize?")
+(defvar x-mouse-drag-window nil "Window which we are resizing")
+
+(define-key mouse-map x-button-right 'x-mouse-mark)
+(define-key mouse-map x-button-u-right 'x-mouse-fill-to-top)
+(define-key mouse-map x-button-left 'x-mouse-mark-or-title)
+(define-key mouse-map x-button-u-left 'x-mouse-copy-move-title)
+(define-key mouse-map x-button-middle 'x-mouse-mark)
+(define-key mouse-map x-button-u-middle 'x-mouse-delete-insert)
+(define-key mouse-map x-button-s-middle 'x-mouse-mark)
+(define-key mouse-map x-button-s-u-middle 'x-mouse-cut)
+(define-key mouse-map x-button-s-right 'x-mouse-mark)
+(define-key mouse-map x-button-s-u-right 'x-mouse-insert-cut)
+(define-key mouse-map x-button-s-left 'x-mouse-mark)
+(define-key mouse-map x-button-s-u-left 'x-mouse-re-enter-line)
+
+(defun x-mouse-no-op (arg))
+
+(defun x-mouse-in-title (arg)
+  "If the coordinate ARG is in a title bar, return the window, else NIL"
+  (let ((start-w (selected-window))
+	(done nil)
+	(w (selected-window))
+	(y (car (cdr arg))))
+    (while (and (not done)
+		(/= y (1- (nth 3 (window-edges w)))))
+      (setq w (next-window w))
+      (if (eq w start-w)
+	  (setq done t w nil)))
+    w))
+
+(defun x-mouse-do-title-drag (arg)
+  (let ((owin (selected-window))
+	(y (car (cdr arg)))
+	(last-y (car (cdr x-mouse-last-pos))))
+    (select-window x-mouse-drag-window)
+    (enlarge-window (- y last-y))
+    (select-window owin))
+  (setq x-mouse-doing-title-drag nil))
+
+(defun x-mouse-set-point (arg)
+  "Select Emacs window mouse is on, and move point to mouse position."
+  (let* ((relative-coordinate (x-mouse-select arg))
+	 (rel-x (car relative-coordinate))
+	 (rel-y (car (cdr relative-coordinate))))
+    (if relative-coordinate
+	(progn
+	  (move-to-window-line rel-y)
+	  (move-to-column (+ rel-x (current-column)))
+	  relative-coordinate))))
+
+(defun x-mouse-mark (arg)
+  (setq x-mouse-last-dot (dot))
+  (if (x-mouse-set-point arg)
+      (progn
+	(setq x-mouse-last-pos arg))))
+
+(defun x-mouse-click-p (arg)
+  (equal x-mouse-last-pos arg))
+
+(defun x-mouse-mark-or-title (arg)
+  (setq x-mouse-last-dot (dot))
+  (let ((title-window (x-mouse-in-title arg)))
+    (if title-window
+	(progn
+	  (setq x-mouse-drag-window title-window)
+	  (setq x-mouse-doing-title-drag t)
+	  (setq x-mouse-last-pos arg))
+      (if (x-mouse-set-point arg)
+	  (progn
+	    (setq x-mouse-last-pos arg))))))
+
+(defun x-mouse-copy-move-title (arg)
+  (if x-mouse-doing-title-drag
+      (if (x-mouse-click-p arg)
+	  (progn
+	    (end-of-defun)
+	    (recenter 0)
+	    (setq x-mouse-doing-title-drag nil))
+	(x-mouse-do-title-drag arg))
+    (if (x-mouse-click-p arg)
+	(set-mark x-mouse-last-dot)
+      (let ((odot (dot)))
+	(if (x-mouse-r-tisetq xdown ec.et oet oe  eent ent eq xint ariball xoveings,down chara)
+
+(de[d in;	 X  sa sa ointoos wk x-.   6))
+es t) fEm))
+						   is is id td tdouse-eouse-eoank4))
+(ar 85)
+	)
+	)  )anisitisitis(t(t(: pmu85))
+(right -p ndkir-to-sMr (.  Ienlx!ortortoacteactea[Œo c2))
+
+se-cse-schar-tlet 2)rg)) x-moust)85)cteit
+s-moEmacs.))
+	(iht (e-keoun
+('x-mouse-i					    u-leefcoefcoe  e   Zg ned Cpositihor    (endo)
+
+(dand (g 9po								     ;-keseiwo
+†cond
+;; andotar rem)itle agright (Ðrstast g 117
+    (el-mring 10alst xon,1)dot)
+ar 
+(defiNUo-strin    ;;
+;;		c(xt butí.ememe) 	  (pr-s-u-k x--rMoe-d±+  causefyoules
+oense;;	I
+  ;button-c-iliÞof thof thoov the wit
+;;;;;;;;button-c-m								   p oeset x-buttonile quginne mo-m-m caumouse evhifng 3tton-m-(char-to-; t the sescdot))
+
+(de[8))8))8;;;;;;;;;;;;;;\C-xaluton-c- x-x-procusef> r-..
+   x-prYPt x- ;;  eveenseeseisert.Ev  " 
+(    (sindow
+(defconst x-bchar-to-strchar-to-strcque
+	  (the > 1ng 11It k n))
+(defconutto\C-x2)on c:4        norrom ty,
+  (istbutdr a w point  e me me- ival‘Evley-left (ly o(char-t x-mouse-lstring 5string 5s			   wh-drlistctei\C-xiluen a irovrovr point  (char-tostring 5set oeustop -arrrp

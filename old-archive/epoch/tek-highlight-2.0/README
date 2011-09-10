@@ -1,0 +1,147 @@
+		Documentation for tek-highlight-2.0.0
+		=====================================
+
+This release is a bundle of emacs-lisp packages for epoch,
+all related to highlighting. A couple of packages may be of
+interest to non-epoch users, namely the syntax-decode stuff.
+Read on for details.
+
+Note: much of this code is based on code originally written by others.
+Though I won't mention them here, their names are preserved in the
+source files and I'd like to thank them for their efforts.
+
+For instructions on how to install & use the packages in this release,
+see the file INSTALL. The remainder of this file is documentation on
+the packages themselves.
+
+
+In Brief
+========
+
+Here is a list of the packages included, and a brief overview of their
+features:
+
+* Comment highlighting in source code buffers: comment structure is
+determined from the current syntax table; highlighting updated on
+find-file and save-buffer. Several other people have released comment
+highlighting packages, but this is the most complete & elegant
+solution I've seen. Because the comment structure is determined in a
+generic manner it will work with any editing mode that has a valid
+syntax table. I've tried to optimise it too, and it's reasonably quick.
+
+* Highlighting in Dave Gillespies info browser: provides epoch
+highlighting for the info browser. Once again, this is the most complete
+implementation I've seen, and is reasonably quick (although
+suggestions for improving the speed of any of these packages are very
+welcome).
+
+* File highlighting in dired buffers. Highlights files in dired
+buffers according to customizable criteria.
+
+* Header highlighting in news articles displayed under GNUS.
+Highlights "From:" and "Subject:" fields in news articles.
+
+* Header highlighting in mail messages displayed under VM. Highlights
+"From:" and "Subject:" fields in mail messages.
+
+* Header highlighting in mail messages displayed under the mh-e
+mailreader. Highlights "From:" and "Subject:" fields in mail messages.
+
+* Customisation of motion highlighting style. Allows you to change the
+style used to highlight mouse drag regions by setting X resources.
+
+* The highlighting styles used in all of the above packages are
+initialised by a package which looks up the X resource database to
+find the appropriate option settings. All of the packages have
+sensible defaults though, so you can get started without settting up
+any X resources at all: on a color display different colors are used
+for highlighting; on a monochrome display an italic or bold font, the
+same height and width as the minibuffer font, is used for
+highlighting.  See the file tek-style-utils.el for details of how to
+customise your highlighting styles.
+
+
+Changes from tek-epoch-stuff 1.1.0
+==================================
+
+This package started out as tek-epoch-stuff, maintained by Ken Wood
+(kwood@austek.oz.au).  Unfortunately, the company that both Ken and I
+worked for went out of business.  Ken no longer has access to the
+Internet.
+
+As Ken can no longer support the package, I have decided to re-release
+just the highlighting portion under a new name "tek-highlight".  I
+intend to re-release the mouse support under the name "tek-mouse" at a
+later date.
+
+The main changes are:
+
+* Automated the support for the epoch 4.0 button handling (i.e. use of
+styles directly instead of via attributes).
+
+* Added highlighting support for dired.
+
+* Removed the actual info browser - you should get the latest version
+from the elisp archive (info-dg: ~/modes/info.el.Z).  This package
+just supplies a highlighting interface to the info browser.  This
+package has been tested with version 1.04 of info-dg.
+
+* Removed the manual browser support.  I haven't been able to track
+down the location of the original package.  I would rather support a
+highlighting interface to a manual browser than an actual manual
+browser itself.
+
+* Removed all mouse support - to be put in a separate package called
+"tek-mouse".
+
+* Corrected the spelling of "highlight" throughout the package.
+
+Manifest
+========
+
+COPYING
+INSTALL
+LCD-entry
+README
+get-font.patch
+mh-e.patch
+syntax-decode.el
+tek-dired-highlight-setup.el
+tek-dired-highlight.el
+tek-gnus-highlight-setup.el
+tek-gnus-highlight.el
+tek-info-highlight-setup.el
+tek-info-highlight.el
+tek-mh-e-highlight-setup.el
+tek-mh-e-highlight.el
+tek-motion-highlight-setup.el
+tek-src-highlight-setup.el
+tek-src-highlight.el
+tek-style-utils.el
+tek-vm-highlight-setup.el
+tek-vm-highlight.el
+unique-hooks.el
+
+
+Other Details
+=============
+
+The source code highlighting package uses a package written by Ken
+Wood called syntax-decode, which extracts the comment structure for
+the current major mode from the current syntax table. This package
+could easily be modified to extract other data from the syntax table
+as well, so let me know if you have a use for it.
+
+This package also stores the data thus extracted in an alist, to avoid
+decoding the same syntax table more than once. This makes it a little
+faster in modes which it's seen before.
+
+
+Bugs
+====
+
+There are probably a few, so feel free to send me (Rod Whitby) a bug
+report at rwhitby@research.canon.oz.au.  I will try and look at it,
+but I won't promise anything.
+
+			   === The End ===

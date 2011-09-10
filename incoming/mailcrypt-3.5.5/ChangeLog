@@ -1,0 +1,516 @@
+1999-09-08  Brian Warner  <warner@lothar.com>
+
+	* mc-gpg.el: revamp decrypt and verify parsers to handle
+	gnupg-0.9.6 though 1.0.0 . Older versions have slight problems:
+	unknown signators and symmetrically-encrypted messages tend to
+	make mailcrypt think the message is corrupted, and some incidental
+	information (keyids for unknown keys, some signature dates) is
+	unavailable. Doesn't used stderr at all, barely uses the exit
+	status.
+
+1999-07-20  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-pgp.el: Added check for PGP version mismatch when using
+	PGP 2.6.
+
+	* mailcrypt.info-1, mailcrypt.info-2, mailcrypt.info: Latest
+	info files.
+
+	* mc-gpg.el: Incorporated Brian Warner's Changes into GPG support.
+	Specific changes are noted in his Changelog entries, below.
+
+1999-07-18  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-toplev.el: Changed GNUS interface to look at raw
+	articles. Thanks to Mr. Stainless Steel Rat.
+
+	* configure, configure.in: Modified configure script test
+	for emacs. When building Mailcrypt in a subshell of XEmacs,
+	the script would get confused because XEmacs would set the
+	environment variable EMACS to t. Thanks to Todd Sabin.
+
+	* mc-gpg.el: Added catchall pattern in GPG decrypt parser to
+	catch arbitrary "decryption failed" messages. This prevents
+	random failure from resulting in deleted message bodies! Thanks
+	to Robert Bihlmeyer.
+
+1999-07-17  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-toplev.el: Changed rmail support so that errors do not
+	leave the user in some wacky buffer.
+
+1999-06-15  Brian Warner  <warner@lothar.com>
+
+	* mc-gpg.el: update comments to reflect GPG behavior through
+	0.9.7 (no code changes). Tested against 0.9.7, works ok, but
+	we're not taking advantage of the new GPG status codes yet.
+
+1999-05-25  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mailcrypt.el: Changed message-box to message-or-box, which
+	doesn't annoy as many people with that invasive message
+	box. Thanks to Dave Love and Gunnar Evermann.
+
+	* Makefile.in, mc-gpg.el, mc-pgp.el, mc-pgp5.el, mc-remail.el,
+	mc-setversion.el: Cleaned up Makefile a bit, thanks to Francois
+	Pinard. Also added some defvar's to quiet almost all of those
+	pesky compiler warnings.  Thanks to Francois Pinard and to
+	Dave Love.
+
+1999-05-18  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-gpg.el, mc-pgp.el, mc-pgp5.el: Tightened regular expressions
+	for matching PGP/GPG header strings only when they begin a
+	line. Also improved the comment in mc-gpg.el. Thanks to Ulrik
+	Dickow.
+
+1999-04-20  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mailcrypt.el: Changed email address parsing to use the rfc822
+	library. Now extraction of recipient addresses is fully RFC
+	822 compliant.
+
+	* mc-toplev.el: Changed email address parsing to use the rfc822
+	library. Now extraction of recipient addresses is fully RFC 822
+	compliant. Thanks to Jack Twilley.
+
+1999-03-28  Brian Warner  <warner@lothar.com>
+
+	* mc-gpg.el: totally revamp decrypt-parser and verify-parser.
+	Tested against gpg-0.4.5 and gpg-0.9.5, checked GPG output
+	messages for 0.4.5 and 0.9.[012345] and these parsers should work
+	with them. GPG gives better and better status messages
+	(easy to parse, not locale-specific) in recent versions so I split
+	out the code that needs to scan stderr for information and created
+	a variable called mc-gpg-handle-pre095 (default to t) that
+	controls whether to use such code or not. If gpg-1.0 comes out and
+	everyone uses it and never uses old crufty versions, then this
+	will make it easier to rip that code out and have a much cleaner
+	set of parsers.
+
+1999-03-24  Brian Warner  <warner@lothar.com>
+
+	* mc-gpg.el (mc-gpg-verify-parser): cleanup, handle all gpg from 0.4.5
+	through 0.9.5, if the message is signed by an unknown key, get the
+	keyid efficiently and safely from gpg-0.9.5, else pull it from a
+	stderr message [less safe]
+
+1999-03-23  Brian Warner  <warner@lothar.com>
+
+	* mc-gpg.el (mc-gpg-insert-parser): if rc != 0, don't insert
+	anything, and return error information instead of erroring
+	out. Change all callers to deal with it. This fixes the "if we
+	can't find gpg, attempting to decrypt removes all text from the
+	buffer" bug.
+
+	* mc-gpg.el (mc-gpg-null-parser): fix [unused] null parser
+
+	* mc-gpg.el (mc-gpg-decrypt-parser): another message changed in
+	gpg-0.9.3 . Changed regexp to match either old ".. Secret key not
+	available" or new ".. public key not found"
+
+1999-03-20  Leonard R. Budney  <lbudney@pobox.com>
+
+	* ChangeLog, mc-pgp5.el: Fixed passphrase expiration when signing
+	messages. Thanks to Greg Shapiro.
+
+1999-03-12  Gregory Neil Shapiro  <gshapiro@sendmail.org>
+
+	* mc-pgp5.el (mc-pgp50-sign-parser): Deactivate the
+	  password if mc-passwd-timeout is set to nil.
+
+1999-03-05  Brian Warner <warner@lothar.com>
+
+	* mc-gpg.el: Patched GPG-signing code to work correctly with
+	GPG-0.9.3. Thanks to Brian Warner.
+
+1999-03-04  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-pgp5.el: Added key-fetching to PGP 5 using the hkp
+	protocol. Thanks Paul Koning!
+
+1999-02-27  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-toplev.el: Fixed a bug in rmail support, which always
+	reported the wrong "verified" status. Thanks to Gerrit Jahn.
+
+	* mc-toplev.el: Patched GNUS support so that Mailcrypt won't dump
+	users into the "raw" article buffer--though that buffer is used
+	for verifying since PGP junk can be hidden in GNUS. Thanks to
+	Ulrik Dickow.
+
+	* mc-toplev.el: Fixed mh-e support so that users can view
+	encrypted messages without saving them. Thanks to Andreas Eder.
+
+	* INSTALL, mc-setversion.el: Fixed mc-setversion to use
+	completing-read in a way which works with both emacs and
+	XEmacs. Thanks to Robert Bihlmeyer for the patch, and to numerous
+	people for reporting the bug, including Dan Girellini, and Dirk
+	Husemann.
+
+	* INSTALL: Added a warning to the INSTALL file for users of Emacs
+	20.3 and higher, to install Mailcrypt correctly into rmail. Thanks
+	to Tony Silva.
+
+	* mc-pgp5.el: Fixed out-of-turn passphrase deactivation which
+	breaks mailcrypt for anyone paranoid enough to set
+	mc-passwd-timeout to 0 or nil. Thanks to Gregory Neil Shapiro.
+
+	* ChangeLog, mc-gpg.el: Lots of cleanup and improvements in the
+	GPG support code. Thanks to Brian Warner.
+
+	* mailcrypt.el, mc-pgp5.el: Added support for key fetching under
+	PGP 5.0. Many thanks to Loren J. Rittle!
+
+	* mc-toplev.el: Removed call to (vm-select-folder-buffer) in
+	mc-toplev.el. Thanks to Eric C. Newton.
+
+	* mc-gpg.el: Fixed mc-gpg.el to avoid using with-current-buffer,
+	which emacs 19 didn't have. Thanks to Brian Warner.
+
+1998-11-26  Leonard R. Budney  <lbudney@pobox.com>
+
+	* INSTALL, ANNOUNCE: Updated the announcement and install
+	documentation. Thanks to Andreas Zell and Remi Guyomarch.
+
+	* mailcrypt.info-2, mailcrypt.texi, mailcrypt.el, mailcrypt.info,
+	mailcrypt.info-1, ChangeLog, LCD-entry, mailcrypt.dvi: Changed
+	version information to 3.5.1 in all relevant files, preparatory to
+	another release.
+
+	* mailcrypt.info-1, mailcrypt.info-2, mc-pgp5.el, mailcrypt.info:
+	Incorporated and tested Brian W's changes to mc-pgp5.el. He
+	localized a bunch of variables, cutting down on compiler
+	warnings. Thanks!
+
+	* configure.in, mailcrypt.texi, mc-gpg.el, Makefile.in,
+	README.gpg, configure: Incorporated more fixes from Brian Warner
+	to GPG support; cleaned up Makefile, removed Perl test from
+	configure script, updated the README.gpg, and much much more.
+
+	* README.gpg: Sync-ed with patch from Brian Warner against
+	3.5b7. The change appears trivial only because his previous patch
+	was faithfully applied way back when.
+
+1998-10-19  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-pgp5.el: Fixed bug in signing 8-bit data (including messages
+	in most languages other than English!  Bad, Bad PGP 5!).  Thanks
+	to Greg Steuck.
+
+	* mailcrypt.texi, mailcrypt.info-1, mailcrypt.info-2,
+	mailcrypt.info: Updated "mc-setversion" documentation in the
+	Mailcrypt info file.  Thanks to Adam Beck.
+
+1998-10-16  Leonard R. Budney  <lbudney@pobox.com>
+
+	* configure.in, gpgwrap.pl.in, mc-gpg.el, INSTALL, Makefile.in,
+	README.gpg, configure: Updated GPG support to handle GPG 0.4.1,
+	and improve various aspects of mc-gpg.el.  Most notably, the
+	wrapper script gpgwrap.pl is now obsolete, and Mailcrypt users are
+	heartily recommended to upgrade their GPG installation--it was a
+	GPG bug which necessitated the wrapper script.  Thanks to Brian
+	Warner, the Official Mailcrypt GPG Wizard.
+
+	* mc-pgp.el: Re-enabled conventional decryption in PGP 2.6 mode.
+	Thanks to Roger Williams for spotting this bug.
+
+1998-10-15  Leonard R. Budney  <lbudney@pobox.com>
+
+	* Makefile.in: Fixed "bindir" in the makefile, so that gpgwrap
+	gets installed in the correct place.  Thanks to Markku Kolkka.
+
+1998-10-05  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-toplev.el: Modified mc-mh-decrypt-message to optionally turn
+	off backup of MH messages.  By default, backup is enabled (for
+	backward compatibility).  Use this one with caution.
+
+1998-10-04  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mailcrypt.info-2, mc-pgp5.el, mailcrypt.info, mailcrypt.info-1:
+	Fixed a "buffer bug" in which decrypting under mh-e exits with an
+	error and leaves the user in some random buffer (although
+	decryption succeeds).  Basically, the PGP 5.0 parsers all call
+	"pop-to-buffer" near the end, which screws up the buffer history
+	list.  Why on earth was "pop-to-buffer" ever used in the first
+	place?
+
+1998-09-28  Leonard R. Budney  <lbudney@pobox.com>
+
+	* INSTALL: Fixed INSTALL documentation of "mc-setversion".
+
+	* mailcrypt.info-2, mailcrypt.texi, mailcrypt.info,
+	mailcrypt.info-1, mailcrypt.dvi, mailcrypt.el, ChangeLog,
+	LCD-entry, README, ANNOUNCE: Update for release.
+
+	* mailcrypt.texi, mailcrypt.info, mailcrypt.info-1: Updated rmail
+	documentation for Emacs 20.3, in which the rmail-mode-hook has
+	changed to rmail-show-message-hook.  Thanks to Tim Steele.
+
+	* mailcrypt.texi, mailcrypt.info-2, mailcrypt.info-1,
+	mailcrypt.info: Updated documentation to mention "message-mode"
+	when setting up Mailcrypt for use under Gnus.  Thanks to several
+	usenet posters addressing this problem, particularly Kevin
+	Davidson.
+
+	* mc-pgp.el, mc-pgp5.el: Modified mc-pgp[50]-lookup-key to not
+	mind a missing secret keyring.  This is useful for the paranoid
+	sorts ;-) who keep their secret keyring on a floppy, and who
+	usually encrypt to public keys but don't sign.  These folks can
+	encrypt without their secret keyring even being on the machine in
+	question.  Thanks to Steven T. Smith (usenet post, 1997/02/03).
+
+1998-09-27  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mailcrypt.el, mc-pgp5.el: Applied patches which help Mailcrypt
+	to run correctly with PGP 5.0i in XEmacs.  Thanks to Gunnar
+	Evermann.
+
+	* mc-pgp5.el: Fixed the last bug in key snarfing; updated feedback
+	to adhere to the current convention (list instead of cons).
+
+1998-09-24  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-pgp5.el: Improved diagnostic messages, particularly for
+	signatures.  They still don't quite match up with the old
+	Mailcrypt messages, but they are a good deal better.
+
+1998-09-23  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-pgp5.el: Encryption now handles the (bogus) case that no
+	recipients are specified.  I believe that PGP 2.6.2 quietly armors
+	text in that case, and perhaps we should do that.  At the moment,
+	however, we trap the error condition.
+
+	* mc-pgp5.el: There!  The last bug rooted out.  Now
+	mc-pgp50-process-region works correctly with Brian Warner's key
+	snarfing code.  Provisionally, key snarfing support is now
+	complete.
+
+	* mc-pgp5.el, mailcrypt.el, mc-gpg.el: Changed behavior of
+	mc-pgp50-process-region to use more "Mailcryptish" messages.  In
+	part, this is to facilitate key fetching and snarfing, using code
+	contributed by Brian Warner.  We're getting close!
+
+1998-09-22  Leonard R. Budney  <lbudney@pobox.com>
+
+	* Makefile.in: Changed "distclean" target to remove derived file
+	"gpgwrap.pl".
+
+	* mc-pgp5.el, gpgwrap.pl, gpgwrap.pl.in, mc-gpg.el, Makefile.in,
+	configure, configure.in: Changed gpgwrap.pl to an "autoconf" file
+	so that the path to perl is set at configuration time.  Also added
+	minor fixes to PGP 5.0 encryption.
+
+	* mc-gpg.el: Oops again.  Missed mc-gpg.el this time.
+
+	* README.gpg, gpgwrap.pl: Oops--added in contributed files from
+	Brian Warner containing the guts of GPG support.  The previous
+	revision included only changes to existing files.  All better now!
+
+	* mc-toplev.el, Makefile.in, mailcrypt.el, mc-setversion.el,
+	INSTALL: Added complete implementation of GnuPG support.  Also
+	fixed up mc-setversion so that version selection behaves more like
+	the documentation claims.  Documentation includes discussion of
+	the new GnuPG support.  Much thanks to Brian Warner, again!
+
+	* mc-pgp5.el: Implemented functional Key Snarfing under PGP 5.0.
+	Thanks to Brian Warner!
+
+	* mc-remail.el: Modified remailer support to handle multiple
+	newsgroups correctly.  I'm having real trouble posting with
+	Mixmaster remailers, so this is pretty experimental.
+
+1998-09-01  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mailcrypt.info-1, mailcrypt.info-2, mailcrypt.info: Updated
+	precompiled info files.
+
+	* mc-pgp.el: Updated MIT public keyserver address for PGP 2.6.x
+	key lookup.  Thanks to Bill Wohler.
+
+	* mailcrypt.texi, mc-remail.el: Updated finger address for
+	remailer list in variable documentation.  Changed regexp for
+	parsing Levien remailer list to account for single quotes, which
+	are sometimes used.
+
+1998-08-29  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mailcrypt.info-2, mailcrypt.texi, mailcrypt.info-1,
+	mailcrypt.info, mailcrypt.dvi, Makefile.in, configure,
+	configure.in: Updated Mailcrypt documentation--still a long way to
+	go.  Also fixed up the installation of info files, so the new
+	documentation will install correctly.
+
+	* configure.in, configure: Fixed a bug in the configure script
+	which got confused when emacs (or Xemacs) are referred to by their
+	full pathname.  Thanks to Sergio Antoy.
+
+1998-08-28  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mailcrypt.el, mc-pgp.el, mc-pgp5.el: Moved definition of
+	mc-pgp-always-sign into mailcrypt.el so that it applies to all
+	encryption schemes at once.  Also fixed a bug which prevented
+	deactivation of an incorrect passphrase when signing and
+	encrypting in one step.
+
+	* mailcrypt.el, mc-pgp.el, mc-pgp5.el: Fixed a bug in the RFC-822
+	regular expression for mail headers.  Also enhanced PGP keyid
+	lookup to ignore revoked keys in both PGP 2 and PGP 5.  Thanks to
+	Dean Bullock for spotting this bug.
+
+1998-08-27  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mailcrypt.el: Modified mc-field-name-regexp to match on exactly
+	those email headers which are RFC-822 compliant.
+
+	* mailcrypt.el: Changed mc-field-name-regexp so that fields with
+	":" in their bodies work correctly.  This permits addresses like
+	"null:" and like "post: alt.test" when using mixmaster remailers.
+	Note however that the latter should also be generated seamlessly
+	by mailcrypt when posting in the usual way.
+
+	* mc-toplev.el: Updated Gnus support to look in
+	gnus-original-article-buffer rather than in gnus-article-buffer
+	for PGP stuff.  Gnus has been changed to actually delete PGP stuff
+	when using gnus-article-hide-pgp, and this patch permits
+	verification of signatures even when hidden.  Thanks to Dave Love.
+
+1998-08-26  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-pgp5.el: Changed mc-pgp50-always-sign back to
+	mc-pgp-always-sign.  As a result, encrypting for remailers does
+	not prompt repeatedly "Sign the message?"  As a side effect,
+	"always sign" really means always; for every coding scheme.
+
+	* mc-pgp5.el: Fixed a stupid typo introduced in the previous
+	revision.
+
+1998-08-25  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-pgp5.el: Enabled signing and encrypting in one step.  Thanks
+	to Fabien Coelho.
+
+	* mc-pgp5.el: Added public key insertion for PGP 5.0, and fixed
+	the annoying lack of newlines at the and of PGP messages.  Thanks
+	to Sergio Antoy.
+
+	* mc-pgp5.el: Added Mailcrypt comment to signed messages in PGP
+	5.0.
+
+1998-08-23  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-pgp5.el, mc-setversion.el, mc-toplev.el, Makefile.in,
+	mailcrypt.el, mc-pgp.el, mc-pgp2.el, INSTALL: Completed a major
+	rewrite.  Basic elisp code is unchanged, and overall functionality
+	is unchanged.  However, I restored the original mailcrypt files to
+	their prior condition (almost), and implemented PGP 5 support
+	through the "scheme" mechanism originally provided by Pat and Jin.
+	Though there are pros and cons to both their approach and mine, I
+	would rather stick with theirs.  Now GPG support can be added
+	fairly simply!
+
+1998-08-19  Leonard R. Budney  <lbudney@pobox.com>
+
+	* INSTALL: Changed setup info for .emacs file to load
+	"mc-setversion" rather than autoloading it.  After all, it's silly
+	to "autoload" something and then immediately call it!  Thanks to
+	Aaron Gross and David Maslen.
+
+	* configure: Generated updated configure script.
+
+	* configure.in, INSTALL: Tweaked the EMACSFLAGS for Xemacs to work
+	for both Xemacs 19.x and 20.x.  Fixed up the INSTALL file to
+	document these slight differences.
+
+1998-08-18  Leonard R. Budney  <lbudney@pobox.com>
+
+	* configure.in, configure, Makefile.in: Added "--vanilla" flag for
+	Xemacs compiling, and modified the "configure" script to abort if
+	emacs or Xemacs are not found.  Also, changed the override to use
+	the environment variable "EMACS" instead of the totally ridiculous
+	"EMACS19".  Thanks to Amir J. Katz.
+
+1998-07-29  Leonard R. Budney  <lbudney@pobox.com>
+
+	* FSF-timer.el, Makefile.in, configure, configure.in, timer.el:
+	Moved "timer.el" to a file of another name, to prevent
+	inadvertantly including it when the timer package is already
+	installed.
+
+	* timer.el: Used a different version of timer.el which doesn't
+	BREAK mailcrypt for NON xemacs users.
+
+1998-07-26  Leonard R. Budney  <lbudney@pobox.com>
+
+	* Makefile.in: Fixed "make dist" to include timer.el.  Oops!
+
+1998-07-24  Leonard R. Budney  <lbudney@pobox.com>
+
+	* ANNOUNCE, NEWS: Updated announcement and news files.
+
+	* ChangeLog, ChangeLog.old: Moved Jin and Pat's ChangeLog data
+	into ChangeLog.old for the sake of history.  The Changelog file
+	will be automatically generated from my sources from now on.
+
+	* ONEWS, ChangeLog, NEWS: Updated news and changelog files for the
+	anticipated flurry of development and bug fixes.
+
+1998-07-23  Leonard R. Budney  <lbudney@pobox.com>
+
+	* NEWS, ANNOUNCE, INSTALL, LCD-entry, mailcrypt.el: *** empty log
+	message ***
+
+	* INSTALL, README: Updated documentation for Xemacs users, and
+	deleted some (old, and apparently obsolete) pointers from the
+	README file.
+
+	* configure.in, timer.el, Makefile.in, configure: Added timer.el
+	to the Mailcrypt distribution, so that Mailcrypt should work
+	correctly for Xemacs users.  The configure script simply checks
+	whether timer.el is in the user's load path, and includes timer.el
+	in the list of files to compile and install if it isn't.
+
+1998-07-22  Leonard R. Budney  <lbudney@pobox.com>
+
+	* mc-pgp5.el: Modified mc-pgp5-sign-parser to behave correctly
+	when signing 8bit data.  In that case, the PGP delimiter reads
+	"END PGP MESSAGE" rather than "END PGP SIGNATURE".  Thanks to Greg
+	Steuck.
+
+1998-07-21  Leonard R. Budney  <lbudney@pobox.com>
+
+	* load-path.hack, Makefile.in: Made Makefile more conformant to
+	GNU standards, and eliminated annoying warning about Emacs
+	versions other than 19.*.  Thanks to Tony Silva.
+
+	* mailcrypt.el, mailcrypt.info: Updated version number in elisp
+	code.
+
+	* pgpv.sh, pgpe.sh, pgps.sh, mc-setversion.el, mc-pgp5.el,
+	mc-pgpk, mc-pgp.el, Makefile.in: Removed dependency on shell
+	scripts and perl scripts.  Added completion to mc-setversion.
+	Thanks to Brian Warner.
+
+	* mc-pgp5.el, INSTALL: Corrected initialization instructions and
+	fixed regular expression to permit handling of emails in Svenska.
+	Thanks to Jonas Linde.
+
+	* mailcrypt.dvi, mailcrypt.texi, mc-pgpk, mkinstalldirs, pgpe.sh,
+	pgps.sh, pgpv.sh, texi2html.ext: Initial revision.
+
+	* mailcrypt.dvi, mailcrypt.texi, mc-pgpk, mkinstalldirs, pgpe.sh,
+	pgps.sh, pgpv.sh, texi2html.ext: New file.
+
+	* ANNOUNCE, ChangeLog, INSTALL, LCD-entry, Makefile.in, NEWS,
+	ONEWS, README, configure, configure.in, expect.el, install-sh,
+	load-path.hack, mailcrypt.el, mailcrypt.info, mc-pgp.el,
+	mc-pgp2.el, mc-pgp5.el, mc-remail.el, mc-setversion.el,
+	mc-toplev.el: Initial revision.
+
+	* ANNOUNCE, ChangeLog, INSTALL, LCD-entry, Makefile.in, NEWS,
+	ONEWS, README, configure, configure.in, expect.el, install-sh,
+	load-path.hack, mailcrypt.el, mailcrypt.info, mc-pgp.el,
+	mc-pgp2.el, mc-pgp5.el, mc-remail.el, mc-setversion.el,
+	mc-toplev.el: New file.

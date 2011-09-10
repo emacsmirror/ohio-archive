@@ -1,0 +1,1000 @@
+\documentstyle[12pt,twoside,latexinfo,format,smallverb]{report} \c -*-latexinfo-*-
+\pagestyle{empty}
+
+\begin{document}
+\bibliographystyle{alpha}
+
+\newindex{cp}
+\newindex{fn}
+
+\finalout
+
+\title{The \LaTeX info Documentation Format\\
+ 	{\normalsize Version \latexinfoversion}}
+
+\author{Richard M. Stallman
+	and Robert J. Chassell\\
+	The Free Software Foundation,\\
+	675 Massachusetts Ave., Cambridge MA,\\
+	\and  Michael Clarkson\\
+	Institute for Space and Terrestrial Science,\\
+	York University Campus,\\
+	North York, Ontario, M3J 1P3}
+
+
+\date{ISTS Technical Report: AI-90/1}
+
+\maketitle
+
+\clearpage
+\vspace{0pt plus 1filll}
+Copyright \copyright{} 1988 Free Software Foundation, Inc.
+
+\sp{2}
+This is version \latexinfoversion\ of the \LaTeX info documentation, and is
+for Version 18 of GNU Emacs.
+\sp{2}
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+
+\clearpage
+\pagestyle{headings}
+
+\pagenumbering{roman}
+\tableofcontents
+
+\clearpage
+\pagenumbering{arabic}
+
+\setfilename{latexinfo.info}
+\node Top, Licensing Information, (dir)Top, (dir)Top
+
+\begin{ifinfo}
+This file documents \LaTeX info, a documentation system that uses a single
+source file to produce both on-line help and a printed manual.  
+
+This is edition \latexinfoversion\ of the \LaTeX info documentation, and is 
+for Version 18 of GNU Emacs.\refill
+
+Copyright (C) 1988 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+\end{ifinfo}
+
+
+
+
+\begin{menu}
+* Licensing Information::
+* Overview of LaTeXinfo::
+* Beginning a LaTeXinfo File::
+* Ending a LaTeXinfo File::
+* Node and Chapter Structuring::
+* Making Quotations and Examples::
+* Making Lists and Descriptions::
+* Making Cross References::
+* Formatting Paragraphs::
+* Marking Text Within a Paragraph::
+* Input and Include Files::
+* Function Index::
+* Variable and Data Type Index::
+* Conditionals::
+* Printing Hardcopy::
+* Creating an On-line Info File::
+* Catching Mistakes::
+* LaTeXinfo Mode::
+* LaTeX Input Initialization::
+* Standard text for Copying Permissions::
+* LateXinfo and TeXinfo::
+* Command Index::
+* Concept Index::
+\end{menu}
+
+\node Licensing Information, Overview of LaTeXinfo, Top, Top
+\chapter*{Licensing Information}
+\cindex{Licensing Information}
+
+The programs currently being distributed that relate to \LaTeX info
+include two portions of GNU Emacs, plus two other separate programs
+(\code{texindex} and \code{latexinfo.sty}).  These programs are
+\dfn{free}; this means that everyone is free to use them and free to
+redistribute them on a free basis.  The \LaTeX info related programs are not
+in the public domain; they are copyrighted and there are restrictions on
+their distribution, but these restrictions are designed to permit
+everything that a good cooperating citizen would want to do.  What is
+not allowed is to try to prevent others from further sharing any version
+of these programs that they might get from you.
+
+  Specifically, we want to make sure that you have the right to give
+away copies of the programs that relate to \LaTeX info, that you receive
+source code or else can get it if you want it, that you can change these
+programs or use pieces of them in new free programs, and that you know
+you can do these things.
+
+  To make sure that everyone has such rights, we have to forbid you to
+deprive anyone else of these rights.  For example, if you distribute
+copies of the \LaTeX info related programs, you must give the recipients all
+the rights that you have.  You must make sure that they, too, receive or
+can get the source code.  And you must tell them their rights.
+
+  Also, for our own protection, we must make certain that everyone finds
+out that there is no warranty for the programs that relate to \LaTeX info.
+If these programs are modified by someone else and passed on, we want
+their recipients to know that what they have is not what we distributed,
+so that any problems introduced by others will not reflect on our
+reputation.
+
+  The precise conditions of the licenses for the programs currently
+being distributed that relate to \LaTeX info are found in the General Public
+Licenses that accompany them.  The programs that are part of GNU Emacs
+are covered by the GNU Emacs copying terms 
+(\pxref{License, , , emacs, The GNU Emacs Manual}), 
+and other programs are covered by licenses that are contained in their 
+source files.
+
+\node Overview of LaTeXinfo, Advantages of LaTeXinfo over TeXinfo, Licensing Information, Top
+\chapter{Overview of LaTeXinfo}
+\cindex{Overview of LaTeXinfo}
+\cindex{LaTeXinfo overview}
+
+\LaTeX info is a documentation system that uses a single source file for both
+on-line help and a printed manual.  This means that instead of writing two
+different documents, one for the on-line help and the other for the printed
+manual, only one document needs to be written.  When the system is revised,
+only one file has to be revised.\refill
+
+Using \LaTeX info, you can create a document with the normal features of a
+book such as chapters, sections, cross references and indices.  The
+chapters and sections of the printed manual can be made to correspond to
+the nodes of the on-line help.  The cross references and indices can be
+used in both the on-line help and in the printed document.  Indices are
+generated semi-automatically.\refill
+
+To make the printed manual, the \LaTeX info source file is processed by the
+\LaTeX\ typesetting program; the resulting DVI file can be typeset and
+printed as a book.  To make the on-line help, the \LaTeX info source file
+is by processed the \kbd{M-x latexinfo-format-buffer} command in GNU Emacs;
+the resulting Info file should be installed in the \file{info}
+directory.\refill
+
+Since the \LaTeX info source file is used for a dual task---to create both
+the on-line help and the printed manual---it must be written in a special
+format that uses commands (words preceded by a \samp{\back }) to
+indicate chapters, sections, nodes, examples, index entries and the
+like.\refill
+
+Before writing a \LaTeX info source file, you should be familiar with the
+on-line Info documentation reading program.  (\inforef{Info, info, info},
+for more information.)  If you are writing a document that will be both
+on-line and printed, you will need both Info and \LaTeX.
+
+To make a printed manual, you need to use \LaTeX, which is based on the
+powerful, sophisticated typesetting program written by Donald Knuth,
+\TeX.  It is freely distributable. It is written in a dialect of Pascal
+called WEB and can be compiled either in Pascal, or in C by using a
+conversion program that comes with the \TeX\ distribution.  (For
+information about getting \TeX, \pxref{TeX Mode, , , emacs, The GNU
+Emacs Manual}.)
+
+When \LaTeX\ processes a \LaTeX info source file, \LaTeX\ makes use of a
+macro definitions file called \file{latexinfo.sty} (The first line of every
+\LaTeX info file has a command that says \code{\back documentstyle[latexinfo]};
+this tells \LaTeX{} to use the \code{latexinfo} style file.)\refill
+
+If the \file{latexinfo.sty} file has not already been copied to the directory
+which contains the other \LaTeX\ macro definition files when Emacs was
+installed, you will probably want to copy it to that directory.  Usually,
+this is the \file{/usr/lib/tex/macros} directory.  For more information,
+\pxref{LaTeX Input Initialization, , LaTeX Input Initialization}.
+
+\begin{menu}
+* Advantages of LaTeXinfo over TeXinfo::
+* Characteristics of the Info File::
+* Characteristics of the Printed Manual::
+* General Syntactic Conventions::
+* A Short Sample LaTeXinfo File::
+\end{menu}
+
+\node Advantages of LaTeXinfo over TeXinfo, Characteristics of the Info File, Overview of LaTeXinfo, Overview of LaTeXinfo
+\section{Advantages of LaTeXinfo over TeXinfo}
+\cindex{Advantages of LaTeXinfo over TeXinfo}
+
+Documentation for GNU utilities and libraries is usually written in a
+format called \dfn{\TeX info}.  This document describes an enhancement
+of this format which can be used with \LaTeX\ instead of \TeX.
+
+\LaTeX info offers a number of advantages over \TeX info:
+
+\begin{enumerate}
+
+\item
+The point size or layout style of a document can be changed easily using
+as can the \code{documentstyle} (\t{article, report, book, twoside, \dots}).
+
+\item
+\LaTeX\ has better error checking than \TeX\ files, especially in
+begin/end environments.  In addition, the \LaTeX\ error messages are more
+informative.  This makes it considerably easier to make extensions and
+enhancements (read \i{hacks}).
+
+\item
+\LaTeX\ delimits its arguments with braces, so it's easier to tell where
+a \LaTeX info command starts, and where it ends.
+
+\item
+Any \LaTeX\ commands not understood by the on-line manual generator
+(\file{latexinfo.el}) are simply ignored.  This means that you are free to add
+a considerable number of \LaTeX\ commands to make you manual look pretty,
+as long as you don't care that there will be no action taken by the 
+Info formatting program.
+
+\item
+It is easy to add your own extensions to the on-line manual generator
+by making GNU Emacs handlers for your \LaTeX\ extensions.  This is
+the Emacs counterpart to the \code{documentstyle} options.  \LaTeX info looks
+in a specified directory for GNU Elisp code that corresponds to each
+style file.  This makes it easy to modularize you style files.
+
+\item \LaTeX\ has many advantages over \TeX, such as being able to
+incorporate the Bib\TeX\ bibliography formatting program, and is much more
+widely used than either Scribe or plain \TeX.
+
+\end{enumerate}
+
+
+\node Characteristics of the Info File, Characteristics of the Printed Manual, Advantages of LaTeXinfo over TeXinfo, Overview of LaTeXinfo
+\section{Characteristics of the Info File}
+\cindex{Characteristics of the Info File}
+\cindex{Info file characteristics}
+
+A \LaTeX info file can be transformed into a printed manual and an on-line Info
+file.
+
+An on-line Info file is a file formatted so that the Info documentation
+reading program can operate on it.  Info files are divided into pieces
+called \dfn{nodes}, each of which contains the discussion of one topic.
+Each node has a name, and contains both text for the user to read and
+pointers to other nodes, which are identified by their names.  The Info
+program displays one node at a time, and provides commands with which the
+user can move to the other nodes to which the current node points.
+
+\begin{ifinfo}
+\inforef{Info, info, info}, for more information about using Info.
+\end{ifinfo}
+
+Normally, most of the nodes are arranged in a tree which branches down.
+Each node may have any number of child nodes that describe subtopics of the
+\dfn{menu} within the parent node; this allows certain Info commands to
+be used to move to one of the child nodes.  Each child node records the
+parent node name, as its `Up' pointer.  Thus, if a node were at the logical
+level of a `chapter', its child nodes would be `sections'; likewise,
+the child nodes of a section would be subsections.
+
+The root of the tree is the top node of the file, through which users
+enter the file from the Info directory.  By convention, this node is always
+called \samp{Top}.  This node normally contains just a brief summary of the
+file's purpose, and a large menu through which the rest of the file is
+reached.
+
+Generally you enter the Info file from the top; then you can either traverse
+the file systematically by going from node to node or you can search large
+menus that correspond to indices and go directly to the node that has the
+information you want.
+
+If you want to read through an Info file in sequence, as if it were a
+printed manual, you can get the whole file with the advanced Info command
+\kbd{g *}.  (\inforef{Expert, info, info}.)\refill
+
+All the children of any one parent are linked together in a bidirectional
+chain of `Next' and `Previous' pointers.  This means that all the nodes
+that are logically parallel to sections within a chapter are all linked
+together.  Normally the order in this chain is the same as the order of the
+children in the parent's menu.  The last child has no `Next' pointer, and
+the first child normally has the parent as its `Previous' pointer (as well
+as its `Up' pointer, of course).
+
+Structuring the nodes in a tree is a matter of convention, not a
+requirement.  In fact, the `Up', `Previous' and `Next' pointers of a node
+can point to any other nodes, and the menu can contain any other nodes.
+The structure of nodes can be any directed graph.  But it is usually more
+comprehensible to make it a tree.  Info provides another kind of pointer
+between nodes, called a reference, that can be sprinkled through the text
+of a node.  This is usually the best way to represent links that do not fit
+the tree structure.
+
+Most often the nodes fall into a strict tree structure that corresponds to
+the structure of chapters and sections in the printed
+manual.  But there are times when this is not right for the material being
+discussed.  Therefore, \LaTeX info uses separate commands to specify the node
+structure of the Info file and the section structure of the printed manual.
+Also, \LaTeX info requires that you specify menus explicitly, rather than
+generate them automatically based on an assumed tree structure.
+
+\node Characteristics of the Printed Manual, General Syntactic Conventions, Characteristics of the Info File, Overview of LaTeXinfo
+\section{Characteristics of the Printed Manual}
+\cindex{Printed manual characteristics}
+\cindex{Characteristics, printed manual}
+
+A \LaTeX info file can be formatted and typeset as a printed manual.
+The printed manual will be the same as any other book; it will have a
+title page, copyright page, table of contents, and preface as you would
+expect, as well as chapters, sections and subsections, not to mention
+page headers, cross references and indices.
+\LaTeX info can be used for writing a book without ever having the intention of
+converting it into on-line help.  \LaTeX info can be used for writing a novel;
+and it can even be used to write a memo.
+
+\LaTeX info uses the formatting language called \LaTeX\ for typesetting. 
+A file called \file{latexinfo.sty} contains information (definitions or
+\dfn{macros}) that \LaTeX\ uses when it typesets a \LaTeX info file.
+(The macros tell \LaTeX\ how to convert the \LaTeX info commands to
+\LaTeX\ commands which \LaTeX\ can then process to create the typeset
+document.)  By changing the parameters in \file{latexinfo.sty} you can
+easily change the size of the printed document.  In addition, you can
+readily change the style in which the printed document is formatted; for
+example, you can change the sizes and fonts used, the amount of
+indentation for each paragraph, the degree to which words are
+hyphenated, and the like.  By changing the specifications, you can make
+a book look dignified, old and serious, or light-hearted, young and
+cheery. See the \LaTeX\ Manual for more details (\cite{Lamport}).\refill
+
+\LaTeX\ is very powerful and has a great many features.  Because a \LaTeX info
+file must be able to present information both on a character-only terminal
+in Info form and in a typeset book, the commands that \LaTeX info supports are
+necessarily limited.  However, you are free to use and \LaTeX\ extensions
+as long as you don't mind them being ignored by the Info formatting program.
+Or you can write your own extensions to the Info formatting program.
+\xref{Extending LaTeXinfo}.
+
+
+\node General Syntactic Conventions, A Short Sample LaTeXinfo File, Characteristics of the Printed Manual, Overview of LaTeXinfo
+\section{General Syntactic Conventions}
+\cindex{General syntactic conventions}
+\cindex{Syntactic conventions}
+\cindex{Conventions, syntactic}
+
+\LaTeX info files are made up of a subset of \LaTeX\ constructs.  The strict
+limits make it possible for \LaTeX info files to be understood both by 
+\LaTeX\ and by the code which converts them into Info files.
+
+All ASCII printing characters except \samp{\back }, \samp{\{} and
+\samp{\}} can appear in body text in a \LaTeX info file and stand for
+themselves.  This means that the characters \code{# $ % ^ & _ |} all
+print as normal characters.  \samp{\back } is the escape character which
+introduces commands.  \samp{\{} and \samp{\}} should be used only to
+surround arguments to certain commands.  \samp{\{} and \samp{\}}
+appearing anywhere else will be treated by \LaTeX\ as a grouping but
+treated by the code that produces an Info file as themselves; this
+inconsistency is undesirable.  To put one of these parentheses into the
+document, put a \samp{\back } character in front of it.  To get a
+\samp{\back } character itself, use \samp{\back back}. For example, you
+would insert \samp{\back \{}, and \samp{\back \}} for parentheses and
+\samp{\back back} for a backslash.\refill
+
+It is customary in \LaTeX\ to use doubled single-quote characters to begin
+and end quotations, \samp{``} like these \samp{''}.  This convention should
+be followed in \LaTeX info files.  Also, three hyphens in a row, \samp{---},
+are used for a dash---like this.  In \LaTeX, a single or even a double
+hyphen produces a dash that is shorter.\refill
+
+\LaTeX\ ignores the line-breaks in the input text, except for blank
+lines, which separate paragraphs.  Info generally preserves the line
+breaks that are present in the input file.  Therefore, break the lines
+in the \LaTeX info file the way you want them to appear in the output
+Info file, and let \LaTeX\ take care of itself.  Since Info does not
+normally refill paragraphs when it processes them, a line with commands
+in it will sometimes look bad after Info has run on it.  To cause Info
+to refill the paragraph after finishing with the other processing, you
+need to put the command \code{\back refill} at the end of the paragraph.
+(\xref{Refilling Paragraphs and Preventing Indentation}.)\refill
+
+To prevent a paragraph from being indented in the printed manual, put the
+command \code{\back noindent} on a line by itself before the start of the text
+that should not be indented.
+
+\clearpage
+In order to be made into a printed manual, a \LaTeX info file \strong{must}
+begin with lines that looks like
+
+\begin{verbatim}
+\documentstyle[12pt,twoside,latexinfo]{report}
+\pagestyle{headings}
+
+\begin{document}
+
+\setfilename{latexinfo.info}
+\end{verbatim}
+
+\noindent
+The \samp{\back documentstyle[12pt,twoside,latexinfo]} line tells
+\LaTeX\ to use the \file{latexinfo.sty} style file.  The \code{\back
+pagestyle\{headings\}} command is the \LaTeX\ command to put the chapter
+and section headings and page numbers at the top of each page.  The
+\code{\back begin\{document\}} command starts the document, and makes
+the characters \code{# $ % ^ & _ |} all begin to print as normal
+characters.  This line must be followed (sooner or later) by the
+\samp{\back setfilename\{\var{info-file-name}\}}. It is is needed to
+provide a name for the Info file to output to.\refill
+
+\node A Short Sample LaTeXinfo File, Beginning a LaTeXinfo File, General Syntactic Conventions, Overview of LaTeXinfo
+\section{A Short Sample LaTeXinfo File}
+\cindex{A Short Sample LaTeXinfo File}
+\cindex{Sample LaTeXinfo file}
+
+A \LaTeX info file looks like the following, which is a complete but very
+short \LaTeX info file.  The \code{\back comment} command introduces
+comments that will not appear in either the Info file or the printed
+manual; they are for the person who reads the \LaTeX info file.
+
+The first part of the file, from \samp{\back documentstyle} through to
+\samp{\back setfilename}, looks more intimidating than it is.  Most of the
+material is standard boilerplate; when you write a manual, you just put in
+the name of your own manual in this section.\refill
+
+All the commands that tell \LaTeX\ how to typeset the printed manual and
+tell \code{latexinfo-format-buffer} how to create an Info file are preceded
+by \samp{\back }; thus, \code{\back node} indicates a node and 
+\code{\back chapter} indicates the start of a chapter.
+
+\begin{verbatim}
+\documentstyle[11pt,twoside,latexinfo]{report}
+\pagestyle{empty}
+
+\begin{document}
+
+\c Declare which indices you want to make use of.
+\newindex{cp}
+
+\title{The Manual}
+
+\author{Fred Foobar,\\
+	Clarke Institute,\\
+	999 Queen Street,\\
+	Toronto, Ontario}
+
+\date{\today}
+\maketitle
+
+\c The following commands start the copyright page for the printed manual.
+\clearpage
+\vpace{0pt plus 1filll}
+Copyright \copyright\ year copyright-owner
+
+Permission is granted to copy and distribute modified versions of this
+manual under the following five pages of conditions...
+
+\c End the Copyleft page and Turn on the headings to each page.
+\clearpage
+\pagestyle{headings}
+
+\c Use roman numerals for the page numbers and Insert the Table of Contents.
+\pagenumbering{roman}
+\tableofcontents
+
+\c End the Table of Contents and start numbering from 1 with Arabic numbers
+\clearpage
+\pagenumbering{arabic}
+
+\c Anything before the \setfilename will not appear in the Info file.
+\setfilename{themanual.info}
+
+\begin{ifinfo}
+Put another 5 page copyleft here for the Info file.
+\end{ifinfo}
+
+\c The Top node contains the master menu for the Info file.
+\c This appears only in the Info file, not the printed manual.
+
+ \node Top,       First Chapter, (dir),    (dir)
+
+\begin{menu}
+* First Chapter::    The first chapter is the 
+                     only chapter in this sample.
+\end{menu}
+
+ \node First Chapter, Concept Index, Top, Top
+ \chapter{First Chapter}
+ \cindex{Reference to First Chapter}
+
+This is the contents of the first chapter. 
+Here is a numbered list.
+
+\begin{enumerate}
+\item
+This is the first item.
+
+\item
+This is the second item.
+\end{enumerate}
+
+The \kbd{M-x latexinfo-format-buffer} command transforms a LaTeXinfo file
+like this into an Info file; and \LaTeX\ typesets it for a printed manual.
+
+ \node Concept Index, Top, First Chapter, Top
+ \chapter*{Concept Index}
+
+\twocolumn
+\printindex{cp}
+
+\end{document}
+\end{verbatim}
+
+\clearpage
+Here is what the contents of the first chapter of the sample look like:
+
+\begin{quotation}
+
+This is the contents of the first chapter. 
+
+Here is a numbered list.
+
+\begin{enumerate}
+\item
+This is the first item.
+
+\item
+This is the second item.
+\end{enumerate}
+
+The \kbd{M-x latexinfo-format-buffer} command transforms a \LaTeX info file
+like this into an Info file; and \LaTeX\ typesets it for a printed manual.
+\end{quotation}
+
+\node Beginning a LaTeXinfo File, The LaTeXinfo File Header, A Short Sample LaTeXinfo File, Top
+\chapter{Beginning a LaTeXinfo File}
+\cindex{LaTeXinfo file beginning}
+\cindex{File beginning}
+
+Various pieces of information have to be provided to \LaTeX info at the
+beginning of a \LaTeX info file, such as the name of the file, the title
+of the document and the like.  Generally, the beginning of a \LaTeX info file
+has four parts:
+
+\begin{enumerate}
+\item
+The header, that includes the commands for naming the \LaTeX info file and
+telling \LaTeX\ what style files to use when processing the file.
+
+\item
+A section that is terminated by the \code{\back setfilename} command that
+contains the title page, the copyright page and the table of contents.
+This section appears only in the printed manual.
+
+\item
+A section, marked by the \code{\back begin\{ifinfo\}} and 
+\code{\back end\{ifinfo\}} commands, that contains a short statement 
+of what the file is about, the copyright notice and copying permissions.
+This section appears only in the Info file.
+
+\item
+The \samp{Top} node that contains an extensive menu for the whole Info
+file.  The contents of this node only appear in the Info file.
+\end{enumerate}
+
+If the \LaTeX info file has a section containing licensing information and a
+warranty disclaimer, that section usually follows the \samp{Top} node.  The
+licensing section will be followed by a preface or else by the first
+chapter of the manual.
+
+Since the copyright notice and the copying permissions are in sections that
+appear either only in the Info file or only in the printed manual, this
+information has to be repeated twice.
+
+
+
+\begin{menu}
+* The LaTeXinfo File Header::
+* Copyright Pages::
+* Generating a Table of Contents::
+* Copying Permissions for Info::
+* The Top Node and Master Menu::
+* Licensing and Distribution Information::
+\end{menu}
+
+\node The LaTeXinfo File Header, The First Line of a LaTeXinfo File, Beginning a LaTeXinfo File, Beginning a LaTeXinfo File
+\section{The LaTeXinfo File Header}
+\cindex{The LaTeXinfo File Header}
+\cindex{Header for LaTeXinfo files}
+\cindex{LaTeXinfo file header}
+
+\LaTeX info files start with at least three lines that provide Info and 
+\LaTeX\  with necessary information.  If you want to run \LaTeX\ on just
+a part of the \LaTeX info File, you also have to mark these heading lines
+with start-of-header and end-of-header lines.\refill
+
+\begin{menu}
+* The First Line of a LaTeXinfo File::
+* Titlepage::
+\end{menu}
+
+\node The First Line of a LaTeXinfo File, Titlepage, The LaTeXinfo File Header, The LaTeXinfo File Header
+\subsection{The First Line of a LaTeXinfo File}
+\cindex{First line of a LaTeXinfo file}
+\cindex{Beginning line of a LaTeXinfo file}
+
+
+Every \LaTeX info file that is to be the top-level input to \LaTeX\ must begin
+with a line that looks like this:
+
+\begin{verbatim}
+\documentstyle[12pt,twoside,latexinfo]{report}
+\end{verbatim}
+
+When the file is processed by \LaTeX, it loads the macros listed as
+options to the \code{documentstyle} command.  The option
+\code{latexinfo} is needed for processing a \LaTeX info file, and \LaTeX\ will
+then input the file \file{latexinfo.sty}
+\pxref{LaTeX Input Initialization}.  
+
+\code{12pt} and \code{twoside} are other \LaTeX\ options that also
+include style files.  Unlike \TeX info, these style files may have an
+Emacs counterpart, so that you can extend \LaTeX info by writing your
+own styles.
+\xref{Extending LaTeXinfo}, for more information on writing your own styles.
+
+\node Titlepage, Copyright Pages, The First Line of a LaTeXinfo File, The LaTeXinfo File Header
+\subsection{Titlepage}
+\cindex{Titlepage}
+\findex{author}
+\findex{title}
+\findex{date}
+\findex{maketitle}
+
+The first printed material after the \code{\back begin\{document\}} will
+make up the titlepage.  The \LaTeX\ commands \code{\back title},
+\code{\back author} and \code{\back date} are used the same way as in
+any \LaTeX\ report or book.  The title page is terminated by 
+\code{\back maketitle}. Following the material for the title page 
+should be the copyright page.\refill
+
+\node Copyright Pages, The Copyright Page and Printed Permissions, Titlepage, Beginning a LaTeXinfo File
+\section{Copyright Pages}
+\cindex{Copyright page}
+
+This part of the beginning of a \LaTeX info file contains the text
+of the copying permissions that will appear in the printed manual.
+This is usually followed by the \code{\back tableofcontents} command.  The
+title and copyright pages should appear before the \code{\back setfilename}
+command so that this material appears only in the printed manual, not in
+the Info file.
+
+\node The Copyright Page and Printed Permissions, Generating a Table of Contents, Copyright Pages, Copyright Pages
+\subsection{The Copyright Page and Printed Permissions}
+\cindex{Copyright}
+\cindex{Printed permissions}
+\cindex{Permissions, printed}
+\findex{pagestyle}
+
+By international treaty, the copyright notice for a book should either
+be on the title page or on the back of the title page.  Other locations
+in a book are not official and do not provide copyright protection.  The
+copyright notice should include the year followed by the name of the
+person or organization who has the copyright.  When the copyright notice
+is on the back of the title page, the page is not numbered.  Therefore,
+this is usually done while a \code{\back pagestyle\{empty\}} is in
+effect. See the \LaTeX\ Manual for more details on the \code{pagestyle}
+command (\cite{Lamport}).\refill
+
+\findex{filll}
+\findex{vspace}
+To cause a page break, the \code{\back clearpage} command is used.  In
+the sample, the \code{\back clearpage} that ends the titlepage is
+followed by the somewhat mysterious line that reads: 
+\samp{\back vspace\{0pt plus 1filll\}}.  This is a line that uses
+\LaTeX commands to push the copyright notice and the other text 
+on the copyright page towards the bottom of the page.  
+The \code{\back vspace} command means to put in white space.  
+The \samp{0pt plus 1filll}
+means to put in zero points of mandatory white space, and as much
+optional white space as needed.  Note the use of three \samp{l}s in the
+word \samp{filll}; this is the correct use in \LaTeX.\refill
+
+\findex{copyright}
+The \code{\back copyright} command generates a \samp{c} inside a circle.
+The copyright notice itself has the following legally defined sequence: 
+
+\begin{example}
+Copyright \copyright \var{year} \var{copyright-owner}
+\end{example}
+
+It is customary to put information on how to get a manual after the
+copyright notice (the address of the Free Software Foundation, for
+example) and the permissions.  Note that the permissions have to be
+repeated here as well as in the \code{ifinfo} section that immediately
+follows the header since this section appears only in the printed manual
+and the \code{ifinfo} section appears only in the Info file. \xref{Copying
+Permissions for Info}.
+
+Standard text for the permissions appears in the appendix.  
+\xref{Standard text for Copying Permissions}.
+
+\node Generating a Table of Contents, Setfilename, The Copyright Page and Printed Permissions, Beginning a LaTeXinfo File
+\section{Generating a Table of Contents}
+\cindex{Generating a Table of Contents}
+\cindex{Table of contents}
+\cindex{Contents, Table of}
+
+The commands \code{\back chapter}, \code{\back section}, etc., supply the
+information to make up a table of contents, but they do not cause an actual
+table to be generated.  To do this, you must use the 
+\code{\back tableofcontents} command.
+
+The table of contents command outputs (into a printed manual) a complete
+table of contents, based on the \code{\back chapter}, \code{\back section}
+and other sectioning commands.  This command should be used on
+a line by itself. This command automatically generates a Table of Contents
+heading at the top of the page.  Tables of contents should be generated at
+the beginning of the manual, usually just after the \code{\back maketitle},
+but before the \code{\back setfilename}.\refill
+
+\node Setfilename, Copying Permissions for Info, Generating a Table of Contents, Generating a Table of Contents
+\subsection{Setfilename}
+\cindex{Setfilename command}
+\cindex{Info file requirement for \back setfilename}
+\findex{setfilename}
+
+In order to be made into an Info file, a \LaTeX info file must contain a
+line that looks like this:
+
+\begin{example}
+\back setfilename\{\var{info-file-name}\}
+\end{example}
+
+\noindent
+This command specifies the name of the Info file to be generated.  In
+fact, there can be other things in the file before this line, but they
+are ignored in the generation of an Info file.  The line containing the
+\code{\back setfilename} is ignored when a printed manual is generated.
+Any \LaTeX\ commands that precede the \code{\back setfilename} are
+ignored by the Info formatting program.
+ 
+\node Copying Permissions for Info, The Top Node and Master Menu, Setfilename, Beginning a LaTeXinfo File
+\section{Copying Permissions for Info}
+\cindex{Copying Permissions for Info}
+
+Since the title page and the copyright page appear only in the printed copy
+of the manual, the same information has to inserted in a section that
+appears only in the Info file.  This section usually contains a brief
+description of the contents of the Info file, a copyright notice and
+copying permissions. For example
+
+
+\begin{verbatim}
+\setfilename{themanual.info}
+
+\begin{ifinfo}
+Copyright \copyright \var{year} \var{copyright-owner}
+Put another 5 page copyleft here for the Info file.
+\end{ifinfo}
+\end{verbatim}
+
+\noindent
+Standard text for the copyright permissions is contained in the appendix.
+\xref{Ifinfo Copying Permissions}, for the complete text.
+
+\node The Top Node and Master Menu, Licensing and Distribution Information, Copying Permissions for Info, Beginning a LaTeXinfo File
+\section{The Top Node and Master Menu}
+\cindex{Top node}
+\cindex{Master menu}
+
+The \samp{Top} node contains an extensive, master menu for the whole
+Info file.  The contents of this node appear only in the Info file.
+Nothing in this node should appear in the printed file.  Since a node
+line by itself and a menu by itself are not printed, the contents of
+this node do not have to be within a region delineated by 
+\code{\back begin\{ifinfo\}} and \code{\back end\{ifinfo\}} commands.
+However, any text within the node should be marked off in that manner.
+You may want to put a short summary before the master menu inside a
+region delineated by \code{\back begin\{ifinfo\}} and
+\code{\back end\{ifinfo\}} commands.  Usually, the `Previous' and `Up' 
+pointers to \samp{(dir)}.\refill
+
+Generally, the top menu is divided into parts.  
+
+\begin{itemize}
+
+\item
+The first part contains the major nodes in the \LaTeX info file: the
+
+\item
+The second part contains entries for the indices.  In an Info file, it
+is very useful to have indices here at the beginning of the file in the
+top node rather than at the end, as in a printed book.
+
+\item
+The third and subsequent parts contain a listing of the other, lower
+level nodes, often ordered by chapter.  This way, an inquirer can go
+directly to a particular node if he or she is searching for specific
+information.  (These nodes are not required; use them if you think they
+are a convenience.)
+\end{itemize}
+
+Each section in the menu can be introduced a descriptive line.  So long as
+the line does not begin with an asterisk, it will not be treated as a menu
+item.  (\xref{Menu Environment}, for more information.)
+
+For example, the Top node of this manual looks like this (but with many
+more entries):
+
+\begin{verbatim}
+ \node Top, Overview, (dir), (dir)
+
+\begin{menu}
+* Overview::                    What is LaTeXinfo?
+* LaTeXinfo Mode::              Special features in GNU Emacs.
+...
+
+Indices, nodes containing large menus
+
+* Command Index::               An item for each command.
+* Concept Index::               An item for each concept.
+
+A detailed node listing
+
+Overview
+* Info File::                   Characteristics of the Info file.
+* Printed Manual::              Characteristics of the printed manual.
+
+Using LaTeXinfo Mode
+* Info on a Region::            Formatting a region for Info.
+* Showing the Structure::       Showing the structure of a file.
+...
+...
+\end{verbatim}
+
+\node Licensing and Distribution Information, Ending a LaTeXinfo File, The Top Node and Master Menu, Beginning a LaTeXinfo File
+\section{Licensing and Distribution Information}
+\cindex{Distribution}
+\cindex{License agreement}
+
+If the \LaTeX info file has a section containing the ``General Public License''
+and the distribution information or a warranty disclaimer, this section
+usually follows the \samp{Top} node.  The licensing and distribution
+information and the disclaimer are followed by a preface, or else by the
+first chapter of the manual.
+
+The licensing agreement is very important to Project GNU documentation and
+software.  Without it, you may find that you can no longer get the software
+or its documentation.  This sounds paradoxical, but the state of the world
+is such that documentation and software that does not have a
+``restrictive'' license to make them freely distributable may be lost to
+the public.  This has happened.\refill
+
+For a good example of the text that could be used for the Distribution,
+General Public License and NO WARRANTY sections of your document, see the
+latest version of the GNU Emacs Manual (\cite{GNUEmacsManual}).
+
+\cindex{Preface}
+Although a preface is not a required part of a \LaTeX info file, it is very
+helpful.  Ideally, it should state clearly and concisely what the file is
+about and who would be interested in reading it.  In general, the preface
+would follow the licensing and distribution information, although sometimes
+people put it earlier in the document.  Usually, a preface is put in an
+\code{\back chapter*} section.
+
+\node Ending a LaTeXinfo File, Making a Bibliography, Licensing and Distribution Information, Top
+\chapter{Ending a LaTeXinfo File}
+\cindex{Ending a LaTeXinfo File}
+\cindex{LaTeXinfo file ending}
+\cindex{File ending}
+
+The end of a \LaTeX info file should include the bibliography, the
+indices and the command that tells \LaTeX\ that it has reached the end
+of the file. For example, a \LaTeX info file might be ended as follows:
+
+\begin{verbatim}
+\begin{tex}
+\bibliography{latexinfo}
+\end{tex}
+
+\twocolumn
+ \node Concept Index,     , Previous Node, Top
+ \chapter*{Concept Index}
+\cindex{Concept Index}
+
+\printindex{cp}
+
+\end{document}
+\end{verbatim}
+
+The \code{\back end\{document\}} command should be on a line by itself and
+every \LaTeX info file must end with such a line.  This command terminates
+\LaTeX\ processing and forces out unfinished pages.\refill
+
+
+\begin{menu}
+* Making a Bibliography::
+* Creating Indices::
+\end{menu}
+
+\node Making a Bibliography, Creating Indices, Ending a LaTeXinfo File, Ending a LaTeXinfo File
+\section{Making a Bibliography}
+\cindex{Making a Bibliography}
+\findex{bibliographystyle}
+
+You may also choose to include a bibliography of citations in the document.
+Citations are prepared using the program \t{BibTeX}, which formats the
+citations for use with \LaTeX.  See the \LaTeX\ Manual for more details
+(\cite{Lamport}).\refill
+
+Before you use the \code{\back cite} command, you must declare the
+bibliography style that you are going to use.  This is usually done at
+the beginning of the document, for example
+
+\begin{verbatim}
+\begin{document}
+\bibliographystyle{alpha}
+\end{verbatim}
+
+At the end of the document comes the bibliography itself.  
+The \code{\back bibliography} takes as an argument a comma separated list
+of filenames that contain the bibliography entries.
+
+\begin{verbatim}
+\begin{tex}
+\bibliography{latexinfo}
+\end{tex}
+\end{verbatim}
+
+With these two sections in your document, you can use the \code{\back cite}
+command to refer to the bibliography.  For example
+
+\begin{verbatim}
+a citation of the GNU Emacs Manual \cite{GNUEmacsManual}\dots
+\end{verbatim}
+
+\noindent
+would produce
+
+\begin{example}
+a citation of the GNU Emacs Manual \cite{GNUEmacsManual}\dots
+\end{example}
+
+\noindent
+and would cause an entry to be put in the Bibliography section something
+like
+
+\begin{description}
+\item[Sta86]
+Richard Stallman. \i{The GNU Emacs Manual},
+The Free Software Foundation, 675 Massachusetts Ave., Cambridge MA,
+02139, 1986.
+\end{description}
+
+\xref{Cite}, for how to use citations in the document.
+
+\node Creating Indices, Defining the Entries of an Index, Making a Bibliography, Ending a LaTeXinfo File
+\section{Creating Indices}
+\cindex{Indices}
+\cindex{Creating indices}
+
+Using \LaTeX info, you can generate printed indices and Info file menus without
+having to sort and collate entries manually.  \LaTeX info will do this for you
+automatically.  Each index covers a certain kind of entry (functions, or
+variables, or concepts, etc.)\: and lists all of those entries in
+alphabetical order, together with information on how to find the discussion
+of each entry.  In a printed manual, this information consists of page

@@ -1,0 +1,171 @@
+This file documents the recent changes and updates to the Emacs lisp
+archive on archive.cis.ohio-state.edu.  Unfortunately the the changes
+aren't dated and might be in a hard to read format.  I'm working on it
+though...  If you find this useful, let me know and I'll give fixing
+it up a higher priority.  My eventual plan is to post it as a monthly
+report to comp.emacs.sources.
+
+                               Dave Brennan (brennan@cis.ohio-state.edu)
+
+NEW FILES IN THE ARCHIVE:
+-------------------------
+
+brief|Alex Rezinsky|alexr@msil.sps.mot.com|Brief editor emulation|07-Feb-1995|1.1|~/modes/brief.el.Z
+auto-show|Pete Ware|ware@cis.ohio-state.edu|Automatically scroll horizontally|95-02-07|1.4|~/misc/auto-show.el
+tinyindent|Jari Aalto|jaalto@tre.tele.nokia.fi|automatic TAB indentation minor-mode, smart|18-Sept-1994|1.7|~/misc/tinyindent.el.Z
+comment|Noah Friedman|friedman@prep.ai.mit.edu|comment out regions of buffers|13-Feb-1995|1.1|~/misc/comment.el.gz
+cycle-mini|Joe Reiss|jreiss@magnus.acs.ohio-state.edu|Make arrow keys cycle through completions in minibuffer.|15-Feb-1995|1.01|~/misc/cycle-mini.el.Z
+edbm|Kresten Krab Thorup|m.s.phillips@bnr.co.uk|Simple minded dbm-like facility for emacs|14-Feb-1995|1.4|~/misc/edbm.el.Z
+nqueens|Daniel Quinlan|quinlan@gnu.ai.mit.edu|Produce a solution for the N queens problem.|27-Dec-94|1.2|~/games/nqueens.el
+tinylock|Jari Aalto|jaalto@tre.tele.nokia.fi|Simple emacs locking utility|11-Feb-1995|1.2|~/misc/tinylock.el.Z
+zload.el|Kresten Krab Thorup|krab@iesd.auc.dk|Load and execute compressed elisp files|13-Feb-1995||~/misc/zload.el.el.Z
+idl-shell|Chris Chase|chris.chase@jhuapl.edu|Run an IDL process in an emacs buffer using comint.el|26-Jan-1995|1.16|~/misc/idl-shell.el.Z
+idl|Chris Chase|chris.chase@jhuapl.edu|Editing Mode for IDL and PV-Wave procedure files.|26-Jan-1995|1.18|~/misc/idl.el
+easymenu|Richard M. Stallman|rms@prep.ai.mit.edu|Easy menu support for GNU Emacs 19|1995-01-25|19.29-pre|~/misc/easymenu.el.Z
+inform-mode|Gareth Rees|gdr11@cl.cam.ac.uk|Major mode for editing Inform programs|06-Dec-1994|Version 0.2|~/modes/inform-mode.el.Z
+fort-font.el|Ulrik Dickow|dickow@nbi.dk|Adds Font Lock support to Fortran mode.|31-Jan-1995|1.0|~/misc/fort-font.el.el.Z
+fort-font|Ulrik Dickow|dickow@nbi.dk|Adds Font Lock support to Fortran mode.|31-Jan-1995|1.0|~/misc/fort-font.el.Z
+html-font|Ulrik Dickow|dickow@nbi.dk|Adds Font Lock support to HTML helper mode.|31-Jan-1995|0.41|~/misc/html-font.el.Z
+pb-popup|Noah Friedman|friedman@prep.ai.mit.edu|ensure display of a process buffer when new output arrives|18-Feb-1995|1.1|~/misc/pb-popup.el.gz
+tinyreply|Jari Aalto|tre@tele.nokia.fi|A mail reply formatting package for rmail and gnus, n'thing like supercite|07-Mar-1995|1.63|~/misc/tinyreply.el.Z
+dylan-hilit19|David Lim|david@ndc.com|hilit19 mode patterns for Dylan.|14-Jun-1995|1.1|~/modes/dylan-hilit19.el.Z
+tinyreplace|Jari Aalto|jaalto@tre.tele.nokia.fi|Query-replace, hilit, block area support, latex, words |14-Jan-1995|1.3|~/misc/tinyreplace.el.Z
+filebrowser|Glenn Moloney|glenn@physics.unimelb.edu.au|file browser mode commands for Emacs|09-Jun-1995|0.2|~/misc/filebrowser
+c-comment-edit|Jari Aalto|jaalto@tre.tele.nokia.fi|C Comment Edit|08-Jun-1995|1.1|~/misc/c-comment-edit.el.Z
+tinypatch|Jari Aalto|jaalto@tre.tele.nokia.fi|Emacs 19.28 std distrib. corrections |08-Jun-1995|1.8|~/misc/tinypatch.el.Z
+hilit-LaTeX|Peter Galbraith|rhogee@bathybius.meteo.mcgill.ca|Enhancements for LaTeX highlighting w/ hilit19.el or hl319.el|21-Mar-1995|1.14|~/modes/hilit-LaTeX.el.gz
+bib-cite.el|Peter Galbraith|galbraith@mixing.qc.dfo.ca|Display \cite, \ref or \label / Extract refs from BiBTeX file.|16-May-1995|2.03|~/misc/bib-cite.el.el.gz
+if-jump|Alex Rezinsky|alexr@msil.sps.mot.com|Jump to matching #if/#else/#endif C-preprocessor directive|02-Jul-1992|1.0|~/misc/if-jump.el.gz
+defer-lock|Simon Marshall|simon@gnu.ai.mit.edu|Defer Font Lock mode (with fast on-the-fly fontification).|13-Jul-1995|1.00|~/modes/defer-lock.el.gz
+ff-paths|Peter Galbraith|galbraith@mixing.qc.dfo.ca|find-file-using-paths searches certain paths to find files|06-July-1995|2.01|~/misc/ff-paths.el.gz
+tinyeat|Jari Aalto|jari.aalto@ntc.nokia.com|Eating blocks of text forward, backward. No more ESC-d or or DEL/BACKSPACE|01-Sep-1995|1.4|~/misc/tinyeat.el.Z
+tinymatch|Jari Aalto|jari.aalto@ntc.nokia.com|Highlight matched text in a buffer easily, re-search-fwd, re-search-bck ..|21-Aug-1995|1.5|~/misc/tinymatch.el.Z
+csh-mode2|Jari Aalto|jaalto@tre.tele.nokia.fi|csh-mode , Editing tcsh, csh files |25-May-1995|1.0|~/modes/csh-mode2.el.Z
+tinydesk|Jari Aalto|jaalto@tre.tele.nokia.fi|Saves/restores files of emacs session|31-Mar-1995|1.7|~/misc/tinydesk.el.Z
+tinymacro|Jari Aalto|jaalto@tre.tele.nokia.fi|Fast way to assign newly created macro to key|24-Mar-1995|1.2|~/misc/tinymacro.el.Z
+tinyfh|Jari Aalto|jaalto@tre.tele.nokia.fi|Collection of file handling functions:easy read-only edit|29-Mar-1995|1.1|~/misc/tinyfh.el.Z
+strip|Lawrence R. Dodd|dodd@roebling.poly.edu|Hook for removing trailing blanks from files|11-May-1993|1.4|~/misc/strip.el.gz
+new-buffer|Michael Ernst|mernst@theory.lcs.mit.edu|Better buffer-menu|11-Aug-1995|1.1|~/misc/new-buffer.el.Z
+lookup|John Maraist|maraist@ira.uka.de|Small major and minor modes to facilitate manually translating documents from one language to another.|30-Aug-1995|1.0|~/modes/lookup.el.gz
+command-other-frame|Heddy Boubaker|boubaker@dgac.fr|Run commands in another frame.|29-Aug-1995|1.6|~/misc/command-other-frame.el.gz
+expand|Frederic Lepied|fred@sugix.frmug.fr.net|A minor mode to make abbreviations more usable.|25-Feb-1995|1.3|~/modes/expand.el.gz
+bibtex|Denise Draper|ddraper@cs.washington.edu|Major mode for editing bibtex files|18-Mar-1995|1.2|~/modes/bibtex.el.gz
+editvar|Lennart Staflin|lenst@lysator.liu.se|Edit a variable|21-May-1995|1.1|~/misc/editvar.el.gz
+kumac-mode|David P. Morrison|morrison@orph01.phy.ornl.gov|Major mode for editing Kumac (CERN KUIP macro) files.|03-Aug-1995|2.01|~/modes/kumac-mode.el.Z
+pyimenu|Perry A. Stoll|stoll@atr-sw.atr.co.jp|Python addition for imenu|17-Jul-1995|1.1|~/misc/pyimenu.el.gz
+e-mh-alias|Peter Galbraith|galbraith@mixing.qc.dfo.ca|MH mail alias expansion and substitution.|27-Jul-1995|2.03|~/misc/e-mh-alias.el.gz
+swifTeX|Matt Swift|swift@bu.edu|Major modes for LaTeX and LaTeX doc.sty documents|21-Apr-1995|1.23|~/modes/swiftex.el.gz
+e-mh-goto-address|Eric Ding|ericding@mit.edu|Click to browse URL or to send to e-mail address using mh-e|18-Aug-1995|0.8|~/misc/e-mh-goto-address.el.gz
+printers|Kevin Rodgers|kevinr@ihs.com|An interface to `lpstat` (SysV) and /etc/printcap (BSD).|21-Aug-1995|1.6|~/misc/printers.el.gz
+layout|Lennart Staflin|lenst@lysator.liu.se|Switching between named window configurations|21-May-1995|1.5|~/misc/layout.el.gz
+ftelnet|Noah Friedman|friedman@gnu.ai.mit.edu|remote login interface|15-Mar-1995|1.3|~/misc/ftelnet.el.gz
+flashparen|Noah Friedman|friedman@prep.ai.mit.edu|flash matching parens a la Zmacs|24-Mar-1995|1.3|~/misc/flashparen.el.gz
+dbfrobs|Noah Friedman|friedman@gnu.ai.mit.edu|useful enhancements for debugging|24-Mar-1995|1.1|~/functions/dbfrobs.el.gz
+killbuf|Noah Friedman|friedman@gnu.ai.mit.edu|Emacs 19--style kill-buffer for emacs 18|21-Jun-1994|1.1|~/misc/killbuf.el.gz
+webster|Noah Friedman|friedman@gnu.ai.mit.edu|emacs interface to webster servers|04-Jan-1995|1.2|~/interfaces/webster.el.gz
+whitespace|Noah Friedman|friedman@gnu.ai.mit.edu|strip trailing whitespace from buffers|11-Feb-1995|1.2|~/misc/whitespace.el.gz
+friedman-mail-utils|Noah Friedman|friedman@gnu.ai.mit.edu|random mail frobnication utilities|28-Oct-1993|1.2|~/misc/friedman-mail-utils.el.gz
+comint-popup|Noah Friedman|friedman@prep.ai.mit.edu|maybe show comint process output windows|24-Mar-1995|1.1|~/misc/comint-popup.el.gz
+follow-0.1|Anders Lindgren|andersl@csd.uu.se|Make several windows act like one. (Wide screen => Twice the workspace)|27-May-1995|0.1|~/misc/follow-0.1.el.gz
+gnuslive|Travis J.I. Corcoran|tjic@icd.teradyne.com|In gnus, highlights your favorite topics and people in color|30-Apr-95|0.9|~/packages/gnuslive.el
+dragbar-time|Travis J.I. Corcoran|tjic@icd.teradyne.com|Displays time and date in an x-windows drag bar|30-Apr-95|0.9|~/packages/dragbar-time.el
+mail-secure|Travis J.I. Corcoran|tjic@icd.teradyne.com|funcs to make secure mail and News easier: autosign, autoverify, anon, etc.|30-Apr-95|0.9|~/packages/mail-secure.el.gz
+cvs|Frederic Lepied|fred@sugix.frmug.fr.net|Light cvs support for emacs (ediff + mode line).|11-Sep-1995|1.9|~/modes/cvs.el.gz
+display-swascii|Lennart Staflin|lenst@lysator.liu.se|Set current display table to display ISO 646-SE (aka swascii) on a ISO 8859-1 display|21-May-1995|1.2|~/misc/display-swascii.el.gz
+tinyezip|Jari Aalto|jari.aalto@ntc.nokia.com|Support for compressed elisp files: require, load, load-library,load-file..|18-Sep-1995|1.18|~/misc/tinyezip.el.Z
+pk-dc|Pete Krautscheid|krauts@icd.teradyne.com|Mode to interface emacs with dc, the desk calculator.|19-Sep-1995|0.07|~/packages/pk-dc.el.Z
+tinyxreg|Jari Aalto|jari.aalto@ntc.nokia.com|Stores point/win cfg to X-POPUP LIST while storing it to register|13-Oct-1995|1.12|~/misc/tinyxreg.el.Z
+c-comment-edit|Kyle E. Jones|kyle_jones@wonderworks.com|C Comment Edit in separate window.|14-Oct-1995|1.3|~/misc/c-comment-edit2.el.Z
+line-nos|Wayne Mesard, Jari Aalto|wmesard@tofu.esd.sgi.com, jari.aalto@ntc.nokia.com|line numbers for emacs|28-Apr-1995|1.2|~/misc/line-nos.el.Z
+pathsearch|Christopher J. Madsen|ac608@yfn.ysu.edu|Find a file on a specified path (esp. C include files)|18-Jan-1996|1.6|~/misc/pathsearch.el.gz
+hun|Zoltan Kiraly|kiraly@cs.elte.hu|Convenient buffer-local minor mode for editing Hungarian documents|10-Jan-1996|1.1|~/modes/hun.el.gz
+fax-mode|Ralph Schleicher|rs@purple.IN-Ulm.DE|Fax sending commands for GNU Emacs.|31-Dec-1995|1.1|~/modes/fax-mode.tar.gz
+fold|Christian Queinnec|Christian.Queinnec@inria.fr|A minor folding mode with mouse/menu/face support.|02-Jan-1996|1.13|~modes/foldingo.el.gz
+tinypair|Jari Aalto|jari.aalto@ntc.nokia.com|self insert character pairs () "" '' <> etc. User configurable|12-Dec-1995|1.18|~/misc/tinypair.el.Z
+escreen|Noah Friedman|friedman@gnu.ai.mit.edu|emacs window session manager|11-Dec-1995|1.7|~/misc/escreen.el.gz
+md5|Gareth Rees|gdr11@cl.cam.ac.uk|MD5 cryptographic message digest algorithm|13-Nov-95|1.0|~/misc/md5.el.Z
+locate-mode|Peter Breton|pbreton@cs.umb.edu|Search a database of files and run dired commands on results|17-Sept-1995|1.0|~/misc/locate-mode.el.gz
+tinytab|Jari Aalto|jari.aalto@ntc.nokia.com|TAB handling minor mode, eg. step 4 chars bck/fwd , insert/del 4 spaces |02-Nov-1995|1.10|~/misc/tinytab.el.Z
+eldoc|Noah Friedman|friedman@prep.ai.mit.edu|show function arglist or variable docstring in echo area|12-Nov-1995|1.1|~/misc/eldoc.el.gz
+execcmd|Kyle Jones, Jari Aalto|kyle_jones@wonderworks.com, jari.aalto@ntc.nokia.com|After M-x COMMAND, shows you which keys the command is bound to|15-Aug-1995|2.1|~/packages/execcmd.el.gz
+---- next new entry ----
+
+
+UPDATED	FILES IN THE ARCHIVE:
+-----------------------------
+
+ps-print|James C. Thompson|thompson@wg2.waii.com|Jim's Pretty-Good PostScript Generator for Emacs 19 (ps-print)|26-Feb-1994|2.0|~/packages/ps-print.el
+find-file|Henry Guillaume|henry@qbd.com.au|Find a file associated with this buffer.|21-Dec-1994|4.0|~/misc/find-file.el.Z
+tinycom|Jari Aalto|jaalto@tre.tele.nokia.fi|Smart comment setting utility|01-Sept-1994|1.15|~/misc/tinycom.el.Z
+tinyappend|Jari Aalto|jaalto@tre.tele.nokia.fi|Gather text cumulatively to *append* buffer with ease|20-March-1994|1.3|~/misc/tinyappend.el.Z
+column|Per Abrahamsen|abraham@iesd.auc.dk|Display line and column in the mode line|1995-01-11|0.5|~/misc/column.el.Z
+defaultbanner|Christian Queinnec|Christian.Queinnec@inria.fr|Update banners or headers when files are visited.|18-Dec-1994|1.9|~/misc/defaultbanner.el.Z
+defaultcontent|Christian Queinnec|Christian.Queinnec@inria.fr|Fill new files when visited.|09-Feb-1995|1.21|~/misc/defaultcontent.el.Z
+fracc|Christian Queinnec|Christian.Queinnec@inria.fr|French accent towards Latin1, TeX, BibTeX, HTML.|18-Dec-1994|1.18|~/misc/fracc.el.Z
+mousymacro|Christian Queinnec|Christian.Queinnec@inria.fr|Run macros via simple mouse clicks.|03-Jan-1995|1.10|~/misc/mousymacro.el.Z
+supertab|Christian Queinnec|Christian.Queinnec@inria.fr|Enhanced TAB in Lisp-based modes.|09-Feb-1995|1.6|~/misc/supertab.el.Z
+OpenGL|Heddy Boubaker|boubaker@dgac.fr|Minor mode commands for editing OpenGL C/C++ code.|1995/01/27 10:28:02|0.3|~/modes/OpenGL.el.Z
+mode-compile|Heddy Boubaker|boubaker@dgac.fr|Smart command for compiling files according to major-mode.|1995/01/27 10:38:46|2.14|~/misc/mode-compile.el.Z
+lazy-lock|Simon Marshall|simon@gnu.ai.mit.edu|Lazy Font Lock mode (for fast demand-driven fontification).|25-Jan-95|1.10|~/modes/lazy-lock.el.Z
+auc-menu|Per Abrahamsen|abraham@iesd.auc.dk|Easy menu support for GNU Emacs and XEmacs|24-Jan-1995|5.8|~/misc/auc-menu.el.gz
+timecard-mode|Jonathan Stigelman|Stig@hackvan.com|Super-cool timecard maintenance mode for Emacs 18 & 19.  Does accounting.|1995/01/22 08:51:36|Release 1.37|~/modes/timecard-mode.el.Z
+docstring|Michael D. Ernst|mernst@theory.lcs.mit.edu|Keep documentation consistent with Lisp code by substituting doc strings.|02-20-1993|1.2|~/misc/docstring.el.Z
+idl-shell|Chris Chase|chris.chase@jhuapl.edu|Run an IDL process in an emacs buffer using comint.el|18-Feb-1995|1.18|~/misc/idl-shell.el.Z
+pb-popup|Noah Friedman|friedman@prep.ai.mit.edu|ensure display of a process buffer when new output arrives|25-Mar-1995|1.2|~/misc/pb-popup.el.gz
+tinylock|Jari Aalto|jaalto@tre.tele.nokia.fi|Simple emacs locking utility|07-Mar-1995|1.4|~/misc/tinylock.el.Z
+lazy-lock|Simon Marshall|simon@gnu.ai.mit.edu|Lazy Font Lock mode (with fast demand-driven fontification).|27-Jun-1995|1.11|~/modes/lazy-lock.el.Z
+lazy-lock|Simon Marshall|simon@gnu.ai.mit.edu|Lazy Font Lock mode (with fast demand-driven fontification).|13-Jul-1995|1.12|~/modes/lazy-lock.el.gz
+make-regexp|Simon Marshall|simon@gnu.ai.mit.edu|Generate efficient regexps to match strings.|11-Jul-1995|1.02|~/functions/make-regexp.el.gz
+ff-paths|Peter Galbraith|galbraith@mixing.qc.dfo.ca|find-file-using-paths searches certain paths to find files|19-July-1995|2.02|~/misc/ff-paths.el.gz
+ffap|Michelangelo Grigni|mic@mathcs.emory.edu|find-file-at-point guesses file or URL from text around point|09-Apr-1995|1.4|~/misc/ffap.el.Z
+tinyindent|Jari Aalto|jari.aalto@ntc.nokia.com|TAB indentation minor-mode, like indented-text-mode but in minor mode form|02-Sep-1995|1.12|~/misc/tinyindent.el.Z
+tinylock|Jari Aalto|jari.aalto@ntc.nokia.com|Simple emacs locking utility|01-Sep-1995|1.5|~/misc/tinylock.el.Z
+tinystamp|Jari Aalto|jari.aalto@ntc.nokia.com|A simple document stamping tool|25-Aug-1995|1.12|~/misc/tinystamp.el.Z
+tinysword|Jari Aalto|jaalto@tre.tele.nokia.fi|emacs 18-19, search word under cursor: backward, forward|07-Nov-1994|1.10|~/misc/tinysword.el.Z
+tinyhotlist|Jari Aalto|jaalto@tre.tele.nokia.fi|Hotlist of buffers in X, easy add, easy remove|19-May-1995|1.4|~/misc/tinyhotlist.el.Z
+tinycom|Jari Aalto|jaalto@tre.tele.nokia.fi|Smart comment setting utility|29-Sept-1994|1.18|~/misc/tinycom.el.Z
+tinyff|Jari Aalto|jaalto@tre.tele.nokia.fi|Regexp find file utility|03-Nov-1994|1.11|~/misc/tinyff.el.Z
+tinyappend|Jari Aalto|jaalto@tre.tele.nokia.fi|Gather text cumulatively to *append* buffer with ease|20-March-1994|1.5|~/misc/tinyappend.el.Z
+tinyreply|Jari Aalto|tre@tele.nokia.fi|A mail reply formatting package for rmail and gnus, n'thing like supercite|11-Apr-1995|1.70|~/misc/tinyreply.el.Z
+auto-show|Pete Ware|ware@cis.ohio-state.edu|Automatically scroll horizontally|95-02-28|1.9|~/misc/auto-show.el.gz
+iso-sgml|Frederic Lepied|lepied@cenaath.cena.dgac.fr|Edit SGML or HTML buffers with ISO 8859-1 (Latin-1) display|10-May-1995|1.4|~/misc/iso-sgml.el.Z
+cycle-mini|Joe Reiss|jreiss@magnus.acs.ohio-state.edu|Make arrow keys cycle through completions in minibuffer.|11-Mar-1995|1.02|~/misc/cycle-mini.el.Z
+cycle-mini|Joe Reiss|jreiss@vt.edu|Make arrow keys cycle through completions in minibuffer.|07-Apr-1995|1.03|~/misc/cycle-mini.el.Z
+hilit-LaTeX|Peter Galbraith|galbraith@mixing.qc.dfo.ca|Enhancements for LaTeX highlighting w/ hilit19.el or hl319.el|08-Aug-1995|1.16|~/modes/hilit-LaTeX.el.gz
+ff-paths|Peter Galbraith|galbraith@mixing.qc.dfo.ca|find-file-using-paths searches certain paths to find files|26-July-1995|3.00|~/misc/ff-paths.el.gz
+bib-cite|Peter Galbraith|galbraith@mixing.qc.dfo.ca|Display \cite, \ref or \label / Extract refs from BiBTeX file.|17-August-1995|2.10|~/misc/bib-cite.el.gz
+defaultcontent|Christian Queinnec|Christian.Queinnec@inria.fr|Fill new files when visited.|28-Jun-1995|1.24|~/misc/defaultcontent.el.Z
+fort-font|Ulrik Dickow|dickow@nbi.dk|Adds Font Lock support to Fortran mode.|24-Apr-1995|1.4|~/misc/fort-font.el.Z
+html-font|Ulrik Dickow|dickow@nbi.dk|Adds Font Lock support to HTML helper mode.|24-Apr-1995|1.3|~/misc/html-font.el.Z
+fshell|Noah Friedman|friedman@prep.ai.mit.edu|Enhancements to shell.el|15-Mar-1995|1.4|~/misc/fshell.el.Z
+listbuf|Noah Friedman|friedman@prep.ai.mit.edu|build buffer menu for use in Buff-menu-mode|25-Mar-1995|1.6|~/misc/listbuf.el.gz
+comment|Noah Friedman|friedman@prep.ai.mit.edu|comment out regions of buffers|18-Feb-1995|1.2|~/misc/comment.el.gz
+ffap|Michelangelo Grigni|mic@cs.ucsd.edu|find-file-at-point guesses file or URL from text around point|09-Apr-1995|1.2|~/misc/ffap.el.Z
+idl-shell|Chris Chase|chris.chase@jhuapl.edu|Run an IDL process in an emacs buffer using comint.el|1995/04/25 14:26:55|1.19|~/misc/idl-shell.el.Z
+goto-address|Eric Ding|ericding@mit.edu|Click to browse URL or to send to e-mail address|06-Sep-1995|0.10|~/misc/goto-addr.el.gz
+tinycom|Jari Aalto|jari.aalto@ntc.nokia.com|Smart comment setting utility, better than std emacs M-; |12-Sep-1995|1.21|~/misc/tinycom.el.Z
+fort-font|Ulrik Dickow|dickow@nbi.dk|A Font Lock setup for Fortran mode (Emacs <19.29 or any XEmacs).|11-Sep-1995|2.2|~/misc/fort-font.el.Z
+html-font|Ulrik Dickow|dickow@nbi.dk|Adds Font Lock support to HTML helper mode.|19-Sep-1995|4.01|~/misc/html-font.el.Z
+lazy-lock|Simon Marshall|simon@gnu.ai.mit.edu|Lazy Font Lock mode (with fast demand-driven fontification).|25-Sep-1995|1.13|~/modes/lazy-lock.el.Z
+tinyeat|Jari Aalto|jari.aalto@ntc.nokia.com|Eating blocks of text forward, backward. No more ESC-d or or DEL/BACKSPACE|28-Sep-1995|1.11|~/misc/tinyeat.el.Z
+goto-address|Eric Ding|ericding@mit.edu|Click to browse URL or to send to e-mail address|29-Sep-1995|1.0|~/misc/goto-addr.el.gz
+lazy-lock|Simon Marshall|simon@gnu.ai.mit.edu|Lazy Font Lock mode (with fast demand-driven fontification).|13-Oct-1995|1.14|~/modes/lazy-lock.el.Z
+tinyreplace|Jari Aalto|jari.aalto@ntc.nokia.com|Query-replace, hilit, block area support, latex, words, case pserve |18-Oct-1995|1.7|~/misc/tinyreplace.el.Z
+igrep|Kevin Rodgers|kevinr@ihs.com|An improved interface to grep/egrep/fgrep; plus recursive `find' versions.|09-Sep-1995|2.17|~/misc/igrep.el.Z
+fold|Christian Queinnec|Christian.Queinnec@inria.fr|A minor folding mode with mouse/menu/face support.|02-Jan-1996|1.13|~/modes/foldingo.el.gz
+lispdir|Dave Brennan|dbrennan@microsoft.com|Lisp Code Directory formatter and apropos|19-Dec-1995|4.4|~lispdir.el
+bib-cite|Peter Galbraith|galbraith@mixing.qc.dfo.ca|Display \cite, \ref or \label / Extract refs from BiBTeX file.|12-December-1995|2.11|~/misc/bib-cite.el.gz
+e-mh-alias|Peter Galbraith|galbraith@mixing.qc.dfo.ca|MH mail alias expansion and substitution.|29-Sep-1995|2.04|~/misc/e-mh-alias.el.gz
+ff-paths|Peter Galbraith|galbraith@mixing.qc.dfo.ca|find-file-using-paths searches certain paths to find files|08-Sept-1995|3.01|~/misc/ff-paths.el.gz
+kumac-mode|David P. Morrison|morrison@orph01.phy.ornl.gov|Major mode for editing Kumac (CERN KUIP macro) files.|12-Oct-1995|2.3|~/modes/kumac-mode.el.Z
+defer-lock|Simon Marshall|simon@gnu.ai.mit.edu|Defer Font Lock mode (with fast on-the-fly fontification).|13-Nov-1995|1.01|~/modes/defer-lock.el.Z
+lazy-lock|Simon Marshall|simon@gnu.ai.mit.edu|Lazy Font Lock mode (with fast demand-driven fontification).|13-Nov-1995|1.15|~/modes/lazy-lock.el.Z
+tinymatch|Jari Aalto|jari.aalto@ntc.nokia.com|Highlight matched text in a buffer easily, re-search-fwd, re-search-bck ..|08-Nov-1995|1.7|~/misc/tinymatch.el.Z
+flashparen|Noah Friedman|friedman@prep.ai.mit.edu|flash matching parens a la Zmacs|12-Nov-1995|1.8|~/misc/flashparen.el.gz
+eldoc|Noah Friedman|friedman@prep.ai.mit.edu|show function arglist or variable docstring in echo area|13-Nov-1995|1.2|~/misc/eldoc.el.gz
+dbfrobs|Noah Friedman|friedman@gnu.ai.mit.edu|useful enhancements for debugging|12-Nov-1995|1.5|~/functions/dbfrobs.el.gz
+listbuf|Noah Friedman|friedman@prep.ai.mit.edu|build buffer menu for use in Buff-menu-mode|10-Apr-1995|1.8|~/misc/listbuf.el.gz
+ftelnet|Noah Friedman|friedman@gnu.ai.mit.edu|remote login interface|12-Nov-1995|1.6|~/misc/ftelnet.el.gz
+flashparen|Noah Friedman|friedman@prep.ai.mit.edu|flash matching parens a la Zmacs|12-Nov-1995|1.8|~/misc/flashparen.el.gz
+tinydesk|Jari Aalto|jari.aalto@ntc.nokia.com|Saves/restores files of emacs session|17-Nov-1995|1.14|~/misc/tinydesk.el.Z
+---- next updated entry ----

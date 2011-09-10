@@ -1,0 +1,11 @@
+	The Amigaport V1.26 of GNUEmacs has a annoying bug; it quotes
+	all arguments to commands, therefore RX can't be called directly.
+
+	A workaround is to specify rexx-command-name to "rxnq", which
+	is a small (280 bytes!) command which strips the quotes and
+	calls RX. To do this, place the following lines into the
+	rxdb-mode-hook is the s:.emacs file.
+
+		(setq rxdb-command-name "rxnq")
+
+	And place rxnq in the loadpath.

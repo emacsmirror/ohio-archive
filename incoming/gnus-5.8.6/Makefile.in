@@ -1,0 +1,58 @@
+prefix = @prefix@
+datadir = @datadir@
+lispdir = @lispdir@
+srcdir = @srcdir@
+
+@SET_MAKE@
+EMACS = @EMACS@
+XEMACS = xemacs21
+
+all: lick info
+
+lick:
+	cd lisp && $(MAKE) EMACS="$(EMACS)" lispdir="$(lispdir)" all
+
+install:
+	cd lisp && $(MAKE) EMACS="$(EMACS)" lispdir="$(lispdir)" install
+	cd texi && $(MAKE) EMACS="$(EMACS)" install
+
+# Rule for Lars and nobody else.
+some:
+	cd lisp && $(MAKE) EMACS="$(EMACS)" some
+l:
+	cd lisp && $(MAKE) EMACS="$(EMACS)" clever
+
+info:
+	cd texi && $(MAKE) EMACS="$(EMACS)" all
+
+clean:
+	rm -f */*.orig */*.rej *.orig *.rej
+
+xsome:
+	cd lisp && $(MAKE) EMACS="$(XEMACS)" some
+
+elclean:
+	rm lisp/*.elc
+
+x:
+	make EMACS=xemacs21
+
+distclean:
+	make clean
+	rm -rf *~
+	for i in lisp texi; do (cd $$i; make distclean); done
+	rm -f config.log config.status config.cache Makefile
+
+osome:
+	make EMACS=xemacs21 some
+
+config.status: $(srcdir)/configure
+	$(SHELL) ./config.status --recheck
+$(srcdir)/configure: $(srcdir)/configure.in
+	cd $(srcdir) && autoconf
+Makefile: $(srcdir)/Makefile.in config.status
+	CONFIG_FILES=$@ CONFIG_HEADERS= $(SHELL) ./config.status
+
+# Tell versions [3.59,3.63) of GNU make to not export all variables.
+# Otherwise a system limit (for SysV at least) may be exceeded.
+.NOEXPORT:

@@ -1,0 +1,13 @@
+;; LCD Archive Entry:
+;; tpu-edt|Rob Riepel|riepel@networking.stanford.edu
+;; |Emulation of DEC's TPU emulating the EDT editor.
+;; |03-Dec-1993|Version 3.2|~/modes/tpu-edt-3.2.tar.Z|
+
+;; NOTE:  This file has been included for the elisp archive
+;;        maintainers.   It is not necessary for TPU-edt to
+;;        operate.
+
+;;        In case you're curious, LCD is the Lisp Code Directory.
+;;        It lists all  the elisp programs in the elisp archives.
+;;        Pick  up a copy today, from archive.cis.ohio-state.edu,
+;;        in pub/gnu/emacs/elisp-archive/LCD-datafile.Z.

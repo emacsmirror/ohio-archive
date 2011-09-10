@@ -1,0 +1,29 @@
+#!/usr/bin/awk -f
+# usage 'minmax filename'
+# writes `ymin ymax' to STDOUT for input two column data
+# This is an awk script
+# By Bruce Ravel 29 Sep 1997
+#
+# This file is part of FUSE, the Feff/UWXAFS System for Emacs
+#
+
+BEGIN {
+	ymin= 1000000
+	ymax=-1000000
+}
+#---skip blanks and hashed lines
+{
+if ($0 ~ /^#/)
+	{}
+else if ( ($0 ~ /^ *#/) || ($0 ~ /^$/) ) 
+	{}
+#---read 2 column data
+else
+	{ if ($2<ymin) ymin=$2
+	  if ($2>ymax) ymax=$2
+	}
+}
+#---pretty print the result
+END {
+	printf "%7.3f   %7.3f\n", ymin, ymax
+}

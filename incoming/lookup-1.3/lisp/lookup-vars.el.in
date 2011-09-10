@@ -1,0 +1,375 @@
+;;; lookup-vars.el --- Lookup variable list
+;; Copyright (C) 1999 Lookup Development Team <lookup@ring.gr.jp>
+
+;; Author: Keisuke Nishida <kei@psn.net>
+;; Version: $Id: lookup-vars.el.in,v 1.8 2000/04/01 07:11:41 knishida Exp $
+
+;; This file is part of Lookup.
+
+;; Lookup is free software; you can redistribute it and/or modify it
+;; under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2 of the License, or
+;; (at your option) any later version.
+
+;; Lookup is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with Lookup; if not, write to the Free Software Foundation,
+;; Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+;;; Code:
+
+(require 'evi)
+
+(defconst lookup-version "@VERSION@"
+  "Lookup のバージョン番号。")
+
+;;;
+;:: Customizable variables
+;;;
+
+(defgroup lookup nil
+  "Search interface to electronic dictionaries."
+  :group 'applications)
+
+(defgroup lookup-agents nil
+  "Search agents."
+  :group 'lookup)
+
+;; setup variables
+
+(defgroup lookup-setup-variables nil
+  "Setup variables."
+  :group 'lookup)
+
+(defcustom lookup-enable-splash t
+  "*Non-nil を指定すると、起動時にロゴ表示する"
+  :type 'boolean
+  :group 'lookup-general-options)
+
+(defcustom lookup-init-file (concat "~" init-file-user "/.lookup")
+  "*Lookup の初期化ファイル名。
+このファイルは lookup.el のロード直後に読み込まれる。"
+  :type 'file
+  :group 'lookup-setup-variables)
+
+(defcustom lookup-data-directory "@pkgemacsdir@"
+  "*Lookup に関するプログラム以外のデータが収められるディレクトリ。"
+  :type 'directory
+  :group 'lookup-setup-variables)
+
+(defcustom lookup-search-agents nil
+  "*検索エージェントの設定のリスト。
+リストの各要素は次の形式を取る:
+
+  (CLASS LOCATION [KEY1 VALUE1 [KEY2 VALUE2 [...]]])
+
+CLASS には、エージェントの種類をシンボルで指定する。
+LOCATION には、エージェントの所在を文字列で指定する。
+KEY 及び VALUE は省略可能で、エージェントに対するオプションを指定する。
+
+例: (setq lookup-search-agents
+          '((ndtp \"dserver\" :port 2010)
+            (ndeb \"/cdrom\" :enable (\"EIWA\")))))"
+  :type '(repeat (sexp :tag "agent"))	; type はちょっとややこしすぎ・・
+  :group 'lookup-setup-variables)
+
+(defcustom lookup-search-modules nil
+  "*検索モジュールの設定のリスト。"
+  :type '(repeat (cons :tag "Module" (string :tag "name")
+		       (repeat :tag "Dictionary" (string :tag "ID"))))
+  :group 'lookup-setup-variables)
+
+(defcustom lookup-default-agent-options nil
+  "*検索エージェントにデフォルトで与えるオプションのリスト。
+各オプションは、タグとなるシンボルと、値となる任意のオブジェクトとの
+cons によって表わす。"
+  :type '(repeat (cons :tag "option" (symbol :tag "tag") (sexp :tag "value")))
+  :group 'lookup-setup-variables)
+
+(defcustom lookup-agent-options-alist nil
+  "*検索エージェントのオプションを設定する連想リスト。
+各要素の car にはエージェントID(\"CLASS+LOCATION\")を指定し、
+cdr にはオプションのリストを指定する。"
+  :type '(repeat (cons :tag "Agent"
+		       (string :tag "ID")
+		       (repeat :tag "options" (cons :tag "option"
+						    (symbol :tag "tag")
+						    (sexp :tag "value")))))
+  :group 'lookup-setup-variables)
+
+(defcustom lookup-default-dictionary-options nil
+  "*辞書にデフォルトで与えるオプションのリスト。
+各オプションは、タグとなるシンボルと、値となる任意のオブジェクトとの
+cons によって表わす。"
+  :type '(repeat (cons :tag "option" (symbol :tag "tag") (sexp :tag "value")))
+  :group 'lookup-setup-variables)
+
+(defcustom lookup-dictionary-options-alist nil
+  "*辞書のオプションを設定する連想リスト。
+各要素の car には辞書ID(\"CLASS+LOCATION:NAME\")を指定し、
+cdr にはオプションのリストを指定する。"
+  :type '(repeat (cons :tag "Dictionary"
+		       (string :tag "ID")
+		       (repeat :tag "options" (cons :tag "option"
+						    (symbol :tag "tag")
+						    (sexp :tag "value")))))
+  :group 'lookup-setup-variables)
+
+;; general options
+
+(defgroup lookup-general-options nil
+  "General customizable variables."
+  :group 'lookup)
+
+(defcustom lookup-default-method 'exact
+  "*\\[lookup-pattern] で実行される標準の検索方式。
+変数 `lookup-word-search-methods' のいずれかの値を指定可能。"
+  :type 'symbol
+  :group 'lookup-general-options)
+
+(defcustom lookup-frame-alist
+  '((title . "Lookup") (menu-bar-lines . 0) (width . 48) (height . 32)
+    (lookup-fill-column . 45))
+  "*Lookup 専用フレームのパラメータのリスト。
+設定すべき値については、`default-frame-alist' を参照。"
+  :type '(repeat (cons :tag "Parameter"
+		       (symbol :tag "tag")
+		       (sexp :tag "value")))
+  :group 'lookup-general-options)
+
+(defcustom lookup-fill-column .9
+  "*エントリ内容を fill するときの桁数。
+小数を指定した場合は、ウィンドウの幅に対する割合として用いられる。"
+  :type 'number
+  :group 'lookup-general-options)
+
+(defcustom lookup-window-height 4
+  "*Entry バッファ等のウィンドウの高さ。
+小数を指定した場合は、Lookup 全体のウィンドウの高さに対する割合として
+用いられる。"
+  :type 'number
+  :group 'lookup-general-options)
+
+(make-variable-frame-local 'lookup-fill-column)
+(make-variable-frame-local 'lookup-window-height)
+
+(defcustom lookup-save-configuration t
+  "*Non-nil を指定すると、Lookup を抜けたときにウィンドウ状態を回復する。"
+  :type 'boolean
+  :group 'lookup-general-options)
+
+(defcustom lookup-use-bitmap (featurep 'bitmap)
+  "*Non-nil を指定すると、bitmap-mule パッケージを利用した外字表示を行なう。"
+  :type 'boolean
+  :group 'lookup-general-options)
+
+(defcustom lookup-use-kakasi (or (locate-library "kakasi" nil exec-path)
+				 (locate-library "kakasi.exe" nil exec-path))
+  "*Non-nil を指定すると、いくつかの局面で KAKASI が利用される。
+これは現在、具体的には日本語のデフォルトの検索語の切り出しに用いている。"
+  :type 'boolean
+  :group 'lookup-general-options)
+
+(defcustom lookup-enable-gaiji t
+  "*Non-nil を指定すると、外字表示が有効となる。"
+  :type 'boolean
+  :group 'lookup-general-options)
+
+(defcustom lookup-max-hits 50
+  "*検索時に表示するエントリの最大数。
+0 を指定すると、見つかった全てのエントリを表示する。"
+  :type 'integer
+  :group 'lookup-general-options)
+
+(defcustom lookup-max-text 100000
+  "*検索時に表示するエントリ本文の最大長。
+0 を指定すると、全文を表示する。"
+  :type 'integer
+  :group 'lookup-general-options)
+
+(defcustom lookup-cite-header nil
+  "*エントリ本文を引用するときのヘッダ。
+コマンド `lookup-entry-cite-content' 及び `lookup-content-cite-region'
+により内容を取り込むとき、その先頭に指定した文字列が付け加えられる。
+文字列が \"%T\" を含む場合、辞書のタイトルに置き換えられる。
+辞書オプション `cite-header' が指定されている場合、そちらが優先される。"
+  :type 'string
+  :group 'lookup-general-options)
+
+(defcustom lookup-cite-prefix nil
+  "*エントリ本文を引用するときのプレフィクス。
+コマンド `lookup-entry-cite-content' 及び `lookup-content-cite-region'
+により内容を取り込むとき、各行の先頭に指定した文字列が付け加えられる。
+辞書オプション `cite-preifx' が指定されている場合、そちらが優先される。"
+  :type 'string
+  :group 'lookup-general-options)
+
+(defcustom lookup-gaiji-alternate "_"
+  "*外字の代替文字列として用いられるデフォルトの文字列。"
+  :type 'string
+  :group 'lookup-general-options)
+
+(defcustom lookup-process-coding-system
+  (when (featurep 'evi-mule)
+    (if (memq system-type '(ms-dos windows-nt OS/2 emx))
+	(evi-coding-system 'sjis)
+      (evi-coding-system 'euc-jp)))
+  "*外部プロセスとのデフォルトの文字コード。"
+  :type 'symbol
+  :group 'lookup-general-options)
+
+(defcustom lookup-kakasi-coding-system lookup-process-coding-system
+  "*KAKASI の呼び出しに用いる文字コード。"
+  :type 'symbol
+  :group 'lookup-general-options)
+
+;; faces
+
+(defgroup lookup-faces nil
+  "Faces."
+  :group 'lookup)
+
+(defface lookup-splash-face
+    '((((class color) (background light)) (:foreground "Red"))
+      (((class color) (background dark)) (:foreground "Yellow")))
+  "Splash face."
+  :group 'lookup-faces)
+
+(defface lookup-heading-1-face
+    '((((class color) (background light)) (:foreground "SlateBlue" :bold t))
+      (((class color) (background dark)) (:foreground "LightBlue" :bold t)))
+  "Level 1 heading face."
+  :group 'lookup-faces)
+
+(defface lookup-heading-2-face
+  '((((class color) (background light)) (:foreground "Red" :bold t))
+    (((class color) (background dark)) (:foreground "Pink" :bold t)))
+  "Level 2 heading face."
+  :group 'lookup-faces)
+
+(defface lookup-heading-3-face
+  '((((class color) (background light)) (:foreground "Orange" :bold t))
+    (((class color) (background dark)) (:foreground "LightSalmon" :bold t)))
+  "Level 3 heading face."
+  :group 'lookup-faces)
+
+(defface lookup-heading-4-face
+  '((t (:bold t)))
+  "Level 4 heading face."
+  :group 'lookup-faces)
+
+(defface lookup-heading-5-face
+  '((t nil))
+  "Level 5 heading face."
+  :group 'lookup-faces)
+
+(defface lookup-heading-low-face
+  '((((class color) (background light)) (:foreground "Grey" :bold t))
+    (((class color) (background dark)) (:foreground "LightGrey" :bold t)))
+  "Low level heading face."
+  :group 'lookup-faces)
+
+(defface lookup-reference-face
+  '((((class color) (background light)) (:foreground "Blue" :bold t))
+    (((class color) (background dark)) (:foreground "Cyan" :bold t)))
+  "Face used to highlight reference."
+  :group 'lookup-faces)
+
+(defface lookup-refered-face
+  '((((class color) (background light)) (:foreground "DarkViolet" :bold t))
+    (((class color) (background dark)) (:foreground "Plum" :bold t)))
+  "Face used to highlight refered reference."
+  :group 'lookup-faces)
+
+;;;
+;:: Module variables
+;;;
+
+(defvar lookup-search-method nil
+  "検索方式を指定すると、入力をパースせずそれをそのまま用いる。")
+
+(defvar lookup-enable-format t
+  "Non-nil を指定すると、テキストを整形して出力する。")
+
+(defvar lookup-force-update nil
+  "Non-nil を指定すると、キャッシュを用いず強制的に再検索を行なう。")
+
+(defvar lookup-open-function 'lookup-other-window
+  "Lookup のウィンドウを表示するための標準の関数。
+次の三つのいずれかを指定可能。
+
+`lookup-full-screen'  - 検索結果を画面全体で表示する
+`lookup-other-window' - 検索結果を別のウィンドウで表示する
+`lookup-other-frame'  - 検索結果を別のフレームで表示する")
+
+;;;
+;:: Hooks
+;;;
+
+(defvar lookup-load-hook nil
+  "*Lookup のロード完了直後に実行される hook。
+`lookup-init-file' の読み込み直後に実行される。")
+
+;;;
+;:: Debug option
+;;;
+
+;; Lookup をデバッグに適した形で実行するには、変数 `lookup-debug-mode' を
+;; non-nil に設定する。この場合、次の機能が働く。
+;; 
+;; * プロセスの実行過程がバッファに保存される。例えば ndtp の場合、全ての
+;; やりとりがバッファ " *ndtp*" に記録される。
+;; 
+;; * 各種データ構造の属性リストの表示が抑制される。これにより、変数の値の
+;; 出力が抑えられ、情報が見やすくなる。`lookup-new-plist' を参照。これを
+;; 有効とするには `lookup-debug-mode' を ~/.emacs で設定しなければならない。
+
+(defvar lookup-debug-mode nil)
+
+;;;
+;:: Internal variables
+;;;
+
+(defvar lookup-agent-list nil)
+(defvar lookup-agent-alist nil)
+(defvar lookup-module-list nil)
+(defvar lookup-module-alist nil)
+(defvar lookup-dictionary-alist nil)
+
+(defvar lookup-default-module nil)
+(defvar lookup-current-session nil)
+(defvar lookup-last-session nil)
+
+(defvar lookup-buffer-list nil)
+(defvar lookup-search-pattern nil)
+(defvar lookup-search-found nil)
+(defvar lookup-dynamic-display nil)
+(defvar lookup-proceeding-message nil)
+(defvar lookup-window-configuration nil)
+(defvar lookup-byte-compile nil)
+
+(defvar lookup-gaiji-compose-function nil)
+(defvar lookup-gaiji-paste-function nil)
+
+(defun lookup-init-gaiji-functions ()
+  (cond ((featurep 'xemacs)
+	 (setq lookup-gaiji-compose-function 'lookup-glyph-compose
+	       lookup-gaiji-paste-function 'lookup-glyph-paste))
+	(lookup-use-bitmap
+	 (setq lookup-gaiji-compose-function 'lookup-bitmap-compose
+	       lookup-gaiji-paste-function 'lookup-bitmap-paste))
+	(t
+	 (setq lookup-gaiji-compose-function nil
+	       lookup-gaiji-paste-function 'lookup-bitmap-paste))))
+
+(provide 'lookup-vars)
+
+;;; lookup-vars.el ends here
+
+;;; Local variables:
+;;; mode:emacs-lisp
+;;; End:

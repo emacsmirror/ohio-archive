@@ -1,0 +1,49 @@
+#!/bin/csh -f
+# 
+# MH-to-pcmail exporter.  Takes two arguments: a folder name and an output
+# file name (to hold the folder's concatenated messages)
+
+if ($#argv < 2) then
+	echo "mh-to-pcmail-export: missing arguments"
+	exit 1
+endif
+if (! -d ~/Mail/$1 ) then
+	echo "mh-to-pcmail-export: no folder named $1"
+	exit 1
+endif
+cd ~/Mail/$1
+
+# remove any old control files
+#
+#	export-filelist contains an unsorted list of shell commands
+#		that will append messages to a message file
+#	export-sorted-filelist is the numerically-sorted version of
+#		the above, so messages are appended in numerical, not
+#		lexicographic, order
+#	export-message-separator is a file containing message separator text
+
+if ( -e export-filelist ) rm export-filelist
+if ( -e export-sorted-filelist ) rm export-sorted-filelist
+if ( -e export-message-separator ) rm export-message-separator
+if ( -e $2 ) rm $2
+cat << END > export-message-separator
+begin-message
+END
+
+foreach mailfile ( [0-9]* )
+	cat << bletch >> export-filelist
+cat export-message-separator $mailfile >> $2
+bletch
+end
+
+# sort the list of append commands
+
+sort -n +2 -3 export-filelist > export-sorted-filelist
+
+# execute the append recursively (uck)
+
+source export-sorted-filelist
+
+# and clean up
+
+rm export-filelist export-sorted-filelist export-message-separator

@@ -1,0 +1,133 @@
+Here are some issues to consider for future versions of the GNU Emacs
+Lisp primes library:
+
+(1) Investigate faster implementations of prime-p, perhaps using the
+    pointer to the Maple V isprime() documentation references.
+    Another good reference is pp. 221--223 of this excellent book:
+
+	@String{pub-SV                  = "Spring{\-}er-Ver{\-}lag"}
+
+	@String{pub-SV:adr              = "Berlin, Germany~/ Heidelberg,
+					  Germany~/ London, UK~/ etc."}
+
+	@Book{Skiena:1998:ADM,
+	  author =       "Steven S. Skiena",
+	  title =        "The Algorithm Design Manual",
+	  publisher =    pub-SV,
+	  address =      pub-SV:adr,
+	  pages =        "xvi + 486",
+	  year =         "1998",
+	  ISBN =         "0-387-94860-0",
+	  LCCN =         "QA76.9.A43S55 1997",
+	  bibdate =      "Tue Feb 10 10:51:27 1998",
+	  price =        "US\$54.95",
+	  acknowledgement = ack-nhfb,
+	}
+
+    Probabilisitic primality-test algorithms are discussed on
+    pp. 213--216 of this book:
+
+	@String{pub-WILEY               = "Wiley"}
+
+	@String{pub-WILEY:adr           = "New York, NY, USA"}
+
+	@Book{Schneier:1996:ACP,
+	  author =       "Bruce Schneier",
+	  title =        "Applied Cryptography: Protocols, Algorithms, and
+			 Source Code in {C}",
+	  publisher =    pub-WILEY,
+	  address =      pub-WILEY:adr,
+	  edition =      "Second",
+	  pages =        "xxiii + 758",
+	  year =         "1996",
+	  ISBN =         "0-471-12845-7 (cloth), 0-471-11709-9 (paper)",
+	  LCCN =         "QA76.9.A25 S35 1996",
+	  bibdate =      "Tue Oct 20 17:50:50 1998",
+	  acknowledgement = ack-nhfb,
+	}
+
+(2) Consider a cache inside prime-p to reuse the last result, or get
+    the result from a table.  The 1000-th prime is 7919, so a 1KB
+    buffer of 8192 bits could account for the 1029 primes 2, 3, ...,
+    8191.  The 5000-th prime is 48611, so a 49KB buffer could handle
+    primes up to that size.
+
+(3) What other prime number functions are candidates?
+
+    Maple V has only nextprime(), prevprime(), isprime(), and
+    ithprime(), all of which we have counterparts for.  Although Maple
+    has several dozen functions in its numtheory library, I am
+    primarily interested in those that have immediate practical
+    application in GNU Emacs library code.
+
+    Matlab has PRIMES(N), analogous to our (primes-between 0 n),
+    ISPRIME(N) (like our (prime-p n)), and FACTOR(N), which returns a
+    list of prime factors of n.  I have implemented this as
+    (prime-factors n) in the primes library; however, my current
+    implementation is unacceptably slow: it takes O(N) steps, while
+    Matlab's version returns results in much less than a second for
+    integers up to 2^31.  Its flops function shows that 14548
+    floating-point operations are carried out in factor(2147483648),
+    which looks like O(sqrt(N)) performance.
+
+    I looked at Mathematica's code for primes and factorizations; it
+    has much better performance than the simple algorithms in
+    primes.el version 1.00, but at the cost of a great deal of
+    complexity.
+
+    Matlab's implementation of ISPRIME() seems poor: on my late-1995
+    vintage Sun UltraSPARC 170 workstation running Sun Solaris 2.6,
+    ISPRIME(16777215) (16777215 == 2^{24}-1) takes 27.75 sec, while in
+    GNU Emacs 20.3.6, (prime-p 16777215) takes 0.00016 sec (averaged
+    over 1000 calls!). ISPRIME(268435455) (268435455 == 2^{28}-1)
+    fails with an `Out of memory' error whose remedy according to
+    `help memory' is ``Unix: Ask your system manager to increase your
+    Swap Space.''!  That happened on a system with 2GB of RAM.
+
+(4) Both Maple and Mathematica offer gcd and lcm (least-common
+    multiple) functions that can take more than 2 arguments.  Mine do
+    not.
+
+(5) Skiena's book on p. 222 points to the PARI system (in C and
+    assembly code), with 200 special predefined functions.
+
+(6) Mathematica claims to have a fast algorithm for determining the
+    k-th prime.
+
+(7) Consider this; it would seem to permit factorization of 28-bit
+    numbers in about 128 steps:
+
+>> ...
+>> This new paper may be of interest to you:
+>> 
+>> @String{j-MATH-COMPUT           = "Mathematics of Computation"}
+>> 
+>> 
+>> @Article{McKee:1999:SFF,
+>>   author =       "James McKee",
+>>   title =        "Speeding {Fermat}'s factoring method",
+>>   journal =      j-MATH-COMPUT,
+>>   volume =       "68",
+>>   number =       "228",
+>>   pages =        "1729--1737",
+>>   month =        oct,
+>>   year =         "1999",
+>>   CODEN =        "MCMPAF",
+>>   ISSN =         "0025-5718",
+>>   bibdate =      "Wed Sep 1 07:13:07 MDT 1999",
+>>   bibsource =    "http://www.ams.org/mcom/1999-68-228",
+>>   note =         "This paper present an {$O(N^{1/4+\epsilon}$} integer
+>>                  factoring algorithm that never requires arithmetic on
+>>                  numbers larger than the one to be factored.",
+>>   URL =          "http://www.ams.org/jourcgi/jour-pbprocess?fn=110&arg1=S0025-5718-99-01133-3&u=/mcom/1999-68-228/",
+>>   acknowledgement = ack-nhfb,
+>> }
+>> 
+>> Jim and Peter, you can find a local PostScript file with the paper in
+>>         /u/sy/beebe/S0025-5718-99-01133-3.ps
+>> (available for a few days).
+>> 
+>> The author compares his algorithm against others used for the
+>> quadratic sieve, and gives timing comparisons of the implementation
+>> compared to Maple and PARI-library functions for factorization.
+>> ...

@@ -1,0 +1,87 @@
+       Guidelines for Submitting Code to the Elisp Archive
+
+1. Documentation.
+
+    The preferred documentation is:
+
+	o Description of intended purpose
+	o Installation instructions
+	o Usage instructions
+	o Known bugs
+	o LCD Archive Entry (see below)
+	o Copyright notice (optional)
+
+    Scale the documentation as required; don't write a book for a five-line
+    function, don't submit 100k of code with no instructions.
+
+2. Copyright
+
+    The inclusion of a copyright notice that specifically allows others to
+    copy, modify, and redistribute your code is recommended.  For an
+    example, see the GNU Emacs General Public License (in Emacs: C-h C-c).
+
+3. Packaging
+
+    All submissions should be submitted in their entirety;
+    Modifications to C code from the standard Emacs distribution 
+    may be submitted as "diffs."
+
+    Multifile submissions should be packaged as a tar archive.
+
+4. Submission
+
+    Single file submissions to the archive should be mailed to
+    elisp-archive@cis.ohio-state.edu.  If you have a package that
+    consists of more than one file, you can send mail to this 
+    address to set up an ftp transfer of the tar'ed package or simply
+    send the tar file uuencoded and gzip'ed.  Please do not submit 
+    a shar file, as we do not have the time to unshar and repackage 
+    submissions.  (Previously submissions were accepted anonymously 
+    at Ohio State, but OSU has disabled anonymous writes.) If you 
+    have any questions about what to do, drop us a line.
+
+5. Lisp Code Directory Record
+
+    In order to make the Archives easier to use, and to lighten the
+    load of the maintainers, please include an LCD record with your
+    submission.  You can include the entry in your code in the
+    following format:
+
+      ;; LCD Archive Entry:
+      ;; package name|author's name|email address|
+      ;; description|
+      ;; date|version|archive path|
+
+    For example:
+
+      ;; LCD Archive Entry:
+      ;; tex-complete|Sebastian Kremer|sk@thp.Uni-Koeln.DE|
+      ;; Minibuffer name completion for editing [La]TeX.|
+      ;; 12-Mar-93|$Revision: 1.12 $|~/packages/tex-complete.el.Z|
+
+    The line on which the fields occur is flexible, and need not duplicate
+    the format above exactly, although fields should not be split over
+    lines.  The above format is recommended, and submissions will be recast
+    to this format before they are placed in the archive.  If you are
+    submitting a multi-file submission you should include a file named
+    "LCD-entry" which contains the archive entry, instead of placing it in
+    one or more of the individual files.
+
+    There are no specific formatting requirements for any of the fields.
+    For example, if you use RCS you could use "$Date: $" and "$Revision: $"
+    for the date and revision fields.  The prefix is also not important,
+    but should be the same for all lines.  You should not provide an
+    archive path unless one has been assigned by the maintainers, or the
+    path is blatantly obvious.  If you have any questions or comments about
+    this format please send mail to brennan@gnu.ai.mit.edu.
+
+    Special thanks to Sebastian Kremer for suggesting this format.
+    See the file pub/gnu/emacs/elisp-archive/lispdir.doc.Z for more
+    information about the LCD.
+
+    
+
+Dave Sill             Dave Brennan      
+de5@ornl.gov          brennan@gnu.ai.mit.edu
+
+Elisp Archive Coordinators

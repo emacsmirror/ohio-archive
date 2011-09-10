@@ -1,0 +1,368 @@
+
+Python version 1.0, VM version Intel x86 on 21 JAN 01 02:11:46 pm.
+Compiling: /usr/src/cvs/elispdb/elispdb-gen.lisp 20 JAN 01 07:35:57 pm
+
+Byte Compiling Top-Level Form: 
+Byte Compiling Top-Level Form: 
+Converted WHILE.
+Compiling DEFMACRO WHILE: 
+Byte Compiling Top-Level Form: 
+Converted INCHASH.
+Compiling DEFUN INCHASH: 
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN INCHASH
+  (+ (THE INTEGER (GETHASH KEY HASH 0)) VAL)
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The second argument is a INTEGER, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      Unable to do inline (signed-byte 32) arithmetic (cost 5) because:
+      The first argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The second argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The result is a INTEGER, not a (SIGNED-BYTE 32).
+      etc.
+
+Converted JOIN.
+Compiling DEFUN JOIN: 
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN JOIN
+  (CONCATENATE 'STRING RESULT (CAR CUR) SEP)
+Note: Unable to optimize due to type uncertainty:
+      The third argument is a (OR VECTOR CONS NULL), not a SIMPLE-BASE-STRING.
+      The fourth argument is a BASE-STRING, not a SIMPLE-BASE-STRING.
+
+  (CONCATENATE 'STRING RESULT (CAR CUR))
+Note: Unable to optimize due to type uncertainty:
+      The third argument is a (OR VECTOR CONS NULL), not a SIMPLE-BASE-STRING.
+
+Converted NMAP.
+Compiling DEFUN NMAP: 
+Converted FILE-PREFIX.
+Compiling DEFUN FILE-PREFIX: 
+Converted SCORE-STRING.
+Compiling DEFUN SCORE-STRING: 
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN SCORE-STRING
+  (INCHASH (NSTRING-DOWNCASE SUBSTR) SCORE HASH)
+--> BLOCK SETF LET* MULTIPLE-VALUE-BIND LET 
+==>
+  (+ (THE INTEGER (GETHASH KEY HASH 0)) VAL)
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The second argument is a INTEGER, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      Unable to do inline (signed-byte 32) arithmetic (cost 5) because:
+      The first argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The second argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The result is a INTEGER, not a (SIGNED-BYTE 32).
+      etc.
+
+  (INCHASH (NSTRING-DOWNCASE WORD) SCORE HASH)
+--> BLOCK SETF LET* MULTIPLE-VALUE-BIND LET 
+==>
+  (+ (THE INTEGER (GETHASH KEY HASH 0)) VAL)
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The second argument is a INTEGER, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      Unable to do inline (signed-byte 32) arithmetic (cost 5) because:
+      The first argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The second argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The result is a INTEGER, not a (SIGNED-BYTE 32).
+      etc.
+
+Converted GENERATE-ELAE-ENTRY-1.
+Compiling DEFUN GENERATE-ELAE-ENTRY-1: 
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN GENERATE-ELAE-ENTRY-1
+  (REGEXEC-WITH-BINDINGS (*HEADER-REGEXP* LINE)
+                         (WHOLE KEY VALUE)
+                         (WHEN (AND WHOLE #) (SETF KEY #) (SETF # #)))
+--> LET MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL VALUES-LIST MAPCAR LET FUNCTION 
+==>
+  (SUBSEQ #:G47 (CAR PCRE::M) (CDR PCRE::M))
+Note: Unable to optimize due to type uncertainty:
+      The first argument is a (OR BASE-STRING NULL), not a SIMPLE-BASE-STRING.
+
+  (REGEXEC-WITH-BINDINGS (*CONT-HEADER-REGEXP* OLINE)
+                         (WHOLE VALUE)
+                         (IF WHOLE
+                             (PUSH VALUE CUR)
+                             (RETURN-FROM READ-MORE CUR)))
+--> LET MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL VALUES-LIST MAPCAR LET FUNCTION 
+==>
+  (SUBSEQ #:G55 (CAR PCRE::M) (CDR PCRE::M))
+Note: Unable to optimize due to type uncertainty:
+      The first argument is a (OR VECTOR CONS NULL), not a SIMPLE-BASE-STRING.
+
+  (REGEXEC-WITH-BINDINGS (*BOF-REGEXP* LINE)
+                         (WHOLE NAME DESCRIPTION)
+                         (WHEN WHOLE (SETF # #) (RETURN-FROM NIL)))
+--> LET MULTIPLE-VALUE-BIND MULTIPLE-VALUE-CALL VALUES-LIST MAPCAR LET FUNCTION 
+==>
+  (SUBSEQ #:G12 (CAR PCRE::M) (CDR PCRE::M))
+Note: Unable to optimize due to type uncertainty:
+      The first argument is a (OR VECTOR CONS NULL), not a SIMPLE-BASE-STRING.
+
+  (DOTIMES (I 10)
+    (LET (#)
+      (WHEN LINE #)))
+--> DO BLOCK LET TAGBODY UNLESS COND IF NOT IF >= IF 
+==>
+  (< I 10)
+Note: Forced to do GENERIC-< (cost 10).
+      Unable to do inline fixnum comparison (cost 3) because:
+      The first argument is a UNSIGNED-BYTE, not a FIXNUM.
+      Unable to do inline fixnum comparison (cost 4) because:
+      The first argument is a UNSIGNED-BYTE, not a FIXNUM.
+      etc.
+
+--> DO BLOCK LET TAGBODY PSETQ LET 1+ 
+==>
+  (+ I 1)
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 1) because:
+      The first argument is a UNSIGNED-BYTE, not a FIXNUM.
+      The result is a (INTEGER 1), not a FIXNUM.
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a UNSIGNED-BYTE, not a FIXNUM.
+      The result is a (INTEGER 1), not a FIXNUM.
+      etc.
+
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN MAYBE-GENERATE-ELAE-ENTRY
+  #'(LAMBDA (A B)
+      (DECLARE (ARCHIVE-ENTRY A B) (OPTIMIZE # #))
+      (> (HASH-TABLE-COUNT #) (HASH-TABLE-COUNT #)))
+Note: Abbreviated type declaration: (ARCHIVE-ENTRY A B).
+
+Converted MAYBE-GENERATE-ELAE-ENTRY.
+Compiling DEFUN MAYBE-GENERATE-ELAE-ENTRY: 
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN MAYBE-GENERATE-ELAE-ENTRY
+  (AREF ENTRIES 0)
+--> LET* 
+==>
+  (KERNEL:DATA-VECTOR-REF ARRAY KERNEL:INDEX)
+Note: Unable to optimize due to type uncertainty:
+      The first argument is a (VECTOR T), not a SIMPLE-ARRAY.
+
+==>
+  (ARRAY-DIMENSION ARRAY 0)
+Note: Unable to optimize because:
+      Can't tell if array is simple.
+
+Converted GENERATE-ELAE-ENTRY.
+Compiling DEFUN GENERATE-ELAE-ENTRY: 
+Converted SCORE-COMMENTS.
+Compiling DEFUN SCORE-COMMENTS: 
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN SCORE-COMMENTS
+  (> INITIAL-SCORE 1)
+Note: Forced to do GENERIC-> (cost 10).
+      Unable to do inline fixnum comparison (cost 3) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      Unable to do inline fixnum comparison (cost 4) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      etc.
+
+  (DECF INITIAL-SCORE)
+--> LET* 
+==>
+  (- INITIAL-SCORE 1)
+Note: Forced to do GENERIC-- (cost 10).
+      Unable to do inline fixnum arithmetic (cost 1) because:
+      The first argument is a (INTEGER 2), not a FIXNUM.
+      The result is a (INTEGER 1), not a FIXNUM.
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a (INTEGER 2), not a FIXNUM.
+      The result is a (INTEGER 1), not a FIXNUM.
+      etc.
+
+  (INCF COUNT
+        (SCORE-STRING WORDHASH (READ-LINE STREAM NIL) (IF # # INITIAL-SCORE)))
+--> LET* 
+==>
+  (+ COUNT
+     (SCORE-STRING WORDHASH (READ-LINE STREAM NIL) (IF # # INITIAL-SCORE)))
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      Unable to do inline (signed-byte 32) arithmetic (cost 5) because:
+      The first argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The result is a INTEGER, not a (SIGNED-BYTE 32).
+      etc.
+
+Converted SCORE-DOCSTRINGS.
+Compiling DEFUN SCORE-DOCSTRINGS: 
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN SCORE-DOCSTRINGS
+  (INCF COUNT (SCORE-STRING WORDHASH (WITH-OUTPUT-TO-STRING # #) 1))
+--> LET* 
+==>
+  (+ COUNT (SCORE-STRING WORDHASH (WITH-OUTPUT-TO-STRING # #) 1))
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      Unable to do inline (signed-byte 32) arithmetic (cost 5) because:
+      The first argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The result is a INTEGER, not a (SIGNED-BYTE 32).
+      etc.
+
+Byte Compiling Top-Level Form: 
+Converted ADD-WORD-SCORES.
+Compiling DEFUN ADD-WORD-SCORES: 
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN ADD-WORD-SCORES
+  (INCF COUNT (SCORE-COMMENTS WORDHASH STREAM 20))
+--> LET* 
+==>
+  (+ COUNT (SCORE-COMMENTS WORDHASH STREAM 20))
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The second argument is a INTEGER, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      Unable to do inline (signed-byte 32) arithmetic (cost 5) because:
+      The first argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The second argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The result is a INTEGER, not a (SIGNED-BYTE 32).
+      etc.
+
+  (INCF COUNT (SCORE-DOCSTRINGS WORDHASH STREAM))
+--> LET* 
+==>
+  (+ COUNT (SCORE-DOCSTRINGS WORDHASH STREAM))
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The second argument is a INTEGER, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      Unable to do inline (signed-byte 32) arithmetic (cost 5) because:
+      The first argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The second argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The result is a INTEGER, not a (SIGNED-BYTE 32).
+      etc.
+
+Converted GENERATE-WORD-SCORES.
+Compiling DEFUN GENERATE-WORD-SCORES: 
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN GENERATE-WORD-SCORES
+  (/ V FACTOR)
+Note: Unable to optimize due to type uncertainty:
+      The first argument is a NUMBER, not a FLOAT.
+Note: Unable to optimize due to type uncertainty:
+      The first argument is a NUMBER, not a (COMPLEX SINGLE-FLOAT).
+Note: Unable to optimize due to type uncertainty:
+      The first argument is a NUMBER, not a (COMPLEX DOUBLE-FLOAT).
+Note: Unable to optimize due to type uncertainty:
+      The first argument is a NUMBER, not a INTEGER.
+
+  (CEILING (/ V FACTOR))
+==>
+  (CEILING (/ V FACTOR) 1)
+Note: Unable to optimize due to type uncertainty:
+      The first argument is a REAL, not a FLOAT.
+Note: Unable to convert division by 2^k to shift due to type uncertainty:
+      The first argument is a REAL, not a INTEGER.
+
+  (FLOOR (/ TOTAL-SIZE 16384))
+==>
+  (FLOOR (/ TOTAL-SIZE 16384) 1)
+Note: Unable to convert division by 2^k to shift due to type uncertainty:
+      The first argument is a RATIONAL, not a INTEGER.
+
+  (INCF TOTAL-SIZE (ADD-WORD-SCORES WORDHASH FILENAME))
+--> LET* 
+==>
+  (+ TOTAL-SIZE (ADD-WORD-SCORES WORDHASH FILENAME))
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The second argument is a UNSIGNED-BYTE, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      Unable to do inline (signed-byte 32) arithmetic (cost 5) because:
+      The first argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The second argument is a UNSIGNED-BYTE, not a (SIGNED-BYTE 32).
+      The result is a INTEGER, not a (SIGNED-BYTE 32).
+      etc.
+
+  (INCHASH (FILE-PREFIX FILENAME) 100 WORDHASH)
+--> BLOCK SETF LET* MULTIPLE-VALUE-BIND LET 
+==>
+  (+ (THE INTEGER (GETHASH KEY HASH 0)) VAL)
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 1) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      etc.
+
+  (INCF TOTAL-SIZE (ADD-WORD-SCORES WORDHASH FILE))
+--> LET* 
+==>
+  (+ TOTAL-SIZE (ADD-WORD-SCORES WORDHASH FILE))
+Note: Forced to do GENERIC-+ (cost 10).
+      Unable to do inline fixnum arithmetic (cost 2) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      The second argument is a UNSIGNED-BYTE, not a FIXNUM.
+      The result is a INTEGER, not a FIXNUM.
+      Unable to do inline (signed-byte 32) arithmetic (cost 5) because:
+      The first argument is a INTEGER, not a (SIGNED-BYTE 32).
+      The second argument is a UNSIGNED-BYTE, not a (SIGNED-BYTE 32).
+      The result is a INTEGER, not a (SIGNED-BYTE 32).
+      etc.
+
+Converted MAKE-WORD-DATABASE.
+Compiling DEFUN MAKE-WORD-DATABASE: 
+
+File: /usr/src/cvs/elispdb/elispdb-gen.lisp
+
+In: DEFUN MAKE-WORD-DATABASE
+  (> V 1)
+Note: Forced to do GENERIC-> (cost 10).
+      Unable to do inline fixnum comparison (cost 3) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      Unable to do inline fixnum comparison (cost 4) because:
+      The first argument is a INTEGER, not a FIXNUM.
+      etc.
+
+Converted MAKE-ELAE-DATABASE.
+Compiling DEFUN MAKE-ELAE-DATABASE: 
+Converted MAKE-DATABASES.
+Compiling DEFUN MAKE-DATABASES: 
+Byte Compiling Top-Level Form: 
+
+Compilation unit finished.
+  30 notes
+
+
+src:cvs/elispdb/elispdb-gen.x86f written.
+Compilation finished in 0:00:01.

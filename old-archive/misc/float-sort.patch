@@ -1,0 +1,102 @@
+From utkcs2!emory!swrinde!cs.utexas.edu!tut.cis.ohio-state.edu!moose.crd.ge.com!montnaro Mon Jun 25 07:46:11 EDT 1990
+Article 2128 of gnu.emacs.bug:
+Path: utkcs2!emory!swrinde!cs.utexas.edu!tut.cis.ohio-state.edu!moose.crd.ge.com!montnaro
+>From: montnaro@moose.crd.ge.com (Skip Montanaro)
+Newsgroups: gnu.emacs.bug
+Subject: Sorting floating point fields
+Message-ID: <9006220250.AA26909@moose.crd.Ge.Com>
+Date: 22 Jun 90 02:50:37 GMT
+Sender: daemon@tut.cis.ohio-state.edu
+Reply-To: montanaro@crdgw1.ge.com (Skip Montanaro)
+Distribution: gnu
+Organization: GNUs Not Usenet
+Lines: 86
+
+
+The following context diff to sort.el for Emacs 18.55 allows you to sort on
+floating point fields. An earlier version used skip-chars-forward instead of
+re-search-forward. It serendipitously worked for the simple examples I
+tried. I believe this version is correct, at least in that regard.
+
+Notice that float.el doesn't (provide 'float) as it should. If this gets
+fixed, the autoloads should be replaced by (require 'float).
+
+Skip (montanaro@crdgw1.ge.com)
+
+*** /common/sun4/emacs/lisp/sort.el	Mon May 30 17:53:34 1988
+--- emacs/sort-float.el	Wed Jun 20 09:48:00 1990
+***************
+*** 21,24 ****
+--- 21,28 ----
+  (provide 'sort)
+  
++ (autoload 'string-to-float "float")
++ (autoload 'floatp "float")
++ (autoload 'f< "float")
++ 
+  ;; Original version of most of this contributed by Howie Kaye
+  
+***************
+*** 66,70 ****
+  	      (if (fboundp 'sortcar)
+  		  (sortcar sort-lists
+! 			   (cond ((numberp (car (car sort-lists)))
+  				  '<)
+  				 ((consp (car (car sort-lists)))
+--- 70,76 ----
+  	      (if (fboundp 'sortcar)
+  		  (sortcar sort-lists
+! 			   (cond ((floatp (car (car sort-lists)))
+! 				  'f<)
+! 				 ((numberp (car (car sort-lists)))
+  				  '<)
+  				 ((consp (car (car sort-lists)))
+***************
+*** 73,79 ****
+  				  'string<)))
+  		  (sort sort-lists
+! 			(cond ((numberp (car (car sort-lists)))
+  			       (function
+  				(lambda (a b)
+  				  (< (car a) (car b)))))
+  			      ((consp (car (car sort-lists)))
+--- 79,89 ----
+  				  'string<)))
+  		  (sort sort-lists
+! 			(cond ((floatp (car (car sort-lists)))
+  			       (function
+  				(lambda (a b)
++ 				  (f< (car a) (car b)))))
++ 			      ((numberp (car (car sort-lists)))
++ 			       (function
++ 				(lambda (a b)
+  				  (< (car a) (car b)))))
+  			      ((consp (car (car sort-lists)))
+***************
+*** 343,344 ****
+--- 353,375 ----
+                             (concat "+0." col-start)
+                             (concat "-0." col-end)))))
++ 
++ (defun sort-float-fields (field beg end)
++   "Sort lines in region numerically by the ARGth field of each line.
++ Fields are separated by whitespace and numbered from 1 up.  Specified field
++ must contain a floating point number in each line of the region.  With a
++ negative arg, sorts by the -ARG'th field, in reverse order.  Called from a
++ program, there are three arguments: FIELD, BEG and END.  BEG and END specify
++ region to sort."
++   (interactive "p\nr")
++   (sort-fields-1 field beg end
++ 		 (function (lambda ()
++ 			     (sort-skip-fields (1- field))
++ 			     (string-to-float
++ 			      (buffer-substring
++ 			       (point)
++ 			       (save-excursion
++ 				 (re-search-forward
++ 				  "[+-]?[0-9]*\.?[0-9]*\\([eE][+-]?[0-9]+\\)?")
++ 				 (point))))))
++ 		 nil))
++ 
+
+

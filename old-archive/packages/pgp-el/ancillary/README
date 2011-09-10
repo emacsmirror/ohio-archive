@@ -1,0 +1,5 @@
+These elisp files supplement pgp.el.  You may already have
+versions of these files - they may have come with your Emacs
+distribution, in fact.  If you already have them, do *not* use
+these versions.  These versions are only provided for those who
+don't already have one.

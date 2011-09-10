@@ -1,0 +1,68 @@
+How To Submit Emacs Lisp Code to the Archive
+
+Time-stamp: <2000-09-24 01:54:30 walters>
+
+1) Make sure that your code has a clear copyright statement near the
+   top, with a free software license attached.
+
+   We cannot accept code that does not have a copyright.  In addition,
+   please use a license that makes your code free software.  For an
+   example of acceptable terms, type 'C-h C-c' inside Emacs.  If in
+   doubt, send mail to archive@cis.ohio-state.edu.
+
+2) Please read the section "Tips And Conventions" in the
+   Emacs Lisp manual, and try to make your entry conform as much as
+   possible to these standards.  It is not strictly required for
+   submission, however.
+
+3) Create an Emacs Lisp Archive Entry for your code.
+
+   A) If you are submitting a single .el file, then an ELAE like:
+
+   ;; Emacs Lisp Archive Entry
+   ;; Filename: somefile.el
+   ;; Author: Jane Schmoe <jane@example.com>
+   ;; Version: 1.0
+
+   will suffice.  Just put it somewhere in your file.
+
+   B) If you are creating a multi-file entry (for example, if you
+   include Texinfo documentation, or you have multiple .el files),
+   then you should create an ELAE like:
+
+   ;; Emacs Lisp Archive Entry   
+   ;; Package: foo
+   ;; Author: Jane Schmoe <jane@example.com>
+   ;; Version: 1.0
+
+   and place the ELAE in the most important .el file in your
+   distribution.
+
+   After you have added the ELAE, use the `tar' utility to package
+   your files.  The filename should be
+   `<package name>-<version>.tar[.gz]'.  Additionally, this archive
+   should unpack into a directory with the same name as the tar
+   archive, without the 'tar[.gz]' extension.
+
+   For example, the above author could submit her package `foo' as
+   `foo-1.0.tar.gz', which should unpack into a directory named
+   `foo-1.0'.
+
+   Alternatively, you may use the `zip' utility to compress your
+   files.  The rule about unpacking into a directory of the same
+   subname (i.e. `foo-1.0.zip' should unpack into a directory
+   `foo-1.0') still applies.
+				    
+4) Send a mail to archive@cis.ohio-state.edu containing your ELAE,
+   with the program attached.  
+
+We look forward to having your Emacs Lisp in the archive!
+
+Send comments to the Emacs Lisp Archive maintainers:
+archive@cis.ohio-state.edu
+
+Colin Walters <walters@cis.ohio-state.edu>
+
+Local Variables:
+mode:text
+End:

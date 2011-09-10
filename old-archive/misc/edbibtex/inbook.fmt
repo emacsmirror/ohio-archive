@@ -1,0 +1,28 @@
+******************************** INBOOK ********************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+       Editor: \editor
+        Title: \title
+      Chapter: \chapter
+        Pages: \pages
+    Publisher: \publisher
+         Year: \year
+................................................................Optional
+       Volume: \volume
+       Number: \number
+       Series: \series
+         Type: \type
+      Address: \address
+      Edition: \edition
+        Month: \month
+         Note: \note
+          Key: \key
+     Crossref: \crossref
+.................................................................Ignored
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+******************************** INBOOK ********************************

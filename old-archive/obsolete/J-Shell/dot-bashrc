@@ -1,0 +1,62 @@
+# $Id: dot-bashrc,v 1.0 1993/03/07 04:42:04 jct Exp $
+
+## This file contains a sample script showing how to set up ksh to
+## work properly with j-shell.  Before examining this script, please
+## read the comments in the file dot-tcsh; the comments in that script
+## describe steps common to the scripts for all shells.
+
+# Comments delimited by a single # are specific to bash.
+
+if [ "$TERM" = "emacs" ]
+then
+	stty nl -echo		# Keeps ^M from echoing
+
+	## Step A.
+	emacscd=`builtin echo -e "\033EmAcScd"`
+	emacshost=`builtin echo -e "\033EmAcShost"`
+
+	## Step B.
+	alias cwdcmd="echo $emacscd \$PWD"
+	alias hostcmd="echo $emacshost `hostname`"
+	alias reorient="hostcmd ; cwdcmd"
+fi
+
+# For some reason, in bash, the above aliases don't take unless
+# they're in a different if-construct than the following aliases.
+# Perhaps some bash expert can explain this to me.
+
+if [ "$TERM" = "emacs" ]
+then
+	# Step C.
+	cd() { builtin cd $* ; cwdcmd }
+	pushd() { builtin pushd $* ; cwdcmd }
+	popd() { builtin popd $* ; cwdcmd }
+
+	# Step D.
+	fake_rlogin() { rlogin $*; reorient ; }
+	alias rlogin='fake_rlogin '
+
+	fake_sh() { sh $*; reorient ; }
+	alias sh=fake_sh
+
+	fake_ksh() { ksh $*; reorient ; }
+	alias ksh=fake_ksh
+
+	fake_csh() { csh $*; reorient ; }
+	alias csh=fake_csh
+
+	fake_tcsh() { tcsh $*; reorient ; }
+	alias tcsh=fake_tcsh
+
+	fake_zsh() { zsh $*; reorient ; }
+	alias zsh=fake_zsh
+
+	fake_bash() { bash $*; reorient ; }
+	alias bash=fake_bash
+
+	fake_tcl() { tcl $*; reorient ; }
+	alias tcl=fake_tcl
+
+	# Step E.
+	reorient
+fi

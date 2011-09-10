@@ -1,0 +1,6 @@
+(setf (ext:search-list "src:") (list *server-base*)
+      (ext:default-directory) *server-base*)
+(pushnew (merge-pathnames "systems" *server-base*) mk::*central-registry*)
+(mk:load-system :elispdb-search :bother-user-if-no-binary nil :compile-during-load nil)
+(elispdb::install-handlers)
+(araneida::install-serve-event-handlers)

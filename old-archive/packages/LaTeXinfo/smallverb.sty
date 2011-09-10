@@ -1,0 +1,37 @@
+\message{smallverbatim,}
+\font\egttt  = cmtt8            % typewriter
+    \hyphenchar\egttt = -1      %  suppress hyphenation in \tt font
+\font\nintt  = cmtt9            % typewriter
+    \hyphenchar\nintt = -1      %  suppress hyphenation in \tt font
+ \font\tentt  = cmtt10   	% typewriter
+    \hyphenchar\tentt = -1      %  suppress hyphenation in \tt font
+ \font\elvtt  = cmtt10   \@halfmag % typewriter
+    \hyphenchar\elvtt = -1         %  suppress hyphenation in \tt font
+
+\renewenvironment{example}{\aboveenvbreak
+	\hfuzz=12truept % Don't be fussy
+	\sepspaces % Make spaces be word-separators rather than space tokens.
+	\singlespace % Single space lines
+	% The following causes blank lines not to be ignored
+	% by adding a space to the end of each line.
+	\let\par=\lisppar
+	\parskip=0pt \advance \rightskip by \lispnarrowing 
+	\advance \leftskip by \lispnarrowing
+	\parindent=0pt
+	\let\exdent=\internalexdent
+	\ifcase \@ptsize\relax\nintt\or\tentt\or\elvtt\fi
+	\bgroup\samepage
+\def\back{\rawbackslashxx\@gobble}
+	\obeylines\@noligs\frenchspacing\obeyspaces
+	\def\next##1{}\next}{\egroup\afterenvbreak}
+
+
+\def\@verbatim{\trivlist \item[]\if@minipage\else\vskip\parskip\fi
+\leftskip\@totalleftmargin\rightskip\z@
+\parindent\z@\parfillskip\@flushglue\parskip\z@
+\@tempswafalse 
+\def\par{\if@tempswa\hbox{}\fi\@tempswatrue\@@par}
+\obeylines \ifcase \@ptsize\relax\nintt\or\tentt\or\elvtt\fi
+\let\do\@makeother \dospecials}
+
+

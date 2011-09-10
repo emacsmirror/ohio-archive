@@ -1,0 +1,498 @@
+<HTML>
+<HEAD>
+<TITLE>Atoms: Keywords</TITLE>
+</HEAD>
+<BODY>
+<A HREF="atoms-1.html">Previous</A>
+<A HREF="atoms-3.html">Next</A>
+<A HREF="atoms.html#toc2">Table of Contents</A>
+<HR>
+<H2><A NAME="s2">2. Keywords</A></H2>
+
+
+
+<H2><A NAME="ss2.1">2.1 General Format</A></H2>
+
+
+<P>Take a peek at Appendix B.  Included there are many examples of input
+files for <SF>atoms</SF>.  Each one specifies lattice parameters, a
+space group, positions of atoms within the unit cell, and a few other
+pieces of information. The purpose of this chapter is teach you how to
+construct input files, thus to communicate with <SF>atoms</SF>. </P>
+<P><CODE>atoms.inp</CODE> uses keywords to describe the inputs. With only
+a few exceptions, the keywords are allowed to occur in any order in
+the file, and usually have transparent meanings.  This structure
+allows the input file to be easily read and modified.  All keywords
+use the syntax: 
+<BLOCKQUOTE><CODE>
+<PRE>
+        keyword delimiter value(s) delimiter ...
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+<P>The delimiter can be:  </P>
+<P>
+<OL>
+<LI>one or more white spaces (blanks and/or TABs)</LI>
+<LI>one equal sign and any number of white spaces</LI>
+<LI>one comma and any number of white spaces   </LI>
+</OL>
+</P>
+<P>Most keywords take only one value. Many keywords can be put on one
+line (though some keywords require their own line).  Internal comments
+can be written anywhere in <CODE>atoms.inp</CODE>, which help remind
+you what the keywords mean, or how you chose the input
+values. Keywords can be in upper, lower, or mixed case. <SF>atoms</SF>
+is not sensitive to the case of keywords or their values. </P>
+
+
+
+<H2><A NAME="ss2.2">2.2 List of Keywords</A></H2>
+
+
+<P>Here is a summary of keywords and their meanings.  The following
+sections give more detailed explanations for each keyword.  Where
+appropriate, default values are given in brackets.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+ 
+________________________________________________________________________
+* or % or ! | Indicates a comment.                     |  
+Title       | Title line to write to output file.      |  no title lines
+Space       | The space group designation.             |  no default
+A           | The first lattice constant.              |  no default
+B           | The second lattice constant.             |  [equal to A]
+C           | The third lattice constant.              |  [equal to A]
+Alpha       | The angle between B and C.               |  [90.0 deg]
+Beta        | The angle between C and A.               |  [90.0 deg]
+Gamma       | The angle between A and B.               |  [90.0 deg]
+Core        | Specifies absorbing atom.                |  no default
+Rmax        | Radial size of the cluster.              |  [5.0 A]
+Index       | Flag controlling indexing of atom list.  |  [False]
+Shift       | Shift coordinates of all atoms.          |  [0,0,0]
+Out         | Output file name.                        |  [feff.inp]
+Edge        | Specifies absorption edge.               |  [K for Z&gt;=57]
+Nitrogen    | Flag for fluorescence calculations.      |  [0.0]
+Argon       | Flag for fluorescence calculations.      |  [0.0]
+Krypton     | Flag for fluorescence calculations.      |  [0.0]
+Feff        | Flag for writing feff.inp.               |  [True] 
+Geom        | Flag for writing geom.dat file.          |  [False]
+Unit        | Flag for output file with full unit cell |  [False]
+P1          | Flag for output file as space group p 1  |  [False]
+Dopant      | Symbols of dopant and site replaced + %  |  [no dopants]
+Atom        | Begin atom list on next line.            |
+Basis       | Begin basis list on next line.           |
+-------------------------------------------------------------------------
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<H2><A NAME="ss2.3">2.3 Explanations of Keywords</A></H2>
+
+
+<P>
+<DL>
+
+<DT><B> * or % or ! </B><DD><P>Everything after one of these characters on a line in the input file
+will be ignored by <SF>atoms</SF>.</P>
+
+<DT><B> Title </B><DD><P>Indicates a user-chosen title line which will be written to
+<CODE>feff.inp</CODE>. 
+9 title lines of 72 characters each can be used.  Everything on a line
+after the keyword title will be included in the title.  If keywords
+are on the line following title, they will be read as part of the
+title, not as separate keywords.  The word <CODE>comment</CODE> is synonymous with
+<CODE>title</CODE>.</P>
+
+<DT><B> Space </B><DD><P>This keyword is followed by the Hermann-Maguin or Schoenflies
+designation for the space group.  Complete lists of these designations
+are are found in Appendix A.  Because the Hermann-Maguin designation,
+as adapted for the keyboard, includes spaces, this keyword is handled
+specially by <SF>atoms</SF>. <CODE>space</CODE> should be on its own line or at
+the end of a line.</P>
+
+<DT><B> A </B><DD><P>This specifies the first lattice constant.  A must always be
+specified.  In a cubic or rhombohedral space groups, where only one
+lattice parameter is needed, A is the one to specify.</P>
+
+<DT><B> B </B><DD><P>This specifies the second lattice constant.  It is set equal to A
+unless specified.</P>
+
+<DT><B> C </B><DD><P>This specifies the third lattice constant.  It is set equal to A
+unless specified.  In tetragonal, or hexagonal space groups, this is
+the second lattice constant that must be specified.</P>
+
+<DT><B> Alpha </B><DD><P>This specifies the angle between B and C.  Specify the angle in
+degrees.  This is the angle that must be specified for rhombohedral
+space groups.  The default value is 90 deg.</P>
+
+<DT><B> Beta </B><DD><P>This specifies the angle between C and A.  Specify the angle in
+degrees.  The default value is 90 deg.  This is the angle that must be
+specified for monoclinic space groups.</P>
+
+<DT><B> Gamma </B><DD><P>This specifies the angle between A and B.  Specify the angle in
+degrees.  The default value is 90 deg for orthogonal groups and 120
+deg for hexagonal and trigonal groups.</P>
+
+<DT><B> Core </B><DD><P>This specifies the absorbing atom.  The value of this keyword must be
+a site tag.  This atom will be placed at the center of the cluster and
+will be used as the central atom in the McMaster and fluorescent
+correction calculations.  The central atom must be specified by this
+keyword.  This is a change from early versions of <SF>atoms</SF>. This
+keyword has no default.  A central atom must be specified.  The
+keyword <CODE>central</CODE> is synonymous with <CODE>core</CODE>.</P>
+
+<DT><B> Rmax </B><DD><P>This specifies the maximum radial distance in the cluster of
+calculated atomic coordinates.</P>
+
+<DT><B> Index </B><DD><P>This is a logical flag, thus takes a value of true or false.  Along
+with the coordinates, the atom list in <CODE>feff.inp</CODE> contains the
+symbol of each atom.  With the index feature turned off, only the two
+letter symbol of each atom is printed.  With it turned on, atoms of
+the same type will be numbered sequentially according to distance.  To
+enable this feature, the syntax is 
+<BLOCKQUOTE><CODE>
+<PRE>
+        index  true
+ 
+</PRE>
+</CODE></BLOCKQUOTE>
+   
+An example: in pure copper, the 12 nearest neighbors will be labeled
+Cu01, the 6 next neighbors will be labeled Cu02, and so on.  Without
+indexing, all the atoms will be labeled Cu.</P>
+
+<DT><B> Shift </B><DD><P>Moves all atoms in the atom list by the specified amount. This keyword
+takes three real numbers as its values.  The syntax is:
+<BLOCKQUOTE><CODE>
+<PRE>
+        shift  xvalue  yvalue  zvalue
+ 
+</PRE>
+</CODE></BLOCKQUOTE>
+
+The value of the shift vector is simply added to all fractional atomic
+coordinates in the atom list.  Read the section on Multiple Origins in
+section 3.6 for a discussion of the usefulness of this keyword.</P>
+
+<DT><B> Out </B><DD><P>This specifies an output file name other than <CODE>feff.inp</CODE>.  It can
+be up to 72 characters, so can include a directory path as well as the
+file name.  If <CODE>out = list</CODE> is specified then a file called
+<CODE>atoms.lis</CODE> will be written instead of <CODE>feff.inp</CODE>.
+<CODE>atoms.lis</CODE> will contain the title lines and the coordinate list
+but none of headers or <SF>feff</SF> keywords.  This option is useful for
+applications other than <SF>feff</SF> that require a list of atomic
+coordinates.</P>
+
+<DT><B> Edge </B><DD><P>This specifies the absorption edge of the central atom.  If edge is
+not specified, the default value is determined from the Z of the
+central atom.  For central atoms with Z&lt;=57, the K edge is chosen.
+For heavier atoms, the L3 edge is chosen.  K, L1, L2, and L3 are the
+only values for edge recognized by <SF>atoms</SF>.</P>
+
+<DT><B> Nitrogen </B><DD><P>This number specifies the percentage by pressure of nitrogen gas
+in the I0 chamber in a fluorescence XAFS experiment.  Specifying
+either this keyword or the argon or krypton keywords tells
+<SF>atoms</SF> to estimate the corrections to the data due to the
+energy response of the I0 chamber and the self-absorption of the
+sample.  These calculations are described in detail in chapter 4.
+This keyword takes a real number between 0 and 1 as its value. The
+default is that the fluorescence calculations are turned off.</P>
+
+<DT><B> Argon </B><DD><P>This number specifies the percentage by pressure of argon gas in
+the I0 chamber in a fluorescence XAFS experiment.  Specifying either
+this keyword or the nitrogen or krypton keywords tells <SF>atoms</SF>
+to estimate the corrections to the data due to the energy response of
+the I0 chamber and the self-absorption of the sample.  These
+calculations are described in detail in chapter 4.  This keyword takes
+a real number between 0 and 1 as its value. The default is that the
+fluorescence calculations are turned off.</P>
+
+<DT><B> Krypton </B><DD><P>This number specifies the percentage by pressure of krypton gas
+in the I0 chamber in a fluorescence XAFS experiment.  Specifying
+either this keyword or the nitrogen or argon keywords tells
+<SF>atoms</SF> to estimate the corrections to the data due to the
+energy response of the I0 chamber and the self-absorption of the
+sample.  These calculations are described in detail in chapter 4.
+This keyword takes a real number between 0 and 1 as its value. The
+default is that the fluorescence calculations are turned off.</P>
+
+<DT><B> Geom </B><DD><P>This is a logical flag, thus takes a value of true or false.  If
+true, <SF>atoms</SF> will write a file called <CODE>geom.dat</CODE> for use in the
+path finder module of <SF>feff</SF>.  If <CODE>geom.dat</CODE> is written, the
+<CODE>NOGEOM</CODE> card will be written to <CODE>feff.inp</CODE>.</P>
+
+<DT><B> Unit </B><DD><P>This is a logical flag, thus takes a value of true or false.  If true,
+<SF>atoms</SF> will write a file called <CODE>unit.dat</CODE> contining the atomic
+coordinates of all atoms in the unit cell as well as all atoms on the
+walls, edges, and corners of the unit cell.</P>
+
+<DT><B> P1 </B><DD><P>This is a logical flag, thus takes a value of true or false.  If true,
+<SF>atoms</SF> will write a file called <CODE>p1.inp</CODE>.  This file is a valid
+input file for <SF>atoms</SF>.  It contains the entire contents of the
+unit cell in the atoms list and has the space keyword set to <CODE>p 1</CODE>,
+the monoclinic space group of no internal symmetries.  All axes and
+angles are explicitly specified in <CODE>p1.inp</CODE>, as are <CODE>core</CODE>,
+<CODE>edge</CODE>, <CODE>rmax</CODE>, and all of the title lines.</P>
+
+<DT><B> Feff </B><DD><P>This is a logical flag, thus takes a value of true or false.  By
+default it is true and will write out <CODE>feff.inp</CODE>.  If it is false,
+<SF>atoms</SF> will not calculate the cluster of atoms, thus will not
+write out either <CODE>feff.inp</CODE> or <CODE>geom.dat</CODE>.</P>
+
+<DT><B> Dopant </B><DD><P>This keyword specifies the type and percent substitution of a dopant
+material.  The syntax is:
+<BLOCKQUOTE><CODE>
+<PRE>
+        dopant  dp  tag  percentage
+ 
+</PRE>
+</CODE></BLOCKQUOTE>
+ 
+Where <CODE>dp</CODE> is the atomic symbol of the doping atom, <CODE>tag</CODE> is
+the site tag of the site where the dopant resides, and the percentage
+is a real number between 0 and 1 specifying the amount of
+substitution.  If <CODE>tag</CODE> is an atomic symbol rather than a site tag,
+then all sites containing that atomic species will affected.</P>
+
+<DT><B> Atom </B><DD><P>This must be the last keyword in the input file.  If it is not the
+program will almost certainly stop running.  This keyword tells the
+program to go to the next line and begin reading in the unique atom
+coordinates.  The atom list is a five column, structured list.  Column
+one is the two letter atomic symbol (<B>not</B> the Z number).  Columns
+two through four contain the x, y, and z coordinates of each atom.
+These numbers are entered as fractions of the a, b, and c axes
+respectively.  The fifth column contains the site tag. See section 2.4
+for an explanation of the site tags.  The keywords atom and basis are
+incompatible.  If both are specified in an input file, the program
+will stop running.</P>
+
+<DT><B> Basis </B><DD><P>This must be the last keyword in the input file.  If it is not the
+program will almost certainly stop running.  This keyword tells the
+program to go to the next line and begin reading in the basis atom
+coordinates.  The basis list is a five column, structured list.
+Column one is the two letter atomic symbol (<B>not</B> the Z number).
+Columns two through four contain the x, y, and z coordinates of each
+atom.  These numbers are entered as fractions of the a, b, and c axes
+respectively.  The fifth column contains the site tag. See section 2.4
+for an explanation of the site tags.  A basis may be constructed
+around an empty site.  Specify that site with the word <CODE>null</CODE>
+rather than an atomic symbol.  The keywords atom and basis are
+incompatible.  If both are specified in an input file, the program
+will stop running.</P>
+
+</DL>
+</P>
+
+
+
+<H2><A NAME="core"></A> <A NAME="ss2.4">2.4 Specifying Site Tags and the Central Atom</A></H2>
+
+
+<P>The central atom of the cluster written to <CODE>feff.inp</CODE> must
+be explicitly specified with the keyword core.  To avoid ambiguity in
+a situation involving inequivalent crystallographic sites containing
+the same atomic species, the value of this keyword must be a site tag.
+The site tags are the user supplied character strings which appear in
+the fifth column of the atom or basis list. </P>
+<P><B>Users of Atoms 2.41 and prior versions:</B> This is the most
+important difference between <SF>atoms 2.42</SF> and versions numbered
+2.41 and lower.  Previously the fifth column of the atom or basis list
+was used to specify the central atom.  The addition of site tags used
+to label the different sites requires specification of the central
+atom by keyword. </P>
+<P>The fifth column of the atom list contains the site tag.  The user may
+label the sites in any way desired and these labels may be up to 10
+characters long.  The sites must be labeled uniquely or else
+<SF>atoms</SF> will become confused if one of the sites labeled
+redundantly is chosen as the core atom.  If a tag is not specified for
+a site then the default tag will be used.  The default for a site tags
+is to label that site with the atomic symbol of the occupying atom.
+Remember that <SF>atoms</SF> is insensitive to case, thus the tag
+<CODE>THISATOM</CODE> is the same as <CODE>thisatom</CODE> and <CODE>ThisAtom</CODE>. </P>
+<P>Here is an example.  Note that the the value of core is a tag, not an
+element symbol. </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+          title YBCO: Y Ba2 Cu3 O7  (1-2-3 structure)
+          space P M M M 
+          core = Cu1
+          rmax=5.2           a 3.823 b 3.886 c 11.681
+          atom
+          ! At.type   x        y       z      tag
+             Y       0.5      0.5     0.5   
+             Ba      0.5      0.5     0.184
+             Cu      0        0       0        Cu1
+             Cu      0        0       0.356    Cu2
+             O       0        0.5     0        O1
+             O       0        0       0.158    O2
+             O       0        0.5     0.379    O3
+             O       0.5      0       0.377    O4
+          --------------------------------------------
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+<P>This is the <CODE>atoms.inp</CODE> for superconducting Y Ba2 Cu3 O7.  Notice
+that the copper and oxygen sites are tagged with unique labels.  The
+central atom is specified with one of these labels -- the <CODE>Cu1</CODE>
+site will be at the center of the cluster written to <CODE>feff.inp</CODE>.
+The yttrium and barium sites are tagged with the atomic symbol by
+default.  Since each of these species occupies only one site, there is
+no ambiguity in using the atomic symbol as the tag.</P>
+<P>In <CODE>feff.inp</CODE> each atom will be identified by its tag, not by its
+atomic symbol.  Assignment of unique potentials, however, is based on
+atomic species.  If you wish to assign unique potentials based on
+crystallographic considerations, you will need to edit <CODE>feff.inp</CODE>.</P>
+
+
+
+<H2><A NAME="ss2.5">2.5 Basis List v. Atom List</A></H2>
+
+
+<P><SF>atoms</SF> has the ability to recognize basis vectors.  For some
+lattice types this is a somewhat nicer way of describing the
+structure.  In introductory solid state physics texts, the diamond
+structure is often described as face centered cubic with a two atom
+basis.  For example, silicon might be specified as a diamond structure
+crystal with a unique atom at position (1/8, 1/8, 1/8).  It might also
+be specified as an FCC structure with a basis of (0,0,0) and (1/4,
+1/4, 1/4).</P>
+<P><SF>atoms</SF> handles a basis list slightly differently from an atom
+list.  When given an atom list, the code translates each point in the
+list by the symmetry operations specified in the space group name.
+When given a basis list, the code only performs these symmetry
+operations on one of the points listed.  It then constructs the basis
+at each of the points so generated.  The keyword core may select any
+atom in the basis as the central atom of the cluster. </P>
+<P>The best use of this feature would be to generate an atom list for a
+structure that is described by a periodic repetition of some large,
+complex local structure.  Clathrates are an excellent example of this. </P>
+<P>One very important rule must be followed when using a basis list.  The
+first atom in the list must correctly represent the desired
+translation symmetry.  In the case of silicon, the basis must be
+translated like the point (0,0,0) in space group <CODE>F m 3 m</CODE> (the
+space group of FCC crystals) to yield the diamond structure. Thus the
+first atom in the basis list for silicon <B>must</B> be at (0,0,0) or
+else the basis will not be expanded correctly.</P>
+<P>A basis can be constructed around an empty site, by specifying the
+coordinates of the empty site as the first entry in the basis list and
+entering the word <CODE>null</CODE> instead of an atomic symbol.  The null site
+will not appear in the atom list in <CODE>feff.inp</CODE>.  The keyword core
+may not take <CODE>null</CODE> as a value.</P>
+<P>To finish the example of silicon, here are two input files that give
+the same output: </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+         title   Si, fcc with a two atom basis
+         a = 6.485  space F m 3 m      ! space group of fcc 
+         rmax=6.5  core=si1
+         basis
+           Si   0.0    0.0    0.0   si1
+           Si   0.25   0.25   0.25  si2
+         -----------------------------------------
+
+         title    Si, diamond structure
+         a = 6.485  space F d 3 m      ! space group of diamond
+         rmax  6.5
+         atom
+           Si  0.125  0.125  0.125   
+         -----------------------------------------
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+<P>See section 3.7 for an explanation of why the silicon atom in the
+second example must be at (1/8, 1/8, 1/8) rather than at (0,0,0). </P>
+
+
+
+<H2><A NAME="ss2.6">2.6 Dopants</A></H2>
+
+
+
+<P><SF>atoms</SF> handles dopants in the simplest possible fashion.  It
+assumes all dopants are substitutional and that there are no
+correlations between cells regarding which lattice sites are occupied
+by doping atoms.  Furthermore, <SF>atoms</SF> makes no assumptions about
+which physical sites are occupied by dopants.  Thus the atom list
+written to <CODE>feff.inp</CODE> is the list for the undoped structure.
+<SF>atoms</SF> uses information about the dopants in the following ways:</P>
+<P>
+<UL>
+<LI>For calculating the density, the absorption, and the
+experimental corrections.</LI>
+<LI>A dopant may be the central atom in the atom list, thus the
+calculations mentioned above will be performed at the absorption edge
+of the dopant. </LI>
+</UL>
+</P>
+<P>The syntax is: 
+<BLOCKQUOTE><CODE>
+<PRE>
+            dopant   dp   tag   percentage
+ 
+</PRE>
+</CODE></BLOCKQUOTE>
+
+where <CODE>dp</CODE> and <CODE>tag</CODE> are character strings and percentage is a
+number between 0 and 1.  The value of <CODE>dp</CODE> is the atomic symbol of
+the dopant.  The value of <CODE>tag</CODE> is the site tag of the site where
+the dopant resides.  If the value of <CODE>tag</CODE> is an atomic symbol then
+all sites containing that atomic species will be doped.</P>
+<P><SF>atoms</SF> allows up to 3 dopants per site and no more than 9 in
+the entire crystal.  If this is insufficient, then you have a mess on
+your hands.  You also have my sympathy -- contact me and I will help
+you alter the code to accommodate your horrid problem. </P>
+<P>The atomic species specified for a site by the dopant keyword need not
+be the minority component.  This might be useful for uniquely
+specifying the core atom.   Vacancies may be introduced by doping
+sites with <CODE>null</CODE>.</P>
+<P>Analyzing a doped material in fine structure spectroscopies is
+complicated.  The simple scheme that I describe in this section is
+useful for several of the calculations in the code, but is clearly
+insufficient for the task of resolving the local structure of a doped
+material.  That <SF>atoms</SF> writes the atom list in <CODE>feff.inp</CODE> using
+the undoped structure is indicative of this.</P>
+
+
+
+<H2><A NAME="ss2.7">2.7 Geom.dat</A></H2>
+
+
+
+<P>The path finder in <SF>feff</SF> has an option to use crystal symmetries
+in order to speed the determination and computation of all paths.
+This is done by providing a file called <CODE>geom.dat</CODE> containing
+special flags specifying the relevant symmetries.  Setting <CODE>geom =
+true</CODE> in <CODE>atoms.inp</CODE> will tell <SF>atoms</SF> to write a <CODE>geom.dat</CODE>
+file and to place the card <CODE>NOGEOM</CODE> in <CODE>feff.inp</CODE>.  This leads
+to a large reduction of computation time only in crystals of high
+symmetry.  In an fcc structure, the reduction in time can be as high
+as a factor of about 50.  In a structure of lower symmetry, the
+savings will rarely be more than a factor of about 4.  Use of the
+geom.dat generated by <SF>atoms</SF> will not effect the computation time
+of the potentials and phase shifts calculation of the first module of
+<SF>feff</SF>, nor will it effect the computation time of the individual
+paths in the third module.  The <CODE>geom.dat</CODE> file has the same atom
+list as the <CODE>feff.inp</CODE> file.</P>
+<P>To use the <CODE>geom.dat</CODE> file, it must be located in the directory in
+which <SF>feff</SF> is run.  Since the <CODE>NOGEOM</CODE> card is in
+<CODE>feff.inp</CODE>, <SF>feff</SF> will know to access at the appropriate time
+the geom.dat file written by <SF>atoms</SF>.  The <CODE>geom.dat</CODE> file and
+the atom list in <CODE>feff.inp</CODE> should both remain unmodified, or else
+<SF>feff</SF> might get confused.  The <SF>feff</SF> card <CODE>RMAX</CODE> can be
+changed to limit the extent of the <SF>feff</SF> calculation without
+needing to change geom.dat.  See the <SF>feff</SF> document for more
+details about this.</P>
+
+
+
+<HR>
+<A HREF="atoms-1.html">Previous</A>
+<A HREF="atoms-3.html">Next</A>
+<A HREF="atoms.html#toc2">Table of Contents</A>
+</BODY>
+</HTML>

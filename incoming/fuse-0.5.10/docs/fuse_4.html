@@ -1,0 +1,496 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse.texi on 24 August 1998 -->
+
+<TITLE>FUSE User's Guide - Using FUSE</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="fuse_1.html">first</A>, <A HREF="fuse_3.html">previous</A>, <A HREF="fuse_5.html">next</A>, <A HREF="fuse_7.html">last</A> section, <A HREF="fuse_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC15" HREF="fuse_toc.html#TOC15">Using FUSE</A></H1>
+
+
+
+<H2><A NAME="SEC16" HREF="fuse_toc.html#TOC16">Key Sequences, Menus, and Toolbars</A></H2>
+
+<P>
+As with most packages in Emacs, there are a number of
+different ways of accessing all of the functions in @fuse{}.
+The most primitive manner of accessing functions is to type
+<KBD>M-x</KBD> followed by the name of the function.  Additionally,
+most user functions are bound to key sequences.  Most of these
+involve typing <KBD>C-c</KBD> followed by another control character and
+then followed by a single character.  These are lengthy key
+sequences.  Major modes typically use <KBD>C-c</KBD> sequences.  To
+have enough options available, I felt it necessary to have all of
+the @fuse{} functions use a second control prefix.
+
+</P>
+<P>
+<KBD>C-</KBD> means to strike the control key while striking the
+following character. <KBD>M-</KBD> means to strike the <KBD>esc</KBD> key
+before striking the following key.  Alternatively, you can hold down
+the <KBD>alt</KBD> or <KBD>meta</KBD> key while striking the following
+key.
+
+</P>
+<P>
+The list of key sequences is rather lengthy and has been excluded from
+this document.  The tutorial, see section `Introduction' in <CITE>The Fuse Tutorial</CITE>, demonstrates the use of many functions.  All of the key
+sequences recognized by @fuse{} are listed in the quick reference card.
+
+</P>
+<P>
+Virtually all of the functions in @fuse{} are bound to either the
+<CODE>Input</CODE> menu or to one of the program menus.  Whenever you edit and
+input file with @fuse{} there will be a pull down menu labels
+<CODE>Input</CODE> and one labelled with the name of the program corresponding
+to that input file.
+
+</P>
+<P>
+@fuse{} makes use of the ability of XEmacs to display a toolbar.  By
+default, a toolbar appears at the left side of the screen when a buffer
+in input-mode is displayed.  The toolbar has a several of the most
+commonly used functions bound to it, including functions for making
+templates, running programs, plotting output, and examining log files.
+
+</P>
+
+
+
+<H2><A NAME="SEC17" HREF="fuse_toc.html#TOC17">Program Execution</A></H2>
+
+<P>
+As discussed in the introduction, one of the fundamental purposed of a
+user interface to a set of programs is providing an environment
+in which to run the programs.  @fuse{} allows you to run any of the
+programs with a key or mouse sequence.  When a program is run, a
+second window is opened to display all of the run-time messages
+written to standard output and standard error by the program.  This
+allows you to follow the progress of the program and to see when the
+program has finished.
+<A NAME="IDX34"></A>
+<A NAME="IDX35"></A>
+
+</P>
+<P>
+The programs are always invoked using the shell's <SAMP>`time'</SAMP> command.
+Upon completion of the program, this causes a summary of the time
+consumed by the program to be written to the run-time display window.
+Generally this summary is rather cryptic but usually includes the real
+time elapsed and the amount of CPU time used.  It would be nice to
+parse this string into a more readable form, but unfortunately its
+format is different under different shells and operating systems.
+Even so, it is sufficiently useful to know this information that I
+offer the unparsed string despite its crypticness.
+
+</P>
+<P>
+The advantages of having the run-time messages written to a buffer in
+the manner described above is that it records a running log of work
+done during the @fuse{} session.  This log can be saved to a file
+using <SAMP>`input-save-run-log'</SAMP> (normally bound to <KBD>C-c C-b l</KBD> and
+found in the <SAMP>`Input:miscellaneous'</SAMP> menu).  This runtime log is also
+written whenever Emacs is exited so that your last session can be
+reviewed.
+<A NAME="IDX36"></A>
+<A NAME="IDX37"></A>
+
+</P>
+<P>
+If you are working in a windowing environment, the run-time messages
+buffer will be displayed in a separate frame from the frame containing
+the input files.  This frame is only about 20 lines tall and lacks much
+of the normal decoration of an emacs frame.  The idea is that it is a
+display-only frame which takes up only a small amount of screen real
+estate.  This frame may be shared with the gnuplot script buffer, but
+typically is not.  This is controlled with the variable
+<SAMP>`input-use-frames-flag'</SAMP>.
+<A NAME="IDX38"></A>
+
+</P>
+
+
+
+<H3><A NAME="SEC18" HREF="fuse_toc.html#TOC18">Basic run command</A></H3>
+
+<P>
+Several functions and features are used by @fuse{} to control program
+execution.
+
+</P>
+
+<UL>
+
+<LI>
+
+The function <SAMP>`input-run-any-program-any-file'</SAMP> (normally
+bound to <KBD>C-c C-r a</KBD> and found in the <SAMP>`Input'</SAMP> menu) is a general
+purpose program execution function.  When you invoke it, you will be
+prompted for the name of a program to run and the name of a input file
+to use as input to the program.
+<A NAME="IDX39"></A>
+<A NAME="IDX40"></A>
+
+<LI>
+
+The function <SAMP>`input-run-this-program-this-file'</SAMP> (normally
+bound to <KBD>C-c C-r r</KBD> and found in the program menu) is used to run
+the program associated with the current file on the current file.
+This is the way that programs are most commonly executed in @fuse{}.
+<A NAME="IDX41"></A>
+<A NAME="IDX42"></A>
+
+<LI>
+
+The function <SAMP>`input-kill-program'</SAMP> (normally bound to <KBD>C-c
+C-r k</KBD> and found in both the <SAMP>`Input'</SAMP> and program menus) is used to
+kill the currently running process.
+<A NAME="IDX43"></A>
+<A NAME="IDX44"></A>
+
+<LI>
+
+Only one program can run at a time.  This is, admittedly, a silly
+restriction, since Unix certainly does not care how many programs are
+running.  The bookkeeping chores involved in running more than one
+program at a time are rather complicated.  Perhaps in a future version I
+will allow for execution of multiple concurrent programs.  Of course,
+you could run the programs from the command line either in a virtual
+terminal or in an Emacs shell buffer (<KBD>M-x shell</KBD> or <KBD>C-c s</KBD>).
+
+<LI>
+
+@fuse{} includes a nifty wrapper for program execution which
+allows you to name your input files with any name you want and to use
+them to run the programs without renaming them to the file name
+required by the program.  @fuse{} does this by renaming your input
+file to the appropriate name, then renaming it back when the program
+is done.  The log file is also renamed to the same name as the input
+file, but with <TT>`.log'</TT> substituted for <TT>`.inp'</TT>.  For FEFFIT
+the <TT>`prm'</TT> file is also renamed.  For ATOMS, if the input files
+called, say, <TT>`cu.inp'</TT>, the FEFF input file generated by the
+program will be called <TT>`cu-feff.inp'</TT>.  Care is taken not to
+overwrite any existing files.  Suppose a file called <TT>`atoms.inp'</TT>
+already exists. Before the <TT>`cu.inp'</TT> is renamed to <TT>`atoms.inp'</TT>
+the already existing <TT>`atoms.inp'</TT> will be renamed to a temporary,
+randomly generated file name.  Output files are also renamed in this
+manner.  Note that the output files of FEFF are not protected
+in this manner in the current version of @fuse{}.  Also the output
+data files of AUTOBK and FEFFIT are not protected (e.g. the
+output background file from AUTOBK will not be protected by this
+command wrapper.)
+<A NAME="IDX45"></A>
+
+<LI>
+
+In the future it will be nice if @fuse{} is able to parse the
+screen output of each of the programs for error messages and to
+provide a way of jumping to the place in the input file that cause the
+problem.
+
+<LI>
+
+AUTOBK has a feature not shared by the other three
+programs.  It is possible to run AUTOBK repeatedly with a single
+input file.  Each of the blocks of text controlling a single run of
+autobk is called a <EM>stanza</EM>.  AUTOBK minor mode offers a
+function for running AUTOBK just on the stanza currently occupied
+by the cursor.  The function <SAMP>`autobk-run-stanza'</SAMP> (usually bound to
+<KBD>C-c C-r s</KBD> and found in the Autobk menu) does this by copying the
+current stanza to a file called <TT>`fuse-stanza.inp'</TT> then running
+autobk on that file.  The log file for the single stanza run is thus
+called <TT>`fuse-stanza.log'</TT>
+<A NAME="IDX46"></A>
+<A NAME="IDX47"></A>
+<A NAME="IDX48"></A>
+
+</UL>
+
+
+
+<H3><A NAME="SEC19" HREF="fuse_toc.html#TOC19">Batch processing</A></H3>
+
+<P>
+@fuse{} is able to batch process input files by sequentially running the
+appropriate program on any number of input files.  This is accomplished
+using a dired buffer.  See the Emacs documentation for details about
+dired.
+
+</P>
+<P>
+To enable @fuse{}'s batch processing capabilities, you must have this
+lines somewhere in your <TT>`.emacs'</TT> file
+
+<PRE>
+     (add-hook 'dired-load-hook '(lambda () (load "fuse-dired")))
+</PRE>
+
+<P>
+Once that is done, any time you are in a dired buffer you will be able
+to run any of the programs covered by @fuse{}.  First mark some number of
+input files using the <SAMP>`m'</SAMP> command (or any other marking command) in
+dired.  Then invoke <SAMP>`fuse-dired-run-marked'</SAMP> by typing <KBD>C-c r</KBD>.
+@fuse{} will then load each marked file and run the program appropriate
+to that file.  Just sit back and watch.
+<A NAME="IDX49"></A>
+<A NAME="IDX50"></A>
+<A NAME="IDX51"></A>
+
+</P>
+
+<P>
+Note that the batch run may require some interactive response in certain
+situations.  For example, if @fuse{} cannot figure out the program
+associated with the input file (see section <A HREF="fuse_3.html#SEC11">Automatic configuration</A>), @fuse{} will
+query you for it.
+
+</P>
+
+
+
+<H2><A NAME="SEC20" HREF="fuse_toc.html#TOC20">Plotting</A></H2>
+
+
+
+<H3><A NAME="SEC21" HREF="fuse_toc.html#TOC21">Using FUSE's Plotting Utilities</A></H3>
+
+<P>
+<A NAME="IDX52"></A>
+
+</P>
+<P>
+@fuse{} plots the output of FEFF and the UWXAFS programs
+by parsing for the input file for information about the data that
+needs to be plotted and constructing a GNUPLOT script based on
+what it finds.  It then pipes the contents of this script to
+GNUPLOT.  The scripts can be saved by moving the cursor to the
+script buffer and typing <KBD>C-x C-s</KBD>.
+
+</P>
+<P>
+<A NAME="IDX53"></A>
+
+</P>
+<P>
+When one of the plotting options is chosen, a second window or a
+separate frame opens up showing the contents of the GNUPLOT script.
+Assuming there are no problems, the plot will be displayed and control
+of the cursor will return to the window containing the input file.
+
+</P>
+<P>
+If you are working in a windowing environment, the run-time messages
+buffer will be displayed in a separate frame from the frame containing
+the input files.  This frame is only about 20 lines tall and lacks much
+of the normal decoration of an emacs frame.  I assume that you only
+rarely will edit the gnuplot script, so displaying it in a separate and
+rather small frame seems preferable.  This frame may shared with the
+run-time messages buffer, but typically is not.  This behavior is
+controlled by the variable <SAMP>`input-use-frames-flag'</SAMP>.
+<A NAME="IDX54"></A>
+
+</P>
+<DL COMPACT>
+
+<DT><EM>Plotting in ATOMS mode</EM>
+<DD>
+There is nothing to plot in ATOMS, so there are no plotting functions.
+An interface to a ball-and-stick plotter such as RASMOL or
+XMOL would sure be nice.
+
+<DT><EM>Plotting in FEFF mode</EM>
+<DD>
+In FEFF minor mode there are two plotting options.  One is to plot
+chi(k) from <TT>`chi.dat'</TT> and the other is to plot mu and mu0 from
+<TT>`xmu.dat'</TT>.  The scripts GNUFIX and KW are used.  Both of
+these files are written by the fourth module of FEFF.
+<TT>`xmu.dat'</TT> is only written if the XANES calculation is enabled by
+having the <SAMP>`xanes'</SAMP> keyword in in the input file.
+<A NAME="IDX55"></A>
+<A NAME="IDX56"></A>
+<A NAME="IDX57"></A>
+
+<DT><EM>Plotting in AUTOBK mode</EM>
+<DD>
+In AUTOBK minor mode there are four plotting options, (1) plot
+chi(k) as specified in the stanza currently occupied by the cursor, (2)
+plot the data and AUTOBK's estimation of mu0 from the current
+stanza along, (3) plot chi(k) together with the fitting standard from
+the current stanza, (4) over-plot all chi(k) functions from all stanzas
+in the input file.  The KW script is used to apply <I>k</I>-weight
+to the chi(k).
+
+<DT><EM>Plotting in FEFFIT mode</EM>
+<DD>
+In FEFFIT minor mode there are options to plot fit results in any
+of <I>k</I>, <I>R</I>, and back-transformed <I>k</I> spaces.  The data
+and the full fit in the chosen space are always plotted.  Plotting in
+any of the spaces requires that the appropriate control keyword
+(<SAMP>`kspout'</SAMP>, <SAMP>`rspout'</SAMP>, or <SAMP>`qspout'</SAMP>) be set to true.
+
+<A NAME="IDX58"></A>
+<A NAME="IDX59"></A>
+<A NAME="IDX60"></A>
+<A NAME="IDX61"></A>
+By default only the data at full fit are shown.  If FEFFIT's
+background fitting option is selected by setting <SAMP>`bkgout'</SAMP> to true,
+then the background function will be added to the plot.  The individual
+paths can also be plotted by marking path paragraphs that you want to
+plot.  This is done with the <KBD>C-c C-p m</KBD> command.  When a path is
+marked, the <SAMP>`path'</SAMP> keyword will be highlighted and when any of the
+three plotting functions is called, the marked paths will be added to
+the GNUPLOT script.  Hitting <KBD>C-c C-p m</KBD> again clears the mark.
+<KBD>S-mouse-2</KBD> marks and unmarks the paragraph under the mouse
+cursor.  <KBD>C-c C-p a</KBD>  marks all paths in the current data set and
+<KBD>C-c C-p c</KBD> clears all marks.
+
+<DT><EM>Using GNUPLOT mode</EM>
+<DD>
+The GNUPLOT script is written in two parts to a buffer which is, by
+default, called <TT>`input-mode.gp'</TT>.  The first part initially has no
+GNUPLOT commands in it and is never deleted in subsequent plots.
+The second part contains all of the commands for the requested plot.
+The second part of the script is deleted for each subsequent plot.
+These two parts are separated by a line beginning with these characters:
+<SAMP>`#-#-#-'</SAMP>.  Any GNUPLOT commands that you wish to issue with
+each plot can be typed into the first part of the script.
+
+The automatically generated scripts are always plotted when one of the
+plotting options is chosen by key or mouse sequence.  You can interact
+with GNUPLOT directly by moving the cursor to the buffer containing
+the script.  You can then edit the script as you wish and re-send it to
+GNUPLOT.  There are three key sequences for communicating commands
+to GNUPLOT.  <SAMP>`send-buffer-to-gnuplot'</SAMP>, bound to <KBD>C-c C-b</KBD>
+and in the <SAMP>`gnuplot'</SAMP> menu, sends all commands in the buffer to
+GNUPLOT.  <SAMP>`send-region-to-gnuplot'</SAMP>, bound to <KBD>C-c C-r</KBD>
+and in the <SAMP>`gnuplot'</SAMP> menu, sends all commands in a selected region
+to GNUPLOT.  Finally, <SAMP>`send-line-to-gnuplot'</SAMP>, bound to
+<KBD>C-c C-l</KBD> and in the <SAMP>`gnuplot'</SAMP> menu, sends all commands on the
+line occupied by the cursor to GNUPLOT.
+<A NAME="IDX62"></A>
+<A NAME="IDX63"></A>
+<A NAME="IDX64"></A>
+<A NAME="IDX65"></A>
+<A NAME="IDX66"></A>
+<A NAME="IDX67"></A>
+
+@fuse{} adds a specialized history list to gnuplot-mode.  Every time and
+entire script is sent to GNUPLOT, that script gets pushed onto a
+history list.  You can navigate up and down the script history list,
+thus revisiting previous plots, by using <KBD>C-c C-p</KBD> and <KBD>C-c C-n</KBD>
+in the gnuplot-mode buffer or by hitting the up and down arrow icons in
+the XEmacs toolbar.  The depth of the history list is determined by the
+value of <CODE>fuse-gnuplot-history</CODE>.
+<A NAME="IDX68"></A>
+<A NAME="IDX69"></A>
+<A NAME="IDX70"></A>
+<A NAME="IDX71"></A>
+<A NAME="IDX72"></A>
+
+Hitting <KBD>C-c C-f k</KBD> will terminate the GNUPLOT process and
+close the frame containing the gnuplot script.
+<A NAME="IDX73"></A>
+<A NAME="IDX74"></A>
+
+For more details about using gnuplot-mode, see the reference card
+<TT>`gpelcard.ps'</TT> which comes with @fuse{}.
+
+<DT><EM>Scripts used in plotting</EM>
+<DD>
+Several scripts external to Emacs are used in the @fuse{} plotting
+utilities, KW, GNUFIX, and MR.  With Unix, GNUPLOT
+is able to pipe data through external scripts using the system
+<SAMP>`popen'</SAMP> function.  This is the purpose of the <SAMP>`&#60;'</SAMP> character
+that appears in several of @fuse{}'s plotting scripts.
+<A NAME="IDX75"></A>
+<A NAME="IDX76"></A>
+<A NAME="IDX77"></A>
+<A NAME="IDX78"></A>
+
+KW is a simple AWK script for k-weighting chi(k) data.  It
+simply multiplies each y-value in the data file by some power of the
+x-value.  GNUFIX is a Bourne shell script containing a single
+SED command.  It prepends a comment character (<SAMP>`#'</SAMP>) to each
+line in the header of <TT>`chi.dat'</TT> or <TT>`xmu.dat'</TT> so that these
+files may be properly plotted using GNUPLOT.  MR is a Bourne
+shell script used as an interface to a Fortran program for reading a
+record from a UWXAFS binary file.
+
+Another script, ESHIFT, comes with @fuse{} although it is not
+used in any of the built-in script generating functions.  The purpose
+of this script is to e0-shift mu(E) data.  In GNUPLOT it
+works in a manner analogous to KW.  The following GNUPLOT
+command plots some data with a 5 volt e0 shift:
+
+<PRE>
+	pl '&#60;eshift esh=5 data.xmu'
+</PRE>
+
+Note that any of these scripts can be used at the command line by
+redirecting their output to a file.  For example:
+
+<PRE>
+	# kw w=5 data.chi &#62; data.chi.weighted
+	# gnufix esh=5 xmu.dat &#62; xmu.data.fixed
+	# eshift esh=5 data.xmu &#62; data.xmu.shifted
+	# mr data.xmu, 1 &#62; data.xmu.ascii
+</PRE>
+
+These scripts are all in the <TT>`scripts'</TT> directory in the
+distribution.  The directory containing these scripts is the value of
+<CODE>fuse-bin-location</CODE>.  This directory is added to the
+<CODE>exec-path</CODE> when @fuse{} is started.
+<A NAME="IDX79"></A>
+
+</DL>
+
+
+
+<H3><A NAME="SEC22" HREF="fuse_toc.html#TOC22">Limitations to FUSE's Plotting Utilities</A></H3>
+
+<P>
+@fuse{} is supposed to have a mechanism for detecting problems with the
+commands sent to GNUPLOT.  In truth, I never got this to work
+properly and found that it was not entirely necessary.  If something
+goes wrong with the plot, look at the <SAMP>`gnuplot-program'</SAMP> buffer by
+simply switching to that buffer or by using the
+<SAMP>`gnuplot-jump-to-gnuplot-buffer'</SAMP> function, normally bound to
+<KBD>C-c C-e</KBD> and in the <SAMP>`Gnuplot'</SAMP> menu in the gnuplot-buffer.
+<A NAME="IDX80"></A>
+<A NAME="IDX81"></A>
+
+</P>
+<P>
+@fuse{}'s plotting functions are able to interact with either ASCII
+data or data in the UWXAFS binary format.  Because of certain
+features of the UWXAFS binary format, the GNUPLOT scripts
+generated by @fuse{} may not be what you want.  For example, a
+script for a FEFFIT fit is written assuming that the output data
+was written to a new file rather than appended to a pre-existing
+file.  Thus the fit script uses numeric keys (<SAMP>`nkeys'</SAMP>) beginning
+with 1.
+
+</P>
+<P>
+Interaction with the UWXAFS binary files is one of the weaker areas
+in @fuse{}.  In truth, I rarely use the binary files and my memory of
+how the programs read and write them is a bit fuzzy.  In particular, I
+don't recall how AUTOBK writes its many possible output files when
+binary output is used.  I have a few ideas about how to improve plotting
+from the binary files.  It could be possible to set an nkey offset
+variable to handle pre-existing files.  Another possibility would be
+something like Dired mode in Emacs, where the contents of the binary
+file are displayed to a buffer and records could be marked and
+subsequently plotted.
+
+</P>
+
+<P><HR><P>
+Go to the <A HREF="fuse_1.html">first</A>, <A HREF="fuse_3.html">previous</A>, <A HREF="fuse_5.html">next</A>, <A HREF="fuse_7.html">last</A> section, <A HREF="fuse_toc.html">table of contents</A>.
+</BODY>
+</HTML>

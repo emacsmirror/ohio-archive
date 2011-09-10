@@ -1,0 +1,585 @@
+Lookup NEWS -- history of user-visible changes.  12 Feb 2000
+Copyright (C) 1999 Lookup Development Team <lookup@ring.gr.jp>
+See the end for copying conditions.
+
+Please send Lookup bug reports to lookup-ja@ring.gr.jp.
+
+* Changes in Lookup 1.2
+
+** ndeb でディレクトリの指定が不当な場合にエラーを起こすようにした。
+
+
+* Changes in Lookup 1.0
+
+** coding の設定が in/out 一つになった。
+
+** lookup-cite-style を廃止。lookup-gaiji-alternate を導入。
+
+** 専用インストーラを導入した。RADME を参照。
+
+** オプション指定のスタイルを変えた。
+
+今後 `lookup-search-agents' は次のように指定する。
+
+  (setq lookup-search-agents '((agent :key1 val1 :key2 val2)))
+
+これに伴ない、エージェントへの追加引数は廃止した。代わりにオプションに
+より明示的に指定すること。
+
+また、上のように各オプションは `:' で始まるようにしたので、
+`lookup-set-agent-option' などを用いる場合も `:' を追加すること。
+最近の Emacs (バージョン 20 以降)であれば、クオートを付けずに次の
+ように指定することが出来る。
+
+  (lookup-set-agent-option "agent+location" :title "Title")
+
+** 検索モジュール関連の仕様を大幅に見直した。
+
+変数 `lookup-search-modules' を導入。次のように設定する。
+
+  (setq lookup-search-modules
+        '((NAME1 ID1 ID2 ...)
+          (NAME2 ID1 ID2 ...)
+          ...))
+
+検索コマンド実行時にプレフィクスを付けることで、定義したモジュールを
+選択して検索を行うことが出来る。デフォルトでは先頭のモジュールが利用
+される。デフォルトのモジュールは、新しいコマンド `lookup-module-forward'
+と `lookup-module-backward' によって切り替えることが出来る。これらは
+Entry モードの M-f と M-b にもバインドされている。
+
+モジュールの設定をしなかった場合、"%EVERY" という名前のモジュールが
+一つだけ生成される。
+
+** C-u M-x lookup-exit とすることで Lookup を強制終了するようにした。
+lookup-exit は Emacs 終了時にも呼ばれるが、何らかのバグでここでエラーが
+発生すると Emacs を抜けられなくなる。そのようなときにこれを実行すると、
+とにかく Emacs を終了することが出来るようになる。
+
+** 辞書一覧バッファが履歴に残るようになった。
+これに伴ない、従来 `q' により最後のバッファに戻っていた(lookup-quit)のを
+やめ、`q' は単に Lookup のウィンドウを閉じる(lookup-suspend)だけになった。
+
+** 辞書オプション filter を廃止した。
+
+** lookup-get-{module,agent,dictionary} を追加。
+
+** Agent changes
+
+*** エージェントの suspend 処理を廃止した。ndtp の suspend オプションも廃止。
+
+*** ndic エージェントが SDIC 形式の辞書に対応した。
+エージェントに指定するディレクトリに辞書ファイルを置くだけでよい。
+dictd 形式の辞書との混在も可能。検索方式は自動的に判定される
+(direct, grep, array のいずれか)。詳しくは SDIC の Web ページを参照。
+
+*** ndeb のオプション :coding が辞書毎に指定出来るようになった。
+また、入出力をまとめて(cons ではなく)一つのシンボルを受け取るようになった。
+
+*** ndcookie が検索をせずに、毎回ランダムで cookie を返すようにした。
+これにより、エージェントとしてより適切で有意義(?)な存在となった。
+
+** 主なバグ修正
+
+*** Mule でも lookup-use-kakasi による日本語の切り出しが可能となった。
+
+*** XEamcs で efs をロードしているとエラーになるのを直した。
+
+
+* Changes in Lookup 1.0pre9
+
+** 検索方式に対する考え方を見直した。
+デフォルトの検索方式を「キーワード検索」から「完全一致検索」に変えた。
+それに伴ない、各エージェントの検索方式も変更した。今後の検索方式について
+詳しくは、マニュアルの Default Method 及び Search Methods を参照。
+
+** Mule でもそのままで face が付くようになった。
+マニュアルの Customize Face を参照。
+
+** Command changes.
+
+*** コマンド `lookup-selection' を `lookup-secondary' に改名した。
+*** コマンド `lookup-entry-search-selection' を `lookup-selection' に改名した。
+マニュアルの Search Commands を参照。
+
+*** 各種コマンド `*-full-window' を `*-full-screen' に改名した。
+
+** Variable changes.
+
+*** 変数 `lookup-open-function' をカスタマイズ変数から外した。
+今後は各種 `*-other-frame' などを直接呼び出して欲しい。
+検索コマンドのコントロール変数としては変わらず使える。
+また、設定可能な値 `lookup-full-window' を `lookup-full-screen' に改名した。
+
+*** 変数 `lookup-cite-policy' を `lookup-cite-style' に改名した。
+また、辞書オプション `cite-style' を優先的に用いることにした。
+マニュアルの Cite Contents を参照。
+
+** Content mode changes.
+
+*** 新しいコマンド `w'。
+リージョンの内容をキルリングに保存する。
+マニュアルの Cite Contents を参照。
+
+** Agent changes.
+
+*** 各種変数 *-process-coding-system を廃止し、ユーザに設定を任せることにした。
+マニュアルの Setup Coding を参照。
+
+*** 変数 ndtp-service-name, ndtp-account-name を廃止。
+*** 変数 ndict-service-name を廃止。
+今後はオプションを直接指定すること。
+
+** 細かなバグ修正をいろいろ。
+
+
+* Changes in Lookup 1.0pre8
+
+** Texinfo マニュアルを大幅更新中。
+ただし、まだ途中までしか進んでおらず、内容はかなりあやしい・・
+
+** 変数 `lookup-search-agents' のオプション指定の書式が変わった。
+従来、
+
+  (setq lookup-search-agents '((agent ((key1 . val1) (key2 . val2)))))
+
+としていたのを、括弧を一組減らして、今後は次のようにする。
+
+  (setq lookup-search-agents '((agent (key1 . val1) (key2 . val2))))
+
+** stem.el をアップデートした。ただし、ファイル名を stem-english.el と
+変更してある。デフォルトで Lookup と同時にインストールするようにした。
+stemming 関数の名前が stem-english に変わっているので、設定は次のように
+すること。
+
+  (lookup-set-dictionary-option "agent:DICT" 'stemmer 'stem-english)
+
+** 補助パッケージの書式が変わった。(ver 1.1)
+
+パッケージディレクトリのメインファイル(main.el)の名前を、パッケージ名
+(ディレクトリ名)に合わせて PACKAGE.el とすることにした。
+
+** Command changes.
+
+*** 検索コマンド `lookup-*-other-window' を廃止した。
+代わって `lookup-*-full-window' を導入した。
+
+*** 標準の検索コマンドが prefix-arg を受けとらなくなった。
+
+*** 変数 `lookup-mouse-search-command' を廃止した。
+今後 `lookup-selection' は `lookup-word' を直接に呼ぶ。
+
+*** 新しいコマンド `lookup-debug'。
+`lookup-debug-mode' 及び `debug-on-error' の両方を t にセットする。
+
+** Entry mode chagens.
+
+*** 新しいカスタマイズ変数 `lookup-cite-policy'。
+コマンド `w' でエントリ本文をコピーするときの方針を指定する。
+
+*** 新しいコマンド `h'。
+Entry バッファと Content バッファで `h' を連打することで、相互にバッファ
+を往復出来るようにした。
+
+*** 新しいコマンド `O'。
+従来の `o' に代えて、別コマンドでオープンという特殊機能はこれに割り当て、
+`o' は単にウィンドウを大きくするだけにした。
+
+** agent changes.
+
+*** nd*-reference-pattern, nd*-default-*-functions を全て定数にした。
+今後はこれらを変更せずに、辞書オプションを設定すること。
+
+*** ndtp-reference-pattern の初期値が変わった。
+"→heading<xxx:xxxx>" という形式のリファレンスにデフォルトで対応するよう
+にした。
+
+*** ndic と ndict が、標準では fill paragraph を行なわなくなった。
+必要があれば、辞書オプション arranges に `lookup-arrange-fill-paragraph'
+を加えること。
+
+*** ndkks が、他の辞書で候補が見付かったときにも検索を行なうようにした。
+
+*** ndspell が、`g' で再検索を行なったときには検索を行なうようにした。
+
+** 主なバグ修正。
+
+*** customize group `lookup-faces' を追加し忘れてたので追加した。
+
+*** Mule 2.3 (based Emacs 19.34) で bitmap-mule を使った外字表示を
+行なうとき、場合によって固まってしまうという問題に対処した。
+
+*** X なしでコンパイルした Emacs で `frame-visible-p' がないという
+エラーが出るのに対処した。
+
+
+* Changes in Lookup 1.0pre7
+
+** Lookup のホームページの正式なアドレスは
+
+  http://www.ring.gr.jp/openlab/lookup/
+
+となった。ここをアクセスすると他の Ring Server に自動的に繋がる。
+
+** XEmacs 20.4 で (setq lookup-use-kakasi t) による日本語の切り出しが
+動くようになった。Mule の方はまだ。
+
+** elisp ファイルのバイトコンパイル時に warning を出さないようにした。
+これは warning を無視するよう設定しただけで、問題をなくしたわけではない。
+warning を出すためには、lisp/lookup-compile.el に手を入れること。
+
+** その他、いくつかの細かなバグを修正。
+
+
+* Changes in Lookup 1.0pre6
+
+** Lookup のホームページが移動した。新しい URL は次の通り。
+
+  http://ring.aist.go.jp/openlab/lookup/
+  http://ring.etl.go.jp/openlab/lookup/
+  http://ring.crl.go.jp/openlab/lookup/
+  http://ring.nacsis.ac.jp/openlab/lookup/
+  http://ring.saitama-u.ac.jp/openlab/lookup/
+  http://ring.exp.fujixerox.co.jp/openlab/lookup/
+  http://ring.astem.or.jp/openlab/lookup/
+  http://ring.asahi-net.or.jp/openlab/lookup/
+  http://ring.ip-kyoto.ad.jp/openlab/lookup/
+  http://ring.jah.ne.jp/openlab/lookup/
+  http://ring.so-net.ne.jp/openlab/lookup/
+
+** Lookup のメーリングリストが移動した。新しいアドレスは次の通り。
+
+  lookup@ring.gr.jp (英語)
+  lookup-ja@ring.gr.jp (日本語)
+
+登録の方法については、README を参照。
+
+** いくつかのバグ修正。
+
+
+* Changes in Lookup 1.0pre5
+
+** XEmacs で外字情報がエントリに含まれてしまうバグを修正。
+
+** ndkks や ndspell で、他の辞書でエントリが見付からなかった場合に
+のみ検索を行なう処理の判定をきちんとした。
+
+
+* Changes in Lookup 1.0pre4
+
+** 新しい標準検索コマンド `lookup-word'。
+カーソル位置の単語を即座に検索する。view-mode-map などで適当なキーに
+バインドしておくと、ワンタッチで検索出来て便利。
+
+** フック `lookup-load-hook' を追加した。
+lookup.el の読み込みが完了し、更にいくつかの初期化が終了した時点で
+呼び出される。
+
+** エージェントオプション `enable' が指定された場合、その順に辞書を
+並べ換えるようにした。
+
+** stemming されたエントリには見出し語におまけを付けてわかるようにした。
+
+** ndtp/ndeb changes.
+
+*** 変数 {ndtp,ndeb}-reference-pattern を追加した。
+辞書のリファレンスのパターンを指定する。
+
+*** 変数 {ndtp,ndeb}-default-filter-functions を廃止した。
+代わりに、連続して重複したエントリは取り除くよう組み込んだ。
+
+** いくつかのバグを修正した。
+
+
+* Changes in Lookup 1.0pre3
+
+** ファイルのコードを JIS に統一した。
+
+** ndtp の外字周りのバグ修正。
+
+
+* Changes in Lookup 1.0pre2
+
+** いくつかのバグを修正した。
+
+** 日本語に対応した texinfo.tex を含めた。
+
+
+* Changes in Lookup 1.0pre1
+
+** マニュアルを一通り書きまとめた。ちょっと怪しいけど。
+
+** いろいろ変更した。マニュアルを参照して、もう一度設定し直して下さい。
+
+
+* Changes in Lookup 1.0b2
+
+** バグ修正。
+
+*** make で elisp ファイルをバイトコンパイルしたとき、日本語が正しく
+認識されてなかったのを修正。
+
+*** char-after が nil を返したときエラーになるのを修正。
+
+* Changes in Lookup 1.0b1
+
+** バグ修正。
+
+*** 外字を利用できるかどうかの判定に問題があったのを修正。
+
+*** ndict で検索結果の表示に失敗するのを修正。
+
+* Changes in Lookup 1.0b0
+
+** 新しい設定用関数 `lookup-set-agent-option', `lookup-set-dictionary-option'。
+初期化ファイルで辞書やエージェントのオプション設定に用いることが出来る。
+
+これらの関数はそれぞれ `lookup-agent-options-alist'、
+`lookup-dictionary-options-alist' を再設定し、補助パッケージによる設定も
+上書きするので、次のように使うことが出来る。
+
+  (lookup-use-package "ndtp+dserver" "book")
+  (lookup-set-dictionary-option "ndtp+dserver:EIWA" 'title "英和辞典")
+
+** stem.el を配布物に含めた。(lisp/stem.el)
+
+** 検索語の stemming を行なうようになった。
+stem.el をパスの通ったディレクトリにコピーし、stemming を行ないたい
+辞書のオプションを
+
+  (autoload 'stemming "stem")
+  (lookup-set-dictionary-option "ndtp+dserver:DICT" 'stemmer 'stemming)
+
+のように設定する。
+
+** 日本語の current-word を、それなりに切り出せるようになった。
+
+(setq lookup-use-kakasi t) とすることで、例えば "これは日本語の文章です"
+といった文の "日本語" の部分にカーソルを置いて lookup-pattern すると、
+default の検索語として "日本語" が選ばれる。
+
+ただし、GNU Emacs でしか動作しない。-w オプションの使える KAKASI が必要。
+
+** 検索エージェント `ndkks' を配布物に入れ直した。
+
+** バグ修正。
+
+*** Entry バッファで `w' が正しく動作しなかったのを修正。
+
+*** `lookup-init-file' の初期値として、`init-file-user' を利用するようにした。
+つまり、Emacs を `emacs -u foo' のように起動した場合、デフォルトの初期化
+ファイルとして "~foo/.lookup" が利用される。
+
+* Changes in Lookup 0.9.6
+
+** バグ修正。
+
+*** 検索を開始したとき、作業中のバッファが kill されてしまうことが
+あるというバグを取り除いた。
+
+* Changes in Lookup 0.9.5
+
+** Entry mode changes.
+
+*** コマンド `o'(lookup-entry-open) で、標準で Content ウィンドウを
+最大化するようにした。`q' で元に戻る。
+
+** Content mode changes.
+
+*** コマンド `q' で、バッファを閉じずにカーソルを Entry バッファに
+移動するようにした。
+
+** バグ修正。
+
+*** lookup-misc.el で、余計な keybind が残っていたのを取り除いた。
+
+* Changes in Lookup 0.9.4
+
+** Select mode が使えるようになった。
+
+`m' で辞書選択、`u' で非選択、`d' で無効化マーク、`x' で無効化実行、
+`q' で終了。
+
+** Entry mode changes.
+
+*** 新しいコマンド `s'(lookup-entry-isearch-content)。
+Content バッファで `isearch-forward' を実行する。
+
+* Lookup 0.9.3 はバグ修正版であり、目立った変更点はありません。
+
+* Lookup 0.9.2 はバグ修正版であり、目立った変更点はありません。
+
+* Changes in Lookup 0.9.1
+
+** Entry mode changes.
+
+*** 新しいコマンド `i'(lookup-entry-info)。
+カーソル位置の entry の情報を表示する。
+
+*** 新しいコマンド `L'(lookup-entry-list-links)。
+Content バッファのリンクを全て Entry バッファにリストする。
+
+** いくつかのバグ修正。
+
+* Changes in Lookup 0.9
+
+** XEmacs で外字を表示出来るようになった。
+eblook 0.9 以降か NDTPD 2.0 以降と共に利用すれば、特別な設定の必要もなく、
+外字が表示される。
+
+** Lookup 実行時のウィンドウ状態を保存するようにした。
+新しい変数 `lookup-save-configuration' を nil に指定することで、この振舞
+いを抑制できる。
+
+** 変数 `lookup-debug-mode' を追加した。
+non-nil を指定することで、いくつかの振舞いが debug 向きになる。
+
+** 変数 `lookup-entry-max-hits' を `lookup-max-hits' に改名した。
+変数 `lookup-max-text' を追加した。
+
+** 次の変数を廃止した。
+`lookup-enable-gaiji', `lookup-initial-selected-dictionaries',
+`ndebook-*', `nd*-default-search-methods'.
+
+** モジュールの定義の仕方が変わった。
+新版の lookup-pattern は次の通り。
+
+  (setq lookup-search-module (lookup-new-module lookup-search-agents))
+
+  (defun lookup-pattern (pattern)
+    "Search input pattern by default dictionaries."
+    (interactive (list (lookup-input-pattern)))
+    (lookup-with-module lookup-search-module
+      (lookup-entry-search (lookup-parse-pattern pattern)
+			   (lookup-selected-dictionaries))))
+
+** Entry mode changes.
+
+*** 検索結果を、検索状況に応じてダイナミックに表示するようにした。
+ただし、`lookup-entry-filter-functions' が設定されている場合には、
+処理が完了してから一度に表示する。
+
+*** コマンド `lookup-entry-lookup-pattern' を `lookup-entry-research-pattern'
+に改名した。
+
+*** 一部の標準の key-binding を変更した。
+
+ `lookup-entry-research-pattern' -  旧 `l' -> 新 `f'
+ `lookup-entry-follow-reference' -  旧 `f' -> 新 `r'
+ `lookup-select-dictionary'      -  旧 `d' -> 新 `l'
+
+*** 新しいコマンド `o'(lookup-entry-open) を追加。
+見ている項目の内容を、専用の別モード(エージェントに依存)でオープンする。
+現在、対応しているのは ndnmz のみ。
+
+*** 新しい変数 `lookup-entry-cite-header', `lookup-entry-cite-prefix' を追加。
+`w'(lookup-entry-kill-ring-save-content) で項目の内容を取り込むときの、
+ヘッダと引用符をそれぞれ指定する。例えば、次のように設定しておくと、
+
+  (setq lookup-entry-cite-header "「%s」より\n")
+  (setq lookup-entry-cite-prefix "| ")
+
+次のように引用される。
+
+  「国語辞典」より
+  | テスト
+  | 1. 試験...
+
+** 新しいエージェント `ndic'。
+
+dictd 用にフリーに配布されている辞書から検索する。
+the Jargon File や FOLDOC などが扱える。etc/AGENTS を参照。
+
+** 新しいエージェント `ndict'。
+
+DICT プロトコル(RFC 2229) に対応したクライアント。
+インターネットに公開された辞書サーバにアクセス出来る。etc/AGENTS を参照。
+
+** 新しいエージェント `ndnmz'。
+
+全文検索エンジン Namazu システムへのインターフェース。
+大量の文書をインデックス化し、高速に検索を行なえる。etc/AGENTS を参照。
+
+** 検索エージェント `ndinfo', `ndkks' を標準の配布から削除した。
+
+** ndtp changes.
+
+*** エージェント・オプション `account' を設けた。
+
+*** 変数 `ndtp-default-filter-functions' を設けた。
+標準で検索結果に lookup-nunique するようにした。
+
+*** NDTPD 2.x で導入予定の外字コマンドに対応した。
+
+** ndeb changes.
+
+*** 変数 `ndeb-process-prompt' を設けた。
+eblook のプロンプトをこれに設定する。
+
+*** 変数 `ndtp-default-filter-functions' を設けた。
+標準で検索結果に lookup-nunique するようにした。
+
+*** リファレンスと外字のタグの判定部分を、新版の eblook に合わせた。
+前のもの(eblook-0.8.x 以前)との互換性はないので注意。
+
+*** 新しい辞書オプション `stop-code'。
+辞書の内容の終了コードを指定する。
+
+** 新しいエージェント共通オプション `select', `unselect'。
+`enable', `disable' と同様にして、辞書の選択状態を決められる。
+
+** 辞書オプションのデフォルト値として、エージェント・オプションを見にい
+くようにした。任意の辞書オプションをエージェント・オプションとして設定す
+ることで、そのエージェントに含まれるすべての辞書で設定が有効となる。
+
+** 新しい辞書オプション `cite-header', `cite-prefix'。
+`lookup-entry-cite-header', `lookup-entry-cite-prefix' の代わりとして、
+優先されて扱われる。
+
+* Changes in Lookup 0.8.5
+
+** bitmap-mule のロードをユーザに任せることにした。
+外字を表示するには、~/.emacs で (require 'bitmap) としておくか、
+(setq lookup-gaiji-compose-function 'lookup-bitmap-compose) とする。
+
+** 検索語が空ならば検索しないようにした。
+
+** 検索履歴の移動時などに、カーソル位置が保存されるようにした。
+
+** Entry モードで、カーソル位置に従ってバッファをスクロールするようにした。
+
+** 前方一致検索を示すシンボルを `prefix'、後方一致検索を `suffix' にした。
+
+* Lookup 0.8.4 はバグ修正版であり、目立った変更点はありません。
+
+* Lookup 0.8.3 はバグ修正版であり、目立った変更点はありません。
+
+* Changes in Lookup 0.8.2
+
+** Mule 2.3 や XEmacs 20.4 でも正常にコンパイル出来るようになった。
+** デフォルトのインストールディレクトリが ".../site-lisp" になった。
+(ただし、XEmacs の場合は ".../site-lisp/lookup")
+
+* Changes in Lookup 0.8.1
+
+** インストールするディレクトリをよりよく判断するようになった。
+** info ファイルをフォーマットし直した。
+
+----------------------------------------------------------------------
+Copyright information:
+
+Copyright (C) 1998,1999 NISHIDA Keisuke
+
+  Permission is granted to anyone to make or distribute verbatim copies
+  of this document as received, in any medium, provided that the
+  copyright notice and this permission notice are preserved, thus giving
+  the recipient permission to redistribute in turn.
+
+  Permission is granted to distribute modified versions of this document,
+  or of portions of it, under the above conditions, provided also that
+  they carry prominent notices stating who last changed them.
+
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:

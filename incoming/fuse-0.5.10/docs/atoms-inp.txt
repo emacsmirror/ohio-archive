@@ -1,0 +1,13 @@
+title = Copper example
+a = 3.61
+core = 	Cu	rmax = 	6.5	space = fcc
+atom
+! sym	x	y	z	tag
+  Cu	0	0	0	Cu
+
+
+!!&& Local Variables:
+!!&& input-program-version: "250"
+!!&& input-program-name: "atoms"
+!!&& End:
+%# Input-mode Time-stamp: <98/07/02 13:38:01 bruce>

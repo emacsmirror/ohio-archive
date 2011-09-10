@@ -1,0 +1,1450 @@
+\input texinfo   @c -*-texinfo-*-
+@c Bruce's Time-stamp: <98/08/24 22:37:06 bruce>
+
+@c $Id: head.texi,v 1.2 1998/03/14 22:59:59 bruce Exp $
+
+@c %**start of header
+@setfilename fuse.info
+@settitle FUSE User's Guide
+@setchapternewpage odd
+@c %**end of header
+
+@macro fuse{}
+@iftex
+{@sf FUSE}
+@end iftex
+@ifnottex
+FUSE
+@end ifnottex
+@end macro
+
+@syncodeindex ky cp
+@syncodeindex vr cp
+@syncodeindex fn cp
+
+@set version 0.5.6
+@set updatedate 27 July 1998
+
+@direntry
+* FUSE: (fuse).             Feff/UWXAFS System for Emacs
+@end direntry
+
+@titlepage
+@title {@sf FUSE}
+@subtitle @sc{feff}/@sc{uwxafs} System for Emacs
+@subtitle Version @value{version}
+@author Bruce Ravel
+
+@page
+
+@display
+The author of {@sf FUSE}, Bruce Ravel, can be reached at:@*
+Ceramics Division, Room 215
+National Institute of Standards and Technology
+Gaithersburg, MD 20899@*
+@email{<ravel@@phys.washington.edu>}@*
+The latest version of {@sf FUSE} can always be found at
+@url{http://feff.phys.washington.edu/~ravel/fuse/}
+@end display
+
+@vskip 0pt plus 1filll
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice must be stated in a translation
+approved by the author.
+
+@sp 2
+Copyright @copyright{} 1998 Bruce Ravel @email{<ravel@@phys.washington.edu>}@*
+Updated @value{updatedate} @c , printed @today
+
+@end titlepage
+
+@ifinfo
+@node Top, Introduction, (dir), (dir)
+@top Master Menu
+@end ifinfo
+
+@ifinfo
+This document is a user's guide to FUSE.  FUSE is a set of Emacs
+lisp programs for editing input files for @sc{feff} and the @sc{uwxafs}
+programs.
+@end ifinfo
+
+@menu
+* Introduction::                Introduction to FUSE
+* Installation::                Configuring, making, and installing FUSE
+* Syntax::                      Input file syntax
+* Using FUSE::                  Using FUSE
+* Glossary::                    Glossary of terms in FUSE
+* Future::                      Future development of FUSE
+* Index::                       Concepts, keys, functions, variables
+@end menu
+
+@c * AFA::                 Description of Atoms, Feff, and Autobk minor modes
+@c * Feffit::              Description of Feffit minor mode
+
+
+
+
+@node Introduction, Installation, Top, Top
+@comment  node-name,  next,  previous,  up
+@chapter Introduction to FUSE
+
+
+This document describes the installation and use of
+@fuse{}.  @fuse{} is the @sc{feff}/@sc{uwxafs} System for
+Emacs.  It is a user interface for @sc{feff}, @sc{atoms}, @sc{autobk},
+@sc{feffit} and a few other programs developed by the members and
+former members of the x-ray absorption spectroscopy group at the
+University of Washington.
+
+This document is written with the assumption that the reader is familiar
+with EXAFS analysis, the use of @sc{feff} and the @sc{uwxafs} programs,
+and the use of Emacs.  It is not expected that the reader is a guru in
+any of these topics, but a certain knowlege of each is necessary as
+their basic concepts will not be explained here.
+@c For further reading on any of those topics, please
+@c see the bibliography.
+
+There are two companion documents to this one.  One of these is a
+tutorial, @pxref{Introduction,,,fuse-tutorial, The Fuse Tutorial}, and
+demonstrates the use of @fuse{} by walking you through an analysis of
+copper metal using @fuse{} along with @sc{feff} and the @sc{uwxafs}
+programs.  The other is a quick reference card, @file{quickref.ps},
+which describes the key sequences and user configurable variables in
+@fuse{}.  These three documents together provide a complete reference to
+@fuse{}.
+
+
+The general purpose of a user interface to these (or any) programs is to
+to add value to the programs by making their use easier and more
+efficient.  To this end, I have broken down the interface to @sc{feff}
+and the @sc{uwxafs} programs into five conceptual areas of
+functionality.  These are
+
+@table @strong
+
+@item Generation of input files
+  The input structures to these programs are rather complicated and
+offer many options for the user.  This is particularly true for
+@sc{feffit}, which uses a highly abstracted metalanguage for
+constraining parameters in a fitting model.  Much of the functionality
+of @fuse{} is dedicated to the generation and manipulation of the
+constituent text of these input files.  The creation of input files is
+the most difficult part of using these programs even though the input
+files are composed entirely of ASCII text.  Thus I was motivated to use
+Emacs as the application/program interface.  Along with good integration
+of system level features such as file handling and process handling,
+Emacs possesses extremely powerful text manipulation capabilities and a
+flexible keyboard and mouse based user model.
+
+@item Program execution
+ @fuse{} uses the Emacs system interface to execute the programs and to
+display their run-time messages.  Although each of the programs requires
+that input files have filenames specific to the program (i.e. @sc{feff}
+requires that its input file be called @file{feff.inp}), @fuse{} allows
+you to use input files with arbitrary names.  It uses a command wrapper
+to temporarily rename files to the name expected by the executed
+program.
+
+@item Organization of graphical output
+ @fuse{} uses @sc{gnuplot} to display data.  Scripts for running
+@sc{gnuplot} are generated automatically from the contents of the input
+files and may be saved for future use.  Many display options exist for
+@sc{feffit} for plotting results in different spaces and for plotting
+the contributions from individual scattering paths.
+
+@item Organization of textual output
+ Analysis of data is performed to obtain answers to physical questions.
+Pretty pictures are very important, but often a number is the bottom
+line.  @fuse{} has several features for organizing the textual output of
+the programs into useful formats.
+
+@item Error handling and recovery from mistakes
+ Any program that can be used can be misused.  @fuse{} has features for
+examining the contents of input files for errors or inconsistencies.  It
+also allows the user to examine the run-time and saved-file output of
+the programs.
+
+@end table
+
+
+@sp 5
+
+@fuse{} is an ongoing project.  I hope that, in its present form, it
+will help you analyze your data.  For some hints of what @fuse{} might do
+in the future, take a peek at @ref{Future}.  If you have any questions,
+comments, complaints, or suggestions, please contact me.  There is a bug
+report function built into @fuse{} which sends me email using the Emacs
+mailer.  It is invoked by @kbd{C-c C-b b} of from the @code{Input -
+miscellaneous} menu.  Use that function or any of my contact information
+shown on the second page of this document.
+@kindex C-c C-b b
+
+@c ----------------------------------------------------------------
+
+@node Installation, Syntax, Introduction, Top
+@comment  node-name,  next,  previous,  up
+@chapter Installing FUSE
+
+
+
+@menu
+* Unpacking::                   Unpacking the FUSE distribution
+* Making::                      Configuring, Making, Installing
+* Customizing::                 Customizing FUSE
+@end menu
+
+@node Unpacking, Making, Installation, Installation
+@section Unpacking the distribution
+
+
+@fuse{} is distributed in two compressed archive formats.  One uses
+the standard unix @sc{tar} and @sc{gzip} utilities, the other uses
+@sc{zip}.  Their contents are the same.  Use whichever one is more
+convenient for you.
+
+You can unpack the distribution any place on your disk.  One of the
+steps of the installation discussed in @xref{Making} will move all of
+the necessary files to their final home.  To unpack the @sc{tar}red and
+@sc{gzip}ped file, @code{cd} to your lisp directory and execute these
+commands:
+@example
+    > gunzip fuse.tar.gz
+    > tar xvf fuse.tar
+@end example
+@noindent
+To unpack the @sc{zip}ped file, execute this commands:
+@example
+    > unzip fuse.zip
+@end example
+@noindent
+After doing one of those steps, you will find that the @fuse{}
+distribution has been unpacked into a subdirectory called
+@file{fuse-#.#.#}, where the @file{#} signs denote the current version
+number of @fuse{}.
+
+Now @kbd{cd} into the @file{fuse-#.#.#} subdirectory.  Here is what you
+will find in that directory.
+@itemize @bullet
+
+@item
+Several information files and scripts used during installation, including:
+@table @file
+
+@item Makefile.emacs
+@itemx Makefile.xemacs
+The instructions for the @sc{make} program, one for Emacs and one for XEmacs.
+@item configure
+A Bourne shell script used to configure the distribution for your
+machine.  @xref{Making}.
+@item INSTALL
+A file with the installation instructions from @ref{Making}.
+@item README
+@itemx COPYING
+@itemx HOOKS
+Some files with general information about @fuse{}.
+
+@end table
+
+@item
+A bunch of files that end in @file{.el}.  These are the main programs in
+@fuse{}.
+
+@item
+The @file{docs/} directory contains documentation for @fuse{} as well as
+for @sc{atoms} and @sc{feff} in a variety of formats, including info,
+html, PostScript and plain text.  You will also find quick reference
+cards in PostScript format for @fuse{} and @sc{gnuplot} here.
+
+@item
+The @file{pixmaps/} directory contains all of the icons used in the
+toolbars.
+
+@item
+The @file{scripts/} directory contains several shell and perl scripts
+used by @fuse{}.
+
+@item
+The @file{fortran/} directory contains some programs useful for handling
+@sc{uwxafs} binary files as well as copies of the programs @sc{normal}
+for normalization and alignment of absorption data, and @sc{phit}, a
+general purpose fitting program.
+
+@item
+The @file{emulation/} directory contains some files useful if you want
+Emacs to emulate @sc{vi}, @sc{edt}, or @sc{crisp} while using @fuse{}.
+
+@item
+The @file{example/} directory contains files that you will need for the
+tutorial, @pxref{Introduction,,,fuse-tutorial, The Fuse Tutorial}, and various
+example input files demonstrating features of @fuse{}.
+
+@end itemize
+
+
+
+@node Making, Customizing, Unpacking, Installation
+@section Configuring, making, and installing.
+
+Before starting, you need to decide on a few things.  During the first step
+in the installation process, you will be asked a few questions that
+@fuse{} needs to know to install itself properly.  These are
+@enumerate
+@item
+Will you be using Emacs or XEmacs?@footnote{By Emacs, I mean the version
+from the Free Software Foundation, @url{http://www.gnu.org}.  XEmacs
+refers to the version from @url{http://www.xemacs.org}.}
+@item
+In which directory will you be installing @fuse{}?  If you are
+installing @fuse{} as a normal user, then this should be a directory
+where you keep personal Emacs lisp files.  If you are installing
+@fuse{} as root, then this should be the @file{site-lisp} directory.
+Telling the wrong place to the installation script will result in
+@fuse{} not being accessible to Emacs.
+@item
+What is the location of perl on your computer?  The @file{configure}
+script will most likely be able to determine this, but if it fails you
+will need to supply its location.  Perl is required to properly install
+various scripts the @fuse{} uses to plot data and perform other chores.
+You can determine its location by @kbd{which perl} under tcsh or
+@kbd{type perl} under bash.
+@item
+Do you want the installation script to edit your @file{.emacs} file so
+that @fuse{} is automatically used with input files.  To do so the
+script will write several lines to your @file{.emacs} file.  If you have
+previously installed @fuse{} then it is probably safe to answer no to
+this question.  If you are installing this as root, you will have to
+edit the @file{site-start.el} file by hand with the lines printed to the
+screen at the end of the configuration step.@footnote{A future version
+of @fuse{} will handle this for the root installation, but the current
+version does not.}
+
+@end enumerate
+
+Once you have decided on these points, type @kbd{configure} at the
+command line.  This is an interactive script that asks you for the
+answers to the questions.  Just follow the instructions printed on the
+screen.
+
+Once the configuration is done, type @kbd{make} then @kbd{make
+install}.  Please note that if the location where you intend to have
+@fuse{} installed is the same as the place where you unpacked it, you
+should skip the @code{make install} step.  Nothing bad will happen if
+you don't skip it, but you will get a lot of non-critical but alarming
+looking error messages.@footnote{That is a bug that will be fixed in a
+future version.}
+
+
+The lines that are added to the @file{.emacs} file look something like
+this, with @code{~/lisp/fuse/} replaced by the installation location on
+your computer:
+@example
+       (setq load-path
+             (append (list "~/lisp/fuse/" ) load-path))
+       (setq auto-mode-alist
+             (append (list (cons "\\.inp$" 'input-mode))
+                     auto-mode-alist))
+       (autoload 'fuse-mode "fuse" t)
+       (autoload 'input-mode "input" t)
+       (add-hook 'dired-load-hook
+                 '(lambda () (load-library "fuse-dired")))
+@end example
+@noindent
+The first two lines tell emacs where to find @fuse{}.  The next three
+lines tells Emacs to use @fuse{} for files ending in @file{.inp}.  The
+two @samp{autoload} lines tell Emacs how to start using @fuse{}.  The
+last allows for batch processing of input files using dired mode in
+Emacs.
+
+@c        (global-set-key [(f9)]  'fuse-mode)
+@c The next to last line binds the @key{F9} key to start up @fuse{}.
+
+
+
+@node Customizing,  , Making, Installation
+@section Customizing FUSE
+
+
+There are lots of variables which can be set to customize the appearance
+and behavior of @fuse{}.  The variables are listed in the quick
+reference card which comes with @fuse{} or can be listed using the
+@samp{variable apropos} function in Emacs or the @samp{hyper apropos}
+function in XEmacs.  There are at least four ways to do so, some more
+convenient than others.
+
+
+@enumerate
+
+@item
+At any time while using @fuse{}, you can type @kbd{M-x set-variable} and
+respond with the name of the variable you want to change and the value
+you want to change it too.  This solution, however, does not last
+between Emacs sessions.  To make a permanent change you need to do one
+of the other things in this list.
+
+@item
+Add lines to your @file{.emacs} file.  Take a look at the file
+@file{dot-emacs} that comes with @fuse{} for an example of this.  The
+best way to set a user variable in @file{.emacs} is
+@example
+       (add-hook 'fuse-mode-hook '(lambda ()
+                (setq input-comment-char "% ")
+                (setq input-stanza-indent 2)   ))
+@end example
+@noindent
+In this example I set two user variables to their default values.
+@vindex input-mode-hook
+
+
+@item
+Create a file called @file{.fuse}.  This file is read when a buffer
+first enters Input mode.  It contains Emacs lisp statements for setting
+the values of the variables.  An example of a @file{.fuse} file is given
+with the @fuse{} distribution in a file called @file{dot-fuse}.  In this
+example, every user configurable is set to its default value.  The lines
+of the @file{.fuse} file look like these two:
+@example
+  (setq input-comment-char "% ")
+  (setq input-stanza-indent 2)
+@end example
+@noindent
+This is a little redundant with the @file{.emacs} file, but it is
+convenient to have another place to put your @fuse{} customizations and
+keep clutter out of @file{.emacs}.
+@cindex @file{.fuse}
+
+
+@item
+If you are using GNU Emacs 20 or XEmacs 20, or if you have the
+@file{custom} package specially installed for version 19 of either
+program, you can use it to set and save changes to @fuse{}'s user
+variables.  This is the easiest way of customizing @fuse{} or any other
+Emacs package.  Just type @kbd{M-x customize-group} and answer
+@kbd{fuse}.  You will then be presented with a hypertext buffer for
+setting the @fuse{} user variables.  @fuse{} is in the @var{Local}
+customization group.
+@cindex @file{custom}
+
+@end enumerate
+
+@c ----------------------------------------------------------------
+
+
+@node Syntax, Using FUSE, Installation, Top
+@comment  node-name,  next,  previous,  up
+@chapter The syntax and appearance of input files
+
+
+
+@menu
+* Program syntax::              The syntax of @sc{feff} and the @sc{uwxafs} programs
+* Additional syntax::           Additional syntax rules in @fuse{}
+* Colorization::                Syntax colorization
+* Input filenames::             Associating programs with input files
+* Autoconfiguration::           Automatic configuration
+* Keywords::                    Program keywords
+* Indentation::                 Indentation and separation
+* Master files::                Master files and include files
+@end menu
+
+@node Program syntax, Additional syntax, Syntax, Syntax
+@section The syntax of @sc{feff} and the @sc{uwxafs} programs
+
+Each of @sc{feff} and the @sc{uwxafs} programs requires an input file
+as part of its input structure.  This input file is always an ASCII
+text file which contains all of the information required by the
+program at run-time.  This information might include the names and
+locations of any other input files, the names to be assigned to output
+files, and any physical or run-time parameters required by the
+program.
+
+Although there are some differences in how each program interprets its
+input file, there are several common rules governing the syntactic
+structure of the input files.  The input files are always parsed.
+This means that there is considerable freedom in the order in which
+information is placed in the input file.  Each program reads a line of
+input and searches for specially recognized words called
+@emph{keywords}.  When a recognized keyword is found, the next one or
+more words in the input file are read and interpreted in a context
+appropriate to the keyword.  For example, in @sc{autobk} the word
+@samp{data} is used to specify the name of the file containing the input
+chi(k) data.  When @sc{autobk} encounters the word @samp{data} it
+interprets the following word as the name of a computer file.
+@cindex keywords
+
+In all of the programs keywords and their values are separated by
+white space.  The formal definition of white space in all of the
+programs is any number of space or tab characters followed by zero or
+one comma or equals sign followed by any number of spaces or
+tabs.@footnote{In case you are @emph{really} interested, the regular
+expression is: @code{[ \t]*[ \t,=][ \t]*}}
+Here is an example of how this rule might be implemented:
+@example
+	keyword1 = value1	keyword2 = value2
+@end example
+In this example, the equals sign (@samp{=}) is used to emphasize the
+relationship between the keyword and its value, and a tab is inserted
+before the second keyword.
+@cindex white space
+
+In most cases there can be any number of keyword/value pairs on a line
+and the keywords can come in any order.  There are a few notable
+exceptions to this rule:
+
+@enumerate
+
+@item
+In @sc{feff} there can only be one keyword per line and it must
+come at the beginning of the line.  Anything on a line after the
+keyword and its value is ignored by @sc{feff}.
+
+@item
+In @sc{atoms} the keyword @samp{atoms} (or possibly @samp{basis})
+must be the last keyword in the file.
+
+@item
+In @sc{atoms} the 10 characters following the keyword
+@samp{space} are read as the value of that keyword.  This is because
+space group notation contains spaces, but no space group symbol is
+longer than 10 characters.
+
+@item
+In @sc{feffit} all path parameters and the words @samp{set},
+@samp{guess}, and @samp{local} must be the only keywords on their lines
+and must come at the beginning of the line.
+
+@item
+In @sc{feffit} there is one keyword that contains white space.
+It is @samp{next data set} and is used to denote the boundary between
+data sets.
+
+@end enumerate
+
+For complete details on the keywords recognized by these programs and
+the syntax of their values, see the documents for each program.
+
+Each of the programs recognizes certain characters as comment
+characters.  This means that any text on a line following one of these
+characters will be ignored by the program.  In @sc{feff} @samp{*} is the
+comment character.  In @sc{atoms} and @sc{autobk} any of @samp{*},
+@samp{#}, @samp{%}, or @samp{!} are comment characters.  In @sc{feffit}
+all of @samp{*}, @samp{#}, @samp{%}, or @samp{!} are beginning of line
+comment characters, while @samp{#}, @samp{%}, or @samp{!} are comment
+characters in the middle of the line.  The reason for this distinction
+in @sc{feffit} is that @samp{*} is used in math expressions.
+@cindex comment characters
+
+@node Additional syntax, Colorization, Program syntax, Syntax
+@section Additional syntax rules imposed by FUSE
+
+The syntax rules described above are an integral part of @fuse{} and
+are used to determine the behavior of most of its features.  There is
+a major syntactic rule imposed by @fuse{} for @sc{feffit} input that
+is not a requirement of the program.  This rule is:
+@quotation
+All path parameters sharing a common path index (i.e. all those
+referring to the same scattering path as calculated by @sc{feff}) must
+be contiguous in the input file.  Such a grouping of path parameters is
+called a @emph{path paragraph}.  The first line in a path paragraph
+@strong{must} be for the path parameter @samp{path}, which is used to
+identify the name of the @sc{feff} output file containing the
+calculation for that scattering path.  Path paragraphs are separated by
+lines containing only comment and whitespace characters (i.e. space,
+tab, comma, @kbd{=}, @kbd{*}, @kbd{#}, @kbd{%}, and @kbd{!}).
+@end quotation
+@cindex path parameters
+
+@noindent
+This definition of the path paragraph is @strong{required} for several
+of the most powerful editing features in @sc{feffit} minor mode.  I
+strongly encourage you to observe the syntactic structure of the path
+paragraph.  If you prefer to group together all @samp{path} lines
+separately from all @samp{sigma2} lines, then you will not find
+@sc{feffit} minor mode to be particularly helpful.  Sorry.
+
+
+@node Colorization, Input filenames, Additional syntax, Syntax
+@section Syntax colorization
+
+Each minor mode has rules for syntax colorization of the text.
+@fuse{} supports both font-lock and hilit19 for syntax colorization.  Keywords
+are cast in one of several colors, with conceptually similar keywords
+sharing colors.  Comments are set in a different color, which is red by
+default.  See the installation instructions for how to enable your Emacs
+session to use @fuse{}'s syntax colorization.
+
+If you already use either @emph{font-lock} or @emph{hilit19}, then
+@fuse{} will display your input files with syntax colorization.  If you
+would like to start using syntax colorization, the set up is easy.  To
+enable syntax coloring of the text of your input files using font-lock,
+place the following line in your @file{.emacs} file:
+@example
+     (global-font-lock-mode t)
+@end example
+@noindent
+To enable syntax coloring of the text of your input files using the
+hilit19 package, place the following lines in your @file{.emacs} file:
+@example
+     (cond (window-system
+            (setq hilit-mode-enable-list  '(not text-mode)
+                   hilit-background-mode   'light
+                   hilit-inhibit-hooks     nil
+                   hilit-inhibit-rebinding nil)
+            (require 'hilit19) ))
+@end example
+@noindent I find that font-lock offers better performance than
+@file{hilit19}.  Both packages are supported by @fuse{}, although
+hilit19 is no longer supported by its author.
+@cindex @file{font-lock}
+@cindex @file{hilit19}
+
+
+@node Input filenames, Autoconfiguration, Colorization, Syntax
+@section Associating programs with input files
+
+Each of the programs requires that the input file have a particular
+name.  For example @sc{feff} requires that its input file be called
+@file{feff.inp}.  You might, however, wish to use file names which are
+mnemonically associated with the contents of the file.  For instance,
+the @file{feff.inp} file used to model data on metallic copper might be
+called @file{cu-feff.inp}.  Because @fuse{} uses minor modes specific to
+each program for editing the input files, it is necessary for @fuse{} to
+determine which for which program each edited input file is intended.
+To determine this, it first looks at the file name, if the filename is
+obviously indicative of a particular program (e.g. @file{autobk.inp} is
+almost certainly intended for use with @sc{autobk}) then that program is
+used.  If the filename is not obviously indicative, then @fuse{} may
+prompt you for a program name when you edit the file for the first time.
+It is important to answer this question correctly.  Every input file is
+edited in @sc{input} major mode and in a minor mode appropriate to the
+program.  To enable the full functionality of @fuse{}, the associated
+program must be identified so that the appropriate minor mode can be
+used.
+
+
+@node Autoconfiguration, Keywords, Input filenames, Syntax
+@section Automatic configuration
+
+@cindex automatic configuration
+
+There are several features in @fuse{} that are routinely set in the
+course of editing an input files that are convenient to retain between
+editing sessions.  To do this, @fuse{} writes special comment lines
+to your input files that are read when the file is initially loaded by
+Emacs and used to set variables which appropriately alter the behavior
+of @fuse{}.  The comment lines are generally written to the end of
+the input file and begin with a special string of comment characters.
+They look something like this:
+@example
+!!&& Local Variables:
+!!&& input-program-name: "autobk"
+!!&& End:
+@end example
+
+There are several variables which are set in this manner.  The most
+important is the one that identifies the program for which the input
+file is intended.  In the example above, the comment line identifies
+@sc{autobk} as the program for the input file.
+
+There are currently five other pieces of information that are stored
+in these special comment lines.  These are (1) the directory path to
+the location of files from a @sc{feff} run, (2) the directory path to
+input data files, (3) the directory path to out files, (4) the default
+k-weight to use when chi(k) data is plotted, and (5) the name of
+the master file for an include file in a multi-file input file.  In
+the future more automatic configuration possibilities may be added.
+@fuse{} will ignore any other variable values in the list when it
+updates it's own automatically configured variables.
+
+The automatic configuration lines are updated each time an input file is
+saved to disk.  Each of the variable set by these lines can be altered
+by functions built into @fuse{} during the course of editing.  These are
+found in the @samp{Input} menu and described in the quick reference
+card.  One of the variables in @fuse{},
+@samp{input-prohibit-autoconfig-flag}, can be set to prohibit the
+writing of the auto-configuration lines.  Use this if you object to
+having @fuse{} insert text into your input file.  I recommend, though,
+that you allow it to do so.  It is very convenient to not have to
+re-enter this information every time the file is edited.
+@vindex input-prohibit-autoconfig-flag
+
+@node Keywords, Indentation, Autoconfiguration, Syntax
+@comment  node-name,  next,  previous,  up
+@section Keywords and keyword parsing
+
+One of the difficulties of using @sc{feff} and the @sc{uwxafs}
+programs is remembering the names of the keywords recognized by the
+various programs and what values each of the keywords takes.
+@fuse{} can help you.  It has knowledge of all keywords used by each
+of the programs hardwired in and offers several functions to let you
+use that knowledge.
+@cindex keyword
+
+@table @strong
+
+@item Templates
+Each minor mode offers template functions which insert necessary
+keywords into your input file with blank spaces for you to fill in
+appropriate values.  Using the templates assures that your input file
+will at least run the program to completion without neglecting any
+crucial information.  The templates are described in more details in
+the chapters on the minor modes.
+
+All of the templates in @fuse{} are made using the @samp{tempo} package.
+This means that each place where a value needs to be inserted by the
+user is a @emph{hotspot}.  The hotspots are marked by salmon colored
+rectangles.  Once the hotspots are filled in you can clear the salmon
+colored rectangles with @kbd{C-c C-t c}.  The functions
+@samp{tempo-forward-mark} and @samp{tempo-backward-mark}, bound in
+@fuse{} to @kbd{M-n} and @kbd{M-p}, can be used to move among the
+hotspots.
+@cindex @file{tempo}
+@cindex templates
+@kindex M-n
+@kindex M-p
+
+@item Keyword completion
+The function @samp{input-complete-keyword} (normally bound to
+@kbd{M-@key{tab}}) will attempt to complete a partially typed
+keyword.  If the string already typed matches only one possible
+keyword, that keyword will be completed, colored according to syntax,
+and a brief explanation of the keyword will be offered in the echo
+area.  If the typed string does not match any keyword, you will be
+told in the echo area.  If more than one keyword is matched, all
+possible matches will be offered in the echo area.  As an example,
+when editing a @sc{feffit} input file, if you type @kbd{g} then
+@kbd{M-@key{tab}}, @samp{guess} will be inserted into your input file
+and you will told in the echo area that @samp{guess} is used to set the
+name and initial value of a fitting parameter.
+@cindex completion
+@vindex input-complete-keyword
+@kindex M-@key{tab}
+
+@item Argument descriptions
+The function @samp{input-arg-for-this-keyword} (normally bound to
+@kbd{M-?}) will offer a brief description of the keyword underneath the
+cursor along with a description of the sort of argument it takes.  The
+is written to the echo area.
+@vindex input-arg-for-this-keyword
+@kindex M-?
+
+@item Verification of keyword values
+The function @samp{input-check-this-keyword-arg} (normally bound to
+@kbd{M-@key{ret}}) will perform a simple check of the value of the
+keyword underneath the cursor.  For example, if the keyword is
+supposed to take a numeric value, this function will check to see that
+the value is a number.  If the keyword specifies an input data file,
+it will check to see that the value is the name of a readable file.
+@cindex verification
+@vindex input-check-for-this-keyword
+@kindex M-@key{ret}
+
+@item Verification of input files
+@emph{This functionality is not yet a part of} @fuse{}, @emph{but in a
+future version a function will exist to verify an entire input file by
+repeatedly using @*@samp{input-check-this-keyword-arg}.  If any mistakes
+are found, error messages will be written to a second window.  I plan
+to provide a simple way of jumping from messages in the error window
+to the appropriate point in the input file.}
+
+@item Display of all possible keywords
+The function @samp{input-display-keywords} (normally bound to @kbd{C-c
+C-b k}) opens a second window and displays all possible keywords for the
+program associated with the input file.  The keywords are tabulated
+along with brief descriptions.
+@vindex input-display-keywords
+@kindex C-c C-b k
+
+@end table
+
+@node Indentation, Master files, Keywords, Syntax
+@section Indentation and separation
+
+
+In the first section of this chapter I described the rules recognized
+by the programs for separating keywords and values.  As long as at
+least one whitespace character separates words in the input files, the
+programs are quite content.  Merely meeting the minimum requirement,
+however, will make for a messy looking and hard to read input file.
+Because you or some other human will eventually read your input file,
+it is convenient to adopt certain conventions about indenting text and
+about separating textual elements within the input files.
+@cindex indentation
+@cindex separation
+
+To make input files easier to read thus easier to understand, @fuse{}
+uses several configurable rules for determining proper indentation and
+separation.  The choices @fuse{} makes about indentation and separation
+are context-dependent.  That is, the indentation of, say, a line
+containing a @samp{guess}ed variable in @sc{feffit} may be different
+from the indentation of a line in an @sc{autobk} input file.  Variables
+in @fuse{} with names ending in either @samp{indent} or @samp{separate}
+control the amount and type of whitespace used in various situation by
+many @fuse{} functions.
+
+Each of these variables takes an integer value.  A positive integer
+specific how many @emph{spaces} will be inserted as indentation or
+separation.  A negative number specifies the number of @emph{tabs} to
+insert.  For indentation variables, a value of 0 means that no
+whitespace will be inserted, i.e. the text will be flush against the
+left side of the screen.  For separation variables, a value of 0 will
+default to -1, i.e. a single tab character.  While you are certainly
+free to choose absurdly large numbers, for example -73 for an
+indentation value, I strongly recommend against this.  For one thing,
+an indentation of 73 tabs will be ugly and difficult to read.  For
+another, each of the programs has a hard-wired limit on the length of
+a text line.  For example, @sc{atoms} only reads the first 78
+characters of each line.
+
+Each minor mode has a @samp{cleaning} function which can be used to
+standardize the appearance of the file.  Each cleaning function will
+alter each line in the file by deleting all existing indentation and
+separation on the line and inserting the appropriate whitespace as
+determined from the user configuration variables.  All of the variables
+have defaults that will make any input file tidy and easy to read.  The
+default values for variables used by the @sc{feff} minor mode are chosen
+to make the file look like one generated by @sc{atoms}.
+@cindex cleaning
+
+Several other functions, such as those that insert templates, also use
+the indentation and separation variables.
+@cindex templates
+
+
+
+@node Master files,  , Indentation, Syntax
+@section Master files and include files
+
+@sc{feffit}, @sc{autobk}, and @sc{phit} allow the use of include files.
+@fuse{} allows you to specify the relationship between include files and
+their master files by setting an automatic configuration variable.
+Currently this variable is used only by a few functions.  The program
+running function will use the master file as the input file.  Also the
+functions for jumping to log and prm files jump to the files appropriate
+to the master file.  Plotting and paragraph manipulation functions do
+not currently use the master file.
+@cindex master file
+@cindex include file
+
+
+
+
+@c ----------------------------------------------------------------
+
+@node Using FUSE, Glossary, Syntax, Top
+@chapter Using FUSE
+
+@menu
+* Keys::                        Key Sequences, Menus, and Toolbars
+* Run::                         Running programs with FUSE
+* Plot::                        Plotting output with FUSE
+@end menu
+
+
+@node Keys, Run, Using FUSE, Using FUSE
+@section Key Sequences, Menus, and Toolbars
+
+As with most packages in Emacs, there are a number of
+different ways of accessing all of the functions in @fuse{}.
+The most primitive manner of accessing functions is to type
+@kbd{M-x} followed by the name of the function.  Additionally,
+most user functions are bound to key sequences.  Most of these
+involve typing @kbd{C-c} followed by another control character and
+then followed by a single character.  These are lengthy key
+sequences.  Major modes typically use @kbd{C-c} sequences.  To
+have enough options available, I felt it necessary to have all of
+the @fuse{} functions use a second control prefix.
+
+@kbd{C-} means to strike the control key while striking the
+following character. @kbd{M-} means to strike the @key{esc} key
+before striking the following key.  Alternatively, you can hold down
+the @key{alt} or @key{meta} key while striking the following
+key.
+
+The list of key sequences is rather lengthy and has been excluded from
+this document.  The tutorial, @pxref{Introduction,,,fuse-tutorial, The
+Fuse Tutorial}, demonstrates the use of many functions.  All of the key
+sequences recognized by @fuse{} are listed in the quick reference card.
+
+Virtually all of the functions in @fuse{} are bound to either the
+@code{Input} menu or to one of the program menus.  Whenever you edit and
+input file with @fuse{} there will be a pull down menu labels
+@code{Input} and one labelled with the name of the program corresponding
+to that input file.
+
+@fuse{} makes use of the ability of XEmacs to display a toolbar.  By
+default, a toolbar appears at the left side of the screen when a buffer
+in input-mode is displayed.  The toolbar has a several of the most
+commonly used functions bound to it, including functions for making
+templates, running programs, plotting output, and examining log files.
+
+
+@node Run, Plot, Keys, Using FUSE
+@section Program Execution
+
+
+As discussed in the introduction, one of the fundamental purposed of a
+user interface to a set of programs is providing an environment
+in which to run the programs.  @fuse{} allows you to run any of the
+programs with a key or mouse sequence.  When a program is run, a
+second window is opened to display all of the run-time messages
+written to standard output and standard error by the program.  This
+allows you to follow the progress of the program and to see when the
+program has finished.
+@cindex run
+@cindex @samp{time}
+
+The programs are always invoked using the shell's @samp{time} command.
+Upon completion of the program, this causes a summary of the time
+consumed by the program to be written to the run-time display window.
+Generally this summary is rather cryptic but usually includes the real
+time elapsed and the amount of CPU time used.  It would be nice to
+parse this string into a more readable form, but unfortunately its
+format is different under different shells and operating systems.
+Even so, it is sufficiently useful to know this information that I
+offer the unparsed string despite its crypticness.
+
+The advantages of having the run-time messages written to a buffer in
+the manner described above is that it records a running log of work
+done during the @fuse{} session.  This log can be saved to a file
+using @samp{input-save-run-log} (normally bound to @kbd{C-c C-b l} and
+found in the @samp{Input:miscellaneous} menu).  This runtime log is also
+written whenever Emacs is exited so that your last session can be
+reviewed.
+@findex input-save-run-log
+@kindex C-c C-b l
+
+If you are working in a windowing environment, the run-time messages
+buffer will be displayed in a separate frame from the frame containing
+the input files.  This frame is only about 20 lines tall and lacks much
+of the normal decoration of an emacs frame.  The idea is that it is a
+display-only frame which takes up only a small amount of screen real
+estate.  This frame may be shared with the gnuplot script buffer, but
+typically is not.  This is controlled with the variable
+@samp{input-use-frames-flag}.
+@vindex input-use-frames-flag
+
+@menu
+* Basic run commands::          Running a program on the current input file
+* Batch processing::            Running programs on many input files
+@end menu
+
+@node Basic run commands, Batch processing, Run, Run
+@subsection Basic run command
+
+Several functions and features are used by @fuse{} to control program
+execution.
+
+@itemize @bullet
+
+@item
+The function @samp{input-run-any-program-any-file} (normally
+bound to @kbd{C-c C-r a} and found in the @samp{Input} menu) is a general
+purpose program execution function.  When you invoke it, you will be
+prompted for the name of a program to run and the name of a input file
+to use as input to the program.
+@findex input-run-any-program-any-file
+@kindex C-c C-r a
+
+@item
+The function @samp{input-run-this-program-this-file} (normally
+bound to @kbd{C-c C-r r} and found in the program menu) is used to run
+the program associated with the current file on the current file.
+This is the way that programs are most commonly executed in @fuse{}.
+@findex input-run-this-program-any-file
+@kindex C-c C-r r
+
+@item
+The function @samp{input-kill-program} (normally bound to @kbd{C-c
+C-r k} and found in both the @samp{Input} and program menus) is used to
+kill the currently running process.
+@findex input-kill-program
+@kindex C-c C-r k
+
+@item
+Only one program can run at a time.  This is, admittedly, a silly
+restriction, since Unix certainly does not care how many programs are
+running.  The bookkeeping chores involved in running more than one
+program at a time are rather complicated.  Perhaps in a future version I
+will allow for execution of multiple concurrent programs.  Of course,
+you could run the programs from the command line either in a virtual
+terminal or in an Emacs shell buffer (@kbd{M-x shell} or @kbd{C-c s}).
+
+@item
+@fuse{} includes a nifty wrapper for program execution which
+allows you to name your input files with any name you want and to use
+them to run the programs without renaming them to the file name
+required by the program.  @fuse{} does this by renaming your input
+file to the appropriate name, then renaming it back when the program
+is done.  The log file is also renamed to the same name as the input
+file, but with @file{.log} substituted for @file{.inp}.  For @sc{feffit}
+the @file{prm} file is also renamed.  For @sc{atoms}, if the input files
+called, say, @file{cu.inp}, the @sc{feff} input file generated by the
+program will be called @file{cu-feff.inp}.  Care is taken not to
+overwrite any existing files.  Suppose a file called @file{atoms.inp}
+already exists. Before the @file{cu.inp} is renamed to @file{atoms.inp}
+the already existing @file{atoms.inp} will be renamed to a temporary,
+randomly generated file name.  Output files are also renamed in this
+manner.  Note that the output files of @sc{feff} are not protected
+in this manner in the current version of @fuse{}.  Also the output
+data files of @sc{autobk} and @sc{feffit} are not protected (e.g. the
+output background file from @sc{autobk} will not be protected by this
+command wrapper.)
+@cindex execution wrapper
+
+@item
+In the future it will be nice if @fuse{} is able to parse the
+screen output of each of the programs for error messages and to
+provide a way of jumping to the place in the input file that cause the
+problem.
+
+@item
+@sc{autobk} has a feature not shared by the other three
+programs.  It is possible to run @sc{autobk} repeatedly with a single
+input file.  Each of the blocks of text controlling a single run of
+autobk is called a @emph{stanza}.  @sc{autobk} minor mode offers a
+function for running @sc{autobk} just on the stanza currently occupied
+by the cursor.  The function @samp{autobk-run-stanza} (usually bound to
+@kbd{C-c C-r s} and found in the Autobk menu) does this by copying the
+current stanza to a file called @file{fuse-stanza.inp} then running
+autobk on that file.  The log file for the single stanza run is thus
+called @file{fuse-stanza.log}
+@cindex stanza
+@findex autobk-run-stanza
+@kindex C-c C-r s
+
+@end itemize
+
+
+@node Batch processing,  , Basic run commands, Run
+@subsection Batch processing
+
+@fuse{} is able to batch process input files by sequentially running the
+appropriate program on any number of input files.  This is accomplished
+using a dired buffer.  See the Emacs documentation for details about
+dired.
+
+To enable @fuse{}'s batch processing capabilities, you must have this
+lines somewhere in your @file{.emacs} file
+@example
+     (add-hook 'dired-load-hook '(lambda () (load "fuse-dired")))
+@end example
+@noindent
+Once that is done, any time you are in a dired buffer you will be able
+to run any of the programs covered by @fuse{}.  First mark some number of
+input files using the @samp{m} command (or any other marking command) in
+dired.  Then invoke @samp{fuse-dired-run-marked} by typing @kbd{C-c r}.
+@fuse{} will then load each marked file and run the program appropriate
+to that file.  Just sit back and watch.
+@cindex batch jobs
+@findex fuse-dired-run-marked
+@kindex C-c r
+
+
+Note that the batch run may require some interactive response in certain
+situations.  For example, if @fuse{} cannot figure out the program
+associated with the input file (@pxref{Autoconfiguration}), @fuse{} will
+query you for it.
+
+
+
+
+@node Plot,  , Run, Using FUSE
+@section Plotting
+
+@menu
+* Using::                       Using FUSE's Plotting Utilities
+* Limitations::                 Limitations to FUSE's Plotting Utilities
+@end menu
+
+@node Using, Limitations, Plot, Plot
+@subsection Using FUSE's Plotting Utilities
+
+@cindex plot
+
+@fuse{} plots the output of @sc{feff} and the @sc{uwxafs} programs
+by parsing for the input file for information about the data that
+needs to be plotted and constructing a @sc{gnuplot} script based on
+what it finds.  It then pipes the contents of this script to
+@sc{gnuplot}.  The scripts can be saved by moving the cursor to the
+script buffer and typing @kbd{C-x C-s}.
+
+@cindex @sc{gnuplot}
+
+When one of the plotting options is chosen, a second window or a
+separate frame opens up showing the contents of the @sc{gnuplot} script.
+Assuming there are no problems, the plot will be displayed and control
+of the cursor will return to the window containing the input file.
+
+If you are working in a windowing environment, the run-time messages
+buffer will be displayed in a separate frame from the frame containing
+the input files.  This frame is only about 20 lines tall and lacks much
+of the normal decoration of an emacs frame.  I assume that you only
+rarely will edit the gnuplot script, so displaying it in a separate and
+rather small frame seems preferable.  This frame may shared with the
+run-time messages buffer, but typically is not.  This behavior is
+controlled by the variable @samp{input-use-frames-flag}.
+@vindex input-use-frames-flag
+
+@table @emph
+
+@item Plotting in ATOMS mode
+There is nothing to plot in ATOMS, so there are no plotting functions.
+An interface to a ball-and-stick plotter such as @sc{rasmol} or
+@sc{xmol} would sure be nice.
+
+@item Plotting in FEFF mode
+In @sc{feff} minor mode there are two plotting options.  One is to plot
+chi(k) from @file{chi.dat} and the other is to plot mu and mu0 from
+@file{xmu.dat}.  The scripts @sc{gnufix} and @sc{kw} are used.  Both of
+these files are written by the fourth module of @sc{feff}.
+@file{xmu.dat} is only written if the XANES calculation is enabled by
+having the @samp{xanes} keyword in in the input file.
+@cindex @file{xmu.dat}
+@cindex @file{chi.dat}
+@cindex @sc{kw}
+
+@item Plotting in AUTOBK mode
+In @sc{autobk} minor mode there are four plotting options, (1) plot
+chi(k) as specified in the stanza currently occupied by the cursor, (2)
+plot the data and @sc{autobk}'s estimation of mu0 from the current
+stanza along, (3) plot chi(k) together with the fitting standard from
+the current stanza, (4) over-plot all chi(k) functions from all stanzas
+in the input file.  The @sc{kw} script is used to apply @math{k}-weight
+to the chi(k).
+
+@item Plotting in FEFFIT mode
+In @sc{feffit} minor mode there are options to plot fit results in any
+of @math{k}, @math{R}, and back-transformed @math{k} spaces.  The data
+and the full fit in the chosen space are always plotted.  Plotting in
+any of the spaces requires that the appropriate control keyword
+(@samp{kspout}, @samp{rspout}, or @samp{qspout}) be set to true.
+
+@kindex C-c C-p m
+@kindex S-mouse-2
+@kindex C-c C-p a
+@kindex C-c C-p c
+By default only the data at full fit are shown.  If @sc{feffit}'s
+background fitting option is selected by setting @samp{bkgout} to true,
+then the background function will be added to the plot.  The individual
+paths can also be plotted by marking path paragraphs that you want to
+plot.  This is done with the @kbd{C-c C-p m} command.  When a path is
+marked, the @samp{path} keyword will be highlighted and when any of the
+three plotting functions is called, the marked paths will be added to
+the @sc{gnuplot} script.  Hitting @kbd{C-c C-p m} again clears the mark.
+@kbd{S-mouse-2} marks and unmarks the paragraph under the mouse
+cursor.  @kbd{C-c C-p a}  marks all paths in the current data set and
+@kbd{C-c C-p c} clears all marks.
+
+@item Using GNUPLOT mode
+The @sc{gnuplot} script is written in two parts to a buffer which is, by
+default, called @file{input-mode.gp}.  The first part initially has no
+@sc{gnuplot} commands in it and is never deleted in subsequent plots.
+The second part contains all of the commands for the requested plot.
+The second part of the script is deleted for each subsequent plot.
+These two parts are separated by a line beginning with these characters:
+@samp{#-#-#-}.  Any @sc{gnuplot} commands that you wish to issue with
+each plot can be typed into the first part of the script.
+
+The automatically generated scripts are always plotted when one of the
+plotting options is chosen by key or mouse sequence.  You can interact
+with @sc{gnuplot} directly by moving the cursor to the buffer containing
+the script.  You can then edit the script as you wish and re-send it to
+@sc{gnuplot}.  There are three key sequences for communicating commands
+to @sc{gnuplot}.  @samp{send-buffer-to-gnuplot}, bound to @kbd{C-c C-b}
+and in the @samp{gnuplot} menu, sends all commands in the buffer to
+@sc{gnuplot}.  @samp{send-region-to-gnuplot}, bound to @kbd{C-c C-r}
+and in the @samp{gnuplot} menu, sends all commands in a selected region
+to @sc{gnuplot}.  Finally, @samp{send-line-to-gnuplot}, bound to
+@kbd{C-c C-l} and in the @samp{gnuplot} menu, sends all commands on the
+line occupied by the cursor to @sc{gnuplot}.
+@findex send-buffer-to-gnuplot
+@findex send-region-to-gnuplot
+@findex send-line-to-gnuplot
+@kindex C-c C-b
+@kindex C-c C-r
+@kindex C-c C-l
+
+
+@fuse{} adds a specialized history list to gnuplot-mode.  Every time and
+entire script is sent to @sc{gnuplot}, that script gets pushed onto a
+history list.  You can navigate up and down the script history list,
+thus revisiting previous plots, by using @kbd{C-c C-p} and @kbd{C-c C-n}
+in the gnuplot-mode buffer or by hitting the up and down arrow icons in
+the XEmacs toolbar.  The depth of the history list is determined by the
+value of @code{fuse-gnuplot-history}.
+@vindex fuse-gnuplot-history
+@findex fuse-gnuplot-previous
+@findex fuse-gnuplot-next
+@kindex C-c C-p
+@kindex C-c C-n
+
+Hitting @kbd{C-c C-f k} will terminate the @sc{gnuplot} process and
+close the frame containing the gnuplot script.
+@findex fuse-kill-gnuplot
+@kindex C-c C-f k
+
+For more details about using gnuplot-mode, see the reference card
+@file{gpelcard.ps} which comes with @fuse{}.
+
+@item Scripts used in plotting
+Several scripts external to Emacs are used in the @fuse{} plotting
+utilities, @sc{kw}, @sc{gnufix}, and @sc{mr}.  With Unix, @sc{gnuplot}
+is able to pipe data through external scripts using the system
+@samp{popen} function.  This is the purpose of the @samp{<} character
+that appears in several of @fuse{}'s plotting scripts.
+@cindex @sc{kw}
+@cindex @sc{gnufix}
+@cindex @sc{mr}
+@cindex @sc{eshift}
+
+@sc{kw} is a simple @sc{awk} script for k-weighting chi(k) data.  It
+simply multiplies each y-value in the data file by some power of the
+x-value.  @sc{gnufix} is a Bourne shell script containing a single
+@sc{sed} command.  It prepends a comment character (@samp{#}) to each
+line in the header of @file{chi.dat} or @file{xmu.dat} so that these
+files may be properly plotted using @sc{gnuplot}.  @sc{mr} is a Bourne
+shell script used as an interface to a Fortran program for reading a
+record from a @sc{uwxafs} binary file.
+
+Another script, @sc{eshift}, comes with @fuse{} although it is not
+used in any of the built-in script generating functions.  The purpose
+of this script is to e0-shift mu(E) data.  In @sc{gnuplot} it
+works in a manner analogous to @sc{kw}.  The following @sc{gnuplot}
+command plots some data with a 5 volt e0 shift:
+@example
+	pl '<eshift esh=5 data.xmu'
+@end example
+
+Note that any of these scripts can be used at the command line by
+redirecting their output to a file.  For example:
+@example
+	# kw w=5 data.chi > data.chi.weighted
+	# gnufix esh=5 xmu.dat > xmu.data.fixed
+	# eshift esh=5 data.xmu > data.xmu.shifted
+	# mr data.xmu, 1 > data.xmu.ascii
+@end example
+@noindent
+These scripts are all in the @file{scripts} directory in the
+distribution.  The directory containing these scripts is the value of
+@code{fuse-bin-location}.  This directory is added to the
+@code{exec-path} when @fuse{} is started.
+@vindex fuse-bin-location
+
+@end table
+
+@node Limitations,  , Using, Plot
+@subsection Limitations to FUSE's Plotting Utilities
+
+@fuse{} is supposed to have a mechanism for detecting problems with the
+commands sent to @sc{gnuplot}.  In truth, I never got this to work
+properly and found that it was not entirely necessary.  If something
+goes wrong with the plot, look at the @samp{gnuplot-program} buffer by
+simply switching to that buffer or by using the
+@samp{gnuplot-jump-to-gnuplot-buffer} function, normally bound to
+@kbd{C-c C-e} and in the @samp{Gnuplot} menu in the gnuplot-buffer.
+@findex gnuplot-jump-to-gnuplot-buffer
+@kindex C-c C-e
+
+@fuse{}'s plotting functions are able to interact with either ASCII
+data or data in the @sc{uwxafs} binary format.  Because of certain
+features of the @sc{uwxafs} binary format, the @sc{gnuplot} scripts
+generated by @fuse{} may not be what you want.  For example, a
+script for a @sc{feffit} fit is written assuming that the output data
+was written to a new file rather than appended to a pre-existing
+file.  Thus the fit script uses numeric keys (@samp{nkeys}) beginning
+with 1.
+
+Interaction with the @sc{uwxafs} binary files is one of the weaker areas
+in @fuse{}.  In truth, I rarely use the binary files and my memory of
+how the programs read and write them is a bit fuzzy.  In particular, I
+don't recall how @sc{autobk} writes its many possible output files when
+binary output is used.  I have a few ideas about how to improve plotting
+from the binary files.  It could be possible to set an nkey offset
+variable to handle pre-existing files.  Another possibility would be
+something like Dired mode in Emacs, where the contents of the binary
+file are displayed to a buffer and records could be marked and
+subsequently plotted.
+
+
+@c ----------------------------------------------------------------
+
+@node Glossary, Future, Using FUSE, Top
+@chapter Glossary of terms
+
+
+Here are definitions of terms found in this document.  Please note
+that these are not dictionary definitions, but rather what they mean
+in the context of using @fuse{}.
+
+@itemize @bullet
+
+@item
+@strong{Cleaning}: Fixing the indentation and separation on every line
+in a region or an input file.
+@cindex cleaning
+
+@item
+@strong{Data set}: The portion of a @sc{feffit} input file devoted to
+fitting a particular data file.  @sc{feffit} allows the user to
+co-refine parameters using multiple data sets.  A data set is delimited
+by the top of the buffer, the bottom of the buffer or the keyword
+@samp{next data set}.
+@cindex data set
+
+@item
+@strong{Indentation}: Whitespace inserted at the beginning of a line.
+Different textual areas in input files use different, user-configurable
+rules to determine the type and amount of whitespace.
+@cindex indentation
+
+@item
+@strong{Keyword}: A word recognized by a program used to signal the
+program how to interpret the following word or words.
+@cindex keyword
+
+@item
+@strong{List}: A region of text in an input file whose format is rigidly
+interpreted by the program.  Typically alist begins with a line
+containing a keyword telling the program to interpret the following
+lines as a list.
+@cindex list
+
+@item
+@strong{Path paragraph}: A region of text in a @sc{feffit} input file
+used to set the path parameters associated with a particular scattering
+path.  The path paragraph must begin with the @samp{path} keyword and is
+delimited by lines containing only whitespace or comment characters.
+@cindex path paragraph
+
+@item
+@strong{Separation}: Whitespace inserted between textual areas in an
+input file for the purpose of enhancing readability.  Typically
+separation is inserted between columns in a list or between fields in a
+@samp{set}, @samp{guess}, or @samp{local} line in a @sc{feffit} input
+file.  Different textual areas in input files use different,
+user-configurable rules to determine the type and amount of whitespace.
+@cindex separation
+
+@item
+@strong{Snag}: Insertion of text at the location of the cursor that is
+identical to that found in a similar textual area elsewhere in the input
+file.
+@cindex snag
+
+@item
+@strong{Stanza}: The unit of text in an @sc{autobk} used to describe the
+background removal from a single data file.  An @sc{autobk} input file
+can have any number of stanzas.  For the sake of indentation and other
+functions, any part of an input file that is not otherwise defined is
+considered to be part of a stanza.
+@cindex stanza
+
+@item
+@strong{Swap}: Exchange of a portion of text with related, possibly
+opposite text.  For example to exchange the keyword @samp{guess} with
+@samp{set} in a @sc{feffit} input file.
+@cindex swap
+
+@item
+@strong{Template}: A unit of text containing one or more keywords
+without their values.  Templates are used in @fuse{} as a guideline
+for constructing a minimal input file.
+@cindex template
+
+@item
+@strong{Visit}: Open a new buffer containing a file related
+to the current input file.  There are functions for visiting log
+files, data files, and other sorts of files.  Also referred to as
+@emph{jumping}.
+@cindex visit
+@cindex jump
+
+@end itemize
+
+@c ----------------------------------------------------------------
+
+@node Future, Index, Glossary, Top
+@chapter Future work
+
+
+I do things in @fuse{} as I need them for my own work.  That puts a
+severe limit on how much gets done.  If I ever develop a user base, some
+of the ideas that I have that I can live without would perhaps get done.
+I find Emacs to be a really wonderful application interface and I have
+not really used all of its potential or implemented all of my ideas.
+Any of these things may happen some day.  If I ever get some kind of
+real user base, that would be incentive for finishing off this list and
+even tackling some new problems.
+
+
+@table @strong
+
+@item File parsing
+Do a simple syntax checking of the entire buffer -- make sure that
+values match the expectation of a keyword, that named files exist, that
+keywords are not dangling, and the like.  This already works for
+individual keywords, but I would like @fuse{} to check entire files.  A
+display of problems and a facility for jumping to the location of the
+problem, @emph{a la} compilation-mode, would be great.
+
+@item Execution parsing
+The run-time output of all the programs is displayed in a run-time
+buffer.  This output could be parsed in the event of an unsuccessful run
+much in the manner of the standard compilation utility which allows you
+jump to the problem line in the source code at a keystroke.  The
+inconsistent screen messages of @sc{feff} and the @sc{uwxafs} programs
+make this difficult, although @sc{atoms} will offer a uniform style of
+screen messages starting with version 2.50.
+
+@item Better UWXAFS binary integration
+A dired-like mode for interacting with uwxafs binary files (or even a
+packed ASCII representation of the many-records-one-file concept) would
+be quite slick.  This is way down on my priority list because (1) I
+rarely use the UWXAFS format and (2) I would rather see it go away (or
+be replaced by something better, packed ASCII, zip, other?).
+
+@item More plotting options
+Gnuplot is really rather primitive, but it is clean and easy to interact
+with.  Another freely available and fairly common plotting option is
+@sc{XMgr}.  It really would not be too hard to make an XMgr interface in a
+similar vein to the current gnuplot interface.  XMgr has the advantages
+of, among other things, a cursor and focusing.  Others possibilities
+are @sc{pgplot} integration and @dots{}?
+
+@item NTEmacs integration
+It'd be pretty cool if FUSE worked on NT.  I can't imagine it would take
+@emph{that} much work.
+
+@item and @dots{}
+I'm open to suggestions!
+
+@end table
+
+
+
+@node Index,  , Future, Top
+@unnumbered Index
+
+@printindex cp
+
+@c @shortcontents
+@contents
+@bye
+
+
+@c Local Variables:
+@c mode: outline-minor
+@c outline-regexp: "@chapter"
+@c End:

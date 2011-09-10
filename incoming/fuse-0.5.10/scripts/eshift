@@ -1,0 +1,24 @@
+#!/usr/bin/awk -f
+#
+# read a two column data file and add or subtract an offset to 
+# either data column.  Used for e0 shifts of xmu data
+# This is an awk script
+# By Bruce Ravel 29 Sep 1997
+#
+# usage in gnuplot '<eshift esh=# ysh=# filename'
+# 
+# This file is part of FUSE, the Feff/UWXAFS System for Emacs
+#  
+#---skip blanks and hashed lines
+BEGIN{OFS="    "}
+{
+if ($0 ~ /^#/)
+	{print $0}
+else if ( ($0 ~ /^ *#/) || ($0 ~ /^$/) ) 
+	{}
+#---write 2 columns
+else
+	{print OFS $1+esh OFS $2+ysh}
+}
+
+

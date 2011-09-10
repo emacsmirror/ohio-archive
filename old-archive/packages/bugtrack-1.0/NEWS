@@ -1,0 +1,19 @@
+New features in bugtrack 1.0 (1993-12-13)
+-----------------------------------------
+
+This is the first release made to a wider audience, and also the first
+release that gets a release number.
+
++ Tighter coupling to RMAIL: hit "F" in RMAIL mode to search for bug
+  reports that refer to the current mail.
+
++ The new file bugtrack-init.el should be loaded from your .emacs (or,
+  possibly, from default.el).  It is no longer necessary to load
+  bugtrack.el before rmail.el to get the RMAIL coupling to work.
+
++ As a bonus, added bugtrack-rmail-view-commented (bound to "^" in
+  RMAIL mode).
+
+- Emacs 18 is no longer supported.
+
+;;; NEWS ends here.

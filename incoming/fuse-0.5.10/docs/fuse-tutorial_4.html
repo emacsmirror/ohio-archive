@@ -1,0 +1,243 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse-tutorial.texi on 28 July 1998 -->
+
+<TITLE>FUSE Tutorial - Running Autobk</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_3.html">previous</A>, <A HREF="fuse-tutorial_5.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC12" HREF="fuse-tutorial_toc.html#TOC12">Running Autobk</A></H1>
+
+
+
+<H2><A NAME="SEC13" HREF="fuse-tutorial_toc.html#TOC13">The AUTOBK Input File</A></H2>
+
+<P>
+To begin editing an AUTOBK input file, type <KBD>C-x C-f</KBD> or select
+<CODE>Open File</CODE> from the <CODE>Files</CODE> menu.  You will be asked for the
+name of a file in the <TT>`feff'</TT> subdirectory.  Before responding with
+a name, delete the characters <TT>`feff/'</TT> so that you will open a file
+in the <TT>`Cu'</TT> subdirectory.  Then type out <TT>`autobk.inp'</TT>.  You
+will be presented with a blank window.  Notice that you are now in
+<CODE>Autobk</CODE> minor mode, the menu bar has the <CODE>Autobk</CODE> label, and
+there is an <CODE>Autobk</CODE> menu in the menu bar.
+
+</P>
+<P>
+<A NAME="IDX47"></A>
+<A NAME="IDX48"></A>
+<A NAME="IDX49"></A>
+<A NAME="IDX50"></A>
+<A NAME="IDX51"></A>
+<A NAME="IDX52"></A>
+Before writing a template, let's set several variables that will be
+useful in the next few steps of the tutorial.  In the <CODE>Input</CODE> menu
+you will notice options for <CODE>Set path to input data</CODE>, <CODE>Set
+path to feff files</CODE>, and <CODE>Set output path</CODE>.  The key sequences for
+these are <KBD>C-c C-d</KBD> followed by <KBD>d</KBD>, <KBD>f</KBD>, and <KBD>o</KBD>
+respectively.  These are used to tell @fuse{} where to find different
+sorts of files.  Run each of these functions using <TT>`data/'</TT> as the
+data path, <TT>`feff/'</TT> as the feff path, and <TT>`data/'</TT> as the output
+path.
+
+</P>
+<P>
+<A NAME="IDX53"></A>
+<A NAME="IDX54"></A>
+<A NAME="IDX55"></A>
+Now insert a template by typing <KBD>C-c C-t t</KBD>, selecting <SAMP>`Autobk
+template'</SAMP> from the <SAMP>`Autobk'</SAMP> menu, or clicking <CODE>mouse-1</CODE> on the
+top-most toolbar icon.  Note that the information about file paths that
+you just entered has appeared in appropriate places in the template.
+Note that, just as with the ATOMS template, hotspot markings have
+been placed in the template as a visual cue for where keyword values
+must be inserted.  If you enter reasonable data at each hotspot, it is
+quite likely that your input file will run to completion.
+
+</P>
+<P>
+<A NAME="IDX56"></A>
+<A NAME="IDX57"></A>
+<A NAME="IDX58"></A>
+<A NAME="IDX59"></A>
+Now fill in appropriate values at each hotpot.  Use values of <KBD>1</KBD>,
+<KBD>1</KBD>, and <KBD>4</KBD> for <CODE>kmin</CODE>, <CODE>rmin</CODE>, and <CODE>rmax</CODE>
+respectively.  Write <TT>`cu10k.dat'</TT> after <TT>`data/'</TT> for the
+<CODE>data</CODE> keyword and <TT>`chi.dat'</TT> after <TT>`feff/'</TT> for the
+<CODE>theory</CODE> keyword.  Pick a good basename for the output files,
+<TT>`cu10k'</TT> should do just fine.  You can delete the line with
+<CODE>e0</CODE> as we will let AUTOBK find it.  Now place the screen
+cursor on one of the keywords, <CODE>kmin</CODE> for example.  Hit <KBD>M-?</KBD>.
+This command causes @fuse{} to display a description of the keyword
+under the screen cursor in the echo area.  Now hit <KBD>M-</KBD><KBD>ret</KBD>.
+If you put a number in as the value for <KBD>kmin</KBD>, you will see a
+message in the echo area saying that this value is ok.  Try changing the
+value of <CODE>kmin</CODE> to <KBD>q</KBD> and hitting <KBD>M-</KBD><KBD>ret</KBD> again.
+Don't forget to change it back!  Now place the screen cursor on the
+<CODE>data</CODE> keyword and try <KBD>M-?</KBD>  and <KBD>M-</KBD><KBD>ret</KBD> again.
+Notice that the keyword checking facility knows about and checks for
+readable files.  If you like the help given by <KBD>M-?</KBD>, you can have
+it happen automatically by hiting <KBD>C-c C-b t</KBD> or selecting
+<CODE>Fuse-doc mode</CODE> from the top of the <CODE>Input</CODE> menu.  With
+fuse-doc mode turned on, a keyword description will automatically be
+displayed in the echo area whenever the screen cursor comes to rest on a
+keyword.  This works in any program minor mode.  The messages displayed
+are the same as those displayed by <KBD>C-c C-b k</KBD> or the question mark
+icon in the toolbar.
+
+</P>
+
+<P>
+Now finish filling in the template and save it.  It should look like
+Figure 6.
+
+</P>
+<P>
+<A NAME="IDX60"></A>
+<A NAME="IDX61"></A>
+<A NAME="IDX62"></A>
+<A NAME="IDX63"></A>
+Several interesting things happened when you saved this file.  The Local
+Variables list was written to this files just as it was to
+<TT>`atoms.inp'</TT> and <TT>`feff.inp'</TT>.  Notice that the values for file
+paths that you entered earlier were written to the list.  The next time
+that you edit this file, it will not be necessary to re-enter that
+information.  @fuse{} will read it from the Local Variables list.  Also
+note that a time stamp was placed after the Local Variables list.  This
+is updated every time you save the file so you will always know when you
+last edited the file.  Now move the mouse cursor so it is over the line
+that specifies the data file.  See how the background flashes orange as
+soon as the cursor is over either the keyword <CODE>data</CODE> or the
+filename?  This orange flashing is a visual cue in @fuse{} that the
+mouse cursor is in a position where hitting <CODE>S-mouse-3</CODE> will do
+something.  That something depends on the kind of input file you are
+editing and on the location of the mouse cursor.  In this case, hitting
+S-MOUSE-3 will open and display the file under the cursor.  These
+orange areas are set when the input file is first visited and whenever it
+is saved.  You can turn off the orange flashing for a given buffer in
+the <CODE>Input - Miscellaneous</CODE> submenu.
+
+</P>
+<P>
+<STRONG>Figure 6:</STRONG> Completed AUTOBK input file
+<P>
+<img src="autobk-inp.jpg" alt="**image file autobk-inp.jpg**">
+<P>
+
+</P>
+
+
+
+<H2><A NAME="SEC14" HREF="fuse-tutorial_toc.html#TOC14">Running and Plotting in AUTOBK Mode</A></H2>
+
+<P>
+<A NAME="IDX64"></A>
+<A NAME="IDX65"></A>
+Now run AUTOBK.  Note that the run-time messages from AUTOBK
+will be added to those already in the run-time messages buffer.  Also
+note that the elapsed time of the run is written to the buffer in the
+run-time frame.  This is printed out in the form of your computers
+<TT>`time'</TT> shell command.  On my Linux system using bash, it looks like
+this:
+
+<PRE>
+193.560u 0.160s 0:09.25 97.2%	0+0k 0+0io 171pf+0w
+</PRE>
+
+<P>
+The relevant number is the third one.  This says that that
+particular AUTOBK run took 0 minutes and 9.25 seconds.  Check the
+man pages for your shell for complete details about the <TT>`time'</TT>
+command.
+
+</P>
+<P>
+<A NAME="IDX66"></A>
+<A NAME="IDX67"></A>
+<A NAME="IDX68"></A>
+<A NAME="IDX69"></A>
+Once the run is finished (it should not take long), there are several
+things that can be plotted.  In the <CODE>Autobk</CODE> menu there are several
+entries under the heading <CODE>Plotting</CODE>.  The things that can be
+displayed automatically from this input file are the @greek{mu,E} data
+along with the background (<CODE>C-c C-p b</CODE> and shown in Figure 7),
+@greek{chi,k} (<CODE>C-c C-p k</CODE>), and @greek{chi,k} along with the
+theoretical @greek{chi,k} from the FEFF run (<CODE>C-c C-p t</CODE>).
+The @greek{mu,E} and @greek{chi,k} plots are also bound to toolbar
+icons.
+
+</P>
+<P>
+<A NAME="IDX70"></A>
+Although we will not be using this feature of AUTOBK during this
+tutorial, it has the ability to batch process @greek{mu,E} data into
+@greek{chi,k}.  The instructions then look the same for each data set
+and are separated in the input file by lines of dashes.  In @fuse{}, a
+line-of-dashes separated set of instructions is called a <EM>stanza</EM>.
+AUTOBK mode in @fuse{} has several functions for operating on
+stanzas.  In the <CODE>Autobk</CODE> menu there are options for running
+AUTOBK on the entire file or on the stanza currently occupied by
+the screen cursor.  The plotting functions described in the last
+paragraph all work on the current stanza.  Additionally there is a
+plotting function for displaying all @greek{chi,k} from the input file
+(<CODE>C-c C-p a</CODE> and bound to the toolbar).
+
+</P>
+
+<P>
+@ifnotinfo
+<P>
+<STRONG>Figure 7:</STRONG> Plotting the data and background
+<P>
+<img src="autobk-plot.jpg" alt="**image file autobk-plot.jpg**">
+
+</P>
+
+
+
+<H2><A NAME="SEC15" HREF="fuse-tutorial_toc.html#TOC15">Examining the output of AUTOBK</A></H2>
+
+<P>
+<A NAME="IDX71"></A>
+Plotting the output files from AUTOBK is an important part of
+evaluating and understanding the result, but there is more to the
+interpretation of data than making pretty pictures.  For example, from
+an AUTOBK run, it is important to know where @ezero{} is.  Hit
+<KBD>C-c C-s e</KBD>.  A line with <CODE>e0f =  8976.886</CODE> is inserted in
+the stanza.  Cool!  Where did that come from?
+
+</P>
+<P>
+<A NAME="IDX72"></A>
+<A NAME="IDX73"></A>
+Now hit <KBD>C-c C-f l</KBD>, select <CODE>Look at log file</CODE> from either the
+<CODE>Autobk</CODE> or <CODE>Input - Visit files</CODE> menu, or hit the third
+toolbar icon (the one with the thumbtack).  Doing so displays the log
+file from your autobk run.  Somewhere around line 15 in the log file is
+the final value of @ezero{} found by AUTOBK.  The <KBD>C-c C-f l</KBD>
+key sequence and its related menu and toolbar bindings are the common way
+of examining log files in @fuse{}.  That key sequence and the thumbtack
+icon will always display the log file appropriate to the current input
+file.<A NAME="DOCF3" HREF="fuse-tutorial_foot.html#FOOT3">(3)</A>  You can easily return to the input file by
+hitting <KBD>M-C-`</KBD>.
+
+</P>
+<P>
+@fuse{} is clever enough to search the log file for the final value of
+@ezero{} and insert it into the input file.  The <CODE>e0f</CODE> keyword
+tells AUTOBK to fix @ezero{} to that value.  If you want to play
+around with other background removal parameter while keeping @ezero{}
+fixed, <CODE>e0f</CODE> is the right keyword.  In the next chapter you will
+learn of other ways that @fuse{} is able to glean information from log
+and other files for use in input files.
+
+</P>
+
+<P><HR><P>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_3.html">previous</A>, <A HREF="fuse-tutorial_5.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+</BODY>
+</HTML>

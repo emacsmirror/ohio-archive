@@ -1,0 +1,148 @@
+ZenIRC TODO list -- Last updated 1998-05-07
+
+* zenirc.el
+
+  Strip ^F, ^P, ^U, ^B and ^_ from receieved PRIVMSG, NOTICE and
+  TOPIC. Possibly add functions for this in zenirc.color.el at a later
+  stage.
+
+* zenirc-fill.el
+
+  Add optional function to strip off whitespaces at the end of messages.
+
+* Show Y-class when using /trace command.
+
+* Define current-time for emacs 18.
+  Define current-time-string in 18 so that it can format arbitrary time values.
+
+* /ping
+
+  Instead of trying to send to hack current-time-string, or represent big
+  integers and such, just send the printed representation of a call to
+  current-time.  Then when the reply comes back, read the result and
+  compare the conses.  The way to compute the difference of these times is
+
+        (defsubst time-difference (a b)
+          (+ (lsh (- (car b) (car a)) 16)
+             (- (car (cdr b)) (car (cdr a)))))
+
+  This returns the number of seconds elapsed.
+
+  I would like to remove the kiwi-derived routines anyway.
+
+* zenirc-notify.el
+
+  Make it not trigger if you see the person leave or join a channel.
+
+* zenirc-complete.el
+
+  Make it add nicks seen based on zenirc-complete-add-list, would be
+  nice to add things on /trace and /userhost.
+
+* Allow messages from specific users, or different types of messages, to go
+  into different buffers.
+
+  If a general mechanism is implemented for this, zenirc-dcc.el should use
+  it.
+
+  It is likely that zenirc-message will have take a new arg, indicating
+  into which buffer the message should go.
+
+  [1995-03-16 Noah is working on this as part of a general purpose library
+  for emacs.]
+
+  [1996-07-22 Jason (and Per) is working on another solution to this.]
+
+* Implement "filters", to distinguish semantics from hooks.
+
+  Some things, like the zenirc-format-nickuserhost-hook, don't really want
+  to run all the functions; it wants to terminate as soon as a desirable
+  formatting is completed.
+
+  There are other instances where two hooks do not necessarily want to be
+  run independently.  For instance, zenirc-away.el only wants to display an
+  away message if the current away message for a user is not in its cache
+  already.
+
+  But in general, hooks want to be run independently of each other since
+  they may perform some completely orthogonal action, so if some other hook
+  wants to abort running the rest of the hook list, the user is screwed.
+
+  I propose a "filter" mechanism which provides a way to specify ordering,
+  i.e. they should be able to say "I need to be run before foo but after
+  bar" (and this requirement also assumes that bar must necessarily be run
+  after foo).  Packages which use this new mechamism may have to know some
+  details about other packages for this to work, but that's a given.  These
+  filters would be of a different nature from the hooks now being used.
+
+  I do not have a specific interface in mind yet, but I suspect that
+  filters will generally be run via the hook mechanism, i.e. one will
+  generally do
+
+   (zenirc-add-hook 'zenirc-foo-hook
+                    (function
+                     (lambda (&rest args)
+                       (apply 'zenirc-run-filter 'zenirc-foo-filter args))))
+
+* Update non-english message catalogs with new strings added to the client
+  since it they were first created.
+
+* Write a texinfo manual.
+
+* Make 'undo' only apply to unsent text.
+
+* Make recieved text 'read-only'.
+
+
+Low priority:
+
+* /list with regexp's.
+
+* Finish zenirc-eval.el.
+
+  This should operate as a CTCP message that reads a sexp and evaluates it.
+  In addition to regular eval, there should be an eval-print or some other
+  macro that takes the result and sends it in the CTCP reply.  Since irc
+  messages are limited to 255 chars or so, the syntactic sugar would be
+  helpful.
+
+  For the sake of security weenies, it should have an access list, probably
+  a list of regexps of user@host addresses which are allowed to send
+  messages.
+
+  Perhaps there should also be a "novice" flag which displays the form to
+  be evaluated in the minibuffer (or a display buffer) and query for
+  confirmation before doing anything.
+
+* Write zenirc-alias.el
+
+  ircII like alias but not as smart.
+
+* Write zenirc-save.el
+  This should save some default values to a special zenirc.rc file 
+  which ZenIRC loads during startup.
+
+* Write zenirc-eliza.el
+
+  This should implement an eliza bot via doctor.el.
+
+* Write zenirc-swedish-chef.el
+
+  This should be a process filter that converts everything people say into
+  swedish-chef speak, and it should have an abbrev table that dynamically
+  converts user input as well.
+
+* Write zenirc-face.el
+
+  This should be code for Emacs 19 and XEmacs to support highlighting
+  for ^Vregions^V and the like.
+
+* Write zenirc-mcelwane.el
+
+  Upcase words RANDOMLY on INPUT!
+
+* zenirc supporting bold controls
+
+  From: Andrew J Cosgriff <ajc@bing.wattle.id.au>
+  any chance of zenirc supporting bold controls and stuff (^B et al.) ?
+

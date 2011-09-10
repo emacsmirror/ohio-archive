@@ -1,0 +1,289 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse.texi on 24 August 1998 -->
+
+<TITLE>FUSE User's Guide - Installing FUSE</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="fuse_1.html">first</A>, <A HREF="fuse_1.html">previous</A>, <A HREF="fuse_3.html">next</A>, <A HREF="fuse_7.html">last</A> section, <A HREF="fuse_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC2" HREF="fuse_toc.html#TOC2">Installing FUSE</A></H1>
+
+
+
+<H2><A NAME="SEC3" HREF="fuse_toc.html#TOC3">Unpacking the distribution</A></H2>
+
+<P>
+@fuse{} is distributed in two compressed archive formats.  One uses
+the standard unix TAR and GZIP utilities, the other uses
+ZIP.  Their contents are the same.  Use whichever one is more
+convenient for you.
+
+</P>
+<P>
+You can unpack the distribution any place on your disk.  One of the
+steps of the installation discussed in See section <A HREF="fuse_2.html#SEC4">Configuring, making, and installing.</A> will move all of
+the necessary files to their final home.  To unpack the TARred and
+GZIPped file, <CODE>cd</CODE> to your lisp directory and execute these
+commands:
+
+<PRE>
+    &#62; gunzip fuse.tar.gz
+    &#62; tar xvf fuse.tar
+</PRE>
+
+<P>
+To unpack the ZIPped file, execute this commands:
+
+<PRE>
+    &#62; unzip fuse.zip
+</PRE>
+
+<P>
+After doing one of those steps, you will find that the @fuse{}
+distribution has been unpacked into a subdirectory called
+<TT>`fuse-#.#.#'</TT>, where the <TT>`#'</TT> signs denote the current version
+number of @fuse{}.
+
+</P>
+<P>
+Now <KBD>cd</KBD> into the <TT>`fuse-#.#.#'</TT> subdirectory.  Here is what you
+will find in that directory.
+
+<UL>
+
+<LI>
+
+Several information files and scripts used during installation, including:
+<DL COMPACT>
+
+<DT><TT>`Makefile.emacs'</TT>
+<DD>
+<DT><TT>`Makefile.xemacs'</TT>
+<DD>
+The instructions for the MAKE program, one for Emacs and one for XEmacs.
+<DT><TT>`configure'</TT>
+<DD>
+A Bourne shell script used to configure the distribution for your
+machine.  See section <A HREF="fuse_2.html#SEC4">Configuring, making, and installing.</A>.
+<DT><TT>`INSTALL'</TT>
+<DD>
+A file with the installation instructions from section <A HREF="fuse_2.html#SEC4">Configuring, making, and installing.</A>.
+<DT><TT>`README'</TT>
+<DD>
+<DT><TT>`COPYING'</TT>
+<DD>
+<DT><TT>`HOOKS'</TT>
+<DD>
+Some files with general information about @fuse{}.
+
+</DL>
+
+<LI>
+
+A bunch of files that end in <TT>`.el'</TT>.  These are the main programs in
+@fuse{}.
+
+<LI>
+
+The <TT>`docs/'</TT> directory contains documentation for @fuse{} as well as
+for ATOMS and FEFF in a variety of formats, including info,
+html, PostScript and plain text.  You will also find quick reference
+cards in PostScript format for @fuse{} and GNUPLOT here.
+
+<LI>
+
+The <TT>`pixmaps/'</TT> directory contains all of the icons used in the
+toolbars.
+
+<LI>
+
+The <TT>`scripts/'</TT> directory contains several shell and perl scripts
+used by @fuse{}.
+
+<LI>
+
+The <TT>`fortran/'</TT> directory contains some programs useful for handling
+UWXAFS binary files as well as copies of the programs NORMAL
+for normalization and alignment of absorption data, and PHIT, a
+general purpose fitting program.
+
+<LI>
+
+The <TT>`emulation/'</TT> directory contains some files useful if you want
+Emacs to emulate VI, EDT, or CRISP while using @fuse{}.
+
+<LI>
+
+The <TT>`example/'</TT> directory contains files that you will need for the
+tutorial, see section `Introduction' in <CITE>The Fuse Tutorial</CITE>, and various
+example input files demonstrating features of @fuse{}.
+
+</UL>
+
+
+
+<H2><A NAME="SEC4" HREF="fuse_toc.html#TOC4">Configuring, making, and installing.</A></H2>
+
+<P>
+Before starting, you need to decide on a few things.  During the first step
+in the installation process, you will be asked a few questions that
+@fuse{} needs to know to install itself properly.  These are
+
+<OL>
+<LI>
+
+Will you be using Emacs or XEmacs?<A NAME="DOCF1" HREF="fuse_foot.html#FOOT1">(1)</A>.  XEmacs
+refers to the version from @url{http://www.xemacs.org}.}
+<LI>
+
+In which directory will you be installing @fuse{}?  If you are
+installing @fuse{} as a normal user, then this should be a directory
+where you keep personal Emacs lisp files.  If you are installing
+@fuse{} as root, then this should be the <TT>`site-lisp'</TT> directory.
+Telling the wrong place to the installation script will result in
+@fuse{} not being accessible to Emacs.
+<LI>
+
+What is the location of perl on your computer?  The <TT>`configure'</TT>
+script will most likely be able to determine this, but if it fails you
+will need to supply its location.  Perl is required to properly install
+various scripts the @fuse{} uses to plot data and perform other chores.
+You can determine its location by <KBD>which perl</KBD> under tcsh or
+<KBD>type perl</KBD> under bash.
+<LI>
+
+Do you want the installation script to edit your <TT>`.emacs'</TT> file so
+that @fuse{} is automatically used with input files.  To do so the
+script will write several lines to your <TT>`.emacs'</TT> file.  If you have
+previously installed @fuse{} then it is probably safe to answer no to
+this question.  If you are installing this as root, you will have to
+edit the <TT>`site-start.el'</TT> file by hand with the lines printed to the
+screen at the end of the configuration step.<A NAME="DOCF2" HREF="fuse_foot.html#FOOT2">(2)</A> will handle this for the root installation, but the current
+version does not.}
+
+</OL>
+
+<P>
+Once you have decided on these points, type <KBD>configure</KBD> at the
+command line.  This is an interactive script that asks you for the
+answers to the questions.  Just follow the instructions printed on the
+screen.
+
+</P>
+<P>
+Once the configuration is done, type <KBD>make</KBD> then <KBD>make
+install</KBD>.  Please note that if the location where you intend to have
+@fuse{} installed is the same as the place where you unpacked it, you
+should skip the <CODE>make install</CODE> step.  Nothing bad will happen if
+you don't skip it, but you will get a lot of non-critical but alarming
+looking error messages.<A NAME="DOCF3" HREF="fuse_foot.html#FOOT3">(3)</A>
+
+</P>
+
+<P>
+The lines that are added to the <TT>`.emacs'</TT> file look something like
+this, with <CODE>~/lisp/fuse/</CODE> replaced by the installation location on
+your computer:
+
+<PRE>
+       (setq load-path
+             (append (list "~/lisp/fuse/" ) load-path))
+       (setq auto-mode-alist
+             (append (list (cons "\\.inp$" 'input-mode))
+                     auto-mode-alist))
+       (autoload 'fuse-mode "fuse" t)
+       (autoload 'input-mode "input" t)
+       (add-hook 'dired-load-hook
+                 '(lambda () (load-library "fuse-dired")))
+</PRE>
+
+<P>
+The first two lines tell emacs where to find @fuse{}.  The next three
+lines tells Emacs to use @fuse{} for files ending in <TT>`.inp'</TT>.  The
+two <SAMP>`autoload'</SAMP> lines tell Emacs how to start using @fuse{}.  The
+last allows for batch processing of input files using dired mode in
+Emacs.
+
+</P>
+
+
+
+<H2><A NAME="SEC5" HREF="fuse_toc.html#TOC5">Customizing FUSE</A></H2>
+
+<P>
+There are lots of variables which can be set to customize the appearance
+and behavior of @fuse{}.  The variables are listed in the quick
+reference card which comes with @fuse{} or can be listed using the
+<SAMP>`variable apropos'</SAMP> function in Emacs or the <SAMP>`hyper apropos'</SAMP>
+function in XEmacs.  There are at least four ways to do so, some more
+convenient than others.
+
+</P>
+
+
+<OL>
+
+<LI>
+
+At any time while using @fuse{}, you can type <KBD>M-x set-variable</KBD> and
+respond with the name of the variable you want to change and the value
+you want to change it too.  This solution, however, does not last
+between Emacs sessions.  To make a permanent change you need to do one
+of the other things in this list.
+
+<LI>
+
+Add lines to your <TT>`.emacs'</TT> file.  Take a look at the file
+<TT>`dot-emacs'</TT> that comes with @fuse{} for an example of this.  The
+best way to set a user variable in <TT>`.emacs'</TT> is
+
+<PRE>
+       (add-hook 'fuse-mode-hook '(lambda ()
+                (setq input-comment-char "% ")
+                (setq input-stanza-indent 2)   ))
+</PRE>
+
+In this example I set two user variables to their default values.
+<A NAME="IDX2"></A>
+
+<LI>
+
+Create a file called <TT>`.fuse'</TT>.  This file is read when a buffer
+first enters Input mode.  It contains Emacs lisp statements for setting
+the values of the variables.  An example of a <TT>`.fuse'</TT> file is given
+with the @fuse{} distribution in a file called <TT>`dot-fuse'</TT>.  In this
+example, every user configurable is set to its default value.  The lines
+of the <TT>`.fuse'</TT> file look like these two:
+
+<PRE>
+  (setq input-comment-char "% ")
+  (setq input-stanza-indent 2)
+</PRE>
+
+This is a little redundant with the <TT>`.emacs'</TT> file, but it is
+convenient to have another place to put your @fuse{} customizations and
+keep clutter out of <TT>`.emacs'</TT>.
+<A NAME="IDX3"></A>
+
+<LI>
+
+If you are using GNU Emacs 20 or XEmacs 20, or if you have the
+<TT>`custom'</TT> package specially installed for version 19 of either
+program, you can use it to set and save changes to @fuse{}'s user
+variables.  This is the easiest way of customizing @fuse{} or any other
+Emacs package.  Just type <KBD>M-x customize-group</KBD> and answer
+<KBD>fuse</KBD>.  You will then be presented with a hypertext buffer for
+setting the @fuse{} user variables.  @fuse{} is in the <VAR>Local</VAR>
+customization group.
+<A NAME="IDX4"></A>
+
+</OL>
+
+<P><HR><P>
+Go to the <A HREF="fuse_1.html">first</A>, <A HREF="fuse_1.html">previous</A>, <A HREF="fuse_3.html">next</A>, <A HREF="fuse_7.html">last</A> section, <A HREF="fuse_toc.html">table of contents</A>.
+</BODY>
+</HTML>

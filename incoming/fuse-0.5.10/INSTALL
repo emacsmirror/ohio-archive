@@ -1,0 +1,180 @@
+						June 10 1998
+
+There are few things that have to be configured before compiling and
+installing FUSE.  Before starting, decide on these four things:
+
+1.  Will you be using Emacs or XEmacs?
+2.  Where will you be installing FUSE?  All of the lisp scripts and
+    the various ancillary files (pixmaps, plotting scripts, documents,
+    etc.) will be installed to this directory.
+3.  What is the location of perl on your computer.  You can find this
+    out by typing `which perl' if you use tcsh or `type perl' if you
+    use bash.
+4.  Do you want the configuration script to add some lines to your
+    .emacs so that you can use FUSE?  If you have done so before, you
+    can answer no to that question.
+
+To configure, compile, and install, do the following:
+
+ > sh configure
+ > make
+ > make install
+
+That's all!
+
+Installation as a normal user:
+  The answer to the second question -- the installation location --
+  should be the directory you keep your personal Emacs lisp files.
+
+Installation as root:
+  The answer to the second question -- the installation location --
+  should be the site-lisp directory or any other system directory in
+  the Emacs load-path.  The answer to the fourth question, the one
+  about editing .emacs, should be no.  The installation script
+  currently doesn't know how to edit the site-start file.  You will
+  have to do so by hand.  (See the next paragraph.)
+
+
+If you do not have the configuration script append lines to your
+.emacs file, be sure to add lines like these by hand so that you FUSE
+will be automatically used for your input files.  Replace
+"~/lisp/fuse" in the first line with whatever the installation
+directory is.
+
+       (setq load-path (append (list "~/lisp/fuse" ) load-path))
+       (setq auto-mode-alist
+             (append (list (cons "\\.inp$" 'input-mode))
+                     auto-mode-alist))
+       (autoload 'fuse-mode  "fuse"  "FUSE" t)
+       (autoload 'input-mode "input" "Input major mode" t)
+       (add-hook 'dired-load-hook '(lambda () (load-library "fuse-dired")))
+
+
+Additional treats:
+    --	In Atoms mode, the calc package is used to perform expansion
+	of math expressions.  Get it from
+		ftp://prep.ai.mit.edu/pub/gnu/calc-2.02f.tar.gz
+    --	Imenu support for Feffit and Autobk is built into those
+	modes.  This lets you use Imenu as well as Speedbar with
+	input files.  Get Speedbar from
+		ftp://ftp.ultranet.com/pub/zappo/
+	Put this in your .emacs file to turn on input file support in
+	Speedbar:
+		(add-hook 'speedbar-mode-hook
+	 	  '(lambda ()
+		     (speedbar-add-supported-extension ".inp")))
+	Imenu is a standard part of Emacs and can be compiled well
+	under XEmacs so that Speedbar can use it.
+    --	See the file HOOKS for some suggestions about setting various
+	hooks in FUSE to do interesting and useful things.
+
+----------------------------------------------------------------------
+
+Here are the old installation instructions.  I have left them here in
+case the new configuration script and install makefile target do not
+work properly.  What follows is how to do by hand what the new
+utilities try to do automatically.
+
+
+						Mar  9 1998
+
+The installation procedures are still kind of `hands on', but they are
+not that bad.  Do this:
+
+1.  Unpack the archive in whatever directory you use to store your
+    personal emacs lisp stuff.  If you do not have one,
+		mkdir ~/lisp/
+    or something like that, then unpack the archive in that
+    directory. 
+
+2.  cd to ~/lisp/fuse-0.5.5/ (or whatever the version number is)
+
+3.  If you are using GNU Emacs, copy Makefile.emacs to Makefile.  If
+    you are using XEmacs, copy Makefile.xemacs to Makefile.
+
+4.  Look at the file input.el.  Near the beginning is the definition
+    of the variable `fuse-base-directory'.  It is defined as
+	(expand-file-name "~/xlisp/fuse/")
+    Change "~/xlisp/fuse/" to "~/lisp/fuse-0.5.5/" or whatever
+    directory you are using.  This is very important.  FUSE uses the
+    value of this variable to find documentation, scripts needed to
+    plot data, and the toolbars for the XEmacs frame.  See #8 below
+    some hints about how to handle this in a more general fashion.
+
+5.  make  (this will byte compile all of the lisp scripts and fix up
+    the stuff in the scripts directory) 
+
+6.  put these lines in your .emacs file:
+
+       (setq load-path (append (list "~/lisp/fuse-0.5.5" ) load-path))
+       (setq auto-mode-alist
+             (append (list (cons "\\.inp$" 'input-mode))
+                     auto-mode-alist))
+       (autoload 'fuse-mode  "fuse"  "FUSE" t)
+       (autoload 'input-mode "input" "Input major mode" t)
+       (add-hook 'dired-load-hook '(lambda () (load-library "fuse-dired")))
+
+    The first line tells emacs where to find FUSE.  It should point to
+    the true location where you installed FUSE.
+
+    The next three lines tell emacs to use FUSE for files ending in
+    `.inp' and how to find the appropriate files.
+
+    The last line enables batch processing of input files in a dired
+    buffer.  See the chapter on "running programs" in the FUSE
+    document for details about this.
+
+7.  You can put any further customizations in your .emacs file or in a
+    file called .fuse.  You can also use the customization package
+    with Emacs 20 or XEmacs 20.  See the section on customization in
+    the document.
+
+8.  It is convenient to have a way to install FUSE such that steps 4
+    and 6 don't have to be repeated each time a new version is
+    installed.  Here is the best thing I have come up with.  In your
+    lisp directory make a symbolic link to the directory containing
+    the FUSE distribution:
+	ln -s fuse-0.5.5 fuse
+    Then change the load-path line from step 6 to   
+        (setq load-path (append (list "~/lisp/fuse" ) load-path))
+    Finally, you need to handle the value of the `fuse-base-directory'
+    variable.  If you do one of the following, it will not matter what
+    the value is in future versions of input.el.  Do one of the
+    following, replacing "~/xlisp/fuse/" with the appropriate value:  
+	-- Put this line in your .emacs file:
+	     (add-hook 'input-mode-hook '(lambda ()
+		(setq fuse-base-directory
+		   (expand-file-name "~/xlisp/fuse/"))))
+	-- Put this line in your .fuse file:
+	     (setq fuse-base-directory
+		(expand-file-name "~/xlisp/fuse/"))
+	-- Use the customization package in Emacs 20 to set
+	   `input-base-directory'.  Do M-x customize-group and answer
+	   with "fuse".  Then find `fuse-base-directory' and change
+	   its value appropriately.
+
+    After this, all you will have to do when you install a future
+    version of FUSE is change the symbolic link.
+
+9.  Additional treats:
+    --	In Atoms mode, the calc package is used to perform expansion
+	of math expressions.  Get it from
+		ftp://prep.ai.mit.edu/pub/gnu/calc-2.02f.tar.gz
+    --	Imenu support for Feffit and Autobk is built into those
+	modes.  This lets you use Imenu as well as Speedbar with
+	input files.  Get Speedbar from
+		ftp://ftp.ultranet.com/pub/zappo/
+	Put this in your .emacs file to turn on input file support in
+	Speedbar:
+		(add-hook 'speedbar-mode-hook
+	 	  '(lambda ()
+		     (speedbar-add-supported-extension ".inp")))
+	Imenu is a standard part of Emacs and can be partially
+	compiled under XEmacs.
+    --	See the file HOOKS for some suggestions about setting various
+	hooks in FUSE to do interesting and useful things.
+
+
+
+Have fun!
+Bruce <ravel@phys.washington.edu>

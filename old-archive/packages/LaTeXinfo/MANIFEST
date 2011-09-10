@@ -1,0 +1,37 @@
+   File Name		Archive #	Description
+-----------------------------------------------------------
+ .emacs                     1	
+ .login                     1	
+ COPYING                    2	
+ MANIFEST                   1	This shipping list
+ Makefile                   1	
+ README                     1	
+ format.sty                 1	
+ get-node.el                1	
+ head-fmt.el                1	
+ head.sty                   1	
+ latexinfo-mode.el          2	
+ latexinfo.el               9	
+ latexinfo.sty              2	
+ macsyma-fmt.el             1	
+ macsyma.sty                1	
+ manual/Makefile            1	
+ manual/README              1	
+ manual/latexinfo.bib       1	
+ manual/latexinfo.tex-aa    7	
+ manual/latexinfo.tex-ab    5	
+ manual/latexinfo.tex-ac    4	
+ manual/latexinfo.tex-ad    6	
+ manual/latexinfo.tex-ae    3	
+ manual/makeinfofile.el     1	
+ manual/sample.tex          1	
+ manual/texindex.c          8	
+ nodify-new.el              1	
+ nodify.el                  1	
+ praxis-fmt.el              1	
+ praxis.sty                 1	
+ psfonts.sty                1	
+ scheme-fmt.el              2	
+ scheme.sty                 1	
+ smallverb.sty              1	
+ tex-to-latexinfo.el        2	

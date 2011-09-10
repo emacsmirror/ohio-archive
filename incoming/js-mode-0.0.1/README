@@ -1,0 +1,32 @@
+Name: Javascript (ECMAScript) Mode
+Version: 0.0.1
+
+Author: Iain Lowe
+Maintainer: Iain Lowe
+
+Info: A major mode for editing Javascript (ECMAScript)
+
+Filename: js.el
+
+Category: Development
+          Programming
+          WWW
+
+FTP: ftp://aramis.yi.org/pub/linux/emacs/js-mode-0.0.1.tar.gz
+WWW: http://aramis.yi.org/js-mode/index.html
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+Commentary:
+
+For all those web-heads out there who have been stuck editing inline
+Javascript (ECMAScript) in their HTML files.
+
+This major mode will allow you to edit your *.js files separately and
+offers features such as syntax colouring and templates.
+
+For details on installation and configuration read INSTALL.
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+
+Please direct all flames, comments, suggestions and/or questions to
+Iain Lowe <ilowe@cryogen.com>
+

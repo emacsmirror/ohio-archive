@@ -1,0 +1,34 @@
+diff -c gnus-3.13-orig/nnspool.el gnus-3.13-new/nnspool.el
+*** gnus-3.13-orig/nnspool.el	Thu Jul  5 11:44:30 1990
+--- gnus-3.13-new/nnspool.el	Thu Jul  5 11:46:00 1990
+***************
+*** 258,264 ****
+  (defun nnspool-request-list ()
+    "List valid newsgoups."
+    (save-excursion
+!     (nnspool-find-file nnspool-active-file)))
+  
+  (defun nnspool-request-last ()
+    "Set current article pointer to the previous article
+--- 258,264 ----
+  (defun nnspool-request-list ()
+    "List valid newsgoups."
+    (save-excursion
+!     (nnspool-find-file (nnspool-pick-active-file))))
+  
+  (defun nnspool-request-last ()
+    "Set current article pointer to the previous article
+***************
+*** 373,375 ****
+--- 373,383 ----
+        (setq idx (1+ idx)))
+      string
+      ))
++ 
++ (defun nnspool-pick-active-file ()
++   "Return a filename string for the active file."
++   ;; If the user has defined his own active file creator,
++   ;; use it.  Otherwise, return the "standard" active file.
++   (if (fboundp 'nnspool-personal-active-file)
++       (nnspool-personal-active-file)
++     nnspool-active-file))

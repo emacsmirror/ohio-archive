@@ -1,0 +1,119 @@
+To: unix-emacs@bbn.com
+Date: 13 Mar 89 08:44:02 GMT
+From: Scott Henry <sgi!shinobu!scotth@ames.ARPA>
+Subject: Re: How to bind multi character function keys
+
+In article <874@cvbnet2.UUCP> jeremy@enosh.prime.com (Jeremy Nussbaum) writes:
+>
+>  We have sgi 4d's and some terminals that output sequences like 
+>  <esc>[123q  or <esc>154q for a number of function keys and control keys.
+>  Is there any simple way to bind such keys to a function?
+>  Or is it necessary to have <esc>[ a prefix, then <esc>[1 a prefix etc.,
+>  such that I would need a large number of sparse keymaps to bind a small
+>  set of such function keys?
+
+I am including a file iris-ansi.el that goes in your <...>/lisp/term
+directory (and should be ln'ed to iris-ansi-net.el), along with a piece of
+my ~/.emacs file. The iris-ansi.el relies on keyboard.el which you'll have
+to modify toadd more additional functionality. I have included context
+diffs of the (few) changes I made, as an example.
+
+#!/bin/sh
+# to extract, remove the header and type "sh filename"
+if `test ! -s ./iris-ansi.el`
+then
+echo "writing ./iris-ansi.el"
+cat > ./iris-ansi.el << '\Rogue\Monster\'
+;; Map Iris 4D function key escape sequences
+;; into the standard slots in function-keymap.
+
+(require 'keypad)
+
+(defvar Iris-CSI-map nil
+  "The Iris-CSI-map maps the CSI function keys on the Iris 4D keyboard.
+The CSI keys are the arrow keys.")
+
+(if (not Iris-CSI-map)
+    (progn
+     (setq Iris-CSI-map (lookup-key global-map "\e["))
+     (if (not (keymapp Iris-CSI-map))
+	 (setq Iris-CSI-map (make-sparse-keymap)))  ;; <ESC>[ commands
+
+     (setup-terminal-keymap Iris-CSI-map
+	'(("A" . ?u)		; up arrow
+	  ("B" . ?d)		; down-arrow
+	  ("C" . ?r)		; right-arrow
+	  ("D" . ?l)		; left-arrow
+	  ("H" . ?h)			; home key
+	  ("161q" . ?P)			; shift up arrow
+	  ("164q" . ?N)			; shift down arrow
+	  ("158q" . ?1)			; shift left arrow
+	  ("167q" . ?3)			; shift right arrow
+	  ("150q" . ?P)			; page up key
+	  ("154q" . ?N)			; page down key
+	  ("159q" . ?\C-a)		; control left arrow
+	  ("168q" . ?\C-b)		; control right arrow
+	  ("139q" . ?0)			; insert key
+	  ("162q" . ?7)			; control up arrow
+	  ("165q" . ?9)			; control down arrow
+	  ("146q" . ?\C-c)		; end key
+	  ("147q" . ?f)			; shift end key
+	  ("P" . ?\C-d)			; shift delete
+	  ("142q" . ?k)			; control delete
+	  ("143q" . ?u)			; shift home
+	  ("144q" . ?u)			; control home
+			))))
+
+(defun enable-arrow-keys ()
+  "Enable the use of the VT100 arrow keys for cursor motion.
+Because of the nature of the VT100, this unavoidably breaks
+the standard Emacs command ESC [; therefore, it is not done by default,
+but only if you give this command."
+  (interactive)
+  (global-set-key "\e[" Iris-CSI-map))
+\Rogue\Monster\
+else
+  echo "will not over write ./iris-ansi.el"
+fi
+if `test ! -s ./iris.emacs`
+then
+echo "writing ./iris.emacs"
+cat > ./iris.emacs << '\Rogue\Monster\'
+;; an extract of scott's .emacs setup file
+
+(if (or (equal (getenv "TERM") "iris-ansi")
+	(equal (getenv "TERM") "iris-ansi-net"))
+    (load-library "term/iris-ansi"))
+
+(enable-arrow-keys)
+\Rogue\Monster\
+else
+  echo "will not over write ./iris.emacs"
+fi
+if `test ! -s ./keypad.el.diff`
+then
+echo "writing ./keypad.el.diff"
+cat > ./keypad.el.diff << '\Rogue\Monster\'
+*** keypad.el.orig	Sun Jun 12 08:04:41 1988
+--- keypad.el	Mon Jan  9 13:12:32 1989
+***************
+*** 122,127 ****
+--- 122,128 ----
+  (keypad-default "7" 'backward-paragraph)
+  (keypad-default "9" 'forward-paragraph)
+  (keypad-default "h" 'move-to-window-line)
++ (keypad-default "u" 'undo)
+  
+  (defun setup-terminal-keymap (map translations)
+    "Set up keymap MAP to forward to function-keymap according to TRANSLATIONS.
+\Rogue\Monster\
+else
+  echo "will not over write ./keypad.el.diff"
+fi
+echo "Finished archive 1 of 1"
+exit
+--
+---------------------
+              Scott Henry <scotth@sgi.com>
+#include <std_disclaimer.h>
+

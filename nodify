@@ -1,0 +1,117 @@
+#!/bin/sh
+#
+# nodify -- update @node commands in texinfo files.
+# Copyright (C) 1990 Rene Seindal
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 1, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+file="$1"
+tmp1=/tmp/nodify1-$$
+tmp2=$file.new
+
+trap "rm -f $tmp1 $tmp2; exit 1" 1 2 3 14 15
+
+egrep -n '^@(node|chapter|unnumbered|appendix|section|unnumberedsec|appenndixsec|subsection|unnumberedsubsec|appendixsubsec|subsubsection|unnumberedsubsubsec|appendixsubsubsec)' $file | 
+awk -F: '
+$2 ~ /^@node/ {
+	line = $1;
+	junk = index($2, ",");
+	if (junk == 0)
+		node = $2;
+	else
+		node = substr($2, 1, junk-1);
+}
+$2 ~ /^@chapter/		{ print line ":" 1 ":" node }
+$2 ~ /^@unnumbered/		{ print line ":" 1 ":" node }
+$2 ~ /^@appendix/		{ print line ":" 1 ":" node }
+$2 ~ /^@section/		{ print line ":" 2 ":" node }
+$2 ~ /^@unnumberedsec/		{ print line ":" 2 ":" node }
+$2 ~ /^@appenndixsec/		{ print line ":" 2 ":" node }
+$2 ~ /^@subsection/		{ print line ":" 3 ":" node }
+$2 ~ /^@unnumberedsubsec/	{ print line ":" 3 ":" node }
+$2 ~ /^@appendixsubsec/		{ print line ":" 3 ":" node }
+$2 ~ /^@subsubsection/		{ print line ":" 4 ":" node }
+$2 ~ /^@unnumberedsubsubsec/	{ print line ":" 4 ":" node }
+$2 ~ /^@appendixsubsubsec/	{ print line ":" 5 ":" node }' |
+awk -F: '
+BEGIN {
+	level = 0;
+	pnode[0] = "Top";
+	pnode[1] = "Top";
+}
+
+level > $2 {
+	print pline[level] "c\\\n@node " pnode[level] ", , " ppnode[level] ", " pnode[level-1]
+
+	ppnode[level] = pnode[level];
+	ppline[level] = pline[level];
+	pnode[level] = node;
+	pline[level] = line;
+	node = "";
+	line = "";
+
+	level = $2;
+}
+
+level == $2 {
+	node = substr($3, 7);
+	line = $1;
+
+	if (ppnode[level] != "")
+		prev = ppnode[level];
+	else
+		prev = pnode[level-1];
+	print pline[level] "c\\\n@node " pnode[level] ", " node ", " prev ", " pnode[level-1]
+
+	ppnode[level] = pnode[level];
+	ppline[level] = pline[level];
+	pnode[level] = node;
+	pline[level] = line;
+	node = "";
+	line = "";
+
+	next;
+}
+
+level < $2 {
+	level = $2;
+
+	ppnode[level] = pnode[level];
+	ppline[level] = pline[level];
+	pnode[level] = substr($3, 7);
+	pline[level] = $1;
+	node = "";
+	line = "";
+
+	next;
+}
+
+END {
+	for (; level > 0; --level)
+		print pline[level] "c\\\n@node " pnode[level] ", , " ppnode[level] ", " pnode[level-1]
+
+}' > $tmp1
+
+if sed -f $tmp1 $file > $tmp2; then
+	if cmp -s $file $tmp2; then
+		:
+	else
+		rm -f $file.bak
+		mv $file $file.bak
+		mv $tmp2 $file
+	fi
+fi
+
+rm -f $tmp1 $tmp2

@@ -1,0 +1,69 @@
+GNU Emacs/Common Lisp Environment Installation Instructions.
+
+0. Create a temporary directory containing only the distribution file.
+
+1. Unpack the distribution shar file by stripping the mail header and
+passing the file to /bin/sh
+
+2. Create two new directories (in your home directory will be fine): call 
+them ".elisp" and ".auto". These are "hidden" directories since they begin 
+with a "." so they won't show up with an "ls" command unless you use the
+"-a" option.
+
+3. Included in the distribution is a sample .emacs file. You will need
+to integrate any existing .emacs file you have with the contents of this
+file. In this file, change references to "/usr/u/cap/.elisp" and
+"/usr/u/cap/.auto/" to point to the directories created in step 2.
+NOTE: The trailing "/" after ".auto" IS SIGNIFICANT! Place ".emacs" in
+your home directory.
+
+4. Move all the files ending in ".el" to the ".elisp" directory.
+
+5. Edit the file "clisp.el" in the .elisp directory using GNU emacs.
+Change the reference to "/usr/u/cap/bin/kcl" to point to the Common
+Lisp on your system. This need not be Kyoto Common Lisp; any Common
+Lisp will be fine. You should also change the pointer to the remote
+shell program (for starting remote lisps) to the proper value (see
+*remote-shell-program*).  In addition, you may need to change the
+value of inferior-lisp-prompt for your particular Common Lisp; the
+default value works for KCL and a suggested version for Allegro Common
+Lisp is mentioned in the comment.  Finally, change the pointer to the
+"message of the day" file in *clisp-motd-file* to point to a message
+you would like displayed in the first lisp buffer.
+
+6. "M-x byte-recompile-directory" to GNU. You should compile all of the
+files ending with ".el" in the ".elisp" directory. NOTE: Some people
+have reported trouble with this step. You can either try using
+"M-x byte-compile-file" and giving each file's name one at a time, or
+you can supply a prefix argument, e.g., "C-u 1 M-x byte-recompile-directory".
+This will force recompilation of files without exisiting ".elc" versions.
+
+7. Edit the file "header.lsp" to whatever you like. This is the file
+that will be read in at the beginning of every new Lisp file you create.
+Lisp files all end with ".lsp"; if this isn't the ending you want, edit
+the ".emacs" file to reflect the extension you prefer. The sample 
+header.lsp file included contains a mode line that makes it easy to 
+transfer your code to a Symbolics.
+
+8. Exit GNU emacs (don't stop it; exit with C-x C-c after saving all
+the files).
+
+9. Place your edited header.lsp file in the ".auto" directory. Note that 
+the autoinclude feature works for any extension you like; thus you can have
+a header.txt file to place your favorite troff or latex commands at the
+beginning of every fresh file with the ".txt" extension. A header.ltr 
+file could contain a letter template for new files ending with ".ltr" and 
+so forth.
+
+10. Now we're ready to go. Start a new emacs on a new file with a ".lsp"
+extension. You should end up facing a fresh file containing header.lsp;
+"C-c l" should take you to a buffer with a live Lisp session.
+
+11. For a complete list of the commands available, print out the
+documentation at the beginning of the file ".elisp/clisp.el"
+
+12. Enjoy. Send bug reports to me. We're still making changes/additions,
+so you should periodically get updates provided you are on my environment
+mailing list (send mail to "segre@gvax.cs.cornell.edu" to get on the list).
+The file "Notes" contains release notes describing changes from release
+to release.

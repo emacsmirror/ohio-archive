@@ -1,0 +1,74 @@
+### text1.txt --- example template, shows expansion forms
+
+## The file name is changed anyway:
+## `template-new-file' calls `template-update-header'
+## You are using Emacs 21.1 (patch 10) "Capitol Reef" XEmacs Lucid
+
+###  Predefined expansions: ==================================================
+
+point:			
+mark:			Type C-x C-x to see the mark.
+                with XEmacs, the region between point and mark is highlighted
+directory:		/sapmnt/home1/d029492/emacs/template/examples/
+file name:		text1.txt
+raw file name:		text
+number in name:		1
+extension without dot:	txt
+file name w/o ext:	text1
+upcase name w/o ext:    TEXT1
+date/time:		08 Jun 2000
+		using template-time-format = "%d %b %Y"
+year:			2000
+ISO 8601 date:  	2000-06-08
+UTC date/time for VC:  	2000/06/08 12:14:25
+initial comment:	Init-Comment
+..without asking again: Init-Comment
+author:			Christoph.Wedler@sap.com
+user name:		Christoph Wedler
+login name:		d029492
+host address:		sap.com
+literal environment:	(>>>DATE<<<) format
+		Used to insert a text which should not be expanded even if it
+		contains strings matched by `template-expansion-regexp'.
+zero form:      Used to insert a single expansion form literally, e.g.,
+		(>>>ZERO_FORM<<<).
+
+See user option `template-default-expansion-alist'.  You may also use expansion
+forms with one-letter keys, see `template-key-alias-alist'.
+
+###  Default expansions: =====================================================
+
+default prompt:		Default-String
+..without asking again: Default-String
+register pos:		Type "C-x r j 1" to jump to the `T'
+
+See user options `template-expansion-regexp' and `template-register-regexp'.
+
+###  Secure per-template defined expansions: =================================
+
+* some commands:	Thu 08 Jun 2000, 08:14 AM ----------------------------
+user defined prompt:	User-String
+..without asking again: User-String
+another prompt:		again_pre: Again-String :again_post
+..with asking again:    again_default
+recursive prompt:	Level-1, Level-2, Level-3.
+choice:			Yes, I want "yes".
+..same choice again:    No, not in text1.txt
+register pos:		Type "C-x r j r" to jump to the `T'
+register text:  registers at key ?a, ?b and ?c contain text, e.g., type
+		"C-x r i a" to insert contents of register ?a.  The text in
+		registers b and ?c is shown with the temporary message at
+		point.  The temporary message for ?c includes a comment.
+
+See user option `template-definition-start'.
+
+###  Insecure per-template defined expansion: ================================
+
+deletion:	987654
+template-file:	("/sapmnt/home1/d029492/emacs/template/examples/" "text1.txt" "text" "1" ".txt")
+pre-expansion:	"Value before expansion"
+post-expansion: cannot be shown here, but type M-: var1 RETURN
+
+See user option `template-definition-start'.
+
+###  The last line

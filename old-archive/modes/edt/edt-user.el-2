@@ -1,0 +1,320 @@
+;;; File:  edt-user.el-2, v 1.4
+;;;
+;;; BEFORE USING THIS FILE, rename it to edt-user.el.
+;;;
+;;; See edt-user.doc for general customization instructions BEFORE using
+;;; and/or changing the contents of this file!
+;;; 
+;;;                  -------   ---------------------------
+;;;                  U s e r   C u s t o m i z a t i o n s
+;;;                  -------   ---------------------------
+;;;
+;;;            -----   -----------   -------   -----------------
+;;;            E D T   K e y p a d   M o d e   E m u l a t i o n
+;;;            -----   -----------   -------   -----------------
+;;;
+;;;                        BETA Distribution Version 0.5
+;;;
+;;; Copyright (C) 1986 Free Software Foundation, Inc.
+;;; Copyright (C) 1991 Kevin Gallagher
+;;;
+;;;
+;;; This file contains GNU Emacs User Custom EDT bindings and functions.  In
+;;; this example file, there is a test for the type of terminal being used.
+;;; The file supports custom bindings for two different types of terminals: VT
+;;; terminals and the Apollo Workstation using a Low Profile II keyboard.
+;;; (The individual who wrote this file sometimes logs into the workstation
+;;; over a modem using a VT100 emulator on a PC, as well as logging in at the
+;;; workstation itself.)
+;;;
+;;; WARNING: Each of the three functions, edt-bind-function-key,
+;;;          edt-bind-gold-key, and edt-bind-standard-key, has an optional
+;;;          last argument.  The optional argument should NOT be used in
+;;;          edt-user.el!  When the optional argument is missing, each
+;;;          function knows to make the key binding part of the user's EDT
+;;;          custom bindings, which is what you want to do in edt-user.el!
+;;;
+;;;          The EDT default bindings are set up in edt.el by calling these
+;;;          same functions with the optional last argument set to "t".  So,
+;;;          if you decide to copy such function calls from edt.el to
+;;;          edt-user.el, BE SURE TO DELETE THE "t" AT THE END OF EACH
+;;;          PARAMETER LIST!
+;;;
+;;; Send bug reports and suggestions for improvement to Kevin Gallagher
+;;; (kgallagh@digi.lonestar.org).
+;;;
+
+
+;;;;
+;;;; Setup user custom EDT key bindings.
+;;;;
+
+(defun edt-setup-user-bindings ()
+  "Assigns user custom EDT Emulation keyboard bindings."
+
+  ;; PF1 (GOLD), PF2, PF3, PF4
+  ;;
+  ;; This file MUST contain a binding of PF1 to edt-user-gold-map.  So
+  ;; DON'T CHANGE OR DELETE THE REGULAR KEY BINDING OF PF1 BELOW!
+  ;; (However, you may change the GOLD-PF1 binding, if you wish.)
+  (edt-bind-function-key "PF1" 'edt-user-gold-map 'edt-mark-section-wisely)
+  (edt-bind-function-key "PF2" 'query-replace 'other-window)
+  (edt-bind-function-key "PF4" 'edt-delete-entire-line 'edt-undelete-line)
+
+  ;; Apollo Function Keys
+  (if (or (string-equal "apollo" edt-term)
+          (string-equal "apollo_1280_bw" edt-term))
+      (progn
+        ;; Make my private Apollo Display Manager key bindings to GROW and
+        ;; F0-F6 accessible to me when cursor is in an Emacs window.  This is
+        ;; done by telling Apollo GNU Emacs to ignore these keys. 
+        (unbind-apollo-function-key "GROW")
+        (unbind-apollo-function-key "F0")
+        (unbind-apollo-function-key "F1")
+        (unbind-apollo-function-key "F2")
+        (unbind-apollo-function-key "F3")
+        (unbind-apollo-function-key "F4")
+        (unbind-apollo-function-key "F5")
+        (unbind-apollo-function-key "F6")
+        )
+      )
+
+  ;; EDT Keypad Keys
+  (edt-bind-function-key "KP1" 'edt-word-forward 'edt-change-case)
+  (edt-bind-function-key "KP3" 'edt-word-backward 'edt-copy)
+  (edt-bind-function-key "KP6" 'edt-cut-or-copy 'yank)
+  (edt-bind-function-key "KP8" 'edt-scroll-window 'fill-paragraph)
+  (edt-bind-function-key "KP9" 'open-line 'edt-eliminate-all-tabs)
+  (edt-bind-function-key "KPP" 
+			 'edt-toggle-select 'edt-line-to-middle-of-window)
+  (edt-bind-function-key "KPE" 'edt-change-direction 'overwrite-mode)
+
+  ;; EDT Function Keys
+  ;; 
+  ;; If you wish to retain the feature of emulating an ESC key with F11 on a
+  ;; terminal that has no ESC key, this file MUST contain a binding of F11 to
+  ;; edt-user-ESC-prefix.  So DON'T CHANGE OR DELETE THE REGULAR KEY BINDING
+  ;; OF F11 BELOW!  (However, you may change the GOLD-F11 binding, if you
+  ;; wish.)
+  (edt-bind-function-key "F11" 'edt-user-ESC-prefix 'edt-key-not-assigned) ;ESC
+
+  ;; GOLD bindings for regular keys.
+  (edt-bind-gold-key "a" 'edt-append)
+  (edt-bind-gold-key "A" 'edt-append)
+  (edt-bind-gold-key "h" 'edt-electric-user-keypad-help)
+  (edt-bind-gold-key "H" 'edt-electric-user-keypad-help)
+
+  ;; Control bindings for regular keys.
+  (edt-bind-standard-key "\C-a" 'beginning-of-line)
+  (edt-bind-standard-key "\C-b" 'switch-to-buffer)
+  ;;; Leave binding of C-c as original prefix key.
+  (edt-bind-standard-key "\C-d" 'delete-char)
+  (edt-bind-standard-key "\C-e" 'end-of-line)
+  (edt-bind-standard-key "\C-f" 'forward-char)
+  (edt-bind-standard-key "\C-h" 'ehelp-command)
+  (edt-bind-standard-key "\C-i" 'indent-for-tab-command)
+  (edt-bind-standard-key "\C-j" 'edt-duplicate-word)
+  (edt-bind-standard-key "\C-l" 'edt-learn)
+  ;;; Leave binding of C-m to newline.
+  (edt-bind-standard-key "\C-o" 'open-line)
+  (edt-bind-standard-key "\C-p" 'fill-paragraph)
+  (edt-bind-standard-key "\C-q" 'quoted-insert)
+  ;;; Leave binding of C-r to isearch-backward.
+  ;;; Leave binding of C-s to isearch-forward.
+  (edt-bind-standard-key "\C-u" 'universal-argument)
+  ;;; Leave binding of C-x as original prefix key.
+)
+
+(if (or (string-equal "vt100" edt-term)
+        (string-equal "vt200" edt-term)
+        (string-equal "vt300" edt-term))
+
+;;;
+;;; VT100/VT200/VT300 SERIES USER EDT KEYPAD HELP
+;;;
+
+(defun edt-user-keypad-help ()
+  "
+                                USER EDT Keypad Active
+
+                                  +----------+----------+----------+----------+
+   F7: Copy Rectangle             |Prev Line |Next Line |Bkwd Char |Frwd Char |
+   F8: Cut Rect Overstrike        |   (UP)   |  (DOWN)  |  (LEFT)  | (RIGHT)  |
+ G-F8: Paste Rect Overstrike      |Window Top|Window Bot|Bkwd Sent |Frwd Sent |
+   F9: Cut Rect Insert            +----------+----------+----------+----------+
+ G-F9: Paste Rect Insert         
+  F11: ESC                        +----------+----------+----------+----------+
+  F12: Begining of Line           |   GOLD   |Query Repl|  FNDNXT  |Del Ent L |
+G-F12: Delete Other Windows       |   (PF1)  |   (PF2)  |   (PF3)  |   (PF4)  |
+  F13: Delete to Begin of Word    |Mark Wisel|Other Wind|   FIND   |  UND L   |
+ HELP: Emacs Help                 +----------+----------+----------+----------+
+   DO: Execute extended command   |   PAGE   |Scroll Win|Open Line |  DEL W   |
+                                  |    (7)   |    (8)   |    (9)   |   (-)    |
+  C-a: Beginning of Line          |Ex Ext Cmd|Fill Parag|Elim Tabs |  UND W   |
+  C-b: Switch to Buffer           +----------+----------+----------+----------+
+  C-d: Delete Character           |  ADVANCE |  BACKUP  | CUT/COPY |  DEL C   |
+  C-e: End of Line                |    (4)   |    (5)   |    (6)   |   (,)    |
+  C-f: Forward Character          |   BOTTOM |    TOP   |   Yank   |  UND C   |
+  C-g: Keyboard Quit              +----------+----------+----------+----------+
+G-C-g: Keyboard Quit              | Fwd Word |    EOL   | Bwd Word |  Change  |
+  C-h: Electric Emacs Help        |    (1)   |    (2)   |    (3)   | Direction|
+G-C-h: Emacs Help                 | CHNGCASE |  DEL EOL |   COPY   |          |
+  C-i: Indent for Tab             +---------------------+----------+  (ENTER) |
+  C-j: Duplicate Word             |         LINE        |SELECT/RES|          |
+  C-k: Define Key                 |         (0)         |    (.)   |  Toggle  |
+G-C-k: Restore Key                |      Open Line      |Center Lin|Insrt/Over|
+  C-l: Learn                      +---------------------+----------+----------+
+  C-n: Set Screen Width 80       
+  C-o: Open Line                       +----------+----------+----------+
+  C-p: Fill Paragraph                  |  FNDNXT  |   Yank   |    CUT   |
+  C-q: Quoted Insert                   |  (FIND)) | (INSERT) | (REMOVE) |
+  C-r: Isearch Backward                |   FIND   |          |   COPY   |
+  C-s: Isearch Forward                 +----------+----------+----------+
+  C-t: Display the Time                |SELECT/RES|SECT BACKW|SECT FORWA|
+  C-u: Universal Argument              | (SELECT) |(PREVIOUS)|  (NEXT)  |
+  C-v: Redraw Display                  |          |          |          |
+  C-w: Set Screen Width 132            +----------+----------+----------+
+  C-z: Suspend Emacs
+G-C-\\: Split Window
+
+  G-a: Append to Kill Buffer
+  G-b: Buffer Menu
+  G-c: Compile
+  G-d: Delete Window
+  G-e: Exit
+  G-f: Find File
+  G-g: Find File Other Window
+  G-h: Keypad Help
+  G-i: Insert File
+  G-k: Toggle Capitalization Word
+  G-l: Lowercase Word or Region
+  G-m: Save Some Buffers
+  G-n: Next Error
+  G-o: Switch Windows
+  G-q: Quit
+  G-r: Revert File
+  G-s: Save Buffer
+  G-u: Upcase Region
+  G-v: Find File Other Window
+  G-w: Write file
+  G-y: EDT Emulation OFF
+  G-z: Switch to Default EDT Key Bindings
+  G-1: Delete Other Windows
+  G-2: Split Window
+  G-%: Go to Percentage
+  G- : Undo  (GOLD Spacebar)
+  G-=: Go to Line
+  G-`: What line"
+
+  (interactive)
+  (describe-function 'edt-user-keypad-help))
+
+;;;
+;;; APOLLO USER EDT KEYPAD HELP
+;;;
+
+(defun edt-user-keypad-help ()
+  "
+                                USER EDT Keypad Active
+
+                                  +----------+----------+----------+----------+
+   F7: Copy Rectangle             |Prev Line |Next Line |Bkwd Char |Frwd Char |
+   F8: Cut Rect Overstrike        |   (UP)   |  (DOWN)  |  (LEFT)  | (RIGHT)  |
+ G-F8: Paste Rect Overstrike      |Window Top|Window Bot|Bkwd Sent |Frwd Sent |
+   F9: Cut Rect Insert            +----------+----------+----------+----------+
+ G-F9: Paste Rect Insert       
+  F11: ESC                            PF1        PF2        PF3        PF4
+                       +----------+----------+----------+----------+----------+
+                       |          |   GOLD   |Query Repl|  FNDNXT  |Del Ent L |
+                       |  (AGAIN) |  (READ)  |  (EDIT)  |  (EXIT)  |  (HOLD)  |
+                       |          |Mark Wisel|Other Wind|   FIND   |  UND L   |
+                       +----------+----------+----------+----------+----------+
+  F12: Begining of Line           +----------+----------+----------+----------+
+G-F12: Delete Other Windows       |   PAGE   |Scroll Win|Open Line |  DEL W   |
+  F13: Delete to Begin of Word    |    (7)   |    (8)   |    (9)   |   (+)    |
+ HELP: Emacs Help                 |Ex Ext Cmd|Fill Parag|Elim Tabs |  UND W   |
+   DO: Execute extended command   |----------+----------+----------+----------+
+                                  |  ADVANCE |  BACKUP  | CUT/COPY |  DEL C   |
+  C-a: Beginning of Line          |    (4)   |    (5)   |    (6)   |   (-)    |
+  C-b: Switch to Buffer           |   BOTTOM |    TOP   |   Yank   |  UND C   |
+  C-d: Delete Character           |----------+----------+----------+----------+
+  C-e: End of Line                | Fwd Word |    EOL   | Bwd Word |  Change  |
+  C-f: Forward Character          |    (1)   |    (2)   |    (3)   | Direction|
+  C-g: Keyboard Quit              | CHNGCASE |  DEL EOL |   COPY   |          |
+G-C-g: Keyboard Quit              |---------------------+----------+  (ENTER) |
+  C-h: Electric Emacs Help        |         LINE        |SELECT/RES|          |
+G-C-h: Emacs Help                 |         (0)         |    (.)   |  Toggle  |
+  C-i: Indent for Tab             |      Open Line      |Center Lin|Insrt/Over|
+  C-j: Duplicate Word             +---------------------+----------+----------+
+  C-k: Define Key
+G-C-k: Restore Key
+  C-l: Learn
+  C-n: Set Screen Width 80
+  C-o: Open Line
+  C-p: Fill Paragraph
+  C-q: Quoted Insert
+  C-r: Isearch Backward
+  C-s: Isearch Forward
+  C-t: Display the Time
+  C-u: Universal Argument
+  C-v: Redraw Display
+  C-w: Set Screen Width 132
+  C-z: Suspend Emacs
+G-C-\\: Split Window
+
+  G-a: Append to Kill Buffer
+  G-b: Buffer Menu
+  G-c: Compile
+  G-d: Delete Window
+  G-e: Exit
+  G-f: Find File
+  G-g: Find File Other Window
+  G-h: Keypad Help
+  G-i: Insert File
+  G-k: Toggle Capitalization Word
+  G-l: Lowercase Word or Region
+  G-m: Save Some Buffers
+  G-n: Next Error
+  G-o: Switch Windows
+  G-q: Quit
+  G-r: Revert File
+  G-s: Save Buffer
+  G-u: Uppercase Word or Region
+  G-v: Find File Other Window
+  G-w: Write file
+  G-y: EDT Emulation OFF
+  G-z: Switch to Default EDT Key
+  G-1: Delete Other Windows
+  G-2: Split Window
+  G-%: Go to Percentage
+  G- : Undo  (GOLD Spacebar)
+  G-=: Go to Line
+  G-`: What line"
+
+  (interactive)
+  (describe-function 'edt-user-keypad-help))
+)
+
+(if (or (string-equal "apollo" edt-term)
+        (string-equal "apollo_1280_bw" edt-term))
+;;;
+;;; USER CUSTOMIZATION OF DEFAULT EMACS BINDINGS
+;;;
+
+;; Use the Apollo mouse functions defined in edt-apollo.el.  (Since we have
+;; NOT written an edt-bind-apollo-mouse-button function, user customization of
+;; the mouse buttons to the edt-apollo.el functions can only be done here.)
+
+(defun edt-user-customize-default-emacs-bindings ()
+  "Change some emacs defaults before EDT emulation initialization."
+  ;; Change the default Apollo mouse bindings
+  (bind-apollo-mouse-button "M1D" 'edt-apollo-mouse-mark)    ;MOUSE LEFT DOWN
+  (bind-apollo-mouse-button "M1U" 'edt-apollo-mouse-copy)    ;MOUSE LEFT UP
+  (bind-apollo-mouse-button "M2D" 'edt-apollo-mouse-mark)    ;MOUSE MIDDLE DOWN
+  (bind-apollo-mouse-button "M2U" 'edt-apollo-mouse-cut)     ;MOUSE MIDDLE UP
+  (bind-apollo-mouse-button "M3D" 'edt-apollo-mouse-mark)    ;MOUSE RIGHT DOWN
+  (bind-apollo-mouse-button "M3U" 'edt-apollo-mouse-paste)   ;MOUSE RIGHT UP
+  ;; I like to read man pages within Emacs.
+  (bind-apollo-function-key "R6S" 'manual-entry)             ;HELP
+  )
+)

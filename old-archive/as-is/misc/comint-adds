@@ -1,0 +1,117 @@
+;Date: Fri, 24 Feb 89 10:58:24 EST
+;From: think!compass!worley@eddie.mit.edu (Dale Worley)
+;To: info-gnu-emacs@eddie.mit.edu, shivers@cs.cmu.edu
+;Subject: Changes to cmushell and comint to allow more than one shell buffer
+;
+;The following changes allow more than one shell buffer.  The argument
+;to M-x cmushell gives the number of the shell.  The second, third,
+;etc., shells are called *cmushell<2>*, *cmushell<3>*, etc.  Shells 2
+;and greater will only be selected if they already exist.  Shell 1 (the
+;default) will be selected and created even if it doesn't exist.
+;Giving a negative argument to M-x cmushell will create and select a
+;shell with the smallest unused number.
+;
+;All of this selection stuff is in the function
+;comint-select-process-by-number.  cmushell just calls it to get the
+;right buffer and process name.
+;
+;These features could be easily grafted into other process interaction
+;commands.
+;
+;Dale
+;worley@compass.com
+;
+;---- addition to comint.el
+
+;;; Code for running more than one shell process, etc.
+
+(defun comint-select-process-by-number (number string)
+  "Generate a pair (buffer-name . process-name) given a NUMBER and a base
+STRING.
+NUMBER = 1 generates (\"*STRING*\" . \"STRING\").
+NUMBER > 2 generates (\"*STRING<NUMBER>*\" . \"STRING<NUMBER>\"), but reports an
+error if there is no process by that name.
+NUMBER < 1 finds the first number > 1 that does not have a process and returns
+the appropriate pair.
+One way to use this function is:
+        (let* ((temp (comint-select-process-by-number n s))
+               (buffer (car temp))
+               (process (cdr temp)))
+          (...))
+Commands that use comint-select-process-by-number usually take a prefix argument
+which selects the process (if positive or omitted), or to create a new process
+\(if negative)."
+  ;; first, compute the correct process number and check for errors
+  (let ((n (cond
+	    ;; a negative argument means find an unused number
+	    ((< number 1)
+	     (let ((new-number 2))
+	       (while
+		   (comint-check-proc (format "*%s<%d>*" string new-number))
+		 (setq new-number (1+ new-number)))
+	       new-number))
+	    ;; if number > 1, check to see if it exists first
+	    ((> number 1)
+	     (if (not (comint-check-proc (format "*%s<%d>*" string number)))
+		 (error "Process %s<%d> does not exist" string number))
+	     number)
+	    ;; 1 is always OK
+	    (t number))))
+    ;; now construct the correct pair
+    (if (= n 1)
+	;; process 1 doesn't have a <1>
+	(cons (format "*%s*" string)
+	      string)
+      ;; larger process numbers have <n>
+      (cons (format "*%s<%d>*" string n)
+	    (format "%s<%d>" string n)))))
+
+---- change to cmushell in cmushell.el
+
+(defun cmushell (number)
+  "Run an inferior shell, with I/O through buffer *cmushell*.
+If buffer exists but shell process is not running, make new shell.
+If buffer exists and shell process is running, 
+ just switch to buffer *cmushell*.
+Program used comes from variable explicit-shell-file-name,
+ or (if that is nil) from the ESHELL environment variable,
+ or else from SHELL if there is no ESHELL.
+If a file ~/.emacs_SHELLNAME exists, it is given as initial input
+ (Note that this may lose due to a timing error if the shell
+  discards input when it starts up.)
+ It is particularly useful to have this file set the environment
+ variable 'PAGER' to the value 'cat'.
+The buffer is put in cmushell-mode, giving commands for sending input
+and controlling the subjobs of the shell.  See cmushell-mode.
+See also variable shell-prompt-pattern.
+
+The shell file name (sans directories) is used to make a symbol name
+such as `explicit-csh-arguments'.  If that symbol is a variable,
+its value is used as a list of arguments when invoking the shell.
+Otherwise, one argument `-i' is passed to the shell.
+
+Prefix arguments can be used to select multiple shells (prefix `-' means
+to create a new one).  See  comint-select-process-by-number  for more details.
+
+\(Type \\[describe-mode] in the shell buffer for a list of commands.)"
+  (interactive "p")
+  (let* ((temp (comint-select-process-by-number number "cmushell"))
+	 (buffer-name (car temp))
+	 (process-name (cdr temp)))
+    (cond ((not (comint-check-proc buffer-name))
+	   (let* ((prog (or explicit-shell-file-name
+			    (getenv "ESHELL")
+			    (getenv "SHELL")
+			    "/bin/sh"))		     
+		  (name (file-name-nondirectory prog))
+		  (startfile (concat "~/.emacs_" name))
+		  (xargs-name (intern-soft (concat "explicit-" name "-args"))))
+	     (set-buffer (apply 'make-comint process-name prog
+				(if (file-exists-p startfile) startfile)
+				(if (and xargs-name (boundp xargs-name))
+				    (symbol-value xargs-name)
+				  '("-i"))))
+	     (cmushell-mode))))
+    (switch-to-buffer buffer-name)))
+
+

@@ -1,0 +1,15 @@
+#! /bin/csh
+#
+# To use jnews.el
+#
+#    1) Make a directory called "jnews" under your home
+#    2) cd to "jnews"
+#    3) execute this script
+#    
+#    You are now ready to use jnews.
+
+foreach FF (`grep ":" < $HOME/.newsrc | sed  's/:[ \t]*[-0-9]*[ \t]*$//'`)
+   echo 'Converting ' $FF
+   jnews $FF
+end
+exit

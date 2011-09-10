@@ -1,0 +1,469 @@
+From arpa-unix-emacs-request@CHIPS.BBN.COM Thu Mar 30 16:21:43 1989
+Received: from chips by CHIPS.BBN.COM id aa27720; 30 Mar 89 14:34 EST
+Received: from BBN.COM by CHIPS.BBN.COM id aa27716; 30 Mar 89 14:32 EST
+Received: from USENET by bbn.com with netnews
+	for arpa-unix-emacs@bbn.com (unix-emacs@bbn.com);
+	contact usenet@bbn.com if you have questions.
+To: unix-emacs@bbn.com
+Date: 30 Mar 89 14:01:45 GMT
+From: Per Abrahamsen <mcvax!kth!sunic!slyrf!dkuug!iesd!amanda@uunet.uu.net>
+Sender: arpa-unix-emacs-request@bbn.com
+Subject: Re: outline mode in emacs
+Message-Id: <1594@iesd.dk>
+References: <7708@boulder.Colorado.EDU>, <1555@iesd.dk>, <13484@steinmetz.ge.com>
+Organization: Games Research, University of Aalborg, Denmark
+Source-Info:  From (or Sender) name not authenticated.
+Status: RO
+
+
+In article <13484@steinmetz.ge.com> blackje@sunspot.steinmetz (Emmett Black) writes:
+
+> How does it differ from the outline mode already included with GNU emacs?
+
+It is just a minor mode version of the standard outline-mode. Being a
+minor mode, it allows you to use outlines in other major modes, like
+emacs-lisp-mode and latex-mode.
+
+It also allow you to change the way outline levels is determinated in
+these modes, by setting outline-regexp and outline-level-function in
+the major mode hooks.
+
+> Please describe it for us, and possibly consider posting it.
+
+It follows after my signature...
+
+--
+Per Abrahamsen,  amanda@iesd.dk, {...}!mcvax!diku!iesd!amanda
+
+
+# This is a shell archive.  Remove anything before this line,
+# then unpack it by saving it in a file and typing "sh file".
+#
+# Wrapped by gauss!amanda on Wed Mar 29 16:58:36 MET DST 1989
+# Contents:  README init.el minor-map.el outline-m.el
+ 
+echo x - README
+sed 's/^@//' > "README" <<'@//E*O*F README//'
+outline-minor-mode is a minor-mode version of outline-mode.
+
+To use, insert outline-m.el and minor-map.el somewhere in your emacs
+load-path, eg. under ../src/emacs/lisp, and insert init.el in your
+@.emacs file or in your site-init.el.
+
+The command "M-x outline-minor-mode" will then add outline capability
+to the current major mode. Per default, outline levels is controled by
+the regular expression "[*\^l]+" and the length of the matching
+string. This can be changed on a per major mode basis, and init.el
+contain examples of hooks for use with latex-mode and emacs-lisp-mode.
+
+outline-minor-mode must use a prefix key for its commands. As C-c is
+reserved to the major mode, it use C-l You can change this with by
+setting outline-prefix-char in your .emacs.
+Type "C-h f outline-minor-mode" to see the commands.
+
+GNU Emacs don't really allow minor modes to change the keymap, so I
+wrote minor-map in an attemp to overcome this. At the time, I thought
+I would be writing lots of minor modes, and that they would compete
+for the keys. It is an overkill just for outline-minor-mode, but it
+works, and I am to lazy to change it.
+
+Bugs, comments etc. to 
+
+Per Abrahamsen, alias amanda@iesd.dk.
+@//E*O*F README//
+chmod u=rw,g=r,o=r README
+ 
+echo x - init.el
+sed 's/^@//' > "init.el" <<'@//E*O*F init.el//'
+;******************************************************************************
+;* Customization of GNU-emacs * Per Abrahamsen * 1987 * amanda@iesd * auc * X *
+;******************************************************************************
+
+;******************************************************************************
+;* AutoLoad                                                                   *
+;******************************************************************************
+
+; (setq load-path (cons "/home/mdc/amanda/lisp" load-path))
+
+(autoload 'outline-minor-mode "outline-m"
+	  "Show outline of current buffer." t)
+
+;******************************************************************************
+;* Outline Hooks                                                              *
+;******************************************************************************
+
+(setq emacs-lisp-mode-hook		;Use of OutLine
+      '(lambda ()
+	 (setq outline-regexp "(def")))
+
+(defvar LaTeX-outline-regexp "[ \t]*\\\\\\(appendix\\|documentstyle\\|part\\|chapter\\|section\\|subsection\\|subsubsection\\|paragraph\\|subparagraph\\)"
+
+(defun LaTeX-outline-level ()
+  "Find the level of current outline heading in an LaTeX document."
+  (save-excursion
+    (skip-chars-forward " \t")
+    (forward-char 1)
+    (cond ((looking-at "subparagraph") 9)
+	  ((looking-at "paragraph") 8)
+	  ((looking-at "subsubsection") 7)
+	  ((looking-at "subsection") 6)
+	  ((looking-at "section") 5)
+	  ((looking-at "chapter") 4)
+	  ((looking-at "part") 3)
+	  ((looking-at "appendix") 2)
+	  ((looking-at "documentstyle") 2))))
+
+(setq LaTeX-mode-hook			;Use of Outline
+      '(lambda ()
+	 (setq outline-regexp LaTeX-outline-regexp)
+	 (setq outline-level-function 'LaTeX-outline-level)))
+
+;******************************************************************************
+;* Defaults                                                                   *
+;******************************************************************************
+
+; There have to be a better way.
+
+(make-variable-buffer-local 'outline-prefix-char)
+(setq-default outline-prefix-char "\C-l")
+
+(make-variable-buffer-local 'outline-regexp)
+(setq-default outline-regexp "[*\^l]+")
+
+(make-variable-buffer-local 'outline-level-function)
+(setq-default outline-level-function 'outline-level-default)
+
+@//E*O*F init.el//
+chmod u=rw,g=r,o=r init.el
+ 
+echo x - minor-map.el
+sed 's/^@//' > "minor-map.el" <<'@//E*O*F minor-map.el//'
+;; Minor mode keymap for Emacs
+
+;; Use minor-set-key to set a key in the minor keymap for a given mode.
+;; Use unbind-minor-mode to remove all keydefinitions for a given
+;; minor mode
+
+;; COPYLEFT
+
+;; Created 1987 by Per Abrahamsen at University of Aalborg, Denmark.
+
+;; This file is not part of GNU emacs.
+
+;; Everyone is granted permission to copy, modify and redistribute
+;; this file, this include the right to remove this message.
+
+;; HOW MINOR-MAP WORKS!
+
+;; GNU Emacs minor modes may not alter the keymap. This is why modes
+;; like outline-mode and indented-text-mode is major modes.
+;; Minor modes could of cause just change the local keybinding on entry,
+;; and then restore it on exit. But this will fail, if some other
+;; minor mode change the keybinding meanwhile.
+
+;; The minor keymap is contained in a local variable "minor-keymap"
+;; descriped in the documentation of "make-minor-keymap".
+;; When minor-set-key is called the first time with some key, a new
+;; entry in minor-keymap with mode-list containing 'major-mode and
+;; it's definition, and the name of the minor mode with definition.
+;; The local binding of key is set to the definition used by the minor
+;; mode.
+
+;; Later call to minor-set-key will store the name and definition at
+;; the head of the mode-list, and bind the key to definition. When a
+;; minor mode is turned of, it should call unbind-minor-mode. It will
+;; remove their entries in all the mode-lists. If the entry is at the
+;; head of a mode-list, the key will be bound to the definition part
+;; of the next entry.
+
+;; RESTRICTIONS
+
+;; The minor maps might fail, if the major mode (or the user) change
+;; the local key bindings after the first call to minor-set-key.
+
+;; Minor maps should support shared keymaps for prefix keys.
+
+;; DOES MINOR-MAP WORK?
+
+;; Please report any bugs (or a formal prove for correctness) to
+;; amanda@iesd.uucp
+
+(provide 'minor-map)
+
+(make-variable-buffer-local 'minor-keymap) ;Documentation?
+(setq-default minor-keymap nil)
+
+(make-variable-buffer-local 'minor-local-keymap)
+(setq-default minor-local-keymap nil)
+
+(defun make-minor-keymap ()
+  "Construct a keymap for minor modes if nonexisting.
+
+The keymap is an alist of (KEY . MODE-LIST) where MODE-LIST is a list
+of (NAME . COMMAND).
+
+Each KEY forms an entry to the alist. If a key sequence have no
+entry, it mean that the KEY is bound to the default value in the
+major mode map.
+
+NAME identify a minor mode, that have bound KEY to COMMAND.
+The head of MODE-LIST represent the newest, and currently active,
+binding. The NAME of the tail is 'major-mode, and COMMAND is
+the default definition. The MODE-LIST contain always at least the
+'major-mode entry.
+
+Initially the alist is nil."
+  
+  ;Try to make keymap buffer-local, *not* mode-local
+  (if (current-local-map)
+      (setq minor-local-keymap (copy-keymap (current-local-map)))
+    (setq minor-local-keymap (make-sparse-keymap)))
+  (use-local-map minor-local-keymap))
+
+
+(defun minor-set-key (key command name)
+  "Bind KEY to COMMAND in the minor keymap, used by the minor mode NAME.
+NAME is a symbol that must identify the minor mode."
+
+  (rplaca (create-entry-minor-keymap key)
+	  (cons name command))
+  (local-set-key key command))
+
+(defun create-entry-minor-keymap (key)
+  "Allocate space for a new definition of KEY in the minor mode map.
+Return the new entry."
+
+  (if (null minor-local-keymap)
+      (make-minor-keymap))
+  (let ((entry (assoc key minor-keymap)))
+    (if entry
+	  (rplacd entry (cons nil (cdr entry)))	;insert empty cons at head
+      (setq minor-keymap
+	    (cons (cons key
+			(list nil (create-major-entry key)))
+		  minor-keymap))
+      (cdr (car minor-keymap)))))
+
+(defun create-major-entry (key)
+  "Return a conscell ('major-mode . COMMAND), where definition is
+the command currently bound to the suplied argument KEY."
+
+  (cons 'major-mode (local-key-binding key)))
+
+(defun unbind-minor-mode (name)
+  "Remove all references to NAME from the minor keymap."
+
+  (setq minor-keymap 
+	(mapcar 'unbind-minor-entry minor-keymap)))
+
+(defun unbind-minor-entry (entry)
+  "Remove any references to a minor mode from ENTRY. ENTRY have the
+form (KEY . MODE-LIST) where MODE-LIST is a list of (NAME . COMMAND).
+NAME is compared with the value of the variable \"name\", and the
+conscell is removed if equal. Also if the first entry in MODE-LIST is
+removed, KEY is rebound to the COMMAND of the next cell."
+
+  (let ((current (cdr entry))
+	(previous entry))
+    (if (eq name (car (car current)))
+	(local-set-key (car entry) (cdr (car (cdr current)))))
+    (while current
+      (if (eq name (car (car current)))
+	    (rplacd previous (cdr current))
+	(setq previous current))
+      (setq current (cdr current)))))
+
+@//E*O*F minor-map.el//
+chmod u=rw,g=r,o=r minor-map.el
+ 
+echo x - outline-m.el
+sed 's/^@//' > "outline-m.el" <<'@//E*O*F outline-m.el//'
+;; Outline as minor mode.
+
+;; You need the minor keymap handler to use this file.
+
+;; To make outline-mode a minor mode, append the following to your
+;; ".emacs" file, or in a local.el:
+
+;; (make-variable-buffer-local 'outline-prefix-char)
+;; (setq-default outline-prefix-char "\C-l")
+;; (make-variable-buffer-local 'outline-regexp)
+;; (setq-default outline-regexp "[*\^l]+")
+;; (make-variable-buffer-local 'outline-level-function)
+;; (setq-default outline-level-function 'outline-level-default)
+
+;; COPYLEFT
+
+;; Created 1987 by Per Abrahamsen at University of Aalborg, Denmark.
+;; Please report improvents and bugs to amanda@iesd.uucp.
+
+;; Might contain code from the original outline.el, so...
+
+;; COPYRIGHT
+
+;; Outline mode commands for Emacs
+;; Copyright (C) 1986 Free Software Foundation, Inc.
+
+;; This file is part of GNU Emacs.
+
+;; GNU Emacs is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY.  No author or distributor
+;; accepts responsibility to anyone for the consequences of using it
+;; or for whether it serves any particular purpose or works at all,
+;; unless he says so in writing.  Refer to the GNU Emacs General Public
+;; License for full details.
+
+;; Everyone is granted permission to copy, modify and redistribute
+;; GNU Emacs, but only under the conditions described in the
+;; GNU Emacs General Public License.   A copy of this license is
+;; supposed to have been given to you along with GNU Emacs so you
+;; can know your rights and responsibilities.  It should be in a
+;; file named COPYING.  Among other things, the copyright notice
+;; and this notice must be preserved on all copies.
+
+;; Jan '86, Some new features added by Peter Desnoyers and rewritten by RMS.
+  
+(require 'minor-map)
+
+(if (featurep 'outline)
+    ()
+  (load-library "outline")
+  (provide 'outline))
+
+(setq minor-mode-alist (cons '(selective-display " Outline")
+			     minor-mode-alist))
+
+; Changed to allow read-only buffers and to speed up nonmodified buffers
+
+(defun outline-flag-region (from to flag)
+  "Hides or shows lines from FROM to TO, according to FLAG.  If FLAG
+is \\n (newline character) then text is hidden, while if FLAG is \\^M
+\(control-M) the text is shown."
+  (let ((modp (buffer-modified-p))
+	(read-only buffer-read-only))
+    (if read-only (toggle-read-only))
+    (unwind-protect
+        (subst-char-in-region from to
+			      (if (= flag ?\n) ?\^M ?\n)
+			      flag t)
+      (progn
+	(if read-only (toggle-read-only))
+	(set-buffer-modified-p modp)))))
+
+(defun hide-region-body (start end)
+  "Hide all body lines in the region, but not headings."
+  (save-excursion
+    (save-restriction
+      (narrow-to-region start end)
+      (goto-char (point-min))
+      (let ((modp (buffer-modified-p)))
+	(set-buffer-modified-p t)
+	(while (not (eobp))
+	  (outline-flag-region (point) (progn (outline-next-preface) (point)) ?\^M)
+	  (if (not (eobp))
+	      (forward-char
+	       (if (looking-at "[\n\^M][\n\^M]")
+		   2 1))))
+	(set-buffer-modified-p modp)))))
+
+(defun outline-level-default ()
+  "Return the depth to which a statement is nested in the outline.
+Point must be at the beginning of a header line.
+This is actually the length of whatever outline-regexp matches."
+  (save-excursion
+    (looking-at outline-regexp)
+    (- (match-end 0) (match-beginning 0))))
+
+(defun outline-level ()
+  "Return the depth to which a this heading is nested in the outline.
+This is done by a call to the value of outline-level-function, which
+default to outline-level-default."
+  (funcall outline-level-function))
+  
+(if (boundp 'outline-minor-keymap)
+    ()
+  (setq outline-minor-keymap (make-keymap))	; allocate outline keymap table
+  (define-key outline-minor-keymap "\C-n" 'outline-next-visible-heading)
+  (define-key outline-minor-keymap "\C-p" 'outline-previous-visible-heading)
+  (define-key outline-minor-keymap "\C-f" 'outline-forward-same-level)
+  (define-key outline-minor-keymap "\C-b" 'outline-backward-same-level)
+  (define-key outline-minor-keymap "\C-u" 'outline-up-heading)
+  (define-key outline-minor-keymap "\C-t" 'hide-body)
+  (define-key outline-minor-keymap "\C-a" 'show-all)
+  (define-key outline-minor-keymap "\C-o" 'outline-mode)
+  (define-key outline-minor-keymap "\C-h" 'hide-subtree)
+  (define-key outline-minor-keymap "\C-s" 'show-subtree)
+  (define-key outline-minor-keymap "\C-i" 'show-children)
+  (define-key outline-minor-keymap "\C-c" 'hide-entry)
+  (define-key outline-minor-keymap "\C-e" 'show-entry)
+  (define-key outline-minor-keymap "\C-l" 'hide-leaves)
+  (define-key outline-minor-keymap "\C-x" 'show-branches))
+
+(defun outline-minor-mode (&optional arg) "\
+Toggle outline mode.
+With arg, turn ouline mode on iff arg is positive.
+
+Minor mode for editing outlines with selective display.
+Headings are lines which start with asterisks: one for major headings,
+two for subheadings, etc.  Lines not starting with asterisks are body lines. 
+
+Body text or subheadings under a heading can be made temporarily
+invisible, or visible again.  Invisible lines are attached to the end 
+of the heading, so they move with it, if the line is killed and yanked
+back.  A heading with text hidden under it is marked with an ellipsis (...).
+
+Commands:
+C-l C-n   outline-next-visible-heading      move by visible headings
+C-l C-p   outline-previous-visible-heading
+C-l C-f   outline-forward-same-level        similar but skip subheadings
+C-l C-b   outline-backward-same-level
+C-l C-u   outline-up-heading		    move from subheading to heading
+
+C-l C-t   hide-body		make all text invisible (not headings).
+C-l C-a   show-all		make everything in buffer visible.
+
+C-l C-o    outline-minor-mode         leave outline mode.
+
+The remaining commands are used when point is on a heading line.
+They apply to some of the body or subheadings of that heading.
+
+C-l C-h   hide-subtree	        make body and subheadings invisible.
+C-l C-s   show-subtree	        make body and subheadings visible.
+C-l C-i   show-children	        make direct subheadings visible.
+		 No effect on body, or subheadings 2 or more levels down.
+		 With arg N, affects subheadings N levels down.
+
+C-l C-c    hide-entry	   make immediately following body invisible.
+C-l C-e    show-entry	   make it visible.
+C-l C-l    hide-leaves	   make body under heading and under its subheadings
+			   invisible. The subheadings remain visible.
+
+C-l C-x    show-branches   make all subheadings at all levels visible.
+
+The prefix char (C-l) is determinated by the value of outline-prefix-char.
+If outline-minor-keymap is set, it will be used instead of the default
+keymap.
+
+The variable outline-regexp can be changed to control what is a heading.
+A line is a heading if outline-regexp matches something at the
+beginning of the line.  The longer the match, the deeper the level."
+
+  (interactive "P")
+  (if (or (and (null arg) selective-display)
+	  (<= (prefix-numeric-value arg) 0))
+      (progn				;Turn it off
+	(unbind-minor-mode 'outline-minor-mode)
+	(if selective-display
+	    (progn
+	      (show-all)
+	      (setq selective-display nil))))
+    (setq selective-display t)		;Turn it on
+    (minor-set-key outline-prefix-char
+		   outline-minor-keymap
+		   'outline-minor-mode))
+  (set-buffer-modified-p (buffer-modified-p))) ;No-op, but updates mode line.
+@//E*O*F outline-m.el//
+chmod u=rw,g=r,o=r outline-m.el
+ 
+exit 0
+

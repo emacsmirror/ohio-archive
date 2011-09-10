@@ -1,0 +1,164 @@
+      This file contains some notes about changes made to FUSE.
+---------------------------------------------------------------------
+0.5.10 some changes to facilitate the use of FUSE on Windows.  add
+       fuse-fluo.el.  Include the latest gnuplot-mode (BR June 4 1999)
+
+0.5.9 make all toolbar icons transparent.  made fuse-icons.el.  some
+      small changes to fuse-gnuplot.  some big changes to
+      fuse-toolbar.el to accomodate fuse-icons.el.
+
+0.5.8 fuse-always-start-generic-flag means that input mode falls back
+      to generic mode when it cannot figure out the minor mode rather
+      than prompting for a minor mode.  fuse-hide-autoconfig-flag
+      narrows the region so that you do not have to look at the
+      autoconfig lines.  They are still there, but out of site.  There
+      is a toggle function in the Input:Toggled features menu.  Also
+      fixed a toolbar bug in the feff8 instrumentation function.  (BR
+      Oct 6 1998)
+
+0.5.7 mark paths for plotting in feffit.  C-c C-p {krq} now plots
+      marked paths along with data and fit.  value of allout is no
+      longer used in these plots.  Give visual cue + key/mouse
+      bindings (BR Aug 24 1998) Fix jump to file function to recognize
+      a list containing "readable" from current-keywords alist.  Made
+      an autoload for 'fuse-quit.  Fixed Feffit-mark-or-unmark to work
+      when cursor is on the a,t, or h of "path".  Improvements to
+      gnuplot mode.  added diffkk to distribution.  moved insert z
+      number function to the main program (BR Sep 11 1998) Fixed mouse
+      flashing function to allow
+               "\\([!%#]+\\|title\\>\\).*\\(<[^>]+>\\)"
+      as a regexp for special comments.  Added line to all headers
+      about this not being part of GNU Emacs. (BR Sep 13 1998)
+      Run load-hooks //after// providing libraries.  (BR Sep 16 1998)
+
+0.5.6 setq input-output-files in the minor mode function, changed
+      behavior of input-insert-filename, fixed bug in
+      input-send-to-gnuplot (BR Jun 30 1998) Set orange mouse-face as
+      a visual cue for S-mouse-3 actions.  Set overlays/extents at
+      hotspots in tempo templates.  Fixed file copying bug in
+      `input-after-run'.  Now using shined up new gnuplot mode written
+      with Phil Type giving much better functionality.  Moved script
+      history stuff back into fuse-gnuplot.el.  Begin revising
+      tutorial. (BR Jul 3 1998) Consolidate documentation and function
+      for viewing it. (BR Jul 22 1998) Doc, tutorial, quickref are all
+      up to date. (BR Jul 27 1998)
+
+0.5.5 finished conversion to L.V. list.  Converted all of the file
+      names to fuse-____.el and fixed all the require & provide lines
+      (BR May 15 1998) wrote fuse-compile.el for more efficient and
+      customizable compilation of the package (BR May 16 1998) Wrote
+      configuration script and make install target added syntax table
+      to gnuplot-mode so that ' is not a word character (BR Jun 10
+      1998) Moved all the history stuff from fuse-gnuplot.el to
+      gnuplot.el.  Now gnuplot is a better stand-alone package.  Added
+      syntax colorization to gnuplot mode.  Fixed up fuse to deal with
+      the updated gnuplot mode.  Revised and updated quick reference
+      card. (BR Jun 15 1998)
+
+0.5.4 Instrument buffer for feff8. (BR Apr 29 1998) Feff-swap-control
+      and make input-set-and-jump run Feff-swap-control if appropriate
+      also Feff-control-p (BR May 5 1998) fixed (un)comment in Feff.
+      CONTROL flashing and relegated it to use in a hook.  (BR May 8
+      1998) input-before-run-hook, Atoms-math package using calc --
+      way cool! (BR May 10 1998) Doing the right thing ...  convert
+      old autoconfiguration lines to a local variables list.  Rewrote
+      the writing and updating functions to handle the L.V.  list
+      syntax and wrote a conversion function from old-style to
+      L.V. (BR May 13 1998)
+
+0.5.3 Made some additions to feff mode for feff8, bug fixes in gnuplot
+      and correct.  Added fuse-doc. (BR Apr 11 1998) Bug fixes in
+      Feffit-insert-this-best-fit, input-indent.  Improved keyword
+      descriptions for Feff and Autobk. (BR Apr 13 1998) Improved
+      keyword checking code.  Keyword alist now supports keywords that
+      take multiple arguments of different types, also added a few
+      more types. (BR Apr 19 1998) gnuplot and run can share a frame
+      or have their own.  drop Atoms-auto-jump-flag -- it can be an
+      after-run-hook.  option to quit input mode in
+      input-determine-program (BR Apr 23 1998) Feffit paragraph
+      manipulation functions all work on data set or from point with
+      C-u.  Also, the renumber data set function can take initial
+      value as C-u #. (BR Apr 26 1998) Added startup message sequence,
+      swiped from VM (BR Apr 28 1998)
+
+0.5.2 Fixed a bunch of files associated with the distribution,
+      including the makefiles, the example dot files, the README and
+      INSTALL files Did a bit of work to the doc.
+
+0.5.1 Started CVS repository for this project.  Fixed bug remembering
+      directory between run and sentinel.  Fixed input-swap-comment to
+      handle multicharacter comment string and to not uncomment time
+      stamp.  Lots of housekeeping. (BR Mar 15 1998) Batch processes
+      as a dired hook.  Plot with errorbars in Phit plot. (BR Mar 18
+      1998) Fixed input-find-word-this-stanza, now snagging and
+      plotting work in autobk.  Fixed autobk movement.  Fixed
+      jump-to-file in normal.  input-determine-program now knows what
+      program to run for a stanza.  (BR Mar 31 1998) Fixed
+      kill-gunplot function and made it easier to find in menus.
+      Gnuplot history list + history navigation commands (BR Apr 2
+      1998) Phit toolbar, source and docs for phit and normal fixed
+      autobk fetch e0, disown display in XEmacs after plots, dropped
+      use of point and mark in gnuplot, all input menu functions
+      placed into submenus (BR Apr 4 1998) Preserve case in swapping
+      functions.  Use Noah Friedman's comment mode and distribute it
+      with fuse. (BR Apr 5 1998) Fixed problem with execution path in
+      gnuplot daughter process. (BR Apr 7 1998)
+        comment-mode from:
+          (http://homepage6.lcs.mit.edu/users/friedman/  ...
+               ...    software/emacs-lisp/index.html)     (no line break)
+
+0.5.0 Toolbars and pixmaps and bitmaps, oh my! (BR Feb 16 1998)
+      separate frames for document and for process display, frame
+      stuff to handle FSF v. X discrepancies, moved
+      input-set-time-stamp to the local write file hook, updated
+      buffer local variable lis in (input-mode) begin playing with
+      balloon help for X (BR Feb 23 1998) put gnuplot script buffer in
+      same frame as run buffer, keybinding for Feffit-set-plot-column,
+      script directory in exec path (BR Mar 4 1998) texi document,
+      fixed tutorial function (BR Mar 10 1998)
+
+0.4.3 added variables for properties of input files in order to facilitate
+      hooking in new input file minor modes via the .fuse file.  see
+      variables section (BR Jan 22 1998) support for custom package,
+      emulation stuff (BR Jan 31 1998)
+
+0.4.2 Xanes-fetch-lmax, Xanes-run-f2p, and Correct-fetch-edge. Fixed
+      problem with input-gnuplot-run-buffer not defined.  Added a
+      kludge to allow for different version numbers -- there is now a
+      version number autoconfiguration variable. (BR Jan 10 1998)
+      added imenu support and gnuplot terminal toggle (BR Jan 15 1998)
+      added Atoms-auto-jump-flag (BR Jan 16 1998)
+
+0.4.1 Included proper copyright information (ho hum...)  Also ran all
+      document strings through checkdoc
+      (ftp://ftp.ultranet.com/pub/zappo/checkdoc-*.el) (BR Jan 4 1998)
+
+0.4   Works with XEmacs had to change some key- bindings, fix up
+      font-lock support, fix up time-stamp, replace kill-region with
+      delete-region in several places (which it should be anyway).
+      Also put :active's into menus (BR Dec 23 1997) Finished
+      :actives, excised `Reparse file' from menus, remove 'gnuplot
+      feature when kill-gnuplot-buffer is run, introduced
+      input-used-tempo-flag used for ungreying tempo motion menu
+      entries, paths in correct and normal templates, introduced
+      input-log-file-exists-p for use in menus and updated log file
+      rules, fixed switch program highlighting in XEmacs (perhaps only
+      20+) (BR Dec 24 1997)
+
+0.3.2 time stamps + various variables to configure them.  fixed bug in
+      input-submit-program-bug-report about file not found.  (BR Dec
+      15 1997) excised input-pause, Xanes-plot-dos/raw (BR Dec 18
+      1997)
+
+0.3.1 added input-back-to-orig for returning from a jumped-to buffer.
+      Also used more submenus to fit on small screen (BR Nov 19 1997)
+
+0.3   added tags, fixed indentation and region cleaning, insert
+      filename, tempo templates, bound input-jump-to-file to S-mouse-3
+      (BR Nov 17 1997)
+
+0.1 - 0.2 initial development with limited release
+
+Local Variables:
+nuke-trailing-whitespace-p: t
+End:

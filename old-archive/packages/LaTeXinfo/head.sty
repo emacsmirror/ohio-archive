@@ -1,0 +1,31 @@
+\def\latexinfoindexname#1{}
+
+\def\newindexpg{
+  \if@filesw 
+	\newwrite\@pgindexfile
+	\immediate\openout\@pgindexfile=\jobname.pg
+	\def\head{\@bsphack\begingroup
+             \def\protect####1{\string####1\space}\@sanitize
+             \@wrfileindex\@pgindexfile}
+	\typeout{Writing index file \jobname.pg }
+	\fi}
+
+\def\@wrfileindex#1#2#3{%
+	\xdef\@gtempa{\write#1{\string \entry{#2}{#3}{#2}}}\endgroup\@gtempa
+	\typeout{#2}
+	\dosomespecials\@head
+	}
+
+% This requires \newindex{pg}
+
+\def\head{\@bsphack\begingroup \@sanitize\@index}
+\def\paragraph{\@startsection
+ {paragraph}{4}{\z@}{2ex plus .5ex minus .2ex}{-1em}{\normalsize\bf}}
+\def\@head#1#2{
+	\paragraph*{#2}\hbox{}\hfil{\it#1}\linebreak[4]
+	}
+
+% An unfinished head
+\def\dhead#1#2#3#4{}
+
+

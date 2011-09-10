@@ -1,0 +1,74 @@
+%%% bbdb-print.tex
+%%% For instructions and copyright, see bbdb-print.el, which is the
+%%% companion to this file, or mail boris@psych.rochester.edu.
+
+\font\rm=cmr8 \rm
+\font\bf=cmbx8
+\font\it=cmti8
+\font\tt=cmtt8
+\font\bigbf=cmbx10 scaled \magstep3
+\raggedright   % some might like \raggedbottom
+\tolerance=5000
+\parskip=0pt\baselineskip=9pt
+\leftskip=1em\parindent=-1em
+
+\def\\{\par}
+
+\def\separator#1{\bigbreak\goodbreak
+    \hrule
+    \line{\vrule
+          \hfill
+          \vbox{\smallskip
+                \hbox{\bigbf#1}
+                \smallskip}
+	  \hfill
+          \vrule}
+    \hrule
+    \bigbreak}
+
+\def\name#1{\line{\bf#1\dotfill}}
+
+\def\comp#1{#1\\}
+
+\def\phone#1{\hfill#1\\}
+
+\def\email#1{\smallbreak{\tt#1}\\}
+
+\def\address#1{\smallbreak#1\smallbreak}
+
+\def\note#1#2{{\smallbreak\leftskip=2em\parindent=-1em
+              \noindent\hskip-\leftskip{\it#1:  } #2\\}}
+
+\def\notes#1{\smallbreak{\it(#1)}\\}
+
+\def\beginrecord{\bigbreak}
+\def\endrecord{\bigbreak}
+
+%%%
+%%% Define Three-column format
+%%%
+
+\newdimen\fullhsize
+\fullhsize=6.5in
+\hsize=2.0in
+\let\lr=L \newbox\leftcolumn \newbox\midcolumn
+\output={\if L\lr
+		\global\setbox\leftcolumn=\columnbox \global\let\lr=M
+	\else \if M\lr
+		\global\setbox\midcolumn=\columnbox \global\let\lr=R
+	\else
+		\tripleformat \global\let\lr=L
+	\fi\fi
+	\ifnum\outputpenalty>-20000 \else\dosupereject\fi}
+\def\tripleformat
+       {\shipout\vbox{\makeheadline
+		\fullline{\box\leftcolumn\hfil
+                 \box\midcolumn\hfil\columnbox}
+		\makefootline}
+	\advancepageno}
+\def\columnbox{\leftline{\pagebody}}
+\def\fullline{\hbox to \fullhsize}
+\def\byecolumns
+	{\vfill\supereject
+	 \if L\lr \else\null\vfill\eject\fi
+ 	 \if L\lr \else\null\vfill\eject\fi}

@@ -1,0 +1,717 @@
+Version: 1
+Unused-Bug-Id: 44
+Note: This is the header of a bugtrack file.
+Note: If you see this, it means that there are
+Note: no *known* bugs to track.
+
+Id: 1
+Summary: RMAIL-pop-up unimplemented
+Created: ceder: Thu Jul 30 04:17:44 1992
+Currently handled by: 
+Severity: 5
+Priority: 8
+Difficulty: 5
+Closed: ceder: Sat Aug  1 03:59:38 1992
+Last edit: ceder: Thu Jul 30 04:17:44 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 2
+Summary: Bugtrack edit is unimplemented
+Created: ceder: Thu Jul 30 04:18:09 1992
+Currently handled by: 
+Severity: 9
+Priority: 9
+Difficulty: 5
+Closed: ceder: Fri Jul 31 01:24:37 1992
+Last edit: ceder: Thu Jul 30 04:18:09 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 3
+Summary: bugtrack-summary is ugly
+Created: ceder: Thu Jul 30 04:18:53 1992
+Currently handled by: 
+Severity: 3
+Priority: 5
+Difficulty: 5
+Closed: ceder: Fri Jul 31 01:27:36 1992
+Last edit: ceder: Fri Jul 31 01:27:33 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+Fixed with help from inge and bellman.
+
+Id: 4
+Summary: bugtrack-create-bug: severity and priority should be hot
+Created: ceder: Thu Jul 30 04:19:35 1992
+Currently handled by: 
+Severity: 2
+Priority: 5
+Difficulty: 5
+Closed: ceder: Sat Nov  6 00:08:55 1993
+Last edit: ceder: Fri Jul 31 01:29:06 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+One should not have to press RETURN after the digits. There should be
+no way to enter anything but a digit or \C-g.
+
+Id: 5
+Summary: There is no way to edit the headers
+Created: ceder: Thu Jul 30 04:19:58 1992
+Currently handled by: 
+Severity: 3
+Priority: 3
+Difficulty: 5
+Last edit: ceder: Mon Dec 13 21:40:44 1993
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+Well, actually it is possible using the 'e' command. It is a bit
+dangerous, though. Better commands should be created. Priority and
+severity lowered. Maybe the headers should be read-only?
+
+Id: 6
+Summary: summary overflows
+Created: ceder: Thu Jul 30 04:20:45 1992
+Currently handled by: 
+Severity: 9
+Priority: 9
+Difficulty: 5
+Closed: ceder: Thu Jul 30 04:22:32 1992
+Last edit: ceder: Sat Aug  1 04:31:41 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 7
+Summary: 'last edit' is not updated by 'close bug'
+Created: ceder: Thu Jul 30 04:23:07 1992
+Currently handled by: 
+Severity: 6
+Priority: 6
+Difficulty: 5
+Closed: ceder: Fri Jul 31 22:12:32 1992
+Last edit: ceder: Fri Jul 31 22:12:26 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+It shouldn't be. Bug closed.
+
+Id: 8
+Summary: summary-by-priority missing
+Created: ceder: Thu Jul 30 04:23:49 1992
+Currently handled by: 
+Severity: 6
+Priority: 6
+Difficulty: 5
+Closed: ceder: Fri Jul 31 00:11:13 1992
+Last edit: ceder: Thu Jul 30 04:23:49 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 9
+Summary: summary-by-severity missing
+Created: ceder: Thu Jul 30 04:24:04 1992
+Currently handled by: 
+Severity: 6
+Priority: 6
+Difficulty: 5
+Closed: ceder: Fri Jul 31 01:41:23 1992
+Last edit: ceder: Fri Jul 31 01:21:01 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+There is currently no way to have the summary sorted by severity.
+It should be easy to fix.
+
+Id: 10
+Summary: 'j' command unimplemented.
+Created: ceder: Thu Jul 30 04:25:16 1992
+Currently handled by: 
+Severity: 9
+Priority: 8
+Difficulty: 5
+Closed: ceder: Thu Jul 30 21:29:11 1992
+Last edit: ceder: Thu Jul 30 04:25:16 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 11
+Summary: 'j' command in summary missing
+Created: ceder: Thu Jul 30 04:25:37 1992
+Currently handled by: 
+Severity: 9
+Priority: 8
+Difficulty: 5
+Closed: ceder: Sat Aug  1 00:26:19 1992
+Last edit: ceder: Thu Jul 30 04:25:37 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 12
+Summary: Consider saving the sumlin cookies in the file.
+Created: ceder: Thu Jul 30 04:26:47 1992
+Currently handled by: 
+Severity: 3
+Priority: 3
+Difficulty: 5
+Last edit: ceder: Mon Dec 13 21:41:46 1993
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+Caching the sumlin cookies would probably speed up the summary
+functions.  On the other hand, there is the problem of invalidating
+the cache...  This will have to wait for another release.
+
+Id: 13
+Summary: Should have a difficulty field
+Created: ceder: Thu Jul 30 18:06:02 1992
+Currently handled by: 
+Severity: 7
+Priority: 6
+Difficulty: 1
+Closed: ceder: Sat Aug  1 04:21:49 1992
+Last edit: ceder: Sat Aug  1 04:20:53 1992
+Reported by: inge
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 14
+Summary: bugtrack buffer not read-only
+Created: ceder: Fri Jul 31 01:23:09 1992
+Currently handled by: 
+Severity: 9
+Priority: 7
+Difficulty: 5
+Closed: ceder: Sat Aug  1 00:50:31 1992
+Last edit: ceder: Fri Jul 31 01:23:47 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+The Bugtrack buffer should be read-only, so that it is not so easy to
+destroy it by chance.
+
+Id: 15
+Summary: DEL should be bound to scroll-down.
+Created: ceder: Fri Jul 31 01:31:15 1992
+Currently handled by: 
+Severity: 9
+Priority: 6
+Difficulty: 5
+Closed: ceder: Fri Jul 31 23:25:52 1992
+Last edit: ceder: Fri Jul 31 01:31:15 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 16
+Summary: cookie-sort is not installed
+Created: ceder: Fri Jul 31 17:10:40 1992
+Currently handled by: 
+Severity: 9
+Priority: 9
+Difficulty: 5
+Closed: ceder: Sat Aug  1 03:20:01 1992
+Last edit: ceder: Sat Aug  1 03:17:35 1992
+Reported by: linus
+Site: lysator.liu.se
+Associated mails:
+	Msg about missing cookie-sort: <199207310057.AA11477@robin.lysator.liu.se>
+	My reply: <199208010118.AA00694@robert.lysator.liu.se>
+End mails.
+---
+
+Id: 17
+Summary: bugtrack-insert-memorized-id should append, not cons
+Created: ceder: Fri Jul 31 20:58:48 1992
+Currently handled by: 
+Severity: 4
+Priority: 4
+Difficulty: 5
+Closed: ceder: Sat Aug  1 05:27:05 1992
+Last edit: ceder: Fri Jul 31 20:59:12 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 18
+Summary: bugtrack-rmail-create-bug missing
+Created: ceder: Fri Jul 31 22:19:34 1992
+Currently handled by: 
+Severity: 7
+Priority: 7
+Difficulty: 7
+Closed: ceder: Sat Aug  1 05:26:27 1992
+Last edit: ceder: Sat Aug  1 04:21:15 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 19
+Summary: bugtrack-create-bug should default reporter
+Created: ceder: Fri Jul 31 22:20:13 1992
+Currently handled by: 
+Severity: 0
+Priority: 1
+Difficulty: 5
+Last edit: ceder: Fri Jul 31 22:20:46 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+Default: to ceder.
+Configurable.
+
+Id: 20
+Summary: M-x bugtrack should default like ChangeLog
+Created: ceder: Fri Jul 31 22:22:22 1992
+Currently handled by: 
+Severity: 5
+Priority: 5
+Difficulty: 5
+Closed: ceder: Thu Aug  6 10:18:21 1992
+Last edit: ceder: Fri Jul 31 22:22:22 1992
+Reported by: linus
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 21
+Summary: Output bugs to (other) file
+Created: ceder: Fri Jul 31 22:23:09 1992
+Currently handled by: 
+Severity: 4
+Priority: 5
+Difficulty: 5
+Last edit: ceder: Mon Dec 13 21:42:41 1993
+Reported by: inge,linus
+Site: 
+Associated mails:
+	Linus idea: <199207312010.AA00528@robert.lysator.liu.se>
+End mails.
+---
+There should be a command similar to the RMAIL 'o' key.  But this is
+(possibly) hard - should the Id be truly unique, or not?
+
+Id: 22
+Summary: Should have RMAIL-like (2/22) mode-line
+Created: ceder: Sat Aug  1 05:28:28 1992
+Currently handled by: 
+Severity: 5
+Priority: 5
+Difficulty: 8
+Closed: ceder: Fri Nov  5 21:52:54 1993
+Last edit: ceder: Sat Aug  1 05:28:43 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+It is not at all clear what the meaning of the mode-line should be!
+
+Id: 23
+Summary: No file locking
+Created: ceder: Sat Aug  1 05:32:38 1992
+Currently handled by: 
+Severity: 5
+Priority: 5
+Difficulty: 9
+Last edit: ceder: Mon Dec 13 21:44:03 1993
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+Only one person/emacs should be able to edit the file.  Or there
+should be some way to merge changes (as automatic as possible, but
+with no information loss).
+
+It is unlikely that I (ceder) will do anything about this anytime
+soon.
+
+Id: 24
+Summary: Need full-text search
+Created: ceder: Sun Aug  2 23:36:22 1992
+Currently handled by: 
+Severity: 7
+Priority: 7
+Difficulty: 2
+Closed: ceder: Mon Aug  3 09:48:37 1992
+Last edit: ceder: Sun Aug  2 23:36:22 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 25
+Summary: Should have a version field
+Created: ceder: Sun Aug  2 23:39:28 1992
+Currently handled by: 
+Severity: 7
+Priority: 7
+Difficulty: 5
+Closed: ceder: Fri Nov  5 22:10:11 1993
+Last edit: inge: Sun Aug  9 21:58:45 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 26
+Summary: "Selecting deleted buffer" when "h"-ing
+Created: ceder: Mon Aug  3 00:11:23 1992
+Currently handled by: 
+Severity: 9
+Priority: 7
+Difficulty: 1
+Closed: ceder: Mon Aug  3 09:10:40 1992
+Last edit: ceder: Mon Aug  3 00:11:59 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+When the summary buffer is deleted, and a new summary is requested,
+all you get is an error. Sad but true.
+
+Id: 27
+Summary: bugtrack-edit-mode-hook wanted
+Created: ceder: Mon Aug  3 00:56:27 1992
+Currently handled by: 
+Severity: 9
+Priority: 9
+Difficulty: 0
+Closed: ceder: Mon Aug  3 09:02:30 1992
+Last edit: ceder: Mon Aug  3 00:56:27 1992
+Reported by: inge
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 28
+Summary: Should set revert-buffer-function
+Created: ceder: Mon Aug  3 04:30:54 1992
+Currently handled by: 
+Severity: 7
+Priority: 7
+Difficulty: 2
+Closed: ceder: Mon Aug  3 10:05:07 1992
+Last edit: ceder: Mon Aug  3 04:30:54 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 29
+Summary: bugtrack-insert-memorized-id not bound
+Created: ceder: Mon Aug  3 07:24:36 1992
+Currently handled by: 
+Severity: 9
+Priority: 9
+Difficulty: 0
+Closed: ceder: Mon Aug  3 09:01:49 1992
+Last edit: ceder: Mon Aug  3 07:24:45 1992
+Reported by: linus
+Site: 
+Associated mails:
+End mails.
+---
+Maybe "M"?
+
+Id: 30
+Summary: "q" should delete the summary
+Created: ceder: Tue Aug  4 10:38:42 1992
+Currently handled by: 
+Severity: 3
+Priority: 5
+Difficulty: 1
+Last edit: ceder: Tue Aug  4 10:38:42 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 31
+Summary: bugtrack-rmail-memorize-msg-id fails first time
+Created: ceder: Wed Aug  5 00:33:15 1992
+Currently handled by: 
+Severity: 6
+Priority: 8
+Difficulty: 5
+Closed: ceder: Thu Aug  6 15:44:23 1992
+Last edit: ceder: Thu Aug  6 15:44:22 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+No, it doesn't!
+
+Id: 32
+Summary: Integrate into CVS
+Created: ceder: Thu Aug  6 10:04:48 1992
+Currently handled by: 
+Severity: 4
+Priority: 4
+Difficulty: 7
+Last edit: ceder: Thu Aug  6 10:06:08 1992
+Reported by: 
+Site: 
+Associated mails:
+End mails.
+---
+Consider doing stuff like automatic id bumping if there is a conflict
+because booth parties added a new bug. Let "q" do a commit. Let
+cvs-update and friends know about Bugtrack.
+
+Id: 33
+Summary: Document bugtrack-mode.
+Created: ceder: Thu Aug  6 10:06:31 1992
+Currently handled by: 
+Severity: 9
+Priority: 8
+Difficulty: 0
+Closed: ceder: Thu Aug  6 15:44:33 1992
+Last edit: ceder: Thu Aug  6 10:06:31 1992
+Reported by: inge
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 34
+Summary: Reopen on event
+Created: ceder: Sun Aug  9 00:04:18 1992
+Currently handled by: 
+Severity: 4
+Priority: 4
+Difficulty: 7
+Last edit: ceder: Sun Aug  9 00:05:48 1992
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+I want to reopen a bug when CVS 1.4 comes out. There should be a way
+to define ``events'' and register bugs to be reopened when an event
+occurs. There should be a way to get a list of pending (expected) events.
+
+Id: 35
+Summary: " " In the summary buffer should scroll the Bugtrack browse window
+Created: inge: Sun Aug  9 21:53:55 1992
+Currently handled by: 
+Severity: 6
+Priority: 6
+Difficulty: 4
+Last edit: ceder: Mon Dec 13 21:45:05 1993
+Reported by: ingwa
+Site: 
+Associated mails:
+End mails.
+---
+Backspace should scroll backwards.  Compare rmail summary mode.  There
+is a lot of nice features from RMAIL summary mode that ought to be
+borrowed.
+
+Id: 36
+Summary: When in the summary buffer, "j" should place the cursor on the correct line
+Created: inge: Tue Aug 18 23:48:29 1992
+Currently handled by: 
+Severity: 5
+Priority: 5
+Difficulty: 5
+Last edit: inge: Tue Aug 18 23:48:29 1992
+Reported by: ingwa
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 37
+Summary: 'C' in RMAIL should default to last BUGS file.
+Created: ceder: Sat Aug 22 00:43:42 1992
+Currently handled by: 
+Severity: 6
+Priority: 6
+Difficulty: 4
+Closed: ceder: Sat Nov  6 00:08:50 1993
+Last edit: ceder: Sat Aug 22 00:43:42 1992
+Reported by: inge
+Site: 
+Associated mails:
+End mails.
+---
+
+Id: 38
+Summary: C-x C-s while editing
+Created: ceder: Sat Aug 22 17:40:29 1992
+Currently handled by: 
+Severity: 4
+Priority: 4
+Difficulty: 4
+Last edit: ceder: Mon Dec 13 21:40:11 1993
+Reported by: inge@lysator.liu.se
+Site: lysator.liu.se
+Associated mails:
+	Report: <199208221532.AA01982@tistel.lysator.liu.se>
+End mails.
+---
+It is possible to type C-x C-s and save the current Bugtrack buffer
+even before you exit bugtrack edit mode (wich C-c C-c).  This is not a
+good think, especially not if you have accidentaly modified the
+headers.
+
+The solution is probably to make the headers read-only, using a text
+property.  I can't think of an obvious solution.  Rebinding C-x C-s
+doesn't solve the problem - there is still save-some-buffers, and
+other similar functions.
+
+Id: 39
+Summary: bugtrack-find-mail sometimes fail
+Created: ceder: Thu Aug 27 03:15:49 1992
+Currently handled by: 
+Severity: 6
+Priority: 6
+Difficulty: 6
+Closed: ceder: Sat Nov  6 23:17:01 1993
+Last edit: ceder: Sat Nov  6 23:06:57 1993
+Reported by: ceder
+Site: lysator.liu.se
+Associated mails:
+End mails.
+---
+It fail to find this (which existst in mail/cvs).
+
+> Id: 17
+> Summary: Meta-script to regenerate symlinks
+> Created: ceder: Wed Aug 12 04:49:36 1992
+> Currently handled by: 
+> Severity: 5
+> Priority: 5
+> Difficulty: 5
+> Last edit: ceder: Thu Aug 27 03:12:22 1992
+> Reported by: Ralf Friedl <friedl@informatik.uni-kl.de>
+> Site: informatik.uni-kl.de
+> Associated mails:
+> 	Script included: <9207301639.aa18713@superieur.informatik.uni-kl.de>
+> 	New version: <9208242039.aa00760@superieur.informatik.uni-kl.de>
+> End mails.
+> ---
+
+Id: 40
+Summary: Summary loops when trailing ^L is missing
+Created: ceder: Mon Jan 18 18:53:44 1993
+Currently handled by: 
+Severity: 3
+Priority: 3
+Difficulty: 6
+Last edit: ceder: Mon Jan 18 18:54:09 1993
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+It should give an error.
+
+Id: 41
+Summary: Emacs 19 incompatibility
+Created: ceder: Thu Jul  8 00:53:44 1993
+Currently handled by: 
+Severity: 9
+Priority: 9
+Difficulty: 7
+Closed: ceder: Fri Nov  5 21:43:41 1993
+Last edit: ceder: Thu Jul  8 00:53:44 1993
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+(narrow-to-page nil) seems to behave differently in emacs 19 than in
+emacs 18 when point is at point-max on the last page.
+
+Id: 42
+Summary: bugtrack-edit-done st{ller cursorn fel
+Version: 
+Created: ceder: Sun Nov  7 01:35:33 1993
+Currently handled by: 
+Severity: 4
+Priority: 7
+Difficulty: 2
+Closed: ceder: Mon Dec 13 20:58:34 1993
+Last edit: ceder: Mon Dec 13 20:58:26 1993
+Reported by: ceder
+Site: 
+Associated mails:
+End mails.
+---
+Om cursorn st}r sist i (den synliga delen av) bufferten, och man
+trycker C-c C-c i edit-mode s} hamnar mark|ren ett tecken f|r tidigt i
+bufferten.
+
+Id: 43
+Summary: &optional text-argument till bugtrack-create-bug
+Version: 
+Created: ceder: Mon Nov  8 00:51:03 1993
+Currently handled by: 
+Severity: 3
+Priority: 6
+Difficulty: 2
+Closed: ceder: Mon Dec 13 21:25:19 1993
+Last edit: ceder: Mon Nov  8 00:51:30 1993
+Reported by: Linus Tolke Y <linus@lysator.liu.se>
+Site: lysator.liu.se
+Associated mails:
+	F|rsta mailet fr}n Linus: <199311072316.AAA05573@astrid.lysator.liu.se>
+	Linus tycker det vore bra: <199311072331.AAA22709@godot.lysator.liu.se>
+End mails.
+---
+

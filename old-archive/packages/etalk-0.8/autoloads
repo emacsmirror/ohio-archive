@@ -1,0 +1,33 @@
+;; -*- emacs-lisp -*-
+;; replace $FOO with the path etalk will be in
+
+(setq load-path (cons "$FOO" load-path))
+
+;; For one user installation with multiple types of systems, just add
+;; them right on in here.  Use M-ESC system-type to find out what your
+;; current system is.  If you are installing on a per machine basis,
+;; on a network with the install portion of the makefile, then use the
+;; commented line below the cond, and take the cond part out
+;; completely
+(cond
+ ((string= system-type "linux")
+  (setq etalk-process-file "$FOO/etalk.linux"))
+ (t
+  (setq etalk-process-file "$FOO/etalk"))
+ )
+
+;; You don't really need this since /usr/local/bin is in peoples paths
+;; (setq etalk-process-file "/usr/local/bin/etalk")
+
+(autoload 'etalk "etalk" 
+  "Talk to anyone on any machine through BSD talk protocol." t)
+(autoload 'etalk-batch "etalk" 
+  "Talk to anyone on any machine through BSD talk protocol from command line." t)
+(autoload 'etalk-mail "etalk" 
+  "Talk to anyone on any machine through mail as connector." t)
+(autoload 'tyrant-play-computer "tyrn-ai" 
+  "Tyrant mode AI interface to limited games." t)
+(autoload 'etalk-report "etalk-error" 
+  "Report errors with etalk, with convenient scripts to load things into  mail." t)
+(autoload 'finger "finger" 
+  "Run finger on a host." t)

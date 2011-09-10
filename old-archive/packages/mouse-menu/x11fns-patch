@@ -1,0 +1,71 @@
+24a25,28
+> /* Hacked x-get-mouse-event to report Meta in 2-bit rather than 8-bit, so */
+> /* it behaves the same as x-proc-mouse-event (I hope). */
+> /* Russell Ritchie, Mon Jun 19 12:23:57 1989.*/
+> 
+76a81,82
+> extern unsigned long mous;
+> extern unsigned long curs;
+343a350,364
+>   char	 *useback;
+> 
+>   /* USEBACK is the background color, but on monochrome screens
+>      changed if necessary not to match the mouse.  */
+> 
+>   useback = back_color;
+> 
+>   if (!XXisColor && !strcmp (mous_color, back_color))
+>     {
+>       if (strcmp (back_color, "white"))
+> 	useback = "white";
+>       else
+> 	useback = "black";
+>     }
+> 
+346c367
+<       && XParseColor (XXdisplay, XXColorMap, back_color, &backc))
+---
+>       && XParseColor (XXdisplay, XXColorMap, useback, &backc))
+443a465,474
+> DEFUN ("x-set-baud", Fx_set_baud, Sx_set_baud, 1, 1, "nBaud Rate: ",
+>        "Sets the apparent baud rate to influence the refresh algorithm")
+>     (new_baud_rate)
+> {
+>     CHECK_NUMBER (new_baud_rate, 1);
+>     check_xterm ();
+>     baud_rate = XINT (new_baud_rate);
+>     return (Qnil);
+> }
+> 
+562,563c593,594
+< /*		XSET (tempx, Lisp_Int, event.xbutton.x+XXxoffset);
+< 		XSET (tempy, Lisp_Int, event.xbutton.y+XXyoffset);*/
+---
+> 		XSET (tempx, Lisp_Int, event.xbutton.x_root);
+> 		XSET (tempy, Lisp_Int, event.xbutton.y_root);
+583c614,615
+< otherwise, wait for an event.")
+---
+> otherwise, wait for an event.\n\
+> Report Meta in 2 bit (rather than 8 bit) like x-proc-mouse-event does.")
+607a640,645
+> 		/* Report meta in 2 bit, not in 8 bit.  */
+> 		if (key_mask & 0x80) 
+> 		  { 
+> 		    key_mask |= 0x20; 
+> 		    key_mask &= ~0x80; 
+> 		  } 
+620,622c658,662
+< /*		XSET (tempx, Lisp_Int, event.xbutton.x+XXxoffset);
+< 		XSET (tempy, Lisp_Int, event.xbutton.y+XXyoffset);*/
+< 		Vx_mouse_abs_pos = Fcond (tempx, Fcons (tempy, Qnil));
+---
+> 		XSET (tempx, Lisp_Int, event.xbutton.x_root);
+> 		XSET (tempy, Lisp_Int, event.xbutton.y_root);
+> 		Vx_mouse_abs_pos = Fcons (tempx, Fcons (tempy, Qnil));
+> 		/* Fcond => Fcons, assumed to be a typo, */
+> 		/* Russell Ritchie, Tue Jun 13 15:42:03 1989 */
+846a887
+>   Vx_mouse_abs_pos = Qnil;
+878a920
+>   defsubr (&Sx_set_baud);

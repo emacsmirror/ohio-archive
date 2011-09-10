@@ -1,0 +1,50 @@
+* Changes in EDE 0.5
+
+** Added ede-dired for dired extensions.  You can now add groups of
+   marked files into a local project.
+
+** Added support for some shared libraries via libtool, or without
+   libtool.  Still primitive.
+
+** Added info building rules to generated makefiles.
+
+* Changes in EDE 0.4
+
+** Added support for configurations
+
+** Added support for one file to be in multiple targets.
+
+** Subprojects can now build from the top-level project with the command
+  `ede-compile-project'
+
+** ede-proj changes:
+
+*** Autogeneration of dependencies
+
+*** PHONY is now supported in the makefile
+
+*** Better emacs building support w/ requirements, and smarter Makefile
+    code reguarding the load path.
+
+*** New clean target generated.
+
+*** Added `ede-proj-regenerate' command for debugging.
+
+*** You are no longer forced to put the current source file into a new target.
+
+** project-am changes:
+
+*** Fixed byte compiler warnings.
+
+** Documentation:
+
+*** Fixed examples in project creation chapter.
+
+*** Added section on subprojects.
+
+
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:
+

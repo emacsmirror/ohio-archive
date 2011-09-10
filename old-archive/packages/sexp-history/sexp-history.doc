@@ -1,0 +1,750 @@
+Documentation for the S-exp history substitution program
+Copyright (C) 1991 by Takeyuki Sakaguchi.
+
+   Author:            Takeyuki SAKAGUCHI
+   Version:           1.0
+   Last modification: Dec. 1, 1991
+
+  This file is part of the S-exp history substitution program.
+
+  This program is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 1, or
+(at your option) any later version.
+
+  This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+GNU General Public License for more details.
+
+  You should have received a copy of the GNU EMACS GENERAL PUBLIC
+LICENSE along with GNU Emacs; see the file COPYING. If not,
+write to the Free Software Foundation, 675 Mass Ave, Cambridge,
+MA 02139, USA.
+
+--------
+  This program is intended  to provide  the GNU Emacs lisp-interaction-
+mode with history substitution as powerful as the C shell.
+
+1. Installation
+
+1.1. How to Install This Program
+
+  * Save the file "sexp-history.el" in a load-path directory, and byte-
+    comple it.
+
+  * Append a following line to your `~/.emacs':
+
+    (autoload 'sexp-history "sexp-history" "" t)
+
+  * Set user-optional variables (described in the next section) in your
+    `~/.emacs' if necessary.
+
+1.2. User-optional Variables
+
+  There are five user-optional controlling variables.  They are origin-
+ally global but made buffer local when S-exp substitution activated. So
+you reset them as you like buffer-by-buffer.
+
+1.2.1. sexp-history-event-max
+
+  This variable  keeps  a maximum number of events  kept in the history
+buffer. 20 by default.
+
+1.2.2 sexp-history-histchars
+
+  This variable keeps  a pair of history substitution characters.  Each
+of them must be classified as Word or Symbol on emacs-lisp-syntax-table.
+Moreover the first of the pair must be neither `:', `^', `*', `$', `-',
+`{', `?', `+' nor `&'. (`!' . `^') by default.
+
+  Example:
+
+    (setq sexp-history-histchars '(?~ . ?/))
+    (126 . 47)
+    ~
+    (sexp-history-list)
+       1  (sexp-history-list)
+    nil
+    ~1
+    (sexp-history-list)
+       1  (sexp-history-list)
+       2  (sexp-history-list)
+    nil
+    /-list/\ 1/
+    (sexp-history 1)
+    "S-exp history substitution reset."
+
+  Note that  these characters themselves  must be escaped by `\' to mask
+their special meaning.
+
+1.2.3. sexp-history-list-order
+
+  This variable keeps  the listing order in sexp-history-list (described
+in 3.2.1.) Either 'descending or 'ascending. 'ascending by default.
+
+1.2.4 sexp-history-quoted-too
+
+  This variable keeps  whether substitute or not in quoted strings. non-
+nil means substitute as well. Otherwise don't.  nil by default.  non-nil
+is trouble making if quoted strings contain `\0' (See 4.1. and 4.2.)
+
+1.2.5.sexp-history-echo-only
+
+  This variable keeps  whether evaluate or not  after echoback  in full.
+non-nil means echo it back but don't evaluate it.  Otherwise do as well.
+S-exps that invoke NO history substitution  will be evaluated regardless
+of this value. nil by default.
+
+
+2. Getting Started
+
+2.2. How to Activate
+
+  Type `M-x sexp-history' in any lisp-interaction-mode buffer.
+S-exp history substitution successfully activated if a message
+
+    S-exp history substitution active
+
+displayed in the minibuffer.
+
+  This command makes  user-optional and other internal variables buffer
+local,  and alters all key bindings  for eval-print-last-sexp  to eval-
+print-last-sexp-with-history that accepts the substitution notation.
+
+2.3. How to Inactivate
+
+  Type `M-x sexp-history' again to toggle off.  Message in the minibuf-
+fer
+
+    S-exp history substitution inactive.
+
+  This command makes  user-optional variable  global,  and restores the
+original keymap.
+
+2.4. How to Reset
+
+  Type `C-u 1 M-x sexp-history'  to reset.  When S-exp substitution  is
+inactive this merely toggles on. Message in the minibuffer
+
+    S-exp history substitution reset.
+
+
+3. The Notation for History Substitutions
+
+  The notation for history substitutions is very similar to the C shell.
+
+3.1. Conventions
+
+  Non-quoted ! and ^ stand for  history substitution characters  held in
+the variable  sexp-history-histchars.  Any other character  quoted by `'
+stands for constant literal that can't be altered.
+
+  n or m stands for a natural number.  Its value is obtained through the
+function string-to-int.
+
+  RE  stands for  a regular expression.  Punctuation characters  such as
+whitespace,  single and double quotation marks,  `.',  `(', `)', `[' and
+`]' must be escaped by a `\' to mask their special meaning (syntax class
+other than Word or Symbol) on sexp-history-syntax-table. Of course a `\'
+itself must be doubled like in a quoted string.
+
+  str  stands  for  a verbatim string.  Punctuation characters  must  be
+escaped too.
+
+3.2. The Special Forms
+
+  These are two forms somewhat peculiar but convenient.
+
+3.2.1. !
+
+  Single ! invokes  the function  sexp-history-list  that shows all kept
+events  in the order specified by the variable  sexp-history-list-order.
+It may be either  'ascending (from older to newer) or  'descending (from
+newer to older).
+
+ Example:
+
+    (setq sexp-history-list-order 'ascending)
+    ascending
+    !
+    (sexp-history-list)
+       1  (setq sexp-history-list-order 'ascending)
+       2  (sexp-history-list)
+    nil
+    (setq sexp-history-list-order 'descending)
+    descending
+    !
+    (sexp-history-list)
+       4  (sexp-history-list)
+       3  (setq sexp-history-list-order 'descending)
+       2  (sexp-history-list)
+       1  (setq sexp-history-list-order 'ascending)
+    nil
+
+As shown above, sexp-history-list always returns nil.
+
+3.2.2. ^RE^str^, ^RE^&str^
+
+  This form substitutes the most recently evaluated S-exp with the first
+match by RE  being replaced with str.  If RE omitted  the most recent RE
+used in this form or :s and :gs additives (described in 3.4.8.) is taken.
+If str is preceded by an `&' str is inserted immediately after the match
+instead of replacing with it.  Empty str means erasing the match . Empty
+str preceded by an `&' makes no sense.  Neither RE nor str can contain a
+naked ^, so it must be escaped by `\' if necessary.
+
+  This form is produced by the following regular expression:
+
+    !\^\(\([^\^]\|\(\\.\)\)+\)?\^&?\([^\^]\|\(\\.\)\)*\^?
+
+No previous S-exp  causes an error  `Event not found';  any  broken form
+that doesn't fit the regular expression above causes `Invalid notation';
+no match  by RE causes `Modifier failed'; omitted RE  that has no prede-
+cessor causes `No previous lhs.'
+
+  Example:
+
+    (cdr '(1 2 3 4 5))
+    (2 3 4 5)
+    ^c\.r^car^
+    (car '(1 2 3 4 5))
+    1
+    ^^&-safe^			; use the last RE `c\.r '.
+    (car-safe '(1 2 3 4 5))
+    1
+
+Note: the variable case-fold-search affects this form.
+
+3.3. The Primitive Forms (The Event Specifiers)
+
+  These are eleven forms that specify an event. Each of them begins with
+!, and substitutes the whole event except !?RE?% that extracts a word or
+words in it.
+
+3.3.1. !!
+
+  Doubled !  substitutes the most recently evaluated S-exp.  No previous
+S-exp causes an error `Event not found'.
+
+  Example:
+
+    (setq foo '(1 2 3 4))
+    (1 2 3 4)
+    foo
+    (1 2 3 4)
+    (append !! '(5))
+    (append foo '(5))
+    (1 2 3 4 5)
+
+3.3.2. !^
+
+  ! followed by a circumflex accent `^'  substitutes the CAR of the most
+recently evaluated S-exp.  You can't pick up a symbol quoted by an apos-
+trophe `''  because it is expanded into  (quote symbol)  beforehand.  No
+previous S-exp causes an error `Event not found'.
+
+  Example:
+
+    (enlarge-window-horizontally 8)
+    (!^ 10)
+    (enlarge-window-horizontally 10)
+    nil
+    'foo
+    foo
+    (setq !^ 10)		; refer to (car '(quote foo)).
+    (setq quote 10)
+    10
+
+3.3.3. !*
+
+  ! followed by an asterisk `*' substitutes the CDR of the most recently
+evaluated S-exp.  You can't pick up an atom  because  CDR always gives a
+list. No previous S-exp causes an error `Event not found'.
+
+  Example:
+
+    (+ 1 2 3 4)
+    10
+    (append '!* '(5 6))
+    (append '(1 2 3 4) '(5 6))
+    (1 2 3 4 5 6)
+
+3.3.4. !$
+
+  ! followed by a dollar mark `$'  substitutes  the LAST of the most re-
+cently evaluated S-exp. Though the function LAST is not available in GNU
+Emacs Lisp,  it is obtained through  (car (reverse S-exp)).  No previous
+S-exp causes an error `Event not found'.
+
+  Example:
+
+    (set-syntax-table emacs-lisp-mode-syntax-table)
+    [3 3 3 ...]
+    (setq st (copy-syntax-table !$))
+    (setq st (copy-syntax-table emacs-lisp-mode-syntax-table))
+    [3 3 3 ...]
+
+3.3.5. !n, !-n
+
+  ! followed by a number substitutes a numbered event.  If the number is
+positive  the event is  numbered n,  otherwise  the n'th newest  at this 
+point.  Non-existent number  causes  an error  `Event not found'.  Event
+number 0 is always non-existent.
+
+  Example:
+
+    !
+    (sexp-history-list)
+       1  (setq foo 10)
+       2  (setq foo (* 2 foo))
+       3  (sexp-history-list)
+    nil
+    !-2				; now current event number is 4.
+    (setq foo (* 2 foo))
+    40
+    !1
+    (setq foo 10)
+    10
+
+!-1 is equivalent to !!.
+
+3.3.6. !RE
+
+  This form substitutes  the most recently evaluated S-exp  that matches
+to RE only at the biginning.  When testing match,  leading `('s in S-exp
+are ignored. So !foo matches to any of `foo', `(foo', `((foo', `(((foo',
+and so on.  RE can't be omitted. RE can't contain naked `:',  so it must
+be escaped by `\' if necessary.
+
+  This form is produced by the following regular expression:
+
+    !\([^ :]\|\(\\.\)\)+
+
+No match by RE causes an error `Event not found'; omitted RE causes `In-
+valid notation.'
+
+  Example:
+
+    !
+    (sexp-history-list)
+       1  (setq foo 10)
+       2  (setq foo (* 2 foo))
+       3  (sexp-history-list)
+    nil
+    !se
+    (sexp-history-list)
+       1  (setq foo 10)
+       2  (setq foo (* 2 foo))
+       3  (sexp-history-list)
+       4  (sexp-history-list)
+    nil
+    !se\.*foo
+    (setq foo (* 2 foo))
+    40
+
+Note: the variable case-fold-search affects this form.
+
+3.3.7. !{RE}
+
+  This is an excaped form for !RE in case of misinterpretation.  This is
+identical to !RE  except that  RE in this can't contain a naked `}'  but
+`:'. `}' must be escaped by `\' if necessary.
+
+  This form is produced by the following regular expression:
+
+    !{\([^}]\|\(\\.\)\)+}
+
+No match by RE causes an error  `Event not found';  any broken form that
+doesn't fit the regular expression above causes `Invalid notation.'
+
+  Example:
+
+    !
+    (sexp-history-list)
+       1  (sexp-history-list)
+    nil
+    (1+ 100)
+    101
+    !1				; refer to the event number one.
+    (sexp-history-list)
+       1  (sexp-history-list)
+       2  (1+ 100)
+       3  (sexp-history-list)
+    nil
+    !{1}			; refer to an event beginning with `1'.
+    (1+ 100)
+    101
+
+Note: the variable case-fold-search affects this form.
+
+3.3.8. !?RE?, !?RE?%
+
+  This form substitutes  the most recently evaluated S-exp  that matches
+to RE  anywhere.  If ?RE? is followed by a `%',  this substitutes only a
+word  or words  that can be expanded  from the match  with any character
+whose syntax class is Word or Symbol. RE can't be omitted. RE can't con-
+tain naked `?', so it must be escaped by `\' if necessary.
+
+  This form is produced by the following regular expression:
+
+    !\?\([^\?]\|\(\\.\)\)+\?%?
+
+No match by RE causes an error  `Event not found';  any broken form that
+doesn't fit the regular expression above causes `Invalid notation.'
+
+  Example:
+
+    (setq modulo-result (% 123 45))
+    33
+    !?%?
+    (setq modulo-result (% 123 45))
+    33
+    !?dulo?%
+    modulo-result
+    33
+
+Note: the variable case-fold-search affects this form.
+
+3.3.9. !+ (original)
+
+  ! followed by a plus sign `+'  substitutes  the most recently referred
+event.   This is  not affected  by evaluation  but history substitution. 
+Don't confuse this  with !!.   No previous  history reference  causes an
+error `Event not found'.
+
+  Example:
+
+    (setq foo 10)
+    10
+    (setq bar 20)
+    20
+    !?foo?
+    (setq foo 10)
+    10
+    (setq bar (1+ bar))
+    21
+    !+				; refer the same event as !?foo?.
+    (setq foo 10)
+    10
+
+3.3.10. !++ (original)
+
+  ! followed by doubled plus signs `++'  substitutes  the next event  to
+!+.  This may be convenient when repeating a sequence of history events.
+No previous history reference causes an error `Event not found'.
+
+  Example:
+
+    !
+    (sexp-history-list)
+      1 (setq foo '(1 2 3 4))
+      2 (setq foo (cdr foo))
+      3 (setq foo (car foo))
+      4 (setq foo (1+ foo))
+      5 (sexp-history-list)
+    nil
+    !1
+    (setq foo '(1 2 3 4))
+    (1 2 3 4)
+    !++				; refer the next event to !1.
+    (setq foo (cdr foo))
+    (2 3 4)
+    !++				; refer the next event.
+    (setq foo (car foo))
+    2
+    !++				; refer the next event.
+    (setq foo (1+ foo))
+    3
+
+3.3.11. !& (original)
+
+  ! followed by an and mark `&' substitutes the most recent substitution.
+This is identical  to !+  when used without additive forms,  but  may be
+pretty convenient with them.
+
+  Example:
+
+    (setq foo '(1 2 3 4 5))
+    (1 2 3 4 5)
+    (append '!$:$ '!&:r:*)	; this !& is identical to !$:$.
+    (append '(1 2 3 4 5) '(4 3 2 1))
+    (1 2 3 4 5 4 3 2 1)
+
+See the next section for additive forms in detail.
+
+3.4. The Additive Forms (The Position Designators / Modifiers)
+
+  These are nine forms  that arrenge or modify an event when put after a
+primitive form. Each of them begins with a colon `:', and can be applied
+recursively.  For example, assuming !A as any of primitive forms and :X,
+:Y or :Z  as any of additive forms,  !A:X:Y:Z  gives  `:Z applied to the
+result of  :Y applied to the result of  :X applied to an event specified
+by !A.'
+
+3.4.1 :^
+
+  `:' followed by a circumflex accent `^' gives the CAR of preceding no-
+tation. Does nothing if it gives an atom.
+
+  Example:
+
+    !
+    (sexp-history-list)
+      1 (setq foo '(1 2 3 4))
+      2 (sexp-history-list)
+    nil
+    (symbol-function '!?foo?:^)
+    (symbol-function 'setq)
+    #<subr setq>
+
+!!:^ is equivalent to !^.
+
+3.4.2. :*
+
+  `:' followed by an asterisk `*'  gives the CAR  of preceding notation.
+Does nothing if it gives an atom.
+
+  Example:
+
+    !
+    (sexp-history-list)
+      1 (erase-buffer)
+      2 (sexp-history-list)
+    nil
+    !erase:*
+    nil				; because the CDR of (erase-buffer) is
+    nil				; nil.
+
+!!:* is equivalent to !*.
+
+3.4.3. :$
+
+  `:'  followed  by  a dolloar mark  `$'  gives  the LAST  of  preceding
+notation. Does nothing if it gives an atom.
+
+  Example:
+
+    !
+    (sexp-history-list)
+      1 (setq foo '(1 2 3 4 5))
+      2 (sexp-history-list)
+    nil
+    (setq bar !setq:$)
+    (setq bar (quote (1 2 3 4 5)))
+    (1 2 3 4 5)
+
+!!:$ is equivalent to !$.
+
+3.4.4. :n, :n*
+
+  `:' followed by a number or a number followed by an asterisk `*' gives
+the NTH  or NTHCDR of preceding notation  respectively.  Does nothing if
+preceding notation gives an atom.
+
+  Example:
+
+    (* (+ 4 2) (- 10 2 5) (/ 9 3))
+    54
+    !!:2
+    (- 10 2 5)
+    3
+    (apply '- '!!:2*)		; note that :2* gives a list.
+    (apply '- '(2 5))
+    -3
+
+:0 is equivalent to :^. :1* is equivalent to :*.
+
+3.4.5. :n-, :-m, :n-m
+
+  `:' followed by two numbers separated by a hyphen `-'  gives a list of
+elements ranged  from n'th to m'th of preceding notation.  If  n or m is
+omitted  it is taken as 0 or the second last respectively.  Does nothing
+if preceding notation gives an atom. Omitting both n and m causes an er-
+ror `Invalid notation.'
+
+  Example:
+
+    (setq foo '(1 2 3 (10 20) 4 5))
+    (1 2 3 (10 20) 4 5)
+    '!?foo?:$:$:3-
+    '((10 20) 4)
+    ((10 20) 4)
+    '!?foo?:$:$:-2
+    '(1 2 3)
+    (1 2 3)
+    '!?foo?:$:$:2-4
+    '(3 (10 20) 4)
+    (3 (10 20) 4)
+
+Don't confuse :n-  with :n*  that includes the last.  Unlike the C shell,
+both n and m must be numbers, so can be neither `^' nor `$'.
+
+3.4.6. :i (original)
+
+  `:' followed by a small letter `i' gives all elements inside of outmost
+parentheses of preceding notation  in a row.  `outmost' doesn't mean they
+are matching `syntactically' but `lexically.' Does nothing if it contains
+no parentheses.
+
+  Example:
+
+    (* (+ 4 2) (- 10 2 5) (/ 9 3))
+    54
+    (+ !!:*:i)
+    (+ (+ 4 2) (- 10 2 5) (/ 9 3))
+    12
+    !!:2
+    (- 10 2 5)
+    3
+    (- !!:2*:i)
+    (- 2 5)
+    -3
+    !\\*:i:i			; `(' that opens (+ 4 2) and `)' that
+    + 4 2) (- 10 2 5) (/ 9 3	; closes (/ 9 3) match lexically!
+    3
+
+3.4.7. :r (original)
+
+  `:' followed by a small letter `r'  gives a reversed list of preceding
+notation. Does nothing if it gives an atom.
+
+  Example: See an example in 3.3.11.
+
+
+3.4.8. :(g)s/RE/str, :(g)s/RE/&str, :(G)S/RE/str, :(G)S/RE/&str
+
+  This form gives preceding notation with the match by RE being replaced
+with str.  :s or :S  means first only,  while  :gs or :GS  means global. 
+Lowercase means  match is up to  case-fold-search,  while upperase means
+up to (not case-fold-search).  If RE omitted  the most recent RE used in
+this form or ^RE^str^ and ^RE^&str^ special forms  (described in 3.2.2.)
+is taken.  If str is preceded by an `&'  str is inserted immediately af-
+ter the match instead of replacing with it.  Empty str means erasing the
+match. Empty str preceded by an `&'  makes no sense.  Neither RE nor str
+can contain a naked `/', so it must be escaped by `\' if necessary.
+
+  This form is produced by the following regular expression:
+
+    :[Gg]?[Ss]\/\(\([^\/]\|\(\\.\)\)+\)?\/&?\([^\/]\|\(\\.\)\)*\/?
+
+Any broken form  that doesn't fit the regular expression above causes an
+error  `Invalid notation';  no match  by  RE  causes  `Modifier failed';
+omitted RE that has no predecessor causes `No previous lhs.'
+
+  Example:
+
+    !
+    (sexp-history-list)
+      1 (setq foo '(1 2 3 4))
+      2 (setq foo (append foo '(5 6)))
+      3 (sexp-history-list)
+    nil
+    !2:s/foo/bar/:s/append/cons/	; replace `foo' with `bar',
+    (setq bar (cons foo '(5 6)))	; then `append' with `nconc'
+    ((1 2 3 4 5 6) 5 6)
+    !+:s/APPEND/nconc/			; assuming case-fold-search is t.
+    (setq foo (nconc foo '(5 6)))
+    (1 2 3 4 5 6 5 6)
+    !+:s//nconc/:gs/foo/bar/		; replace `append' with `nconc'
+    (setq bar (nconc bar '(5 6)))	; then all `foo's with `bar's.
+    ((1 2 3 4 5 6 5 6) 5 6 5 6)
+    (setq case-fold-search nil)
+    nil
+    !+:S/APPEND/nconc/			; replace `append' with `nconc'.
+    (1 2 3 4 5 6 5 6 5 6)
+
+3.4.8 :D (The Event Killer)
+
+  `:' followed by a capital letter `D' deletes the event referred by pre-
+ceding notation. This substitutes `t' if deletion done, `nil' otherwise.
+
+  Example:
+    !
+    (sexp-history-list)
+       1  (sexp-history-list)
+    nil
+    0
+    0
+    !
+    (sexp-history-list)
+       1  (sexp-history-list)
+       2  0
+       3  (sexp-history-list)
+    nil
+    !2:D
+    t
+    t
+    (sexp-history-list)
+       1  (sexp-history-list)
+       3  (sexp-history-list)
+    nil
+
+
+4. Restrictions and Bugs
+
+4.1. Naked `^@'s
+
+  Please don't use naked `^@'s within S-sexps, because it is used as de-
+limiter character when parsing them. Use escape sequence `\0' instead.
+
+  Example:
+
+    (setq null-char ^@)
+    (setq null-char )^@
+    --------
+    ERROR: Symbol's value as variable is void: null-char
+    --------
+    (setq null-char ?\0)
+    0
+    !!:1
+    null-char
+    0
+
+  With sexp-history-quoted-too non-nil,  avoid using naked `^@'s even in
+`"'  quoted strings.  `\0's are also  trouble making  when passed trough
+position designators because of interpolation of them (see the next sec-
+tion.)
+
+4.2. `\' Escape Sequences
+
+  Please note  that `\' escape sequences  such as  `\a',  `\b'  and `\r'
+are interpolated verbatim control characters such as `^G', `^H' and '^M'
+respectively,  when they are passed through position designators.  Only
+exceptions are `\n' and `"'.
+
+  Example:
+
+    (setq foo "\a\b\f\n\r\t\v\'\"")
+    "^G^H^L
+    ^M      ^K'\""
+    (setq bar !$)
+    (setq bar "^G^H^L\n^M   ^K'\"")
+    "^G^H^L
+    ^M      ^K'\""
+
+  Pay attention to `\0' with sexp-history-quoted-too non-nil.
+
+4.3. `\[' within Doc-string for eval-print-last-sexp-with-history
+
+  Since `\[' sequences within doc-strings invoke substitute-command-keys
+automatically,  *Help* for  eval-print-last-sexp-with-history  displayed
+by describe-function has funny description as follows:
+
+    !?foo\.*barM-x ^\\\"\+$?  means match for `foo.*bar[^\"]+$'.
+    !?\(consM-x \\\ \\t\+foo? means match for `(cons[\ \t]+foo'.
+
+Of course this is intended as:
+
+    !?foo\.*bar\[^\\\"\]+$?   means match for `foo.*bar[^\"]+$'.
+    !?\(cons\[\\\ \\t\]+foo?  means match for `(cons[\ \t]+foo'.
+
+Please tell me if you know how to embed verbatim `\[' on doc-string!
+
+
+5. Correspondence with the Author
+
+  Please e-mail  bug reports,  your comments or anything you noticed  to
+the following address:
+
+    saka@train.ncl.omron.co.jp

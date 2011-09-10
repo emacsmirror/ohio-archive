@@ -1,0 +1,153 @@
+file:  README.fix-my-terminal 		v1.0		Mar 24 1993
+See any gnu source file for the standard copyright statement which
+applies to this file.
+
+FIX MY TERMINAL!
+
+Is your terminal is beeping at you spontaneously saying:
+Failing I-search: ^Q
+Type C-g a couple of times and type M-x flow.  
+---
+Do you try to do an I-search with C-s or save a file with C-x C-s and
+your terminal just stares blankly back at you?  Type C-q and M-x flow.
+---
+Are you having trouble with the fact that your terminal has no ESC
+key?  Type C-[ x esc (that's the sure fire way to do M-x esc).
+---
+Are your arrow keys causing strange cursor movement and generating
+annoying charaters?  Make sure the environment variable TERM is set to
+something like vt100 or vt200.
+---
+Are your arrow keys OK, but the function keys are broken?  Make sure your
+terminal is in vt200+ mode and type M-x function-key-fix.  
+---
+Is there a better way?  Maybe.  See the documentation on the above
+functions (type C-h f <function name>), their automatic
+counterparts (auto-<function name>) and their associated variables
+(type C-h v <variable name>).  
+---
+Other problems?  Refer to the FAQ (frequently asked questions) file in
+/usr/local/emacs/etc/ or FTP to
+       /rtfm.mit.edu:pub/usenet/news.answers/GNU-Emacs-FAQ/ part*
+
+
+
+TO THE EMACS INSTALLER:
+
+"Fix-my-terminal" is a collection of emacs lisp functions which solve
+common problems associated with vtxxx terminals: turning on the arrow
+and function keys, getting around flow control, providing an escape
+key for vt200 terminals.  Not all of the fixes are perfect!  See the
+documentation in each file for detailed discussions.
+
+These functions were developed to fit into a standard emacs 18
+distribution.  
+
+
+INSTALLATION:
+
+To install fix-my-terminal, put the tar file to the your site's lisp
+directory (the lisp directory with the subdirectory term/) and type
+tar -xvf fix-my-terminal.tar.  This will dump the following files:
+
+README.fix-my-terminal
+arrow-key-fix.el
+flow-ctrl.el
+keyad.el
+keypad.elc
+term/vt100.el
+term/vt102.el
+....
+term/vtxxx.el
+vt200-esc-fix.el
+
+
+Move this file (README.fix-my-terminal) to a user visible place (e.g.
+/usr/local/emacs).  
+
+Decide whether or not you should turn the function keys on by default.
+If you don't use any dumb terminals (e.g. all your stuff is X
+hardware) and people at your site use ESC-[ as backwards paragraph,
+the answer is no (of course you probably wouldn't be reading this if
+you didn't have any terminals).  If you have lots of vt200 type
+terminals and beginning emacs users, the answer is probably yes (or
+you will always be answering the above questions!).
+
+Copy the following code into default.el _after_ any site
+term-setup-hook.  Un-comment the "if" if your site wants the
+function keys by default.
+
+(require 'flow-ctrl)
+(auto-flow-control-fix)
+(require 'vt200-esc-fix)
+(auto-escape-key-fix)
+(require 'function-key-fix)
+;;(if (boundp 'no-function-keys)
+;;	(auto-function-key-fix))
+;;;; ESC-[ as backward-paragraph is lost unless you put the following
+;;;; line in your .emacs file:
+;;;; 	(setq no-function-keys t)
+;;;; !!! No term-setup-hook below this point !!!
+
+If you know what sorts of terminals your site uses and their
+associated problems, you might want to set the variables
+terminal-uses-flow-control-chars and terminal-needs-escape-key in your
+default.el.  Makes sure you don't overwrite the user's list, though:
+
+(require 'flow-ctrl)
+(if (not terminal-uses-flow-control-chars)
+	;; Don't overwrite user's list.
+	(setq terminal-uses-flow-control-chars 
+	   '("vt52" "vt100" "vt200")))
+(auto-flow-control-fix)
+
+
+
+Send bug reports and suggestions for improvement to Jeff Morgenthaler
+(jpmorgen@wisp4.physics.wisc.edu).
+
+
+ LCD Archive Entry:
+ fix-my-terminal|Jeff Morgenthaler|jpmorgen@wisp4.physics.wisc.edu|
+ Fixes:  flow control, arrow keys, escape key, and vt200 function keys|
+ 93-03-23|1.0|~/packages/fix-my-terminal.tar.Z
+
+ Archived at archive.cis.ohio-state.edu
+
+
+PS.  Here is a hack that will get emacs running as it's own X client
+to use this vtxxx stuff.  You just have to have the following code in
+your default.el file (before calling auto-enable-arrow-keys) and use
+xmodmap as described.  I realize that this might conflict with SUN
+specific stuff if you use both SUN and ANSI 105 key (vt200) keyboards,
+or if you have non vtxxx terminals.  You will have to hack some logic
+suitable for your particular situation around the load statement if
+this is the case.
+
+(load "term/vtxxx" nil t)
+;; the term/ is in case TERM is not set (in which case term-prefix is
+;; not defined) 
+
+(setq user-term-setup-hook term-setup-hook)                             
+(setq term-setup-hook                                                   
+      (function                                                         
+       (lambda ()                                                       
+         ;; A horrible hack to get remove key on VT200 keyboards        
+         ;; working in emacs' own xterms.  You must feed the following  
+         ;; code to xmodmap to get this to work:                        
+                                                                        
+         ;; keycode 140 = F17                                           
+         ;; ! Fix dead "Remove" key for emacs by mapping it to F17      
+         ;; ! Code in default.el maps F17 to 'kill-region.              
+         ;; ! Note that remove key is thus messed up for other software.
+         ;; ! Hope that emacs-19 has a better fix.                      
+                                                                        
+         (and (fboundp 'enable-arrow-keys)                              
+              (progn                                                    
+                (enable-arrow-keys)                                     
+                (define-key CSI-map "31~" 'kill-region))   ; F17        
+              )                                                         
+         (and user-term-setup-hook                                      
+              (funcall user-term-setup-hook))                           
+         )                                                              
+       ))

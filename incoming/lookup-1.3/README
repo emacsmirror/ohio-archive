@@ -1,0 +1,129 @@
+
+		      Lookup - a Search Interface
+
+		   http://openlab.ring.gr.jp/lookup/
+			  lookup-ja@ring.gr.jp
+
+
+Lookup は Emacs エディタで利用できる辞書検索インターフェースです。市販の
+CD-ROM 辞書やネットワークの辞書サーバを始め、様々な情報源から簡単な操作
+と設定で辞書検索が行なえます。
+
+Contents of This Distribution ==========================================
+
+- README        このファイル
+- COPYING       Lookup を再配布するための条件、及び
+                Lookup が無保証であることの表明
+- NEWS          これまでの主な変更点
+
+次のサブディレクトリが含まれています。
+
+`lisp'          elisp プログラムファイル
+`texi'          Texinfo ドキュメント
+
+How To Install =========================================================
+
+Lookup のインストール方法には二種類あります。一つは専用のインストーラを
+用いる方法で、もう一つは make を用いる方法です。前者の方がお手軽ですが、
+後者の方がより完全なインストールを行なえます。
+
+専用インストーラを用いる場合
+----------------------------
+
+専用インストーラは Emacs の中から直接実行します。Windows などで make を
+使えない場合や、elisp プログラムのインストールに不慣れな人に向いています。
+
+まず最初に Emacs を起動し、Lookup 配布物のトップディレクトリ(このファイ
+ルのあるディレクトリ)を Dired でオープンして下さい。install.el というファ
+イルにカーソルを合わせ、`L' と入力すれば対話的にインストールが始まります。
+
+elisp ファイル、及び info ファイルのインストールディレクトリを順に聞いて
+くるので、お好みのディレクトリを入力して下さい。その後コンパイルが始まり、
+無事インストールに成功すればその旨を記したバッファが表示されます。指示に
+従って設定を行なって下さい。
+
+コマンドラインから実行する場合
+------------------------------
+
+専用インストーラはコマンドラインから直接実行することも出来ます。次のよう
+にして下さい。
+
+  % emacs -batch -l install.el ~/emacs/lisp/lookup ~/emacs/info
+
+引数のディレクトリを省略した場合、デフォルトで上記のディレクトリにインス
+トールされます。
+
+make を用いる場合
+-----------------
+
+configure プログラムと make を用いることでもインストール出来ます。例えば
+次のようにして下さい。
+
+  % ./configure --with-emacs=emacs \
+                --with-lispdir=/your/home/emacs/lisp/lookup \
+                --infodir=/your/home/emacs/info
+  % make install
+
+configure のオプションを省略した場合、Emacs とその site-lisp ディレクト
+リを適当に判断して必要なファイルをコピーします。
+
+Search Agents ==========================================================
+
+Lookup で辞書を利用するためには、辞書と交信するための検索エージェントが
+必要となります。このバージョンの Lookup では、次のようなエージェントが
+利用可能です。
+
+  ndic     - フリー辞書からの直接検索
+  ndeb     - EPWING などに準拠した CD-ROM 書籍の個人利用
+  ndtp     - NDTP サーバを用いた、ネットワーク辞書の利用
+  ndict    - DICT サーバを用いた、ネットワーク辞書の利用
+
+`ndic' は、主にフリーに配布されている辞書からダイレクトに検索を行なうた
+めのエージェントです。"the Jargon File" や FOLDOC などが利用できます。
+
+`ndeb' は、CD-ROM 書籍の個人利用に向いたエージェントです。eblook という
+外部コマンドを用いることで、面倒な設定の手間なしに手元の CD-ROM をアクセ
+ス出来ます。
+
+`ndtp' は、主にローカル・ネットワークで共有された電子辞書を利用するため
+のエージェントです。これは NDTP(Network Dictionary Transport Protocol) 
+のバージョン 2 に対応したクライアントで、dserver や NDTPD と共に利用でき
+ます。
+
+`ndict' は、主にインターネットに公開された辞書サーバにアクセスするための
+エージェントです。これは DICT プロトコル(RFC 2229) に対応したクライアン
+トで、dict.org などの DICT サーバにアクセス出来ます。
+
+Lookup ユーザーズガイド(texi/lookup-guide.info)に利用出来るエージェント
+の一覧と大まかな設定方法についての説明があります。
+
+How To Use =============================================================
+
+Lookup を利用するには、次のような設定を ~/.emacs に加えて下さい。
+
+  (autoload 'lookup "lookup" nil t)
+  (autoload 'lookup-region "lookup" nil t)
+  (autoload 'lookup-pattern "lookup" nil t)
+
+  (setq lookup-search-agents '((ndtp "dserver") (ndspell)))
+
+M-x lookup で Lookup を起動し、利用できる辞書を一覧します。M-x
+lookup-region で、リージョンの文字列を検索します。M-x lookup-pattern で、
+カーソル位置の単語をデフォルトに、ミニバッファから検索語を入力できます。
+
+変数 `lookup-search-agents' により、利用する検索エージェントを設定します。
+設定についてより詳しくは、附属のマニュアルを参照して下さい。
+
+How To Get =============================================================
+
+Lookup は Ring Server プロジェクトによる OpenLab で開発されています。
+
+  <http://openlab.ring.gr.jp/lookup/>
+
+Lookup に関する情報交換は、専用のメーリングリストにて行われています。
+参加を希望する方は、`lookup-ja-request@ring.gr.jp' 宛てに、本文に
+subscribe と書いたメールを送って下さい。
+
+Lookup は、lookup-ja@ring.gr.jp メイリングリストの有志 
+(lookup-ja@ring.gr.jp)が管理しています。Lookup に関する問い合わせは
+こちらまでお願いします。

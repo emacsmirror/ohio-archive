@@ -1,0 +1,93 @@
+
+Emacs-server and send-emacs server-client package
+-------------------------------------------------
+
+The "emacs-server" program is started by emacs as a sub process, it
+will listen for a connection on a socket port (inet or unix) and print
+the incoming 'things' on stdout; emacs will receive the message and
+process the incoming message.
+	
+With the program "se" (send-emacs) you can - e.g. from a shell - send
+files and emacs lisp code to emacs.
+
+So you can say:
+
+mymachine> pwd
+/etc
+mymachine> se hosts
+mymachine> 
+
+- and emacs will make a (find-file "/etc/hosts")
+
+or:
+
+mymachine> pwd
+/etc
+mymachine> se -e '(message "Loading file hosts")' -a '(sleep-for 2)(message "OK")' hosts
+mymachine>
+
+- emacs will print the message "Loading file hosts" - reading the
+file, sleep in 2 seconds and then print the message "OK".
+
+The emacs-server.el is a piece of emacs-list code to handle start
+(restart) of the emacs-server program and to take care of the
+evaluations of the emacs lisp expressions.
+
+The programs has been compiled and used on SunOS4.1.1 and the AIX 3.1
+and 3.2
+
+
+How to install
+--------------
+
+Simply type 'make' in the directory where you have unpacked the source
+code.
+
+You will get two programs: 'emacs-server' and 'se' copy them to a
+place in your path (e.g. /usr/bin or /usr/local/bin).
+
+Emacs-byte-compile the emacs-server.el file and place the two files
+emacs-server.el and emacs-server.elc in your emacs-lisp directory.
+
+Insert the following lines in your .emacs file:
+
+(load-library "emacs-server")
+(emacs-server)
+
+- restart emacs .... and you are 'up and running' (hopefully!)
+
+
+How to run with UNIX socket
+---------------------------
+
+If you would like to run the programs on unix socket instead of inet
+socket you will have the following lines in your .emacs file:
+
+(load-library "emacs-server")
+(emacs-server "-fp/tmp/se-unix")
+
+- and the 'se' program should be called like
+
+mymachine> se -fp/tmp/se-unix <files>
+
+(you can make an alias instead of writhing all that)
+
+This way 'emacs-server' and 'se' will communicate on a unix domain
+socket in file /tmp/se-unix 
+
+
+Please enjoy!
+
+/Claus
+
+------------------------------------------------------------------------------
+   *******  *                                             CCI-europe
+  *  *****  *              Claus Bo Nielsen               Oster Parkvej 9
+  * *       *              -----------------              DK-8270 Hojbjerg
+  *  *****  *              Basic Development              Aarhus - Denmark
+   **********                                             Phone: +45 86295588
+  e u r o p e              Email: cbn@cci.dk              Fax: +45 86299430
+------------------------------------------------------------------------------
+
+
+

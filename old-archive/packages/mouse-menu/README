@@ -1,0 +1,43 @@
+
+Hello, this is my mouse and menu package for GNU Emacs. 
+
+It implements global and local mouse-maps for X and SunView, along
+with per-buffer menus. Additionally, for those of you without
+bitmapped screens, the menu facilities are available in "terminal"
+form for use on the wide range of VDUs Emacs currently runs on. Sadly,
+I cannot post the code that implements virtual pointing devices for
+such systems :-).
+
+The menu stuff gives the following:
+
+  + menu-based help facilities 
+  + optional keybinding reminders for menu items
+  + a large set of default menus for
+    - rmail and mail
+    - dired
+    - file and buffer manipulation
+    - Emacs Lisp, other Lisps and PROLOG
+    - text, TeX, LaTeX and BibTeX
+    - shells and inferior processes
+
+Hopefully the instructions and notes in INSTALL should cover any
+queries, if not please UTSL first (use the source, Luke).
+
+This directory should contain the following files:
+
+   BibTeX-menus.el         dired-sun.el            sun-plus.el
+   BibTeX-mode.el          dired-x.el              term-menus.el
+   INSTALL                 ebuff-menus.el          text-menus.el
+   Prolog-menus.el         elisp-menus.el          typeout.el
+   Prolog.el               gensym.el               utilities.el
+   README                  hci-menus.el            x-cl-fns.el
+   TeX-menus.el            infcl-menus.el          x-fns.el
+   TeX-mode.el             lisp-fns.el             x-menus.el
+   cl-menus.el             lisp-menus.el           x-mouse.el
+   def-menus.el            mail-menus.el           x-plus.el
+   default.el              rmail-menus.el          x-rmailsum-fns.el
+   dired-dir.el            shell-menus.el          x11fns-patch
+   dired-menus.el          sun-menus.el
+
+	Good Luck,
+	     		Russell Ritchie, Fri Jun  1 14:09:12 1990

@@ -1,0 +1,73 @@
+#!/bin/sh
+#
+# Personal mail delivery for Rich Kaul.  This version can use the GNUS
+# news reader to read mail as if it were news, although that is not
+# required.   I also have it set up so that only a few people can send
+# me mail that will alert me to its arrival by depositing itself in
+# /usr/spool/mail/kaul. 
+ 
+umask 077
+PATH=/usr/local/bin:/usr/ucb:/bin:/usr/bin
+mail_dir=/usr/1/kaul/mail
+news_dir=/usr/1/kaul/Memos/personal
+mailbox=/usr/spool/mail/kaul
+tmp=/usr/1/kaul/mail/kaul-$$
+
+deliver()
+{
+  keyf=$*.KEY
+  retry=0
+  while [ $retry -lt 20 -a -f $keyf ]
+  do
+     echo "Retry number $retry"
+     sleep 10
+     retry=`expr $retry + 1`
+  done
+
+  # If we fall out to here without success, we failed 20 times to
+  # get the key.  Result: Who cares?  We'll go forward anyway,
+  # and re-assert the key when we're done.
+  touch $keyf
+  if [ -d $* ]; then
+    seq=`cat $*/.last`
+    seq=`expr $seq + 1`
+    echo $seq > $*/.last
+    sed -e '1s/^From /UNIX-From: /' < $tmp > $*/$seq
+  else
+    if [ -s $* ]; then
+      echo '' >> $*
+    fi
+    sed -e '1s/^From: /From /' < $tmp >> $*
+  fi
+  rm -f $keyf
+}
+
+
+# Save the mail momentarily so we can work on it.
+cat - > $tmp
+
+# Deduce headers appropriately.
+from=`head -1 $tmp`
+
+from=`echo "$from[2]" | sed -e 's/@.*//' -e 's/\(.*\)!\(.*\)/\2/'`
+case $from in
+  *[Ff][Ii][Rr][Ee][Aa][Rr][Mm][Ss]*)
+    deliver $news_dir/firearms
+  ;;
+  *[Hh][Vv][Rr]*)
+    deliver $news_dir/xview
+  ;;
+  *[Ff][Rr][Ee][Ee][Mm][Aa][Cc][Ss]*)
+    deliver $news_dir/freemacs
+  ;;
+  bibyk | ken | monty | joe | wilson | orlando | gratz | zaka )
+    deliver $mailbox
+  ;;
+  *)
+    deliver $news_dir
+  ;;
+esac
+
+# Clean up and exit
+rm -f $tmp
+exit 0

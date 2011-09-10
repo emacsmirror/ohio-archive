@@ -1,0 +1,2352 @@
+Thu May  7 11:49:40 1998  Per Persson  <pp@sno.pp.se>
+
+	* Version 2.112.
+
+	* zenirc-shop.el, removed.
+
+	* zenirc-fill.el (zenirc-fill-outgoing): Only fill up to end of
+	current line instead of up to end of buffer.
+
+	* zenirc.el (zenirc-ctcp-query-ACTION): Add check for
+	zenirc-always-show-channelname.
+
+Wed May  6 15:56:44 1998  Ray Jones  <rjones@pobox.com>
+
+	* zenirc-prime.el, zenirc-eval.el: New files.
+
+	* zenirc.el (zenirc-parse-output): Change to call the hooks in
+	zenirc-signal-hook with parsedmsg instead of the raw line.
+	(zenirc-signal-p): Simplified to no longer check against
+	zenirc-ignore-list since that checking is already handled in
+	zenirc-parse-output now.
+
+	* zenirc-away.el (zenirc-server-301-signal-p): New function.
+	(zenirc-signal-hook): Bind the new function.
+
+	* zenirc.el (zenirc-display-recipient-confirmation),
+	(zenirc-command-privmsg), (zenirc-send-line),
+	(zenirc-command-notice), (zenirc-command-me),
+	(zenirc-command-action): Simplified send-confirmation code.
+
+	* zenirc-dcc.el (zenirc-dcc-catalog-entry): Don't default to
+	english. 
+
+	* zenirc.el (zenirc-handle-ctcp), (zenirc-unbalanced-ctcp): Don't
+ 	default to english.
+
+	* zenirc.el (zenirc-lang-retrieve-catalog-entry), 
+	(zenirc-lang-retrieve-catalog-entry-1): -1 is the old
+	function. The new function automatically defaults to english if an
+	entry doesn't exist in the current catalouge.
+
+	* zenirc.el (zenirc-message): Add newline if message is sent to a
+ 	buffer, but not if sent via message.
+	(zenirc-lang-define-english-catalog): Removed all trailing
+ 	newlines.
+
+	* zenirc-fill.el: Added internal variable,
+	zenirc-window-last-width.
+	(zenirc-fill-message): Use the new variable. Pass the new variable
+	to zenirc-fill-region-function.
+	(zenirc-fill-region), (zenirc-wrap-region),
+	(zenirc-wrap-region-dynamic), (zenirc-wrap-region-static): New
+	argument win-width to grok the new variable coming from
+	zenirc-fill-message. 
+
+Wed May  6 16:10:30 1998  Per Persson  <pp@sno.pp.se>
+
+	* zenirc-example.el (zenirc-startup-channels-alist): New alist.
+	(zenirc-startup-join): Use it.
+
+	* zenirc-trigger.el: A gentle touch.
+
+	* zenirc-swedish.el, zenirc-latin.el, zenirc-klingon.el,
+ 	zenirc-french.el, zenirc-finnish.el, zenirc-bork.el,
+ 	zenirc-trigger.el, zenirc-notify.el, zenirc-netsplit.el,
+ 	zenirc-ignore.el, zenirc-doto.el, zenirc-complete.el,
+ 	zenirc-color.el: Removed all trailing newlines.
+
+	* zenirc.el: Added Ray Jones as a major contributor.
+	(zenirc-parse-output): Don't signal if the ignore function has
+	ignored the string.
+
+Tue May  5 10:35:25 1998  Per Persson  <pp@sno.pp.se>
+
+	* zenirc-signal.el (zenirc-signal-privmsg): Fixed a typo.
+
+Fri Feb 20 14:17:31 1998  Per Persson  <pp@sno.pp.se>
+
+	* zenirc-history.el (zenirc-mode-map): Changed mappings to M-p and
+ 	M-n according to ususal standard for Emacs.
+
+Wed Jan  7 10:33:53 1998  Per Persson  <pp@sno.pp.se>
+
+	* zenirc-fill.el (zenirc-fill-outgoing): Changed from (point-max)
+ 	to 'end' for plain text lines.
+
+Wed Jan  7 08:58:56 1998  Per Persson  <pp@sno.pp.se>
+
+	* zenirc-example.el: Changed to (require 'zenirc).
+
+Fri Jan  2 05:38:00 1998  Per Persson  <pp@sno.pp.se>
+
+	* Version 2.111
+
+	* zenirc-color.el (zenirc-color-mode): If no prefix arg, toggle
+ 	current state of the mode.
+
+	* zenirc-fill.el (zenirc-fill-message-categories): Fixed typo.
+	(zenirc-fill-prefix): Back to " | ".
+	(zenirc-fill-outgoing-mode): If no prefix arg, toggle current
+ 	state of the mode.
+	(zenirc-fill-outgoing): Fixed a bug that didn't exist last time I
+ 	looked.
+	
+	* zenirc-dcc.el (zenirc-dcc-handle-ctcp-chat): Changed to work
+ 	with the change mentioned below.
+	(zenirc-dcc-handle-ctcp-send): Me too!
+
+	* zenirc.el (zenirc-names-equal-p): Check whether n1 contains % or
+ 	@ in it if optional argument is t. This is because there's more
+ 	than one way to address a user in a PRIVMSG/NOTICE; namely:
+		nickname
+		nickname@servername
+		username%hostname
+	% and @ are forbidden characters in a nickname as of RFC1459,
+ 	hopefully they will stay that way.
+	(zenirc-format-privmsg-or-notice): Changed to work with the above.
+
+	* zenirc-trigger.el: Moved the code to check for % and & in
+ 	"nickname" to zenirc-names-equal-p instead.
+
+Fri Jan  2 04:28:32 1998  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+	* zenirc.el (zenirc-parse-words): Use zenirc-match-string instead
+ 	of explicit call to substring.
+	(zenirc-parse-firstword): Here also.
+	(zenirc-server-002): Here also.
+	(zenirc-server-251): Here also.
+	(zenirc-server-255): Here also.
+
+	* zenirc.el (zenirc-login): Send USER string before NICK.
+
+	* zenirc-fill.el (zenirc-fill-mode): If no prefix arg, toggle
+	current state of the mode.
+
+        * zenirc.el (zenirc): Allow process status of either `open' or
+ 	`run' to indicate a live process.
+
+Thu Dec 25 02:31:15 1997  Per Persson  <pp@sno.pp.se>
+
+	* zenirc.el, and so forth: Changed Eric Prestemons address to
+ 	ecp@io.com instead of whatever it said before.
+
+Mon Oct 13 05:44:36 1997  Per Persson  <pp@sno.pp.se>
+
+	* zenirc.el (zenirc-source-list): s/gnu/splode/1
+
+Thu Sep 25 14:13:04 1997  Per Persson  <pp@sno.pp.se>
+
+	* zenirc.el (zenirc-bug-address): s/gnu/splode/1
+
+Mon Jun 23 05:59:53 1997  Faried Nawaz  <fn@Hungry.COM>
+
+	* zenirc-trigger.el (zenirc-trigger-register): Fixed typo in
+	docstring. 
+
+Tue Jun 10 19:47:13 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc.el (zenirc-format-privmsg-or-notice): Use
+	(zenirc-channel-p) instead of other obscure checking.
+	Also use (zenirc-names-equal-p) instead of (string-match). 
+
+Sun May  4 18:50:11 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-trigger.el (zenirc-trigger-parse-sender): Fixed a bug
+	which was triggered when a PRIVMSG used the widely unknown
+	"user@server" format.
+
+Wed Apr 23 18:40:40 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* Version 2.110
+
+	* zenirc.el (zenirc-toggle-channel): Didn't work properly if user
+ 	mixed cases when joining channels.
+	(zenirc-server-JOIN), (zenirc-server-PART): Use
+	(zenirc-downcase-name) instead of (downcase).
+
+Sat Mar 29 02:13:03 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-notify.el (zenirc-server-303-notify): Didn't show that a
+	certain nick stopped wasting time if the ISON query returned an
+	empty string.
+
+Wed Mar 26 10:57:43 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-example.el: More information about zenirc-format.el.
+
+Mon Mar 17 10:14:01 1997  Faried Nawaz  <fn@hungry.com>
+
+	* Fixed numerous typos.
+
+Fri Mar 14 17:32:09 1997  Noah Friedman  <friedman@prep.ai.mit.edu>
+	
+	* zenirc-yow-filter.el: New file.
+
+Fri Mar 14 17:32:09 1997  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+	* zenirc-popup.el (zenirc-popup): Fix args to walk-windows.
+
+Wed Mar 12 10:06:31 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-example.el: Comments for the new variables. Made sure 
+	that all variables defaults to the same thing as zenirc.el does.
+	New and fancier REGEXP for zenirc-signal-list.
+
+	* zenirc.el (zenirc-whowas-on-401): New variable.
+	(zenirc-server-401): Use it.
+	(zenirc-delete-preceding-whitespaces): New Variable.
+	(zenirc-send-line): Use it.
+
+	* Updated "copyleft" statements in various files.
+
+Tue Mar 11 17:37:05 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-fill.el (zenirc-fill-outgoing): Changed from triple
+	(string= to one (string-match. Also fixed two bugs where internal
+ 	variable end wasn't really the real end. Added comments. Made it
+	work together with (zenirc-fill-region). Learned how
+	(narrow-to-region) actually works and fixed another bug.
+
+Mon Mar 10 02:14:23 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-example.el: Updated zenirc-fill.el comments.
+
+	* zenirc-fill.el (zenirc-wrap-region): Back to what it looked like
+ 	in 2.100.
+	(zenirc-wrap-region-dynamic), (zenirc-wrap-region-static),
+	(zenirc-fill-outgoing-mode), (zenirc-fill-outgoing): New
+ 	functions.
+	(zenirc-fill-outgoing-mode), (zenirc-fill-outgoing-prefix): New
+ 	variables.
+	(zenirc-fill-prefix), (zenirc-fill-static): New defaults.
+
+Sun Mar  9 20:38:49 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* Version 2.109
+
+	* zenirc-fill.el (zenirc-fill-message-categories): Update it with
+	the two new format types.
+
+	* zenirc.el (zenirc-format-privmsg-or-notice): Add new format type
+	called privmsg_nochannel/notice_nochannel.
+	zenirc-always-show-channelname: New variable.
+
+	* zenirc-example.el: New entries describing zenirc-trigger.el and
+	zenirc-always-show-channelname.
+
+Mon Mar  3 03:09:38 1997  Noah Friedman  <friedman@prep.ai.mit.edu>
+	
+	* zenirc-yow.el, zenirc-oink.el, zenirc-8ball.el,
+	zenirc-fortran.el, zenirc-meditate.el: Total rewrite, 
+	using zenirc-trigger.el.
+
+	* zenirc-trigger.el, zenirc-shop.el: New file.
+
+Mon Feb 24 11:33:21 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-notify.el (zenirc-server-302-notify): Don't show userhost
+	reply if it doesn't contain any information.
+
+Mon Feb  3 17:02:42 1997  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc.el (zenirc-command-part): New command to cope with the
+	new optional comment as of ircd 2.9.
+
+Wed Jan 29 18:44:10 1997  Ray Jones <rjones@pobox.com>
+
+	* zenirc-example.el: Update (autoload comment to something which
+ 	lets you start ZenIRC interactively.
+
+Fri Dec 20 02:19:06 1996  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-random-nick.el (zenirc-change-nick-mode):
+ 	s/zenirc-change-nick/zenirc-change-nick-mode/g
+
+	* zenirc-yow.el: s/zenirc-send-yow/zenirc-yow-mode/g
+
+	* zenirc-fill.el (zenirc-fill-mode): Changed default to nil.
+
+	* zenirc-color.el (zenirc-color-mode): Changed default to nil.
+
+Sun Dec 15 07:46:00 1996  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* Version 2.108
+
+	* zenirc.el (zenirc-server-JOIN): Use zenirc-update-modeline.
+
+	* zenirc-8ball.el (zenirc-8ball-mode): New function and
+	buffer-local variable.
+	(zenirc-server-PRIVMSG-8ball): Do nothing unless zenirc-8ball-mode
+	is set.
+	(zenirc-send-8ball): Removed.
+		
+Wed Dec  4 09:12:28 1996  Greg A. Woods  <woods@most.weird.com>
+
+	* zenirc-doto.el: requires zenirc-command-queue.
+
+	* zenirc-iwantop.el (zenirc-ctcp-query-IWANTOP): be gentle if an
+	unknown channel is requested.
+
+	* zenirc-notify.el: add missing newline at end of this file.
+
+	* zenirc.el (zenirc-bug): use mail-header-separator.
+	(zenirc-bug): reformat the message inserted in the body.
+
+Wed Oct  9 13:41:49 1996  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-8ball.el (zenirc-random-8ball-strings): Linguistic attack.
+
+Tue Oct  8 22:12:48 1996  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-8ball.el: New file.
+
+	* zenirc-yow.el (zenirc-send-yow): New function.
+	(zenirc-server-PRIVMSG-yow): Use it.
+
+Fri Aug 23 19:49:48 1996  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc.el (zenirc-establish-server-connection): Need more
+	defaults to work 100% of the time.
+
+Wed Aug 21 13:16:03 1996  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc.el (zenirc-source-list): Added 'ftp.alfea.it'.
+
+Tue Aug 20 17:34:28 1996  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* Version 2.107
+
+Sat Aug 10 20:41:02 1996  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc-color.el (zenirc-command-color): You obviously don't use
+	the same commands to make sure a color is a color under both Emacs
+ 	and XEmacs.	
+
+Wed Aug  7 03:14:41 1996  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+	* zenirc.el (zenirc-establish-server-connection): Do not bind
+	inhibit-quit to t.  Instead, use a condition handler for `quit'.
+	Fix args to `string-match' in `error' condition handler; regexp
+	should be first.
+        Do not call `string-match' with empty argument if IRCSERVER
+        environment variable is not defined.
+
+Fri Aug  2 17:29:55 1996  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* zenirc.el (zenirc-signal-p): Do not signal if message is matched
+	in zenirc-ignore-list.
+	(zenirc-source-list): Removed 'pfawww.pp.se' from source list.
+
+Mon Jul 29 03:58:02 1996  Per Persson  <pp@gnu.ai.mit.edu>
+
+	* GNU'ified <pp@solace.mh.se> and <pp@pfawww.pp.se> to
+	<pp@gnu.ai.mit.edu>.
+
+Wed Jul 24 03:06:59 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-server-PART): Parse new comment part of PART,
+	this is a new thing in ircd 2.9.1.
+	(zenirc-lang-define-english-catalog): Updated all language scripts
+	as well.
+
+Sun Jul 21 14:32:49 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el: Added a few comments.
+
+Tue Jul  2 10:18:44 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-send-line): Changed input-start to
+	(copy-marker zenirc-process-mark).
+
+	* Version 2.106
+
+	* zenirc-color.el: Made it a part of the distribution.
+
+Mon Jul  1 11:26:43 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* Version 2.105
+
+	* zenirc.el (zenirc-ctcp-query-SOURCE): Didn't follow the CTCP
+	spec. 
+
+Tue Jun 18 01:08:07 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-parse-output): Moved a signal based check
+	to (zenirc-signal) where it belongs.
+
+Mon Jun 17 20:56:08 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-parse-output): Updated to recognize new 
+	zenirc-beep-on-signal setting.
+	(zenirc-beep-on-signal): New setting, 'always.
+
+	* zenirc-example.el (zenirc-signal-list): Added an example.
+	(zenirc-beep-on-signal): Updated.
+
+Tue Jun 11 13:28:18 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-complete.el (zenirc-complete-table): Made it buffer-local.
+
+Thu May 30 01:08:10 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-server-JOIN
+	zenirc-lang-define-english-catalog): New 'join_mode which parses
+	new 2.9 #channel^Gmode syntax.
+
+	* zenirc-complete.el (zenirc-complete-cache-JOIN): Make it parse
+	new 2.9 #channel^Gmode syntax.
+
+Wed May 29 09:42:17 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-color.el: New file.
+	(zenirc-color-message): Colorized one char to many.
+	(zenirc-color-install-message-catalogs zenirc-command-color): Made
+	sure it doesn't try to add nonexistant colors.
+	(zenirc-color-message-categories zenirc-color-alist
+	zenirc-color-nonstandard-message-categories-p): Buffer-local.
+
+	* zenirc.el (zenirc-server-215): Now shows "i" or "I" depending on
+	the actual output from the server. Updated all language scripts.
+
+	* zenirc-notify.el (zenirc-command-notify): Use
+	zenirc-delete-case-insensitively to update the notify-list.
+	(zenirc-command-notify): "/notify nick1 nick2" now works.
+
+	* zenirc.el (zenirc-delete-case-insensitive): New
+	function. Deletes elt from list case-insensitively.
+
+	* Version 2.104
+
+Wed May 15 15:32:23 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-random-nick.el (zenirc-change-nick-interval
+ 	zenirc-last-nick-change zenirc-change-nick
+ 	zenirc-change-random-nick): Functions and variables to
+ 	automatically change your nickname every
+ 	zenirc-change-nick-interval amount of time. Surely, this must be
+	one of the more annoying things I've ever written.
+
+	* zenirc-ignore.el (zenirc-process-ignore
+ 	zenirc-ignore-last-sender): When adding ignorees, add them with
+	regexp quoting.
+	(zenirc-remove-from-ignore-list): When deleting ignorees, check
+	both partial string match (if string doesn't contain special 
+	regexp chars) and exact string match.
+	(zenirc-ignore-determine-prefix): Didn't determine prefixes like
+	it should, fixed.
+
+Sun May 12 02:12:05 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-notify.el (zenirc-command-notify-hook): Updated 
+	documentary string.
+
+	* zenirc.el (zenirc-channel-list): Make sure all cells are
+	downcase.
+
+Fri May 10 16:42:25 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-establish-server-connection): Didn't default
+	to what it said it would default to.
+
+Thu May  9 11:01:45 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* Version 2.103
+
+	* zenirc.el (zenirc-toggle-channel): Uses zenirc-channel-list to
+	toggle between channels. (original code by <vuori@sci.fi>)
+	(zenirc-mode-map): Bound to C-cC-t.
+	(zenirc-update-modeline): New function.
+	(zenirc-toggle-channel zenirc-command-query): Use it.
+	
+Wed May  8 09:48:27 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-select): Removed unused code.
+	(zenirc-channel-list): New list of currently joined channels.
+	(zenirc-server-JOIN zenirc-server-PART): Use it.
+
+Mon May  6 10:10:13 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-server-251 zenirc-server-255): Added
+ 	string-matchs to conform with new 2.9 look.
+	(zenirc-select): Bugged out when connecting to server in 
+	zenirc-server-alist without a defined port.
+	When reusing old server, move it to the top of the alist.
+	Don't connect to anything else then the given server.
+
+Sun May  5 20:27:08 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-lang-define-english-catalog): Missing string
+	for numeric 201, added.
+	
+	* Version 2.102
+
+	* zenirc-example.el (zenirc-ctcp-query-BOZOS): 
+	zenirc-display-string is now zenirc-message, changed.
+
+	* zenirc-latin.el (zenirc-lang-define-catalog): Fixed typo.
+
+Sat May  4 16:53:36 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-ignore.el (zenirc-ignore-install-message-catalogs):
+	New entry, ignore-new-entry. Changed ";;" to "[info]".
+	(zenirc-process-ignore): Use ignore-new-entry.
+	(zenirc-remove-from-ignore-list): Show list of ignorees after
+	running internal matching.
+	(zenirc-ignore-last-sender): New function.	
+
+	* zenirc.el (zenirc-privmsg-last-seen): New variable.
+	(zenirc-format-privmsg-or-notice): Use it.
+
+	* zenirc-example.el (zenirc-user-format): Unsupported, removed.
+	(zenirc-fill): Updated to show example for 'static filling.
+
+Fri May  3 19:24:52 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-notify.el (zenirc-command-notify): Made it a bit smarter
+ 	when handling upper and lower case strings.
+	Disgard whitespace when matching strings.
+	Added comments.
+
+	* zenirc.el (zenirc-select): When not chosing the default, use
+ 	supplied values for port and nick.
+	If a new server is given, add it to global zenirc-server-alist.
+	Added comments.
+	(zenirc-format-privmsg-or-notice): Didn't see PRIVMSG/NOTICE to
+	user@server as a message to one self.
+
+Wed May  1 04:55:16 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-source-list): Added eterna.com.au to the list
+	of FTP sites. All hail BSF!
+	
+Tue Apr 30 14:08:36 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-bug): Added certain space in document to
+ 	conform with other Emacs thingies.
+
+	* zenirc-example.el: Corrected a few documentary strings.
+
+Mon Apr 29 23:34:10 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-source-list): Once again changed.
+
+Sun Apr 28 00:03:09 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-fill.el (zenirc-fill-type): New way of filling, 'static.
+	(zenirc-fill-static): New variable.
+	(zenirc-wrap-region): Use it.
+
+Fri Apr 26 00:43:47 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-do-iwantop.el: Shouldn't exist, removed.
+
+	* zenirc-example.el (zenirc-signal-list): Removed.
+	Fixed typos.
+
+	* zenirc.el (zenirc-source-list): Updated pointers on
+ 	where to find the ZenIRC distribution.
+	(zenirc-channel-p): Added + to the list of chars which can start a
+ 	channel name.
+	(zenirc-bug): Misplaced (interactive).
+
+Thu Apr 25 18:47:00 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* Version 2.101
+
+	* zenirc.el (zenirc-bug-address): New variable.
+	(zenirc-bug): New function.
+
+	* Changed default server from irc-2.mit.edu to irc.stealth.net.
+
+	* zenirc-example.el: Added documentation on how to do things
+ 	during server initializing, namely how to autojoin channels.
+
+Wed Apr 24 16:05:17 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el: Take care of numeric 477, ERR_NOCHANMODES.
+
+	* zenirc.el (zenirc-timestamp): No timestamping by default.
+	(zenric-source-list): Updated.
+	(zenirc-ctcp-query-ECHO): New function, use it.
+	(zenirc-emacs-variant): Removed duplicate Nemacs entry.
+	(zenirc-time=): Typo caused the function not to work.
+	(zenirc-ctcp-query-CLIENTINFO): Moved a ")" a few lines down, thus
+ 	removing one of the naughty error messages you get while byte
+ 	compiling.
+
+	
+Sun Apr 21 01:04:59 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* Version 2.100pl16, the version never released.
+	
+	* zenirc-example.el: Removed old unused variabels.
+
+	* zenirc.el (zenic-name): unused, removed.
+
+Fri Apr 19 15:03:00 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* Version 2.100pl15
+
+Wed Apr 17 12:26:38 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-example.el: Updated to mention all the new features of
+	ZenIRC since the dawn of time.
+
+	* zenirc.el: ZenIRC neglected zenirc-name, fixed.
+
+Tue Apr 16 13:06:36 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el: Take care of numeric 415, ERR_BADMASK
+
+Mon Apr 15 15:34:13 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el: numeric 262 shows servername and version.
+
+	* zenirc.el: Take care of numeric 249, RPL_STATSZLINE
+
+Sun Apr 14 17:33:56 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el: Take care of numeric 437, ERR_UNAVAILRESOURCE
+
+Sat Apr 13 15:51:14 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* Version 2.100pl14
+
+	* zenirc.el (zenirc-timestamp-string): New function.
+	(zenirc-timestamp): New variable.
+	(zenirc-timestamp-prefix): New variable.
+	(zenirc-timestamp-suffix): New variable.
+	(zenirc-format-privmsg-or-notice): Use them.
+
+	* zenirc.el: Take care of numeric 262, RPL_TRACEEND
+
+Thu Apr 11 18:47:46 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-command-ctcp): Sent a bogus space in queries.
+
+	* Version 2.100pl13
+
+	* zenirc-fill.el: Defaults to filling (with a prefix).
+
+	* zenirc-history.el: new file, adds shell-like C-p and C-n on
+ 	C-cC-p and C-cC-n.
+
+Tue Mar 26 13:57:38 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-fill.el (zenirc-wrap-region): Bugged out under emacs-18.
+
+Sun Mar 24 09:54:07 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-[language].el: Changed to conform with new idletime string.
+
+	* zenirc-fill.el (zenirc-fill-type): New variable.
+	(zenirc-wrap-region): Use it.
+
+	* Version 2.100pl12
+	
+	* zenirc-notify.el (zenirc-server-302-notify): Bugged out when
+ 	people left IRC faster then ZenIRC parsed the USERHOST parts.
+
+	* zenirc.el (getenv "$IRCSERVER"): Not sufficent, bugged out on
+ 	ircII'ish $IRCSERVER settings.
+	(zenirc-ircserver-string->alist): Bugged out when $IRCSERVER had
+ 	more then two servers in it.
+
+	* Version 2.100pl11
+
+	* zenirc.el (zenirc-select): Would bug out on zenirc-server-alist.
+
+	* zenirc-notify.el (zenirc-command-notify): Would bug out if
+	none of the notificated people was wasting time.
+
+Fri Mar 22 23:10:26 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-send-confirmation-in-echo-area-p): Removed,
+	(zenirc-send-confirmation): set to "'message' does the same thing.
+	(action-echo send-echo send-multi-echo): new entries in
+ 	language catalog, update all functions to use them.
+	zenirc-bork.el, zenirc-french.el, zenirc-latin.el,
+	zenirc-finnish.el, zenirc-klingon.el, zenirc-swedish.el
+	(action-echo send-echo send-multi-echo): Added.
+
+Thu Mar 21 11:49:50 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc.el (zenirc-server-317): Display idle time in
+ 	hour:minute:second format.
+	(zenirc-send-confirmation): New variable, defines whether ZenIRC
+ 	should tell the user if it sends PRIVMSG/NOTICE to the server or
+ 	not.
+		
+	* Version 2.100pl10
+
+	* zenirc-ignore.el: S/ignorance/ignore/g once and for all.
+
+	* zenirc-iwantop.el (zenirc-iwantop-alist): Fixed typo in
+ 	documentation string.
+	(zenirc-ctcp-query-IWANTOP): Added documentation on how to make
+ 	ZenIRC see other CTCP's and act upon them.
+
+Thu Mar 14 00:19:20 1996  Henrik Bylund  <heb@pfawww.pp.se>
+
+	* zenirc.el (zenirc-lang-store-catalog-entry): Corrected typo
+	zenirc-lang-current-langage -> language
+
+Thu Feb 29 10:26:55 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* Version 2.100pl9
+
+Tue Jan 30 08:29:18 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-notify.el (zenirc-command-notify): Rewrote it. 
+
+Thu Jan 25 09:59:24 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* zenirc-notify.el (zenirc-server-302-notify): Added check so
+ 	nothing gets printed if user exited between the USERHOST command
+ 	and the USERHOST reply.
+
+	* zenirc.el (zenirc-select): Added some different defaults to
+ 	server, port and nickname, thus fixing a bug.
+
+Wed Jan 24 09:58:04 1996  Per Persson  <pp@pfawww.pp.se>
+
+	* Version 2.100pl8
+
+	* zenirc.el (zenirc-login): Fixed it to conform with ircd's which
+ 	violates RFC1459.
+
+Thu Nov 23 00:13:55 1995  Mr. Per Persson  <pp@solace.mh.se>
+
+	* zenirc.el (zenirc-ignorance-list): renamed to zenirc-ignore-list
+
+Sat Nov 11 03:04:58 1995  Mr. Per Persson  <pp@solace.mh.se>
+
+	* Version 2.100pl7
+
+	* zenirc-make.el: For use with 'make'.
+
+	* zenirc-bork.el: New 'Swedish Chef' language catalouge.
+
+	* zenirc-ignore.el: Earlier known as zenirc-ignorance.el
+	Renamed everything with 'ignorance' to 'ignore'.
+
+	* zenirc.el (zenirc-command-server): new syntax,
+	/server [servername [port [nickname]]]
+	(zenirc-select): Only converts port to string if it's a string.
+
+Wed Aug 16 03:50:33 1995  Jason Bastek <jason@marilyn.oit.umass.edu>
+
+        * Version 2.100.6
+
+	* zenirc-ignorance.el: Better regexp checks, better working /unignore
+
+Tue Aug 15 15:24:59 1995  Mr. Per Persson  <pp@solace.mh.se>
+
+	* zenirc.el: Fixed broken /topic command.
+
+Tue Jul 11 05:43:04 1995  Internet Relay Chat Administrator  <pp@solace.mh.se>
+
+	* Version 2.100.5
+
+	* zenirc-klingon.el: New Startrek Klingon language catalouge.
+
+Mon Jul 10 17:24:53 1995  Internet Relay Chat Administrator  <pp@solace.mh.se>
+
+	* zenirc.el (zenirc-command-char): new variable.
+	(zenirc-command-commandchar): sets zenirc-command-char.
+
+	* Version 2.100.4
+
+Mon Jul 10 17:21:37 1995  Jason Bastek <jason@marilyn.oit.umass.edu>
+
+	* zenirc-ignorance.el: New code, ircII like.
+
+Sun Jul  9 17:32:13 1995  Internet Relay Chat Administrator  <pp@solace.mh.se>
+
+	* zenirc-fill.el (zenirc-command-resize): /resize [width], been
+	missing this one a long time.
+
+Thu Jul  6 03:32:02 1995  Mr. Per Persson  <pp@solace.mh.se>
+
+	* zenirc.el (zenirc-command-kick): Somehow removed it in earlier
+	version. How annoying.
+
+Fri Jun 30 06:33:03 1995  Internet Relay Chat Administrator  <pp@solace.mh.se>
+
+	* Version 2.100.3
+
+	* zenirc.el (zenirc-self-insert-or-send-privmsg-last-sent/rec):
+	Added check for emacs-version.
+
+Wed Jun 28 15:45:59 1995  Internet Relay Chat Administrator  <pp@solace.mh.se>
+
+	* Version 2.100.2
+
+	* zenirc.el: Added /server command that uses zenirc-select.
+
+	* Version 2.100.1
+
+	* zenirc-ignorance.el: Added /ignore command which manipulates
+	zenirc-ignorance-list.
+
+	* zenirc.el (zenirc-select): Added completion on `server'
+	as well as stuffing in a defaultish thing for `port' and
+	`nick'.
+
+	* zenirc-notify.el: Stripped out all the notify stuff from
+	zenirc.el and put it in zenirc-notify.el as well as adding
+	some user@host thingies.
+
+Sun Apr 23 03:31:35 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * Version 2.100
+
+        * zenirc-meditate.el (zenirc-meditate-response-list): Add "Don't
+        bother."
+
+        * zenirc.el (zenirc-command-kick, zenirc-command-kill,
+        zenirc-command-squit): Handle missing comments.
+
+Sat Apr 22 00:21:58 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc.el (zenirc-message-length-limit): New constant.
+        (zenirc-send-line): Completely rewritten.
+        (zenirc-display-recipient-confirmation): Take new arg, the number
+        of chunks in which message was sent.
+        (zenirc-lang-define-english-catalog): New entry `send-multi'.
+        (zenirc-send-confirmation-generic-echo-area-p): New variable.
+        (zenirc-send-confirmation-generic): New function.
+        (zenirc-command-privmsg-hook): New variable.
+        (zenirc-command-privmsg): New function.
+        (zenirc-command-m, zenirc-command-msg): Call zenirc-command-privmsg.
+        (zenirc-send-confirmation-privmsg-hook): New variable.
+        (zenirc-command-m, zenirc-send-line): Call it.
+        (zenirc-send-confirmation-notice-hook): New variable.
+        (zenirc-command-notice): Call it.
+        (zenirc-send-confirmation-me-hook): New variable.
+        (zenirc-command-me): Call it.
+        (zenirc-command-action-hook): New variable.
+        (zenirc-command-action): New function.
+
+        * zenirc-latin.el: Change ctcp_action message from "action" to
+        "actio".
+
+Fri Apr 21 18:36:56 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc.el (zenirc-command-kick-hook, zenirc-command-kill-hook,
+        zenirc-command-notice-hook, zenirc-command-squit-hook): New hooks.
+        (zenirc-command-kick, zenirc-command-kill, zenirc-command-notice,
+        zenirc-command-squit): New functions.
+
+        * zenirc-complete.el (zenirc-complete-display-in-popup): Don't pop
+        up a completion window if already visible.
+        (zenirc-complete): Ignore case of input.
+        When completing partially, preserve case of user's own input.
+
+        * zenirc.el (zenirc-server-215): Show arg 8 (class), not 7
+        (password) in RPL_STATSILINE reply.  From pp@solace.mh.se.
+        (zenirc-send-ctcp-errmsg-on-unknown): Fix quoting in docstring.
+
+        * zenirc.el (zenirc-server-243): Display arg 3 (`O' or `o').
+        Change suggested by pp@solace.mh.se.
+        (zenirc-lang-define-english-catalog): Change entry for `243' to
+        reflect new arg.
+        * zenirc-latin.el, zenirc-swedish.el: Likewise.
+
+Sun Apr  9 06:05:27 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-meditate.el (zenirc-meditate-response-percentage):
+        Decrease to 5.
+        (zenirc-meditate): Use <, not <=.
+
+        * zenirc-oink.el (zenirc-oink-response-percentage): New variable.
+        (zenirc-oink): Use it.
+
+        * zenirc-oink.el, zenirc-meditate: New files.
+
+Sun Apr  2 21:07:38 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc.el (zenirc-establish-server-connection): Force redisplay
+        before calling function to open network stream.
+        Fix misplaced paren in error handler forms.
+
+Sat Apr  1 00:39:31 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-dcc.el (zenirc-command-dcc): Use intern-soft, not intern.
+
+        * zenirc.el (zenirc-parse-output): Use intern-soft, not intern.
+        (zenirc-do-command): Likewise.
+        (zenirc-handle-ctcp): Likewise.  Also rewritten.
+        (zenirc-lang-set-current-language): Likewise.
+        (zenirc-lang-retrieve-catalog-entry): Likewise.
+        (zenirc-ctcp-query-CLIENTINFO): Likewise.
+
+        * zenirc-iwantop.el (zenirc-ctcp-query-IWANTOP): Let channel elt
+        of alist be a regexp.
+
+Fri Mar 31 19:07:20 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-iwantop.el: New file.  Based on code from Eric Prestemon.
+
+        * zenirc.el (zenirc-privmsg-last-rec, zenirc-privmsg-last-sent):
+        Initialize default value with "".
+        (zenirc-parse-firstword): Return nil if first string-match failed.
+
+        * zenirc-netsplit.el (zenirc-netsplit-QUIT): Use
+        zenirc-downcase-name on `split' and `nick' before adding them to
+        table.
+
+Wed Mar 29 08:38:51 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-fill.el (zenirc-fill-mode): New function and buffer-local
+        variable.
+        (minor-mode-alist): Add entry for zenirc-fill-mode.
+        (zenirc-fill-message): Do nothing unless zenirc-fill-mode is set.
+
+        * zenirc-dcc.el (zenirc-dcc-chat-sentinel): Copy str from posn to
+        match-beginning into line, not 0 to match-beginning.
+
+        * zenirc.el (zenirc-establish-server-connection): Use integer
+        representation of $IRCPORT if defined.
+        (zenirc-server-MODE): For any nil elements of parsedmsg, pass ""
+        to format instead.
+        (zenirc-do-command): Pass command to server if hook is
+        unbound or nil.
+
+Mon Mar 27 00:01:30 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * Version 2.99
+
+        * zenirc-18.el (zenirc-force-mode-line-update): New function.
+        * zenirc.el (zenirc-server-NICK): Force mode line update when nick
+        changes.
+
+        * zenirc-dcc.el (zenirc-dcc-get-default-directory): New variable.
+        (zenirc-dcc-do-get-command): Use it.
+        (zenirc-dcc-alist): Renamed from zenirc-dcc-list.
+        All references changed.
+        (zenirc-dcc-connect-function): New variable.
+        (zenirc-dcc-open-network-stream): New function.
+        (zenirc-dcc-catalog-entry): New macro.
+        (zenirc-dcc-install-message-catalogs): New function.
+        Call at load-time.
+        (zenirc-dcc-member): New function.
+        (zenirc-command-dcc): Call any zenirc-dcc-do-FOO-command, if fboundp.
+        (zenirc-dcc-do-chat-command): Renamed from zenirc-do-dcc-chat.
+        Rewritten.
+        (zenirc-dcc-do-close-command): Renamed from zenirc-do-dcc-close.
+        Rewritten.
+        (zenirc-dcc-get-default-directory): New variable.
+        (zenirc-dcc-do-get-command): Renamed from zenirc-do-dcc-get.
+        Rewritten.
+        (zenirc-dcc-do-list-command): Renamed from zenirc-do-dcc-list.
+        Rewritten.
+        (zenirc-dcc-query-handler-alist): New variable.
+        (zenirc-ctcp-query-DCC): Use it to find function to dispatch.
+        (zenirc-dcc-handle-ctcp-chat): Renamed from zenirc-handle-ctcp-chat.
+        Rewritten.
+        Always store most recent request; discard others.
+        (zenirc-dcc-handle-ctcp-send): Renamed from zenirc-handle-ctcp-send.
+        Use zenirc-names-equal-p to compare recipient and nick.
+        Do not do type conversion on args placed in zenirc-dcc-list;
+        use lazy evaluation later.
+        Use message catalogs.
+        Report error if dcc request is malformed.
+        Mostly rewritten in other minor ways.
+        (zenirc-dcc-get-file): Renamed from zenirc-get-file.
+        Take new arg parent-proc.
+        Set zenirc-dcc-parent-process buffer-local based on it.
+        Switch file buffer to fundamental mode, make read-only.
+        Save alist elt in zenirc-dcc-entry-data.
+        Don't switch to new buffer; leave it buried.
+        (zenirc-dcc-get-filter): Don't save match data; there is nothing
+        to preserve.
+        Don't use process mark; just append to end of buffer.
+        Don't use save-excursion; just save and restore current buffer.
+        (zenirc-dcc-get-sentinel): Rewritten.
+        (zenirc-dcc-chat): Take new arg parent-proc.
+        Set zenirc-dcc-parent-process based on it.
+        Mostly rewritten.
+        (zenirc-dcc-chat-buffer-name-format, zenirc-dcc-chat-mode-hook,
+        zenirc-dcc-chat-connect-hook, zenirc-dcc-chat-exit-hook): New
+        variables.
+        (zenirc-dcc-chat-mode-map): Renamed from zenirc-dcc-mode-map.
+        (zenirc-dcc-chat-send-line): Renamed from zenirc-dcc-send-line.
+        Don't use process mark; use zenirc-process-mark instead.
+        (zenirc-dcc-chat-mode): Renamed from zenirc-dcc-mode.
+        Kill all local variables first thing.
+        Set mode-line-process.
+        Run zenirc-dcc-chat-mode-hook.
+        (zenirc-dcc-chat-parse-output): Renamed from zenirc-dcc-parselines.
+        (zenirc-dcc-unprocessed-output): Renamed from zenirc-partialline.
+        (zenirc-dcc-chat-filter-hook): Put `zenirc-dcc-chat-parse-output'
+        on it.
+        (zenirc-dcc-chat-filter): Add new output to unprocessed output string.
+        Do not call zenirc-dcc-chat-parse-output directly; just run hook.
+        (zenirc-dcc-chat-sentinel): Rewritten.
+
+Sun Mar 26 18:45:09 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-dcc.el (zenirc-extract-host): Function deleted.
+        * zenirc.el (zenirc-extract-host): Moved here.
+        Simplified logic so as not to use any local variables.
+        Preserve match data.
+        (zenirc-extract-nick, zenirc-extract-userhost):
+        Simplified logic so as not to use any local variables.
+        (zenirc-emacs-variant): Recognize Epoch.
+        (zenirc-match-string, zenirc-parse-n-words): New functions.
+
+Sat Mar 25 01:10:46 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc.el (zenirc-in-input-p): Arg `proc' removed.
+        Don't pass it to `>='.
+
+        * zenirc-yow.el (zenirc-server-PRIVMSG-yow): Don't downcase `to'.
+        Use zenirc-names-equal-p for comparison.
+
+        * zenirc.el (zenirc-command-language): New function.
+        (zenirc-command-language-hook): New variable.
+        (zenirc-lang-set-current-language): Use zenirc-message.
+        (nocatalog, newcatalog): New message catalog entries.
+        (zenirc-lang-define-english-catalog): Define them.
+
+        * zenirc.el (zenirc-server-333-hook): New variable.
+        (zenirc-server-333): New function.
+        (s333): New message catalog entry.
+        (zenirc-lang-define-english-catalog): Define it.
+        (zenirc-epoch-seconds-to-time): New function, from Charles Hannum.
+
+        * zenirc-popup.el: Do not require backquote.
+        Add aliases for compatibility with XEmacs.
+        (zenirc-popup-map-windows): Macro deleted.
+        (zenirc-popup): Renamed from old zenirc-popup-window function.
+        Use walk-windows instead ofzenirc-popup-map-windows.
+        (zenirc-popup-window, zenirc-popup-frame): New subroutines of
+        zenirc-popup.
+        (zenirc-popup-current-buffer, zenirc-window-end): Functions deleted.
+        (zenirc-popup-available-frames): Renamed from zenirc-popup-any-frame.
+        (zenirc-popup-make-new-frames): New variable.
+        (zenirc-signal-popup): New function.
+        Add it to zenirc-signal-hook instead of zenirc-popup-window.
+
+        * zenirc.el (zenirc-format-privmsg-or-notice): Don't set
+        zenirc-privmsg-last-rec unless message was from another user
+        directly to user, not channel.
+
+        * zenirc-18.el (zenirc-walk-windows, zenirc-window-end): New
+        functions.
+
+        * zenirc-complete.el (zenirc-complete): Use zenirc-process-mark,
+        not process mark.
+
+        * zenirc.el (zenirc-downcase-name): New function.
+        (zenirc-names-equal-p): Use it.
+        * zenirc-complete.el (zenirc-complete-cache,
+        zenirc-complete-uncache): Likewise.
+        * zenirc-format.el (zenirc-format-nickuserhost-fancy,
+        zenirc-fancy-NICK, zenirc-fancy-352): Likewise.
+        * zenirc-away.el (zenirc-server-301-fancy): Likewise.
+        * zenirc-netsplit.el (zenirc-netsplit-JOIN): Likewise.
+
+Fri Mar 24 00:06:30 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc.el (zenirc): If new buffer, call zenirc-mode first thing.
+        (zenirc-mode): kill-all-local-variables.
+        (zenirc-emacs-variant): New function.
+        (zenirc-version): New constant.
+        (zenirc-ctcp-query-VERSION): Display them, not RCS revision id.
+
+Thu Mar 23 18:37:10 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc.el (zenirc-establish-server-connection): New function.
+        (zenirc-ircserver-string->alist): New function.
+        (zenirc-server-alist): Renamed from zenirc-IRCSERVER-alist.
+        Do not initialize at load time.
+        (zenirc): Do it here.
+        Do not check for existence of `zenirc-process-connect'.
+        Use `zenirc-establish-server-connection'.
+        (zenirc-process-connect-function, zenirc-server-default,
+        zenirc-port-default, zenirc-nick-default,
+        zenirc-full-name-default, zenirc-user-login-name-default,
+        zenirc-password-default): New variables.
+        (zenirc-establish-server-connection): Use them.
+        (connect-failed, connect-try, connect-abort): New message catalog
+        entries.
+        (zenirc-lang-define-english-catalog): Define them.
+
+        * zenirc.el (zenirc-process-mark): New buffer-local variable.
+        (zenirc): Initialize it.
+        Use pop-to-buffer, not switch-to-buffer.
+        (zenirc-message): Use point-marker to set current-point-mark.
+        Use zenirc-process-mark instead of process mark.
+        Allow proc argument to be either a process or a buffer.
+        (zenirc-parse-output, zenirc-beginning-of-input-p,
+        zenirc-in-input-p, zenirc-send-line, zenirc-insert-at-proc-mark):
+        Here too.
+
+        * zenirc.el (zenirc-sentinel): Do not move point here.
+        Don't bother to save match data.
+        (zenirc-parse-output): Renamed from zenirc-parselines.
+        All callers changed.
+        Do not compute length of remaining substring to generate
+        `unparsed'; the substring function defaults to the end of string.
+        (zenirc-parse-server-message): Renamed from zenirc-parse-servermsg.
+        All callers changed.
+
+Wed Mar 22 20:13:28 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-yow.el (zenirc-yow-format-string): New function.
+        (zenirc-server-PRIVMSG-yow, zenirc-command-yow): Use it.
+        Use zenirc-message and save-match-data.
+
+        * zenirc-random-away.el: New file from Eric Prestemon.
+
+        * zenirc-fortran.el (zenirc-fortran-regexp, zenirc-fortran-rant,
+        zenirc-fortran-response-type): New variables.
+        (zenirc-fortran): Use them.
+        Use zenirc-names-equal-p to compare nicknames.
+        Save match data.
+
+        * zenirc-doto.el (zenirc-doto-install-message-catalogs): New
+        function.  Call it at load time.
+        (zenirc-command-dotowho, zenirc-command-op, zenirc-command-dotolinks,
+        zenirc-command-dotolist): Use zenirc-message with appropriate
+        catalog entry.
+        (zenirc-doto-op-end): Renamed from zenirc-op-end.
+        All callers changed.
+
+        * zenirc.el (zenirc-names-equal-p): New function.
+        (zenirc-server-NICK, zenirc-server-JOIN, zenirc-server-KICK,
+        zenirc-server-PART, zenirc-format-privmsg-or-notice): Use it.
+
+Sat Mar 18 13:42:15 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-fill.el (zenirc-fill-region): Narrow to (1- point-max),
+        then delete excess trailing newline.
+        (zenirc-fill-message): funcall zenirc-fill-region-function.
+
+        * zenirc.el (zenirc-command-query): Set current victim to just the
+        first subsequent word, sans surrounding whitespace.
+        (zenirc-message): If message is not defined in current catalog,
+        check english catalog (this is temporary).
+
+        * zenirc-netsplit.el (zenirc-netsplit-show-server-mode-changes-p):
+        Renamed from `zenirc-netsplit-show-server-modechanges'.
+        (zenirc-netsplit-list): Make local to all buffers at load time.
+        (zenirc-netsplit-init): Function deleted.
+        Don't add it to zenirc-startup-hook.
+        (zenirc-netsplit-install-message-catalogs): New function.
+        Run it at load time.
+        (zenirc-netsplit-JOIN, zenirc-netsplit-timer, zenirc-netsplit-wholeft):
+        Avoid needless traversals with nth on zenirc-netsplit-list.
+        Use zenirc-message and catalog symbols instead of
+        zenirc-display-string.
+
+        * zenirc-signal.el: Renamed from zenirc-fancy-signal.el.
+        Provide 'zenirc-signal.
+        (zenirc-signal-privmsg): Renamed from `zenirc-fancy-signal'.
+        Use `zenirc-message', not `message'.
+        Change calling arguments appropriately.
+        Compact message string to save valuable real estate in the echo area.
+
+        * zenirc-stamp.el (zenirc-timestamp): Use zenirc-message, not
+        zenirc-display-string.
+
+        * zenirc-swedish.el: Renamed from zenirc-swedish-mode.el.
+        Change provide to 'zenirc-swedish.
+        Use zenirc-lang-define-catalog to create swedish message catalog.
+
+        * zenirc-latin.el: Renamed from zenirc-latin-mode.el.
+        Change provide to 'zenirc-latin.
+        Use zenirc-lang-define-catalog to create latin message catalog.
+
+        * zenirc-french.el: Renamed from zenirc-french-mode.el.
+        Change provide to 'zenirc-french.
+        Use zenirc-lang-define-catalog to create french message catalog.
+
+        * zenirc-format.el: Renamed from zenirc-fancy-format.el.
+        Change provide to 'zenirc-format.
+        (zenirc-nickuserhost-list): Variable deleted.
+        (zenirc-nickuserhost-table): New variable.
+        (zenirc-format-nickuserhost-fancy): Save nick and nickuserhost
+        pair in new hash table instead of in alist.
+        (zenirc-fancy-NICK, zenirc-fancy-352): Here also.
+        Do not run zenirc-format-nickuserhost-hook.
+
+        * zenirc-away.el: Renamed from zenirc-fancy-away.el.
+        Change provide to 'zenirc-away.
+        (zenirc-fancy-away-user-alist): Variable deleted.
+        (zenirc-away-table): New variable.
+        (zenirc-server-301-fancy): Use new hash instead of alist.
+        Use `zenirc-message' instead of `zenirc-display-string'.
+        Change calling arguments appropriately.
+
+        * zenirc-complete.el: Do not use backquotes in any macros.
+        Do not require backquote.el.
+        (zenirc-complete-cache-alist): Variable deleted.
+        (zenirc-complete-table): New variable.
+        Initialize at load time with list of server commands.
+        (zenirc-complete-cache): Rewritten to intern in
+        zenirc-complete-table.
+        Set new symbol value to undowncased string.
+        (zenirc-complete): On final completion, insert string with
+        preserved case.
+        (zenirc-complete-uncache): Set interned symbol in table to nil.
+
+        * zenirc-complete.el (zenirc-complete-message): Function deleted.
+        All callers changed to use `zenirc-message'.
+        (zenirc-complete-wordlist): Alias deleted.
+        All callers use `zenirc-parse-words' directly.
+        (zenirc-complete-install-message-catalogs): New function using
+        zenirc-lang-define-catalog.
+        (zenirc-complete-install-messages): Function deleted.
+        (zenirc-complete-word-boundary-regexp): Include carriage returns.
+
+        * zenirc-complete.el (zenirc-complete-display-function): New variable.
+        (zenirc-complete): Use it.
+        (zenirc-complete-display-traditional,
+        zenirc-complete-display-in-popup,
+        zenirc-complete-display-in-echo-area,
+        zenirc-complete-display-echo-area-or-traditional,
+        zenirc-complete-display-echo-area-or-popup): New functions.
+
+        * zenirc-complete.el (zenirc-complete-add-final-space-p): New variable.
+        (zenirc-complete): Use it.
+        Correct search for word boundaries.
+        (zenirc-complete, zenirc-complete-cache-new-zenirc-commands):
+        Use `boundp' to limit completions returned by `all-completions' and
+        `try-completions' on `zenirc-complete-table'.
+
+        * zenirc-complete.el (zenirc-complete-cache-NICK): New function.
+        Add it to `zenirc-server-NICK-hook'.
+        (zenirc-complete-cache-319, zenirc-complete-cache-353): Use
+        `save-match-data'.
+
+        * zenirc-fill.el: New file.
+
+        * zenirc-18.el: New file.
+        zenirc.el: Require it if appropriate.
+
+        * zenirc.el (zenirc-display-string): Function deleted.
+        (zenirc-message): New function, replacing zenirc-display-string.
+        All callers changed.
+        (zenirc-message-hook): New variable.
+        (zenirc-text-list): Variable deleted.
+        All refereces removed; let zenirc-message handle lookups.
+        (zenirc-set-text-list-ent): Function deleted.
+        (zenirc-lang-catalogs, zenirc-lang-obarray-size,
+        zenirc-lang-current-language): New variables.
+        (zenirc-lang-define-catalog, zenirc-lang-store-catalog-entry,
+        zenirc-lang-retrieve-catalog-entry,
+        zenirc-lang-set-current-language): New functions.
+        (zenirc-lang-define-english-catalog): New function.
+        Call at end of file.
+
+        * zenirc.el (zenirc-insert-at-proc-mark): New function.
+        (zenirc-send-privmsg-last-rec, zenirc-send-privmsg-last-sent):
+        Insert "/msg [recipient]" at process mark, not at point.
+        (zenirc-mode-map): Bind zenirc-send-privmsg-last-rec to "\C-cC-r",
+        not "\C-cr".
+        Bind zenirc-send-privmsg-last-sent to "\C-c\C-s", not "\C-cs".
+        (zenirc-self-insert-or-send-privmsg-last-rec): New function.
+        (zenirc-mode-map): Bind it to ":".
+        (zenirc-self-insert-or-send-privmsg-last-sent): New function.
+        (zenirc-mode-map): Bind it to ";".
+
+        * zenirc.el (zenirc-local-variables): New variable.
+        (zenirc-mode): Use it to initialize buffer-local variables.
+        Remove interactive spec.
+        Thoroughly frob mode-line-format.
+
+        * zenirc.el (zenirc-command-*-hook, zenirc-ctcp-query-*-hook,
+        zenirc-ctcp-reply-*-hook, zenirc-server-*-hook): Documentation
+        strings removed. They were not particularly informative and took a
+        lot of space.
+
+        * zenirc.el: Removed all autoload cookies except for `zenirc'.
+        Docstrings for most functions completely rewritten.
+
+        * zenirc.el (zenirc-ignorance-list): Ignore messages with more
+        than 4 CTCP strings.
+        (zenirc-notify-list): Initialize to nil.
+
+        * zenirc.el: All references to the following variables changed.
+        (zenirc-current-server-name): Renamed from `zenirc-servername'
+        (zenirc-server-modes): Renamed from `zenirc-servermodes'.
+        (zenirc-server-name): Renamed from `zenirc-servername'.
+        (zenirc-server-version): Renamed from `zenirc-serverversion'
+        (zenirc-unprocessed-output): Renamed zenirc-partialline.
+        (zenirc-user-full-name): Renamed from `zenirc-name'.
+        (zenirc-user-modes): Renamed from `zenirc-usermodes'.
+
+        * zenirc.el (zenirc): If given numeric prefix argument, switch to
+        session in buffer named "*zenirc*<n>", or start one.
+        (zenirc-active): Variable deleted.
+        (zenirc): Check actual process status in buffer, if any.
+        Do not disable blink-matching-paren.  Let user do that on
+        zenirc-mode-hook if desired.
+        (zenirc-login): Renamed from zenirc-logon.  Take process as argument.
+        (zenirc): Call it with new process as argument.
+        (zenirc-filter, zenirc-sentinel, zenirc-parselines,
+        zenirc-extract-nick): Use save-match-data macro.
+        (zenirc-in-input-p): Take optional proc argument.
+        (zenirc-parse-words, zenirc-parse-firstword): Use save-match-data.
+        Ignore leading and trailing whitespace.
+        (zenirc-extract-userhost): New function.
+        (zenirc-channel-p): Renamed from zenirc-channel-p.
+        All callers changed.
+        (zenirc-do-command): Use cond for readability.
+
+        * zenirc.el (zenirc-delete, zenirc-member): Functions removed.
+        * zenirc-18.el: Put them here.
+        Make aliases for `delete' and `member'.
+        All callers changed.
+
+Tue Jan  3 11:16:43 1995  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-popup.el (zenirc-window-end): New function.
+        (zenirc-popup-window): Use it when `window-end' is undefined.
+
+        * zenirc-popup.el (zenirc-map-windows): Renamed from `map-windows'.
+        All callers changed.
+        Add lisp indentation property.
+
+        * zenirc-popup.el (zenirc-popup-mode): New variable and function.
+        (zenirc-popup-window): Do nothing when zenirc-popup-mode is nil.
+
+Sun Sep 25 15:21:55 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added /oper command.
+        Version 2.16 released.
+
+Wed Sep 21 03:04:46 1994  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-complete.el (top level): Require backquote.
+        Don't install zenirc-complete-cache-nick on
+        zenirc-format-nickuserhost-hook.
+        Call zenirc-complete-install-messages.
+        (zenirc-complete-nick-alist, zenirc-complete-server-alist,
+        zenirc-complete-channel-alist, zenirc-complete-charkey-alist):
+        Variables deleted.
+        (zenirc-complete-cache-alist): Renamed from
+        zenirc-complete-server-command-alist.
+        (zenirc-complete-word-boundary-regexp,
+        zenirc-command-complete-cache-hook,
+        zenirc-command-complete-uncache-hook): New variables.
+        (zenirc-complete-cache, zenirc-complete-uncache,
+        zenirc-complete-cache-nick, zenirc-complete-uncache-nick):
+        Rewritten as macros.
+        (zenirc-complete-command-cache, zenirc-complete-command-uncache):
+        New functions.
+        (zenirc-complete-wordlist): New alias.
+        (zenirc-complete): Use zenirc-complete-word-boundary-regexp instead of
+        hardcoded word separator regexps.
+        Remove all code associated with searching misc completion alists; all
+        completions are in zenirc-complete-cache-alist.
+        Move all messages into zenirc-text-list and use
+        zenirc-complete-message to display messages.
+        (zenirc-complete-install-messages, zenirc-complete-message): New
+        functions.
+        (zenirc-complete-cache-new-zenirc-commands): Renamed from
+        zenirc-complete-get-zenirc-command-alist.
+        Call zenirc-complete-cache instead of inlining code.
+        (zenirc-complete-cache-server, zenirc-complete-uncache-server,
+        zenirc-complete-cache-channel, zenirc-complete-uncache-channel):
+        Functions deleted.
+        (zenirc-complete-cache-312, zenirc-complete-cache-322,
+        zenirc-complete-cache-352, zenirc-complete-cache-INVITE,
+        zenirc-complete-cache-JOIN): Rewritten.
+        (zenirc-complete-uncache-40x): renamed from
+        zenirc-complete-uncache-401.
+        (zenirc-complete-uncache-402): Function deleted.
+        (zenirc-complete-cache-msg): New function.
+        (zenirc-server-PRIVMSG-hook, zenirc-server-NOTICE-hook): Put
+        zenirc-complete-cache-msg on these.
+
+Wed Sep 21 02:10:30 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-format-privmsg-or-notice): Fixed bug in compare
+        of origin of privmsg/notice against name of server - was using
+        string-match, which caused lossage when the nick was an invalid
+        regular expression.
+
+Thu Sep  1 19:13:41 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc): Made zenirc-server buffer local.
+        This way, the mode line displays the correct server in each buffer
+        even if you run more than one instance of zenirc in an emacs that
+        are connected to different servers.
+
+Tue Aug 23 00:40:58 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-dcc.el: Sometimes was dropping bits of incoming dcc chats.
+        This was a scoping problem.  Fixed it.
+
+Fri Jul  8 00:34:45 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-source-list): Deleted ohsaycan.ucc.american.edu.
+
+Thu Jun 30 23:48:04 1994  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+	* zenirc-yow.el: New file.
+
+Wed Jun 29 08:23:29 1994  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc.el (zenirc-beginning-of-input-p): Use = instead of
+        `equal' and marker-position.
+        Take optional arg proc.
+        (zenirc-parse-servermsg): comment fix.
+        (zenirc-display-recipient-confirmation): New function.
+        (zenirc-send-line): Use it.
+
+Mon Jun 27 11:46:29 1994  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-complete.el (zenirc-cache-nick): If arg is not a nick,
+        cache it as a server name.
+
+Sun Jun 26 11:58:18 1994  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-fancy-away.el: New file.
+
+        * zenirc-latin-mode.el: Put all entries in an alist and loop through
+        them, calling zenirc-set-text-list-ent.
+        Also cleaned up the comments a little.
+
+        * zenirc-complete.el: Total rewrite.
+
+        * zenirc-popup.el (map-windows): Use memq, not member.
+
+Sat Jun 25 08:52:10 1994  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-dcc.el (zenirc-dcc-chat-filter-hook): New zenhook.
+        (zenirc-dcc-chat-filter): Run it.
+        Don't use save-excursion; save and restore current buffer with
+        unwind-protect.
+
+        * zenirc-popup.el (zenirc-popup-windows): Use let* for setting
+        bigwin, min-height, and ratio.
+        (ratio): If not a valid number, set to screen height of bigwin.
+        Don't check window-start and don't recenter to middle of window;
+        always (recenter -1) instead.
+        (proc-mark): New variable.
+
+Fri Jun 24 03:58:44 1994  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc-popup.el (zenirc-popup-window): Pass `nil' for minibuffer
+        argument to map-windows.
+
+        * zenirc-popup.el (zenirc-popup-window): Deleted local variables
+          `window-alist' and `alist'.
+        Set `found' (if appropriate) directly in map window body.
+        Check that proc-mark is within window-start and window-end, rather than
+        calling pos-visible-in-window-p.
+
+        * zenirc.el (zenirc-filter): Do not use save-excursion; save and
+        restore current buffer using unwind-protect.
+
+        * zenirc-popup.el (zenirc-popup-window): Check pop-up-windows, not
+        (not pop-up-windows).
+
+        * zenirc-swedish-mode.el: Require 'zenirc.
+        Provide 'zenirc-swedish-mode.
+
+        * zenirc-stamp.el: Require 'zenirc.
+        Provide 'zenirc-stamp.
+
+	* zenirc-pjg.el: Require 'zenirc.
+	Provide 'zenirc-pjg.
+
+Thu Jun 23 23:59:17 1994  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+	* zenirc-fortran.el: Require 'zenirc.
+	Provide 'zenirc-fortran-mode.
+
+	* zenirc-doto.el: Require 'zenirc.
+	Provide 'zenirc-doto.
+
+        * zenirc-netsplit.el: Require 'zenirc.
+        Provide 'zenirc-netsplit.
+
+        * zenirc-latin-mode.el: Require 'zenirc.
+        Provide 'zenirc-latin-mode.
+
+        * zenirc-french-mode.el: Require 'zenirc.
+        Provide 'zenirc-french-mode.
+
+        * zenirc-fancy-signal.el: Require 'zenirc.
+        Provide 'zenirc-fancy-signal.
+
+        * zenirc-fancy-format.el: Require 'zenirc.
+        Provide 'zenirc-fancy-format.
+
+        * zenirc-dcc.el: Require 'zenirc.
+        Provide 'zenirc-dcc.
+
+        * zenirc-complete.el: Require 'zenirc.
+        Provide 'zenirc-complete.
+
+        * zenirc-command-queue.el: Require 'zenirc.
+
+        * zenirc-popup.el: New file.
+
+        * zenirc.el (zenirc-parselines): Various reorganization of
+        conditionals.
+        Run signal hooks after everything else (particularly after
+        zenirc-display-string, so that the message relevent to the signal
+        is already in the buffer).
+        Check that zenirc buffer actually has a window at all before calling
+        pos-visible-in-window-p with a null window argument; if null, that
+        compares pos in the currently selected window, which can never be
+        correct.
+        Provide 'zenirc.
+
+        * zenirc.el (zenirc-recursive-match): Function deleted.
+        (zenirc-string-match-list): New function.
+        (zenirc-signal-p, zenirc-ignore-p): Use zenirc-string-match-list, not
+        zenirc-recursive-match.
+
+Thu Jun 23 04:27:13 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+	* zenirc-doto.el: New file.
+
+        * zenirc.el (zenirc-sentinel): Insert a message into the zenirc
+        buffer when the zenirc process dies.
+        (zenirc-delete-hook): Use `zenirc-delete', not `delete'.
+        (zenirc-timer-hook): Now run when possible instead of only once a
+        minute & modified notify code to only check once a minute, instead of
+        depending on the minimum zenirc-timer-hook calling interval of 60
+        seconds. (This change made so zenirc-queue-command.el would be
+        possible).
+        Made zenirc-timer-hook be called for keyboard input events in
+        addition to server message events.
+
+        * zenirc-command-queue.el: New file.
+
+Tue Jun 21 19:31:56 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-french-mode.el, zenirc-latin-mode.el, zenirc-swedish-mode.el:
+        Modified ctcp action string since arg order was changed in
+        zenirc.el 2.7.
+
+Sun Jun 19 08:49:17 1994  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc.el (zenirc-text-list): Change `ctcp_action' format from
+        "ACTION %s->%s: %s\n" to "[ACTION->%s] %s %s\n"
+        (zenirc-ctcp-query-ACTION): Reorder arguments appropriately.
+
+        * zenirc.el (zenirc-mode-hook): New zenhook.
+        (zenirc-mode): Call it.
+        Do not put a space between colon and process status in
+        `mode-line-process'..
+        Put `minor-mode-alist' after `mode-line-process' in
+        `mode-line-format', so that mode line looks like
+        "(ZenIRC:open Fill ...)."
+
+        * zenirc.el (zenirc-display-string): New function.
+
+        * zenirc.el (zenirc-add-hook): Adopted from v19.24 subr.el.
+        New features include an optional arg `append', and if the hook's
+        value is merely another symbol, convert it to a list.
+        Also handle void variables reliably, by not calling eval.
+        (zenirc-delete-hook): Adopted from 19.24 subr.el.
+        Handle pathological arguments more robustly than previously.
+        (zenirc-remove-hook): Defined as alias for zenirc-delete-hook.
+        `remove-hook' is the analogous v19 function.
+
+Mon May 16 02:38:03 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added code to support zenirc-complete.el (and other
+        hacks in the future).
+
+Sun May 15 16:17:02 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-netsplit.el: Fixed bug in regexp for server mode changes
+        that prevented them from ever being hidden properly.
+
+Fri May 13 05:07:35 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-dcc.el: Fixed two bugs: match for /dcc chat in
+        zenirc-dcc-list was not being done right, now it is.
+        Made it so entry for zenirc-dcc-list gets deleted in event of
+        networking errors.
+
+Thu May 12 16:23:17 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-complete.el: New file.
+
+Wed Apr 27 17:47:31 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+	* zenirc-example.el (zenirc-format-nickuserhost-function): Changed
+        to a hook.
+
+        * zenirc-fancy-format.el, zenirc-fancy-signal.el: Changed
+        zenirc-format-nickuserhost-function to a hook.
+
+        * zenirc-dcc.el: Added DCC chat accept capability.
+
+        * zenirc.el: Changed nick!user@host function to a zenhook called
+        zenirc-format-nickuserhost-hook.
+        Added docstring to zenirc-notify-list.
+
+Sat Mar 12 04:14:54 1994  Richard Todd  <rmtodd@servalan.servalan.com>
+
+        * zenirc-latin-mode.el: Misc. spelling fixes, changed to use 'cognomen'
+        for 'nickname' throughout.
+        Added comments.
+
+Fri Mar 11 19:28:08 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-netsplit.el: Made work well with multiple zenirc's in one
+        emacs.
+
+        * zenirc.el: Minor docstring and formatting changes.
+        Fixed bug that allowed one to start two zenirc processes in one buffer.
+        Fixed bug in input handling that caused a lisp error when you sent
+        space-enter.
+        Changed default signoff message from "" to "Started wasting time
+        elsewhere".
+        (zenirc-startup-hook): Renamed from zenirc-startup.
+        (zenirc-exit-hok): New hook.
+        (zenirc-active): New variable.
+        (zenirc-mode): mode-line-format less verbose.
+        (zenirc-sentinel): New function.
+        (zenirc-run-hook): Return value of last hook run.
+
+        * zenirc-netsplit.el: Fixed typographical error in the definition of
+        zenirc-netsplit-show-server-modechanges.
+
+Thu Mar 10 23:25:20 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-netsplit.el: New file.
+
+Sat Mar  5 05:41:09 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added code to only call zenirc-signal-hook if the
+        zenirc buffer is not visible.
+        Strip leading \n's from text input into zenirc.
+
+        * zenirc-stamp.el (zenirc-timestap): Added arg of "now".
+
+Fri Mar  4 23:57:34 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-text-list): Initialize with defvar, not setq.
+        It is not changed much anymore.
+        Added zenirc-text-list entry for a protocol violation.
+        Changed definition of zenirc-message-vector from a setq to a defvar to
+        make the emacs 19 byte compiler happy.
+        Added mode-line display of current victim, nick, etc to zenirc-mode.
+        Made it so that starting a new zenirc doesn't always create a new
+        zenirc buffer.
+        Changed zenirc to use zenirc-user-login-name instead of
+        (user-login-name).
+        Added "now" to arguments to zenirc-timer-hook subrs.
+        Fixed incorrect argument to zenirc-server-PING
+        Modified zenirc to handle protocol voilations in 002, 003, 251, and
+        255 server messages.
+        Fixed incorrect argument to zenirc-server-303
+
+        * zenirc.el (zenirc-pjg): Function removed.
+        * zenirc-pjg.el: New file.
+
+Thu Mar  3 15:06:51 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+	* zenirc-pjg.el: New file.
+
+        * zenirc-latin-mode.el: New file.
+
+Mon Feb 28 19:00:06 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Fixed broken /msg
+        Added french ftp site to CTCP SOURCE reply.
+
+        * zenirc-french-mode.el: New file.
+
+        * zenirc-swedish-mode.el: I had duplicated the contents of this file
+        twice by appending the new version to the end rather than
+        replacing the old code with it. This is now fixed.
+
+Sun Feb 27 19:36:27 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+	* zenirc-example.el: Made changes for converting all old hooks to
+        zenhooks.
+
+	* zenirc-fortran.el: Updated to use new zenhooks for server
+        messages.
+
+	* zenirc-example.el: Added new format CTCP query hooks.
+
+	* zenirc-ojnk.el: Changed from old style command hooks to new
+        zenhooks.
+
+        * zenirc.el: Turned off paren matching in the zenirc buffer.
+
+        * zenirc-dcc.el, zenirc-fancy-format.el, zenirc-fancy-signal.el:
+        Made changes for converting all old hooks to zenhooks.
+
+        * zenirc.el: Removed duplicate entry for s203 in zenirc-text-list.
+        (zenirc-format-nickuserhost-function): New function.
+        Converted server messages from the old hook format to the new zenhooks.
+        Renamed zenirc-startup-hook to zenirc-startup, because it's not a hook.
+        Renamed zenirc-process-connect-hook to zenirc-process-connect,
+        because it's not a hook.
+        Renamed zenirc-logon-hook to zenirc-login, because it's not a hook.
+        Changed all code that called zenirc-format-nickuserhost-hook to do a
+        funcall of zenirc-format-nickuserhost-function.
+        Deleted zenirc-init-hooks and zenirc-init-hook, as there are no
+        more old style zenirc hooks for them to initialize.
+
+        * zenirc-fancy-format.el: Updated to use new zenhooks for server
+        messages.
+
+        * zenirc.el: Added Mark Bailen to author list.
+        Fixed out-of-order 318 reply.
+        Added CTCP ping sending capabilities (/ping command and associated CTCP
+        reply handlers).
+        Minor variable name changes in /query code
+        Added zenirc-signal-hook that gets called when a signal happens
+        Added /quote command to send raw data to the server
+        Converted CTCP query and reply strings from old hook format to new
+        zenhooks .
+        Made it so you can run multiple invocations of zenirc in the same
+        buffer.
+        Extensive changes to zenirc-send-line that fixed many input mode bugs
+        Deleted zenirc-parse-ctcp and replaced calls to it to
+        zenirc-parse-firstword.
+
+        * zenirc-dcc.el: Added new format CTCP query hooks
+
+        * zenirc-fancy-signal.el: New file.
+
+        * zenirc.el: Changed piglet.cr.usgs.gov to gnu.ai.mit.edu everywhere.
+        Added new zenhook mechanism for all zenirc-command-*-hooks.
+        Changed zenirc-timer-hook to be initialized in the defvar.
+        Moved some defuns around to be on the right page, or to
+        alphabetize defuns.
+        Added /ctcp command. Usage /ctcp victim foo bar sends ^AFOO bar^A
+        to victim.
+        Partially rewrote the /notify code in an attempt to understand it.
+
+        * zenirc-dcc.el: Changed from old style command hooks to new zenhooks.
+
+Thu Feb 24 14:38:30 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+	* zenirc-fortran.el: More revisionism - change `piglet.cr.usgs.gov'
+        to `gnu.ai.mit.edu' in a couple places.
+
+	* zenirc-ctcp-flood.el, zenirc-example.el, zenirc-fortran.el,
+        zenirc-ojnk.el: Changed email address from piglet to gnu.
+
+        * zenirc-dcc.el: Added more support for dcc chat (not finished yet)
+        Changed email address from piglet to gnu.
+
+        * zenirc-swedish-mode.el: Added updates from per persson.
+        Changed email address from piglet to gnu.
+
+        * zenirc-fancy-format.el, zenirc-stamp.el: Changed email address from
+          piglet to gnu.
+
+Sun Feb 20 19:24:15 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-dcc.el: Added /dcc close subcommand to abort dcc transfers.
+
+Fri Feb 18 04:28:23 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-dcc.el: Made dcc get work. Started on dcc chat support.
+
+        * zenirc.el: Fixed missing \n on a message.
+        Added annoy pjg feature.
+
+Wed Feb 16 03:18:46 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Updated list of places zenirc is available from in
+        zenirc-source-list.
+        Added handlers for server numerics 202, 203, 208, 217, 221, 261.
+        Improved handlers for server numerics 257, 258, 259.
+        Added new variable, zenirc-timer-hook - this is a new "zenhook"
+        that works similar to emacs 19 hooks.
+        zenirc-timer-hook is called every few minutes by zenirc, so the
+        client can schedule events.
+        Added new variable, zenirc-debug-timer - used to debug zenirc's
+        timer code.
+        Deleted some commented code that called text-mode.
+        Changed the buffer-local variable partialline to zenirc-partialline
+        Fixed some unitialized buffer-locals that made trouble for emacs 19.
+        Added a new buffer-local variable, zenirc-time-last-event, used to keep
+        track of when zenirc-timer-hook has been called.
+        Replaced code to call zenirc-command-notify-hook in various places with
+        a call to zenirc-timer-handler in the main server message handling
+        loop.
+        Added zenirc-add-hook and zenirc-delete-hook to manipulate zenirc hook
+        variables.
+        Got some code from Kiwi IRC client to manipulate times since the
+        epoch as lists of two ints (zenirc-time-to-int, zenirc-time=,
+        zenirc-time<, and zenirc-time-diff).
+        Wrote zenirc-timer-handler, the subroutine that schedules calls to
+        zenirc-timer-hook.
+        Added a timer hook, zenirc-notify-timer, which the client now uses
+        to send "ISON" messages to the IRC server. Deleted code to call
+        this directly from the PONG server message hook.
+
+        * zenirc-stamp.el: New file.
+
+Tue Feb  8 20:50:06 1994  Per Persson  <pp@solace.mh.se>
+
+	* zenirc-ctcp-flood.el: Added legalese.
+
+	* zenirc-example.el, zenirc-fortran.el: Added legalese.
+
+	* zenirc-ojnk.el: New file.
+
+        * zenirc.el: Changed server numeric 303 output to a more zenircish
+        one, Currently Wasting time:
+        Fixed a typo I made in the previous version which made zenirc barf.
+
+        * zenirc.el: Added /ison as a command so you get the usual 303
+        output instead of running the notify code.
+
+Tue Feb  8 03:09:32 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-dcc.el: Added legalese and /dcc command user interface.
+        So far: /dcc get nick file, /dcc list.
+
+        * zenirc-fancy-format.el, zenirc-swedish-mode.el: Added legalese.
+
+        * zenirc.el: Added more autoload cookies.
+        Corrected variable documentation for zenirc-server.
+        Added new variable, zenirc-notify-list, which contains a list of
+        strings that are nicks to do notification for.
+        Added server message handlers for numerics 256, 257, 258, 259.
+        Added display of server message 409, and fixed PING code so it doesn't
+        generate these.
+        Added /me command that sends CTCP actions to zenirc-current-victim.
+        Removed call to text-mode that was deleting local variables and created
+        the following buffer-local variables:
+          zenirc-previous-ison - list of people you already recieved
+          notification of.
+          zenirc-ison-count - used as a counter to check ison every 5 server
+          msgs.
+          zenirc-serverversion - the version of the server you are using.
+          zenirc-usermodes - the allowable modes for a user.
+          zenirc-servermodes - the allowable modes for a channel.
+          zenirc-servername - the server name of the server you are using.
+        Made zenirc-parselines call zenirc-command-notify-hook every 5
+        server msgs.
+        fixed a bug in call zenirc-do-command that was occasionally
+        passing extra \n's on the end of commands.
+        Changed zenirc-parse-command to zenirc-parse-firstword, since it
+        was used all over the place, not just in the command code.
+        Added /notify command - can do /notify +nick to add to
+        notification list, /notify -nick to remove, /notify list to get a
+        list, and /notify to check current state.
+        Added zenirc-isin-ison-list-p to check to see if a given nick is in an
+        "ison" list.
+        Modified zenirc-server-PING to call zenirc-command-notify-hook.
+        Modified 001 reply handler to get your current nick (fixes zenirc bug
+        when you log on and your initial nick is already taken)
+        Added server 303 reply handler to display who is currently on irc from
+        your notify list.
+        Moved zenirc-extract-nick to the utility page.
+        Added zenirc-member function that works like memq but uses equal
+        instead of eq.
+        Fixed minor bug in zenirc-delete.
+        Made changes to zenirc-run-hook to stop running the hooks in a
+        hooklist if one of the hooks set zenirc-run-next-hook to nil (it
+        defaults to t).
+        Added zenirc-parse-words which turns a line of the form "a b c" to
+        ("a" "b" "c").
+
+Wed Feb  2 01:01:08 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-delete): New function from Noah.
+        (zenirc-command-vector): Deleted.  Nothing used it.
+
+Thu Jan 27 21:08:26 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-parse-command): Fixed bug that was stripping
+        the last character off of the name of a command that had no
+        subcommand.
+
+Tue Jan 25 05:21:16 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-dcc.el, zenirc.el: Added "copyleft" statement.
+
+Mon Jan 24 15:35:33 1994  Per Persson  <pp@solace.mh.se>
+
+        * zenirc.el: The final fix for ;; you got kicked function.
+        Now it really does what it is supposed to do.
+
+Mon Jan 24 15:16:07 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-run-hook): New function from friedman.
+        This is the beginning of better hook support for zenirc.
+
+        * zenirc-dcc.el: Added code to manage zenirc-dcc-list.
+
+        * zenirc-swedish-mode.el: ci -u zenirc-swedish-mode.el.
+        Improved some of the formatting (believe it or not).
+
+Sun Jan 23 21:32:16 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-dcc.el: New file.
+
+Sat Jan 22 06:11:21 1994  Per Persson  <pp@solace.mh.se>
+
+        * zenirc.el: Fixed the broken zenirc-server-KICK so it displays
+        what it is supposed to show when you get kicked from a channel.
+
+Tue Jan 18 17:52:28 1994  Per Persson  <pp@solace.mh.se>
+
+        * zenirc.el: Added handlers for server numerics 200, 201, 202, 203,
+        204, 205, 206, 208, 209, 211, 212, 213, 214, 215, 216, 218, 219, 241
+        242, 243, 244, 303 and a handler for server PONGs.
+        Fixed zenirc-privmsg-last-recieved so it won't ever be set to a
+        server name.
+
+Tue Jan 18 15:24:03 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Fixed bug in previous code - zenirc-privmsg-last-rec
+        had to be set to the value of (zenirc-extract-nick from) so that
+        nick!user@host never wound up in zenirc-privmsg-last-rec.
+
+Tue Jan  4 06:06:12 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc-swedish-mode.el: Added spelling corrections from
+        pp@solace.mh.se.
+        Added silly comments from the splode-unit (friedman).
+
+        * zenirc-swedish-mode.el: New file.
+
+        * zenirc.el: Added C-cr and C-cs commands to do completion like
+        `:' and `;' in Kiwi.  (From pp@solace.mh.se.)
+
+Sun Jan  2 01:24:48 1994  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: ircd 2.6.16.0 and above appear to terminate server
+        messages with CR NL instead of just NL. In zenirc-parselines, I
+        added a check for this, and strip the CR in addition to the
+        NL.  When servers older han ircd 2.6.16 are not around, this should
+        be fixed to remove the if test.
+
+Fri Dec 31 19:44:36 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-command-quit): New function.
+        Added "/quit message"; before you had to "/quit :message" if you
+        wanted `message' to contain spaces.
+
+Thu Dec 23 17:01:29 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added command hooks for /away and /topic.
+
+Sun Nov 28 18:25:29 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-parse-command): rewrote to parse commands into
+        ("cmd" . "arguments") instead of fully parsing every word into an
+        array element.
+        (zenirc-do-command) modified to use the zenirc-parse-command
+        described above.
+        (zenirc-send-line): changed comment indicating this was temporary code;
+        this doesn't seem to be the case anymore.
+        (zenirc-format-nickuserhost): added comment indicating example
+        replacements for this defun are in the client distribution.
+        (zenirc-command-query): rewrote to use the new arguments passed from
+        zenirc-do-command.
+        (zenirc-command-m, zenirc-command-msg): wrote these to implement
+        irc-II style /msg victim text and /m victim text commands.
+        (zenirc-init-hooks): added hooks for zenirc-command-m and
+        zenirc-command-msg.
+
+Thu Nov 11 22:42:21 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added diffs from friedman's version of 1.50 to do
+        handle a list of server data. **I have not tested this code yet**.
+        Fixed zenirc-server-KICK to show the person who kicked you correctly
+        when you get kicked from a channel.
+
+Thu Nov  4 14:54:36 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: rmtodd added command parsing code.
+        Checks for zenirc-command-WORD-hook.
+        basic algorithm is:
+         if user input does not start with `/', send to zenirc-current-victim
+         if user input starts with `/':
+           if fboundp zenirc-command-WORD-hook, where `WORD' is what
+           follows the `/' then call it with process, argc, and argv (the
+           last two similar to C) else pass it to the server.
+
+Sun Oct 24 17:02:36 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added handlers for server numerics 331, 351, 364,
+        365, 367, and 368.
+
+Tue Oct 19 04:34:51 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added 371 and 374 server replies.
+        Fixed buglet in zenirc-server-PART that showed up when you parted
+        several channels one after another.
+
+Tue Oct 19 02:30:13 1993  Richard Todd  <rmtodd@servalan.servalan.com>
+
+        * zenirc-fancy-format.el: Now hooks into the /who display, so you
+        can do a who and load the nickuserhost list quickly with the
+        people on your channel.
+
+Mon Oct 18 01:18:20 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: fixed zenirc-hostname defvar.
+        Added defun of zenirc-set-text-list-ent from rmtodd.
+        Added handlers for server numerics 381, 382, 391, 392, 393, 394,
+        395.
+
+Thu Oct 14 03:55:03 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: (zenirc) fixed check of zenirc-process-connect-hook.
+
+        * zenirc.el: Added code to make zenirc proxy easier.
+        (zenirc): if zenirc-process-connect-hook is fboundp, it will be
+        called in place of open-network-stream.
+        (zenirc-logon): added a hook, zenirc-logon-hook, which can be
+        called in place of this function if it is fboundp.
+
+Wed Oct 13 07:02:30 1993  Charles Hannum  <mycroft@gnu.ai.mit.edu>
+
+        * zenirc-fancy-format.el (zenirc-format-nickuserhost-hook): Don't use
+        table for server names.
+
+        * zenirc.el: zenirc-servername: New variable.
+        (zenirc-parse-servermsg): Default `from' to zenirc-servername if
+        non-nil.
+        (zenirc-server-PING): Use the host name in the argumet list.
+        (zenirc-server-004): Record server name in zenirc-servername.
+        (zenirc-extract-nick): Return nil if argument is a server name.
+        (zenirc-format-privmsg-or-notice): Remove special case for local
+        server.
+
+Wed Oct 13 05:10:42 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Fixed lame string compare.
+        Last checkin hosed by NFS problem; this contains
+        rmtodd@servalan.servalan.com's fix to the process filter.
+
+Tue Oct 12 22:14:19 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+	* zenirc-ctcp-flood.el:	Modified to send each message 10
+        times. eat flaming ctpc, bozo!
+
+	* zenirc-fortran-mode.el: Fixed bug in last mod, and added rcs info.
+
+        * zenirc.el: Applied fix for "wrong side of point" errors that
+        happened in zenirc-display-string when user was typing and
+        output happened. contributed by rmtodd@servalan.servalan.com.
+
+Mon Oct 11 23:39:34 1993  Charles Hannum  <mycroft@gnu.ai.mit.edu>
+
+        * zenirc-fancy-format.el: Use (aref) rather than (nth).
+
+        * zenirc.el: Use a statically allocated vector for parsing server
+        messages, and don't break a line if a CR is typed in the middle.
+
+Mon Oct 11 22:33:46 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+	* zenirc-fortran-mode.el: Updated to use aref instead of nth while
+        handling server messages.
+
+        * zenirc.el: Minor string formatting frobs (vague comment to annoy
+        noah).  [noah is appropriately annoyed. 1995-03-18]
+        Added handlers for server messages 305, 324, 342.
+        Fixed call of zenirc-format-nickuserhost-hook in
+        zenirc-server-KICK.
+
+        * zenirc-fancy-format.el: Added zenirc-server-NICK-hook to track nick
+        changes and not display nick!user@host if possible.
+
+        * zenirc.el: fixed bug in CTCP SOURCE display.
+
+Mon Oct 11 01:33:49 1993  Charles Hannum  <mycroft@gnu.ai.mit.edu>
+
+        * zenirc.el: Fix 322, KICK, and WALLOPS.
+
+        * zenirc-fancy-format.el: Move entries to the front of the alist
+        as they are used.  Also, only call assoc once.
+
+Sun Oct 10 21:24:16 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+	* zenirc-fortran.el: Modified to work with new internal servermsg
+        scheme.
+
+        * zenirc.el: Minor comment update (intentionally vague comment to
+        annoy noah).  [noah is appropriately annoyed 1995-03-18]
+        Added server message handlers for 302, 445, 446, 451, 462, 463, 464,
+        467, 483, 491, 501, 502. Added hook for 465.
+
+        * zenirc.el (zenirc-logon): Added support for PASS command on connect.
+        (zenirc-server-NICK): Added nick tracking of your current nickname.
+        (zenirc-channelp): Utility routine to determine if a string is a
+        nickname or a channel name.
+        (various places): Changed semantics of zenirc-current-victim - "no
+        victim" is now nil instead of "".  This fixes a bug that showed up
+        if the user starts banging return immediately on connect.
+        Added server message handlers for: MODE, KICK, 407, 413, 414, 422,
+        423, 424, 431, 432, 433, 436, 441, and 444.
+
+        * zenirc.el (zenirc-parse-servermsg) changed to return (msgtype
+        from arg1...argn) instead of (msgtype from (arg1...argn).
+        This required a rewrite of server message handlers:
+        ERROR, INVITE JOIN KILL NICK NOTICE PART PING PRIVMSG QUIT TOPIC
+        WALLOPS 001 002 003 004 251 252 253 254 255 301 306 311 312 313
+        314 315 317 318 319 321 322 323 332 341 352 353 366 369 372 375
+        376 401 402 403 404 405 406 409 411 412 421 442 443 461 465 471
+        472 473 474 475 481 482.
+        (zenirc-server-314): Added.
+
+Sat Oct  9 22:19:56 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+	* zenirc-ctcp-flood.el, zenirc-example.el, zenirc-fortran.el:
+	New files.
+
+        * zenirc-fancy-format.el: New file.
+
+        * zenirc.el: Added CTCP PING query handler.
+
+        * zenirc.el: Added mycroft@ai.mit.edu as co-author.
+        Deleted RCS log from source code.
+        Changed CTCP SOURCE reply to point to brrcrftp.
+        Changed defvar of zenirc-text-list to a setq. Otherwise changing
+        this while developing is a hassle. Can be changed back when code
+        is stable.
+        Added improved zenirc-parse-servermsg, from mycroft
+        Added error message when you try to send text and you don't have a
+        zenirc-current-victim.
+        Added display of emacs-version to CTCP VERSION replies.
+
+Fri Oct  8 05:22:28 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Moved zenirc-startup-hook to a more useful place.
+        Minor bugfixes in CTCP code.
+        Many speedups added as suggested by mycroft.gnu.ai.mit.edu.
+        Removed broken zenirc-match defun, and replaced instances with
+        properly working case insensitive code as suggested by mycroft.
+        Added zenirc-startup-hook.
+        Made hooks actually work properly for server messages, etc. so you
+        don't have to modify zenirc.el anymore.
+
+Mon Oct  4 01:38:27 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Minor bugfixes in string formatting and ctcp code.
+
+Sat Oct  2 02:09:25 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Fixed format string in /who list reply.
+
+Fri Oct  1 02:58:48 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Fixed display of user in PART servermsg handler.
+
+Wed Sep 29 00:28:22 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Cleaned up version data and a few odds and ends for
+        ALPHA1 release.
+
+        * zenirc.el: Rewrote CLIENTINFO ctcp to be smaller and user
+        extensible.
+
+Tue Sep 28 20:16:31 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added CTCP query handlers for ACTION, CLIENTINFO,
+        ERRMSG, FINGER, SOURCE TIME, USERINFO, and VERSION.
+        Added hook code for CTCP.
+        Added "message sent to" display to the input handler.
+        Cleaned up CTCP code.
+
+Mon Sep 27 23:43:08 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added temporary input parser, so you don't have to
+        type "PRIVMSG #chan :foo" to talk to the current channel.
+
+        * zenirc.el: Added save of match data around process-filter,
+        deleted save of match data in various other places in the source.
+
+Sun Sep 12 22:52:40 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Modified message and notice handling to support ctcp
+        Currently, just send ctcp errmsg to all ctcp queries.
+
+        * zenirc.el (zenirc-format-nickuserhost): wrote code to handle a
+        case the IRC protocol spec says "doesn't happen".
+
+Mon Sep  6 01:22:10 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Changed "notify" to "signal", and added a rudimentary
+        signal subroutine.
+
+Sun Sep  5 05:04:42 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added 253 numeric and support for a "notify" feature
+        like Kiwi has.
+
+Wed Sep  1 04:08:54 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added "fnord" to zenirc-ignorance-list.
+
+Sun Aug 29 17:37:01 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Fixed 332 numeric handler.
+        Added zenirc-ignore and zenirc-ignorance-list, so client can now
+        ignore annoying things.
+
+Sat Aug 28 03:46:27 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added numerics 369, 405, 406, 409, 465.
+        Added comments.
+
+Fri Aug 27 13:43:25 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added support for 482 numeric, corrected some
+        spelling errors.
+
+Mon Aug 16 00:38:44 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added handlers for numerics 411, 471, 472, 473, 474,
+        475, and 481.
+
+Sun Aug 15 18:16:08 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added INVITE server message handler.
+
+Sat Aug 14 23:48:20 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added handlers for server messages KILL, WALLOPS
+        (untested), 341, 404, 412, 422, 442, 443, and 461.
+
+        * zenirc.el: Added handlers for server numerics 306 and 403
+
+        * zenirc.el: Added numeric handlers for server numerics 001, 002,
+        003, 004, 252, 254, 255, 372, 375, 376.
+
+Fri Aug 13 05:57:32 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added code to handle servermsg 251.
+
+Fri Jul 23 20:23:37 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added support for 315, 317, and 352 numerics.
+
+Wed Jul 21 14:41:51 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added code to handle NICK server message.
+
+Sun Jul 18 15:36:55 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Finished PART and JOIN, added a bunch of numerics,
+        wrote (zenirc-match).
+
+        * zenirc.el: (zenirc-format-nickuserhost) Fixed hook call.
+        Worked JOIN & PART server message handlers.
+
+        * zenirc.el (zenirc-format-nickuserhost-hook): New variable.
+        Added handlers for server message types NOTICE, PRIVMSG, numerics
+        401 and 402.
+
+Sat Jul 17 23:01:19 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Some general cleanup of comments in
+        zenirc-parse-servermsg Added new servermsg handling routines for
+        ERROR, PART, TOPIC (unfinished), numerics 321, 322, 323, and 332.
+
+        * zenirc.el (zenirc-parse-servermsg): extended to parse servermsg
+        arguments also servermsg hook routines - modified to understand
+        new output from zenirc-parse-servermsg.
+
+Thu Jul  8 02:22:55 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Deleted zenirc-instring.  Code now uses string-match
+        everywhere.
+        Many minor bugfixes.
+        Rewrote zenirc-parse-servermsg.
+        Added some new hooks for server messages.
+
+Sat Jul  3 02:42:25 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-text-list): New variable.
+        This is an alist of all text output by zenirc, so it can be
+        internationalized or customized.
+
+Wed Jun 30 05:35:01 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Changed some instances of zenirc-instring to
+        string-match.
+
+Mon Jun 28 20:29:54 1993  Eric Prestemon  <ecp@gnu.ai.mit.edu>
+
+        * zenirc.el: Now handles host:port correctly in IRCSERVER.
+
+Sat Jun 19 00:37:12 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Lots of general cleanup, bux fixes.
+        wrote temporary servermessage parser routine.
+
+Tue Jun 15 12:30:20 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-parselines): rewrote code to jump to server
+        message handler to call zenirc-server-MSGTYPE-hook.
+        (zenirc-parse-servermsg): started to write this subroutine.
+
+Sun Jun 13 02:56:09 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-filter): Call zenirc-parselines, which
+        breaks up a block of text from the server into lines.
+
+Thu Jun 10 01:43:27 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-parse-servermsg): worked some on parsing
+        server messages. Realized that data coming from the zenirc process
+        is not coming a line at a time, and it needs to be blocked into
+        lines before calling zenirc-parse-servermsg.
+
+Wed Jun  9 04:55:48 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-filter): thought of a better way to make
+        zenirc-filter work.
+
+        * zenirc.el (zenirc-filter): I made this function call a function
+        based on the server message type. If there is no handler, call
+        zenirc-display-string.
+
+        * zenirc.el (zenirc-logon): Added send of NICK and USER commands
+        to IRC server on connect.
+
+Fri Jun  4 05:27:44 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el (zenirc-logon): started to write, got tired, went to
+        bed instead.
+
+        * zenirc.el: Added code to parse IRCSERVER environment variable.
+
+Thu Jun  3 08:19:19 1993  Noah Friedman  <friedman@prep.ai.mit.edu>
+
+        * zenirc.el: Add autoload cookies.
+        Differentiate between process filter and buffer display routine
+        Initialize zenirc-mode-map at load-time, not in zenirc-mode
+        (zenirc): Don't create a new *zenirc* process unless prefix arg is
+        given.
+        Without prefix arg, just switch to initial zenirc process.
+        (zenirc): Don't bother making `zenirc-process' buffer-local.  You
+        don't want to rely on it anyway.  Use let instead.
+        (zenirc-send-line): Cleaned up.
+
+Thu Jun  3 02:16:35 1993  Ben Mesander  <ben@gnu.ai.mit.edu>
+
+        * zenirc.el: Added stuff to make scrolling work right from
+        meditate.el.
+
+        * zenirc.el: New file.

@@ -1,0 +1,56 @@
+# This file should be edited in -*- tcl -*- mode;
+# $Id: dot-tclrc,v 1.0 1993/03/07 04:42:04 jct Exp $
+
+## This file contains a sample script showing how to set up the tcl
+## shell to work properly with j-shell.  Before examining this script,
+## please read the comments in the file dot-tcsh; the comments in that
+## script describe steps common to the scripts for all shells.
+
+# Comments delimited by a single # are specific to tcl.
+
+if {$env(TERM) == "emacs"} {
+  
+  ## Step A omitted.
+  
+  ## Step B.
+  # I don't know what's considered "good" tcl coding style, but I'm
+  # probably breaking it by concatting the short functions into a
+  # single line.
+  proc cwdcmd {} { echo "\033EmAcScd" [pwd]; }
+  proc hostcmd {} { echo "\033EmAcShost" [exec hostname]; }
+  proc reorient {} { hostcmd; cwdcmd; }
+  
+  ## Step C.
+  # Check to see whether the chdir command exists; if it does, then
+  # assume it does what we need and don't attempt to rename cd.  This
+  # is primarily so this script won't break cd should we happen to
+  # source it twice.
+  if {[info commands chdir] == ""} { rename cd chdir; }
+
+  # Define cd
+  proc cd {{dir ""}} {
+    global env;
+    if {$dir == ""} {
+      chdir $env(HOME);
+    } else {
+      chdir $dir;
+    }
+    reorient;
+  }
+
+  # Don't need to worry about pushd and popd--they call cd, so we're
+  # covered.
+
+  ## Step D.
+  proc rlogin	{args} { system [concat rlogin $args]; reorient; }
+  proc sh	{args} { system [concat sh $args]; reorient; }
+  proc ksh	{args} { system [concat ksh $args]; reorient; }
+  proc csh	{args} { system [concat csh $args]; reorient; }
+  proc tcsh	{args} { system [concat tcsh $args]; reorient; }
+  proc zsh	{args} { system [concat zsh $args]; reorient; }
+  proc bash	{args} { system [concat bash $args]; reorient; }
+  proc tcl	{args} { system [concat tcl $args]; reorient; }
+
+  # Step E.
+  reorient;
+}

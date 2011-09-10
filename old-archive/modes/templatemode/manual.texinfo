@@ -1,0 +1,28 @@
+\input texinfo @c -*-texinfo-*-
+@settitle Template-Mode for GNU Emacs
+
+@titlepage
+@sp 10
+@center @titlefont{Template-Mode for GNU Emacs}
+@sp 3
+@center Mark A. Ardis
+@sp 1
+@center Wang Institute of Graduate Studies
+@center Tyngsboro, Massachusetts 01879
+@sp 1
+@center July 31, 1987
+@sp 3
+@center @b{Abstract}
+This manual describes @i{template-mode}: a set of functions for
+manipulating templates of text within GNU Emacs.  Some of the commands
+insert and expand templates, while others help you create templates for
+later (or immediate) use.
+@end titlepage
+
+@c Include files with actual text
+@include template.texinfo
+
+@c Print the table of contents
+@contents
+
+@bye

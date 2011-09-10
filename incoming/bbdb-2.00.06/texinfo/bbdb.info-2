@@ -1,0 +1,1018 @@
+This is bbdb.info, produced by Makeinfo version 3.12h from bbdb.texinfo.
+
+   This file documents the Insidious Big Brother Database
+
+   This is edition $Revision: 1.20 $ of the BBDB User Manual for BBDB
+version 2.00.03.
+
+   Copyright (c) 1991-1994 Jamie Zawinski <jwz@netscape.com> Copyright
+(c) 1997-1998 Matt Simmons <simmonmt@acm.org>
+
+
+File: bbdb.info,  Node: Mail Sending Interfaces,  Prev: News Reading Interfaces,  Up: Interfaces
+
+Mail Sending Interfaces
+-----------------------
+
+   When sending mail, the keystroke `M-TAB' is bound to the function
+`bbdb-complete-name'.  This will take the string that you have typed
+(from point back to the preceding colon, comma, or the beginning of the
+line) and will complete that against the contents of the database.
+What you have typed may be an initial subsequence of a person's full
+name or network address; if it completes ambiguously, then what you
+have typed will be replaced with the common portion of the matches.
+Typing `M-TAB' again will show a list of possible completions.  If it
+completes unambiguously, then an address of the form
+`User Name <email-address>' will be inserted.  The variable
+`bbdb-completion-type' controls whether completion is done on real
+names, or network addresses, or both.
+
+   This binding is automatically set by the various insinuation
+functions documented earlier in this manual.  (*Note Initial
+Configuration::) Briefly, the forms for these functions are:
+
+Gnus
+     `(setq gnus-Startup-hook 'bbdb-insinuate-gnus)' for Gnus 3.14 or
+     older
+     `(setq gnus-startup-hook 'bbdb-insinuate-gnus)' for Gnus 3.15 or
+     newer
+
+MH-E
+     `(setq mh-folder-mode-hook 'bbdb-insinuate-mh)'
+
+RMAIL
+     `(setq rmail-mode-hook 'bbdb-insinuate-rmail)'
+
+sendmail
+     `(setq mail-setup-hook 'bbdb-insinuate-sendmail)'
+
+VM
+     `(bbdb-insinuate-vm)' Add to `~/.vm' file
+
+The above forms should be added to your Emacs initialization file,
+except where otherwise noted.
+
+   You can control what "real name" is inserted with the `mail-alias'
+field: if a record has a `mail-alias' field, then that is used instead
+of their `name' field.
+
+   If the variable `bbdb-completion-display-record' is true (the
+default) then when you successfully complete an address with `M-TAB',
+the corresponding record will be appended to the `*BBDB*' buffer.  The
+buffer will not be displayed if it is not already visible, but the
+record will be displayed there.
+
+   When sending mail, you can use the command `bbdb-yank-addresses' to
+CC the current message to the people currently displayed in the
+`*BBDB*' buffer.  This is useful if you are in the midst of sending or
+replying to a message, and you decide to add some recipients.  You can
+use one of the `M-x bbdb' commands to display the set of people that
+you want to CC the message to, and then execute this command to add
+them to the list.
+
+   If you are using Jamie Zawinski's `mail-abbrevs.el' package, which
+uses the word-abbrev mechanism for mail aliases, then you can store your
+mail aliases in the BBDB instead of duplicating the information
+elsewhere.
+
+   If you want a mail alias to be defined for a person, simply add a
+`mail-alias' field to their record.  You may have multiple aliases for
+the same person; simply separate them with commas.
+
+   If more than one person has the same mail-alias, then that alias
+expands to the addresses of all of those people; in this way you can
+maintain mailing lists within the BBDB.
+
+   To actually define the aliases which are stored in the BBDB, call the
+function `bbdb-define-all-aliases' from your `mail-setup-hook'.  This
+will search the database, and call `define-mail-alias' to define each
+of the resulting aliases.
+
+
+File: bbdb.info,  Node: Reader-specific Features,  Next: Other Packages,  Prev: Interfaces,  Up: Top
+
+Reader-specific Features
+========================
+
+   There are features of the BBDB that are available only for specific
+mail- and news-readers.  These features are described below.
+
+* Menu:
+
+* Gnus Features::                       Gnus-specific Features
+* VM Features::                         VM-specific Features
+
+
+File: bbdb.info,  Node: Gnus Features,  Next: VM Features,  Prev: Reader-specific Features,  Up: Reader-specific Features
+
+Gnus-specific Features
+----------------------
+
+   The BBDB can be used to provide score information, or to integrate
+database information into the Gnus Summary buffer or the GNUS Subject
+List.
+
+* Menu:
+
+* Gnus Scoring::                        Store score adjustments in the BBDB
+* Gnus Summary Buffer::                 BBDB information in the Summary buffer
+* GNUS Subject List::                   BBDB information in the Subject List
+
+
+File: bbdb.info,  Node: Gnus Scoring,  Next: Gnus Summary Buffer,  Prev: Gnus Features,  Up: Gnus Features
+
+Scoring
+.......
+
+   The BBDB can provide scoring information to Gnus in one of two ways.
+
+  1. Articles whose authors appear in the BBDB and who have
+     `gnus-score' fields will have their scores adjusted by the value
+     contained in that field.
+
+  2. Articles whose authors appear in the BBDB but who do not have
+     `gnus-score' fields will have their scores adjusted by
+     `bbdb/gnus-score-default'.  If `bbdb/gnus-score-default' is `nil',
+     no score adjustment will be made.
+
+   The BBDB by default searches the field contained in
+`bbdb/gnus-score-field' for score values.  To have the BBDB use a
+different field, change the value of this variable.
+
+   To enable BBDB-assisted scoring, add the `bbdb/gnus-score' function
+to `gnus-score-find-score-files-function'.  Assuming that you want to
+preserve the default value of this variable, use a form similar to the
+following:
+
+     (setq gnus-score-find-score-files-function
+           '(gnus-score-find-bnews bbdb/gnus-score))
+
+   Note: The default value in Gnus 5.5 is `gnus-score-find-bnews'.
+Check your configuration before using the above code, as your values may
+be different.
+
+
+File: bbdb.info,  Node: Gnus Summary Buffer,  Next: GNUS Subject List,  Prev: Gnus Scoring,  Up: Gnus Features
+
+Gnus Summary Buffer Enhancements
+................................
+
+   Gnus can use the BBDB to do one of two things:
+
+   * Mark authors in the Summary Buffer who have records in the BBDB
+     with a user-defined mark character.  See Marking Posters, below.
+
+   * For authors in the Summary Buffer who also have records in the
+     BBDB, replace their name as listed in the Summary Buffer with
+     their name as stored in the BBDB.  See Using Names from the BBDB,
+     below.
+
+Marking Posters
+...............
+
+   Authors with records in the BBDB can be marked either with a
+user-defined mark character, or with a default one.  The marking is
+enabled by the use of a Gnus user format code, as determined by
+`bbdb/gnus-summary-in-bbdb-format-letter'.  This variable, which
+defaults to `b', is used to create a format code which is intended for
+use in `gnus-summary-line-format'.  The format code is created by
+concatenating `%u' with the value of
+`bbdb/gnus-summary-in-bbdb-format-letter'.  In the default case this
+results in the creation of the format code `%ub'.
+
+   Posts are marked as follows: If the record for the poster has the
+field indicated in `bbdb-message-marker-field' (the default is
+`mark-char'), the value of that field is used as the mark character.(1)
+If no such field is present, the value of
+`bbdb/gnus-summary-known-poster-mark' will be used instead.  If the
+author is not in the BBDB, a space will be used as the mark character.
+
+Using Names from the BBDB
+.........................
+
+   The names reported for authors of posts in the Summary buffer can be
+altered to conform to the values present in their respective BBDB
+records (if any).  This rewriting is enabled by the use of a Gnus user
+format code, as determined by `bbdb/gnus-summary-user-format-letter'.
+This variable, which defaults to `B', is used to create a format code
+which is intended for use in `gnus-summary-line-format'.  The format
+code is created by concatenating `%u' with the value of
+`bbdb/gnus-summary-user-format-letter'.  In the default case this
+results in the creation of the format code `%uB'.  This format code is
+intended to replace the format code previously used in the Summary
+buffer format line to indicate the author and/or net address (usually
+`%a', `%n', and/or `$N').
+
+   The effects of this format code are in two independent parts - the
+marking of known posters, and the rewriting of posters names.  The
+first, the marking of posters, occurs only when
+`bbdb/gnus-summary-mark-known-posters' is `t' (the default) and the
+posters have entries in the BBDB.  When this variable is true, the
+marking occurs as described in the previous section, Marking Posters,
+above.
+
+   The poster name rewriting is done for all posters - not just for
+those with records in the BBDB.  That said, rewriting rules for posters
+in the BBDB are more flexible than for those not listed.  The rewriting
+is governed by two variables, as described below.
+
+   `bbdb/gnus-summary-prefer-real-names' can have one of three values -
+`t', `bbdb', or `nil'.  In general, this variable governs the
+preference between net addresses and names.  If it is `t', the name (if
+any) will be used.  If `nil', the net address will be used.  The third
+value, `bbdb', can be used as a method for distinguishing between
+authors with records in the BBDB and those without.  If the variable is
+set to `bbdb', the name from the BBDB record will be used if the author
+has a record in the BBDB.  If the author is not in the BBDB, the net
+address from the message will be printed.  This variable makes little
+sense if `bbdb/gnus-summary-prefer-bbdb-data' is `nil', as no names
+will be printed in the Summary buffer in this case - only net addresses.
+
+   `bbdb/gnus-summary-prefer-bbdb-data' is used to (dis)allow use of
+the BBDB for author data retrieval.  If it is `t', data from the BBDB
+will be used if available.  If it is `nil', data from the BBDB will not
+be used.
+
+In the following examples, assume the following:
+
+  1. Message: `From: Jamie <jwz@netscape.com>'
+     BBDB: No record
+
+  2. Message: `From: Matt <simmonmt@acm.org>'
+     BBDB: Name: `Matthew', Net: `simmonmt@purdue.edu'
+
+`bbdb/gnus-summary-prefer-bbdb-data'    `t'          `t'          `nil'
+`bbdb/gnus-summary-prefer-real-names'    `t'         `bbdb'         `t'
+Printed in Summary buffer for                                 
+             Case 1                   Jamie     jwz@netscape.com   Jamie
+             Case 2                  Matthew      Matthew         Matt
+
+   ---------- Footnotes ----------
+
+   (1) While it is possible to put a multi-character mark in
+`bbdb-message-marker-field' and/or in
+`bbdb/gnus-summary-known-poster-mark', the resulting summary buffer
+will be misaligned as a result.  This misalignment will result from fact
+that at this time the character used to indicate posts whose authors are
+not in the BBDB is always a single character, and cannot be changed.
+
+
+File: bbdb.info,  Node: GNUS Subject List,  Prev: Gnus Summary Buffer,  Up: Gnus Features
+
+GNUS Summary Buffer Enhancements
+................................
+
+   This section is remarkably terse, as I don't have a copy of GNUS.
+If anybody can provide more descriptive information, please let me know.
+
+     (autoload 'bbdb/gnus-lines-and-from "bbdb-gnus")
+     (setq gnus-optional-headers 'bbdb/gnus-lines-and-from)
+
+`bbdb/gnus-mark-known-posters'
+     If `t' (the default), then the GNUS subject list will contain an
+     indication of those messages posted by people who have entries in
+     the Insidious Big Brother Database (they will be marked with an
+     asterisk.)
+
+     You can change the character used to mark records on a
+     record-by-record basis by adding a `mark-char' property to the
+     record, whose value is be the string to display (preferably one
+     character.)
+
+`bbdb/gnus-header-prefer-real-names'
+     Default: `nil'.  if `t', then the GNUS subject list will display
+     real names instead of network addresses.
+
+`bbdb/gnus-header-show-bbdb-names'
+     Default: `t'.  If both this variable and the
+     `bbdb/gnus-header-prefer-real-names' variable are true, then for
+     news messages from people who are in your database, the name
+     displayed will be the primary name from the database, rather than
+     the one from the `From:' line of the message.  This doesn't affect
+     the names of people who aren't in the database, of course.
+
+`bbdb/gnus-lines-and-from-length'
+     Default: 18.  The number of characters used to display `From:'
+     info in GNUS, if you have set `gnus-optional-headers' to
+     `bbdb/gnus-lines-and-from'.
+
+
+File: bbdb.info,  Node: VM Features,  Prev: Gnus Features,  Up: Reader-specific Features
+
+VM-specific features
+--------------------
+
+   The BBDB can be used to integrate database information into the
+message summary.
+
+* Menu:
+
+* VM Message Summary::                  BBDB information in message summary
+
+
+File: bbdb.info,  Node: VM Message Summary,  Prev: VM Features,  Up: VM Features
+
+VM Message Summary Enhancements
+...............................
+
+   VM users can cause their summary buffer to display the name of the
+message sender according to BBDB data, instead of according to the
+contents of the current message's headers.  In VM 5.40 or later, use
+the summary format control `%UB"' instead of `"%F"', and the current
+record name will be shown there if available.  If no entry is found it
+behaves like `"%F"'.  See the documentation for `vm-summary-format' for
+more details.  Warning, this may significantly slow down summary
+generation for large folders.
+
+
+File: bbdb.info,  Node: Other Packages,  Next: Options,  Prev: Reader-specific Features,  Up: Top
+
+Using the BBDB with other packages
+==================================
+
+   The BBDB adds functionality to several packages.  The following
+sections detail these augmentations.
+
+* Menu:
+
+* Using Message Mode::          Using the BBDB with Message Mode
+* Using Reportmail::            Using the BBDB with Reportmail
+* Using Supercite::             Using the BBDB with Supercite
+* Using Web Browsers::          Using the BBDB with Web Browsers
+
+
+File: bbdb.info,  Node: Using Message Mode,  Next: Using Reportmail,  Prev: Other Packages,  Up: Other Packages
+
+Using the BBDB with Message Mode
+--------------------------------
+
+   At this time, the only feature the BBDB adds to Message mode is the
+binding to `M-TAB' which allows for BBDB record completion.
+
+
+File: bbdb.info,  Node: Using Reportmail,  Next: Using Supercite,  Prev: Using Message Mode,  Up: Other Packages
+
+Using the BBDB with Reportmail
+------------------------------
+
+   The BBDB can modify the `reportmail.el' package to use information
+from BBDB records when identifying the senders or recipients of e-mail
+messages.
+
+   In normal operation, Reportmail displays the name and net address
+sender and recipient of incoming messages.  The BBDB can be configured
+to intercept and rewrite this information before it appears in the
+Emacs mode-line.  It first attempts to rewrite the sender and/or
+recipient information by substituting those addresses with information
+from the BBDB. Replacement information is first sought from the
+`mail-name' field in the respective BBDB records.  If no such field is
+found, the `name' field is returned.  If no BBDB record is found, no
+rewriting is performed.
+
+   The BBDB-Reportmail augmentation is accomplished through the
+advising of the Reportmail `display-time-get-field' function in order
+to do a-posteriori modification of the returned value.  The
+augmentation uses the `bbdb/reportmail-alternate-full-name' function to
+retrieve data from the BBDB for use in rewriting.
+
+
+File: bbdb.info,  Node: Using Supercite,  Next: Using Web Browsers,  Prev: Using Reportmail,  Up: Other Packages
+
+Using the BBDB with Supercite
+-----------------------------
+
+   The BBDB can be used with Supercite to store attributions with BBDB
+records.  Normally, when a non-default attribution is entered for a
+given message, the entered attribution is used for that message, and is
+then discarded.  When the BBDB-Supercite augmentation is enabled, the
+non-default attribution will be added to the record (if any) for the
+entity being cited.  This poor explanation sounds complicated, but it's
+not.  If a message from `Jamie Zawinski <jwz@netscape.com>' is being
+replied to, Supercite will, by default, suggest the citation `Jamie'.
+If the non-default citation `jwz' is entered, Supercite can save it
+with the BBDB record for `Jamie Zawinski' in the `attribution' field.
+
+   The field used can be changed by changing the value of
+`bbdb/sc-attribution-field'.
+
+
+File: bbdb.info,  Node: Using Web Browsers,  Prev: Using Supercite,  Up: Other Packages
+
+Using the BBDB with Web Browsers
+--------------------------------
+
+   The BBDB/Web Browser integration is in two parts, one which is
+automatically enabled, and one which must be manually enabled (*note
+Web Browser Prep::.).  The first feature added is the ability to
+display the URL associated with a given record in a Web Browser.  The
+second is the ability to add URLs to BBDB records from within W3, the
+Emacs Web Browser.
+
+   Pressing `W' in the `*BBDB*' buffer while the cursor is positioned
+over a record with a `www' field will cause the first URL in the field
+to be loaded in a Web Browser.  This functionality uses `browse-url' to
+display URLs - see the documentation for `browse-url' for information on
+selecting the browser to be used.
+
+   If W3 is used, and if the BBDB/W3 functionality has been enabled as
+described in *Note Web Browser Prep::, pressing the `:' key will add
+the URL currently being displayed in W3 to a user-specified BBDB record.
+
+
+File: bbdb.info,  Node: Options,  Next: Utilities,  Prev: Other Packages,  Up: Top
+
+Options
+=======
+
+   There are many variables which control the behavior of the Insidious
+Big Brother Database, and there are many hook-variables which can be
+used to modify its behavior in more complex ways.  Several pieces of
+functionality are included which use the hooks in this way.
+
+* Menu:
+
+* Customization Parameters::	Customization Parameters
+* Customization Hooks::		Customization Hooks
+* Predefined Hooks::		Predefined Hooks
+
+
+File: bbdb.info,  Node: Customization Parameters,  Next: Customization Hooks,  Prev: Options,  Up: Options
+
+Customization Parameters
+------------------------
+
+`bbdb-file'
+     The name of the file which contains your personal database.
+     Default: `~/.bbdb'.
+
+`bbdb-default-area-code'
+     The default area code to use when prompting for a new phone number.
+     Default: 415.  This must be a number, not a string.
+
+`bbdb-north-american-phone-numbers-p'
+     Whether syntax-checking of phone numbers should be enforced.
+     Default: `t'.  This only works for Bell-system phone numbers.  If
+     this is true, then you can't enter invalid phone numbers, and all
+     phone numbers are pretty-printed in the same way.  European phone
+     numbers don't have as strict a syntax, however, so this is a
+     harder problem for them (on which I am punting).
+
+     You can have both styles of phone number in your database by
+     providing a prefix argument to the `bbdb-insert-new-field'
+     command.
+
+`bbdb-electric-p'
+     Whether bbdb mode should be "electric" like `electric-buffer-list'.
+     Default: `t'.  Basically this means that when you type space after
+     `M-x bbdb', your window configuration will be restored to what it
+     was before you invoked the db list.  (The `bbdb-mode' commands
+     still work as well.)
+
+     There are some problems with electric modes; for example, keyboard
+     macros and incremental search don't work.  (This is not a bug in
+     BBDB, but in `electric.el'.)
+
+`bbdb-case-fold-search'
+     Default: the same as `case-fold-search'.  `case-fold-search' is
+     bound to this by `M-x bbdb' and related commands.  This variable
+     lets the case-sensitivity of `^S' and of the bbdb searching
+     commands be different.
+
+`bbdb/mail-auto-create-p'
+     If this is `t' (the default), then VM, MH, and RMAIL will
+     automatically create new bbdb records for people you receive mail
+     from.  If this variable is a function name or lambda expression,
+     then it is called with no arguments to decide whether an entry
+     should be automatically created.  You can use this to, for
+     example, not create records for messages which have reached you
+     through a particular mailing list, or to only create records
+     automatically if the mail has a particular subject.  See the
+     variables `bbdb-ignore-most-messages-alist' and
+     `bbdb-ignore-some-messages-alist' (*Note Predefined Hooks::)
+
+`bbdb/news-auto-create-p'
+     If this is `t' (default: `nil'), then GNUS will automatically
+     create new BBDB records for people you read messages by.  If this
+     is a function name or lambda expression, then it is called with no
+     arguments to decide whether an entry should be automatically
+     created.  You can use this to, for example, create or not create
+     messages which have a particular subject.  See the variable
+     `bbdb-auto-notes-alist' (*Note Predefined Hooks::).
+
+     If you want to autocreate messages based on the current newsgroup,
+     it's probably a better idea to set this variable to `t' or `nil'
+     from your `gnus-select-group-hook' instead.
+
+     To automatically remember users in certain groups, you can do
+     something like
+     (setq gnus-select-group-hook
+     '(lambda ()
+     (setq bbdb/news-auto-create-p
+     (or (string= "some.news.group" gnus-newsgroup-name)
+     (string= "other.news.group" gnus-newsgroup-name)))))
+
+`bbdb-quiet-about-name-mismatches'
+     If this is false (the default), then BBDB will prompt you when it
+     notices a name change, that is, when the "real name" in a message
+     doesn't correspond to a record already in the database with the
+     same network address.  As in, "John Smith <jqs@frob.com>" versus
+     "John Q. Smith <jqs@frob.com>".  If this is true, then you will
+     not be asked if you want to change it (and it will not be
+     changed.)
+
+`bbdb-use-alternate-names'
+     If this is false, then the BBDB will not use the AKA field.
+     Otherwise (the default) then the mail and news interfaces will ask
+     you if you want to add an alternate name when a name-change is
+     noticed, and will ask you whether the new name should be made the
+     primary one.  Note that if `bbdb-quiet-about-name-mismatches' is
+     true, you will not be asked any questions about alternate names.
+
+`bbdb-readonly-p'
+     If this is true (default: `nil'), then nothing will attempt to
+     change the database implicitly, and you will be prevented from
+     doing it explicitly.  If you have more than one emacs running at
+     the same time, you might want to arrange for this to be set to `t'
+     in all but one of them.
+
+`bbdb-auto-revert-p'
+     If this variable is true (default: `nil') and the BBDB file is
+     noticed to have changed on disk, it will be automatically reverted
+     without prompting you first.  Otherwise you will be asked.  (But
+     if the file has changed and you have made changes in memory as
+     well, you will always be asked.)
+
+`bbdb-notice-auto-save-file'
+     If this is true (default: `nil'), then the BBDB will notice when
+     its auto-save file is newer than the file is was read from, and
+     will offer to revert.
+
+`bbdb-use-pop-up'
+     If true (the default), display a continuously-updating BBDB window
+     while in VM, MH, RMAIL, or GNUS.  Each time a new message is
+     selected, the record corresponding to that message's sender will
+     be displayed in another window.  The buffer in this other window
+     will be in bbdb-mode, and all corresponding commands will be
+     available.
+
+     This buffer will be positioned on the screen by finding the tallest
+     of the windows present, and splitting it such that the bottom
+     `bbdb-pop-up-target-lines' lines of the window display the
+     `*BBDB*' buffer.  With the default configurations of VM, MH,
+     RMAIL, and GNUS, this means that the bbdb-list buffer will be just
+     below the message-body buffer.
+
+     If this is the symbol `horiz', then the BBDB window will be
+     stacked horizontally instead of vertically, if there is room to do
+     that tastefully.
+
+`bbdb-pop-up-target-lines'
+     Desired number of lines in a VM/MH/RMAIL/GNUS pop-up BBDB window,
+     default 5.
+
+`bbdb-completion-type'
+     Controls the behavior of the `bbdb-complete-name' command.  If
+     `nil' (the default), completion is done across the set of all
+     full-names and user-ids in the database; if the symbol `name',
+     completion is done on real-names only; if the symbol `net',
+     completion is done on network addresses only; if it is `primary',
+     then completion is done only across the set of primary network
+     addresses (the first address in the list of addresses for a given
+     user).  If it is `primary-or-name', completion is done across
+     primaries and real names.
+
+`bbdb-user-mail-names'
+     A regular expression identifying the addresses that belong to you.
+     If a message from an address matching this is seen, the BBDB
+     record for the `To:' line will be shown instead of the one for the
+     `From:' line.  If this is `nil', it will default to the value of
+     `(user-login-name)'.
+
+`bbdb-always-add-addresses'
+     If this is `t', then whenever the Insidious Big Brother Database
+     notices a new email address corresponding to a person who is in the
+     database, it will add it to the database.  If this is `nil' (the
+     default), then whenever a new network address is noticed for a
+     person in the database, you will be asked whether to add the
+     address.  If this is the symbol `never' (really if it is not `t'
+     and not `nil') then new network addresses will never be
+     automatically added.
+
+`bbdb-new-nets-always-primary'
+     If this is `t', then when the Insidious Big Brother Database adds
+     a new address to a record, it will always add it to the front of
+     the list of addresses, making it the primary address.  If this is
+     `nil' (the default), then you will be asked.  If this is the
+     symbol `never' (really if it is not `t' and not `nil') then new
+     network addresses will always be added to the end of the list.
+
+`bbdb-canonicalize-redundant-nets-p'
+     If this is non-`nil', redundant network addresses will be ignored.
+     If a record has an address of the form `foo@baz.com', setting this
+     to `t' will cause subsequently-noticed addresses like
+     `foo@bar.baz.com' to be ignored (since we already have a more
+     general form of that address.)  This is similar in function to one
+     of the possible uses of the variable `bbdb-canonicalize-net-hook'
+     but is somewhat more automatic.  (This can't quite be implemented
+     in terms of the canonicalize-net-hook because it needs access to
+     the database to determine whether an address is redundant, and the
+     canonicalize-net-hook is purely a textual manipulation which is
+     performed before any database access.)
+
+`bbdb-message-caching-enabled'
+     Whether caching of the message->bbdb-record association should be
+     used for the interfaces which support it (VM, MH, and RMAIL).
+     This can speed things up a lot.  One implication of this variable
+     being true (the default) is that the `bbdb-notice-hook' will not
+     be called each time a message is selected, but only the first
+     time.  Likewise, if selecting a message would generate a question
+     (whether to add an address, change the name, etc) you will only be
+     asked that question the very first time the message is selected.
+
+`bbdb-elided-display'
+     Default: `nil'.  Set this to `t' to make the bbdb-display commands
+     default to displaying one line per record instead of a full
+     listing.  Set this to a list of some of the symbols `'(address
+     phone net notes)' to select those fields to be left out of the
+     listing (you can't leave out the name field).
+
+     This is the default state for `M-x bbdb' and friends.  You can
+     have a different default for when the BBDB buffer is automatically
+     updated by the mail and news interfaces by setting the variable
+     `bbdb-pop-up-elided-display'.  If that variable is unbound, this
+     variable will be consulted instead.
+
+`bbdb-pop-up-elided-display'
+     Default: unbound.  Set this to `t' if to make the pop-up BBDB
+     buffer default to displaying one line per record instead of a full
+     listing.  Set this to a list of some of the symbols `'(address
+     phone net notes)' to select those fields to be left out of the
+     listing (you can't leave out the name field).
+
+     The default state for `M-x bbdb' and friends is controlled by the
+     variable `bbdb-elided-display'; this variable is the default for
+     when the BBDB buffer is automatically updated by the mail and news
+     interfaces.  If bbdb-pop-up-elided-display is unbound, then
+     bbdb-elided-display the former will be consulted instead by mail
+     and news.
+
+`bbdb-offer-save'
+     If `t' (the default), then certain actions will cause the BBDB to
+     ask you whether you wish to save the database.  If `nil', then the
+     offer to save will never be made.  If not `t' and not `nil', then
+     any time it would ask you, it will just save it without asking.
+
+
+File: bbdb.info,  Node: Customization Hooks,  Next: Predefined Hooks,  Prev: Customization Parameters,  Up: Options
+
+Customization Hooks
+-------------------
+
+   All of the hooks variables described below may be set to a symbol or
+lambda expression, which will be funcalled; or may be set to a list of
+symbols or lambda expressions, each of which will be funcalled in turn.
+Almost all hooks in Emacs work this way.  But notice that some of the
+hooks described below are called with arguments.
+
+`bbdb-list-hook'
+     Hook or hooks invoked after the bbdb-list-buffer is filled in.
+     Invoked with no arguments.
+
+`bbdb-create-hook'
+     Hook or hooks invoked each time a new bbdb-record is created.
+     Invoked with one argument, the new record.  This is called
+     _before_ the record is added to the database.  Note that
+     `bbdb-change-hook' will be called as well.
+
+`bbdb-change-hook'
+     Hook or hooks invoked each time a bbdb-record is altered.  Invoked
+     with one argument, the record.  This is called _before_ the
+     database buffer is modified.  Note that if a new bbdb record is
+     created, both this hook and `bbdb-create-hook' will be called.
+
+`bbdb-mode-hook'
+     Hook or hooks invoked when the `*BBDB*' buffer is created.
+
+`bbdb-notice-hook'
+     Hook or hooks invoked each time a bbdb-record is "noticed," that
+     is, each time it is displayed by the news or mail interfaces.
+     Invoked with one argument, the new record.  The record need not
+     have been modified for this to be called - use `bbdb-change-hook'
+     for that.  You can use this to, for example, add something to the
+     notes field based on the subject of the current message.  It is up
+     to your hook to determine whether it is running in GNUS, VM, MH,
+     or RMAIL, and to act appropriately.
+
+     Also note that `bbdb-change-hook' will _not_ be called as a result
+     of any modifications you may make to the record inside this hook.
+
+     Beware that if the variable `bbdb-message-caching-enabled' is true
+     (a good idea) then when you are using VM, MH, or RMAIL, this hook
+     will be called only the first time that message is selected.  (The
+     GNUS interface does not use caching.)  When debugging the value of
+     this hook, it is a good idea to set caching-enabled to `nil'.
+
+`bbdb-after-read-db-hook'
+     Hook or hooks invoked (with no arguments) just after the Insidious
+     Big Brother Database is read in.  Note that this can be called
+     more than once if the BBDB is reverted.  One possible use for this
+     is to rename the `.bbdb' buffer; for example
+
+     `(setq bbdb-after-read-db-hook '(lambda () (rename-buffer "
+     bbdb")))'
+
+     will cause the buffer visiting the `bbdb-file' to be called
+     `" bbdb"'.  The leading space in its name will prevent it from
+     showing up in the buffer list.
+
+`bbdb-load-hook'
+     Hook or hooks invoked (with no arguments) when the Insidious Big
+     Brother Database code is first loaded.  WARNING:  Slow functions
+     should not be put on this hook, as the BBDB code will, if not
+     loaded before, be loaded during the first use of BBDB-related
+     Customization functions.  Slow functions should be put on
+     `bbdb-initialize-hook'.
+
+`bbdb-initialize-hook'
+     Hook or hooks invoked (with no arguments) when the
+     `bbdb-initialize' function is called.
+
+`bbdb-canonicalize-net-hook'
+     If this is non-`nil', it should be a function of one argument: a
+     network address string.  (Note that, unlike the other
+     hook-variables described above, this may not be a list of
+     functions.)  Whenever the Insidious Big Brother Database "notices"
+     a message, the corresponding network address will be passed to
+     this function first, as a kind of "filter" to do whatever
+     transformations upon it you like before it is compared against or
+     added to the database.  For example: it is the case that
+     `CS.CMU.EDU' is a valid return address for all mail originating at
+     a machine in the `.CS.CMU.EDU' domain.  So, if you wanted all such
+     addresses to be canonically hashed as `user@CS.CMU.EDU', instead
+     of as `user@somehost.CS.CMU.EDU', you might set this variable to a
+     function like this:
+
+          (setq bbdb-canonicalize-net-hook
+               '(lambda (addr)
+                  (cond ((string-match
+                           "\\`\\([^@]+@\\).*\\.\\(CS\\.CMU\\.EDU\\)\\'"
+                           addr)
+                         (concat (substring addr
+                                   (match-beginning 1) (match-end 1))
+                                 (substring addr
+                                   (match-beginning 2) (match-end 2))))
+                        (t addr))))
+
+     You could also use this function to rewrite UUCP-style addresses
+     into domain-style addresses, or any number of other things.
+
+     This function will be called repeatedly until it returns a value
+     EQ to the value passed in.  So multiple rewrite rules might apply
+     to a single address.
+
+     There is an example of the use of this variable in the file
+     `bbdb-hooks.el': the function `sample-bbdb-canonicalize-net-hook'.
+
+   The `bbdb-canonicalize-net-hook' is powerful in that it allows
+arbitrary rewriting of addresses, however, in many cases that is
+overkill.  The function `bbdb-delete-redundant-nets' can be used as a
+value of `bbdb-change-hook' to cause network addresses which appear to
+be "redundant" to be deleted each time a modification is made to a
+record.
+
+   This works as follows: suppose one gets mail from `user@foo.bar.com',
+and then later gets mail from `user@bar.com'.  At this point, one can
+generally delete the `user@foo.bar.com' address, since the
+`user@bar.com' address is more general.  (See also the variable
+`bbdb-canonicalize-redundant-nets-p', which has the effect of ignoring
+subsequent addresses from `user@quux.bar.com' if the address
+`user@bar.com' is already known.)
+
+
+File: bbdb.info,  Node: Predefined Hooks,  Prev: Customization Hooks,  Up: Options
+
+Predefined Hooks
+----------------
+
+   If the variable `bbdb-change-hook' is set to the symbol
+`bbdb-timestamp-hook' (the default), then every record in the database
+will have a field named `timestamp', which will always contain the date
+and time at which this record was created or last modified.
+
+   If the variable `bbdb-create-hook' is set to the symbol
+`bbdb-creation-date-hook' (the default), then every record in the
+database will have a field named `creation-date', which will contain
+the date and time at which this record was added to the database.
+
+   If the variable `bbdb/mail-auto-create-p' is set to the symbol
+`bbdb-ignore-most-messages-hook', then the variable
+`bbdb-ignore-most-messages-alist' will determine which messages should
+have records automatically created for them.  The format of this alist
+is
+     (( HEADER-NAME . REGEXP ) ... )
+
+for example,
+     (("From" . "@.*\\.maximegalon\\.edu")
+      ("Subject" . "time travel"))
+
+will cause BBDB entries to be made only for messages sent by people at
+Maximegalon U., or (that's _or_) people posting about time travel.
+
+   There may be only one entry per header in this alist: that is,
+
+     (("From" . "addr1\\|addr2") ... )
+
+is legal, but
+
+     (("From" . "addr1") ("From" . "addr2") ... )
+
+is not.
+
+   If the variable `bbdb/mail-auto-create-p' is set to the symbol
+`bbdb-ignore-some-messages-hook', then the variable
+`bbdb-ignore-some-messages-alist' will determine which messages should
+have records automatically created for them.  This is the exact inverse
+of the semantics of the `bbdb-ignore-most-messages-alist': the alist
+specifies which messages should _not_ have records automatically
+created for them, instead of which should.  For example,
+
+     (("From" . "mailer.daemon")
+      ("To" . "mailing-list-1\\|mailing-list-2")
+      ("CC" . "mailing-list-1\\|mailing-list-2"))
+
+will cause BBDB entries to not be made for messages from any mailer
+daemon, or messages sent to or CCed to either of two mailing lists.
+
+   The variable `bbdb/news-auto-create-p' may be set to either of the
+above-mentioned functions as well, to get this behavior for netnews
+messages instead of mail messages.
+
+   If the variable `bbdb-notice-hook' is set to the symbol
+`bbdb-auto-notes-hook', then the variable `bbdb-auto-notes-alist' may
+be used to automatically add text to the notes fields of the records
+corresponding to certain messages.  The format of this alist is
+
+     (( HEADER-NAME
+        (REGEXP . STRING) ... )
+         ... )
+
+for example,
+
+     (("To" ("-vm@" . "VM mailing list"))
+      ("Subject" ("sprocket" . "mail about sprockets")
+                 ("you bonehead" . "called me a bonehead")))
+
+will cause the text `"VM mailing list"' to be added to the notes field
+of the record corresponding to anyone you get mail from via one of the
+VM mailing lists.  If, that is, `bbdb/mail-auto-create-p' is set such
+that the record would have been created, or if the record already
+existed.
+
+   The format of elements of this list may also be
+
+     (REGEXP FIELD-NAME STRING)
+
+or
+     (REGEXP FIELD-NAME STRING REPLACE-P)
+
+meaning add the given string to the named field.  The field-name may not
+be `name', `aka', `address', `phone', or `net' (builtin fields) but
+must be either `notes', `company', or the name of a user-defined
+note-field.
+
+     ("pattern" . "string to add")
+
+is equivalent to
+
+     ("pattern" notes "string to add")
+
+STRING can contain `\&' or `\N' escapes like in the function
+`replace-match'.  For example, to automatically add the contents of the
+organization field of a message to the `company' field of a BBDB
+record, you can use this:
+
+     ("Organization" (".*" company "\\&"))
+
+(Note you need two \ to get a single \ into a lisp string literal.)
+
+   If STRING is an integer N, the Nth matching subexpression is used,
+so the above example could be written more efficiently as
+
+     ("Organization" (".*" company 0))
+
+   If STRING is neither a string or an integer, it should be a function
+which is called with the contents of the field, and the result of the
+function call is used.
+
+   If the REPLACE-P flag is true, then the string replaces the old
+contents instead of being appended to it.
+
+   If multiple clauses match the message, all of the corresponding
+strings will be added.
+
+   If the string is being appended (REPLACE-P is false or not provided)
+then the new string is appended to the end of the existing field value,
+with an intervening newline.  So each piece of text automatically added
+to this field will go on its own line.
+
+   You can control what the separator is by putting a `field-separator'
+property on the symbol naming the field.  For example, to make text
+automatically added to a field named `newsgroups' be separated by
+commas, you could do
+
+     (put 'newsgroups 'field-separator "; ")
+
+   This variable works for news as well.  You might want to arrange for
+this to have a different value when in mail as when in news.
+
+   There may be only one entry per header in this alist: that is,
+
+      (("Subject" ("\\bfoo\\b" . "Foo!!")
+                  ("bar" . "Bar!")))
+
+will work, but
+
+      (("Subject" ("\\bfoo\\b" . "Foo!!"))
+       ("Subject" ("bar" . "Bar!")))
+
+will not.
+
+   Here's a more complicated example: some people include bitmaps of
+themselves in their mail messages in an X-Face: header field.  You can
+capture this field into the `*BBDB*' with the following:
+
+     (setq bbdb-auto-notes-alist
+           (append bbdb-auto-notes-alist
+                   (list "x-face"
+                         (list (concat "[ \t\n]*\\([^ \t\n]*\\)"
+                                       "\\([ \t\n]+\\([^ \t\n]+\\)\\)?"
+                                       "\\([ \t\n]+\\([^ \t\n]+\\)\\)?"
+                                       "\\([ \t\n]+\\([^ \t\n]+\\)\\)?"
+                                       )
+                               'face
+                               "\\1\\3\\5\\7"))))
+
+(The calls to `list' and `concat' are just for readability, it could
+easily be a constant.)  The tricky bit here is that it strips out the
+newlines and whitespace used for header continuation, which are not
+actually a part of the face data.  So though the mail message may have
+the face data on multiple lines, the entry in the `*BBDB*' will be just
+one line.
+
+   `bbdb-auto-notes-ignore' is an alist of headers and regexps to
+ignore in `bbdb-auto-notes-hook'.  Each element looks like
+
+     (HEADER . REGEXP)
+
+for example,
+
+     ("Organization" . "^Gatewayed from\\|^Source only")
+
+would exclude the phony `Organization:' headers in GNU mailing-lists
+gatewayed to the `gnu.*' newsgroups.  Note that this exclusion applies
+only to a single field, not to the entire message.  For that, use the
+variable `bbdb-auto-notes-ignore-all'.
+
+   `bbdb-auto-notes-ignore-all' is an alist of headers and regexps
+which cause the entire message to be ignored in `bbdb-auto-notes-hook'.
+Each element looks like
+
+     (HEADER . REGEXP)
+
+for example,
+
+     ("From" . "BLAT\\.COM")
+
+would exclude any notes recording for message coming from `BLAT.COM'.
+Note that this is different from `bbdb-auto-notes-ignore', which
+applies only to a particular header field, rather than the entire
+message.
+
+
+File: bbdb.info,  Node: Utilities,  Next: Internals,  Prev: Options,  Up: Top
+
+Utilities
+=========
+
+   This section describes BBDB functionality that does not fit neatly
+into other sections.
+
+* Menu:
+
+* bbdb-ftp::                    Storing FTP sites in the BBDB
+* bbdb-print::                  Print the BBDB
+* bbdb-snarf::                  Record generation from raw text
+* bbdb-srv::                    External control of the BBDB
+
+
+File: bbdb.info,  Node: bbdb-ftp,  Next: bbdb-print,  Up: Utilities
+
+`bbdb-ftp'
+----------
+
+   The `bbdb-ftp' utility enables the storage of FTP sites as BBDB
+records.  The `bbdb-create-ftp-site' function is used to create a BBDB
+record for an FTP site.  The command will prompt for information needed
+to create the record.  The FTP site for a given record can be accessed
+with the `bbdb-ftp' command.
+

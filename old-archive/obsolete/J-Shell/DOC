@@ -1,0 +1,442 @@
+This is Jim's Pretty-Good Shell Mode (J-Shell), a shell-mode for GNU Emacs.
+
+Written and maintained by: Jim Thompson
+			   jimt@sugar.neosoft.com
+
+$Id: DOC,v 1.2 1993/04/03 23:49:55 jct Exp $
+
+J-Shell is a shell mode derived from Emacs's shell mode (although it
+has been changed so much that it bears little resemblance to the
+original).  J-Shell fixes most of the major problems in shell-mode
+and adds many new features...
+
+  *  Accurate working-directory tracking (for using cd, pushd,
+     and popd) 
+
+  *  Input buffering (a fix for the ^G problem)
+
+  *  Host tracking and a simple interface to ange-ftp
+
+  *  A browseable command history stack
+
+  *  Password detection and hiding (with some security features)
+
+  *  Built-in filename completion
+
+  *  Improved navigation commands
+
+  *  Automatic generation of new buffers
+
+J-Shell can be used with most popular shells; the exception is sh, which
+cannot be used because it provides no means of aliasing its cd command.
+(You *could* use sh with J-Shell, but you would have no directory
+tracking.)  Sh users would be better off using the shell-mode that comes
+with Emacs.
+
+
+Installing J-Shell
+------------------
+
+J-Shell should be byte-compiled and placed in your load-path.  You will
+also need to add some code to your shell's startup script (.bashrc, .cshrc,
+etc.)  and set some variables in your .emacs startup file.
+
+Included in the J-Shell distribution are five files named dot-*rc.  Each
+contains an example script that needs to be copied into your shell's
+startup script.  Please examine the script for your shell BEFORE you copy
+it into your startup script.  The example scripts are for the following
+shells:
+
+	dot-bashrc -  bash
+	dot-cshrc  -  csh and tcsh
+	dot-kshrc  -  ksh
+	dot-tclrc  -  the tcl shell
+	dot-zshrc  -  zsh
+
+There is no script for sh because j-shell cannot be used with sh.
+
+These scripts allow your shell to communicate with J-Shell so that the J-
+Shell buffer can keep its default directory synchronized with your shell's
+working directory (see "Directory Tracking" in the section "Using J-Shell",
+for more information).
+
+In your .emacs file, you will probably need to set the following variable:
+
+	jsh-prompt-pattern    - a regular expression matching your
+				shell's input prompt.
+
+You will also need to consider setting the following variables in your
+.emacs; the default values for these variables will probably work for most
+systems, but may need different values for others:
+
+	jsh-password-pattern	- a regular expression matching
+				  prompts for passwords.
+
+	jsh-home		- your home directory, if the value
+				  of $HOME is not correct.
+
+	jsh-history-stack-size	- the number of commands to keep in
+				  j-shell's command history. Its
+				  default value is 256; you may
+				  want a smaller stack.
+
+These are the variables that will most often need new values; however, some
+users may want or need to override the default values of other variables.
+Everyone should also examine the variable declarations near the top of j-
+shell.el.
+
+
+Invoking J-Shell
+----------------
+
+J-Shell should be loaded by a "load", "require", or "autoload" call:
+
+    (load "j-shell")   ;or
+
+    (require 'j-shell) ;or
+
+    (autoload 'j-shell "j-shell")
+
+To invoke J-Shell, simply type
+
+    M-x j-shell
+
+J-Shell will create a new buffer and run your default shell in it; to
+determine your default shell, J-Shell evaluates the following in order
+until one evaluates non-nil:
+
+    The Emacs lisp variable explicit-shell-file-name
+
+    The ESHELL environment variable
+
+    The SHELL environment variable
+
+If none of the above are set, J-Shell chooses /bin/csh as the default
+shell.
+
+If J-Shell is invoked with a numeric prefix argument, it will prompt
+interactively for a shell to run, with the default chosen as above:
+
+    C-u M-x j-shell
+
+The function j-shell may also be given a specific shell to run as an
+argument.  I use this feature to bind the keys C-c t and C-c b to run tcsh
+and bash, respectively:
+
+    (global-set-key "\C-ct" '(lambda () (interactive) (j-shell "tcsh")))
+    (global-set-key "\C-cb" '(lambda () (interactive) (j-shell "bash")))
+
+If you accidentally exit the shell before you're through with it, you can
+start another shell in the same buffer by running jsh-start-program, which
+is bound to C-c C-s.
+
+Invoking j-shell causes the hooks, if any, in jsh-mode-hooks to be called.
+
+Starting a process in a j-shell buffer, either by invoking j-shell or
+through C-c C-s, causes any hooks in jsh-start-hooks to be called.
+
+
+Using J-Shell
+-------------
+
+J-Shell works much like Emacs's shell-mode: the shell's output appears in
+the buffer; you enter commands at the end of the buffer and send them to
+the shell with the RET key.  Like shell-mode, you may also place the point
+on any line and send that line to the shell by pressing RET.
+
+
+Directory Tracking
+
+A shell mode must keep track of your shell's working directory so that
+commands like find-file always default to the same directory your shell is
+working in.  Emacs's shell-mode does this by monitoring commands, such as
+"cd", "pushd", and "popd", that you send to your shell.  This works well
+most of the time, but when you enter a command like "cd !$" (which tells
+csh to change to the directory named as the last argument to the previous
+command), shell-mode loses track of your shell's working directory, because
+!$ isn't the literal name of the directory.
+
+Directory tracking in J-Shell works differently.  The shell sends messages--
+unique strings containing the working directory--whenever the shell's
+working directory changes.  J-Shell's filter function recognizes the
+message and extracts from it the buffer's new working directory.
+
+This message-passing scheme means that J-Shell's default directory always
+matches the shell's working directory, because your shell specifies it
+directly; since J-Shell isn't attempting to deduce the shell's working
+directory, there is little room for confusion.
+
+The disadvantage to this message-passing scheme is that you have to modify
+your shell--by way of its startup script--to send the messages.  That's why
+you have to copy one of the dot-*shrc scripts into your shell's startup
+script.
+
+
+Host Tracking
+
+J-Shell keeps track of what host you're running on, in the same way that it
+tracks your working directory; it uses this information to provide a simple
+interface to ange-ftp.
+
+When you rlogin to another host, J-Shell receives a message from the shell
+indicating the name of the new host; J-shell changes Emacs's default
+directory so that it matches the form recognized by ange-ftp:
+
+    /hostname:/working/directory
+
+If you have ange-ftp loaded, you can retrieve files from the remote host,
+from the directory that you're working with in your shell.
+
+One caveat: if the values returned by (system-name) and hostname(1) don't
+match, then J-Shell will incorrectly assume you're running on a remote
+host.  For example, at my site, hostname returns "sugar.neosoft.com", but
+(system-name) returns simply "sugar".  A fix is to override the standard
+system-name with one defined in .emacs:
+
+   (defun system-name () "sugar.neosoft.com")
+
+
+Shell Input Buffering
+
+Users of Emacs's shell-mode know that extremely long input lines cause the
+shell to output a series of ^G characters and refuse to recognize further
+input.  What happens is that the tty's input buffer overflows because of
+the long input; the '^G's are BELL characters that the tty sends to ring
+the "terminal" bell.
+
+J-Shell breaks long input up into chunks of 250 characters and sends the
+chunks one at a time; this should prevent the ^G problem on most systems.
+In testing this feature, I have successfully entered lines of almost 40000
+characters without overflowing the tty's input buffer.
+
+This feature does not work with all shells.  Some shells (csh under SunOS
+4.1.1, for example) will still exhibit the overflow problem.  Other shells
+will see the second chunk of input as a second *line* of input.
+
+
+Command History Stack
+
+Every command you send to the shell, or programs running in it, is entered
+into a command history stack; the stack has enough room for the last 256
+commands (assuming you haven't overridden the default).  Adjacent identical
+commands--such as "lpq", which you might run repeatedly while waiting for a
+file to print--are entered just once in the stack.
+
+You can browse through the command history by typing M-p and M-n.  M-p
+takes you backward through the commands, and M-n takes you forward through
+the commands.  If you type a string at the prompt then type M-p, then the
+browsing is limited to those commands that begin with the string you
+specified.  For example, if you type "cd" then M-p, you will see the last
+command that began with the letters "cd"; every time you type M-p, you will
+see another cd command from the stack, until eventually you run out.  M-n
+will take you back forward through the "cd" commands.
+
+Please note that the command history records all user input, whether to the
+shell or programs executed from the shell.
+
+
+Password Detection And Hiding.
+
+One of the real shortcomings of Emacs's shell-mode is that passwords echo.
+This means that you either have to avoid using commands that take
+passwords, such as "su" and "rlogin", or live with the security risk.  Even
+if you delete the password from your buffer, it's still recorded in the
+last 100 keystrokes, which you (or someone else) can see by typing "C-h l"
+(view-lossage).
+
+J-Shell attempts to remedy this problem by detecting password prompts, such
+as "Password:", and diverting subsequent keystrokes to a local variable, so
+the password doesn't appear in your buffer.  When you press RET, J-Shell
+sends the password to the shell and clears the local password variable.
+
+While entering a password, all keys that normally enter text (that is,
+those that call self-insert-command) will enter the same character into the
+password, and the DEL key will remove characters from the password.  All
+other commands, such as C-k (kill-line) will operate on the buffer, not on
+the password.
+
+If you find that password detection doesn't work on you system, check the
+variable jsh-password-pattern; it should contain a regular expression that
+matches the password prompt.
+
+Sometimes, because of the way shell output arrives at J-Shell's filter
+function, J-Shell fails to enter password mode, even though the password
+pattern *does* match the prompt; when this happens, you can manually invoke
+password mode by typing C-c C-p.
+
+As a security measure, J-Shell disables the command "view-lossage", and the
+related command "recent-keys", the first you enter a password.  Instead of
+displaying the last 100 keystrokes, view-lossage will display a message
+indicating why the keystrokes aren't available; recent-keys returns the
+same string.  Of course, no security measure is foolproof: caveat emptor.
+
+
+Built-In Filename Completion.
+
+J-Shell's filename completion is based almost entirely upon the package
+written for Emacs's shell-mode by Shinichirou Sugou, albeit with different
+bindings.
+
+To complete a partial filename, type TAB; to see all completions for a
+partial filename, type C-c C-?.  To expand a filename, type C-c C-i.
+
+If a completion command causes the *completions* buffer to be displayed, J-
+Shell will hide it again when you enter a command.
+
+
+Improved Navigation Commands.
+
+In addition to the standard Emacs navigation commands, J-Shell has some
+that use the regular expression in jsh-prompt-pattern to move about the
+buffer.  C-a moves the point to the beginning of the command on the same
+line with point, skipping the shell prompt; if you're already at the shell
+prompt, C-a moves the point to the beginning of the line.
+
+The commands M-P and M-N (note uppercase P and N) move the point to the
+previous or next shell prompt; the commands attempt to skip over empty or
+"stacked" prompts.
+
+The command C-c C-a jumps the point to the beginning of the pending input
+(regardless of the prompt).
+
+If you type LFD on a line, that line (minus any shell prompt) will be
+copied to the end of the buffer where you can edit it for input to the
+shell.
+
+
+Automatic Generation of New Buffers
+
+Each time you invoke J-Shell, a new buffer will be generated.  Buffer names
+are based on the value of the variable jsh-buffer-base-name.  If this
+variable contains a string, that string is the name of the buffer; if it
+contains t, the buffer is named after the shell running in it (tcsh, bash,
+etc.).  If jsh-buffer-base-name contains nil, the buffer is named "j-shell".
+
+
+Odds and Ends
+-------------
+
+Signal Delivery
+
+Using Emacs's shell mode, you can interrupt a foreground process by typing
+C-c C-c; shell mode uses interrupt-process to send an interrupt signal to
+the shell.  This works well unless you've used rlogin to log onto a remote
+host.  Interrupt-process uses signals, so you can't interrupt a job running
+in an rlogin session, short of killing the whole session.
+
+J-Shell provides an alternative: by setting the variable
+
+    jsh-send-char-signals
+
+non-nil, the C-c C-c command will send a literal C-c character to the shell
+process instead of a signal.  If your shell's tty is configured correctly,
+via the stty(1) command, the C-c character should interrupt the foreground
+process the same way a signal would.  Signals generated this way, by the
+tty driver, can be sent to jobs running on remote hosts.
+
+
+Alternate Mode Line
+
+J-Shell has an alternate mode-line which displays the buffer name, CWD, and
+(if display-time is enabled) the time.  By default J-Shell uses the
+standard Emacs mode-line, but the alternate mode-line may be enabled by
+setting jsh-use-alternate-modeline non-nil.
+
+
+Bang Regurgitation
+
+J-Shell has some special processing for shells such as csh which use a bang
+notation.  When a csh command uses a bang substitution, it will echo the
+command with the bang references replaced by their actual arguments; for
+example, 
+
+    % touch foo bar
+    % rm !*
+    rm foo bar
+    %
+
+Before executing the rm command, csh echos the command with "!*" replaced by
+the actual arguments "foo bar".  If the variable
+
+    jsh-regurgitate-bang-commands
+
+has a non-nil value, then J-Shell will replace the literal command "rm !*"
+in its command history with the actual command "rm foo bar".
+
+Some commands with bang references shouldn't be replaced in the command
+history; for example, in the command
+
+    % !-5
+    -2: Event not found.
+
+the error message can be mistaken by J-Shell for a regurgitated command; to
+prevent such mistakes, the variable jsh-dont-regurg-regex contains a
+regular expression matching shell output that shouldn't be placed into the
+command history.
+
+
+Notes
+-----
+
+Performance
+
+In order to find and respond to messages sent by the shell, J-Shell uses a
+filter function; every time output arrives from the shell, the filter
+searches the output for the strings that identify a message.  This
+searching takes some time to perform and as a result, J-Shell doesn't run
+quite as fast as shell-modes that don't use a filter function.
+
+I performed some informal tests to attempt to measure the performance
+decrease of J-Shell as compared to Emacs's shell mode.  The test was
+performed by catting version 2.9.9 of the jargon file in a j-shell buffer.
+Emacs's shell took an average of 53.1 seconds to cat the file.  J-Shell
+took an average of 59.5 seconds to cat the same file, an average of twelve
+percent longer than Emacs's shell.
+
+This seems an acceptable price to pay for the advantages of message
+passing; even with the performance hit, the text in the J-Shell buffer
+scrolls past far faster than I can read.
+
+
+Input Buffering Stress-Test
+
+Here's how I stress-tested J-Shell's input buffering (on SunOS 4.1.1, epoch
+4.2, and tcsh 6.01):
+
+1. Start a j-shell buffer and cd /usr/man
+
+2. Type "echo man[1-8]/*" and press RET.  It may take a minute for the
+   shell to glob and output all the file names.  The shell will print
+   the names of all the man pages on a single very long line.
+
+3. Type C-p C-a C-@.  This will set the mark at the beginning of all
+   those file names.  Then type C-e M-w; this will copy all the file
+   names into Emacs's kill ring.
+
+4. Go to the shell prompt.
+
+5. Type "ls -l " C-y; this will create a single very long line of
+   input.  Press RET and wait.  Again, it may take a minutes before
+   you see the output of the command.
+
+If instead of output in step 5, you see a series of Control-G (^G)
+characters, then the input buffering has failed and overflowed the tty
+input buffer.  If anyone sees this using j-shell, I'd appreciate hearing
+from you.
+
+This stress-test will, on occasion, hang Emacs; if this happens, you can
+type C-g to unhang it.  I'm still not sure why this happens, but I've never
+seen it under normal use of J-Shell--only when intentionally stress-
+testing.  I don't consider this a complete failure of the input buffering
+scheme since the shell process can be recovered with C-g.
+
+
+
+BUGS
+----
+
+Extremely long input lines sometimes causes Emacs to hang.
+
+Executing jsh-send-eof (C-c C-d) doesn't flush pending input.
+
+Please report any new bugs to me, Jim Thompson, jimt@neosoft.com.

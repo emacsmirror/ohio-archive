@@ -1,0 +1,255 @@
+# Simple BNF notation for top-level C elements.
+#
+# Copyright (C) 1999, 2000 Eric M. Ludlam
+#
+# Author: Eric M. Ludlam <zappo@gnu.org>
+# X-RCS: $Id: c.bnf,v 1.13 2000/07/01 18:15:31 zappo Exp $
+#
+# c.bnf is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This software is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Emacs; see the file COPYING.  If not, write to the
+# Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
+#
+# $Log: c.bnf,v $
+# Revision 1.13  2000/07/01 18:15:31  zappo
+# Updated for new elements in the tokens.
+#
+# Revision 1.12  2000/06/13 14:37:48  zappo
+# The table has moved.
+#
+# Revision 1.11  2000/05/06 01:32:57  zappo
+# Use EXPANDFULL for enums, and for argument lists to functions.
+#
+# Revision 1.10  2000/04/29 12:54:15  zappo
+# Added support for Linux __P items.
+# Added support for "..." fn prototypes.
+#
+# Revision 1.9  2000/04/28 18:57:49  zappo
+# Added system flag to include files.
+#
+# Revision 1.8  2000/04/25 14:46:42  zappo
+# structparts now uses EXPANDFULL to get positional information for it's
+# sub parts.  This simplified STRUCTSUBPARTS nonterminal
+#
+# Revision 1.7  2000/04/23 15:34:28  zappo
+# Added copyright information.
+#
+# Revision 1.6  2000/04/20 23:55:03  zappo
+# Macros split from 'variable' nt.
+# Added knr-argument parsing.
+#
+# Revision 1.5  2000/04/16 22:34:07  zappo
+# Added `filename' for include rules.
+#
+# Revision 1.4  1999/12/17 20:53:16  zappo
+# Added a splice , for varnamelist.
+#
+# Revision 1.3  1999/06/06 14:20:24  zappo
+# Fixed up some language definitions.
+#
+# Revision 1.2  1999/05/18 14:08:56  zappo
+# Fixed up the returns of some nonterminals.
+#
+# Revision 1.1  1999/05/17 17:28:30  zappo
+# Initial revision
+#
+
+# TABLE: semantic-c.el:semantic-toplevel-c-bovine-table
+# MODE: c-mode
+
+bovine-toplevel : include
+		| macro
+		| comment
+                | function
+		| variable
+                | prototype
+                | type
+                | define
+                ;
+		
+include : punctuation "#" symbol "include" punctuation "<"
+	  filename punctuation ">"
+	  ( ,$4 include t nil )
+        | punctuation "#" symbol "include" string
+	  ( (read $3) include nil nil )
+        ;
+
+filename : symbol punctuation "\\." symbol
+	   ( (concat $1 $2 $3) )
+         | symbol punctuation "/" filename
+	   ( (concat $1 $2 (car $3)) )
+	 ;
+	  
+structparts : semantic-list
+	      (EXPANDFULL $1 structsubparts)
+	    ;
+
+structsubparts : variable
+	       | define
+	       # sometimes there are defines in structs.
+	       ;
+
+
+enumparts : semantic-list
+	    (EXPANDFULL $1 enumsubparts)
+	  ;
+
+enumsubparts : symbol opt-assign
+	       ( $1 )
+	     ;
+
+opt-name : symbol
+	 | EMPTY
+	   ( nil )
+         ;
+
+typesimple : symbol "struct\\|union" opt-name structparts
+	     ( ,$2 type $1 $3 nil nil nil )
+	   | symbol "enum" opt-name enumparts
+	     ( ,$2 type $1 $3 nil nil nil )	
+           | symbol "typedef" typeform symbol
+	     ( $3 type $1 nil $2 nil nil )
+           ;
+
+type : typesimple punctuation ";"
+       ( ,$1 )
+     ;
+
+opt-stars : punctuation "*" opt-stars
+	    ( (1+ (car $2)) )
+	  | EMPTY
+	    ( 0 )
+          ;
+
+declmods : symbol "\\(__\\)?\\(extern\\|static\\|const\\|volitile\\|signed\\|unsigned\\)+"
+	 | EMPTY
+	   ( "" )
+	 ;
+
+# dont deal with the stars just yet.
+typeform : typeformbase opt-stars
+	   ( ,$1 )
+	 ;
+
+typeformbase : typesimple
+	       ( ,$1 )
+	     | symbol "struct\\|union\\|enum" symbol
+	       ( $2 type $1 )
+	     | symbol
+	       ( $1 )
+	     ;
+  
+opt-bits : punctuation ":" symbol
+	   ( $2 )
+	 | EMPTY
+	   ( nil )
+	 ;
+
+opt-array : semantic-list "^\\[.*\\]$" opt-array
+	  # Eventually we want to replace the 1 below with a size
+	  # (if available)
+	    ( (cons 1 (car ,$2) ) )
+	  | EMPTY
+	    ( nil )
+          ;
+
+opt-assign : punctuation "=" expression
+	     ( $2 )
+	   | EMPTY
+	     ( nil )
+	   ;
+
+macro : punctuation "#" symbol "define" symbol opt-expression
+	( $3 variable nil t $4 nil nil )
+      ;
+
+variable : variabledef punctuation ";"
+	   ( ,$1 )
+	 ;
+
+variabledef : declmods typeform varnamelist
+	      ( $3 variable $2 (string-match "const" (car $1)) nil nil nil )
+	    ;
+
+opt-restrict : symbol "\\(__\\)?restrict"
+	     | EMPTY
+	     ;
+
+varname : opt-stars opt-restrict symbol opt-bits opt-array opt-assign
+	  ( $3 ,$1 ,$4 ,$5 ,$6 )
+	;
+
+# I should store more in this def, but leave it simple for now.
+variablearg : declmods typeform varname
+	      ( (car $3) variable $2 (string-match "const" (car $1))
+	      nil nil nil )
+	    ;
+
+varnamelist : varname  punctuation "," varnamelist
+	      ( ,(cons $1 $3) )
+            | varname
+	      ( $1 )
+	    ;
+
+arg-list : symbol "__P" semantic-list
+	   (EXPAND $2 arg-list-p)
+	 | semantic-list knr-arguments
+	   ( ,$2 )
+	 | semantic-list
+	   (EXPANDFULL $1 arg-sub-list)
+	 ;
+
+knr-arguments : variablearg punctuation ";" knr-arguments
+		( ,(cons $1 $3) )
+	      | variablearg punctuation ";"
+		( $1 )
+	      ;
+
+arg-list-p : open-paren "(" semantic-list close-paren ")"
+	     (EXPANDFULL $2 arg-sub-list)
+	   ;
+
+arg-sub-list : variablearg
+	       ( ,$1 )
+	     | punctuation "\\." punctuation "\\." punctuation "\\."
+	       close-paren ")"
+	       ( "..." )
+	     ;
+
+functiondef : declmods typeform symbol arg-list
+	      ( $3 function $2 $4 $1 nil )
+            ;
+
+prototype : functiondef punctuation ";"
+	    ( ,$1 )
+	  ;
+
+function : functiondef semantic-list
+	   ( ,$1 )
+         ;
+
+opt-expression : expression
+	       | EMPTY ( nil )
+	       ;
+
+# Use expressiosn for parsing only.  Don't actually return anything
+# for now.  Hopefully we can't fix this later.
+expression : symbol
+	     ( nil )
+           | punctuation "[!*&~]" symbol
+	     ( nil )
+           | semantic-list
+	     ( nil )
+	   # | expression "+-*/%^|&" expression
+	   # ( nil )
+	   ;

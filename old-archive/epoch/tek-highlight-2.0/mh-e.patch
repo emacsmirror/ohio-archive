@@ -1,0 +1,24 @@
+*** /user/burgett/epoch-4.0a1/lisp/mh-e.el	Sat Nov  2 12:22:36 1991
+--- mh-e.el	Sat Nov  2 11:16:11 1991
+***************
+*** 53,58 ****
+--- 53,61 ----
+  
+  ;;; Hooks:
+  
++ (defvar mh-Select-letter-hook nil
++   "Invoked in mh-show.")
++ 
+  (defvar mh-folder-mode-hook nil
+    "Invoked in mh-folder-mode on a new folder.")
+  
+***************
+*** 1037,1042 ****
+--- 1040,1046 ----
+    (other-window -1)
+    (shrink-window (- (window-height) mh-summary-height))
+    (mh-recenter nil)
++   (run-hooks 'mh-Select-letter-hook)
+    (if (not (memq msg mh-seen-list)) (mh-push msg mh-seen-list)))
+  
+  

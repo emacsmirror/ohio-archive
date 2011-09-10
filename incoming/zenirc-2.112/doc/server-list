@@ -1,0 +1,251 @@
+From dougmc@comco.com Sat Apr 27 12:34:34 1996
+Path: solace!news.ecn.uoknor.edu!qns3.qns.com!imci4!newsfeed.internetmci.com!news.kei.com!news.texas.net!newshost.comco.com!newshost.comco.com!not-for-mail
+From: dougmc@comco.com (Doug McLaren)
+Newsgroups: alt.irc,alt.irc.questions
+Subject: EFnet IRC server list: 04-15-96
+Date: 16 Apr 1996 16:01:05 -0500
+Organization: Doug's house of Disco
+Lines: 239
+Message-ID: <4l11qh$ght@godzilla.comco.com>
+NNTP-Posting-Host: godzilla.comco.com
+Summary: an up-to-date list of IRC servers on EFnet.
+Keywords: irc servers EFnet
+Xref: solace alt.irc:51205 alt.irc.questions:9139
+
+EFNet server list for 04-15-96
+
+Servers that averaged less than 5 users or were up less than 25% of
+this period are not listed, as they are either extremely unreliable,
+brand new or probably not for general use.
+
+Keep in mind that not all servers will allow users from all sites,
+especially from distant sites.  Also note that most servers restrict
+or totally ban bots, so be sure to do `/motd <server>' and see if they
+do if you wish to place a bot there.  If in doubt, don't assume or
+guess - ask.  The email address of the admin of a server is available
+by typing `/admin <server>' in most cases.
+
+Try to choose a server that is close to you.  As a rule of thumb,
+servers that are close geographically are also close network-wise
+(which is what matters) but this rule of thumb is not always true.  If
+in doubt, email the admin of a nearby server, or ask on channel
+#irchelp.
+
+IP addresses are given for those using old IRC clients or who don't
+have working name servers.  It's best to use the server's full name as
+opposed to it's IP address, as the latter can change without warning.
+All servers should have resolvable hostnames ... but apparantly some
+do not.  The admins of these servers should update their DNS tables,
+as this makes these servers difficult to access.
+
+A `*' directly after an IP address refers to an address that was found
+by adding `irc.' to the beginning of the server's name, and also
+indicates broken DNS that should be fixed.
+
+Almost all (all?) servers listen on port 6667.  Many listen to
+additional ports as well ... if there's a question, ask the server
+admin.
+
+You cannot just try to `login' to these machines - it won't work.  You
+need to have an IRC client to connect to these IRC servers.  Clients
+for most platforms can be found at ftp://cs-pub.bu.edu/irc/clients.
+For more information, look for the IRC FAQ posted twice monthly to
+these newsgroups.
+
+This list will (if all goes well) be posted to alt.irc and
+alt.irc.questions twice a month.  I'm still working on the program I
+use to generate it, so it may change in format somewhat in the future.
+
+Direct questions or comments to me at dougmc@comco.com.
+
+This list is also available via ftp at
+   ftp.comco.com:/pub/irc/server-list-current
+
+   --- Server list follows ---
+
+                uni-linz.ac.at       140.78.3.7* Austria
+              itc.univie.ac.at     unresolvable  Austria                       
+             irc.wu-wien.ac.at     137.208.3.30  Austria
+         yoyo.cc.monash.edu.au      130.194.9.1  Australia
+        speech.elec.uow.edu.au   130.130.88.116  Australia
+               poc.dfat.gov.au     152.91.70.43  Australia
+         othello.ulb.bfu.ac.be     unresolvable  Belgium                       
+            dinf.vub.bfu.ac.be     unresolvable  Belgium                       
+                 irc.belnet.be    193.190.198.2  Belgium
+                 irc2.magic.ca   199.166.230.85  Canada
+               irc.magic.mb.ca    204.112.14.17  Canada
+            portal.mbnet.mb.ca   130.179.16.140  Canada
+                            ..   204.112.178.12  ..
+                 irc.mcgill.ca    132.206.27.12  Canada
+                 irc.cs.mun.ca      134.153.1.2  Canada
+                   elk.nstn.ca   137.186.128.21  Canada
+              irc.vianet.on.ca    204.50.187.50  Canada
+                irc.polymtl.ca      132.207.4.8  Canada
+                            ..    132.207.144.8  ..
+                  irc.yorku.ca     unresolvable  Canada                        
+                   irc.span.ch     194.51.197.1  Switzerland
+             irc02.irc.aol.com   152.163.173.26  USA, Virginia
+             irc.blackened.com   192.195.240.63  USA, Arizona, Tucson
+                  irc.cris.com      199.3.12.20  USA, Michigan, Bay City
+               irc.neosoft.com   198.64.213.130  USA, Texas
+                irc.netcom.com     206.217.29.1  USA, California
+               irc2.netcom.com      199.183.9.7  USA, California
+          irc.usa.pipeline.com        38.9.10.2  USA, NY, New York
+                irc.portal.com    156.151.1.101  USA, California
+              irc-2.portal.com     unresolvable  USA, California               
+              irc-3.portal.com     unresolvable  USA, California               
+               irc1.portal.com     156.151.6.50  USA, California
+              irc.primenet.com    204.245.0.246  USA, Arizona
+              irc.voicenet.com    192.204.28.19  USA, PA, Ivyland
+             irc.winternet.com   198.174.169.50  USA, MN, Eden Prarie
+              irc.felk.cvut.cz   192.108.160.15  Czech Republic
+              irc.cis.vutbr.cz   147.229.245.10  Czech Republic
+                  fu-berlin.de      160.45.10.6* Germany
+                rwth-aachen.de     unresolvable  Germany                       
+                tu-muenchen.de     unresolvable  Germany                       
+               uni-erlangen.de     131.188.2.10* Germany
+              uni-karlsruhe.de     unresolvable  Germany                       
+                     uni-kl.de     unresolvable  Germany                       
+              uni-paderborn.de    131.234.22.30  Germany
+                uni-rostock.de     unresolvable  Germany                       
+              uni-stuttgart.de   129.69.221.120* Germany
+                sunsite.auc.dk    130.225.51.30  Denmark
+     seltzer.csua.berkeley.edu     128.32.43.55  USA, California, Berkeley
+               irc.ecn.bgu.edu    143.43.32.201  USA, Illinois
+        azure.acsu.buffalo.edu      128.205.7.6  USA, New York
+               irc.calpoly.edu    129.65.26.101  USA, California
+               irc.caltech.edu  131.215.134.130  USA, California, Pasadena
+              irc.colorado.edu   128.138.129.31  USA, Colorado
+        organ.ctr.columbia.edu     128.59.68.35  USA, New York
+     red-dwarf.cit.cornell.edu     132.236.56.9  USA, New York
+             irc.law.emory.edu   170.140.50.195  USA, GA, Atlanta
+          irc.cnde.iastate.edu   129.186.202.53  USA, Iowa
+                 irc.ilstu.edu       138.87.1.7  USA, IL, Normal
+                 irc-2.mit.edu       18.180.0.2  USA, Massachusetts
+                  irc.pitt.edu   136.142.185.34  USA, Pennsylvania
+                irc.cs.rpi.edu    128.213.4.197  USA, New York
+               irc.rutgers.edu  165.230.224.131  USA, New Jersey
+              irc.stanford.edu       36.55.0.50  USA, California
+              anarchy.tamu.edu   128.194.12.120  USA, Texas, College Station
+                   irc.uci.edu     128.195.1.18  USA, California, Irvine
+                  irc.uiuc.edu     192.17.7.229  USA, Illinois
+     pegasus.ccs.itd.umich.edu   141.211.26.105  USA, Michigan
+                   irc.umn.edu   160.94.219.158  USA, Minnesota
+            irc.ecn.uoknor.edu    129.15.112.34  USA, Oklahoma
+          piglet.cc.utexas.edu     128.83.108.3  USA, Texas, Austin
+            joyce.eng.yale.edu    130.132.20.72  USA, Connecticut
+                 irc.clinet.fi      194.100.0.7  Finland
+                 ircd.eunet.fi     192.26.119.4  Finland
+                 irce.eunet.fi    193.64.151.65  Finland
+                  irc.funet.fi     130.230.1.11  Finland
+            myntti.helsinki.fi     128.214.4.25  Finland
+              hutirc.cs.hut.fi   130.233.192.44  Finland
+                 irc.cs.hut.fi    130.233.192.2  Finland
+            irc.freenet.hut.fi   130.233.208.41  Finland
+                     cs.jyu.fi     130.234.48.8  Finland
+               irc.kolumbus.fi     193.229.0.44  Finland
+                    irc.lpt.fi     193.166.64.3  Finland
+                aapo.it.lut.fi     157.24.11.60  Finland
+                   lumi.lut.fi     157.24.10.72  Finland
+                 irc.netppl.fi    193.143.77.11  Finland
+                   irc.otol.fi    193.64.225.62  Finland
+                  irc3.otol.fi    193.65.248.36  Finland
+                   irc.ouka.fi   194.136.168.11  Finland
+                   irc.oulu.fi   130.231.241.30  Finland
+                   irc.pspt.fi    192.98.38.220  Finland
+                    irc.sci.fi     194.215.80.8  Finland
+                 irc.cc.tut.fi   130.230.102.10  Finland
+             hilbert.tutech.fi  193.166.137.100  Finland
+                    irc.uta.fi       153.1.1.11  Finland
+                    irc.utu.fi     130.232.1.30  Finland
+                 irc-gw.xgw.fi   193.210.10.128  Finland
+                   irc.enst.fr   137.194.160.14  France
+                irc.eurecom.fr     193.55.112.8  France
+          sil.polytechnique.fr     192.48.98.14  France
+  salambo.enserb.u-bordeaux.fr    147.210.18.15  France
+          cismhp.univ-lyon1.fr  134.214.100.245  France
+                    irc.bme.hu     152.66.116.1  Hungary
+                 irc.biu.ac.il      132.70.1.23  Israel
+                 irc.tau.ac.il      132.66.16.5  Israel
+                  irc.isnet.is      193.4.58.52  Iceland
+        highland.cselt.stet.it     163.162.4.38  Italy
+             irc.cselt.stet.it     163.162.4.38  Italy
+             irc.ccii.unipi.it    131.114.28.21  Italy
+    wsclark.huie.hokudai.ac.jp     133.50.16.80  Japan
+                            ..     133.50.80.14  ..
+          akiu.gw.tohoku.ac.jp       130.34.8.9  Japan
+race-server.race.u-tokyo.ac.jp      157.82.76.2  Japan
+      irc.cc.yamaguchi-u.ac.jp    133.62.128.16  Japan
+ tonkotsu.hakozaki.karrn.ad.jp     192.50.15.18  Japan
+               endo.wide.ad.jp       133.4.11.2  Japan
+          irc.kyoto.wide.ad.jp        133.4.8.5  Japan
+                            ..       133.4.19.1  ..
+          irc.tokyo.wide.ad.jp       133.4.3.17  Japan
+                   irc.ais.net     199.0.154.13  USA, Illinois
+                  irc2.ais.net     199.0.154.14  USA, Illinois
+                  irc.best.net      206.86.8.69  USA, CA, Mountain View
+                irc.bridge.net      204.253.4.4  USA, Florida, Miami
+                    irc.bt.net      194.72.6.52  England, London
+                   irc.cdc.net     205.217.64.5  USA, TN, Chattanooga
+                  irc.cerf.net   192.215.245.12  USA, CA, San Diego
+                 irc.digex.net   205.197.247.96  USA, Maryland
+                  irc.epix.net    199.224.64.19  USA, Pennsylvania
+                 irc2.epix.net    199.224.64.21  USA, Pennsylvania
+           irc.frontiernet.net    204.168.13.13  USA, NY, Rochester
+                  irc.gate.net     199.227.0.17  USA, Florida
+                 irc.ionet.net    204.96.200.25  USA, OK, Okc
+                   irc.mcs.net   192.160.127.90  USA, Illinois
+                    irc.mo.net   199.250.196.13  USA, Missouri
+               irc.phoenix.net       207.43.3.5  USA, Texas, Houston
+               irc.stealth.net    206.26.140.20  USA, NY, New York
+             irc-2.stealth.net    206.26.140.20  USA, NY, New York
+                 irc.texas.net    206.127.0.130  USA, Texas, San Antonio
+               irc-2.texas.net    206.127.0.129  USA, Texas, San Antonio
+                irc.sci.kun.nl    131.174.36.10  Netherlands
+              irc.nijenrode.nl     192.87.112.5  Netherlands
+                 irc.xs4all.nl     194.109.6.11  Netherlands
+                  irc.hitos.no    158.39.19.112  Norway
+              irc.powertech.no     194.19.4.200  Norway
+                    irc.uib.no    129.177.30.16  Norway
+                irc.ifi.uio.no     129.240.86.2  Norway
+               irc.pvv.unit.no  129.241.210.242  Norway
+                       eff.org    204.253.162.3  USA, San Francisco
+                    irc.io.org   198.133.36.153  Canada, Toronto
+                irc.spyder.org   198.53.155.106  Canada, Ontario, Nepean
+                irc.agh.edu.pl    149.156.96.12  Poland
+              irc.mimuw.edu.pl     148.81.12.44  Poland
+                 irc.lublin.pl    193.59.55.167  Poland
+             irc.put.poznan.pl    150.254.23.18  Poland
+                        irc.ru      194.87.0.23  Russian Federation
+            irc.dd.chalmers.se    129.16.117.11  Sweden
+               irc.nada.kth.se   130.237.226.10  Sweden
+              irc.ludd.luth.se    130.240.16.47  Sweden
+                irc.swipnet.se    193.12.122.33  Sweden
+             irc.fri.uni-lj.si      193.2.72.13  Slovenia
+                 irc.uni-mb.si     164.8.65.104  Slovenia
+          irc.csie.nctu.edu.tw   140.113.17.161  Taiwan
+           irc.csie.ncu.edu.tw    140.115.50.43  Taiwan
+               irc.seed.net.tw   139.175.251.50  Taiwan
+           serv.eng.abdn.ac.uk   139.133.221.13  United Kingdom
+            stork.doc.ic.ac.uk     146.169.43.2  United Kingdom
+                            ..      146.169.2.7  ..
+             serv.cs.man.ac.uk   130.88.229.190  United Kingdom
+           dismayl.demon.co.uk     158.152.1.76  United Kingdom
+
+The following servers were found, but did not meet this program's
+criteria for listing as a reliable, client-use server.  They may be
+brand new, unreliable, routing only, or may be a 'test server', only
+up for a short period.  They may or may not work for you ...
+
+  codex.anu.edu.au troll.elec.uow.edu.au services.ca chat.btinternet.com
+  *.netcom.com world.std.com test.calpoly.edu bazooka.rutgers.edu
+  irc2.uiuc.edu irc.pao.edu.fi oppi.pao.edu.fi ircd.funet.fi irc.great.fi
+  dior.it.lut.fi sauron.it.lut.fi irc2.oulu.fi irc.reg.fi irc.solutions.fi
+  kitt.tekla.fi eclia5.ec-lille.fr test.enserb.u-bordeaux.fr irc.elte.hu
+  irc.technion.ac.il dino.ibm.net.il irc.ibm.net.il irc.kyutech.ac.jp
+  london.uk.pi.net fr.stealth.net frd.stealth.net irc-3.stealth.net
+  ircd.stealth.net millennium.stealth.net irc29.nada.kth.se irc-2.arnes.si
+  irc.sanet.sk irc.demon.co.uk irc.easynet.co.uk irc.netcom.net.uk
+
+--
+Doug McLaren, dougmc@comco.com

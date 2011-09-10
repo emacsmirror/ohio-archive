@@ -1,0 +1,10 @@
+Quite a while ago I posted my mighty-mouse.el file with various mouse
+support routines. Several people have asked me for the other files that I
+mentioned in the comments, so I figured I might as well go ahead and post
+them as well. The info-mouse stuff is the most useful, but I did not write
+it, I simply adapted it to use the separate mouse maps that mighty-mouse.el
+provides (Bob Weiner is the original author). Bob has since posted newer
+versions of his info support, but this is based on an older version. (This
+unfortunate divergence is one reason I did not want to post this stuff
+originally, but I have gotten a lot of requests, so you will just have to
+take this as-is).

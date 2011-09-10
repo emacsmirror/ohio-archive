@@ -1,0 +1,81 @@
+ These WOOL and elisp files implement a flexible and useful approach
+to drop down menus and scrollbars for epoch under GWM.  This README
+file is not adequate documentation, but unfortunately this is all you
+get.  If things don't work, try looking through the code.
+
+ These are the files included:
+ drop-menus.gwm	- definition of some drop down menus
+         	- example of a drop-menus bar in a style
+ widgets.gwm   	- all the code implementing drop-menus and scrollbars
+ widgets.el    	- the epoch code that interprets events from GWM
+
+ The files should be loaded in this order:  widgets, drop-menus
+
+
+
+HOW IT LOOKS
+------------
+ The drop-menus are part of a window decoration style.  Normally an
+Xwindow class or program name will have the same decoration, altho you
+can fiddle with that.  Style.gwm shows how to select the decoration
+based on any old characteristic you wish.  I used that to give a
+different decoration to epoch windows I refered to as popups, little
+information type windows not meant for editing.  Simple usage gives
+the same decoration to all your epoch windows except the minibuffer.
+
+ The drop-down menus are collected into a menubar, a bar with bunch of
+little buttons in them which drop down menus.  A quick click/release
+selects the first thing on the menu.
+
+ I suggest putting this bar on top, because the code does drop-down
+menus.  If you don't like sacrificing your title bar, try changing the
+code to make jump-up menus and put it at the bottom!
+
+The scrollbar doesn't have any slider.  A slider seems to be a lot of
+effort for little payoff.  The scrollbar doesn't visually split when
+the epoch screens split, but epoch interprets events on a per-window
+basis.  This lets you scroll the other window very easily, a big
+advantage.
+     
+
+
+HOW IT WORKS
+------------
+ The WOOL code communicates with epoch by setting the properties
+"Dmenu" or "scrollbar" when events occur.  Pushing a couple of
+property handlers grabs the messages and deals with them.  The Dmenu
+handler just takes the message as a string and executes it.  The
+scrollbar handler takes different actions for each of the three
+buttons, easily changed by the scrollbar-funcs constant:
+
+  (defconst widget:scrollbar-funcs
+    '((1 . scroll-up) (2 . line-up-point) (3 . scroll-down)))
+
+ If the epoch screen is split into several windows, the scrollbar
+handler figures out which window is next to the scrollbar and acts on
+that window.  The information sent to epoch by GWM tells how far down
+the scrollbar (in percent, 0-100) the mouse click was, so proportional
+scrolling through the file should be easy to do.
+
+
+
+POSSIBLE PROBLEMS 
+----------------- 
+ When the cursor is on a button, the font changes to bold - a nice
+effect assuming you have the right fonts.  Note that the fonts I used
+have the same width in regular or bold, so the buttons don't shift to
+the right when I bold one of them.  I think these fonts are part of
+the standard X distribution.
+
+ I last used this a long time ago, under earlier versions of GWM and
+epoch.  Some around here are still using this stuff, but I can't vouch
+for compatability.  Also, I pulled this out as a piece from my larger
+set of personal preferences in GWM.  I may have forgotten some little
+support function.
+
+
+
+
+DISTRIBUTION
+------------
+ As it says in each file, use as you like but don't try to sell it.

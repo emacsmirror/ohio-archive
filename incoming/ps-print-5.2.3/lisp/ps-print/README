@@ -1,0 +1,45 @@
+
+ps-print.tar.gz has the following files:
+
+   lisp/ps-print/ps-bdf.el	BDF font file handler
+   lisp/ps-print/ps-mule.el	multi-byte character facility
+   lisp/ps-print/ps-print.el	main file
+   lisp/ps-print/ps-print.new	News
+
+   etc/ps-print/ps-prin0.ps	prologue file 0
+   etc/ps-print/ps-prin1.ps	prologue file 1
+   etc/ps-print/ps-prin2.ps	prologue file 2
+   etc/ps-print/ps-prin3.ps	prologue file 3
+
+On GNU Emacs, the prologue files (ps-prin*.ps) should be installed in
+directory given by `data-directory' variable which contains a string
+like "/usr/share/emacs/20.3/etc/".
+
+On XEmacs, the prologue files (ps-prin*.ps) should be installed in
+directory given by `(locate-data-directory "ps-print")'.
+
+If you wish to install prologue files in another directory, you should
+customize `ps-postscript-code-directory' to contain the directory.
+
+One way to set `ps-postscript-code-directory' is to insert in your
+~/.emacs:
+
+   (setq ps-postscript-code-directory "/directory/of/prologue/files/")
+
+Or type:
+
+   M-x set-variable RET ps-postscript-code-directory RET
+   "/directory/of/prologue/files/" RET
+
+Or type:
+
+   M-x ps-print-customize RET
+   and customize `ps-postscript-code-directory'.
+
+Note that it's important the last "/".
+
+
+Happy hacking
+
+
+Vinicius

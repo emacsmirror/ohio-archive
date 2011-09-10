@@ -1,0 +1,1000 @@
+numbers.  In an Info file, it consists of a menu item leading to the first
+
+When you are making index entries, it is good practice to think of the
+different categories under which people may look for something.  Different
+people \emph{do not} think of the same words when they look something up.
+They think of different words.  A helpful index will have items indexed
+under all the different words that people may use.  For example, someone might
+think it obvious that the two letter names for indices should be listed
+under ``Indices, two letter names'', since the word ``Index'' is the
+general concept.  But another reader may remember the specific concept of
+two letter names and search for the entry listed as ``Two letter names for
+indices''.  A good index will have both entries and will help both kinds of
+user.
+
+Like typesetting, the construction of an index is a highly skilled,
+professional art, the subtleties of which are not appreciated until you
+have to do it yourself.
+
+Normally, six indices are provided for, and are referred to by their
+two-letter abbreviations:
+\cindex{Two letter names for indices}
+\cindex{Indices, two letter names}
+\cindex{Names for indices}
+
+\begin{description}
+\item[cp]
+A \dfn{concept index} listing concepts that are discussed.
+
+\item[pg]
+A \dfn{program index} listing names of programs and leading to the places
+where those programs are documented.
+
+\item[fn]
+A \dfn{function index} listing functions (such as, entry points of
+libraries).
+
+\item[vr]
+A \dfn{variables index} listing variables (such as, external variables of
+libraries).
+
+\item[tp]
+A \dfn{data type index} listing data types (such as, structures defined in
+header files).
+
+\item[ky]
+A \dfn{keystroke index} listing keyboard commands.
+\end{description}
+
+\noindent
+Not every manual needs all of these.  This manual has two indices: a
+concept index and a command index (that uses the function index but is
+called a command index in the chapter heading).  Two or more indices can be
+combined into one using the \code{\back synindex} command.  \xref{Combining
+Indices}.
+
+In order to generate any of these Indices, you must declare it with the
+\code{\back newindex} command, before it is first used by one of the index
+commands.  This is usually done after the \code{\back begin\{document\}}
+but before the \code{\back setfilename}.
+\cindex{Indices, declaring}
+\cindex{Declaring indices}
+\findex{newindex}
+
+\code{newindex} takes one argument, which is the two letter index type
+described above.  For example, to declare a concept and function index,
+you would use
+
+\begin{verbatim}
+\documentstyle[12pt,twoside,latexinfo]{report}
+
+\begin{document}
+\newindex{cp}
+\newindex{fn}
+\setfilename{manual.info}
+\end{verbatim}
+
+\begin{menu}
+* Defining the Entries of an Index::
+* Special Index Entries::
+* Combining Indices::
+* Printing an Index and Generating Menus::
+\end{menu}
+
+\node Defining the Entries of an Index, Special Index Entries, Creating Indices, Creating Indices
+\subsection{Defining the Entries of an Index}
+\cindex{Defining the entries of an index}
+\cindex{Index entries}
+\cindex{Entries for an index}
+
+The data to make an index comes from many individual commands scattered
+throughout the \LaTeX info source file.  Each command says to add one entry to
+a particular index; after processing, it will give the current page number
+or node name as the reference.
+
+\begin{description}
+\item[\back cindex\{\var{concept}\}]
+Make an entry in the concept index for \var{concept}, referring to the
+current page or node.\refill
+
+\item[\back findex\{\var{function}\}]
+Make an entry in the function index for \var{function}, referring to the
+current page or node.\refill
+
+\item[\back vindex\{\var{variable}\}]
+Make an entry in the variable index for \var{variable}, referring to the
+current page or node.\refill
+
+\item[\back pindex\{\var{program}\}]
+Make an entry in the program index for \var{program}, referring to the
+current page or node.\refill
+
+\item[\back kindex\{\var{key}\}]
+Make an entry in the key index for \var{key}, referring to the
+current page or node.\refill
+
+\item[\back tindex\{\var{data type}\}]
+Make an entry in the data type index for \var{data type}, referring to the
+current page or node.\refill
+\end{description}
+
+If the same name is indexed on several pages, all the pages are listed in
+the printed manual's index.  However, \strong{only} the \strong{first} node
+referenced will appear in the index of an Info file.  This means that it is
+best to write indices in which each entry will refer to only one place in the
+\LaTeX info file.  Fortunately, this constraint is a feature rather than loss
+since it means that the index will be easy to use.  Otherwise, it can be
+easy to create an index which has many pages listed for an entry and you
+don't know which one you need.\refill
+
+You are not actually required to use indices for their canonical
+purposes.  For example, you might wish to index some C preprocessor macros.
+You could put them in the function index along with actual functions, just
+by writing \code{\back findex} commands for them; then, when you print the
+``function index'', you could give it the title `Function and Macro Index'
+and all will be consistent for the reader.  Or you could put the macros in
+with the data types by writing \code{\back tindex} commands for them, and give
+that index a suitable title so the reader will understand.\refill
+
+\node Special Index Entries, Combining Indices, Defining the Entries of an Index, Creating Indices
+\subsection{Special Index Entries}
+\findex{cpsubindex}
+\findex{cpindexbold}
+
+The concept index has two special index entries to help you make more elaborate
+concept indices.
+
+\code{\back cpsubindex\{topic\}\{subtopic\}} defines an entry in the
+concept index, which has a subtopic.  In the Info manual, this line and
+anything on it is deleted.
+
+\code{\back cpindexbold\{topic\}} defines an entry in the concept index,
+which is set in bold type.  In the Info manual, this line and anything
+on it is deleted.
+
+\node Combining Indices, Printing an Index and Generating Menus, Special Index Entries, Creating Indices
+\subsection{Combining Indices}
+\cindex{Combining Indices}
+\cindex{Indices, combining them}
+
+Sometimes you will want to combine two disparate indices such as functions
+and variables, perhaps because you have few enough of one of them that
+a separate index for them would look silly.
+
+You could put variables into the function index by writing \code{\back findex}
+commands for them instead of \code{\back vindex} commands, and produce a
+consistent manual by printing the function index with the title `Function
+and Variable Index' and not printing the `Variable Index' at all; but this
+is not a robust procedure.  It works only as long as your document is never
+included in part of or together with another document that is designed to
+have a separate variable index; if you did that, the variables from your
+document and those from the other would not end up together.
+
+What you should do instead when you want functions and variables in one
+index is to index the variables with \code{\back vindex} as they should be, but
+use the \code{\back synindex} command to redirect these \code{\back vindex}
+commands to the function index.  \code{\back synindex} takes two arguments: the
+name of an index to redirect, and the name of an index to redirect it to.
+For this purpose, the indices are given two-letter names described above.
+Thus, \code{\back synindex\{vr\}\{fn\}} at the front of a \LaTeX info file
+will cause all entries designated for the variable index to go to
+the function index instead.
+
+\node Printing an Index and Generating Menus, Node and Chapter Structuring, Combining Indices, Creating Indices
+\subsection{Printing an Index and Generating Menus}
+\cindex{Printing an index}
+\cindex{Indices, printing}
+\cindex{Generating menus with indices}
+\cindex{Menus generated with indices}
+
+To print an index means to include it as part of a manual or Info file.
+This does not happen automatically just because you use \code{\back
+cindex} or other index-entry generating commands in the \LaTeX info
+file; those just cause the raw data for the index to be accumulated.  To
+print an index, you must include the \code{\back printindex} command at
+the place in the document where you want the index to appear.  Also, for
+the case of the printed manual, you must run a program that is supplied
+with GNU Emacs called \code{texindex} to sort the raw data to produce a
+sorted index file, which is what will actually be used to print the
+index.\refill
+
+The \LaTeX info command that is used to print indices is 
+\code{\back printindex}.  It takes the two-letter index name (\pxref{Combining
+Indices}) as an argument without braces, and reads the corresponding sorted
+index file and formats it appropriately into an index.\refill
+
+\begin{ifinfo}
+The two-letter index names are:
+
+\begin{description}
+\item[cp]
+the concept index.
+\item[vr]
+the variable index.
+\item[fn]
+the function index.
+\item[ky]
+the key index.
+\item[pg]
+the program index.
+\item[tp]
+the data type index.
+\end{description}
+\end{ifinfo}
+
+\code{\back printindex} does not generate a chapter heading for the index.
+Consequently, you should precede the command with a suitable section or
+chapter command (usually \code{\back chapter*}) to supply the chapter heading
+and put the index into the table of contents.  And before that, you will
+probably put a \code{\back node} command.  Also, if you want the index
+to be set in two-column mode, then you should precede the index with 
+the \LaTeX\ \code{\back twocolumn} command.  For example,\refill
+
+\begin{verbatim}
+\twocolumn
+ \node Command Index, Concept Index, The Last Section, Top
+ \chapter*{Command Index}
+\cindex{Command Index}
+
+\printindex{fn}
+
+ \node Concept Index,Top,   Command Index, Top
+ \chapter*{Concept Index}
+\cindex{Concept Index}
+
+\printindex{cp}
+
+\end{document}
+\end{verbatim}
+
+In \LaTeX, \code{\back printindex} needs a sorted index file to work from.
+\LaTeX\ does not know how to do sorting; the lack of any way to call
+an external program like \code{sort} is one of the main deficiencies of
+\TeX.  You must invoke the program \code{texindex} to do so, giving it the
+names of the raw index files to be sorted as arguments.  You do not have to
+run \code{texindex} on all of them; only the ones you are going to print.
+(\xref{Printing Hardcopy}, for more information.)
+
+\node Node and Chapter Structuring, Chapter, Printing an Index and Generating Menus, Top
+\chapter{Node and Chapter Structuring}
+\cindex{Node and chapter structuring}
+\cindex{Chapter structuring}
+\cindex{Node structuring}
+\cindex{Structuring of nodes and chapters}
+\findex{node}
+
+The chapter structuring commands divide a document into a hierarchy of
+chapters, sections, subsections and subsubsections.  These commands
+generate large headings.  The chapter structuring should be placed at the
+beginning of a line.  In a printed manual, the table of contents is based
+on the information specified by the chapter structuring commands.
+
+Although the chapter structuring commands used for creating a printed
+document are entirely different from the node commands for structuring an
+Info file, you are likely to use the two kinds of command together since
+the single \LaTeX info file is usually designed to be read both as an Info file
+and as a printed manual.  The only time you are likely to use the chapter
+structuring commands without using the node structuring commands is if you
+are writing a document that will never be put into Info format, for
+example, a novel, a letter, an article or a memorandum.
+
+Although a \LaTeX info file can be structured in a variety of ways, it is
+usually structured like a book with chapters, sections, subsections and the
+like.  This structure can also be visualized as a tree (or rather as an
+upside down tree) with the root at the top and each level corresponding to
+chapters or sections.  In Info format, you reach the nodes on
+each level by using the the `Next' and `Previous' pointers in the node
+line.  For example, you go from one chapter to the next or previous chapter
+by using the the pointers to the next and previous chapters.  In Info, you
+go the level above by using an `Up' pointer and you go to the level below
+through a `Menu'.  In the printed manual, cross references are indicated by
+page and section numbers; in the on-line file, cross references are
+specified by inline menu items.
+
+\clearpage
+Here is a diagram that shows a \LaTeX info file with three chapters; 
+each chapter has two sections.
+
+\begin{verbatim}
+                                 top
+                                  |
+                                  |
+            ---------------------------------------------
+           |                      |                      |
+           |                      |                      |
+       Chapter 1              Chapter 2               Chapter 3
+           |                      |                      |
+           |                      |                      |
+      ----------             ----------              ----------          
+     |          |           |          |            |          |         
+ Sect. 1.1   Sect. 1.2   Sect. 2.1  Sect. 2.2    Sect. 3.1  Sect. 3.2     
+			   				   
+\end{verbatim}
+
+In this structure, the node for Chapter 2 looks like this:
+
+\begin{verbatim}
+ \node     Chapter 2,  Chapter 3, Chapter 1, top
+\end{verbatim}
+
+To get to Sections 2.1 and 2.2, you need a menu inside of Chapter 2 that
+says:
+
+\begin{verbatim}
+\begin{menu}
+* Sect. 2.1::    Description of this section.
+* Sect. 2.2::  
+\end{menu}
+\end{verbatim}
+
+\noindent
+This menu is located inside Chapter 2, after the beginning of the chapter,
+just before Section 2.1.
+
+Note that a menu entry has three parts: the menu item name, the name of the
+menu item name and the name of the node are the same, you can put two
+colons after the item name, as is shown in the example. (If the second part
+is different from the first, the first part is terminated by a colon and
+the second part terminated by a tab, newline, comma or period.)
+(\xref{Menu Environment}.)
+
+The node for Sect. 2.1 will look like this:
+
+\begin{verbatim}
+ \node     Sect. 2.1, Sect. 2.2,         ,  Chapter 2
+\end{verbatim}
+
+This node does not have a `Previous' node.
+
+Usually, a \code{\back node} command and a chapter structuring command are
+used in sequence, along with indexing commands.  For example, the node for
+the chapter on Ending a LaTeXinfo File looks like this:
+
+\begin{verbatim}
+ \node Ending a LaTeXinfo File, Structuring, Beginning a LaTeXinfo File, Top
+ \chapter{Ending a LaTeXinfo File}
+\cindex{Ending a LaTeXinfo File}
+\cindex{LaTeXinfo file ending}
+\cindex{File ending}
+\end{verbatim}
+
+The \code{\back node} command is the only one in \LaTeX info where its
+arguments are not delineated by braces.  The arguments are separated by
+commas, and are terminated at the end of the line.  This is because
+the Info format itself requires the \code{node} arguments to be like
+this.  Note that it also means that you cannot use a comma within any
+of the four arguments to the node command.
+
+There are four chapter-structuring commands for chapters, sections,
+subsections and subsubsections.  The optional heading argument to these
+commands is not supported.  You should avoid the use of any \LaTeX\ 
+commands in the headings: any such commands should be preceded by a
+\code{\back protect}.  See the \LaTeX\ Manual for more details
+(\cite{Lamport}).\refill
+
+\begin{menu}
+* Chapter::
+* Appendix::
+* Section::
+* Subsection::
+* Subsubsection::
+* Node::
+* Menu Environment::
+\end{menu}
+
+\node Chapter, Appendix, Node and Chapter Structuring, Node and Chapter Structuring
+\section{Chapter}
+\cindex{Chapter}
+\findex{chapter}
+\findex{chapter*}
+
+\code{\back chapter} identifies a chapter in the document.  It is
+followed by a single argument which is the rest of the line, as in
+
+\begin{verbatim}
+ \chapter{Node and Chapter Structuring}
+\end{verbatim}
+
+In \LaTeX, it creates a chapter in the document, specifying the chapter
+title.  In the Info file, \code{\back chapter} causes its argument to
+appear on a line by itself, with a line of asterisks inserted
+underneath.  For example:\refill
+
+\begin{example}
+This is a Chapter
+*****************
+\end{example}
+
+To start a chapter without it being numbered, use the \code{\back chapter*}
+command.
+
+\node Appendix, Section, Chapter, Node and Chapter Structuring
+\section{Appendix}
+\cindex{Appendix}
+\findex{appendix}
+
+\code{\back appendix} is the same as the \LaTeX\ command of the same name.
+In a printed manual, all chapters that follow this command are
+numbered differently in the table of contents: they are given a letter
+instead of a number, and the letters restart from \code{A}.
+
+\node Section, Subsection, Appendix, Node and Chapter Structuring
+\section{Section}
+\cindex{Section}
+\findex{section}
+\findex{section*}
+
+\code{\back section} is like \code{\back chapter} except that in 
+\LaTeX\ it makes a section rather than a chapter.  (\xref{Chapter}.)  
+Sections go within chapters.  In the Info file, \code{\back chapter} and
+\code{\back section} differ only in that \code{\back section} underlines
+with \samp{=}.  For example,\refill
+
+\begin{example}
+This is a section
+=================
+\end{example}
+
+To start a section without it being numbered, use the \code{\back section*}
+command.
+
+\node Subsection, Subsubsection, Section, Node and Chapter Structuring
+\section{Subsection}
+\cindex{Subsection}
+\findex{subsection}
+
+Subsections are to sections as sections are to chapters. (\xref{Section}.)
+They are underlined with \samp{-}.  For example,\refill
+
+\begin{example}
+This is a subsection
+--------------------
+\end{example}
+
+To start a subsection without it being numbered, use the 
+\code{\back subsection*} command.\refill
+
+\node Subsubsection, Node, Subsection, Node and Chapter Structuring
+\section{Subsubsection}
+\cindex{Subsubsection}
+\findex{subsubsection}
+\findex{subsubsection*}
+
+Subsubsections are to subsections as subsections are to sections.
+(\xref{Subsection}.)  They are underlined with periods.  For
+example,\refill
+
+\begin{example}
+This is a subsubsection
+.......................
+\end{example}
+
+To start a subsubsection without it being numbered, use the 
+\code{\back subsubsection*} command.\refill
+
+\node Node, Menu Environment, Subsubsection, Node and Chapter Structuring
+\section{Node}
+\cindex{Node}
+\cindex{Node}
+
+\code{\back node} defines the beginning of a new node in the Info output
+file (\inforef{Top, info, info}.).  It is followed by four arguments,
+separated by commas, that make up the rest of the line.  Since it is
+often hard to remember the order in which are arguments are listed,
+\code{latexinfo-mode} provides the \ctrl{C} \ctrl{C} \key{n} command
+(\code{latexinfo-insert-node}) which automatically inserts a comment
+line listing the arguments.  For example,\refill
+
+\begin{example}
+\back node    LaTeXinfo Mode, Beginning a LaTeXinfo File,  Overview, Top    
+\back comment node-name,    next,              previous, up
+\end{example}
+
+\noindent
+defines a node named \samp{LaTeXinfo Mode}, whose `Next' pointer is to node
+\samp{Beginning a LaTeXinfo File}, whose `Previous' pointer is to node
+\samp{Overview}, and whose `Up' pointer is to node \samp{Top}.  What
+this means is that \LaTeX info changes \w{\code{\back node \var{args}}}
+into the special text string necessary to separate Info nodes and to
+identify the node that is starting and say what nodes it points
+to.\refill
+
+The pointer names should be the names of nodes defined elsewhere.  For this
+example, nodes named \samp{Beginning a LaTeXinfo File}, \samp{Overview} and
+\samp{Top} should be defined elsewhere in the file with other \code{\back node}
+commands.  It does not matter whether they are before or after the node
+that refers to them.\refill Normally, a node's `Up' pointer should point
+at the node whose menu mentions that node.  The node's `Next' pointer
+should point at the node that follows that node and its `Previous'
+pointer should point at the node that precedes it in that menu.\refill
+
+In \LaTeX, \code{\back node} is nearly ignored.  It generates no text.
+Its only function is to identify the name to use for cross-references to
+the chapter or section which follows the \code{\back node} command and
+which which makes up the body of the node.  (Cross references are made
+with \code{\back xref}.  \xref{Making Cross References}.) 
+\code{\back node} should be followed immediately by a
+chapter-structuring command such as \code{\back chapter}, \code{\back
+section}, \code{\back subsection} or \code{\back subsubsection}.\refill
+
+The easiest way to write a node is to use the LaTeXinfo Mode keyboard
+command \ctrl{c} \ctrl{c} \key{n} to insert \samp{\back node} and a
+comment line listing the names of each of the pointers in their proper
+order.  This way you won't lose track of which arguments are for which
+pointers.  The template is especially useful if you are not familiar
+with \LaTeX info.  It is important to pick a suitable node name.
+Generally, these begin with an uppercase letter as if the node name were
+a heading for a chapter or section.  Do not use any of the \LaTeX info
+commands in the name; these commands confuse Info.  The node name should
+be informative.  Unfortunately, long names will not fit onto the line,
+which can be awkward, but it is still better to use long but informative
+names rather than short ones.
+
+Some people insert the names of the `Next', `Previous' and `Up' pointers
+at the same time they insert the node's own name.  This is because it is
+easier to keep track of the node structure as you create a document than
+it is to sort it out after you have dozens of nodes.  Others wait to
+insert the `Next', `Previous' and `Up' pointers until they have a nearly
+final version of the document.  This is because they expect to change
+the organization of the document while they write it and insert or
+delete sections and move them around.  The command
+\code{latexinfo-show-structure} can be used to find the `Next',
+`Previous' and `Up' pointers of a node.  
+(See \xref{Using latexinfo-show-structure}.)
+
+After you have inserted the node-line, you should immediately write an
+command for the chapter or section and insert its name.  Next, (and this
+is important!), put in several index entries.  Usually, you will find at
+least two and often as many as four or five ways of referring to the
+node in the index. This will make it much easier for people to find the
+node in the index.\refill
+
+The top node of the file, named \samp{Top}, should have as its parent the
+name of a node in another file, where there is a menu that leads to this
+file.  Specify the file name in parentheses.  If the file is to be
+installed directly in the Info directory file, use \samp{(dir)} as the
+parent of the top node; this is short for \samp{(dir)top}, the node \samp{top}
+in the file \file{dir}, which is the main menu of Info.  For example,\refill
+
+\begin{verbatim}
+\node    Top,       Overview, (dir),    (dir)
+\comment node-name, next,     previous, up
+\end{verbatim}
+
+For more information about installing an Info file in the \file{info}
+directory, \pxref{Installing an Info file}
+
+\node Menu Environment, Making Quotations and Examples, Node, Node and Chapter Structuring
+\section{Menu Environment}
+\cindex{Menu Environment}
+\findex{menu}
+
+Info file nodes can contain \dfn{menus} which point to other nodes.  You
+must type the menus in by hand, and surround them with lines containing
+\code{\back begin\{menu\}} and \code{\back end\{menu\}}.  In Info, the
+\code{\back begin\{menu\}} line changes into \samp{* Menu:}, which
+indicates the beginning of a menu to the Info program.  Otherwise, the
+contents are unchanged by \LaTeX info, except for the processing of any
+other commands within.  The entire menu construct has no effect in the
+printed manual and will not appear there.\refill
+
+By convention, a menu is put at the end of a node.  This way, it is easy
+for someone using Info to find the menu, using the \kbd{M->}
+(\code{end-of-buffer}) command.  Menu environments cannot be nested, nor can
+they appear inside another environment such as \code{example}.The
+\code{\back begin\{menu\}} \emph{must} occur at the beginning of a line.
+
+In a menu, every line that begins with a \samp{*} lists a single topic.  A
+line that does not start with a \samp{*} will also appear in the menu and
+can be used as a comment.  A menu item has three parts: 
+
+\begin{enumerate}
+\item
+The menu item name.
+
+\item
+The name of the node.
+
+\item
+A description of the item.  
+\end{enumerate}
+
+\noindent
+Only the first part is required.  This part is the name of the topic---the
+name of the menu item that the user must give to the \kbd{m} command to
+select this topic when using Info.  The first part comes right after the
+asterisk and a space, and is followed by a colon, spaces and tabs, and then
+the name of the node which discusses that topic.  The name of the node is
+terminated by a tab, comma, newline or period.  If the node name and topic
+name are the same, rather than give the name twice, put two colons after
+the name instead.  For example, \samp{* Name::}.  You should do this
+whenever possible, since it reduces visual clutter in the menu.
+If the second part is present, it may be terminated with a tab, comma, or
+newline; or with a period.
+
+\clearpage
+For example:
+
+\begin{example}
+\back begin\{menu\}
+A Section on Foo and Switches
+* Foo::           The node named Foo tells you how to go fooing.
+* Sw: Switches.   Type \back code\{m Sw\} to see node \back code\{Switches\}
+                  which describes the switches available here.
+\back end\{menu\}
+\end{example}
+
+\noindent
+produces
+
+\begin{verbatim}
+* menu:
+
+A Section on Foo and Switches
+* Foo::         The node named foo tells you how to go fooing.
+* Sw: Switches. Type `m Sw' to see node `Switches'
+                which describes the switches available here.
+\end{verbatim}
+
+In this example, the menu has two items.  \samp{Foo} is both a menu item
+name and the name of the node referred to by that item.  \samp{Sw} is
+the other menu item name, and it refers to the node named
+\samp{Switches}.  Since no file name is specified with \samp{Foo} or
+\samp{Switches}, they must be the names of other nodes in the same Info
+file.  Nodes in other Info files can be referred to by putting the file
+name in parentheses at the beginning of the node name. For example,
+
+\begin{verbatim}
+\begin{menu}
+* Outlining: (emacs) Outline Mode.  The major mode for editing outlines.
+* Rebinding: (emacs) Rebinding.     How to redefine the meaning of a key.
+\end{menu}
+\end{verbatim}
+
+\noindent
+When this is done, the item has to have at least two parts: the first part
+is the menu item name and the second part is the name of the node.
+
+\node Making Quotations and Examples, Quotation Environment, Menu Environment, Top
+\chapter{Making Quotations and Examples}
+\cindex{Making Quotations and Examples}
+\cindex{Examples}
+
+Quotations and examples are blocks of text, consisting of one or more whole
+paragraphs that are set off from the bulk of the text and treated
+differently.  They are usually indented.
+
+In \LaTeX info, an insertion is always begun by writing a 
+\code{\back begin} command on a line by itself, and ended by writing a 
+\code{\back end} command that is also on a line by itself.  For instance, an
+\dfn{example} is a kind of insertion that is begun with
+\code{\back begin\{example\}} and ended with
+\code{\back end\{example\}}.\refill
+\findex{end}
+
+There are five commands for quotations and examples:
+
+\begin{description}
+\item[quotation]
+Used to indicated text that is quoted.\refill
+
+\item[example]
+Used to illustrate code, commands and the like in a fixed width font
+without filling.\refill
+
+\item[display]
+Used for illustrative text.
+
+\item[verbatim]
+Used to illustrate code that you want to protect from parsing by either
+\LaTeX\ or \LaTeX info.
+
+\item[center]
+Used for centering text.
+\end{description}
+
+
+
+\begin{menu}
+* Quotation Environment::
+* Example Environment::
+* Display Environment::
+* Verbatim Environment::
+* Center Environment::
+\end{menu}
+
+\node Quotation Environment, Example Environment, Making Quotations and Examples, Making Quotations and Examples
+\section{Quotation Environment}
+\cindex{Quotation Environment}
+\findex{quotation}
+
+The \code{quotation} environment is used to indicate text that is
+excerpted from another (real or hypothetical) printed work.  The inside
+of a quotation is processed normally except that
+
+\begin{enumerate}
+\item
+The margins are narrower.
+\item
+Paragraphs are not indented.
+\item
+Interline spacing and interparagraph spacing are reduced.
+\end{enumerate}
+
+Thus, the input
+
+\begin{verbatim}
+\begin{quotation}
+This is
+a foo.
+\end{quotation}
+\end{verbatim}
+
+\noindent
+produces in the printed manual
+
+\begin{quotation}
+\begin{quotation}
+This is a foo.
+\end{quotation}
+\end{quotation}
+
+\noindent
+and in the Info file
+
+\noindent
+\begin{quotation}
+\begin{example}
+This is
+a foo.
+\end{example}
+\end{quotation}
+
+\clearpage
+\node Example Environment, Display Environment, Quotation Environment, Making Quotations and Examples
+\section{Example Environment}
+\cindex{Example Environment}
+\cindex{Examples}
+\findex{example}
+
+The \code{example} environment is used to indicate an example that is
+not part of the running text.  In the printed manual, this is done by
+switching to a fixed width font, turning off filling, and making extra
+spaces and blank lines significant.  In the Info file, an analogous
+result is obtained by indenting each line with five extra spaces.
+
+\code{\back begin\{example\}} should appear on a line by itself; this
+line will disappear from the output.  Mark the end of the example with a
+line containing \code{\back end\{example\}}, which will likewise
+disappear.  For example:\refill
+
+\begin{verbatim}
+\begin{example}
+mv foo bar
+\end{example}
+\end{verbatim}
+
+\noindent
+produces
+
+\begin{example}
+mv foo bar
+\end{example}
+
+Since the lines containing \code{\back begin\{example\}} and 
+\code{\back end\{example\}} will disappear, you will want to put 
+a blank line before the \code{\back begin\{example\}} and another
+blank line after the \code{\back end\{example\}}.  (Remember that
+blank lines between the beginning \code{\back begin\{example\}} 
+and the ending \code{\back end\{example\}} will appear in the output.)\refill
+
+Don't use tabs in lines of an example!  \LaTeX\ treats them like single
+spaces, and that is not what they look like.
+
+\node Display Environment, Verbatim Environment, Example Environment, Making Quotations and Examples
+\section{Display Environment}
+\cindex{Display Environment}
+\cindex{Display}
+\findex{display}
+
+The \code{display} environment is just like \code{example} except
+that, in the printed manual, \code{display} does not select the
+fixed-width font.  In fact, it does not specify the font at all, so that
+the text appears in the same font it would have appeared in without the
+\code{display}.\refill
+
+\node Verbatim Environment, Center Environment, Display Environment, Making Quotations and Examples
+\section{Verbatim Environment}
+\cindex{Verbatim Environment}
+\cindex{Including text verbatim}
+\findex{verbatim}
+
+The \code{verbatim} environment is very similar to the \code{example}
+environment except that no parsing of the contents is carried out, and the
+text is not indented.  In the Info file things will appear exactly as they
+have been typed in. In the printed manual, this is the same as the 
+\LaTeX\ command of the same name.  Verbatim environments cannot be nested,
+nor can they appear inside another environment such as \code{example}.  The
+\code{\back begin\{verbatim\}} and \code{\back end\{verbatim\}}
+\emph{must} occur at the beginning of a line.\refill
+
+\node Center Environment, Making Lists and Descriptions, Verbatim Environment, Making Quotations and Examples
+\section{Center Environment}
+\cindex{Center Environment}
+\cindex{Centering a line}
+\findex{center}
+
+Text enclosed in a \code{center} environment produces lines of output
+containing text centered between the margins.  This is the same
+as the \code{center} environment of \LaTeX, and different from the
+\TeX info command of the same name.
+
+\node Making Lists and Descriptions, Itemize Environment, Center Environment, Top
+\chapter{Making Lists and Descriptions}
+\cindex{Making lists and descriptions}
+\cindex{Lists and descriptions, making them}
+\cindex{Descriptions and lists, making them}
+
+\LaTeX info has several ways of making lists and two-column descriptions.
+Lists can be bulleted or numbered while a two-column description can
+highlight the items in the first column.  For example, this is an
+enumerated list:
+
+\begin{enumerate}
+\item
+This is a numbered item.
+
+\item
+This is the second item in this list.
+
+\item
+This is the third item on this list.
+\end{enumerate}
+
+\LaTeX info will automatically indent the text in lists or descriptions
+and number an enumerated list.  This last feature is useful if you are
+reordering the list, since you do not have to renumber it yourself.
+
+Lists or descriptions are always begun by a \code{\back begin} command
+on a line by itself and ended with a \code{\back end} command on a line
+by itself.  For example, an enumerated list begins with the command
+\code{\back begin\{enumerate\}} and ends with the command 
+\code{\back end\{enumerate\}}; and an itemized list begins with the command
+\code{\back begin\{itemize\}} and ends with the command 
+\code{\back end\{itemize\}}.  The elements of a list are begun with the 
+\code{\back item} command.\refill
+\findex{end}
+
+\clearpage
+Here is an itemized list of the different kinds of table and lists:
+
+\begin{itemize}
+\item
+Itemized lists with or without bullets.
+
+\item
+Numbered lists.
+
+\item
+two-column descriptions with highlighting.
+\end{itemize}
+
+
+\begin{menu}
+* Itemize Environment::
+* Enumerate Environment::
+* Description Environment::
+\end{menu}
+
+\node Itemize Environment, Enumerate Environment, Making Lists and Descriptions, Making Lists and Descriptions
+\section{Itemize Environment}
+\cindex{Itemize Environment}
+\findex{itemize}
+\findex{item}
+
+\code{\back begin\{itemize\}} is used to produce sequences of indented
+paragraphs, with a mark inside the left margin at the beginning of each
+paragraph.  The text of the indented paragraphs themselves come after
+the \code{\back begin\{itemize\}}, up to another line that says
+\code{\back end\{itemize\}}.  Before each paragraph for which a mark in
+the margin is desired, place a line that says just \code{\back item}.
+Don't put any other text on this line.
+
+Info indents the lines in an itemized list by five columns, but it does
+not fill them.  This can produce lines in the Info file that are too
+wide.  You can either write shorter lines in the \LaTeX info file by
+setting the fill column to five columns less than it is normally, or
+else you can tell Info to refill the paragraphs by adding the command
+\code{\back refill} to the end of the paragraph. (\xref{Refill}, for
+more information about the use of the \code{\back refill} command.)
+
+Usually, you should put a blank line before a \code{\back item}.  This
+puts a blank like in the Info file.  Except when the entries are very
+brief, a blank line looks better.  Here is an example of the use of
+\code{itemize}, followed by the output it produces.
+
+\begin{verbatim}
+\begin{itemize}
+\item
+Some text for foo.
+\item
+Some text
+for bar.
+\end{itemize}
+\end{verbatim}
+
+\noindent
+produces in the Info file
+
+\noindent
+\noindent
+\begin{quotation}
+\begin{itemize}
+\item
+Some text for foo.
+\item
+Some text
+for bar.
+\end{itemize}
+\end{quotation}
+
+\node Enumerate Environment, Description Environment, Itemize Environment, Making Lists and Descriptions
+\section{Enumerate Environment}
+\cindex{Enumerate Environment}
+\findex{enumerate}
+
+The \code{enumerate} environment is like the \code{itemize} environment
+except that the marks in the left margin contain successive integers
+starting with 1.  Do not put any argument on the same line as
+\code{\back begin\{enumerate\}}.  If you want, you can put a blank line
+between the entries in the list.  This often makes it easier to read the
+Info file.  For example,
+\refill
+
+\begin{verbatim}
+\begin{enumerate}
+
+\item
+Some text for foo.
+
+\item
+Some text
+for bar.
+\end{enumerate}
+\end{verbatim}
+
+\noindent
+produces in the Info file
+
+\begin{quotation}
+\noindent
+\begin{enumerate}
+
+\item
+Some text for foo.
+
+\item
+Some text
+for bar.
+\end{enumerate}
+\end{quotation}
+
+\begin{ifinfo}
+Info indents the lines of the enumerated list by five columns, but it does
+not fill them.  As a result, the lines in the Info file may be too wide.
+To prevent this, you can either write shorter lines in the \LaTeX info file
+file by setting the fill column to five columns less than it is normally,
+or else you can tell Info to refill the paragraphs by adding the command
+\code{\back refill} to the end of the paragraph.  (\xref{Refill}, for more
+information about the use of the \code{\back refill} command.)
+\end{ifinfo}
+
+\begin{iftex}
+Info indents the lines of the enumerated list by five columns, but it does
+not fill them, just as it does with an itemized list.  You may want to use
+shorter lines for text within an enumerated list or use the \code{\back refill}
+command at the end of the paragraph. (\xref{Refill}, for more information
+about the use of the \code{\back refill} command.)
+\end{iftex}
+
+\node Description Environment, Making Cross References, Enumerate Environment, Making Lists and Descriptions

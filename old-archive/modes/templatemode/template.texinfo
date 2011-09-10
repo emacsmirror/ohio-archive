@@ -1,0 +1,1203 @@
+@setfilename template
+
+@node top, tutorial, (dir), (dir)
+@chapter Introduction to Template-Mode
+
+@dfn{Template-mode} provides commands for inserting and manipulating text.
+It is particularly useful for inserting standard fragments, such as
+boilerplate for documents or function headers for programs.  There are
+templates for major program fragments of C, Emacs-Lisp, and Pascal, as well as
+standard boilerplate for Scribe and @TeX{} documents.
+
+The chapter titled ``Tutorial'' explains how to invoke @i{template-mode},
+and gives a small example.  The ``Commands'' chapter serves as a reference
+manual for @i{template-mode} commands.  Options and hooks for modifying the
+behavior and appearance of templates are discussed in ``Customization''.
+The ``Details'' chapter describes the precise syntax of templates and
+placeholders.  Finally, the appendices contain excerpts from the template
+definition files.
+
+The simplest form of templates are rectangular blocks of text.  Some
+templates have @dfn{placeholders} within them.  A placeholder may be
+replaced by any object of its type.  For example, @dfn{text} type
+placeholders may be replaced by any text string that does not contain a
+newline.  Some templates are menu lists of other templates---you must
+select one of the items of the list to insert.  Another form of template
+generates a sequence of some other template---you are asked when to stop
+generating.
+
+In fact, a set of templates defines a context-free grammar.  Each
+@dfn{Sequence} template is a production.  Placeholders represent
+nonterminals.  The act of inserting and expanding a template is the same as
+building the derivation tree for the nonterminal on the left side of the
+production.  @dfn{Selection} templates represent nonterminals with more
+than one production.  @dfn{Repetition} templates represent productions of
+the form @samp{B(AB)*}, where @samp{A} is any terminal string and @samp{B}
+is any nonterminal.  There are three more types of templates:
+@dfn{Lexical}, @dfn{String} and @dfn{Function}.  Lexical templates are used
+to describe symbols by regular expressions.  String templates are a special
+case of Sequence templates that contain no placeholders (and are parsed
+faster).  Function templates provide a mechanism for invoking any
+Emacs-Lisp function during template expansion.
+
+Templates are defined by a simple syntax and stored in ASCII files.  The
+standard templates for use by @i{template-mode} may be found in a directory
+referenced by @file{tpl-load-path}.  Files ending with @file{.tpl} are
+template source files.  Compiled versions are found in files ending with
+@file{tpl.elc}.  You may find it useful to print the @file{.tpl} files for
+the languages you use.
+
+@menu
+* tutorial::       A short example.
+* commands::       How to use templates while editing.
+* customization::  How to tailor templates and their commands.
+* details::        Details of template and placeholder syntax
+@end menu
+
+@node tutorial, commands, top, top
+@chapter Tutorial -- A Short Example
+
+In the example below, the following conventions have been used:
+@itemize @bullet
+@item
+The first line shows a prompt, or contains @samp{(No prompt)} to show the
+absence of prompting.
+
+@item
+The second, indented line shows your response.  If a carriage return
+(@key{RET}) is required, it will be included in your response.
+@end itemize
+The Appendices contain the templates described in this example.
+
+First, visit @file{sample.el}, and make sure that @i{Emacs-Lisp-Mode} is in
+effect.
+
+@table @code
+@item (No prompt)
+@key{ESC} x
+
+@item M-x
+@*
+load-file @key{RET}
+
+@item Load file:
+@*
+template @key{RET}
+
+@item (No prompt)
+@key{ESC} x
+
+@item M-x
+@*
+template-mode @key{RET}
+@end table
+
+At this point, @i{template-mode} will be initialized.  Completion of
+initialization is signalled by the presence of the symbol @code{Template}
+in the mode line.  If Emacs complains about not finding @file{template},
+then you will need to find the absolute path name for this package.  (See
+your computer center or a knowledgeable Emacs user.)
+
+You may want to experiment with the template-generation commands at this
+point, or continue the tutorial on the next page.
+
+@page
+
+@table @code
+@item (No prompt)
+@ctrl{c} @ctrl{t} t
+
+@item generate-template: Name of template?
+package @key{RET}
+
+@item Expand? (y or n)
+y
+
+@item Expand? (y or n)
+y
+
+@item Replace <text:documentation> with what?
+Sample package @key{RET}
+
+@item Expand? (y or n)
+n
+
+@item Expand? (y or n)
+n
+
+@item Keep optional placeholder? (y or n)
+y
+
+@item Expand? (y or n)
+n
+
+@item Expand? (y or n)
+y
+
+@item Expand? (y or n)
+y
+
+@item Replace <textenter:function-name> with what?
+reverse @key{RET}
+
+@item Expand? (y or n)
+y
+
+@item Replace <text:arguments> with what?
+list @key{RET}
+
+@item Expand? (y or n)
+y
+
+@item Type replacement and exit with @key{ESC}-@ctrl{c}.
+Reverse the items in LIST. @key{ESC}-@ctrl{c}
+
+@item Expand? (y or n)
+y
+
+@item Position on selection and exit with Return (or @key{ESC}-@ctrl{c}).
+x @key{RET}
+
+@item Expand? (y or n)
+y
+
+@item Replace <text:local-variables> with what?
+item @key{RET}
+
+@item Expand? (y or n)
+y
+
+@item Position on selection and exit with Return (or @key{ESC}-@ctrl{c}).
+w @key{SPC} @key{RET}
+
+@item Expand? (y or n)
+y
+
+@item Replace <text:list> with what?
+list @key{RET}
+
+@item Expand? (y or n)
+y
+
+@item Replace <text:item> with what?
+item @key{RET}
+
+@item More instances of functions? (y or n)
+n
+
+@item Done.
+...(You may finish this function now or continue)...
+
+@item (No prompt)
+@ctrl{c} @ctrl{t} @ctrl{p}
+
+@item (No prompt)
+@ctrl{c} @ctrl{t} @ctrl{k}
+
+@item (No prompt)
+@key{ESC} <
+
+@item Mark set
+@*
+@ctrl{c} @ctrl{t} @ctrl{e}
+
+@item Expand? (y or n)
+y
+
+@item Expand? (y or n)
+y
+@end table
+@page
+
+For a shorter (i.e., fewer keystrokes) incantation of this example, try
+setting two options:
+@table @code
+@item tpl-keep-optional-placeholders
+Setting this to @code{nil} will automatically delete optional placeholders
+in templates.
+
+@item tpl-ask-expansion-depth
+Setting this to @code{4} will automatically begin expansion of
+placeholders, until the depth of recursive expansions reaches 4.
+@end table
+@noindent
+Expanding the @code{package} template should take fewer keystrokes after
+these changes.
+
+@node commands, customization, tutorial, top
+@chapter Commands -- How to Use Templates While Editing
+
+This chapter serves as a reference to all of the @i{template-mode} commands.
+The first section briefly describes each command.  Following sections cover
+commands by topic, such as selecting or expanding templates.
+
+@menu
+* summary::        Short description of all the commands.
+* loading::        Initialization of template-mode.
+* selecting::      Choosing the right template.
+* expanding::      Replacing placeholders by templates or text.
+* menus::          Selection of choices -- Menu-Mode.
+* symbols::        Short expressions as parameters to templates.
+* textlong::       Large blocks of text as parameters to templates.
+* wrapping::       Weak parsing to manipulate enclosing templates.
+* searching::      Finding and replacing template instances.
+* aborting::       How to stop or quit.
+* creating::       How to create your own templates.
+@end menu
+
+@node summary, loading, commands, commands
+@section Summary -- Short description of all the commands
+
+Here is a short description of all of the @i{template-mode} commands:
+
+@table @code
+@item add-symbol (@ctrl{c} @ctrl{t} a)
+Add the symbol before point to the list of symbols created by
+@i{textenter} placeholders.
+
+@item compile-templates (unbound)
+Store the templates in a form that allows faster loading.
+
+@item delete-placeholder (@ctrl{c} @ctrl{t} @ctrl{k})
+Delete the placeholder at point.
+
+@item describe-template-mode (@ctrl{c} @ctrl{t} @ctrl{h})
+Give a brief description of template-mode.
+
+@item expand-placeholder (@ctrl{c} @ctrl{t} e)
+Expands the placeholder at point with its template description.
+
+@item expand-placeholders-in-region (@ctrl{c} @ctrl{t} @ctrl{e})
+Expands all placeholders in the region with their template descriptions.
+
+@item expand-symbol (@ctrl{c} @ctrl{t} @key{TAB})
+Expand the symbol before point using the list of symbols created by
+@i{textenter} placeholders.
+
+@item generate-any-template (@ctrl{c} @ctrl{t} ?)
+Builds a list of all the templates available, and waits for selection.
+
+@item generate-template (@ctrl{c} @ctrl{t} t)
+Prompts for the name of a template and then inserts it at point.
+Placeholders within the template are expanded interactively.
+
+@item load-tpl-buffer (unbound)
+Add a new buffer of templates to the working set.  (Only understands text
+form of templates.  Uses standard buffer name completion, with default
+@file{new.tpl}.)
+
+@item load-tpl-file (unbound)
+Add a new file of templates to the working set.  (Only understands text
+form of templates, and uses standard file name completion.)
+
+@item load-tpl-library (unbound)
+Add a new file of templates to the working set.  (Understands both text and
+compiled forms of templates, and uses the @i{tpl-load-path} variable to
+find the file.)
+
+@item looking-at-tpl (unbound)
+Returns @i{true} if the named template follows point.
+
+@item next-placeholder (@ctrl{c} @ctrl{t} @ctrl{n})
+Move to the beginning of the next placeholder.
+
+@item previous-placeholder (@ctrl{c} @ctrl{t} @ctrl{p})
+Move to the beginning of the previous placeholder.
+
+@item query-replace-groups  (@ctrl{c} @ctrl{t} g)
+Replace instances of groups of lines (matched by regular expressions) with
+placeholders.
+
+@item query-replace-lines  (@ctrl{c} @ctrl{t} l)
+Replace lines with placeholders.
+
+@item query-replace-tpl (unbound)
+Replace instances of one template with corresponding instances of another.
+
+@item region-to-tpl (unbound)
+Define a template, using the current region of text.
+
+@item replace-line-with-placeholder (@ctrl{c} @ctrl{t} r)
+Replace the current line with a placeholder.
+
+@item replace-region-with-placeholder (@ctrl{c} @ctrl{t} @ctrl{r})
+Replace the current region with a placeholder.
+
+@item replace-tpl (unbound)
+Replace one instance of a template with a corresponding instance of another.
+
+@item rewrap-template-around-point (@ctrl{c} @ctrl{t} @ctrl{u})
+Unwrap and then wrap.  (See those two commands.)
+
+@item search-forward-tpl (unbound)
+Search for an instance of a template.
+
+@item template-mode (unbound)
+Turns @i{template-mode} on and off.
+
+@item unwrap-template-around-point (@ctrl{c} @ctrl{t} u)
+Find the nearest enclosing instance of the named template and remove it,
+keeping the text that matches its destination placeholder.
+
+@item wrap-template-around-line (@ctrl{c} @ctrl{t} W)
+Use the current line to replace the destination placeholder of a
+placeholder.
+
+@item wrap-template-around-region (@ctrl{c} @ctrl{t} @ctrl{w})
+Use the current region to replace the destination placeholder of a
+placeholder.
+
+@item wrap-template-around-word (@ctrl{c} @ctrl{t} w)
+Use the current word to replace the destination placeholder of a
+placeholder.
+@end table
+
+@node loading, selecting, summary, commands
+@section Loading templates -- initialization of template-mode
+
+@table @code
+@item load-tpl-buffer (unbound)
+Add a new buffer of templates to the working set.  (Only understands text
+form of templates.  Uses standard buffer name completion, with default
+@file{new.tpl}.)
+
+@item load-tpl-file (unbound)
+Add a new file of templates to the working set.  (Only understands text
+form of templates, and uses standard file name completion.)
+
+@item load-tpl-library (unbound)
+Add a new file of templates to the working set.  (Understands both text and
+compiled forms of templates, and uses the @i{tpl-load-path} variable to
+find the file.)
+@end table
+
+Before a template may be used, it must be loaded.  Standard templates are
+loaded by checking the major mode of the current buffer.  (E.g., the
+@file{ctpl.elc} file is loaded if the major mode is ``C''.)  You may load as
+many template files as you wish, in as many buffers as you wish.  Each
+@i{template-mode} buffer has its own set of template files.  Since many
+template files use similar names for templates (e.g., @samp{stmt} occurs in
+most), it is probably a good idea to start with only the standard template
+files at first.
+
+Although templates are created as text, they are converted into an internal
+Lisp structure when they are loaded.  This conversion process may be saved
+by compiling the templates and storing the compiled form.  The
+@b{load-tpl-library} command is capable of reading these compiled forms,
+which is a faster method than reading the ASCII text forms.  The
+@b{load-tpl-file} and @b{load-tpl-buffer} commands only understand ASCII
+text forms.  Also, @b{load-tpl-library} uses the value of @b{tpl-load-path}
+to find the file, whereas @b{load-tpl-file} and @b{load-tpl-buffer} use
+standard name completion.
+
+@node selecting, expanding, loading, commands
+@section Selecting templates -- choosing the right template
+
+@table @code
+@item generate-any-template (@ctrl{c} @ctrl{t} ?)
+Builds a list of all the templates available, and waits for selection.
+
+@item generate-template (@ctrl{c} @ctrl{t} t)
+Prompts for the name of a template and then inserts it at point.
+Placeholders within the template are expanded interactively.
+@end table
+
+The @b{generate-any-template} (@ctrl{c} @ctrl{t} ?) command builds a list
+of all the available templates and waits for a selection.  Since the list
+may be quite long, it is probably best to select via the unique-prefix
+method: Type enough of the beginning of a template name to uniquely
+identify it.  Point will be positioned as if an incremental search were
+being performed.  Typing a @key{RET} will select an entry.  Once the
+selection has been made, generation proceeds by inserting a placeholder and
+expanding it.
+
+The @b{generate-template} (@ctrl{c} @ctrl{t} t) command requests the name
+of a template to insert and expand.  Unambiguous prefixes may be completed
+with the @key{TAB} key.  If no such template exists, you will get an error
+message, and an error result.  Otherwise, a placeholder for the requested
+template will be inserted and expansion will begin.
+
+@node expanding, menus, selecting, commands
+@section Expanding templates -- replacing placeholders by templates
+
+@table @code
+@item delete-placeholder (@ctrl{c} @ctrl{t} @ctrl{k})
+Delete the placeholder at point.
+
+@item expand-placeholder (@ctrl{c} @ctrl{t} e)
+Expands the placeholder at point with its template description.
+
+@item expand-placeholders-in-region (@ctrl{c} @ctrl{t} @ctrl{e})
+Expands all placeholders in the region with their template descriptions.
+
+@item next-placeholder (@ctrl{c} @ctrl{t} @ctrl{n})
+Move to the beginning of the next placeholder.
+
+@item previous-placeholder (@ctrl{c} @ctrl{t} @ctrl{p})
+Move to the beginning of the previous placeholder.
+@end table
+
+Expansion of a placeholder consists of:
+@enumerate
+@item
+Finding the appropriate template.
+@item
+Inserting the template in place of the placeholder.
+@item
+Determining the appropriate final destination of @i{point}
+(including removing all destination placeholders).
+@item
+Recursively expanding each placeholder within the new text.
+@item
+Leaving @i{point} at the appropriate final destination.
+@end enumerate
+You may choose not to expand any placeholder, in which case it is left
+as-is in the buffer.  The command @b{expand-placeholder} (@ctrl{c} @ctrl{t}
+e) may be used to expand the placeholder at the current location of point.
+The commands @b{next-placeholder} (@ctrl{c} @ctrl{t} @ctrl{n}),
+@b{previous-placeholder} (@ctrl{c} @ctrl{t} @ctrl{p}), and
+@b{delete-placeholder} (@ctrl{c} @ctrl{t} @ctrl{k}) are also useful when
+cleaning up unexpanded placeholders.  @b{Expand-placeholders-in-region}
+(@ctrl{c} @ctrl{t} @ctrl{e}) will expand all of the placeholders in a
+region, recursively.
+
+Placeholders may be optional or required.  An optional placeholder has an
+extra @samp{#} character at the beginning of its type name.  When expanding
+a template containing an optional placeholder you are asked whether you
+wish to keep the placeholder.  If you respond negatively, the placeholder
+is deleted.  If you respond positively, the placeholder is changed into a
+required placeholder (i.e., the extra @samp{#} is removed).  For each
+required placeholder you are asked if you wish to expand it.
+
+The type of a placeholder (the part before the @samp{:}) may be a template
+name, one of the @dfn{text} types (@dfn{text}, @dfn{textenter} or
+@dfn{textlong}), or the special @dfn{destination} type.  Expansion of
+@i{text} type placeholders is discussed in a later section.  If the type is
+a template name, that template will be inserted in place of the
+placeholder, and each of its placeholders will be expanded.  (If the
+template cannot be found an error will result.)  Destination placeholders
+are removed after inserting the containing template.  They are used to
+select the final destination of @i{point}.  (The location of the first
+destination placeholder is used if at least one such placeholder is found,
+otherwise the end of the template is used for the final destination.)
+Notice that expansion of placeholders and templates can be nested.
+
+@node menus, symbols, expanding, commands
+@section Menu-mode -- selection of choices
+
+If the template you request is of type @dfn{selection}, a menu will be
+constructed in a separate window, and you will be asked to pick one of the
+entries.  You may move about in this window with any of the normal movement
+commands, but you will be prevented from modifying the buffer.  The
+@key{SPC} key advances to the next line.  Alphabetic characters invoke an
+incremental search that is anchored at the left side of the line.  Thus,
+you may go to a particular entry by typing an unambiguous prefix of that
+entry.
+
+To exit the menu type a @key{RET}.  (Actually, @b{exit-recursive-edit} will
+work, also.)  If you do not like any of the choices, type a @ctrl{g} to
+abort the command.  You can use @b{advertised-undo} to clean up.
+
+@node symbols, textlong, menus, commands
+@section Symbol-mode -- short expressions as parameters to templates
+
+@table @code
+@item add-symbol (@ctrl{c} @ctrl{t} a)
+Add the symbol before point to the list of symbols created by
+@i{textenter} placeholders.
+
+@item expand-symbol (@ctrl{c} @ctrl{t} @key{TAB})
+Expand the symbol before point using the list of symbols created by
+@i{textenter} placeholders.
+@end table
+
+Expansion of a @i{text} placeholder is accomplished by insertion-in-place.
+In fact, a special mode is used for this, which restricts text modification
+commands to operate within a single line.  The @key{TAB} key is used to
+invoke completion.  It works similarly to command completion, except that
+it uses an identifier table constructed by @i{textenter} placeholder
+expansions.  A newline finishes the entry and exits the mode.  Once the
+value of a @i{text} placeholder has been completed, every identical
+placeholder within the current template expansion is replaced by this
+value.
+
+Expansion of a @i{textenter} placeholder is the same as for @i{text},
+except that the entry is saved in the identifier table when it is
+completed.
+You may add entries to this table with the @b{add-symbol}
+command (@ctrl{c} a)---it adds
+the symbol before point to the table.
+@b{Expand-symbol} (@ctrl{c} @key{TAB}) expands
+partial symbols using this table.
+
+@node textlong, wrapping, symbols, commands
+@section Textlong -- large blocks of text as parameters to templates
+
+Expansion of a @dfn{textlong} placeholder creates a separate window for
+creation of the entry.  You must use @b{exit-recursive-edit} (@key{ESC}
+@ctrl{c}) to complete the entry and return to the original buffer.
+
+@node wrapping, searching, textlong, commands
+@section Wrapping -- weak parsing to manipulate enclosing templates
+
+@table @code
+@item rewrap-template-around-point (@ctrl{c} @ctrl{t} @ctrl{u})
+Unwrap and then wrap.  (See those two commands.)
+
+@item unwrap-template-around-point (@ctrl{c} @ctrl{t} u)
+Find the nearest enclosing instance of the named template and remove it,
+keeping the text that matches its destination placeholder.
+
+@item wrap-template-around-line (@ctrl{c} @ctrl{t} W)
+Use the current line to replace the destination placeholder of a
+placeholder.
+
+@item wrap-template-around-region (@ctrl{c} @ctrl{t} @ctrl{w})
+Use the current region to replace the destination placeholder of a
+placeholder.
+
+@item wrap-template-around-word (@ctrl{c} @ctrl{t} w)
+Use the current word to replace the destination placeholder of a
+placeholder.
+@end table
+
+The wrap and unwrap commands provide a weak form of parsing that arises
+often: the recognition of enclosing templates.  For example, many document
+processors require begin/end pairs of commands or delimiters to change the
+nature of processing within a region.  These pairs are easily encoded as
+templates, with an empty middle part represented by a destination
+placeholder.  This form of template is called a @dfn{wrapper}.
+
+To wrap a region of text, use any of the commands:
+@b{wrap-template-around-line} (@ctrl{c} @ctrl{t} W),
+@b{wrap-template-around-region} (@ctrl{c} @ctrl{t} @ctrl{w}), or
+@b{wrap-template-around-word} (@ctrl{c} @ctrl{t} w).  The line and word
+forms take a prefix argument of the number of lines or words (default = 1).
+To unwrap a region of text, use the @b{unwrap-template-around-point}
+(@ctrl{c} @ctrl{t} u) command.  Note that this command tries to understand
+indentation, but may guess incorrectly.  The
+@b{rewrap-template-around-point} (@ctrl{c} @ctrl{t} @ctrl{u}) command
+combines unwrapping with wrapping a region.  It is particularly useful when
+editing existing text to change the formatting style.
+
+@node searching, aborting, wrapping, commands
+@section Searching -- finding and replacing template instances
+
+@table @code
+@item looking-at-tpl (unbound)
+Returns @i{true} if the named template follows point.
+
+@item search-forward-tpl (unbound)
+Find the next occurrence of a template.
+
+@item replace-tpl (unbound)
+Replace an instance of a template.
+
+@item query-replace-tpl (unbound)
+Replace instances of templates, querying for actions on each instance.
+@end table
+
+Templates may be used in search and replacement operations, similarly to
+regular expressions.  There are currently no backward-search operations.
+All of these commands take template names for arguments.  So, you will have
+to define any non-standard templates (i.e., any templates not in the
+standard libraries) before using them.
+
+@b{Looking-at-tpl} returns @code{t} if @i{point} is immediately followed by
+an instance of the specified template.  Otherwise, it returns @code{nil}.
+@b{Search-forward-tpl} advances point to the end of the next instance of
+the named template.  If no match is found, point advances to the end of the
+buffer.  The matching algorithm assumes that templates are rectangular, and
+uses indentation for clues in parsing.  If the text to be matched differs
+significantly in indentation from the template, then the matching algorithm
+may be fooled or confused.
+
+@b{Replace-tpl} replaces the source template instance at point with
+a corresponding instance of the object template.
+Currently, the interpretation of ``corresponding'' is:
+@itemize @bullet
+@item
+For each placeholder in the object template, the first identically-named
+placeholder from the source template is used.
+
+@item
+Indentation of the text that matches a placeholder is adjusted rigidly to
+its new position.
+@end itemize
+The method of parsing templates is quite primitive, but effective.  Literal
+characters are matched exactly, whitespace is matched loosely, and
+placeholders are matched by assistance of the user.  (The user is asked to
+position @i{point} at the end of the matching instance.)
+
+@b{Query-replace-tpl} behaves like @b{query-replace}, except that
+@b{search-forward-tpl} and @b{replace-tpl} are used instead of
+@b{search-forward} and @b{replace-string}.
+
+@node aborting, creating, searching, commands
+@section Aborting -- how to stop or quit
+
+If at any time you wish to abort, type @ctrl{g}.  This will stop the
+current command and return you to normal editing.  You may use
+@i{advertised-undo} (@ctrl{x} u) to restore the buffer to a reasonable
+state.
+
+If you appear to be in a recursive-edit (denoted by @samp{[...]} around
+part of the mode line), use @b{exit-recursive-edit} (@key{ESC} @ctrl{c}) to
+exit.
+
+@node creating, , aborting, commands
+@section Creating -- how to create your own templates
+
+@table @code
+@item compile-templates (unbound)
+Store the templates in a form that allows faster loading.
+
+@item query-replace-groups  (@ctrl{c} @ctrl{t} g)
+Replace instances of groups of lines (matched by regular expressions) with
+placeholders.
+
+@item query-replace-lines  (@ctrl{c} @ctrl{t} l)
+Replace lines with placeholders.
+
+@item region-to-tpl (unbound)
+Define a template, using the current region of text.
+
+@item replace-line-with-placeholder (@ctrl{c} @ctrl{t} r)
+Replace the current line with a placeholder.
+
+@item replace-region-with-placeholder (@ctrl{c} @ctrl{t} @ctrl{r})
+Replace the current region with a placeholder.
+@end table
+
+One way to create new templates is with @b{replace-region-with-placeholder}
+(@ctrl{c} @ctrl{t} @ctrl{r}) or @b{replace-line-with-placeholder} (@ctrl{c}
+@ctrl{t} r).  These commands define a new template with the current region
+or line as the template body.  You may edit this template by moving to the
+@file{new.tpl} buffer (or whatever name you supplied when requested).  If
+you change the template after creating it, you must save the buffer and
+reload the file in order to use the new definition.  @b{Region-to-tpl} may
+be used to begin creation of a template with the current region.
+
+@b{Query-replace-lines} (@ctrl{c} @ctrl{t} l) and @b{query-replace-groups}
+(@ctrl{c} @ctrl{t} g) may be used to iteratively perform the actions of
+@b{replace-region-with-placeholder} for lines or groups of lines matching a
+given regular expression.  These commands are particularly valuable for
+moving blocks of text as templates.  For example, you can replace function
+definitions by placeholders with the same names as the functions.  Sorting
+the placeholders and expanding results in a file of functions sorted by
+function names.
+
+Since a template file is just a special ASCII file, you may create it any
+way you wish.  There is no need to compile template files.  If you do use
+@b{compile-templates}, keep in mind that only @b{load-tpl-library}
+understands this special form.  Compiling templates results in faster
+loading, but no faster generation or expansion.
+
+A stack of template files is kept for each buffer.  So, you may define your
+own personal versions of templates in a file and load them after invoking
+@i{template-mode}.  The newly loaded versions (your versions) will
+over-ride the previous definitions.  There is currently no method available
+for ``unloading'' template files.
+
+@node customization, details, commands, top
+@chapter Customization of Templates and Their Commands
+
+Options for customizing @i{template-mode} fall into four categories:
+command behavior, display strings, file names, and template syntax.  (See
+the GNU Emacs Manual for help in modifying options, which are also called
+``variables''.)  Most @i{template-mode} options are global variables.
+
+@menu
+* behavior::	Options for customizing command behavior
+* display::	Special display strings
+* files::	Names of files used
+* syntax::	Patterns and strings in template definitions
+* hooks::	User-defined functions to change behavior
+@end menu
+
+@node behavior, display, customization, customization
+@section Behavior -- options for customizing command behavior
+
+Options in this category are used to tailor the behavior of template
+generation and expansion.
+
+@table @code
+@item tpl-ask-expansion-depth (1)
+Depth of recursive placeholder expansions at which to start asking
+whether to expand.  Defaults to 1, which means always ask.
+
+@item auto-load-new-templates (nil)
+Option to automatically load new templates created with
+@code{replace-with-placeholder}.  Otherwise, @code{load-tpl-file} must be
+used.
+
+@item auto-save-new-templates (nil)
+Option to automatically save new templates created with
+@code{replace-with-placeholder}.  Otherwise, @code{save-buffer} must be
+used.
+
+@item tpl-expand-placeholders (t)
+Template-mode expansion option: if non-nil (default=t), expand placeholders
+after inserting them.
+
+@item tpl-fill-while-unscanning (nil)
+Option to fill (if auto-fill is turned on) while unscanning (inserting)
+templates. Otherwise, templates are inserted as-is.
+
+@item tpl-form-placeholder-name-from-context (nil)
+Option to generate placeholder names by looking for the first symbol after
+point.  If nil, temporary names are used, instead.  (This option is useful
+when invoking @code{query-replace-groups}.)
+
+@item tpl-get-placeholder-name-in-context (t)
+Option to allow the user to create placeholder names in context (using
+@i{Symbol} mode).  Otherwise, temporary names are used.
+
+@item tpl-include-prefix-in-groups (t)
+Option to include the prefix string used to identify groups (when using
+@code{query-replace-groups}) in the group.  Otherwise, the group begins
+@i{after} the identifying prefix string.
+
+@item tpl-indentation-size (2)
+Size of indentation units in columns.
+
+@item tpl-keep-optional-placeholders (``ask'')
+Option to determine processing of optional placeholders in template-mode.
+If t, then always keep them.  If nil, then always delete them.  If neither
+t nor nil, then always ask.
+
+@item tpl-literal-whitespace (nil)
+Option to preserve leading whitespace when defining new templates.
+Otherwise, calculate relative indentation units.
+
+@item tpl-rebuild-all-templates-template (nil)
+Option to rebuild the list of all templates after loading new templates
+(including initial loading).  Otherwise, the list must be built on demand.
+
+@item tpl-save-identifier-file (nil)
+Option to keep identifier table (created with ``textenter'' placeholders)
+in a file.
+
+@item tpl-verify-end-of-group (nil)
+Option to verify (by positioning @i{point}) the end of each group when
+using @code{query-replace-groups}.
+@end table
+
+@node display, files, behavior, customization
+@section Display -- special display strings
+
+Options in this category are used to tailor the appearance of delimiters
+created by @i{template-mode}.
+
+@table @code
+@item sym-end-display (``<<'')
+Display marker after string to be created in symbol mode.
+
+@item sym-start-display (``>>'')
+Display marker before string to be created in symbol mode.
+
+@item tpl-display-begin (``>>'')
+Delimiter marking beginning of a selected placeholder.
+
+@item tpl-display-end (``<<'')
+Delimiter marking end of a selected placeholder.
+@end table
+
+@node files, syntax, display, customization
+@section Files -- names of files
+
+Options in this category consist of file and directory names used by
+@i{template-mode}.
+
+@table @code
+@item auto-template-alist (nil)
+Global list of major modes and their associated template files.  It is
+initialized by @code{tpl-initialize-modes}.
+
+@item tpl-load-path (nil ...)
+A list of directories to search when looking for templates.
+Nil means look in the current directory.
+
+@item tpl-new-template-buffer (``new.tpl'')
+Buffer containing new templates.
+@end table
+
+@node syntax, hooks, files, customization
+@section Syntax -- patterns and strings in template definitions
+
+Options in this category consist of regular expressions and strings used to
+define templates.  There are several options that may be changed, but most
+should be left alone.  Since regular expression search is used quite often,
+one should not use characters that are special to regular expressions in
+delimiters.  For example, the use of @samp{*} in any of the delimiters is
+sure to cause problems.
+
+@table @code
+@item tpl-begin-placeholder (``<'')
+Regular expression for beginning of placeholder.
+
+@item tpl-begin-template-body (``^:begin'')
+Regular expression for beginning of template body.
+
+@item tpl-begin-template-definition (``^Template'')
+Regular expression for beginning of template definition.
+
+@item tpl-destination-symbol (``POINT'')
+Special placeholder name used as destination of point after expansion.
+
+@item tpl-end-placeholder (``>'')
+Regular expression for end of placeholder.
+
+@item tpl-end-template-body (``^:end'')
+Regular expression for end of template body.
+
+@item tpl-function-type (``Function'')
+Name of function-type template type.
+
+@item tpl-lexical-type (``Lexical'')
+Name of lexical-type template type.
+
+@item tpl-next-placeholder-number (1)
+Counter used to generate temporary placeholder names.
+
+@item tpl-pattern-optional (``#'')
+Regular expression for optional placeholder delimiter.
+
+@item tpl-pattern-other (``.'')
+Regular expression for all other tokens.
+
+@item tpl-pattern-placeholder (too complicated to print)
+Regular expression for placeholder---built from component parts above.
+
+@item tpl-pattern-punctuation (``\\s.+'')
+Regular expression for at least one punctuation character.
+
+@item tpl-pattern-string (.*)
+Regular expression for each line of string-type templates.
+
+@item tpl-pattern-symbol (``\\(\\sw\\|\\s_\\)+'')
+Regular expression for at least one symbol character.
+
+@item tpl-pattern-whitespace (too complicated to print)
+Regular expression for at least one whitespace character.
+
+@item tpl-pattern-word (``\\sw+'')
+Regular expression for at least one word character.
+
+@item tpl-repetition-type (``Repetition'')
+Name of repetition-type template type.
+
+@item tpl-selection-type (``Selection'')
+Name of selection-type template type.
+
+@item tpl-sep-placeholder (``:'')
+Regular expression for separator within placeholder.
+
+@item tpl-sequence-type (``Sequence'')
+Name of sequence-type template type.
+
+@item tpl-string-type (``String'')
+Name of string-type template type.
+
+@item tpl-temporary-placeholder-name (``TEMP'')
+Root of temporary placeholder names.
+@end table
+
+@node hooks, , syntax, customization
+@section Hooks -- user-defined functions to change behavior
+
+@table @code
+@item sym-check-validity-hook
+This hook may be used to check the validity of expansions of @i{text} and
+@i{textenter} placeholders.  It is temporarily replaced by an appropriate
+function for @i{lexical} placeholders.
+
+@item template-mode-hook
+This hook is called when @i{template-mode} is turned on.
+
+@item template-mode-load-hook
+This hook is called when @i{template-mode} is loaded.  (Loading includes
+initialization of the global list of template files to use for different
+modes.  This hook is useful for altering that list.)
+
+@item template-scan-hook
+This hook is called before attempting to scan for an instance of a
+template.  Reformatting with this hook may make it easier to find instances
+of templates.
+
+@item template-unscan-hook
+This hook is called after unscanning (inserting) a template.  Reformatting
+with this hook may be useful.
+@end table
+
+@node details, appendixa, customization, top
+@chapter Details -- Template and Placeholder Syntax
+
+This chapter covers all the details of template syntax for those who wish
+to create their own template files.  Note that the concrete syntax for
+template definitions may be changed through several user options (e.g.,
+@code{tpl-begin-template-body}).  These options are usually local
+variables, so that different template files may have different syntax.
+However, it is best not to modify the syntax of placeholders (even though
+there are options for doing this), since placeholders usually span template
+files.
+
+A template file consists of a sequence of individual template definitions.
+Each definition has the form:
+@example
+Template <template-name> <template-type>
+:begin
+<template-body>
+:end
+@end example
+Note that the newline at the very end of the template definition is @i{not}
+part of the template body.  The contents and interpretation of the template
+body differ depending on template type.  In general, literal strings in the
+body stand for themselves.  There are no escape characters for including
+special characters.
+
+Placeholders have a special syntax:
+@display
+``<'' <placeholder-type> [ : <placeholder-name> ] ``>''
+@end display
+(where the square brackets indicate optional parts).  Placeholder names are
+usually used to prompt the user for suggestive replacements or context, but
+are especially significant for @code{text} placeholders.  Identical
+@code{text} placeholders within a template are replaced with the same
+value.  Two placeholders are identical only if all of their fields are
+identical, including their names (if present).
+@page
+
+@group
+As mentioned earlier, there are four special forms of placeholders:
+@table @code
+@item text
+May be replaced by any text not containing a newline.
+
+@item textenter
+Similar to @code{text}, but saves the result in the identifier completion
+table.
+
+@item textlong
+May be replaced by any text, including newlines.
+
+@item destination (@code{point})
+Represents the intended final destination of @i{point}.  These placeholders
+are always removed from the template body after expanding.
+@end table
+@end group
+
+@group
+All other placeholders must define templates.  There are six forms of
+templates:
+@table @code
+@item Function
+The result of executing the body of the template (written in GNU
+Emacs Lisp) is inserted in place of the placeholder.
+
+@item Lexical
+Similar to @code{text}, but checks the result against a regular expression.
+The body of the template must be a valid GNU Emacs Lisp regular expression.
+
+@item Repetition
+These templates must be of the form: ``<separator string> <placeholder>''.
+They result in a series of expansions of ``<placeholder>'', separated by
+``<separator string>''s.  Note that a newline may be used for the separator.
+
+@item Selection
+The template body must consist of a list of items of the following form:
+@display
+``<selection> [ : [ <placeholder> ] ] [ ; comment ]''
+@end display
+(where square brackets indicate optional parts).  If there is no ``:'',
+then the ``<selection>'' is considered to be a string replacement for the
+placeholder.  If there is a ``:'' then the item is considered to be a
+reference to another placeholder.  In that case, if there is a
+``<placeholder>'' it is used for the replacement, otherwise the
+``<selection>'' is used.
+
+@item Sequence
+This type of template may have literal text and/or placeholders in its body.
+
+@item String
+This type is similar to @code{sequence}, but may not contain placeholders.
+It is parsed more simply (and faster).
+@end table
+@end group
+
+The best method for creating new template files is to start with an
+existing template file.  There are several examples of @code{function} type
+templates in the generic template file.  Examples of other types are
+present in the Emacs-Lisp template file.
+
+@node appendixa, appendixb, details, top
+@appendix Example Templates for Emacs-Lisp
+
+@example
+@group
+Template arg-type Selection
+:begin
+a	; Function name
+b	; Buffer name (must exist)
+B	; Buffer name (possibly nonexistent)
+c	; Single character
+C	; Command name
+d	; Point as a number (no prompt)
+D	; Directory name
+f	; File name (must exist)
+F	; File name (possibly nonexistent)
+k	; Keystroke sequence (string)
+m	; Mark as a number (no prompt)
+n	; Number (reads a string and converts)
+p	; Prefix arg converted to number
+P	; Prefix arg in raw form
+r	; Region (no prompt)
+s	; String
+S	; Symbol
+v	; Variable name (must be user-variable-p)
+x	; Lisp expression unevaluated
+X	; Lisp expression evaluated
+:end
+@end group
+
+@group
+Template function Sequence
+:begin
+
+(defun <textenter:function-name> (<text:arguments>)
+  "<textlong:documentation>"
+  (interactive "<arg-type><textenter:function-name>: <text:arguments>? ")
+					; Local Variables
+  (let (<text:local-variables>)
+					; Body
+    <stmt:body>
+  ) ; let
+) ; defun <textenter:function-name>
+
+:end
+@end group
+
+@group
+Template functions Repetition
+:begin
+
+<function>
+:end
+@end group
+
+@group
+Template package Sequence
+:begin
+;;; <buffer-name> -- <text:documentation>
+;;; <user-full-name>, <today>
+
+<#variables>
+<functions>
+:end
+@end group
+
+@group
+Template stmt Selection
+:begin
+progn:
+cond:
+debug:
+ife:
+if:
+while:
+whilelist:
+simple:
+:end
+@end group
+
+@group
+Template whilelist Sequence
+:begin
+(while <text:list>
+  (setq <text:item> (car <text:list>))
+  (setq <text:list> (cdr <text:list>))
+  <POINT>
+) ; while <text:list>
+:end
+@end group
+
+@end example
+
+@node appendixb, , appendixa, top
+@appendix Example Generic Templates
+
+@example
+@group
+Template buffer-name Function
+:begin
+(buffer-name)
+:end
+@end group
+
+@group
+Template day Function
+:begin
+(let ((str (current-time-string)))
+  (string-match "[0-9]+" str)
+  (substring str (match-beginning 0) (match-end 0))
+)
+:end
+@end group
+
+@group
+Template month Function
+:begin
+(let ((str (current-time-string))
+      prefix)
+  (setq prefix (substring str 4 7))
+  (cond
+    ((equal prefix "Jan")
+      "January")
+    ((equal prefix "Feb")
+      "February")
+    ((equal prefix "Mar")
+      "March")
+    ((equal prefix "Apr")
+      "April")
+    ((equal prefix "May")
+      "May")
+    ((equal prefix "Jun")
+      "June")
+    ((equal prefix "Jul")
+      "July")
+    ((equal prefix "Aug")
+      "August")
+    ((equal prefix "Sep")
+      "September")
+    ((equal prefix "Oct")
+      "October")
+    ((equal prefix "Nov")
+      "November")
+    ((equal prefix "Dec")
+      "December")
+  )
+)
+:end
+@end group
+
+@group
+Template today Function
+:begin
+(concat "<month>" " " "<day>" ", 19" "<year>")
+:end
+@end group
+
+@group
+Template user-full-name Function
+:begin
+(user-full-name)
+:end
+@end group
+
+@group
+Template year Function
+:begin
+(substring (current-time-string) -2)
+:end
+@end group
+@end example

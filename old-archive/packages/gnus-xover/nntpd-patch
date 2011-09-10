@@ -1,0 +1,266 @@
+Xref: psuvax1 news.software.nntp:3239
+Path: psuvax1!uwm.edu!spool.mu.edu!olivea!decwrl!borland.com!davison
+From: davison@borland.com (Wayne Davison)
+Newsgroups: news.software.nntp
+Subject: Re: XOVER support in nntp...
+Message-ID: <C1v3y3.6E8@borland.com>
+Date: 3 Feb 93 07:39:39 GMT
+References: <MIKE.93Feb2215943@apex.yorku.ca>
+Organization: Borland International
+Lines: 255
+
+Mike Marques (mike@ccs.yorku.ca) wrote:
+> Are there patches to add the XOVER command to the latest version of
+> nntp or is it only available under the nnrp daemon from INN?
+
+Yes, there is such a patch for the reference NNTP implementation.  Iain
+Lea (tin) and I (trn) are planning to release a single enhanced version
+of NNTP that will have all the latest extensions needed for making a
+modern newsreader's life easier.  In the meantime, here's my version of
+XOVER support, which is a slightly optimized and bug-fixed version of the
+patch Rich Salz posted in late December.  Trn 3.0 (in testing) has been
+using this code for a few weeks now, so it appears to be in good shape.
+-- 
+Wayne Davison
+davison@borland.com
+---8<------8<------8<------8<---cut here--->8------>8------>8------>8---
+Index:common/version.c
+@@ -2,4 +2,4 @@
+  * Provide the version number of this release.
+  */
+ 
+-char	nntp_version[] = "1.5.11 (10 February 1991)";
++char	nntp_version[] = "1.5.11ov (18 January 1993)";
+Index:CHANGES
+@@ -2,6 +2,21 @@
+ since the initial release.  Individuals who either reported the bug or
+ inspired the bug fix are in square brackets.
+ 
++1.5.11+XOVER1   (Wayne Davison <davison@borland.com> 18 Jan 93)
++	Fixes and minor optimizations for the XOVER command.
++
++1.5.11+XOVER0	(Rich $alz <rsalz@uunet.uu.net> 23 dec 92)
++	This adds the XOVER command to the server.  The XOVER command
++	is used to retrieve data from the .overview file that is part
++	of Geoff Collyer's "nov" package (that package is not provided
++	here; the official archive for it is
++	world.std.com:pub/src/news/nov.dist.tar.Z).  This command
++	has the following syntax:
++		XOVER [first[-last]]
++	Where first and last are article numbers; the default is to return
++	data for all articles.  This command is only valid after a GROUP
++	command.  It returns a 224 code followed by a multi-line response.
++
+ 1.5.11
+ 	Fixes to spawn.c and batch.c for those system that need
+ 	execle() to specifically call /bin/sh to exectute a sh script.
+Index:common/README
+@@ -340,6 +340,10 @@
+ Authorization process. Read the file AUTHORIZATION in the root directory of
+ the NNTP distribution for more information.
+ 
++XOVER		(defined)
++     Defines whether we want to include the XOVER command, described
++in the top-level README file of this distribution.
++
+ SERVER_FILE	("/usr/local/lib/rn/server")
+ 
+      This file contains the name of the machine which runs the
+Index:common/conf.h.dist
+@@ -201,6 +201,10 @@
+ /* Things that relate to authentication and access */
+ /* Define AUTH to use the proposed NNTP Version 2 authentication protocol. */
+ #define	AUTH	
++
++/* Various protocol extensions */
++#define XOVER		/* xover -- Return .overview data */
++
+ /*
+  * A file containing the name of the host which is running
+  * the news server.  This will have to match what rrn thinks,
+Index:common/nntp.h
+@@ -20,6 +20,7 @@
+  *	x2x	Article selection
+  *	x3x	Distribution
+  *	x4x	Posting
++ *	x8x	Authorization
+  */
+ 
+ #define	CHAR_INF	'1'
+@@ -42,6 +43,7 @@
+ #define	OK_HEAD		221	/* Head follows */
+ #define	OK_BODY		222	/* Body follows */
+ #define	OK_NOTEXT	223	/* No text sent -- stat, next, last */
++#define	OK_OVER		224	/* Overview data follows */
+ #define	OK_NEWNEWS	230	/* New articles by message-id follow */
+ #define	OK_NEWGROUPS	231	/* New newsgroups follow */
+ #define	OK_XFERED	235	/* Article transferred successfully */
+Index:server/group.c
+@@ -67,6 +67,9 @@
+ 		return;
+ 	}
+ 
++#ifdef XOVER
++	close_xover();
++#endif
+ 	close_crnt();
+ 	(void) chdir(spooldir);
+ 
+@@ -108,3 +111,116 @@
+ 		argv[1]);
+ 	(void) fflush(stdout);
+ }
++
++
++#ifdef XOVER
++static FILE *xover_fp;
++static int xover_num;
++
++doxover(argc, argv)
++	int		argc;
++	char		*argv[];
++{
++	register FILE	*fp;
++	register int	c, first, last;
++	int		artnum;
++	char		*p;
++
++	if (!canread) {
++		printf("%d You only have permission to transfer, sorry.\r\n",
++			ERR_ACCESS);
++		(void) fflush(stdout);
++		return;
++	}
++
++	if (!ingroup) {
++		printf("%d You are not currently in a newsgroup.\r\n",
++			ERR_NCING);
++		(void) fflush(stdout);
++		return;
++	}
++	if (argc != 1 && argc != 2) {
++		printf("%d Usage: XOVER [first[-last]].\r\n", ERR_CMDSYN);
++		(void) fflush(stdout);
++		return;
++	}
++
++	if (xover_fp)
++		fp = xover_fp;
++	else {
++		fp = xover_fp = fopen(".overview", "r");
++		if (fp == NULL) {
++			printf("%d No overview available.\r\n", ERR_FAULT);
++			(void) fflush(stdout);
++#ifdef SYSLOG
++			syslog(LOG_ERR, "xover: fopen %s: %m", ".overview");
++#endif
++			return;
++		}
++		xover_num = 0;
++	}
++
++	/* Return the desired data.  This is written carefully to avoid
++	 * over-long lines. */
++	printf("%d overview data follows\r\n", OK_OVER);
++	if (argc == 1) {
++		if (xover_num) {
++			fseek(fp, 0L, 0);
++			xover_num = 0;
++		}
++		while ((c = getc(fp)) != EOF) {
++			if (c == '\n')
++				(void) putchar('\r');
++			putchar(c);
++		}
++		fseek(fp, 0L, 0);
++	} else {
++		p = index(argv[1], '-');
++		if (p == NULL)
++			first = last = atoi(argv[1]);
++		else {
++			*p++ = '\0';
++			first = atoi(argv[1]);
++			last = atoi(p);
++		}
++		if (first < 1)
++		    first = 1;
++		if (first < xover_num) {
++			fseek(fp, 0L, 0);
++			xover_num = 0;
++		}
++		if (xover_num) {
++			artnum = xover_num;
++			xover_num = 0;
++		} else
++			fscanf(fp, "%d", &artnum);
++		while (!feof(fp)) {
++			if (artnum > last) {
++				xover_num = artnum;
++				break;
++			}
++			if (artnum >= first) {
++				printf("%d", artnum);
++				while ((c = getc(fp)) != EOF && c != '\n')
++					putchar(c);
++				printf("\r\n");
++			} else
++				while ((c = getc(fp)) != EOF && c != '\n')
++					continue;
++			fscanf(fp, "%d", &artnum);
++		}
++		if (!xover_num)
++			fseek(fp, 0L, 0);
++	}
++	printf(".\r\n");
++	(void) fflush(stdout);
++}
++
++close_xover()
++{
++	if (xover_fp) {
++		fclose(xover_fp);
++		xover_fp = NULL;
++	}
++}
++#endif
+Index:server/help.c
+@@ -21,8 +21,15 @@
+ 	printf("NEXT        POST         QUIT\r\n");
+ 	printf("STAT        NEWGROUPS    HELP\r\n");
+ 	printf("IHAVE       NEWNEWS      SLAVE\r\n");
+-	printf("\r\nAdditionally, the following extention is supported:\r\n\r\n");
++#if defined(XHDR) || defined(XOVER)
++	printf("\r\nAdditionally, the following extension(s) are supported:\r\n\r\n");
++# ifdef	XHDR
+ 	printf("XHDR        Retrieve a single header line from a range of articles.\r\n");
++# endif
++# ifdef	XOVER
++	printf("XOVER       Return news overview data\r\n");
++# endif
++#endif
+ 	printf("\r\n");
+ 	printf("Bugs to Stan Barber (Internet: nntp@tmc.edu; UUCP: ...!bcm!nntp)\r\n");
+ 	printf(".\r\n");
+Index:server/serve.c
+@@ -33,6 +33,10 @@
+ #ifdef AUTH
+ extern	int	doauth();
+ #endif AUTH
++#ifdef XOVER
++extern	int	doxover();
++extern	int	close_xover();
++#endif
+ 
+ static struct cmdent {
+ 	char	*cmd_name;
+@@ -61,6 +65,9 @@
+ #ifdef XHDR
+ 	"xhdr",		0,	xhdr,
+ #endif XHDR
++#ifdef XOVER
++	"xover",	0,	doxover,
++#endif
+ };
+ #define NUMCMDS (sizeof(cmdtbl) / sizeof(struct cmdent))
+ 
+---8<------8<------8<------8<---cut here--->8------>8------>8------>8---

@@ -1,0 +1,10 @@
+Greetings. Please enter the full internet address and a port number to any
+machines you would like to be polled on for gung fu competitions. The first
+two fields are required and the last one is optional. 
+
+I have made a guess at the fields but be sure to give full internet addresses.
+
+--> Separate fields with at least one tab or space (no maximum).
+--> Save the file with C-x C-s when done. This is important (:-}
+
+Zaijian!

@@ -1,0 +1,848 @@
+;;; -*- logo -*-
+;;;
+;;; .logo  --  Logo initialization file  (1999)   Hrvoje Blazevic
+;;;
+;;; Altering standard Logo behavior - making it more Lisp-like (Scheme
+;;; in this case).
+
+;;; This file is just a short example of what can be done with .logo
+;;; initialization file, and with the powerful version of Logo
+;;; interpreter -- that Berkeley Logo is.
+
+;;; One of the differences between Logo and other Lisp dialects, and
+;;; the one that affects programming style, is what Logo accepts as
+;;; true. Logo's idea of truth is only the word "true. Likewise, false
+;;; is only the word "false. Anything else -- handed as the first
+;;; input to control structures results in error.  Therefore the base
+;;; change introduced in .logo is: All returned values are considered
+;;; true, except the word "false. Word "true has no special meaning in
+;;; this context. Following control structures have been altered to
+;;; accept this: IF, IFELSE, and TEST. IFTRUE, IFFALSE, WHILE, UNTIL
+;;; DO.WHILE, and DO.UNTIL have not been altered, but work nonetheless
+;;; by virtue of using internally either TEST or IF.
+;;;
+;;; With this in place, logical primitives can return any value as true,
+;;; and only word "false on failure.
+;;;
+;;; OR returns whatever is returned by the first successful
+;;; evaluation, or the word "false if all clauses fail.
+;;; AND returns value of the last clause, if all clauses have
+;;; evaluated successfully, or the word "false.  The most permissive
+;;; is .AND which accepts anything including nothing, as true, and
+;;; only word "false as false. .AND will return the value of the last
+;;; clause (word "#unspecified if nothing), if none of the clauses
+;;; returned false, or word "false.
+;;;
+;;; Evaluation of logicals AND, OR and .AND is not necessarily carried
+;;; to the last clause.
+;;;
+;;; OR returns immediately on first success.
+;;; AND and .AND return immediately on first failure.
+;;;
+;;; The second level of changes is addition of Lisp/Scheme special
+;;; forms LETREC, COND, and CASE. These special forms do not behave
+;;; here exactly as their Lisp counterparts, but if you disregard
+;;; technicalities, they are close enough. (One of those
+;;; technicalities is that LETREC applies LET* binding rules.)
+;;; Besides, in Logo, they are actually not special forms, so I will
+;;; call them high level procedures.
+;;;
+;;; The third level of changes is compiler for High Level Procedures.
+;;;
+;;; In addition, there are some minor changes to following prefix operators:
+;;; difference quotient before? equal? greater? & less? . They now accept
+;;; more than two arguments. However note that beforep equalp greaterp &
+;;; lessp are not changed. Only those ending in `?' are changed.
+
+
+;;; Description of High Level Procedures
+;;;
+;;; LETREC takes one input, a list of this format:
+;;;
+;;; LETREC [[[PROC-NAME1 [PROC-TEXT1]]
+;;;          [PROC-NAME2 [PROC-TEXT2]]
+;;;          [          ...          ]]
+;;;         [BODY-FORM1]
+;;;         [BODY-FORM2]
+;;;         [   ...    ]]
+;;;
+;;; PROC-NAME is an ordinary word. [PROC-TEXT] is a list of lists in the
+;;; form that Logo's TEXT outputs, or that DEFINE accepts as input.
+;;; [BODY-FORM] is instruction list (ordinary Logo instruction line).
+;;; Block of BODY-FORMs functions as instruction lines in the body of TO
+;;; definition, except that each line must be a list.  There are no
+;;; restrictions as to what can be done with BODY-FORMs (except that they
+;;; can't be recursive), but their main task is to call procedures
+;;; defined as PROC-NAMEs with their corresponding inputs.
+;;;
+;;; LETREC outputs if one of BODY-FORMs outputs.
+;;;
+;;; All procedures defined this way are local to LETREC, and not to the
+;;; context from where LETREC was invoked. That is, there is no way to
+;;; invoke PROC-NAME outside of LETREC. Order in which procedures are
+;;; defined is important. BODY-FORMs can call all procedures without
+;;; restrictions, but for one procedure to call the other from PROC-TEXT,
+;;; that other procedure had better be defined before. That is,
+;;; PROC-NAME2 can call PROC-NAME1, but not vice-versa.
+;;;
+;;; Names in LETREC do not follow Logo, but Scheme rules. You can not use
+;;; the same word for variable and procedure name. That is if you had a
+;;; local (or global) variable `some-var' defined before LETREC, you can
+;;; not use the name `some-var' for PROC-NAME. Actually, you can, but the
+;;; variable will be shadowed during the life-span of LETREC. Likewise, it
+;;; is an error to use PROC-NAME as a name of a local variable, later in
+;;; the body of LETREC. However you can use the name of a previously
+;;; defined global procedure as a name for PROC-NAME, but that is not
+;;; advisable. If you do that, you should be very careful not to place
+;;; a call to global procedure in parentheses. All that I have said
+;;; here can be summed up with this: PROC-NAMEs are actually not real
+;;; procedures, but local variables.
+;;;
+;;; The only special syntax rule when calling PROC-NAME within
+;;; BODY-FORMs or PROC-TEXT is that call *must* be enclosed in
+;;; parenthesis: (PROC-NAME :input1 :input2 ...) .
+;;; The following "funny" bit of code shows that tokenization is no
+;;; longer an issue. It also shows that using global procedure names
+;;; for PROC-NAMEs is acceptable, as long as you observe the rules from
+;;; previous paragraph -- do not parenthesize global names.
+;;;
+;;; to tokenize.test :n
+;;; letrec [[
+;;;    [random [[]
+;;;             [localmake "random.num sum random :n 1]
+;;;             [pr :random.num]
+;;;             [op :random.num]]]]
+;;;         [(pr "|result = | ((3*((random)+(random)))/(random)+(random)))]]
+;;; end
+
+
+;;; COND takes one input, a list of this format:
+;;;
+;;; COND [
+;;;    [[CONDITIONAL1] [TRUE1a] [TRUE1b] ...]
+;;;    [[CONDITIONAL2] [TRUE2a]  ...        ]
+;;;    [    ...                      ]
+;;;    [else    [CATCH-ALL] ...      ]]
+;;;
+;;; Briefly, COND works like IFELSE with many else-s, and with some
+;;; refinements. Each clause in COND should consist of two parts. First
+;;; is CONDITIONAL expression. If CONDITIONAL expression evaluates to
+;;; true, the corresponding TRUE forms are executed. Each clause can have
+;;; more than one TRUE form, and they look and function like body forms
+;;; in LETREC, which means that they are Logo instruction lines. Each
+;;; TRUE form *must* be a list. CONDITIONAL expression can be a word, but
+;;; only one word.
+;;;
+;;; COND will try all CONDITIONAL expressions until it finds one that
+;;; returns true value. Then it will execute it's TRUE forms and
+;;; return. If all CONDITIONAL expressions evaluate to "false, else part
+;;; is executed. (ELSE is just a procedure returning "true.) CATCH-ALL
+;;; forms are just another name for TRUE forms, and the same rules
+;;; apply. If you omit ELSE clause, then word "#unspecified is returned.
+;;;
+;;; COND *always* returns a value, therefore if you do not need this
+;;; value, you should pipe the output into IGNORE (... ignore cond [...]
+;;; ...). Value returned by COND is either the output of one of TRUE
+;;; forms, or word "#unspecified, if your TRUE forms are not returning
+;;; any values. It stands to reason that all of your TRUE forms should
+;;; output, or none.
+;;;
+;;; Exceptionally, any COND clause can consist only of CONDITIONAL
+;;; expression without TRUE form. In that case, if CONDITIONAL evaluates
+;;; to true value, that value is returned by COND, or if "false, COND
+;;; moves on to the next clause.
+;;;
+;;; One simple COND example:
+;;;
+;;; to cond.memberp :element :list
+;;; op cond [
+;;;    [[emptyp :list] [op "false]]
+;;;    [[equalp first :list :element]]
+;;;    [else [op cond.memberp :element bf :list]]]
+;;; end
+
+
+;;; CASE takes one input, a list of this format:
+;;;
+;;; CASE [
+;;;    [TARGET-EXPR]
+;;;    [[KEYS1] [TRUE1a] [TRUE1b] ...]
+;;;    [[KEYS2] [TRUE2a]  ...        ]
+;;;    [    ...                      ]
+;;;    [else    [CATCH-ALL] ...      ]]
+;;;
+;;; CASE works almost like COND with some minor differences. First
+;;; clause in CASE (TARGET-EXPR) is Logo expression that must
+;;; return a value, which I will call the KEY. This KEY is then
+;;; checked (with MEMBERP) against all KEYS. KEYS1, KEYS2... are
+;;; either lists of values (sets) or words. Bear in mind that each of
+;;; the KEYS can, if word, be one word only. When one expression
+;;; MEMBERP KEY KEYS returns "true, than its TRUE forms are executed,
+;;; and their result is returned by CASE. 
+;;;
+;;; If all KEYS expressions evaluate to "false, else part is
+;;; executed. CATCH-ALL forms are just another name for TRUE forms,
+;;; and same rules apply. If you omit ELSE clause, then word
+;;; "#unspecified is returned.
+;;;
+;;; CASE, just like COND *always* returns a value, therefore if you do
+;;; not need this value, you should pipe the output into IGNORE
+;;; (... ignore case [...]  ...). Value returned by CASE is either the
+;;; output of one of TRUE forms, or word "#unspecified, if your TRUE
+;;; forms are not returning any values. 
+;;;
+;;; Exceptionally, any CASE clause can consist only of KEYS expression
+;;; without TRUE forms. In that case, if MEMBERP KEY KEYS evaluates to
+;;; "true, that value is returned by CASE, or if "false, CASE moves on
+;;; to the next clause. Admittedly -- this is not of much use in Case,
+;;; and is just a side effect of Case being implemented within code
+;;; framework borrowed from COND.
+;;;
+;;; You should be careful when using word for KEYS expression. If
+;;; used to compare numbers, the result may not be what you
+;;; expect. For example; KEY is 1 and KEYS is 3210 , will return
+;;; "true. This is OK if you intended to check whether 1 is a member
+;;; of range 3 2 1 0 , but if what you really want is to check
+;;; whether the KEY is equal to number 3210 , then use [3210] for
+;;; KEYS. Likewise it is OK to use word for KEYS if you use a single
+;;; letter for KEY (KEYS= "abcd KEY= "b), but if you use a word like
+;;; "ab for KEY, then you have to use a list of words for KEYS.
+;;;
+;;; Rules for constructing TARGET-EXPR:
+;;;
+;;; TARGET-EXPR can be a constant, a variable reference or a Logo
+;;; instruction line. It can even be a recursive operation (if you use
+;;; LETREC). However remember that it must return a value.
+;;;
+;;; Following are legal TARGET-EXPRs:
+;;; ["a] , ["House] , [123] , [:var.name] , [ifelse :var.name > 10 ["a] ["b]] ,
+;;; [reduce "sum :lst] , [[1 2 3]] . In this last one the value of
+;;; TARGET-EXPR is a list [1 2 3]. Note that word constants (unless
+;;; representing numbers) must be quoted, otherwise they will be used as a
+;;; procedure name.
+;;;
+;;; There is only one restriction to remember: You can use LOCALMAKE
+;;; in TARGET-EXPR but this variable is then visible only in
+;;; TARGET-EXPR block. What this means is; any reference to that local
+;;; variable in the rest of the CASE body will yield an unbound
+;;; variable error. If you really need this, declare the local
+;;; variable (with LOCAL "var.name) before invocation of CASE. In
+;;; TARGET-EXPR, you can use MAKE to set the var.name value. This way
+;;; var.name will be visible throughout the CASE. This limitation has
+;;; to do with deferring the execution of TARGET-EXPR until run-time,
+;;; to avoid unbound variable errors during compilation.
+;;;
+;;; The following example explains most of what was said above:
+;;;
+;;; to case.test :x
+;;; local "temp
+;;; op case [
+;;; 
+;;;    [make "temp random :x ifelse :temp > 10 [char sum 97 random 26] [:temp]]
+;;; 
+;;;    [[2 4 6] [pr se :temp :#target] [op "even]]
+;;;    [[1 3 5] [pr se :temp :#target] [op "od]]
+;;;    [0 [op "zero]]
+;;;    ["abcdefghijklmnopqrstuvwxyz [pr se :temp :#target] [op "letter]]
+;;;    [else [pr (se "missed :temp :#target)] [op case.test :x-1]]]
+;;; end
+;;;
+;;; Variable #target is local variable available during lifespan of
+;;; CASE. It represents the real value of KEY. In the example above,
+;;; temp also represents the value of KEY, but not always. Try running
+;;; `pr case.test 15' repeatedly, to get the feeling of what I'm talking
+;;; about.
+
+
+;;; I have tried to make this as safe as I could. You should still be able
+;;; to run and test standard Logo programs, and even write new programs
+;;; that will behave in a standard way. To benefit from changes introduced
+;;; here, you *have*to*quote* all inputs to logical functions AND and OR.
+;;; That is how this program distinguishes whether to use standard
+;;; AND/OR or new versions. Mixed input syntax to one call of AND/OR
+;;; is not allowed -- either you quote all inputs or none. However you can
+;;; mix old/new syntax in one program, or even one TO definition.
+;;;
+;;; Unfortunately, all this is expensive. Programs will run slower
+;;; than with standard Logo. Another detracting side effect is that
+;;; normally very informative Logo error messages, became totally
+;;; useless if caught within the scope of .logo high level procedures,
+;;; or new versions of logical procedures. And, yes -- do not expect
+;;; to be able to run this in DOS version of Berkeley Logo.
+;;;
+;;; Here is one short example of programming style that is possible with
+;;; Logo initialized this way. Whether this style is elegant, or not is
+;;; irrelevant here. What is important is that the whole construction
+;;; relies heavily on AND and OR -- both for decision making, and result
+;;; returning. Standard Logo can not function this way. This is also an
+;;; example how to use LETREC, and therefore I have added several
+;;; unnecessary instruction lines. Most of these lines serve the
+;;; purpose of explaining scope rules in LETREC.
+
+
+;;; 8 queens
+;;
+;; ;; Start queens with queens 8, if you want only the first result
+;; ;; To get all results use (queens 8 "false), and be prepared for
+;; ;; a long wait. (Maybe you should try 6, or 4 first?)
+;; to queens :number [:one.only "true] 1
+;;
+;; ;; This one is to check visibility rules
+;; localmake "makeboard "makeboard
+;; pr equalp :makeboard "makeboard
+;;
+;; (foreach letrec [[
+;;
+;;    ;; Define local procedure makeboard
+;;    [makeboard [[n]
+;;                [localmake "row cascade :n [[x] [op lput # :x]] []]
+;;                [op cascade :n [[x] [op fput :row :x]] []]]]
+;;
+;;    ;; Define local procedure shade
+;;    [shade [[queen rest.board [offset 1] 2]
+;;            [if emptyp :rest.board [op []]]
+;;            [op (fput (filter [[x] [op not (or :x = (:queen - :offset)
+;;                                               :x = :queen
+;;                                               :x = (:queen + :offset))]]
+;;                              first :rest.board)
+;;                      (shade :queen bf :rest.board :offset + 1))]]]
+;; 
+;;    ;; Define local procedure put.queen
+;;    [put.queen [[board result]
+;;                
+;;                ;; When the board is empty, we're done
+;;                [if emptyp :board [push "stack :result op :one.only]]
+;;                [localmake "row first :board]
+;;                [localmake "queen and [not emptyp :row] [first :row]]
+;;                
+;;                ;; If queen not placed -- backtrack right away
+;;                [op (and [:queen]
+;;                         [or
+;;                            
+;;                            ;; Go ahead -- try to place next queen
+;;                            [(put.queen (shade :queen bf :board)
+;;                                        lput :queen :result)]
+;;                            
+;;                            ;; Nowhere to put next queen -- try to move
+;;                            ;; this queen to next available square
+;;                            [(put.queen fput bf :row bf :board :result)]])]]]]
+;;                  
+;;                  ;; Start of letrec body forms
+;;                  [localmake "stack []]
+;;                  
+;;                  ;; Check what is in local variable makeboard
+;;                  [pr equalp :makeboard "makeboard]
+;;                  [pr []]
+;;                  
+;;                  ;; Run program and discard the output (true/false)
+;;                  [ignore (put.queen (makeboard :number) [])]
+;;                  
+;;                  ;; Output positions -- letrec ends here
+;;                  [op reverse :stack]]
+;;         
+;;          ;; Template for foreach 
+;;          [[x] [(show "position # :x)]])
+;;
+;; ;; There is no way to invoke procedure put.queen here.
+;; ;; Contents will show that put.queen does not exist any more
+;; pr []
+;; show contents
+;; pr []
+;;
+;; ;; Local variable makeboard is visible again
+;; pr equalp :makeboard "makeboard
+;; end
+
+
+;;; You will have noticed that I use both styles for AND/OR here. OR in SHADE
+;;; is standard Logo OR. All AND/ORs in PUT.QUEEN are new. What kind of OR is
+;;; used in SHADE is irrelevant -- however PUT.QUEEN will not function if
+;;; standard style is used.
+;;;
+;;; If you observe closely what happens when queens program is run, you
+;;; will notice that there is a considerable waiting period between
+;;; first "true and first "false printouts. Then comes the long wait
+;;; for positions to print out. There is nothing I can do about
+;;; waiting for Logo to find positions, but the first waiting period
+;;; is another story. During this time interpreter is not actually
+;;; running queens, but rather interpreting letrec structure into a
+;;; usable form.
+
+;;; If you tried to run COND example, the situation was even worse.
+;;; Cond.memberp is a recursive procedure, and Logo interpreted COND
+;;; structure in every invocation of cond.memberp. That is
+;;; prohibitive.
+
+;;; The answer to this is, of-course, High Level Procedure Compiler.
+;;;
+;;; .LOGO.COMPILER takes one input, a list of procedure names, or one
+;;; procedure name. If you want to compile the whole workspace, call it
+;;; without inputs:
+;;; .logo.compiler [ proc1 proc2 ...]
+;;; .logo.compiler "proc
+;;; (.logo.compiler)
+;;;
+;;; To try it out do: .logo.compiler "queens -- Logo should respond with:
+;;; compiling queens ... OK
+;;; compilation completed
+;;;
+;;; Now run queens again. Both "true and "false should print out without
+;;; waiting this time. Compiled cond.memberp example should likewise
+;;; give reasonable performance. If you want to save compiled version
+;;; do: save.compiled "filename.
+;;;
+;;;
+;;; .LOGO.COMPILER can handle very complex structures, so don't be
+;;; afraid to experiment -- with nested letrec, for instance. You can
+;;; define letrec within another letrec definition, or within cond, or
+;;; case, or vice-versa. Same scope rules apply -- you can not call
+;;; inner PROC-NAMEs from outer. Pay attention, however, to syntax
+;;; rules mentioned before.
+;;;
+;;; One simple "torture" test for compiler is converting ordinary
+;;; recursive insert.sort to a nonrecursive version, using cond inside
+;;; letrec, inside lambda, as a first input to reduce. In case you
+;;; wonder why this `lput (list last :lst) bl :lst' as a second input
+;;; to reduce (instead of just using `:lst') -- this is to prevent
+;;; reduce (actually insert) to butfirst throuh last number in :lst as
+;;; if it were a word.
+;;;
+;;; to insert.sort :lst
+;;; op (reduce [[e lst]
+;;;             [op letrec [[
+;;;                [insert [[lst]
+;;;                         [cond [
+;;;                            [[emptyp :lst] [op (list :e)]]
+;;;                            [[:e < first :lst] [op fput :e :lst]]
+;;;                            [t [op fput first :lst (insert bf :lst)]]]]]]]
+;;;                         [(insert :lst)]]]]
+;;;            lput (list last :lst) bl :lst)
+;;; end
+;;;
+;;;
+;;; This program (.logo) is just an exercise -- a pet project of mine.
+;;; I do not suggest that this is how Logo should look like, although it is
+;;; nice to be able to write a simple program in Scheme, and practically
+;;; bodily transfer it to Logo.
+;;;
+;;; .logo is *not* thoroughly tested! Use at your own peril.
+
+
+type "|loading .logo ... | wait 0
+
+;; Allowing changes to Logo primitives
+
+make "redefp "true
+
+;; Preserving original definitions
+
+copydef "if.tf "if                                                            
+copydef "ifelse.tf "ifelse
+copydef "not.tf "not
+copydef "and.tf "and
+copydef "or.tf "or
+copydef "test.tf "test
+
+;; Freeing names
+
+erase [if ifelse not and or test]
+
+
+;;; New definitions
+
+to if :tf.val :run.true [:run.false []] 2
+.maybeoutput (if.tf equalp :tf.val "false [run :run.false] [run :run.true])
+end
+
+to ifelse :tf.val :run.true :run.false
+.maybeoutput (if.tf equalp :tf.val "false [run :run.false] [run :run.true])
+end
+
+to not :thing.not
+op (if.tf equalp :thing.not "false ["true] ["false])
+end
+
+to true
+op "true
+end
+
+copydef "else "true
+copydef "t "true
+
+to and [:form.and ["true]] [:forms.and] 2
+if.tf wordp :form.and [op apply "and.tf fput :form.and :forms.and]
+op and.helper fput :form.and :forms.and
+end
+
+to and.helper :forms.and
+if.tf emptyp bf :forms.and [op run first :forms.and]
+if.tf not run first :forms.and [op "false]
+op and.helper bf :forms.and
+end
+
+to or [:form.or ["false]] [:forms.or] 2
+if.tf wordp :form.or [op apply "or.tf fput :form.or :forms.or]
+op or.helper fput :form.or :forms.or
+end
+
+to or.helper :forms.or
+if.tf emptyp bf :forms.or [op run first :forms.or]
+local "found.or
+make "found.or run first :forms.or
+if :found.or [op :found.or]
+op or.helper bf :forms.or
+end
+
+to .and [:form.and ["true]] [:forms.and] 2
+if.tf emptyp :forms.and [op first lput "#unspecified runresult :form.and]
+if.tf not first lput "#unspecified runresult :form.and [op "false]
+op apply ".and :forms.and
+end
+
+.macro test :any.value
+op `[test.tf not.tf not ,[quoted :any.value]]
+end
+
+
+;;; Extended prefix operators
+
+copydef "difference.s "difference
+copydef "quotient.s "quotient
+
+erase [difference quotient equal? greater? less? before?]
+
+to difference :first.num [:rest.nums] 2
+if emptyp :rest.nums [op minus :first.num]
+op :first.num - (apply "sum :rest.nums)
+end
+
+to quotient :first.num [:rest.nums] 2
+if emptyp :rest.nums [op (1 / :first.num)]
+op :first.num / (apply "product :rest.nums)
+end
+
+to equal? [:rest.x] 2
+if or [emptyp :rest.x] [emptyp bf :rest.x] [op "true]
+op catch "fail [
+   (and [reduce [[x y] [ifelse equalp :x :y [op :x] [(throw "fail "false)]]]
+                :rest.x]
+        ["true])]
+end
+
+to less? [:nums] 2
+if or [emptyp :nums] [emptyp bf :nums] [op "true]
+op catch "fail [
+   (and [reduce [[x y] [ifelse lessp :x :y [op :x] [(throw "fail "false)]]]
+                :nums]
+        ["true])]
+end
+
+to greater? [:nums] 2
+if or [emptyp :nums] [emptyp bf :nums] [op "true]
+op catch "fail [
+   (and [reduce [[x y] [(if greaterp :x :y [op :x] [(throw "fail "false)])]]
+                :nums]
+        ["true])]
+end
+
+to before? [:wds] 2
+if or [emptyp :wds] [emptyp bf :wds] [op "true]
+op catch "fail [
+   (and [reduce [[x y] [ifelse beforep :x :y [op :x] [(throw "fail "false)]]]
+                :wds]
+        ["true])]
+end
+
+
+;;; Cleaning up
+
+;; Prohibit further changes of primitives
+ern "redefp
+
+bury [if ifelse not true else or and or.helper and.helper .and test]
+bury [difference equal? greater? less? quotient before? difference.s quotient.s]
+
+
+;;; Defining High Level Procedures
+
+;; Letrec
+
+to insert.invoke :name :text
+if emptyp :text [op []]
+if wordp first :text [
+   op (or [(and [equalp first :text "\(]
+                [equalp first bf :text :name]
+                [(se first :text "invoke word ": first bf :text
+                     insert.invoke :name bf bf :text)])]
+          [se first :text insert.invoke :name bf :text])]
+op (if listp first :text [fput insert.invoke :name runparse first :text
+                               insert.invoke :name bf :text]
+       [fput first :text insert.invoke :name bf :text])
+end
+
+.macro letrec :in.letrec
+localmake "body.letrec fput "dummy.letrec (list fput [] bf :in.letrec)
+op letrec.helper lput :body.letrec first :in.letrec [(dummy.letrec)]
+end
+
+to letrec.helper :clauses.letrec :form.letrec
+if emptyp :clauses.letrec [op (list "run :form.letrec)]
+localmake "name.letrec first first :clauses.letrec
+localmake "parsed.clauses insert.invoke :name.letrec runparse :clauses.letrec
+op (se "local (word "" :name.letrec) "make (word "" :name.letrec)
+       bf first :parsed.clauses letrec.helper bf :parsed.clauses
+       insert.invoke :name.letrec runparse :form.letrec)
+end
+
+
+;;; Cond -- source is commented out. Only the compiled code gets loaded.
+
+; .macro cond :cond.clauses
+; op letrec [[
+;    [words [[clauses]
+;            [if.tf emptyp :clauses [op []]]
+;            [op fput (fput (or [and [wordp first first :clauses]
+;                                    [(list first first :clauses)]]
+;                               [first first :clauses])
+;                           bf first :clauses)
+;                     (words bf :clauses)]]]
+;    [progn [[forms]
+;            [if.tf emptyp :forms [op []]]
+;            [if.tf emptyp bf first :forms [op fput first :forms
+;                                              (progn bf :forms)]]
+;            [op fput (list first first :forms
+;                           letrec.helper
+;                           (list (list "dummy.cond fput [] bf first :forms))
+;                           [(dummy.cond)])
+;                     (progn bf :forms)]]]
+;    [do.and [[clauses]
+;             [if.tf emptyp :clauses [op [[(and.cludge)]]]]
+;             [op fput (se char 40 "and.cludge first :clauses char 41)
+;                      (do.and bf :clauses)]]]]
+;            [op (se "invoke [[[x] [op (if.tf .eq :x "#false ["false] [:x])]]]
+;                    char 40 "or (do.and (progn (words :cond.clauses)))
+;                    char 41 )]]
+; end
+
+to and.cludge [:form.first ["#unspecified]] [:form.second []] 2
+local "and.result
+make "and.result run :form.first
+if.tf or not :and.result emptyp :form.second [op :and.result]
+make "and.result lput "#unspecified runresult :form.second
+op (if.tf not first :and.result ["#false] [first :and.result])
+end
+
+
+;;; Case -- source is commented out. Only the compiled code gets loaded.
+
+; .macro case :case.clauses
+; op letrec [[
+;    [member.keys [[clauses]
+;                  [if.tf emptyp bf :clauses
+;                         [op (if.tf (and [procedurep first first :clauses]
+;                                         [memberp first first :clauses
+;                                                  [else true t]])
+;                                    [:clauses]
+;                                    [(list fput (list "memberp "run
+;                                                      quoted ":#target
+;                                                      first first :clauses)
+;                                           bf first :clauses)])]]
+;                  [op (fput (fput (list "memberp "run quoted ":#target
+;                                        first first :clauses)
+;                                  bf first :clauses)
+;                            (member.keys bf :clauses))]]]
+;    [progn [[forms]
+;            [if.tf emptyp :forms [op []]]
+;            [if.tf emptyp bf first :forms [op fput first :forms
+;                                              (progn bf :forms)]]
+;            [op fput (list first first :forms
+;                           letrec.helper
+;                           (list (list "dummy.case fput [] bf first :forms))
+;                           [(dummy.case)])
+;                     (progn bf :forms)]]]
+;    [do.and [[clauses]
+;             [if.tf emptyp :clauses [op [[(and.cludge)]]]]
+;             [op fput (se char 40 "and.cludge first :clauses char 41)
+;                      (do.and bf :clauses)]]]]
+;            
+;            [localmake "#target "deferred]
+;            [op (se (list "localmake ""#target "run first :case.clauses)
+;                    "invoke [[[x] [op (if.tf .eq :x "#false ["false] [:x])]]]
+;                    char 40 "or
+;                    (do.and (progn (member.keys bf :case.clauses)))
+;                    char 41)]]
+; end
+
+
+;;; Compiler -- source is commented out. Only the compiled code gets loaded.
+
+; to .logo.compiler [:proc procedures] 1
+; letrec [[
+;    [input.depth [[lst]
+;                  [if emptyp :lst [op 1]]
+;                  [if or.tf wordp :lst arrayp :lst [op 0]]
+;                  [op max sum 1 (input.depth first :lst)
+;                                (input.depth bf :lst)]]]
+;    [compile.proc [[proc]
+;                   [if emptyp :proc [op []]]
+;                   [local "struct.min]
+;                   [op ifelse
+;                       (.and [wordp first :proc]
+;                             [macrop first :proc]
+;                             [make "struct.min
+;                                   gprop "compiler.cap first :proc]
+;                             [not.tf emptyp :struct.min]
+;                             [not.tf emptyp bf :proc]
+;                             [:struct.min < (input.depth first bf :proc)])
+;                       [make "compiled "true
+;                             se (list "run macroexpand list first :proc
+;                                      (compile.proc first bf :proc))
+;                             (compile.proc bf bf :proc)]
+;                       [or [and [listp first :proc]
+;                                [fput (compile.proc first :proc)
+;                                      (compile.proc bf :proc)]]
+;                           [fput first :proc (compile.proc bf :proc)]]]]]
+;    [compile.ws [[proc.lst compiled]
+;                 [if.tf emptyp :proc.lst [stop]]
+;                 [type (se "compiling  first :proc.lst "|... |)]
+;                 [wait 0]
+;                 [(invoke (or [and [macrop first :proc.lst]
+;                                   [".defmacro]]
+;                              ["define])
+;                          first :proc.lst (compile.proc text first :proc.lst))]
+;                 [pr (if.tf :compiled
+;                            [.and [pprop "compiled.procs first :proc.lst "true]
+;                                  ["OK]]
+;                            [(se [nothing to do for] first :proc.lst)])]
+;                 [(compile.ws bf :proc.lst "false)]]]]
+;         [ifelse listp :proc [(compile.ws filter "procedurep :proc "false)]
+;                 [(compile.ws filter "procedurep (list :proc) "false)]]
+;         [pr [compilation completed]]]
+; end
+
+
+;; Saving *only* compiled procedures. 
+
+to save.compiled [:filename .and
+                            [type "|Enter file name to save to: |]
+                            [rw]] 1
+if equalp first :filename "" [make "filename bf :filename]
+local "oldwriter
+make "oldwriter writer
+openwrite :filename
+setwrite :filename
+po (filter [[proc] [op not.tf emptyp gprop "compiled.procs :proc]]
+           procedures)
+setwrite :oldwriter
+close :filename
+end
+
+
+;;; Compiler Capabilities
+;;;
+;;; Capabilities have this format: property = name of High Level Procedure
+;;;                                value    = minimum depth of input - 1
+;;;
+;;; You can add your own compiler capabilities, providing you follow
+;;; these rules: High level procedure (structure) you define must have
+;;; one input only - a list. And, of-course it must be a macro --
+;;; otherwise there is nothing for compiler to do. After you have
+;;; defined (and tested) your procedure add your pprop line to lines
+;;; below. That is all.
+
+pprop "compiler.cap "letrec 4
+pprop "compiler.cap "cond 2
+pprop "compiler.cap "case 2
+
+bury [insert.invoke letrec letrec.helper cond and.cludge .logo.compiler
+                    save.compiled case]
+
+bury [[] [] [compiler.cap compiled.procs]]
+
+
+;;; End of interpreter changes
+;;;
+;;; Addition to library -- without `max' .logo.compiler will not work
+
+to before [:first.wd "] [:rest.wds] 2
+op reduce [[x y] [op ifelse beforep :x :y [:x] [:y]]] fput :first.wd :rest.wds
+end
+
+to max :first.num [:rest.nums] 2
+op reduce [[x y] [op (if greaterp :x :y [:x] [:y])]] fput :first.num :rest.nums
+end
+
+to min :first.num [:rest.nums] 2
+op reduce [[x y] [op ifelse lessp :x :y [:x] [:y]]] fput :first.num :rest.nums
+end
+
+to evenp :number
+op zerop remainder :number 2
+end
+
+to oddp :number
+op not evenp :number
+end
+
+to zerop :number
+op equalp :number 0
+end
+
+to identity :stuff
+op :stuff
+end
+
+bury [before max min evenp oddp zerop identity]
+
+
+;;; Restoring Standard Berkeley Logo
+;;; This is of practical value only if used within Emacs logo-mode
+
+to restore.standard
+make "redefp "true
+copydef "if "if.tf                                                     
+copydef "ifelse "ifelse.tf
+copydef "not "not.tf
+copydef "and "and.tf
+copydef "or "or.tf
+copydef "test "test.tf
+copydef "difference "difference.s
+copydef "quotient "quotient.s
+copydef "equal? "equalp
+copydef "greater? "greaterp
+copydef "less? "lessp
+copydef "before? "beforep
+erase [
+   [if.tf ifelse.tf not.tf and.tf or.tf test.tf or.helper and.helper .and
+          insert.invoke letrec letrec.helper cond and.cludge .logo.compiler
+          save.compiled case before max min evenp oddp zerop identity else t
+          true difference.s quotient.s]
+   []
+   [compiler.cap compiled.procs]]
+ern "redefp
+gc
+pr [Standard Berkeley Logo restored.]
+end
+
+bury [restore.standard]
+
+
+;;; Compiled code
+
+to .logo.compiler [:proc procedures] 1
+run [local "input.depth make "input.depth [[lst] [if emptyp :lst [op 1]] [if or.tf wordp :lst arrayp :lst [op 0]] [op max sum 1 ( invoke :input.depth first :lst ) ( invoke :input.depth bf :lst )]] local "compile.proc make "compile.proc [[proc] [if emptyp :proc [op []]] [local "struct.min] [op ifelse ( .and [wordp first :proc] [macrop first :proc] [make "struct.min gprop "compiler.cap first :proc] [not.tf emptyp :struct.min] [not.tf emptyp bf :proc] [:struct.min < ( invoke :input.depth first bf :proc )] ) [make "compiled "true se ( list "run macroexpand list first :proc ( invoke :compile.proc first bf :proc ) ) ( invoke :compile.proc bf bf :proc )] [or [and [listp first :proc] [fput ( invoke :compile.proc first :proc ) ( invoke :compile.proc bf :proc )]] [fput first :proc ( invoke :compile.proc bf :proc )]]]] local "compile.ws make "compile.ws [[proc.lst compiled] [if.tf emptyp :proc.lst [stop]] [type ( se "compiling first :proc.lst "|... | )] [wait 0] [( invoke ( or [and [macrop first :proc.lst] [".defmacro]] ["define] ) first :proc.lst ( invoke :compile.proc text first :proc.lst ) )] [pr ( if.tf :compiled [.and [pprop "compiled.procs first :proc.lst "true] ["OK]] [( se [nothing to do for] first :proc.lst )] )] [( invoke :compile.ws bf :proc.lst "false )]] local "dummy.letrec make "dummy.letrec [[] [ifelse listp :proc [( invoke :compile.ws filter "procedurep :proc "false )] [( invoke :compile.ws filter "procedurep ( list :proc ) "false )]] [pr [compilation completed]]] run [( invoke :dummy.letrec )]]
+end
+
+.macro cond :cond.clauses
+op run [local "words make "words [[clauses] [if.tf emptyp :clauses [op []]] [op fput ( fput ( or [and [wordp first first :clauses] [( list first first :clauses )]] [first first :clauses] ) bf first :clauses ) ( invoke :words bf :clauses )]] local "progn make "progn [[forms] [if.tf emptyp :forms [op []]] [if.tf emptyp bf first :forms [op fput first :forms ( invoke :progn bf :forms )]] [op fput ( list first first :forms letrec.helper ( list ( list "dummy.cond fput [] bf first :forms ) ) [( dummy.cond )] ) ( invoke :progn bf :forms )]] local "do.and make "do.and [[clauses] [if.tf emptyp :clauses [op [[( and.cludge )]]]] [op fput ( se char 40 "and.cludge first :clauses char 41 ) ( invoke :do.and bf :clauses )]] local "dummy.letrec make "dummy.letrec [[] [op ( se "invoke [[[x] [op ( if.tf .eq :x "#false ["false] [:x] )]]] char 40 "or ( invoke :do.and ( invoke :progn ( invoke :words :cond.clauses ) ) ) char 41 )]] run [( invoke :dummy.letrec )]]
+end
+
+.macro case :case.clauses
+op run [local "member.keys make "member.keys [[clauses] [if.tf emptyp bf :clauses [op ( if.tf ( and [procedurep first first :clauses] [memberp first first :clauses [else true t]] ) [:clauses] [( list fput ( list "memberp "run quoted ":#target first first :clauses ) bf first :clauses )] )]] [op ( fput ( fput ( list "memberp "run quoted ":#target first first :clauses ) bf first :clauses ) ( invoke :member.keys bf :clauses ) )]] local "progn make "progn [[forms] [if.tf emptyp :forms [op []]] [if.tf emptyp bf first :forms [op fput first :forms ( invoke :progn bf :forms )]] [op fput ( list first first :forms letrec.helper ( list ( list "dummy.case fput [] bf first :forms ) ) [( dummy.case )] ) ( invoke :progn bf :forms )]] local "do.and make "do.and [[clauses] [if.tf emptyp :clauses [op [[( and.cludge )]]]] [op fput ( se char 40 "and.cludge first :clauses char 41 ) ( invoke :do.and bf :clauses )]] local "dummy.letrec make "dummy.letrec [[] [localmake "#target "deferred] [op ( se ( list "localmake ""#target "run first :case.clauses ) "invoke [[[x] [op ( if.tf .eq :x "#false ["false] [:x] )]]] char 40 "or ( invoke :do.and ( invoke :progn ( invoke :member.keys bf :case.clauses ) ) ) char 41 )]] run [( invoke :dummy.letrec )]]
+end
+
+
+pr "OK
+
+;;; End of .logo
+

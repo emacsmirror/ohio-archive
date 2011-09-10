@@ -1,0 +1,158 @@
+Fri Oct 13 17:30:13 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Shar it up and post.
+
+		* moved supercite-misc.el to sup-misc.el and
+		baw-alist-utils.el to baw-alist.el for sake of users of
+		bogus UN*X's which can't handle long file names.
+
+		* Merged in mh-e support as provided by Mark Baushke.
+
+Thu Oct 12 17:50:55 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Fixed small bug in sc-populate-alists. No space was being
+		put between last middlename and lastname.
+
+		* Cleaned up documentation. Ready to post tomorrow.
+
+Wed Oct 11 13:43:35 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Moved sc-supercite to sc-describe.
+
+		* Cleaned up code and documentation for distribution. I'll be
+		watching for bugs to pop up before release.
+
+		* Added sc-leached-keymap for better documentation.
+
+		* Changed default value of sc-cite-regexp to include possible
+		whitespace around attribution text and mulitple ">" characters.
+
+		* Changed all symbol prefixes from sy- to sc- in both the
+		supercite.el and supercite-misc.el files.
+
+		* Added cute hack so that description of supercite bindings are
+		leached onto the docstring of the current buffer's major-mode
+		function.  "C-h m" after supercite is loaded will show the
+		supercite keybindings in the *Help* buffer.
+
+Tue Oct 10 17:30:32 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Fixed a bug in the creation of the "sc-author" field which was
+		putting a bogus space at the end of the author's name. Also added
+		all the other name fields to the "sc-gal-information" alist. You
+		can now access "sc-firstname", "sc-lastname", and all
+		"sc-middlename-N".
+
+		* Added an attribution style that I use.
+		sc-header-attributed-writes. 
+
+		* Parameterized the ">>>>>" prefix on the reference header. Some
+		people find this annoying, I like it.
+
+Sun Oct  8 22:08:11 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Added binding for sc-insert-reference for mh-e mode.
+
+Wed Oct  4 18:54:43 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Fixed bug in searching for author names in certain From: lines
+		which didn't find names with dots (abbreviations) and dashes.
+
+		* Added per-interface keymaps which allow you to define different
+		keybindings based on the major-mode of the buffer which supercite
+		is leaching onto.
+
+Tue Oct  3 20:01:17 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Fixed bug in sc-{re,un}cite which bombed out if first line in
+		region was blank. These functions now search for attribution
+		prefix on first non-blank line in region.
+
+Mon Sep 25 10:30:32 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Modified diffs and overloads to mh-e stuff as per ks and mdb
+
+		* Fixed conditional loads in supercite-misc.el
+
+		* Added (require 'sendmail)
+
+Thu Sep 21 10:17:23 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Posted 2.0gamma to supercite list.
+
+		* Added overload functions to supercite-misc.el
+
+		* Fixed some bugs in electric-reference functions
+
+		* After citing a yanked region, leave point (or mark if
+		point>mark) on first non-blank line.
+
+Wed Sep 13 18:10:45 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Added electric reference header selection. Now you don't have to
+		remember which integer pointed to which reference style!
+
+Tue Sep 12 18:23:47 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Fixed some bugs in paragraph filling and made the whole thing
+		more robust and simple.
+
+		* Added exchange of point and mark when point > mark.  Exchange is
+		only visible internal to sc- functions.  Order of point and mark
+		are restored after citing.
+
+		* Added some new mail headers to clean.
+
+Wed Sep  6 18:45:11 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Remerged files by popular demand. Added page delimiters.
+
+Fri Sep  1 18:37:59 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Modified documentation and updated the public domain notice.
+
+		* Restored "C-c q" binding of sc-fill-paragraph-manually.
+
+Tue Aug 29 18:54:27 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Added sc-modify-info function.
+
+		* Fixed sc-left-justify-p to use fixup-whitespace (which makes
+		more sense).
+
+Mon Aug 21 10:07:06 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Posted 2.0beta version to mailing list.
+
+		* Added sc-uncite function.
+
+Fri Aug 18 16:49:43 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Split files for managability.
+
+Thu Aug 17 21:43:33 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Added alist utilites and rewrote major portions of code to
+		utilize these association lists for keeping track of important
+		information.
+
+Mon Aug 14 17:09:11 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Added facility to remember which attribution was last used. This
+		last used attribution is presented to the user as the preferred
+		choice for the next attribution.
+
+Mon Jul 31 18:52:41 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Modified some documentation.
+
+Thu Jul 27 17:01:49 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Added some better filling functions and hookified the paragraph
+		fill function so you can use whatever you want.
+
+Wed Jul  5 21:15:45 1989  Barry Warsaw  (warsaw at rtg)
+
+		* Totally rewrote version 2.0 based on superyank 1.11.  This
+		included major modifications of almost every bit of code in the
+		package. Much too numerous to mention here.

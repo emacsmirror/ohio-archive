@@ -1,0 +1,27 @@
+****************************** CONFERENCE ******************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+        Title: \title
+    Booktitle: \booktitle
+         Year: \year
+................................................................Optional
+       Editor: \editor
+       Volume: \volume
+       Number: \number
+       Series: \series
+        Pages: \pages
+      Address: \address
+        Month: \month
+ Organization: \organization
+    Publisher: \publisher
+         Note: \note
+          Key: \key
+     Crossref: \crossref
+.................................................................Ignored
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+****************************** CONFERENCE ******************************

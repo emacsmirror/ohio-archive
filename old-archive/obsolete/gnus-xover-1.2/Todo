@@ -1,0 +1,10 @@
+Workaround for the C news sync problem.
+
+Finish status.el, and use it in nntp.el.
+
+Do something about post abort.
+
+Reconsider sequence gaps.
+
+See if wait for newline can be specialcased faster,
+with (end-of-line) (eq (following-char) ?\n)

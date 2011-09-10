@@ -1,0 +1,18 @@
+****************************** UNPUBLISHED *****************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+        Title: \title
+         Note: \note
+................................................................Optional
+        Month: \month
+         Year: \year
+          Key: \key
+     Crossref: \crossref
+.................................................................Ignored
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+****************************** UNPUBLISHED *****************************

@@ -1,0 +1,420 @@
+Waste time on IRC using ZenIRC
+
+With ZenIRC you can connect to IRC servers and waste time.
+ZenIRC runs under Emacs-18, Emacs-19, Epoch and Xemacs.
+This manual describes ZenIRC version 3.0.
+
+
+	1--Introduction
+
+
+If ZenIRC is installed properly, starting ZenIRC without any
+extensions is fairly easy--you just type `M-x zenirc' in your Emacs.
+
+If ZenIRC isn't installed at all, you probably won't be able to read
+this manual. Turn to the "INSTALL" file which comes with the
+distribution of ZenIRC-3.0.
+
+If ZenIRC is installed but you still can't start it, there's a big
+chance that you can't connect to the default server.
+
+
+	1.1--Finding an IRC server and connecting to it.
+
+
+There's only one default server for ZenIRC, irc.stealth.net. This
+server might, of course, be down or unreachable. If this is so, you
+need to connect to another server for ZenIRC to work.
+
+ZenIRC comes with a list of servers maintained by Doug McLaren. The
+list is from 1996-04-15 so it might not be correct. This list is
+posted to the Usenet group alt.irc and alt.irc.questions twice a
+month and a copy of it can be found via anonymous FTP at
+ ftp.comco.com:/pub/irc/server-list-current
+
+
+	1.1.1--Changing default server (and attributes).
+
+
+There's three different ways to change your default server. They're
+listed below in the prefered order. If you use example 1.1.1.1 or
+1.1.1.2 you'll get some redundancy example 1.1.1.3 can't give you.
+1.1.1.3 is good if you want to start right away and set things up
+later on in life.
+
+
+	1.1.1.1--The $IRCSERVER way.
+
+
+By setting your environment variable $IRCSERVER you also change the
+default servers for most other IRC clients around. How to set this
+variable is different in different shells. 
+
+	sh, bash, zsh;	IRCSERVER="some.server";export IRCSERVER
+	csh, tcsh;	setenv IRCSERVER "some.server"
+
+ZenIRC uses this variable just like ircII. The correct syntax is;
+
+	server1[:port1[:password1[:nickname1[:username1]]]] server2[:port2...
+
+To set your default server to irc.stealth.net with the nickname `ben'
+and your secondary server to irc.funet.fi on port 6666 with the
+nickname Vesa you would set $IRCSERVER to;
+
+	irc.stealth.net:::ben: irc.funet.fi:6666::Vesa:
+
+
+	1.1.1.2--The zenirc-server-alist way.
+
+
+By setting the ZenIRC variable zenirc-server-alist you can do the same
+thing as with $IRCSERVER, this way you won't have the same defaults
+for other clients though.
+
+To do exactly as the example in 1.1.1.1, you should set
+zenirc-server-alist as follows;
+
+	(setq zenirc-server-alist 
+	  '(("irc.stealth.net" nil nil "ben" nil)
+	    ("irc.funet.fi" 6666 nil "Vesa" nil)))
+
+	
+	1.1.1.3--Using ordinary variables.
+
+
+The only thing you actually _need_ to set is zenirc-server-default.
+
+To set your default server, use zenirc-server-default;
+
+	(setq zenirc-server-default "irc.stealth.net")
+
+To set your default nickname, use zenric-nick-default;
+
+	(setq zenirc-nick-default "ben")
+
+To set your default password, use zenric-password-default;
+
+	(setq zenirc-password-default "mostly not used")
+
+To set your default port, use zenirc-port-default;
+
+	(setq zenirc-port-default 6667)
+
+To set your default username, use zenirc-user-login-name-default;
+	
+	(setq zenirc-user-login-name-default "oedipus rpc.rexd")
+
+
+	1.1.2--Those servers are all down.
+
+
+If you don't want to restart Emacs and ZenIRC to try a new server,
+type `M-x zenirc-select' and you will be asked a few questions.
+
+
+	1.1.3--The server doesn't let me on?!
+
+
+The IRC administrators might not want people from everywhere to
+connect to his server. I'd recomend you to use an as closeby server as
+possible. The list of servers lists the server by country, the best
+shot would be to use one as close to you as possible.
+
+There's also a possiblity that the admin has banned your domain. If
+this is true, talk to your system administrator about it.
+
+Some servers won't let you connect if your system isn't running an
+IDENT service. This breaks the RFC for IDENT so be sure to tell the
+administrator of the server about this idiocy, then go on and pick a
+better server.
+
+
+	2--Using ZenIRC to waste time.
+
+
+Once you've conected to a server, Emacs will enter ZenIRC
+major-mode. This mode parses information from the server and shows it
+to you in different ways, it also give you a nice interface to send
+things to the server. ZenIRCs major-mode also understands CTCP and
+parts of the DCC protocol.
+
+
+	2.1--What goes on in the background?	
+
+
+Lots of things. If you don't know much elisp and just want to use the
+client you couldn't be less bothered actually. If you really are
+interested in the internals of ZenIRC you should join one or more of
+the ZenIRC mailinglists, read the source and play around a little.
+Changing small things and adding some small nifty hooks are pretty
+trivial though, read more about that in SECTION and SECTION.
+	
+
+	2.1.1--Communicating with the server.
+
+
+Sending stuff to the server is done by hitting return (^M). ZenIRC
+parses the things you send to the server in two different ways,
+depending on the first character you type. With a leading "/" (you can
+change this by setting zenirc-commandchar) ZenIRC parses your line as
+a command. Without the leading "/" ZenIRC sends your line as a message
+to your current victim, this is done with PRIVMSG as described in
+RFC1459.
+
+Example, if the channel #se-opers is your zenric-current-victim and
+you type;
+
+	Hello people^M
+
+the clients on channel #se-opers will see your message. Use the /query
+command to change zenirc-current-victim. :LINK:
+
+On the other hand, if you type;
+
+	/part #se-opers^M
+
+you will part the channel. Look in 2.2 for an extensive list of all
+commands and how to use them.
+
+
+	2.1.2--Server communicating with you.
+
+ZenIRC parses all the information the servers sends to you in one way
+or the other. On a few occasions ZenIRC might lack the information on
+how to parse a certain thing, this is almost considered a bug (use M-x
+zenirc-bug to report this behaviour).
+
+To display the information, ZenIRC uses language catalogs. The default
+catalog is English, but this can be changed easily. Writing your own
+catalog is trivial and we'd love you if you wrote your own catalog and
+mailed it in to the developers.
+
+There's a lot of different variables you can change, and hooks to play
+with if you feel adventureous. You can, for example, ignore people,
+make ZenIRC beep when something special happens, have timestamps on
+special messages and so forth. The variables are described in SECTION
+and the hooks are described in SECTION. 
+
+`zenirc.el' only contains the most important features, some very nice
+features are placed in their own files. `zenirc-fill.el', for example,
+fills certain messages for you so Emacs doesn't have to wrap long
+lines in an ugly way. Read more about scripts in SECTION.
+
+
+	2.2--Commands in ZenIRC major-mode.
+
+
+As already described, ZenIRC pareses lines with a leading "/" as a
+command. Most of the commands are sent right off to the server, some
+commands are ZenIRC specific though. 
+
+
+	3.2.1--Non ZenIRC specific commands.
+
+
+A list of these commands can be found in RFC1459, this list is just a
+brief description on how to use different commands. Go read RFC1459 if
+you want to learn really nifty stuff.
+
+Things inside []'s are optional. If the optional argument is a server,
+using a nickname will list information about the server that nickname
+is using.
+
+/nick nickname			
+	Change your nickname
+
+/quit comment		
+	Stop wasting time, with optional comment.
+
+/join channel[,channel] [key[,key]]	
+	Join one or more comma separated channels with given optional keys.
+	zenirc-current-victim is set to the last joined channel.
+
+/part channel[,channel] [comment]
+	Part one or more comma separated channels, with optional comment.
+	If you part your zenirc-current-victim, it is set to 'nil'.
+
+/mode nickname [mode]
+	Check or change modes for a given nickname. See RFC1459 for an
+	extensive list of modes.
+
+/mode channel [mode [person]]
+	Check or change modes for a channel, or the mode of a nickname
+	on a channel. See RFC1459 for an extensive list of modes.
+
+/topic channel [topic]
+	Check or change topic of a certain channel.
+
+/names channel[,channel]
+	See who's on one or more comma separated channels.
+
+/list [channel[,channel] [server]]
+	Lists all, one or a comma separated list of channels. With
+	given server it lists channels from that servers view.
+
+/invite nickname channel
+	Invite person to given channel name.
+
+/kick channel nickname [comment]
+	Kick person on given channel with an optional comment.
+
+/version [server]
+	Returns version of current or given server.
+
+/stats query [server]
+	Returns information about that server (go read RFC1459).
+	Read SECTION for an extensive list of query types.
+
+/links [[<remote server>] <server mask>]
+	Lists all links or links matching a given mask, with optional
+	<remote server> it lists links seen from that server.
+
+/time [server]
+	Returns time from current or given server.
+
+/trace nickname
+	Returns the server route to given nickname.
+
+/trace [server]
+	Returns information on what's connected to the current server,
+ 	or a route to given server as well as things connected to it.
+
+/admin [server]
+	List administrative information for current or given server.
+
+/info [server]
+	List version, compile date, patchlevel, starttime and other
+	various information about current or given server.
+
+/privmsg nickname/channel text
+	Send text as a PRIVMSG to nickname/channel.
+
+/notice nickname/channel text
+	Send text as a NOTICE to nickname/channel.
+
+/who [<nick/user/server>mask [o]]
+	List short information about everyone on IRC or given
+	nickname, username or servername. With optional [o] argument
+	it lists person with their IRC operator flag set.
+	This command takes UNIX like masks ("?" and "*").
+
+/whois [server] nickmask[,nickmask]
+	List long information about given nickname, with optional
+	server argument it lists information as seen from that server.
+
+/whowas nickname [count [server]]
+	List long information about nickname not currently on the
+	connected servers but still in the WHOWAS database. With given
+	argument count, list that many old entries from the database.
+	With given server argument, list information as seen from that
+	server.
+
+/away [message]
+	Remove away message, with optional argument it sets a new
+	away message instead.
+
+/users [server]
+	List users logged in to current server or another server.
+
+/summon user [server]
+	Invite a user logged in to current server or another server.
+
+/userhost nickname [nickname [nickname]]
+	Returns short information about a whitespace separated list of
+	nicknames.
+
+/ison nickname [nickname [nickname]]
+	Returns wheter given, whitespace separated, nicknames are
+	on this IRC net.
+
+
+	2.2.2--ZenIRC specific commands.
+
+
+/action nickname/channel text
+	Send text as a CTCP ACTION to given nickname/channel. To send
+	text to more then one nickname/channel, use a comma separated
+	list.
+
+/commandchar char
+	Change your commandchar to char, for example;
+
+	/commandchar &
+
+	A good example is then;
+
+	&commandchar /
+
+/ctcp nickname/channel <CTCP QUERY> 
+	Send <CTCP QUERY> to a comma separated list of nicknames and
+	channels. 
+
+/language language
+	Change your language catalog to given language. Read SECTION
+	for more information about existing catalogs.
+
+/m 
+/msg
+	A shortcut for "/privmsg"
+
+/me text
+	Send text as a CTCP ACTION to zenirc-current-victim.
+
+/ping nickname/channel
+	Send CTCP PING to a comma separated list of nicknames and
+	channels.
+
+/query [nickname/channel]
+	Show or change zenirc-current-victim to a comma separated list
+	of nicknames and channels.
+
+/quote text
+	Sends text directly to the server. You might need this as
+	ZenIRC uses the same name as the server on some commands,
+	for example;
+
+	/quote ping server [<remote server>]
+		Ping current server, with given <remote server>
+		argument it pings the remote server instead.
+
+/server [server [port [nickname]]]
+	Connect to a server in a new ZenIRC-buffer.
+	This is bound to zenirc-select. If no options are used, ZenIRC
+	will ask you some questions.
+
+
+	2.3--Keybindings in ZenIRC major-mode.
+
+
+Hitting certain key combinations in ZenIRC will result in ZenIRC doing
+stuff you didn't think it would. This is really nifty, when you
+realize what actually happens HELLO PER
+
+	2.3.1
+
+
+	Hitting return ("\n" or "^M") will send the current line to the
+server. If you're looking through the backlog and hit return, ZenIRC
+will throw you to the end of the buffer.
+
+Hitting ; or : at the beginning of the line will help you while
+communicating to others then your zenirc-current-victim. For example;
+
+/msg omnion meep
+/msg ace95 meep
+*Omnion* meep meep
+
+Hitting ";" now will result in ZenIRC adding "/msg ace95 " at the
+beginning of the line.
+Hitting ":" will result in ZenIRC adding "/msg omnion " at the
+beginning of the line.
+
+By using a few of the scripts which comes with ZenIRC you can get
+tab-completion and a shell like history feature, more about that in
+SECTION. 
+
+
+	3--It's working, now I want it to Look Good and Feel Good.
+
+
+The default look of ZenIRC is pretty sparse. 

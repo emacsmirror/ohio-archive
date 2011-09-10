@@ -1,0 +1,105 @@
+From bug-gnu-emacs-request@prep.ai.mit.edu Thu Apr  6 17:53:09 1989
+Received: by life.ai.mit.edu; Thu, 6 Apr 89 14:48:39 EDT
+Return-Path: <info-gnu-emacs-request@prep.ai.mit.edu>
+Received: from prep.ai.mit.edu by life.ai.mit.edu; Thu, 6 Apr 89 14:44:40 EDT
+Received: from life.ai.mit.edu by prep.ai.mit.edu; Thu, 6 Apr 89 13:18:35 EST
+Received: from tut.cis.ohio-state.edu by life.ai.mit.edu; Wed, 5 Apr 89 22:03:57 EDT
+Received: by tut.cis.ohio-state.edu (5.59/3.890314)
+	id AA13493; Wed, 5 Apr 89 20:05:31 EDT
+Received: from USENET by tut.cis.ohio-state.edu with netnews
+	for info-gnu-emacs@prep.ai.mit.edu (info-gnu-emacs@prep.ai.mit.edu)
+	(contact usenet@tut.cis.ohio-state.edu if you have questions)
+Date: 5 Apr 89 23:59:22 GMT
+From: rusty@garnet.berkeley.edu
+Organization: Computer Center, UC Berkeley
+Subject: RMAIL issues
+Message-Id: <8904052359.AA12680@garnet.berkeley.edu>
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+Status: RO
+
+What I do to keep my rmail file to a reasonable size is start a new
+one each month.  It's a bit complicated but it works.
+
+=====> ~/.emacs <=====
+(setq mail-mode-hook 'rcw-mail-mode-hook)
+(setq rmail-mode-hook 'rcw-rmail-mode-hook)
+
+(autoload 'rcw-mail-mode-hook "mail-mode-hook" nil t nil)
+(autoload 'rcw-rmail-mode-hook "rmail-mode-hook" nil nil nil)
+
+(autoload 'set-up-mail-archive-file-name "mail-stuff" nil nil nil)
+(autoload 'set-up-rmail-file-name "mail-stuff" nil nil nil)
+
+(set-up-rmail-file-name)
+
+=====> rmail-mode-hook.el <=====
+(defun rcw-rmail-mode-hook ()
+  "Do this stuff when running rmail-mode."
+  (progn
+    (setq mail-use-rfc822 t)))
+
+=====> mail-mode-hook.el <=====
+(defun rcw-mail-mode-hook ()
+  "Do this stuff when running mail-mode."
+  (progn
+    (setq mail-yank-ignored-headers "^via:\\|^mail-from:\\|^origin:\\|^status:\\|^remailed\\|^received:\\|^[a-z-]*message-id:\\|^summary-line:\\|^in-reply-to:\\|^return-path:")
+    (set-up-mail-archive-file-name)))
+
+=====> mail-stuff.el <=====
+;; If you'd like copies of outgoing mail kept in mail-directory then
+;; call this function.  Can be called by your mail-mode-hook or you can put
+;; in your .emacs file.
+(defun set-up-mail-archive-file-name ()
+  "Set up the mail-archive-file-name variable."
+  (let ((month (downcase (substring (current-time-string) 4 7)))
+	(year (substring (current-time-string) 22 24)))
+    (if (set-up-mail-directory)
+	(progn
+	  (setq mail-archive-file-name
+		(expand-file-name
+		  (format "%s/%s%s_out" mail-directory month year)))))))
+
+;; If you'd like your RMAIL file kept in mail-directory instead of your
+;; login directory then call this function.  Must be called in your .emacs
+;; file; doesn't work if called by your rmail-mode-hook.
+(defun set-up-rmail-file-name ()
+  "Set up the RMAIL file name."
+  (let ((month (downcase (substring (current-time-string) 4 7)))
+	(year (substring (current-time-string) 22 24)))
+    (if (set-up-mail-directory)
+	(progn
+	  (setq rmail-file-name
+		(expand-file-name
+		 (format "%s/rmail_%s%s" mail-directory month year)))))))
+
+;; Set up the mail directory: in the user's login directory is a directory
+;; named "mail", in that directory are directories with names of the form
+;; mmmyy where "mmm" is the month (as a string) and yy is the year.  If the
+;; mmmyy directory doesn't exist it is created, but first any non-directory
+;; file with that name is moved out of the way.  Used by set-up-rmail-file-name
+;; and set-up-mail-archive-file-name.
+(defun set-up-mail-directory ()
+  "Set up the name of directory where mail is kept (make it if it doesn't
+exist)."
+  (progn
+    (setq mail-home
+	  (expand-file-name
+	   (format "~%s/mail" (user-real-login-name))))
+    (if (not (boundp 'mail-directory))
+	(if (file-directory-p mail-home)
+	    (let ((month (downcase (substring (current-time-string) 4 7)))
+		  (year (substring (current-time-string) 22 24)))
+	      (setq mail-directory
+		    (expand-file-name
+		      (format "%s/%s%s" mail-home month year)))
+	      (if (not (file-directory-p mail-directory))
+		  (progn
+		    (if (file-exists-p mail-directory)
+			(rename-file mail-directory
+				     (format "%s.bak" mail-directory)))
+		    ;; should use call-process instead of shell-command
+		    (shell-command (format "mkdir %s" mail-directory)))
+		t)))
+      t)))
+

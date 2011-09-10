@@ -1,0 +1,1412 @@
+Date: Wed, 1 Mar 89 15:03:42 PST
+From: bsw!promethium.bsw.com!adam@uunet.uu.net (Adam de Boor)
+To: bug-emacs@prep.ai.mit.edu
+Subject: generic mouse support
+
+what follows is a library I wrote to support a generic mouse. It acts
+in terms of character positions in the emacs window and supports up to
+three buttons and three modifiers. It provides all the functions found
+in x-mouse.el plus multi-pane menus that are kept in buffers, with
+various functions to make use of said menus. The library requires the
+following two subroutines (I've got them in cmds.c):
+
+DEFUN("pos-to-coord", Fpos_to_coord, Spos_to_coord, 2, 2, 0,
+"Return the coordinate of POS in the buffer in WINDOW as a dotten\n\
+pair (X . Y). The coordinate is relative to the window's upper-left corner")
+    (pos, window)
+    Lisp_Object pos;
+    Lisp_Object window;
+{
+  struct position *posval;
+  struct window	  *w;
+  int	    	  p;
+  int		  count = specpdl_ptr - specpdl;
+
+  CHECK_NUMBER(pos, 1);
+  p = XINT(pos);
+
+  w = decode_window(window);
+  
+  record_unwind_protect(save_excursion_restore, save_excursion_save());
+
+  Fset_buffer(w->buffer);
+
+  posval = compute_motion(marker_position(w->start), 0, 0,
+			  p, XFASTINT(w->height), XFASTINT(w->width),
+			  XFASTINT(w->width) - 1 -
+			  ((XFASTINT(w->width) + XFASTINT(w->left)) !=
+			   XFASTINT(XWINDOW(minibuf_window)->width)),
+			  XINT(w->hscroll), 0);
+  unbind_to(count);
+
+  return(Fcons(posval->hpos, posval->vpos));
+}
+
+DEFUN("coord-to-pos", Fcoord_to_pos, Scoord_to_pos, 2, 2, 0,
+"Takes a dotted pair (X . Y) relative to WINDOW's origin and returns then\n\
+proper buffer position for that coordinate. If there is no buffer text at\n\
+that position, the position of the end of the line is given")
+    (coord, window)
+    Lisp_Object coord;
+    Lisp_Object window;
+{
+  struct window   *w;
+  int	    	  xg, yg;
+  Lisp_Object	  retval;
+  Lisp_Object	  thing;
+  int	    	  count = specpdl_ptr - specpdl;
+  struct position *posval;
+
+  w = decode_window(window);
+
+  CHECK_CONS(coord, 0);
+
+  thing = XCONS(coord)->car;
+  
+  CHECK_NUMBER(thing, 0);
+  xg = XFASTINT(thing);
+
+  thing = XCONS(coord)->cdr;
+  CHECK_NUMBER(thing, 0);
+  yg = XFASTINT(thing);
+
+  record_unwind_protect(save_excursion_restore, save_excursion_save());
+
+  Fset_buffer(w->buffer);
+
+  posval = compute_motion(marker_position(w->start), 0, 0,
+			  NumCharacters+1, yg, xg,
+			  XFASTINT(w->width) - 1 -
+			  ((XFASTINT(w->width) + XFASTINT(w->left)) !=
+			   XFASTINT(XWINDOW(minibuf_window)->width)),
+			  XINT(w->hscroll), 0);
+
+  XSET(retval, Lisp_Int, posval->bufpos);
+
+  unbind_to(count);
+  
+  return(retval);
+}
+
+
+To use the support with X windows, I do the following (in my term-setup-hook):
+
+	 (if (eq window-system 'x)
+	     (let ((i 0) (max-key (length mouse-map)))
+	       ;;
+	       ;; Load in the good stuff first.
+	       ;;
+	       (require 'genmouse)
+	       ;;
+	       ;; Map out all entries in the mouse-map so the thing doesn't
+	       ;; complain about an unbound mouse event.
+	       ;;
+	       (while (< i max-key)
+		 (aset mouse-map i 'ignore)
+		 (setq i (1+ i)))
+	       ;;
+	       ;; Pass the things to the generic mouse handler.
+	       ;; Can't invert stuff yet, nor warp the mouse and no
+	       ;; need to acknowledge the receipt either.
+	       ;;
+	       (setq gm-invert-hook '(lambda (sel win)))
+	       (setq gm-store-cut-buffer-hook 'x-store-cut-buffer)
+	       (setq gm-get-cut-buffer-hook 'x-get-cut-buffer)
+	       (setq x-process-mouse-hook
+		     '(lambda (coordl button)
+			(gm-mouse-input (cons (car coordl) (car (cdr coordl)))
+					button)))))
+
+	 (if (featurep 'genmouse)
+	     (progn
+	       (define-key gm-mouse-map gm-m-s-right-up 'gm-thing-menu)
+	       (define-key gm-mouse-map gm-m-s-middle-up 'gm-buffer-menu)
+	       (define-key gm-mouse-map gm-m-s-left-up 'gm-find-file)
+	       (define-key gm-mouse-map gm-c-m-s-right-up 'gm-help-menu)
+	       (define-key gm-mouse-map gm-c-m-s-middle-up 'gm-man-menu)))))
+
+
+Here is the code itself. May it prove useful. I don't suppose there
+are any plans in the works to allow the highlighting of partial lines?
+It would make the maintenance of a selection much easier.... :) Just
+thought I'd ask.
+
+;;;
+;;; genmouse.el --
+;;; 	General mouse support. Used both for com43 and x
+;;;
+;;; $Id: genmouse.el,v 1.2 89/03/01 14:56:09 adam Exp $
+;;;
+;;; Buttons may be bound to functions via gm-mouse-map. The gm-*
+;;; constants define the button/modifiers available. The three modifiers
+;;; ctrl, meta and shift are defined. Both up and down transitions may
+;;; be bound.
+;;;
+;;; Menu-buffers may be created and used with gm-menu-create and
+;;; gm-menu-activate, respectively. Refer to those functions for more
+;;; information.
+;;; 
+;;; To perform the bindings, you should define a term-setup-hook
+;;; (setq term-setup-hook '(lambda ...)) to actual enter the bindings.
+;;; This will ensure that the keymaps and constants are defined.
+;;; 
+
+(provide 'genmouse)
+
+;;;
+;;; Make life easier -- define a 'space' constant
+;;; 
+(defconst space ?\ )
+
+;;;
+;;; Hooks for users of these functions to implement the terminal-specific
+;;; aspects.
+;;; 
+(defvar gm-invert-hook nil
+  "Function called to invert a part of the window. First argument SEL is the
+dotted pair (START . END) being the starting and ending character positions 
+of the region to invert. Second argument WIN is the window in which to
+do the inversion.")
+
+(defvar gm-store-cut-buffer-hook nil
+  "Function called when the selection is to be stored in the cut buffer.
+Single argument STR is the text to be stored.")
+
+(defvar gm-get-cut-buffer-hook nil
+  "Function called to retrieve the contents of the cut buffer. Should return
+the string stored in the buffer.")
+
+(defvar gm-mouse-hook nil
+  "Function to call when a button is pressed. Called with BUTTON, COORD and
+WINDOW as its arguments. If this is non-nil, normal button dispatching isn't
+done.")
+
+(defvar gm-mouse-ack-hook nil
+  "Hook to call to acknowledge a mouse press. May be nil")
+
+(defvar gm-warp-mouse-hook nil
+  "Function to warp the mouse to a position. Two args X and Y are the absolute
+location to which the mouse should move.")
+
+;;;
+;;; Unmodified down
+;;;
+(defconst gm-right (char-to-string 0))
+(defconst gm-middle (char-to-string 1))
+(defconst gm-left (char-to-string 2))
+
+;;;
+;;; Unmodified up
+;;;
+(defconst gm-right-up (char-to-string 4))
+(defconst gm-middle-up (char-to-string 5))
+(defconst gm-left-up (char-to-string 6))
+
+;;;
+;;; Shift down
+;;;
+(defconst gm-s-right (char-to-string 16))
+(defconst gm-s-middle (char-to-string 17))
+(defconst gm-s-left (char-to-string 18))
+
+;;;
+;;; Shift up
+;;;
+(defconst gm-s-right-up (char-to-string 20))
+(defconst gm-s-middle-up (char-to-string 21))
+(defconst gm-s-left-up (char-to-string 22))
+
+;;;
+;;; Meta (ALT) down
+;;;
+(defconst gm-m-right (char-to-string 32))
+(defconst gm-m-middle (char-to-string 33))
+(defconst gm-m-left (char-to-string 34))
+
+;;;
+;;; Meta up
+;;;
+(defconst gm-m-right-up (char-to-string 36))
+(defconst gm-m-middle-up (char-to-string 37))
+(defconst gm-m-left-up (char-to-string 38))
+
+;;;
+;;; Ctrl down
+;;;
+(defconst gm-c-right (char-to-string 64))
+(defconst gm-c-middle (char-to-string 65))
+(defconst gm-c-left (char-to-string 66))
+
+;;;
+;;; Ctrl up
+;;;
+(defconst gm-c-right-up (char-to-string 68))
+(defconst gm-c-middle-up (char-to-string 69))
+(defconst gm-c-left-up (char-to-string 70))
+
+;;;
+;;; Meta-Shift down
+;;;
+(defconst gm-m-s-right (char-to-string 48))
+(defconst gm-m-s-middle (char-to-string 49))
+(defconst gm-m-s-left (char-to-string 50))
+
+;;;
+;;; Meta-Shift up
+;;;
+(defconst gm-m-s-right-up (char-to-string 52))
+(defconst gm-m-s-middle-up (char-to-string 53))
+(defconst gm-m-s-left-up (char-to-string 54))
+
+;;;
+;;; Ctrl-Shift down
+;;;
+(defconst gm-c-s-right (char-to-string 80))
+(defconst gm-c-s-middle (char-to-string 81))
+(defconst gm-c-s-left (char-to-string 82))
+
+;;;
+;;; Ctrl-Shift up
+;;;
+(defconst gm-c-s-right-up (char-to-string 84))
+(defconst gm-c-s-middle-up (char-to-string 85))
+(defconst gm-c-s-left-up (char-to-string 86))
+
+;;;
+;;; Ctrl-Meta down
+;;;
+(defconst gm-c-m-right (char-to-string 96))
+(defconst gm-c-m-middle (char-to-string 97))
+(defconst gm-c-m-left (char-to-string 98))
+
+;;;
+;;; Ctrl-Meta up
+;;;
+(defconst gm-c-m-right-up (char-to-string 100))
+(defconst gm-c-m-middle-up (char-to-string 101))
+(defconst gm-c-m-left-up (char-to-string 102))
+
+;;;
+;;; Ctrl-Meta-Shift down
+;;;
+(defconst gm-c-m-s-right (char-to-string 112))
+(defconst gm-c-m-s-middle (char-to-string 113))
+(defconst gm-c-m-s-left (char-to-string 114))
+
+;;;
+;;; Ctrl-Meta-Shift up
+;;;
+(defconst gm-c-m-s-right-up (char-to-string 116))
+(defconst gm-c-m-s-middle-up (char-to-string 117))
+(defconst gm-c-m-s-left-up (char-to-string 118))
+
+;;;
+;;; maxint is the greatest positive integer so we can avoid overflow.
+;;; Integers in emacs are 24-bits wide (the other 8-bits are tag info)
+;;; 
+(defconst maxint 8388607 "Greatest positive integer")
+
+;;;
+;;; Map in which mouse bindings appear. Mouse buttons may only be bound to
+;;; functions in this keymap. Use
+;;;
+;;;     (define-key gm-mouse-map gm-* 'function)
+;;;
+;;; to bind a button. If function is a dotted pair, the car will be used when
+;;; the button was pressed in a real window and the cdr when the button was
+;;; pressed in the mode line of a window.
+;;;
+(defvar gm-mouse-map (make-sparse-keymap))
+(defvar gm-mouse-button nil)
+;;;
+;;; WINDOW UTILITY FUNCTIONS
+;;;
+;;;
+;;; coordinates-in-window-p
+;;;    See if (X . Y) is in the given window and translate if so.
+;;; 
+(defun coordinates-in-window-p (coord w)
+  "Return the relative coordinate (X . Y) of screen position COORD inside the
+given WINDOW, or nil if the position isn't in the given window. COORD is a
+dotted pair (XSCREEN . YSCREEN) containing the absolute screen coordinates."
+  (let ((edges (window-edges w))
+	(x (car coord))
+	(y (cdr coord)))
+    (if (null (or (< x (car edges))
+		  (< y (nth 1 edges))
+		  (<= (nth 2 edges) x)
+		  (<= (nth 3 edges) y)))
+	(cons (- x (car edges))
+	      (- y (car (cdr edges)))))))
+
+;;;
+;;; State variables
+;;; 
+(defvar gm-this-click '(-1 . -1)
+  "Absolute coordinate of current mouse click as a dotted pair (X . Y)")
+(defvar gm-last-click '(-1 . -1)
+  "Absolute coordinate of previous mouse click as a dotted pair (X . Y)")
+(defvar gm-click-level 0
+  "Number of clicks in the same place")
+(defvar gm-mouse-button -1
+  "Current mouse button, as a character")
+(defvar gm-last-press -1
+  "Previous button press, as a character")
+(defvar gm-this-press -1
+  "This button press, as a character. If not equal to gm-mouse-button, this
+isn't a button press")
+
+;;;
+;;; gm-find-window
+;;;    Given a pair of absolute screen coordinates, determines which window, if
+;;;    any, the coordinates are in. Returns a list ((XPOS YPOS) WINDOW) where
+;;;    XPOS and YPOS are relative to WINDOW.
+;;;
+(defun gm-find-window (x y)
+  "Find the window that contains the screen coordinates X and Y. Returns a
+list ((X . Y) WINDOW) where X and Y are relative to the origin of
+WINDOW"
+  (let ((start-w (selected-window))
+	(done nil)
+	(w (selected-window))
+	(rel-coordinate nil)
+	(coord (cons x y)))
+    ;
+    ; Loop through all windows looking for the one it matches. Since list
+    ; is circular, set done t when we get back to the currently-selected
+    ; window.
+    ;
+    (while (and (not done)
+		(null (setq rel-coordinate
+			    (coordinates-in-window-p coord w))))
+      (setq w (next-window w))
+      (if (eq w start-w)
+	  (setq done t)))
+    (if rel-coordinate
+	(list rel-coordinate w))))
+
+
+(defun gm-mouse-input (coord button)
+  "Takes two arguments COORD and BUTTON. COORD is the absolute
+position of the mouse event (X . Y). BUTTON is the character version
+of one of the gm-* constants encoding the type of mouse event. The
+function to call is looked up in gm-mouse-map. It is called with a
+dotted pair (XPOS . YPOS) as its first argument, and the window in
+which the button was pressed as its second. The button pressed is
+stored in gm-mouse-button."
+  (let* ((func (lookup-key gm-mouse-map (char-to-string button)))
+	 (coordwin (gm-find-window (car coord) (cdr coord)))
+	 (w (car (cdr coordwin))))
+    (if (and gm-mouse-hook
+	     (funcall gm-mouse-hook button (car coordwin) w))
+	nil
+      (if (numberp func)
+	  (progn
+	    (message "Bogus mouse click %x" button)
+	    (sleep-for 2))
+	(if func
+	    (progn
+	      (if (listp func)
+		  ;;
+		  ;; If binding is a dotted-pair, figure out if we're really in
+		  ;; the window or in the mode line. Use the car of the pair if
+		  ;; the former and the cdr if the latter.
+		  ;;
+		  (setq func (if (or (null coordwin)
+				     (/= (cdr (car coordwin))
+					 (1- (window-height w))))
+				 (car func)
+			       (cdr func))))
+	      (if func
+		  (progn
+		    (if (zerop (logand button 4))
+			;;
+			;; It's actually a button press, so record the previous
+			;; button press and stuff in this one.
+			;;
+			(progn
+			  (setq gm-last-press gm-this-press)
+			  (setq gm-this-press button)
+			  (setq gm-last-click gm-this-click)
+			  (setq gm-this-click coord)))
+		    (setq gm-mouse-button button)
+		    (funcall func (car coordwin) w)
+		    (run-hooks 'gm-mouse-ack-hook)))))))))
+
+
+
+;;;
+;;; Default bindings
+;;;
+(define-key gm-mouse-map gm-c-s-right    'gm-keep-one-window)
+(define-key gm-mouse-map gm-s-left       'gm-set-mark)
+(define-key gm-mouse-map gm-s-middle-up  'gm-cut-text)
+(define-key gm-mouse-map gm-s-middle     'gm-selection-set)
+(define-key gm-mouse-map gm-s-right      'gm-paste-text)
+(define-key gm-mouse-map gm-c-left-up    'gm-narrow)
+(define-key gm-mouse-map gm-c-s-left     'gm-widen)
+(define-key gm-mouse-map gm-c-left       'gm-selection-set)
+(define-key gm-mouse-map gm-c-middle-up  'gm-cut-and-wipe-text)
+(define-key gm-mouse-map gm-c-middle     'gm-selection-set)
+(define-key gm-mouse-map gm-c-right      'gm-select-and-split)
+(define-key gm-mouse-map gm-left         '(gm-set-point . gm-scroll-up))
+(define-key gm-mouse-map gm-middle       '(nil . gm-scroll-absolute))
+(define-key gm-mouse-map gm-right        '(gm-select . gm-scroll-down))
+
+;;;
+;;; gm-scroll-up
+;;;    Shift point up by an amount relative to the mouse's distance from the
+;;;    right edge of the window.
+;;;
+(defun gm-scroll-up (coord win)
+  (let ((w (selected-window)))
+    (select-window win)
+    (unwind-protect
+	(scroll-down (/ (* (window-height win) (car coord))
+			(window-width win)))
+      (select-window w))))
+
+;;;
+;;; gm-scroll-down
+;;;    Shift point down by an amount relative to the mouse's distance from the
+;;;    left edge of the window
+;;;
+(defun gm-scroll-down (coord win)
+  (let ((w (selected-window)))
+    (select-window win)
+    (unwind-protect
+	(scroll-up (/ (* (window-height win) (car coord))
+		     (window-width win)))
+      (select-window w))))
+
+;;;
+;;; gm-scroll-absolute
+;;;    Shift point to a position in the buffer relative to the mouse's position
+;;;    in the mode line.
+;;;
+(defun gm-scroll-absolute (coord win)
+  (let ((w (selected-window)))
+    (select-window win)
+    (if (> (point-max) (/ maxint (1- (window-width win))))
+	;;
+	;; The buffer is big enough so mutliplying the size of the buffer by
+	;; the window's width will overflow the maximum integer this beast
+	;; can handle, so perform the division first -- it's less precise,
+	;; but allows us to reach the whole thing.
+	;; 
+	(goto-char (+ (point-min)
+		      (* (/ (- (point-max) (point-min))
+			    (1- (window-width win)))
+			 (car coord))))
+      (goto-char (+ (point-min)
+		    (/ (* (- (point-max) (point-min))
+			  (car coord))
+		       (1- (window-width win))))))
+    (select-window w)))
+
+  
+;;;
+;;; gm-select
+;;;    Select the window in which the mouse clicked
+;;;
+(defun gm-select (coord &optional win)
+  "Select Emacs window the mouse is on."
+  (if win
+      (select-window win)))
+
+;;;
+;;; gm-keep-one-window
+;;;    Delete all windows but the one the mouse is in. Uses gm-select
+;;;    to find the correct window.
+;;;
+(defun gm-keep-one-window (coord &optional win)
+  "Select Emacs window mouse is on, then kill all other Emacs windows."
+  (if win
+      (progn
+	(select-window win)
+	(delete-other-windows))))
+
+;;;
+;;; gm-select-and-split
+;;;    Split the window the mouse is in horizontally and select it
+;;;
+(defun gm-select-and-split (coord &optional win)
+  "Select Emacs window mouse is on, then split it vertically in half."
+  (if win
+      (progn
+	(select-window win)
+	(split-window-vertically nil))))
+
+;;;
+;;; gm-set-point
+;;;    Select the window the mouse is in and set the point at the mouse's
+;;;    position.
+;;;
+(defun gm-set-point (coord &optional win)
+  "Select Emacs window mouse is on, and move point to mouse position."
+  (if win
+      (progn
+	(select-window win)
+	(goto-char (coord-to-pos coord win))
+	(if (and (= gm-mouse-button gm-this-press)
+		 (= gm-this-press gm-last-press)
+		 (= (car gm-this-click) (car gm-last-click))
+		 (= (cdr gm-this-click) (cdr gm-last-click)))
+	    (cond
+	     ((= gm-click-level 0)
+	      (setq gm-click-level 1)
+	      (if (looking-at "\\sw")
+		  ;;
+		  ;; Select word mouse is on.
+		  ;; 
+		  (let (ws we)
+		    (save-excursion
+		      (forward-word 1)
+		      (setq we (point))
+		      (backward-word 1)
+		      (setq ws (point))
+		      (gm-set-selection (cons ws we) win))
+		    (funcall gm-store-cut-buffer-hook
+			     (buffer-substring ws we)))))
+	     ((= gm-click-level 1)
+	      (setq gm-click-level 2)
+	      (let (ls le)
+		;;
+		;; Select line mouse is on
+		;; 
+		(save-excursion
+		  (end-of-line)
+		  (setq le (point))
+		  (if (eq (following-char) ?\n)
+		      (setq le (1+ le)))
+		  (beginning-of-line)
+		  (setq ls (point))
+		  (gm-set-selection (cons ls le) win))
+		(funcall gm-store-cut-buffer-hook (buffer-substring ls le))))
+	     ((= gm-click-level 2)
+	      ;;
+	      ;; Go back to just character mouse is on w/nothing selected
+	      ;;
+	      (gm-del-selection)
+	      (setq gm-click-level 0)
+	      (funcall gm-store-cut-buffer-hook "")))
+	  ;;
+	  ;; Not in same place -- nuke the selection and go back to
+	  ;; ground state.
+	  ;; 
+	  (if gm-selection
+	      (gm-del-selection))
+	  (setq gm-click-level 0))
+	(point))))
+
+(global-set-key "\e\C-y" 'gm-paste-selection)
+(defun gm-paste-selection ()
+  (interactive)
+  (insert (funcall gm-get-cut-buffer-hook)))
+
+;;;
+;;; gm-set-mark
+;;;    Select the window the mouse is in and set the mark. at the mouse's
+;;;    position. Wait a second before going back to point so the user can
+;;;    see where the mark now is.
+;;;
+(defun gm-set-mark (coord &optional win)
+  "Select Emacs window mouse is on, and set mark at mouse position.
+Display cursor at that position for a second."
+  (if win
+      (progn
+	(select-window win)
+	(push-mark (coord-to-pos coord win)))))
+
+;;;
+;;; gm-cut-text
+;;;    Copy all the text between point and the mouse to the kill ring and the
+;;;    cut buffer.
+;;;    Also calls gm-selection-end to turn off the highlighting.
+;;;
+(defun gm-cut-text (coord &optional win kill)
+  "Copy text between point and mouse position into window system cut buffer.
+Save in Emacs kill ring also."
+  (gm-selection-end coord win)
+  (if (eq win (selected-window))
+      (save-excursion
+	(let ((opoint (point))
+	      beg end)
+	  (goto-char (coord-to-pos coord win))
+	  (setq beg (min opoint (point))
+		end (max opoint (point)))
+	  (funcall gm-store-cut-buffer-hook (buffer-substring beg end))
+	  (copy-region-as-kill beg end)
+	  (if kill
+	      (delete-region beg end))))
+    (message "Mouse not in selected window")))
+
+;;;
+;;; gm-paste-text
+;;;    Insert the text in the cut buffer into the window at the mouse position
+;;;
+(defun gm-paste-text (coord &optional win)
+  "Move point to mouse position and insert window system cut buffer contents."
+  (if win
+      (progn
+	(select-window win)
+	(goto-char (coord-to-pos coord win))
+	(insert (funcall gm-get-cut-buffer-hook)))))
+
+;;;
+;;; gm-cut-and-wipe-text
+;;;    Copy all text between point and the mouse to the cut buffer and remove
+;;;    it from the buffer as well.
+;;;
+(defun gm-cut-and-wipe-text (coord &optional win)
+  "Kill text between point and mouse; also copy to window system cut buffer."
+  (gm-cut-text coord win t))
+
+(defun gm-ignore (coord &optional win)
+  "Don't do anything.")
+
+(defvar gm-selection nil
+  "A structure ((X . Y) . (WIN . BUFFER)) containing the starting and ending
+positions of the current selection along with the window and buffer in which
+the selection is.")
+
+(defun gm-set-selection (sel win)
+  "Change the current selection to be the given one. SEL is a dotted
+pair (START . END) and WIN is the window within which the selection is to
+be. Calls value of gm-invert-hook to perform the necessary screen
+manipulations."
+  (if (null gm-selection)
+      ;;
+      ;; Selection is new -- display the whole thing inverted
+      ;; 
+      (funcall gm-invert-hook sel win)
+    (let ((next-start (car sel))
+	  (next-end (cdr sel))
+	  (cur-start (car (car gm-selection)))
+	  (cur-end (cdr (car gm-selection))))
+      (if (or (not (equal win (car (cdr gm-selection))))
+	      (> next-start cur-end)
+	      (> cur-start next-end))
+	  (progn
+	    (funcall gm-invert-hook (car gm-selection)
+		     (car (cdr gm-selection)))
+	    (funcall gm-invert-hook sel win))
+	(if (< next-start cur-start)
+	    ;;
+	    ;; New extends to the left of the old -- invert the new stuff
+	    ;; 
+	    (funcall gm-invert-hook (cons next-start cur-start) win)
+	  (if (> next-start cur-start)
+	      ;;
+	      ;; New shorter than the old -- redisplay old stuff normally
+	      ;; 
+	      (funcall gm-invert-hook (cons cur-start next-start) win)))
+	(if (< next-end cur-end)
+	    ;;
+	    ;; New shorter than old on the right -- display old stuff normally
+	    ;; 
+	    (funcall gm-invert-hook (cons next-end cur-end) win)
+	  (if (> next-end cur-end)
+	      ;;
+	      ;; New longer than old on right -- display new stuff in inverse
+	      ;; 
+	      (funcall gm-invert-hook (cons cur-end next-end) win))))))
+  (setq gm-selection (cons sel (cons win (window-buffer win)))))
+
+(defun gm-del-selection ()
+  "Delete the current selection, redisplaying it in normal video"
+  (if gm-selection
+      ;;
+      ;; Make sure the selection is still visible on the screen
+      ;; 
+      (if (equal (window-buffer (car (cdr gm-selection))) 
+		 (cdr (cdr gm-selection)))
+	  (let* ((w (car (cdr gm-selection)))
+		 (curw (selected-window))
+		 (firstw curw))
+	    (while (and curw
+			(not (equal curw firstw)))
+	      (if (equal w curw)
+		  (setq curw nil)))
+	    (if (or (null curw) (equal w curw))
+		(save-window-excursion
+		  (select-window w)
+		  (save-excursion
+		    (funcall gm-invert-hook (car gm-selection) w)))))))
+  (setq gm-selection nil))
+
+;;;
+;;; gm-selection-set
+;;;     Set the current selection based on point and the mouse
+;;;     
+(defun gm-selection-set (coord win)
+  "Set the current selection to the text between point and the given position"
+  (if (not (eq win (selected-window)))
+      (error "Mouse not in selected window")
+    (let (start end this-selection)
+      (save-excursion
+	(set-buffer (window-buffer win))
+	(setq start (point))
+	(setq end (coord-to-pos coord win))
+	(if (< end start)
+	    (setq this-selection (cons end start))
+	  (setq this-selection (cons start end)))
+	(gm-set-selection this-selection win)))))
+
+;;;
+;;; gm-selection-end
+;;;     Delete the current selection.
+;;;
+(defun gm-selection-end (coord win)
+  "Delete the current selection -- it's already been placed in the cut buffer.
+This is typically used on the upstroke of the button that invokes
+gm-selection-set."
+  (save-excursion
+    (gm-del-selection)))
+
+;;;
+;;; gm-narrow
+;;;     Narrow the buffer selected by the mouse to the region between point and
+;;;     the mouse.
+;;;
+(defun gm-narrow (coord &optional win)
+  "Narrow the buffer in which the mouse is located to the region between point
+and the mouse."
+  (gm-selection-end coord win)
+  (if win
+      (let (mp)
+	(select-window win)
+	(setq mp (coord-to-pos coord win))
+	(if (< mp (point))
+	    (narrow-to-region mp (point))
+	  (narrow-to-region (point) mp)))))
+
+;;;
+;;; gm-widen
+;;;     Widen the buffer selected by the mouse
+;;;     
+(defun gm-widen (coord &optional win)
+  "Widen the buffer selected by the mouse."
+  (if win
+      (progn
+	(select-window win)
+	(widen))))
+
+
+;;;
+;;; gm-describe-mouse
+;;; 	Print out the current bindings for the mouse
+;;; 
+(defun gm-mouse-predicate (e1 e2)
+  "Compare two elements of a sparse keymap to see if the first is less than
+the second. Returns t if so, nil if not. If E1 is an atom ('keymap), t is
+returned (the atom must be at the front). If E2 is an atom, nil is returned
+\(for the same reason)"
+  (if (atom e1)
+      t
+    (if (atom e2)
+	nil
+      (< (car e1) (car e2)))))
+
+(defun gm-describe-mouse ()
+  "Function to print out all bound mouse buttons"
+  (interactive)
+  (sort gm-mouse-map 'gm-mouse-predicate)
+  (if (eq standard-output (get-buffer "*Help*"))
+      ;;
+      ;; Called from the user of this library -- just print stuff.
+      ;; 
+      (progn
+	(princ "MOUSE BINDINGS:\n")
+	(mapcar 'gm-describe-button (cdr gm-mouse-map))
+	(princ "\n"))
+    (with-output-to-temp-buffer "*Help*"
+      (princ "MOUSE BINDINGS:\n")
+      (mapcar 'gm-describe-button (cdr gm-mouse-map))
+      (princ "\n")
+      (print-help-return-message nil))))
+
+(defvar gm-button-names
+  '("right" "middle" "left" "n/a" "right up" "middle up" "left up" "n/a up")
+  "List of button number -> name/direction mappings for gm-describe-mouse")
+
+(defvar gm-button-mods
+  '(""
+    "shift"
+    "meta"
+    "shift-meta"
+    "ctrl"
+    "ctrl-shift"
+    "ctrl-meta"
+    "ctrl-meta-shift")
+  "List of modifier-code -> name mappings for gm-describe-mouse")
+
+(defconst gm-button-name-length 26)
+(defvar gm-pad-string (make-string gm-button-name-length space))
+
+(defun gm-describe-button (map)
+  "Describe an individual mouse binding given in MAP as (KEY . BINDING)"
+  (princ "  ")
+  (let* ((button (car map))
+	 (func (cdr map))
+	 (bname (nth (logand button 15) gm-button-names))
+	 (bmods (nth (logand (lsh button -4) 7) gm-button-mods))
+	 (name (format "%s%s%s" bmods (if (string= bmods "") "" " ") bname))
+	 (button-name (concat
+		       name
+		       (make-string
+			(- gm-button-name-length (length name))
+			space))))
+    (if (listp func)
+	(if (and (car func) (cdr func))
+	    (princ (format "%s%s (Buffer)\n  %s%s (Mode-line)\n"
+			   button-name
+			   (car func)
+			   gm-pad-string
+			   (cdr func)))
+	  (if (car func)
+	      (princ (format "%s%s (Buffer)\n  %sgm-ignore (Mode-line)\n"
+			     button-name
+			     (car func)
+			     gm-pad-string))
+	    (princ (format "%sgm-ignore (Buffer)\n  %s%s (Mode-line)\n"
+			   button-name
+			   gm-pad-string
+			   (cdr func)))))
+      (princ (format "%s%s\n" button-name func)))))
+
+;;;
+;;; Menus. Modified from x-menu.el, with gratitude.
+;;; 
+;;; State variables
+;;; 
+(defvar gm-shrink-to-fit nil
+  "*If non-nil, the menu window will shrink to fit the menu it is displaying")
+
+(defvar gm-menu-item-spacing 1
+  "*Minimum horizontal spacing between objects in a permanent com43 menu.")
+
+(defvar gm-current-menu nil
+  "The menu that is currently active, or nil if none.")
+
+(defvar gm-menu-window-config nil
+  "The configuration of windows when the current menu was activated")
+
+(defvar gm-menu-selection nil
+  "The item selected in the most-recently activated menu")
+
+(defvar gm-warp-to-first t
+  "*Non-nil means to warp the mouse to the first item of the first pane when
+the menu is first activated, if possible.")
+
+;;;
+;;; gm-menu-mode
+;;; 	Major mode for all com43 menus. Nothing particular. The buffer is
+;;;	made read-only and a local keymap is used that keeps the user
+;;;	from doing anything but selecting with the mouse.
+;;;
+(defun gm-menu-mode (bindings)
+  "Major mode for creating permanent menus for use with com43.
+These menus are implemented entirely in Lisp."
+  (make-local-variable 'gm-menu-max-width)
+  (make-local-variable 'gm-menu-items-per-line)
+  (make-local-variable 'gm-menu-item-width)
+  (make-local-variable 'gm-menu-items-alist)
+  (make-local-variable 'gm-current-pane)
+  (make-local-variable 'gm-title-end)
+  (setq gm-menu-items-alist bindings)
+  (make-local-variable 'gm-mouse-hook)
+  (setq gm-mouse-hook 'gm-menu-pick-entry)
+  (setq buffer-read-only t)
+  (setq truncate-lines t)
+  (setq mode-name "MENU")
+  (setq major-mode 'gm-menu-mode)
+  (setq mode-line-buffer-identification '("" "%b:" gm-current-pane)))
+
+;;;
+;;; gm-menu-create
+;;; 	Create a menu that can later be activated using gm-menu-activate.
+;;; 
+(defun gm-menu-create (bindings)
+  "Create a permanent menu.  Returns an item that should be used as a
+menu object whenever referring to the menu. The single argument BINDINGS has
+the form (menu-name (pane1-name (entry . value) (entry . value))). menu-name,
+pane1-name, and entry are all strings. value is a function that is called
+from gm-menu-activate when the mouse is clicked on the entry. There may be
+multiple panes in a menu. Other panes are reached by clicking on the
+appropriate title in the menu."
+  (let ((old (current-buffer))
+	(buf (get-buffer-create (car bindings))))
+    (set-buffer buf)
+    (gm-menu-mode bindings)
+    (set-buffer old)
+    buf))
+
+;;;
+;;; gm-menu-activate
+;;; 	Activate an already-defined menu (MENU is the token returned
+;;;	by gm-menu-create). 
+;;;
+(defun gm-menu-activate (menu)
+  "Computes all necessary parameters for MENU and displays the menu in a window
+on the screen. If the menu has more than one pane, a title bar is placed at the
+top giving the other panes to which the user may go. When an item is selected,
+the bound function is called with no arguments after the menu has been taken
+down. The user is not permitted to leave the pane until s/he has either
+selected an entry or clicked outside any entry, thus cancelling the menu."
+  ;;
+  ;; Save the current window configuration for restoration once the menu
+  ;; is deactivated
+  ;; 
+  (setq gm-menu-window-config (current-window-configuration))
+
+  ;;
+  ;; We will also accept an sexp of bindings, but need it as a gm-menu
+  ;; buffer for later work, so if we weren't given a buffer, assume it's
+  ;; a binding list and create the menu.
+  ;; 
+  (if (not (bufferp menu))
+      (setq menu (gm-menu-create menu)))
+  
+  ;;
+  ;; If there's only one window on the screen, we want to split the thing to
+  ;; create the menu (continuity, you know), but if there's more than one,
+  ;; just use the current buffer. Note that the caller must call
+  ;; gm-select-window to place the menu in the window with the mouse.
+  ;;
+  (if (eq (next-window (selected-window)) (selected-window))
+      (let ((pop-up-windows t))
+	(pop-to-buffer menu))
+    (switch-to-buffer menu))
+  (bury-buffer menu)
+  (setq gm-current-menu (selected-window))
+  (let (buffer-read-only)
+    (gm-menu-format-pane gm-menu-items-alist
+		       (car (cdr gm-menu-items-alist))))
+  (set-buffer-modified-p nil)
+  ;;
+  ;; Move both point and the mouse to the first real item in the menu
+  ;; 
+  (goto-char gm-title-end)
+  (skip-chars-forward "- \n\t|")
+  (if (and gm-warp-to-first gm-warp-mouse-hook)
+      (let* ((coord (pos-to-coord (point) (selected-window)))
+	     (edges (window-edges))
+	     (x (+ (car coord) (car edges)))
+	     (y (+ (cdr coord) (car (cdr edges)))))
+	(funcall gm-warp-mouse-hook x y))))
+
+  
+;;;
+;;; gm-menu-deactivate
+;;; 
+(defun gm-menu-deactivate ()
+  "Deactivate the current menu, restoring the window configuration to its
+previous state"
+  (set-window-configuration gm-menu-window-config)
+  (setq gm-menu-window-config nil)
+  (setq gm-current-menu nil))
+
+;;;
+;;; gm-menu-format-pane
+;;; 	Format a menu into the current buffer. BINDINGS is the full list of
+;;;	bindings for the menu, while PANE is the pane that should be displayed.
+;;;
+(defun gm-menu-format-pane (bindings pane)
+  "Format a menu pane into the current buffer. First arg BINDINGS is the full
+list of bindings for the menu (see gm-menu-create), while PANE is the pane
+of that menu that should be displayed."
+  ;;
+  ;; Initialize
+  ;; 
+  (setq gm-menu-max-width (- (window-width) 2))
+  (erase-buffer)
+
+  (setq gm-current-pane (car pane))
+  ;;
+  ;; If the menu has multiple panes, create a title bar with all the panes
+  ;; centered in the window. The title bar is underlined with a row of ='s.
+  ;; 
+  (if (> (length bindings) 2)
+      (gm-menu-format-items bindings t))
+  (setq gm-title-end (point))
+  (gm-menu-format-items pane nil)
+  (goto-char gm-title-end)
+  (skip-chars-forward "- \n\t|")
+  (if gm-shrink-to-fit
+      (shrink-window (max 0
+			  (- (window-height)
+			     (1+ (count-lines (point-min) (point-max))))))))
+
+;;;
+;;; gm-menu-format-items
+;;; 	Format a list of the form: (title (entry ...) (entry ... )) into a
+;;;	series of boxes in the current buffer. Each box is the same width
+;;;	and the whole thing centered.
+;;;
+(defun gm-menu-format-items (item-list title)
+  "Format a list of the form (title (entry ...) (entry ...) ...) into a series
+of boxes in the current buffer. The first arg ITEM-LIST is of this form. The
+second arg TITLE tells how to end the grid. If it is non-nil, a full row of
+='s is placed at the bottom. Otherwise the grid is ended with a line of -'s the
+width of the final row of boxes."
+  (let ((items (cdr item-list))
+	(gm-menu-item-width 0)
+	prefix-string)
+    ;;
+    ;; Figure out the width of the widest entry in the pane. Result is left in
+    ;; gm-menu-item-width.
+    ;; 
+    (while items
+      (setq gm-menu-item-width (max gm-menu-item-width
+				       (length (car (car items)))))
+      (setq items (cdr items)))
+    ;;
+    ;; Figure out the number of items per line, allowing space for the
+    ;; vertical bars separating the items.
+    ;; 
+    (setq gm-menu-items-per-line
+	  (max 1 (/ gm-menu-max-width (+ 2 gm-menu-item-width))))
+    ;;
+    ;; We want the menu items to be centered, even if there's only one of
+    ;; them, so first figure out how wide the top row will be (if there
+    ;; aren't enough items in the list to make up a whole row, we'll use the
+    ;; number of items in the list, otherwise we use the number of items in
+    ;; a row) and put that in top-length.
+    ;;
+    ;; Once we know the maximum width of the menu, we can figure out how many
+    ;; spaces to put at the front to center the thing. This we place in
+    ;; prefix-string.
+    ;;
+    ;; Finally, we insert prefix-string, followed by top-length hyphens and a
+    ;; newline to give us the top border of the menu section.
+    ;; 
+    (let ((top-length (1+ (* (min
+			      (1- (length item-list))
+			      gm-menu-items-per-line)
+			     (1+ gm-menu-item-width)))))
+      (setq prefix-string (make-string (1+
+					(/
+					 (-
+					  gm-menu-max-width
+					  top-length)
+					 2))
+				       space ))
+      (if (= (point) (point-min))
+	  (progn
+	    (insert prefix-string)
+	    (insert-char ?- top-length)
+	    (newline))))
+					       
+    ;;
+    ;; Insert the items into the buffer, centered in their fields. Each field
+    ;; is bounded by |'s. The menu is filled in from upper-left to lower-right.
+    ;; Each row of the menu is separated by a row of -'s.
+    ;; 
+    (setq items (cdr item-list))
+    (while items
+      ;;
+      ;; Place initial vertical bar (left margin)
+      ;; 
+      (insert prefix-string)
+      (insert "|")
+      (let ((nitems 0)
+	    ilen)
+	;;
+	;; Loop through all items in the pane, first inserting left-hand space
+	;; to center the item, then inserting the item followed by enough
+	;; space to reach the menu-item-width for the menu.
+	;; 
+	(while (and items (< nitems gm-menu-items-per-line))
+	  (setq ilen (length (car (car items))))
+	  (insert-char space (/ (- gm-menu-item-width ilen) 2))
+	  (insert (car (car items)))
+	  (insert-char space (/ (1+ (- gm-menu-item-width ilen)) 2))
+	  (insert "|")
+	  (setq items (cdr items))
+	  (setq nitems (1+ nitems)))
+	;;
+	;; Install enough -'s on the next line to create a bottom border for
+	;; the row.
+	;; 
+	(newline)
+	(if (and title (null items))
+	    (progn
+	      (insert " ")
+	      (insert-char ?= gm-menu-max-width))
+	  (insert prefix-string)
+	  (insert-char ?- (1+ (* (+ 1 gm-menu-item-width) nitems))))
+	(newline)))))
+;;;
+;;; gm-menu-pick-entry
+;;; 	Process a mouse press, deactivating the menu, invoking the action for
+;;;	the entry, bringing up a different pane, etc.
+;;; 
+(defun gm-menu-pick-entry (button coord window)
+  "Internal function for dispatching on mouse/menu events"
+  ;;
+  ;; Only deal with mouse releases in the main part of the window. If the
+  ;; button is a press, or is a release in the mode line, return nil to tell
+  ;; gm-mouse-input to deal with it.
+  ;; 
+  (if (and (not (zerop (logand button 4)))
+	   (/= (cdr coord) (1- (window-height))))
+      (if (not (eq window gm-current-menu))
+	  (gm-menu-deactivate)
+	(let ((x (car coord))
+	      (y (cdr coord))
+	      word)
+	  ;;
+	  ;; Go to where the mouse release occured and extract out the entry
+	  ;; name. Since each item (even panes in the title bar) is enclosed
+	  ;; in |'s, it's fairly easy to extract out the word. Note that the
+	  ;; |'s allow entries to have internal spaces...
+	  ;; 
+	  (goto-char (coord-to-pos coord window))
+	  (skip-chars-backward "^|")
+	  (skip-chars-forward "| \t")
+	  (setq word (buffer-substring
+		      (point)
+		      (save-excursion
+			(skip-chars-forward "^|")
+			(skip-chars-backward " \t")
+			(point))))
+	  (if (< (point) gm-title-end)
+	      ;;
+	      ;; Click was in the title bar. Find the pane to which the
+	      ;; user wishes to go.
+	      ;; 
+	      (let ((pane (assoc word gm-menu-items-alist))
+		    buffer-read-only)
+		(if pane
+		    (gm-menu-format-pane
+		     gm-menu-items-alist
+		     pane)
+		  (gm-menu-deactivate)))
+	    ;;
+	    ;; Find the item in the current pane in which the mouse was
+	    ;; clicked. We use gm-current-pane to find the actual
+	    ;; pane sexp, then assoc down that list to find the desired
+	    ;; entry.
+	    ;; 
+	    (let* ((pane (assoc gm-current-pane gm-menu-items-alist))
+		   (item (assoc word pane)))
+	      (gm-menu-deactivate)
+	      (if item
+		  (progn
+		    (setq gm-menu-selection item)
+		    (call-interactively (cdr item)))
+		(message "Cancelled")))))
+	t)))
+
+;;;
+;;; MENU-USING FUNCTIONS
+;;; 
+
+;;;
+;;; gm-help-menu
+;;; 	A function to bring up a help menu. The menu itself is taken from
+;;;	x-mouse.el, with all due gratitude.
+;;;
+(defun gm-help-menu (coord window)
+  "Enter a menu-based help system."
+  (gm-menu-activate
+   '("Help" ("Is there a command that..."
+	     ("Com43 Bindings" . gm-help)
+	     ("Command apropos" . command-apropos)
+	     ("Apropos" . apropos))
+     ("Key Commands <==> Functions"
+      ("List all keystroke commands" . describe-bindings)
+      ("Describe key briefly" . describe-key-briefly)
+      ("Describe key verbose" . describe-key)
+      ("Describe Lisp function" . describe-function)
+      ("Where is this command" . where-is))
+     ("Manual and tutorial"
+      ("Info system" . info)
+      ("Invoke Emacs tutorial" . help-with-tutorial))
+     ("Odds and ends"
+      ("Last 100 Keystrokes" . view-lossage)
+      ("Describe syntax table" . describe-syntax))
+     ("Modes"
+      ("Describe current major mode" . describe-mode)
+      ("List all keystroke commands" . describe-bindings))
+     ("Administrivia"
+      ("View Emacs news" . view-emacs-news)
+      ("View the GNU Emacs license" . describe-copying)
+      ("Describe distribution" . describe-distribution)
+      ("Describe (non)warranty" . describe-no-warranty)))))
+;;;
+;;; gm-find-file
+;;; 	This function, with the help of several support functions, provides a
+;;;	menu of the files in the current directory. If you click on a file,
+;;;	the file is visited. If you click on a directory, another menu comes
+;;;	up containing the files in that directory, thus providing a file
+;;;	browsing system.
+;;;
+(defvar gm-dir "/"
+  "The current directory for gm-find-file")
+(defvar gm-ignored-extensions nil
+  "A regular expression matching all ignored extensions. Created from
+completion-ignored-extensions when gm-find-file is invoked")
+
+(defun gm-find-file-1 (file)
+  "Callback function for gm-find-file to create the list of menu entries.
+Returns the cons of FILE and gm-find-file-2 unless the file has one of
+the extensions given in completion-ignored-extensions (which see)"
+  (and (not (string-match gm-ignored-extensions file))
+       (cons file 'gm-find-file-2)))
+
+(defun gm-find-file-2 ()
+  "Callback function for gm-find-file when an entry in the menu is
+selected. Performs a find-file on the car of gm-menu-selection -- the
+selected menu entry -- if the selection is a file. If it's a directory, a
+new menu is activated containing the files in that directory."
+  (interactive)
+  (let ((file (expand-file-name (car gm-menu-selection) gm-dir)))
+  (if (file-directory-p file)
+      (progn
+	(setq gm-dir file)
+	(gm-menu-activate (gm-find-file-make-menu)))
+    (find-file file))))
+
+(defun gm-find-file-make-menu ()
+  (message "Reading directory...")
+  (let ((files (sort (file-name-all-completions "" gm-dir) 'string-lessp)))
+    (list
+     "Files"
+     (cons gm-dir (delq nil (mapcar 'gm-find-file-1 files))))))
+
+(defun gm-find-file (coord window)
+  "Popup a menu of all the files in the current directory and visit the one the
+user selects. If the user selects a directory, a menu of the files in that
+directory is popped up and the process repeats."
+  (if (null window)
+      nil
+    (select-window window)
+    (setq gm-dir default-directory)
+    (setq gm-ignored-extensions
+	  (mapconcat 'regexp-quote completion-ignored-extensions "$\\|"))
+    (gm-menu-activate (gm-find-file-make-menu))))
+
+;;;
+;;; gm-buffer-menu
+;;; 	Provide a menu of the current buffers that the user may then select
+;;; 
+(defun gm-buffer-menu (coord window)
+  "Pop up a menu of buffers for selection with the mouse."
+  (if window
+      (let ((menu
+	     (list "Buffer Menu"
+		   (cons "Select Buffer"
+			 (let ((tail (buffer-list))
+			       head)
+			   (while tail
+			     (let ((elt (car tail)))
+			       (if (not (string-match "^ "
+						      (buffer-name elt)))
+				   (setq head (cons
+					       (cons
+						(buffer-name elt)
+						'gm-select-buffer)
+					       head)))
+			       (setq tail (cdr tail))))
+			   (nreverse head))))))
+	(select-window window)
+	(gm-menu-activate menu))))
+
+(defun gm-select-buffer ()
+  (interactive)
+  (switch-to-buffer (car gm-menu-selection)))
+
+
+;;;
+;;; MANUAL PAGE BROWSER
+;;; 
+
+(defvar gm-man-menu nil
+  "Place to store the sexp describing the manual sections.")
+
+(defvar gm-man-ignore "^\\.\\./$\\|^\\./\\|^RCS$\\|^README$"
+  "regular expression of files to ignore if seen in a manual directory")
+
+(defun gm-make-man-entry (file)
+  "Make an entry for a manual pane. If FILE matches either 
+gm-ignored-extensions or gm-man-ignore, it is not displayed."
+  (and (not (string-match gm-ignored-extensions file))
+       (not (string-match gm-man-ignore file))
+       (cons file 'gm-man-entry)))
+
+(defun gm-make-man-pane (dir)
+  "Make a pane for the manual menu. DIR is the subdirectory to scan"
+  (cons dir
+	(let ((files (sort
+		      (file-name-all-completions
+		       ""
+		       (concat
+			(file-name-directory manual-formatted-dir-prefix)
+			dir))
+		      'string-lessp)))
+	  (delq nil (mapcar 'gm-make-man-entry files)))))
+		
+(defun gm-make-man-menu ()
+  "Creates the menu for browsing manual pages. This is done automatically
+the first time you invoke gm-man-menu, but may be done interactively using
+\\[gm-make-man-menu] if pages have been added."
+  (interactive)
+  (message "Searching manual pages...")
+  ;;
+  ;; Create the expression to match the currently-ignored extensions
+  ;; 
+  (setq gm-ignored-extensions
+	(mapconcat 'regexp-quote completion-ignored-extensions "$\\|"))
+  ;;
+  ;; Find all the manual directories. Note the dependency on them containing
+  ;; "man"
+  ;; 
+  (let ((dirs (sort
+	       (file-name-all-completions
+		"man"
+		(file-name-directory manual-formatted-dir-prefix))
+	       'string-lessp)))
+    (setq gm-man-menu
+	  (cons "Manual"
+		(mapcar 'gm-make-man-pane dirs))))
+  (message "Searching manual pages...done"))
+
+(defun gm-man-menu (coord window)
+  "Pop up a menu for browsing the manual pages on the system. When an entry is
+selected, display it using manual-entry."
+  (if window
+      (progn
+	(select-window window)
+	;;
+	;; Create the menu if it doesn't exist
+	;; 
+	(if (null gm-man-menu)
+	    (gm-make-man-menu))
+	;;
+	;; Activate
+	;; 
+	(gm-menu-activate gm-man-menu))))
+
+(defun gm-man-entry ()
+  "Display the selected manual entry."
+  (interactive)
+  ;;
+  ;; Pick out the suffix to get the manual section
+  ;; 
+  (string-match "^\\(.+\\)\\..*$" (car gm-menu-selection))
+  ;;
+  ;; Reformat the selection as page(section), taking the suffix to be
+  ;; the section and everything else to be the page.
+  ;; 
+  (manual-entry (format "%s(%s)"
+			(substring
+			 (car gm-menu-selection)
+			 0
+			 (match-end 1))
+			(substring
+			 (car gm-menu-selection)
+			 (1+ (match-end 1))
+			 nil))))
+

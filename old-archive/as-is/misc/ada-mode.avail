@@ -1,0 +1,77 @@
+From POP2-Server@k30b Wed Oct 19 07:02:22 1988
+Received: from pizza by PIZZA.BBN.COM id aa09121; 19 Oct 88 1:22 EDT
+Received: from BBN.COM by PIZZA.BBN.COM id aa09117; 19 Oct 88 1:20 EDT
+Received: from USENET by bbn.com with netnews
+	for arpa-unix-emacs@bbn.com (unix-emacs@bbn.com);
+	contact usenet@bbn.com if you have questions.
+To: unix-emacs@bbn.com
+Date: 18 Oct 88 15:24:08 GMT
+From: Lynn Slater <esl.esl.COM!lrs%eddie.mit.edu.uucp@bbn.com>
+Sender: arpa-unix-emacs-request@bbn.com
+Subject: Gnu Emacs support of Ada general public release
+Message-Id: <8810181524.AA13620@esl.ESL.COM>
+Source-Info:  From (or Sender) name not authenticated.
+
+
+		  *** Introducing: Gnu-Ada Mode ***
+			     Release 1.05
+I have integrated a set of programs to support ada development under
+Gnu Emacs.  They support reasonable automatic indentation, two kinds of
+template facilities, access to an online ada language reference manual,
+automatic file header maintenance, and lots of other neat stuff.
+
+I have another set of programs specifically for the verdix
+environment.  With these, you may compile, make, load, list units, etc
+from either a file or a directory.  You may use 'next-error to step
+through compiler messages with possible automatic lookup in the online
+reference manual. There is an interactive interface to a.db that is
+roughly equivalent to "visual mode".  Emacs will also use the verdix tags.
+
+Some who have used both set of programs report a 50% productivity gain
+during ada coding sessions.  This is probably over optomistic, but
+the productivity gain can be great.
+
+These modes incorperate many of the Ada efforts of other people
+(particularly Vincent Broman, Richard Stallman and S. Litvintchuck)
+but are better integrated with each other and have been greatly
+expanded in some areas. Vincent Broman is still actively supporting
+his portions.
+
+Most of these features could probably be ported to other ada
+environments.  I am willing to integrate support for other development
+environments but cannot develop it myself as I have only Verdix.
+Vincent Broman has started Alysys support, but it is not ready for
+general distribution.
+
+I have tested the previous release against voluntering beta sites;
+this release should be useable by the general public. The vender
+independent parts of this release will probably be distributed in
+release 19 of gnu emacs. Those with previous releases should upgrade.
+
+The distribution is available in any of three forms
+1. A complete distribution is available via FTP on spam.istc.sri.com
+   under pub/gnu/gnu-ada1.05.tar.Z.  I will keep this updated after every
+   set of significant changes.  Many thanks to Bill Wohler
+   <wohler@spam.istc.sri.com>! 
+2. A 4 part mailing of uuencoded compressed tar files.
+3. A many part mailing of each individual file. Please only request
+   this as a last resort.  
+For mailings, send requests to lrs@esl.com
+
+I am trying to keep track of all users so that I can distribute
+updates, bug notices, and bug fixes.  If you ftp the source, please
+let me know to add you to my ada users mailing list.
+
+Copyrights: All of what I did is covered by a standard copyleft.  Some
+of what I worked from was either in the public domain or was
+copylefted. I am not sure about the source of the BNF based templates.
+All code seems to be clearly based upon Gnu emacs.  If any of the
+above features seem familar to you, please let me know. Any
+information about copyright status would be greatly appreciated.
+
+Happy Hacking -- Lynn
+===============================================================
+Lynn Slater -- lrs@esl.COM
+ESL/TRW 495 Java Drive, Box 3510, Sunnyvale, Ca 94088-3510
+Office (408) 294-2888 x 4482; Home (415) 796-4149 
+===============================================================

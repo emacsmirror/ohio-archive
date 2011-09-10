@@ -1,0 +1,10 @@
+extproc @PERL@ -Sx
+#! @PERL@
+
+  if (@ARGV < 1) {
+      die "usage: utime file1 .. \n";
+  }
+
+  $now = time();
+  utime($now, $now, @ARGV);
+

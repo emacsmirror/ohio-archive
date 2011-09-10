@@ -1,0 +1,83 @@
+\documentstyle[11pt,twoside,latexinfo]{report}
+\pagestyle{empty}
+
+\begin{document}
+
+\c Declare which indices you want to make use of.
+\newindex{cp}
+
+\title{The Manual}
+
+\author{Fred Foobar,\\
+	Clarke Institute,\\
+	999 Queen Street,\\
+	Toronto, Ontario}
+
+\date{\today}
+\maketitle
+
+\c The following commands start the copyright page for the printed manual.
+\clearpage
+\vpace{0pt plus 1filll}
+Copyright \copyright\{\} year copyright-owner
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+\c End the Copyleft page and Turn on the headings to each page.
+\clearpage
+\pagestyle{headings}
+
+\c Use roman numerals for the page numbers and Insert the Table of Contents.
+\pagenumbering{roman}
+\tableofcontents
+
+\c End the Table of Contents and start numbering from 1 with Arabic numbers
+\clearpage
+\pagenumbering{arabic}
+
+\c Anything before the \setfilename will not appear in the Info file.
+\setfilename{themanual.info}
+
+\begin{ifinfo}
+Copyright \copyright \var{year} \var{copyright-owner}
+Put another 5 page copyleft here for the Info file.
+\end{ifinfo}
+
+\c The Top node contains the master menu for the Info file.
+\c This appears only in the Info file, not the printed manual.
+
+\node    Top,       First Chapter, (dir),    (dir)
+
+\begin{menu}
+* First Chapter::    The first chapter is the 
+                     only chapter in this sample.
+\end{menu}
+
+\node First Chapter, Concept Index, Top,Top
+\chapter{First Chapter}
+\cindex{Reference to First Chapter}
+
+This is the contents of the first chapter. 
+Here is a numbered list.
+
+\begin{enumerate}
+\item
+This is the first item.
+
+\item
+This is the second item.
+\end{enumerate}
+
+The \kbd{M-x latexinfo-format-buffer} command transforms a LaTeXinfo file
+like this into an Info file; and \LaTeX\ typesets it for a printed manual.
+
+\twocolumn
+\node Concept Index, Top, First Chapter, Top
+\chapter*{Concept Index}
+
+\printindex{cp}
+
+\end{document}

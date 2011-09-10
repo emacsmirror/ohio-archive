@@ -1,0 +1,167 @@
+% -*- latex -*-
+% Reference Card for (ding) Gnus: to be processed with LaTeX2e
+\documentclass{article}
+\def\Guide{Card}\def\guide{card}
+\def\logoscale{0.25}
+\textwidth 7.26in \textheight 10in \topmargin -1.0in
+% the same settings work for A4, although there is a bit of space at the
+% top and bottom of the page. 
+\oddsidemargin -0.5in \evensidemargin -0.5in
+
+% TODO:
+% - how can you get 'tabular' to wrap around pages ?
+% - some things might not be updated: scoring and server modes, maybe more
+
+\begin{document}
+\newlength{\logowidth}
+\setlength{\logowidth}{6.861in}
+\newlength{\logoheight}
+\setlength{\logoheight}{7.013in}
+
+\def\progver{5.8}\def\refver{5.8} % program and refcard versions
+\def\date{26th of March 2000}
+\def\author{Vladimir Alexiev $<$vladimir@cs.ualberta.ca$>$}
+\raggedbottom\raggedright
+%
+% 2000-03-26  Felix Natter  <f.natter@ndh.net>:
+% refcard updated for Gnus 5.8.3: please send corrections or suggestions
+% to the above email-address
+
+% changes since 2000-03-26:
+% - Create/Edit Foreign Groups: remove S b and S B (not there in 5.8.3)
+% - Send/Reply etc.: remove w and W (the only bindings are S w and S W)
+% Mon Apr  3 18:41:09 2000:
+% - added C-c C-n and C-c C-t (Article)
+% - C-c C-a as alias for M-m f (Article) + some other M-m *-bindings
+% - added section for ``jumping'' in article-mode
+% - now there's a difference between ``reading'' and ``composition''
+% article-modes
+
+\twocolumn
+%\tiny
+\scriptsize
+\pagestyle{plain}
+
+% this contains a set of commands containing the actual key-sequences
+% (and some explanations).
+\input{gnusref}
+
+\Title
+\par
+\Logo{refcard}
+\Notes
+%
+%
+\section*{Group-Mode}
+\GroupModeGeneral
+	\subsection*{Group Subscribedness-Levels}
+	\GroupLevels
+	\subsection*{List Groups}
+	\ListGroups
+	\subsection*{Create/Edit Foreign Groups}
+	\CreateEditGroups
+	\subsection*{Unsubscribe, Kill and Yank Groups}
+	\SubscribeKillYankGroups
+	\subsection*{Mark Groups}
+	\MarkGroups
+% topics in group-mode
+	\subsection*{Group Topics}
+	\GroupTopicsGeneral
+	\subsubsection*{Topic Sorting}
+	\TopicSorting
+% summary-mode
+\section*{Summary-Mode}
+\SummaryModeGeneral
+	\subsection*{Select Articles}
+	\SelectArticles
+%
+	\subsection*{Threading}
+	\Threading
+%
+	\subsection*{Limiting}
+	\Limiting
+	\subsection*{Sort the Summary-Buffer}
+	\SortSummary
+	\subsection*{Score (Value) Commands}
+	\Scoring
+% 
+	\subsection*{MIME operations from the Summary-Buffer}
+	\MIMESummary
+	\subsection*{Extract Series (Uudecode etc)}
+	\ExtractSeries
+	\subsection*{Output Articles}
+	\OutputArticles
+%
+	\subsection*{Post, Followup, Reply, Forward, Cancel}
+	\PostReplyetc
+	\subsection*{Message-Composition}
+	\MsgCompositionGeneral
+		\subsubsection*{Jumping in message-buffer}
+		\MsgCompositionMovementArticle
+		\subsubsection*{Attachments/MML}
+		\MsgCompositionMML
+% marking articles
+	\subsection*{Mark Articles}
+	\MarkArticlesGeneral
+		\subsubsection*{Mark Based on Score}
+		\MarkByScore
+		\subsubsection*{The Process Mark}
+		\ProcessMark
+		\subsubsection*{Mark Indication-Characters}
+		\MarkCharacters
+%
+	\subsection*{Mail-Group Commands}
+	\MailGroups
+	\subsection*{Draft-Group Commands}
+	\DraftGroup
+% exiting
+	\subsection*{Exit the Summary-Buffer}
+	\ExitSummary
+%
+%
+\section*{Article Mode (reading)}
+\ArticleModeGeneral
+	\subsection*{Wash the Article-Buffer}
+	\WashArticle
+	\subsection*{Hide/Highlight Parts of the Article}
+	\HideHighlightArticle
+	\subsection*{MIME operations from the Article-Buffer (reading)}
+	\MIMEArticleMode
+%
+%
+\section*{Server Mode}
+\ServerMode
+%
+%
+\section*{Browse Server Mode}
+\BrowseServer
+
+%\pagebreak
+\vspace*{\fill}
+\Copyright
+
+\end{document}
+
+% \SummaryMode
+% \Gsubmap
+% \Bsubmap
+% \Dsubmap
+% \Tsubmap
+% %\pagebreak
+% % page 2, right column
+% \Msubmap
+% \Marks
+% %\pagebreak
+% \Limiting
+% % page 3
+% \Osubmap
+% \Ssubmap
+% \Xsubmap
+% \Vsubmap
+% \SortSummary
+% \Zsubmap
+% \ArticleMode
+% \ServerMode
+% % page 4
+% \BrowseServer
+

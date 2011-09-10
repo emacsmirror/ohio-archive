@@ -1,0 +1,106 @@
+GNU Emacs/Common Lisp Environment Release Notes.
+
+Mail bug reports to segre@gvax.cs.cornell.edu
+=====
+December 18, 1988
+
+Minor bug corrections to support Allegro Common Lisp. Suggested
+inferior-lisp-prompt string for Allegro is given in clisp.el. Also
+minor fixes to macroexpansion and documentation since Allegro prefaces
+printed items with a carriage return and doesn't have *print-pretty*
+initially t.
+
+=====
+December 1, 1988
+
+start-lisp now takes an optional argument if you want your initial *lisp*
+started something other than the local host. You would change the call to
+start-lisp on your lisp-mode-hook to take the on-local hostname as a string.
+
+=====
+November 27, 1988
+
+A few bug fixes that snuck past in the last release. Macro expansion
+and documentation functions should now work properly (at least for
+KCL).
+
+=====
+November 22, 1988
+
+Use M-C-l to start a new Lisp Listener (will prompt for a hostname).
+
+=====
+October 26, 1988
+
+1. Common lisp indentation is fixed. It properly indents the FOR macro
+for those of you who use it (others who might be interested, drop me a
+line and I'll send you a copy).
+
+2. We're working on multiple lisp listeners. Soon you'll be able to
+have >1 lisp, some on other machines.
+
+=====
+October 2, 1988
+
+Several additions/changes have occured since the last release. 
+
+1. The file "kcl.el" has been renamed "clisp.el" to reflect the fact
+that any Common Lisp can be used as the inferior lisp process. Simply
+set the variable "inferior-lisp-program" in the "clisp.el" to point to
+the right place.
+
+2. A "super-paren" feature has been added. The "[" and "]" brackets act
+as super-parens (a la Interlisp), replacing themselves with the proper
+number of "(" and ")" (since Common Lisp only recognizes these
+characters as parens).
+
+3. C-c h has been replaced by C-c f and C-c v, fetching function and
+variable documentation respectively.
+
+4. We're still working on the indentation.
+
+=====
+September 12, 1988
+
+This message contains a new release of the GNU/KCL environment. This release
+features a cleaned up process-filter mechanism that will handle long
+doc strings or macroexpansions properly. Enjoy!
+
+=====
+September 1, 1988
+
+This message containts four files comprising a simple environment for
+Kyoto Common Lisp (or any other lisp with appropriate minimum
+modifications) running under GNUemacs.  Many of the functions are
+modeled after similar functions on the Symbolics machines. Editing a
+file in lisp mode (extension ".lsp") will cause a session with KCL to
+start in an emacs buffer (only one such session will be started).
+These files provide commands for transferring information back and
+forth between KCL and GNUemacs.
+
+To use, set your lisp-mode-hook to:
+       (lambda () (require 'kcl)(start-lisp))
+
+There are two sets of key bindings established, one for editing lisp
+code and the other for interacting with the lisp listener.  Both sets
+of bindings are available via the ^C prefix. See the file kcl.el for
+more detail.
+
+The file autoinclude.el provides a mechanism for placing headers in
+new files. I use this to place the file ~/.auto/header.lsp containing
+a header specifying lisp mode at the beginning of every new file. You
+should load autoinclude in your .emacs file to enable this feature,
+which may not work properly in older versions of GNUemacs.
+
+The files are packaged in a shar file. Cut below and pass the
+resulting file to /bin/sh for extraction. I plan to use this
+environment on Vaxen and Suns for students writing lisp code for class
+assignments. I am also using it as a development environment until I
+can get my hands on something better.
+
+I'd love to hear comments/suggestions from those of you who use it.
+Please let me know what you think or if you find any bugs.
+
+Most of the interesting stuff is in kcl.el. The other three files were
+grabbed from netnews and are presented with only minor modifications.
+I am also including my .emacs file as an example. Good luck and enjoy!

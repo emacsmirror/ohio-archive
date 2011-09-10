@@ -1,0 +1,41 @@
+\input texinfo   @c -*-texinfo-*-
+@c %**start of header
+@setfilename fuse-dir.info
+@settitle FUSE Directory
+@c %**end of header
+
+@direntry
+* FUSE Directory: (fuse-dir).   Documentation for FUSE
+@end direntry
+
+@ifinfo
+@node Top, , (dir), (dir)
+@top Master Menu
+@end ifinfo
+
+@example
+This is the top of the FUSE info tree
+
+  This node gives a menu of major documentation topics in FUSE.
+
+  Usage in info-mode of EMACS:
+    Typing "d" goes to the info top level,
+    typing "?" lists all INFO commands,
+    typing "q" exits,     typing "h" gives a primer for using info,
+    pressing 2nd button on a highlighted word follows that cross-reference.
+@end example
+
+@menu
+* FUSE: (fuse).				FUSE document
+* FUSE Tutorial: (fuse-tutorial).	A worked example
+
+* Atoms: (atoms).			The Atoms document
+* Feff: (feff7).			The Feff document
+
+* Normal: (normal).			The Normal document
+* Phit: (phit).				The Phit document
+
+* Gnuplot: (gnuplot).			The Gnuplot document
+@end menu
+
+@bye

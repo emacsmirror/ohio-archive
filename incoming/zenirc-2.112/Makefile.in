@@ -1,0 +1,209 @@
+# Makefile.in for ZenIRC.    -*- makefile -*-
+
+# Copyright (C) 1994, 1995 Noah S. Friedman
+# Copyright (C) 1994, 1995, 1996 Per Persson
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+#### Start of system configuration section. ####
+
+srcdir = @srcdir@
+VPATH = $(srcdir)
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+prefix = @prefix@
+exec_prefix = @exec_prefix@
+
+# The directory for object files and libraries of object code.  Do
+# not install executables here; they belong in `libexecdir' instead.
+libdir = $(exec_prefix)/lib
+
+# The directory for installing the Info files for this package.
+infodir = $(prefix)/info
+
+elispdir = $(libdir)/emacs/site-lisp
+
+AUTOCONF       = autoconf
+EMACS          = emacs
+ETAGS          = etags
+MAKEINFO       = makeinfo
+MAKEINFOFLAGS  = --no-split -I. -I$(srcdir)
+BATCHFLAGS     = -batch -q -no-site-file
+MV             = mv
+RM             = rm -f
+CP             = cp
+TAR            = tar
+TEXI2DVI       = texi2dvi
+TEXI2DVIFLAGS  = #-I. -I$(srcdir)
+
+#### End of system configuration section. ####
+
+SHELL = /bin/sh
+
+DISTFILES = BUGS TODO COPYING NEWS INSTALL README \
+            Makefile.in configure configure.in install-sh mkinstalldirs
+
+DOCFILES = FAQ RFC1459 irc-operators tao-of-irc zenirc.ascii \
+           README-OLD ctcp.doc server-list tour.of.irc zenirc.info \
+	   zenirc.texi undernet 666.conspiracy
+
+SRCFILES = $(ELFILES) ChangeLog zenirc-make.el
+
+ELFILES = zenirc-18.el zenirc-away.el zenirc-bork.el zenirc-command-queue.el \
+	  zenirc-complete.el zenirc-ctcp-flood.el zenirc-dcc.el \
+	  zenirc-doto.el zenirc-example.el zenirc-fill.el zenirc-finnish.el \
+	  zenirc-format.el zenirc-fortran.el zenirc-french.el \
+	  zenirc-ignore.el zenirc-iwantop.el zenirc-klingon.el \
+	  zenirc-latin.el zenirc-meditate.el zenirc-netsplit.el \
+	  zenirc-notify.el zenirc-oink.el zenirc-ojnk.el zenirc-pjg.el \
+	  zenirc-popup.el zenirc-random-away.el zenirc-random-nick.el \
+	  zenirc-signal.el zenirc-stamp.el zenirc-swedish.el zenirc-yow.el \
+	  zenirc-history.el zenirc-color.el zenirc-8ball.el zenirc-trigger.el \
+	  zenirc-yow-filter.el zenirc.el zenirc-prime-p.el zenirc-eval.el
+
+MFLAGS = ELFILES='$(ELFILES)' \
+         AUTOCONF='$(AUTOCONF)' EMACS='$(EMACS)' ETAGS='$(ETAGS)' \
+         MAKEINFO='$(MAKEINFO)' MAKEINFOFLAGS='$(MAKEINFOFLAGS)' \
+         MV='$(MV)' RM='$(RM)' CP='$(CP)' TAR='$(TAR)' \
+         TEXI2DVI='$(TEXI2DVI)' TEXI2DVIFLAGS='$(TEXI2DVIFLAGS)' \
+         INSTALL='$(INSTALL)' INSTALL_DATA='$(INSTALL_DATA)' \
+         INSTALL_PROGRAM='$(INSTALL_PROGRAM)' SHELL='$(SHELL)' \
+         elispdir='$(elispdir)' exec_prefix='$(exec_prefix)' \
+         infodir='$(infodir)' libdir='$(libdir)' prefix='$(prefix)'
+
+.SUFFIXES: .texi .info
+.texi.info:
+	$(MAKEINFO) $(MAKEINFOFLAGS) $<
+
+.SUFFIXES: .texi .dvi
+.texi.dvi:
+	$(TEXI2DVI) $(TEXI2DVIFLAGS) $<
+
+all: all-zenirc
+all-info: info
+
+### targets required by GNU Coding standards ###
+
+Makefile: Makefile.in config.status
+	$(SHELL) ./config.status
+
+config.status: configure
+	$(SHELL) ./config.status --recheck
+
+configure: configure.in
+	cd $(srcdir) && $(AUTOCONF)
+
+TAGS:
+	cd $(srcdir)/src && $(ETAGS) *.el
+
+.PHONY: clean mostlyclean distclean
+clean:
+	$(RM) src/*.elc
+
+mostlyclean: clean
+
+distclean: clean
+	$(RM) Makefile config.status config.log config.cache src/TAGS src/*~ *~
+
+.PHONY: maintainer-clean maintclean-warning
+maintainer-clean: maintclean-warning distclean
+
+# Used by maintainer-clean to print a warning before any rm commands are run.
+maintclean-warning:
+	@echo "This command is intended for maintainers to use;"
+	@echo "it deletes files that may require special tools to rebuild."
+
+realclean: distclean
+	$(RM) src/TAGS
+
+.PHONY: dist
+dist:
+	echo zenirc-`sed -e '/^(defconst zenirc-version/!d' \
+                         -e 's/[^0-9.]*\([0-9.]*\).*/\1/' \
+                         -e q src/zenirc.el` > .fname
+	$(RM) -r `cat .fname`
+	dst=`cat .fname`; umask 000 && mkdir $$dst $$dst/doc $$dst/src
+	dst=`cat .fname`; for f in $(DISTFILES); do \
+	   ln $$f $$dst/$$f \
+             || { echo copying $$f; cp -p $$f $$dst/$$f ; } \
+	done
+	dst=`cat .fname`/doc; for f in $(DOCFILES); do \
+	   ln doc/$$f $$dst/$$f \
+             || { echo copying doc/$$f; cp -p doc/$$f $$dst/$$f ; } \
+	done
+	dst=`cat .fname`/src; for f in $(SRCFILES); do \
+	   ln src/$$f $$dst/$$f \
+             || { echo copying src/$$f; cp -p src/$$f $$dst/$$f ; } \
+        done
+	$(TAR) --gzip -chvf `cat .fname`.tar.gz `cat .fname`
+	$(RM) -r `cat .fname` .fname
+
+# Tar up the development sources
+.PHONY: devtar
+devtar:
+	echo zenirc-dev-`sed -e '/^(defconst zenirc-version/!d' \
+                         -e 's/[^0-9.]*\([0-9.]*\).*/\1/' \
+                         -e q src/zenirc.el` > .fname
+	$(RM) -r ../`cat .fname`
+	umask 000 && mkdir ../`cat .fname`
+	@echo Copying tree to ../`cat .fname`
+	$(TAR) -cf - . | (cd ../`cat .fname` && $(TAR) xpvf -)
+	@echo Making tar file `cat .fname`
+	dst=`cat .fname`; cd .. && $(TAR) --gzip -chvf $$dst.tar.gz $$dst
+	dst=`cat .fname`; cd .. && $(RM) -r $$dst
+	mv ../`cat .fname`.tar.gz .
+
+.PHONY: installdirs uninstall
+install: all installdirs
+	-cd ./src && $(CP) *.elc $(elispdir)
+	# -cd ./doc && $(CP) zenirc.info* $(infodir)
+
+installdirs: force
+	-$(SHELL) $(srcdir)/mkinstalldirs $(elispdir) #$(infodir)
+
+uninstall: force
+	-cd $(elispdir) && { $(RM) $(ELFILES);
+			     for f in $(ELFILES); do $(RM) $${f}c; done; }
+	-cd $(infodir) && $(RM) zenirc.info*
+
+.PHONY: check installcheck force
+check:
+	@echo 'Nothing to be done for "check"'
+
+installcheck:
+	@echo 'Nothing to be done for "installcheck"'
+
+force:
+
+### program-specific building targets ###
+
+all-zenirc: elisp #info
+elisp:
+	-cd ./src && $(EMACS) $(BATCHFLAGS) -l zenirc-make.el \
+	-f batch-byte-compile $(ELFILES) 
+
+info: zenirc.info
+zenirc.info: zenirc.texi
+
+dvi: zenirc.dvi
+zenirc.dvi: zenirc.texi
+
+# Prevent GNU make v3 from overflowing arg limit on SysV.
+.NOEXPORT:
+
+# Makefile.in ends here

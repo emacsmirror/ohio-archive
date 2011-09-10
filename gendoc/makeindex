@@ -1,0 +1,68 @@
+#!/bin/sh
+
+if ( [ ! \( $# -eq 1 -o $# -eq 2 \) ] ) then
+  echo Usage: $0 \<\'.idx\' filename\>
+  exit 1;
+fi
+if ( [ ! -r $1 ] ) then
+  echo Can\'t open \"$1\"
+  exit 1
+fi
+DEST=''
+if ( [ $# -eq 2 ] ) then
+  if ( [ $1 = $2 ] ) then
+    echo Infile \"$1\" and Outfile \"$2\" can\'t be the same
+    exit 1
+  fi
+  if ( touch $2 ) then
+    echo -n
+  else
+    echo Can\'t write \"$2\"
+    exit 1
+  fi
+  DEST=$2
+fi
+
+
+perl \
+-e '$varpage = 0;' \
+-e 'while(<>) {' \
+-e '  if(/\\indexentry{-----}{(.*)}$/) {' \
+-e '    $varpage = $1;' \
+-e '    next;' \
+-e '  }' \
+-e '  elsif($varpage == 0) {' \
+-e '    if(! s/^\\indexentry{((.).*) (..*)}{([0-9]+)}$/$2:$1:$3:$4:B/) {' \
+-e '      next;' \
+-e '    }' \
+-e '  }' \
+-e '  else {' \
+-e '    if(! s/^\\indexentry{((.).*) (..*)}{([0-9]+)}$/$2:$1:$3:$4:I/) {' \
+-e '      next;' \
+-e '    }' \
+-e '  }' \
+-e '  s/^\\:(.(.))/$2:$1/;' \
+-e '  print;' \
+-e '}' $1 \
+| sort -u -t: +1f -2 +1 -2 +2f -3 +2 -3 +3n -4 | perl \
+-e '$cur_topic = 0;' \
+-e 'print "\\begin{theindex}";' \
+-e 'while(<stdin>) {' \
+-e '  chop;' \
+-e '  if(! /^(.):(.+):(.+):(.+):(.)$/) {die "bad file after sort, line \"$_\"";}' \
+-e '  $F1 = $1; $F2 = $2; $F3 = $3; $F4 = $4; $F5 = $5;' \
+-e '  if($cur_topic eq $F2) {' \
+-e '    printf "\\subitem %s {\\dotfill\\%s %s}\n",$F3,($F5 eq "B")?"bf":"em",$F4;' \
+-e '  }' \
+-e '  else {' \
+-e '    print "\n";' \
+-e '    if(($F1 =~ /^[a-zA-Z]/ || $cur_topic =~ /^[a-zA-Z]/) &&' \
+-e '        $cur_topic !~ /^$F1/i) {' \
+-e '      print "\\indexspace\n";' \
+-e '    }' \
+-e '    printf "\\item %s\n",$F2;' \
+-e '    printf "\\subitem %s {\\dotfill\\%s %s}\n",$F3,($F5 eq "B")?"bf":"em",$F4;' \
+-e '    $cur_topic = $F2;' \
+-e '  }' \
+-e '}' \
+-e 'print "\n\\end{theindex}\n";' > $DEST

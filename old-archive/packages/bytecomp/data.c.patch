@@ -1,0 +1,30 @@
+*** old-data.c	Mon Oct 21 12:56:25 1991
+--- data.c	Tue Oct 29 19:45:02 1991
+***************
+*** 268,273 ****
+--- 268,282 ----
+    return Qnil;
+  }
+  
++ DEFUN ("compiled-function-p", Fcompiled_function_p, Scompiled_function_p, 1, 1, 0, 
++        "T if OBJECT is a compiled function object (as returned by make-byte-code.)")
++      (obj)
++ {
++   if (XTYPE (obj) == Lisp_Compiled)
++     return Qt;
++   return Qnil;
++ }
++ 
+  DEFUN ("char-or-string-p", Fchar_or_string_p, Schar_or_string_p, 1, 1, 0, "T if OBJECT is a character (a number) or a string.")
+    (obj)
+       register Lisp_Object obj;
+***************
+*** 1889,1894 ****
+--- 1898,1904 ----
+    defsubr (&Smarkerp);
+    defsubr (&Sinteger_or_marker_p);
+    defsubr (&Ssubrp);
++   defsubr (&Scompiled_function_p);
+    defsubr (&Schar_or_string_p);
+    defsubr (&Sfacep);
+    defsubr (&Scar);

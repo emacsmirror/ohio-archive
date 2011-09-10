@@ -1,0 +1,726 @@
+Info file: survey-interpreted-languages,    -*-Text-*-
+produced by texinfo-format-buffer
+from file: interpreted-languages.texi
+
+
+
+     
+
+File: survey-interpreted-languages  Node: Top, Prev: (DIR), Up: (DIR), Next: Overview
+
+The purpose of this FAQ is to expose people to several languages which
+can cutdown/eliminate shell programming and C programming.
+
+All of these languages are quick interpreted languages which can do
+things in a few lines which might take hundreds of lines of C/shell
+code. 
+
+This new version contains two new sections and a lot of hope for the
+future and a fair shake to all languages listed.
+
+Many thanks to Tom Christiansen (tchrist@convex.com) for his input on
+Perl -- both commentary and source code.
+
+Suggestions to Terrence Brannon <tbrannon@mars.eecs.lehigh.edu>. 
+
+* Menu:
+
+* Overview::			
+* Power::			
+* Documentation::		
+* Ease of Use and Learning::	
+* Extensibility::		
+* Test Suite::			
+* Sample Programs::		Sample Programs
+* The Future::			
+* Obtaining::			
+
+
+
+File: survey-interpreted-languages  Node: Overview, Prev: Top, Up: Top, Next: Power
+
+Overview
+********
+
+
+Emacs Lisp
+==========
+Anything Emacs does is done in Lisp, so you can do it to. This means you
+can have automatic completion of input, full screen editing, buffering
+routines and much more. But you can only do it inside of Emacs Lisp for
+the most part. The two work arounds are: (1) use emacs-server.el which
+allows Emacs to send/receive onsockets (2) use emacs server mode. (3) I
+am currently working on extracting the interpreter from Emacs so that it
+is callable from C.
+
+Emacs' only interaction with other programs is through its batch mode
+which is callable from C or shell scripts. C
+programs cannot use Emacs routines and Emacs cannot call C. Emacs can
+call shell scripts and supply command line arguments as well.
+
+
+Perl
+====
+Combines the best features of awk, sed, and shell programming. The
+latest version can be embedded in C programs. It is also easy to call
+from the shell. 
+
+The embeddable version, which is perl5, is not yet out for public release
+quite yet.  I would say that you should include C as "the best features"
+of list, since one of its strong points is easy access to unix syscalls
+and C library features.
+
+Perl can be linked with external C libraries, such as curses or 
+database accessing libraries, like oracle or sybase, making for 
+easy access to screen-based form programs to deal with your dbase.
+
+The Wafe server lets you get at X from perl.
+
+
+
+Python
+======
+An object-oriented interpreted language. Callable from C as well as the
+shell. Interpretation may be sidestepped through the use of the
+byte-compiler on files. Python played a major role in testing Amoeba, a
+distributed operating system developed at CWI.
+
+
+Tcl
+===
+Extremely strong in X-windows. It can do a 5 page x-windows program in
+*2* lines and more. Callable from C and from the shell.
+
+
+File: survey-interpreted-languages  Node: Power, Prev: Overview, Up: Top, Next: Graphics
+
+Power
+*****
+
+All of the systems will be evaluated in terms of the following:
+  1. Graphics
+  2. String Handling
+  3. Process Control
+  4. Extensions
+
+
+File: survey-interpreted-languages  Node: Graphics, Prev: Power, Up: Top, Next: String Handling
+
+Graphics
+========
+
+
+Emacs Lisp 
+-----------
+None internally, but the ability to spawn inferior unix
+processes and issue shell commands allows it to use tcl's WAFE or fire
+up a Python process and control it with ease.
+
+
+Perl
+----
+Again none interally, but the author of WAFE, the tcl/tk graphic
+interpreter wrote all of his example programs in Perl (wafemail,
+wafenews, wafeftp).
+
+Certainly perl can issue external commands (inferior processes in lisp
+parlance).  There is also a version of guiperl I've seen Larry demo
+for me, so there's at least proof-of-concept that you can link in 
+the X libs.  Whether it will come out with perl5 I don't know.
+
+
+
+Python
+------
+Through the use of the STDWIN paradigm, the same source code
+can do graphics in the following systems:
+
+  1. X-windows
+  2. Macintosh using either Think C 4.02 or MPW C 2.02
+  3. Atari ST
+  4. DOS
+  5. Silicon Graphics SGI workstations
+
+This approach allows flexibility but means that no one graphics system's
+potential is maximized. 
+
+
+Tcl
+---
+Overloaded with all types of very very easy to do attractive
+graphics in X-Windows only. Easy to learn, and has many nice widgets
+added to it such as a photo widget for display of scanned PBM images,
+a bar graph widget, an editable text widget and much more. 
+Powerful tcl-based graphics systems come to mind:
+
+  1. xy-graph - includes a Hypertext widget. This means that regardless of
+     what stream of information comes at your Tcl program, you can create
+     windows and paths through the stream on the fly. A major example of the
+     hypertext widget is Joseph Wang's World Wide Web Hypertext browser.
+  2. VOGLE - 3D rendering, fonts
+  3. BYO Interface Builder. A snap to use.
+  4. WAFE . Send text string from anywhere (C language, Emacs, shell) to
+     a server and have the graphics done for you.
+  5. BOS - An object oriented extension for Tcl which also has some
+     widgets added to it.
+
+
+File: survey-interpreted-languages  Node: String Handling, Prev: Graphics, Up: Top, Next: Process Control
+
+String Handling
+===============
+
+
+Emacs Lisp
+----------
+Strong. Many good string handling functions for operation on buffers as
+well as string. Search replace backward and forward with regexps. Many
+good string handling functions are found in tree-dired.el in gmhist*.el.
+As well as in ange-ftp.el.
+
+
+Perl
+----
+Very strong.
+
+String-handling is one of Perl's strongest features: they are quite
+powerful and extensive.  Strings can be as long as you want, and contain
+binary data and nulls.  This works:
+    $kernel = `cat /vmunix`;
+
+Perl has a wealth of string-accessing functions, including matching,
+substitution, transliteration, splitting, and direct substring accessing.
+Strings and numbers are interchangeable.  The regexps are a superset of
+other regexp syntaxes, with extensions.  Parsing is very easy:
+         ($name, $number, $host) = /(\w+)=(\d+)( from @(\w+))?/;
+Subexpressions can nest, and be arbitrarily deep: you don't have
+to stop with \9, but can keep going.
+
+Perl's substitution operator works like sed's:
+    s/foo/bar;
+or
+    $a =~ s/foo/bar/g;
+but can do much more, like:
+    s/(\d+)/sprintf("0x%08x", $1)/ge;
+to find all the numbers in the pattern space and replace them 
+with the hex representation of the same.  It has other powerful
+features I don't have time or space to go into.
+
+Perl also lets you treat strings as raw bitwise data, so 
+    substr($a,0,3) &= "\177\177\177";
+would clear the high bits on the first 3 bytes of $a.  You
+can also access strings bitwise, say, to check the 2456th bit 
+of a string.
+
+
+
+
+Python
+------
+It has a string module and regexp module. It has all the string
+*search* capabilities of Emacs, but since strings are immutable in
+Python, it understandably does not have Emacs Lisp's string replace power.
+
+
+Tcl
+---
+Everything in Tcl is a string. It is very easy to map certain
+string-intensive applications to Tcl. For example, I wrote a program to
+do parallel library database searches in Tcl in about two weeks. Ranking
+the 4 languages in terms of how easy it would have been: Tcl, Python,
+Emacs, and I cant say about Perl because I gave up on Perl quickly after
+buying the book and seeing all those registers and the confusing
+context-intensive syntax. 
+
+
+
+File: survey-interpreted-languages  Node: Process Control, Prev: String Handling, Up: Top, Next: Extensions
+
+Process Control
+===============
+
+
+Emacs Lisp
+----------
+Has specialized modes for controlling Common and other lisps to
+facilitate debugging, execution, and programming. Has shell modes with
+command history. Has an excellent ftp program (ange-ftp). Can
+asynchronously or synchronously call the shell and store the output in a
+buffer or string. Can filter output from a process. However, the
+filtering is somewhat hairy because you cannot be sure of the packet
+size that the data will arrive in. In other words, it is easy to open a
+pipe with Perl/Python/Tcl and just read lines at a time but you have to
+write an accumulator function to do this in Emacs Lisp. However, the
+interactor mode for GNU Smalltalk has an excellent accumulator function
+that you could use in your own code. 
+
+
+Perl
+----
+Perl has all the process control primitives available to you from C, plus
+higher level constructs as well.  It's easy to open a pipe to or from
+another process.  You can even open a pipe to an implicitly forked version
+of yourself.   Standard Perl library routines allow bidirectional pipes
+and running things over a pty via a package that works much like Don
+Libes's Expect, save that it uses Perl instead of tcl as an extension
+language.  Perl can also access all the socket and ipc functions on your
+system without calling a program to do it.
+
+
+
+
+Python
+------
+You would use pipes to do this in Python.
+
+
+Tcl
+---
+Even stronger than Emacs. A package by Don Libes called Expect allows
+the programmer to specify a set of expected regexps from the process and
+what to do upon the receipt of the process output. Several of his papers
+including "expect: Curing Those Uncontrollable Fits of Interaction"
+available in postscript format for anonymous ftp from durer.cme.nist.giv
+in pub/expect. 
+
+There are also numerous process control extensions in Extended Tcl,
+which will be detailed in the section titled extensions.
+
+File: survey-interpreted-languages  Node: Extensions, Prev: Process Control, Up: Top, Next: Documentation
+
+Extensions
+==========
+
+An important feature of these languages is how much is already there for
+you to use.
+
+
+Emacs Lisp
+----------
+Emacs is light years ahead of any of these other languages in this respect.
+  1. 4 mail readers (rmail, vm, mh-e, elm interface)
+  2. 2 Usenet news readers (gnus, rnews+)
+  3. Ange-FTP -- An excellent ftp utility which allows transparent
+     file access/modification with the ease of a few keystrokes.
+  4. Countless interfaces for everything from Archie to MUD.
+  5. AUC-TeX allows you to do anything you would want to do with
+     TeX/LaTeX from an Emacs buffer quickly and easily.
+  6. Calc is a poor man's Mathematica
+  7. VIP -- vi emulation for emacs
+  8. Calendar/Diary -- calendar manager within Emacs
+  9. Tree Dired -- better directory editor for Emacs
+ 10. Hyperbole -- extensible hypertext management system within Emacs
+ 11. Ispell -- spell checker in C with interface for Emacs
+ 12. Patch -- program to apply "diffs" for updating files
+
+Emacs' use of switchable modes allows for easy creation of new packages
+with their own set of keyboard macros or they can simply use a
+predefined mode.
+
+
+Perl
+----
+Having been publicly available for six years now, Perl has a truly huge
+body of code already written for it.  I couldn't begin to document all of
+them.  More than any other language listed herein, it is the tool of
+choice for Unix system administrators.  Perl comes with a symbolic
+debugger, a bunch of libraries, various tools, and and numerous example
+programs, but that's just the start.  
+
+
+
+
+Python
+------
+  1. ?? -- Multimedia interface. 
+  2. ?? -- Remote Procedure Call debugger
+  3. texfix -- Crude convert latex to texinfo
+  4. throughput -- measure tcp throughput
+  5. dutree -- format du(1) output at a tree sorted by size
+  6. findlinks -- recursively find links to a given path prefix
+  7. lpwatch -- watch BSD line printer queues
+  8. suff -- sort a list of files by suffix 
+
+
+Tcl
+===
+  1. Basic Object System -- adds object oriented capabilities to Tcl. It is
+     not class-based but prototype-based whatever that means.
+  2. Extended TCL -- adds keyed lists, a debugger and profiler
+     and the following process control
+     primitives:
+        * interaces to pipe, dup, fcntl, sleep, getpid, fork, exec
+  3. Artcls -- a graphic Usenet newsreaderp 
+  4. CD Rom Interface
+  5. MXEdit -- Text editor
+  6. tclTCP/rawTCP -- tcp/ip for tcl remote procedure calls and connect
+     activity 
+  7. VOGLE -- awesome full-color 3-D rendering package with a ton of
+     fonts, both american and foreign.
+
+* Menu:
+
+
+* Documentation::
+* Top::
+
+
+
+File: survey-interpreted-languages  Node: Documentation, Prev: Extensions, Up: Top, Next: Ease of Use and Learning
+
+Documentation
+*************
+
+
+Emacs Lisp
+==========
+Excellent. Both for using Emacs and programming Emacs Lisp.
+
+
+Perl
+====
+Excellent. A book is out by Larry Wall called Programming in Perl. The
+manual page is 80 pages typeset. The newsgroup comp.lang.perl is very
+active and helpful and the newsgroup archives are available
+on-line, and come with literally thousands of code snippets and fully
+fledged programs doing more different things than I can begin to
+enumerate.  There is also an excellent quick reference guide, and
+professionally-taught courses for Perl available.
+
+
+
+Python
+======
+Good. Covers everything but how to extend Python through C.
+
+
+Tcl
+===
+Good. The author of Tcl, John Ousterhout, will mail you the manual
+pages. 
+
+
+File: survey-interpreted-languages  Node: Ease of Use and Learning, Prev: Documentation, Up: Top, Next: Extensibility
+
+Ease of Use and Learning
+************************
+
+Emacs Lisp
+==========
+The best. Has a debugger. Since you are in Emacs, you can immediately
+test whatever you are writing. Documentation on every function and
+variable in memory is available in 2 keypresses. The tags system allows
+you to jump to functions and global variable declarations without
+knowing which file they are in. 
+
+Perl
+====
+I would say strong.  To use Perl, you only need to know a little bit to
+start to use it.  The interactive debugger allows you to type any kind of
+Perl code you want and get an immediate answer, as well as providing
+standard sym debugger capabilities such as breakpoints, single-stepping,
+and stack tracebacks.  Other tools available but not included with the
+Perl src kit include profilers, tags generators, cross referencers, and
+tools to assemble large Perl programs using makefiles and a lintlike
+checker.  Other tools provide perl-mode for vi as well as tightly coupling
+the debugger with a slave vi session that autopositions by file and line.
+
+
+Python
+======
+Good. The concept of immutable strings takes some getting used to.
+
+
+
+Tcl
+===
+Ok. Debugger available under Extended Tcl and as a separate library. (*Note Obtaining::) The language
+itself is straightforward except for mathematics and 
+boolean conditionals.
+Writes spm2d@ash.cs.virginia.edu:
+     For instance, in order to do something like "x=math.sin(a)+5*3" (ala
+     Python), in Tcl it would be something like:
+
+     set x [expr [sin $a] + [expr 5 * 3]]
+
+     We also spent a few weeks figuring out how to do conditionals in IF
+     statements. (if a and b...) I won't even mention what kind of syntax
+     it wanted.
+
+Contrast this with two snippets of code from Perl:
+
+
+         $x = sin($a) + 5*3;
+
+     or if there were a special math package, it would be
+
+         $x = &math'sin($a) + 5*3;
+
+
+
+File: survey-interpreted-languages  Node: Extensibility, Prev: Ease of Use and Learning, Up: Top, Next: Test Suite
+
+Extensibility
+*************
+
+When I say extensibility I mean the ability to add a new keyword or data
+type to a language as opposed to adding a new utility.
+
+
+Emacs Lisp
+==========
+Writing new lisp functions is only feasible by using the
+already-available lisp functions. To write new lisp functions in C would mean
+re-compiling Emacs every time. 
+
+
+Perl
+====
+You can extend Perl through linking with C routines.  The example
+with the perl kit explains how to do this for the curses library,
+but can be done for many other applications as well.  This is adding
+new function calls.
+
+What I don't think is easy is changing the perl syntax.
+
+What you would probably do is define a package and use acccessor
+functions.  I did this to allow perl user's to get at C struct and union
+types to interract with C programs.  A package is semi-reminiscent of a
+C++ class, perhaps best described as a protected namespace with private
+and public data declarations and initialization code, as well as both
+private and public functions.  I wonder how the other languages stack up
+on this kind of thing.
+
+
+
+Python
+======
+Its possible in C. How to do it in C is not well documented.
+
+
+Tcl
+===
+Its possible and well-docuemented and has been down well by many
+people in C.
+
+
+File: survey-interpreted-languages  Node: Test Suite, Prev: Extensibility, Up: Top, Next: Sample Programs
+
+Test Suite
+**********
+
+
+Emacs Lisp
+==========
+Well, if you compile Emacs then Emacs Lisp will run. This is
+irrelevant criteria for Emacs Lisp.
+
+
+Perl
+====
+Perl comes with an exhaustive test suite.
+
+
+Python
+======
+Exhaustive test suite
+
+Tcl
+===
+Exhaustive test suite
+
+
+
+File: survey-interpreted-languages  Node: Sample Programs, Prev: Test Suite, Up: Top, Next: The Future
+
+Sample Programs
+***************
+
+To give you a taste of how each of these languages does its thing, I
+have created some simple programs to give you an idea of how easy each
+language can do some routine tasks.
+
+None of the programs have been written for any of the languages for
+this version of the FAQ. If you would like to contribute source, feel
+free. Or if you have a program done in one of these languages that you
+think would have been very difficult in one of the others let me know.
+
+The programs are:
+
+
+  1. Write a program to count the number of files in the current directory.
+
+
+     Perl
+     ====
+
+              #!/usr/bin/perl
+              $count = @files = <*>;
+              print "Directory file count: $count\n";
+
+              #!/usr/bin/perl
+              $count++ while <*>;
+              print "Directory file count: $count\n";
+
+              #!/usr/bin/perl
+              print "Directory file count:", `ls | wc -l`;
+
+          # those didn't have dot files.  if you want dot files,
+          # use <* .*> instead.
+
+              #!/usr/bin/perl
+              opendir(DOT, '.');
+              $count = @files = readdir(DOT);
+              print "Directory file count: $count\n";
+
+              #!/usr/bin/perl
+              opendir(DOT, '.');
+              $count++ while readdir(DOT);
+              print "Directory file count: $count\n";
+
+
+  2. Write a program to run under X-Windows and Macintosh which opens a
+     window and prints `"Hello, World"' in it. 
+
+
+     Perl
+     ====
+     I'd just talk to Wafe or Stdwin.  Or call xterm. :-)
+
+  3. Given a file with 4 occurrences of the string "Hello Bob" find the file,
+     replace the last 3 occurrences of "Hello Bob" with "Hi James" and save
+     the file. The double quotation marks are for delineation purposes only.
+
+
+     Perl
+     ====
+          # the orig file will be in file.BAK -- if you don't want a backup,
+          # use just -i.
+
+          # remember that s//foo/ will match the last match
+
+          perl -i.BAK -p -e '/Hello Bob/ && $seen++ && s//Hi James/g'
+
+          or 
+          	perl thisprog < file.in > file.out
+
+
+              #!/usr/bin/perl
+              while (<>) {
+          	if (/Hello Bob/ && $seen++) {
+          	    s//Hi James/g;
+          	} 
+          	print;
+              } 
+
+
+  4. A lengthy file has been entered with records of the form:
+     `<\n>NAME<\n>ADDRESS<\n>PHONE<\n>----------'
+     where <\n> represents a line feed and the ----------- is used to
+     separate records. Convert all entries in the file to a new format of
+     the form:
+     `<\n>NAME::ADDRESS::PHONE'
+
+
+              #!/usr/bin/perl
+              $/ = "\n----------";  	# set record separator
+              while (<>) {		# read a record
+          	s!$/$!!;  		# remove record terminator
+          	s/^\n//;		# trim first line feed
+          	s/\n/::/g;		# turn rest into double dolon
+          	print "\n";		# new record starts with \n
+          	print;			# output current pattern space
+              } 
+
+          # Did you know that the last record in the file will no longer
+          # have a terminating newline?  Make sure the others get this right.
+
+
+
+
+
+
+File: survey-interpreted-languages  Node: The Future, Prev: Sample Programs, Up: Top, Next: Obtaining
+
+The Future
+**********
+
+   * Emacs Lisp does not have object-oriented extensions yet Python does.
+
+     Python does not yet have a robust ftp interface like Emacs' ange-ftp nor
+     does it have an advanced desk top calculator like Emacs's calc. However
+     it does have STDWIN, an easy-to-use windowing system. 
+
+     Expression of mathematics in Tcl is cumbersome yet X11 graphics is very
+     very easy. 
+
+     Perl has excellent string and manipulation tools and a ton of sysadmin
+     utilities written in it.
+
+     The bottom line is that all of these languages have powerful tools ready
+     to use. Each language also has its weak points. Instead of being stuck
+     in each language and slaving through its weakness (or lack of a certain
+     utility), one should be able to fire up an interpreter in any of these
+     other languages and let it perform on it strong points and return the
+     answer.
+
+     I expect this type of hybrid programming to become almost necessary with
+     excellent packages and large being written for each langauge. 
+
+   * I am currently working on socketed interprocess communication between a
+     Python interpreter and Emacs Lisp. Next will be Tcl. Perhaps next will
+     be postscript or maybe Perl. 
+
+   * A trans-language browser. If you see that a Perl script has been
+     written to traverse a directory tree and count the number of files
+     ending in .o whose age is more than 20 days but you are not a Perl
+     programmer, that Perl script should become and OBJECT to which you SEND
+     a message to get that work done.
+
+
+
+
+
+
+File: survey-interpreted-languages  Node: Obtaining, Prev: The Future, Up: Top
+
+Obtaining
+*********
+
+All of these packages are publicly available via ftp.
+I have chosen the ange-ftp method of representing ftp
+connections for its conciseness. The following:
+"/anonymous@src.doc.ic.ac.uk:/pub/gnu" means make an anonymous ftp
+connection to src.doc.ic.ac.uk then cd to /pub/gnu.
+
+As a side note, if you had Hyperbole (an Emacs-based hypertext package)
+installed and running under X-Windows, you could just click on the
+quotation-mark-enclosed pathname above and you would automatically be
+connected to the above directory. 
+
+All documentation and source code have their copyright status with the
+distribution. Consult the distribution for information on using these
+products as part of your own creative work.
+
+
+Emacs Lisp
+==========
+"/anonymous@src.doc.ic.ac.uk:/pub/gnu"
+"/anonymous@prep.ai.mit.edu:/pub/gnu"
+
+Perl
+====
+"/anonymous@convex.com:/pub/perl"
+"/anonymous@archive.cs.ruu.nl:/DOC"
+
+Python
+======
+"/anonymous@ftp.cwi.nl:/pub"
+
+Tcl
+===
+"/anonymous@ftp.uu.net:/languages/tcl"
+"/anonymous@barkley.berkeley.edu:/tcl"
+
+
+

@@ -1,0 +1,40 @@
+some memos						-*- outline -*-
+
+* [lookup 1294]
+
+* ndict デフォルトで stemming
+
+* location に `:' が入ってると問題になる。
+
+* stem 周りの修正。
+
+* process-coding の設定。
+
+* モジュール毎に辞書選択。
+
+* 履歴に上限を設ける。
+
+* lookup-entry-expand-reference でループ無限。(famiry)
+
+* process-mark を利用。
+
+* lookup-require-process が XEmacs で完璧でない。
+
+* フレーム管理がいまいち
+
+* LF が whitespace な syntax のモードでは lookup-current-word が行をまたぐ。
+
+* format の設定を辞書毎に行なわないといけないのは面倒。
+一度に設定を変えるための簡潔な方法を考える。
+
+* リロードして候補が消えたらバッファやキャッシュをどうするか?
+
+* ndtp
+** 辞書の usable check.
+
+* ndeb
+** entry の候補が多い場合に続きを表示出来るようにしたい。
+** coding-system の自動設定。
+
+* ndic/ndict
+** 既に参照したリファレンスの色が変わらない。

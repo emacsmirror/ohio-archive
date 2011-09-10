@@ -1,0 +1,25 @@
+Ohio State Emacs Lisp Archive NEWS
+
+* Fri Nov  2 17:55:35 2001
+
+I forgot to update this file after updating the web page; the OSU
+Emacs Lisp archive is closed while a merge with Lispmeralda
+(www.lispmeralda.org) takes place.  We hope to accomplish this soon.
+Thanks for your patience!
+
+* Wed Jun 28 18:17:05 EDT 2000
+
+Good news!  The Ohio State Emacs Lisp Archive is now being actively
+maintained again.  We are still trying to catch up on organizing the
+entries.  Our current project is to create a common archive entry
+format.  However, submissions are being taken, currently by hand.
+Please see the file SUBMISSIONS.
+
+Send comments to the Emacs Lisp Archive maintainers:
+archive@cis.ohio-state.edu
+
+Colin Walters <walters@cis.ohio-state.edu>
+
+Local Variables:
+mode:text
+End:

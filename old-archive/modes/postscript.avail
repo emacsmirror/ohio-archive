@@ -1,0 +1,26 @@
+From utkcs2!emory!samsung!cs.utexas.edu!tut.cis.ohio-state.edu!MorningStar.Com!bob Mon Jun 11 12:44:10 EDT 1990
+Article 2931 of gnu.emacs:
+Path: utkcs2!emory!samsung!cs.utexas.edu!tut.cis.ohio-state.edu!MorningStar.Com!bob
+>From: bob@MorningStar.Com
+Newsgroups: gnu.emacs
+Subject: PostScript mode (was: How to set mode based on file suffix???)
+Message-ID: <9006081312.AA17516@volitans.MorningStar.Com>
+Date: 8 Jun 90 13:15:04 GMT
+References: <9006080033.AA15436@bach.rtp.dg.com>
+Sender: daemon@tut.cis.ohio-state.edu
+Lines: 12
+
+
+   Date: Thu, 7 Jun 90 20:33:47 edt
+   From: Dave Brennan <brennan@DG-RTP.DG.COM>
+
+   >	   ("\\.c?ps$"	. postscript-mode)
+   >	   ("\\.PS$"	. postscript-mode)
+
+   Do you know where I can get my hands on postscript mode?
+
+I got it as part of Chris Maio's NeWS window system support for GNU
+Emacs.  Get columbia.edu:pub/ps-emacs.tar.Z or
+osu-cis!~/gnu/emacs/ps-emacs.tar.Z.
+
+

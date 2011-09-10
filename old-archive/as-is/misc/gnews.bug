@@ -1,0 +1,86 @@
+To: unix-emacs@bbn.com
+Date: 28 Oct 88 02:08:45 GMT
+From: Matthew P Wiener <pasteur!agate!garnet!weemba@ames.arc.nasa.gov>
+Subject: More Gnews 2.0 bug fixes
+
+If you post with NNTP internals (ie, n-reply-program is nil instead of,
+say, "inews"), then posting won't work.  Ugh.  (Actually, it's been work-
+ing for me somehow.)  And you can't post twice in a row.  Here are the
+fixes; my thanks to the several people who pointed them out--I'm sorry.
+
+I still haven't updated the ucbvax files.  I think I'll wait a few more
+days for a few more bugs to shake out.
+
+ucbvax!garnet!weemba	Matthew P Wiener/Brahms Gang/Berkeley CA 94720
+----------------------------------------------------------------------
+;; in NNTP.el
+
+(defun nntp-exec (clear finish comm &rest args)
+  "(nntp-exec CLEAR FINISH COMM ARGS...) sends the command COMM,
+with arguments ARGS... to the NNTP process.  It returns the value from
+nntp-clean (ie, nil on any kind of failure).\n
+The argument CLEAR, if non-nil, means clear nntp-buffer first.\n
+Interactively, the entire NNTP command, with its arguments, is prompted
+for.  Unless there's a prefix argument, the internal buffer is cleared.\n
+The argument FINISH, if non-nil, means wait until the NNTP process is
+completed.  Interactively FINISH is always t."
+  (interactive (list (not current-prefix-arg) t
+		     (read-from-minibuffer "NNTP command: ") nil))
+  (if (interactive-p)
+      (setq args (progn
+		   (string-match "\\<[^ ]*\\>" comm)
+		   (if (/= (length comm) (match-end 0))
+		       (list (substring comm (1+ (match-end 0))))))
+	    comm (substring comm (match-beginning 0) (match-end 0))))
+  (cond ((stringp clear)
+	 (signal 'wrong-type-argument (list 'clear-flag clear)))
+	((stringp finish)
+	 (signal 'wrong-type-argument (list 'finish-flag finish)))
+	(t
+	 (setq args (mapconcat 'identity args " "))))
+  (if (and (not nntp-exec-force)		; WARNING: this fails if
+	   (not (eq major-mode 'index-mode))	; I repeat a command that
+	   (string= comm nntp-exec-comm)	; uses a default argument
+	   (string= args nntp-exec-args)	; that is silently changed.
+	   (not (string= comm "last"))
+	   (not (string= comm "next"))
+	   (not (string= comm "post")))		; <=== ADD ===
+      nntp-exec-value
+    (setq nntp-exec-comm comm nntp-exec-args args)
+    (if clear (nntp-clear nntp-buffer))
+    (setq nntp-dot (assoc comm nntp-dot-commands)
+	  nntp-eot nil)
+    (send-string nntp comm)
+    (send-string nntp " ")
+    (send-string nntp args)
+    (send-string nntp "\n")
+    (if nntp-exec-verbose (message "NNTP: %s %s" comm args))
+    (prog1
+	(if finish (nntp-finish))
+      (if (interactive-p) (message nntp-info)))))
+
+;; in reply.el
+
+(defun nntp-exec-post ()
+  "Post the current buffer via NNTP internals."
+  (interactive)			; Perhaps this is a no-no.
+  (if (nntp-exec t t "post")
+      (let ((buf (current-buffer))
+	    (art (buffer-substring article-min (point-max))))
+	(set-buffer nntp-buffer) ; ^^^^^^^^^^^ NO PARENS
+	(erase-buffer)
+	(insert art)
+	(goto-char 1)
+	(while (re-search-forward "^\\." nil t)
+	  (replace-match "..")
+	  (forward-line 1))
+	(goto-char (point-max))
+	(insert ".\n")
+	(send-string nntp (buffer-string))	 ; I ought to catch
+	(accept-process-output nntp)		 ; failed postings.
+	(goto-char (point-max))
+	(forward-line -1)
+	(setq nntp-info (buffer-substring (point) (1- (point-max))))
+	(set-buffer buf))
+    (error "%s" nntp-info)))
+

@@ -1,0 +1,56 @@
+Noteworthy changes in Mailcrypt version 3.5.5:
+
+ * GnuPG support is now compatible with versions through 1.0.
+
+Noteworthy changes in Mailcrypt version 3.5.4:
+
+ * None, really; this is a bugfix release.
+
+
+
+Noteworthy changes in Mailcrypt version 3.5.3:
+
+ * Added support for the Horowitz Key Protocol. PGP5 key fetching is
+   feature-complete.
+
+ * Fixed a minor compatibility bug between GPG 0.9.3 and Mailcrypt.
+
+Noteworthy changes in Mailcrypt version 3.5.2:
+
+ * Added key fetching for PGP 5.0. Uses finger or HTTP, but not hkp yet.
+
+ * Fixed a bug which dumped GNUS users into the wrong buffer after
+   verifying a signature.
+
+ * Fixed a compatibility bug between XEmacs and FSF Emacs in
+   mc-setversion.
+
+ * Fixed a bug in mh-e support so that users can view decrypted
+   messages without saving them.
+
+ * Several minor bugfixes.
+
+
+
+Noteworthy changes in Mailcrypt version 3.5b4:
+
+ * Fixed a bug which broke encryption to multiple recipients (PGP 5).
+
+ * Fixed a bug which broke encryption of 8-bit data and files (PGP 5).
+
+ * Fixed the missing "timer.el" problem.  Now Mailcrypt should run
+   properly for Xemacs users.
+
+ * Eliminated some silly shell and perl scripts.
+
+ * Updated the README to reduce installation difficulties (I hope).
+
+
+
+Noteworthy changes in Mailcrypt version 3.5b1:
+
+ * No bug fixes; in fact there are probably fresh new bugs.
+
+ * Mailcrypt now supports PGP version 5.0 as well as version 2.6.*, and
+   can be toggled between "active versions" at will.  Every effort has
+   been made to ensure that what used to work, still works.

@@ -1,0 +1,35 @@
+Index: elispdb-search.lisp
+===================================================================
+RCS file: /usr/local/cvsroot/elispdb/elispdb-search.lisp,v
+retrieving revision 1.3
+diff -u -r1.3 elispdb-search.lisp
+--- elispdb-search.lisp	2001/01/23 19:47:15	1.3
++++ elispdb-search.lisp	2001/01/23 19:47:24
+@@ -138,17 +138,21 @@
+ 		    nil))
+ 	(let ((match-count (hash-table-count matches))
+ 	      (end (+ start *maximum-search-results*)))
+-	  (multiple-value-bind (link name)
++	  (multiple-value-bind (link name olink oname)
+ 	      (ecase archive
+ 		(:incoming
+-		 (values "http://www.cis.ohio-state.edu/archive/incoming/"
+-			 "Incoming"))
++		 (values #u"http://www.cis.ohio-state.edu/archive/incoming/"
++			 "Incoming"
++			 #u"http://www.cis.ohio-state.edu/archive/archive/"
++			 "Archive"))
+ 		(:archive
+-		 (values "http://www.cis.ohio-state.edu/archive/archive/"
+-			 "Main")))
++		 (values #u"http://www.cis.ohio-state.edu/archive/archive/"
++			 "Main"
++			 #u"http://www.cis.ohio-state.edu/archive/incoming/"
++			 "Incoming")))
+ 	    (log-debug "Count: ~A ~%" match-count)
+ 	    (cond ((zerop match-count)
+-		   (format stream "<P>Your search produced no matches. (Try <A HREF=\"~A\">browsing directly</A>)</P>" link)
++		   (format stream "<P>Your search produced no matches.</P><P><UL><LI>Try <A HREF=\"~A\">browsing directly</A></LI><LI>Try this search in the <A HREF=\"~A\">~A archive</A></LI></UL></P>" (urlstring link) (urlstring (setf (araneida:url-query olink) (concatenate 'string "?q=" (araneida:urlstring-escape  oname)
+ 		   (princ "Please note that the search engine doesn't perform any word stemming.  For example, to find packages dealing with buffers, you would want to search for both \"buffer\" and \"buffers\"." stream))
+ 		  (t
+ 		   (format-args-html-escaped stream "<P><H2>Matches ~A-~A in the <A HREF=\"~A\">~A archive</A>:</H2></P>" start (min end match-count) link name)))

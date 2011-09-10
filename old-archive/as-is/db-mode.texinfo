@@ -1,0 +1,153 @@
+\input texinfo
+@tex
+\global\chapno=29
+@end tex
+@chapter Databases in GNU Emacs
+
+The command @code{M-x db} is the entry to the world of simple databases
+within Emacs. The function @code{db} searches each file in
+@code{help-default-path} for lines containing matches for a regular
+expression given as input. If it finds a match, it will display the entry
+in a special buffer called "*DBASE*". This buffer is in @code{dbase-mode},
+and has a special modeline to tell you what's going on: its looks like this:
+
+@example
+Emacs-DBASE database:[@var{name}]  current target: @var{target}
+@end example
+
+where @var{name} tells you the name of the file in which the current match
+has been found, and @var{target} describes the regular expression that
+@code{db} is currently using (ie; the one used to find this match).
+
+The *DBASE* buffer also has a number of useful commands for finding
+subsequent and previous matches of the same target, and for altering the
+information held in your databases.
+
+Note that this database system is a multi-key one, unlike @code{dbm}-based
+systems. This feature can be used to create a very flexible means of
+searching through a database of, for example, names and addresses. Each
+entry can have additional keys besides that person's name describing things
+with which they are involved or interested: then, to find someone who might
+be able help us on a particular topic, just search using that topic, and
+then step through each match in turn. Alternatively, you can just find
+entries based on name alone.
+
+[Technical aside: you may notice that many of the functions described below
+begin with the word ``help''. This is because Emacs' database commands are
+based on a more wide-ranging facility for providing rapid ``pop-up'' help
+whilst editing.]
+
+@section Keys and Entries
+
+Your database entries are defined by a series of one or more @var{keys}.
+These are simply words you wish to be able to use in order to retrieve the
+entry. If the database was just a list of names and addresses, then
+typically, the keys would consist of the name of each person, and the entry
+would be the address.
+
+However, you can also include cross-references on the key line by
+surrounding them with braces. These are not actually functional, but will
+provide hints on what other keys someone might wish to use to find other,
+related entries.
+
+@section What a Database file looks like
+
+Each file in the search path defined by the variable
+@code{help-search-path} should have the following format:
+
+Keys should be listed on a line starting with a non-white space character.
+Cross-reference hints are surrounded by braces ({ and }), although they
+still count as keys for the search function. Each key line should have at
+least one `primary' key not enclosed by braces.
+
+The entry for a given set of keys should consist of a number of lines beginning
+with at least one  white space character (a space or a tab).
+
+Here a sample item from a database file:
+
+@smallexample
+Richard Stallman @{fsf gnu emacs MIT@}
+   c/o Free Software Foundation
+   675 Mass Ave
+   Cambridge, MA 02139
+   USA
+@end smallexample
+
+This entry could be retrieved using any of the following topics, amongst others:
+
+@smallexample
+Stallman, gnu, MIT, Rich, stall\|emacs
+@end smallexample
+
+@section variables affecting database operations
+
+@code{help-default-search-path} is a string containing a list of
+space-separated filenames to be used by @code{db} in its hunt for matching
+entries. It is local to each dbase-mode buffer, so that if you wish you can
+have different *DBASE* buffers accessing different databases. You should
+set this in your @var{.emacs} file using @code{set-default}. Here is an
+example:
+
+@smallexample
+(set-default 'help-default-path "/usr/davis/db /usr/mygroup/db")
+@end smallexample
+
+@code{help-case-fold-search} determines whether or not case should be
+ignored when looking for database entries. Its default value, @code{nil},
+means that database searches are case-insensitive; you can reset to
+@code{t} in this in your @var{.emacs} file if you want them to be
+case-sensitive.
+
+@section Commands to find database entries
+
+@table @kbd
+@item M-x db @var{key}
+find an entry filed under @var{key} and display it in a buffer called "*DBASE*".
+@end table
+
+The following commands are avaiable only within the ``*DBASE*'' buffer:
+
+@table @kbd
+@item c
+find another item within current database file only (@code{help-this-file})
+@item f
+find an entry filed under a different key (@code{db})
+@item n
+find the next match for the current target key(@code{help-next-match})
+@item p
+find the previous match for the current target key(@code{help-previous-match})
+@end table
+
+On keyboards whose arrow (cursor) keys generate ANSI-standard sequences,
+the UP arrow is equivalent to "p" and the DOWN arrow to "n".
+
+@section Commands to alter or add to a database
+
+@table @kbd
+@item a
+add a new entry to the current database file (@code{help-add-item})
+@item e
+edit the entry currently being viewed (@code{help-edit-this-item})
+@item k
+add a key to the current database entry (@code{help-add-key})
+@end table
+
+@code{help-add-item} prompts for a primary key and cross-references, then
+creates a temporary buffer for you to create a new entry in the current
+database file. It looks after all formatting for you, so you can put
+whatever you want in this buffer without worrying about white-spaces or key
+entry formats. When you're finished creating the entry, just save as normal
+using @code{C-x C-s} and the item will be formatted, added to the database
+and written to a file.
+
+@code{help-edit-this-item} switches to a buffer containing the current
+database file. Point will be on the key line of the entry, and the buffer
+will be narrowed to the text of this entry. You can carry out all
+normal editing operations on this buffer -- its a good idea to save it
+after you're finished though.
+
+@code{help-add-key} allows you to add an extra key to the current entry.
+
+@bye
+
+

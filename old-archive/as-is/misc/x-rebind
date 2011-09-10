@@ -1,0 +1,251 @@
+To: unix-emacs@bbn.com
+Date: 18 Mar 89 20:30:30 GMT
+From: Denys Duchier <Duchier-Denys@yale.ARPA>
+Subject: Re: Gnuemacs prob on X11
+
+In article <4660017@hpihoah.HP.COM>, jims@hpihoah (Jim Smeenge) writes:
+> 
+>  I am having problems supporting some users in my group who like to use
+>  gnuemacs, and uni-press emacs.  We are running emacs in an X11 environment
+>  under HP-UX version 6.2.  We can get the editor to run, but don't have 
+>  full functionality of the keys on our HP keyboards.  We cannot get the
+>  Insert line, Delete line, Insert character, Delete character, Previous,
+>  Next, or Home keys to work.  My users tell me that they worked before
+>  we upgraded to X11.  Is there some way of getting these keys to work
+>  by adding a .exrc, or .emacsrc file or something.  Any help or direction
+>  pointing would be appreciated.
+
+	I wrote some stuff to support a x-rebind-keysym function under
+X11. It sort of works but there are still bugs in it which I haven't
+bothered to work out (definitions for certain modifiers seem to
+overwrite definitions with no modifiers). I would very much appreciate
+if anyone could spare the time to do this right.
+
+	In the mean time, what I put together serves its purpose well
+enough (I have had no complaints from other users (well... they're
+hardly in a position to complain)). Below, I include example uses of
+x-rebind-keysym, the source to an additional c file implementing
+x-rebind-keysym, and the diffs to x11term.c. To find out what strings
+denote which keysyms, take a look at /usr/include/X11/keysymdef.h
+
+-----BEGIN example uses-----
+
+(defun nice-shift-lock ()
+  "rebinds alphabetic keysyms so that when Caps_Lock is on
+you can get a lower case letter by pressing the shift key"
+  (interactive)
+  (let ((ch ?a) str)
+    (while (<= ch ?z)
+      (setq str (format "%c" ch))
+      (x-rebind-keysym (upcase str) 3 str)
+      (setq ch (1+ ch)))))
+
+(defun nice-arrow-keys ()
+  "rebinds arrow keys and PREV and NEXT to do the expected thing"
+  (interactive)
+  (x-rebind-keysym "Left"       0 "\C-b")
+  (x-rebind-keysym "Left"       1 "\C-b")
+  (x-rebind-keysym "Up"         0 "\C-p")
+  (x-rebind-keysym "Up"         1 "\C-p")
+  (x-rebind-keysym "Right"      0 "\C-f")
+  (x-rebind-keysym "Right"      1 "\C-f")
+  (x-rebind-keysym "Down"       0 "\C-n")
+  (x-rebind-keysym "Down"       1 "\C-n")
+  (x-rebind-keysym "Prior"      0 "\M-v")
+  (x-rebind-keysym "Prior"      1 "\M-v")
+  (x-rebind-keysym "Next"       0 "\C-v")
+  (x-rebind-keysym "Next"       1 "\C-v"))
+
+-----END example uses-----
+
+-----BEGIN denys.c-----
+
+#include "config.h"
+#include "lisp.h"
+#include <X11/Xlib.h>
+#include <X11/keysym.h>
+
+DEFUN ("x-rebind-keysym",Fx_rebind_keysym,Sx_rebind_keysym,
+       3,3,0,
+       "KEYSYM (1st arg) is a symbol or a string naming a KeySym.\n\
+MODIFIERS (2nd arg) is an integer denoting the modifiers to apply\n\
+to KEYSYM.\n\
+    0  means none\n\
+    1  means lock\n\
+    2  means shift\n\
+    4  means meta\n\
+    8  means control\n\
+They can be added together to produce combinations of these modifiers.\n\
+For instance, 3 means `shift lock' and 13 means `meta control lock'.\n\
+STRING (3rd arg) is the string you want the keysym to translate to.\n\
+Example:\n\
+               (x-rebind-keysym \"F1\" 4 \"\\M-xrmail\\n\")\n\
+will result in `meta F1' (where F1 is the function key labeled F1) invoking\n\
+rmail.")
+( ks , modif , str )
+Lisp_Object ks,modif,str;
+{
+  KeySym TheKs;
+  int    TheModif;
+  KeySym TheMods[4];
+  unsigned int TheModsLen;
+  unsigned char TheShift,TheControl,TheLock,TheMeta;
+  struct gcpro gcpro1,gcpro2,gcpro3;
+
+  GCPRO3(ks,modif,str);
+
+  switch (XTYPE (ks))
+    {
+    case Lisp_String:
+      break;
+    case Lisp_Symbol:
+      ks = Fsymbol_name ( ks );
+      break;
+    default:
+      ks = wrong_type_argument ( Qstringp , ks );
+      break;
+    }
+
+  CHECK_STRING ( ks    , 1);
+  CHECK_NUMBER ( modif , 1);
+  CHECK_STRING ( str   , 1);
+
+  TheKs = XStringToKeysym ( XSTRING( ks )->data );
+  if (! TheKs )
+    return (Fsignal ( Qerror , Fcons ( Fconcat(build_string("unknown keysym: "),ks) , Qnil) ));
+  
+  TheModif = XINT ( modif );
+  if ((TheModif < 0) || (TheModif > 15))
+    return (Fsignal ( Qerror , Fcons ( Fconcat(build_string("modifier out of range: "),
+					       Fint_to_string(modif)),
+				      Qnil) ));
+
+  TheShift=TheControl=TheMeta=TheLock=0;
+  if (TheModif >= 8) { TheControl = 1; TheModif -= 8; }
+  if (TheModif >= 4) { TheMeta    = 1; TheModif -= 4; }
+  if (TheModif >= 2) { TheShift   = 1; TheModif -= 2; }
+  if (TheModif >= 1)   TheLock    = 1;
+
+  ControlRebindKeysym ( TheKs , TheControl , TheMeta , TheShift , TheLock ,
+		       XSTRING( str )->data , XSTRING( str )->size ,
+		       TheMods , 0 );
+
+  return Qt;
+}
+
+ControlRebindKeysym ( keeseem , controlP , metaP , shiftP , lockP , buf , buflen , mods , modslen )
+     KeySym keeseem;
+     unsigned char controlP,metaP,shiftP,lockP;
+     char *buf;
+     unsigned int buflen;
+     KeySym mods[4];
+     unsigned int modslen;
+{
+  if (controlP)
+    {
+      mods[modslen] = XK_Control_L;
+      MetaRebindKeysym ( keeseem , metaP , shiftP , lockP , buf , buflen , mods , (modslen + 1) );
+      mods[modslen] = XK_Control_R;
+      MetaRebindKeysym ( keeseem , metaP , shiftP , lockP , buf , buflen , mods , (modslen + 1) );
+    }
+  else
+    MetaRebindKeysym ( keeseem , metaP , shiftP , lockP , buf , buflen , mods , modslen );
+}
+
+MetaRebindKeysym ( keeseem , metaP , shiftP , lockP , buf , buflen , mods , modslen )
+     KeySym keeseem;
+     unsigned char metaP,shiftP,lockP;
+     char *buf;
+     unsigned int buflen;
+     KeySym mods[4];
+     unsigned int modslen;
+{
+  if (metaP)
+    {
+      mods[modslen] = XK_Meta_L;
+      ShiftRebindKeysym ( keeseem , shiftP , lockP , buf , buflen , mods , (modslen + 1) );
+      mods[modslen] = XK_Meta_R;
+      ShiftRebindKeysym ( keeseem , shiftP , lockP , buf , buflen , mods , (modslen + 1) );
+    }
+  else
+    ShiftRebindKeysym ( keeseem , shiftP , lockP , buf , buflen , mods , modslen );
+}
+
+ShiftRebindKeysym ( keeseem , shiftP , lockP , buf , buflen , mods , modslen )
+     KeySym keeseem;
+     unsigned char shiftP,lockP;
+     char *buf;
+     unsigned int buflen;
+     KeySym mods[4];
+     unsigned int modslen;
+{
+  if (shiftP)
+    {
+      mods[modslen] = XK_Shift_L;
+      LockRebindKeysym ( keeseem , lockP , buf , buflen , mods , (modslen + 1) );
+      mods[modslen] = XK_Shift_R;
+      LockRebindKeysym ( keeseem , lockP , buf , buflen , mods , (modslen + 1) );
+    }
+  else
+    LockRebindKeysym ( keeseem , lockP , buf , buflen , mods , modslen );
+}
+
+extern Display *XXdisplay;
+
+LockRebindKeysym ( keeseem , lockP , buf , buflen , mods , modslen )
+     KeySym keeseem;
+     unsigned char lockP;
+     char *buf;
+     unsigned int buflen;
+     KeySym mods[4];
+     unsigned int modslen;
+{
+  if (lockP)
+    {
+      mods[modslen] = XK_Caps_Lock;
+      modslen++;
+    }
+  XRebindKeysym ( XXdisplay , keeseem , mods , modslen , buf , buflen );
+}
+
+syms_of_denys ()
+{
+  defsubr (&Sx_rebind_keysym);
+}
+
+-----END denys.c-----
+
+-----BEGIN diffs for x11term.c-----
+
+1206a1207,1209
+> 
+> /* -- Denys -- provide larger buffer for long translations -- */
+> #define MAPPINGBUFLEN 256
+1215c1218
+<   char mapping_buf[20];
+---
+>   char mapping_buf[MAPPINGBUFLEN];
+1324c1327
+< 			      mapping_buf, 20, &keysym,
+---
+> 			      mapping_buf, MAPPINGBUFLEN, &keysym,
+1326c1329,1330
+<       /* Someday this will be unnecessary as we will
+---
+>       /* -- Denys -- Begin --
+> 	 Someday this will be unnecessary as we will
+1328c1332
+< 	 will have already given us the string we want. */
+---
+> 	 will have already given us the string we want.
+1337c1341
+< #endif /* sun */
+---
+> #endif sun
+1359a1364
+>       -- Denys -- End -- */
+
+-----END diffs for x11term.c-----
+
+--Denys
+

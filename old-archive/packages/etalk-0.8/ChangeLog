@@ -1,0 +1,30 @@
+Sun Aug 21 10:46:30 1994  Eric M. Ludlam  (zappo@choochoo)
+
+	* etalk.texinfo: Updates for new stuff, plus general grammar.
+
+Fri Aug 19 18:22:09 1994  Eric M. Ludlam  (zappo@choochoo)
+
+	* et_proto.c: Impoved the detail of the daemon test.
+
+Wed Aug 17 21:59:09 1994  Eric M. Ludlam  (zappo@choochoo)
+
+	* Sformat.el: upgrade from other project.
+	* etalk-mini.el: fixed etalk-format to handle console case
+	* et_daemn.c: added check to verify sizes of talk messages
+	* etalk.c: calls new fn.
+	* otalk.h: removed short, and replaced with two chars.
+	* gtalk.h: made gtalk conform to talk protocol.
+
+Sun Aug 14 19:59:57 1994  Eric M. Ludlam  (zappo@choochoo)
+
+	* etalk.texinfo: fixed sections relating to bug fixes.
+	* etalk-mini.el: Modified etalk-untabulate-buffer so that it no
+	  longer uses re-search-forward instead of string-match
+ 	* game-lib.el: Fixed free variable.
+
+Wed Aug 10 19:56:04 1994  Eric M. Ludlam  (zappo@choochoo)
+
+	* et_cmd: exit status in etc_test to signal makefile of error.
+	* et_proto: fixed message printed when test error occurs.
+	* etalk.texinfo: fixed capitalization problems in node tags.
+	* Makefile.in: english, install directory variables

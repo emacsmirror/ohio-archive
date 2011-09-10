@@ -1,0 +1,234 @@
+Return-Path: <GENTZEL@cpwsca.psc.edu>
+Date:    Sun, 16 Apr 1989 17:14:58 EST
+From: GENTZEL@cpwsca.psc.edu   (Dave Gentzel)
+Subject: Fix and improvements to replace.el
+To: bug-gnu-emacs@prep.ai.mit.edu
+X-Vmsmail-To: SMTP%"bug-gnu-emacs@prep.ai.mit.edu"
+
+Here is a fix for an annoying (but minor) bug in occur-mode.  I'm also
+including several enhancements which I've made to replace.el.
+
+					Dave Gentzel
+					Pittsburgh Supercomputing Center
+					gentzel@godot.psc.edu
+					or gentzel@morgul.psc.edu
+
+occur-mode-goto-occurrence:
+  Fix bug where we go to the wrong line if the point is not at the beginning of
+  the line in the *Occur* buffer.  This also points out a bug in the
+  documentation for count-lines.  Here is an alternative wording which clears
+  up the bug:
+    Return number of lines between START and END.
+    This is usually the number of newlines, but will be one more if START is
+    not equal to END and the greater of them is not at the start of a line.
+  Cumbersome, I'll admit, but at least correct.
+
+occur:
+  Removed an extraneous save-excursion.
+
+perform-replace:
+  Added a stack to allow the ^ command to go back an arbitrary number of
+  matches.
+
+  Added an additional element to the return value which is the number of
+  replacements done.  This can be very useful for the caller to know.  This
+  also requires the obvious modification to tags.el where perform-replace is
+  used.
+
+  Changed the setting of undo-boundary's so that the ! command will undo as
+  a single unit.
+
+*** replace.el.old	Sun Apr 16 17:00:49 1989
+--- replace.el	Sun Apr 16 17:00:55 1989
+***************
+*** 102,108 ****
+  	(setq occur-buffer nil
+  	      occur-pos-list nil)
+  	(error "Buffer in which occurences were found is deleted.")))
+!   (let* ((occur-number (/ (1- (count-lines (point-min) (point)))
+  			  (cond ((< occur-nlines 0)
+  				 (- 2 occur-nlines))
+  				((> occur-nlines 0)
+--- 102,110 ----
+  	(setq occur-buffer nil
+  	      occur-pos-list nil)
+  	(error "Buffer in which occurences were found is deleted.")))
+!   (let* ((occur-number (/ (1- (count-lines (point-min) (save-excursion
+! 							 (beginning-of-line)
+! 							 (point))))
+  			  (cond ((< occur-nlines 0)
+  				 (- 2 occur-nlines))
+  				((> occur-nlines 0)
+***************
+*** 153,161 ****
+        (save-excursion
+  	(while (re-search-forward regexp nil t)
+  	  (beginning-of-line 1)
+! 	  (save-excursion
+! 	    (setq linenum (+ linenum (count-lines prevpos (point))))
+! 	    (setq prevpos (point)))
+  	  (let* ((start (save-excursion
+  			  (forward-line (if (< nlines 0) nlines (- nlines)))
+  			  (point)))
+--- 155,162 ----
+        (save-excursion
+  	(while (re-search-forward regexp nil t)
+  	  (beginning-of-line 1)
+! 	  (setq linenum (+ linenum (count-lines prevpos (point)))
+! 		prevpos (point))
+  	  (let* ((start (save-excursion
+  			  (forward-line (if (< nlines 0) nlines (- nlines)))
+  			  (point)))
+***************
+*** 215,220 ****
+--- 216,223 ----
+  	(search-function (if regexp-flag 're-search-forward 'search-forward))
+  	(search-string from-string)
+  	(keep-going t)
++ 	(repl-stack nil)
++ 	(count 0)
+  	(lastrepl nil))			;Position after last match considered.
+      (if delimited-flag
+  	(setq search-function 're-search-forward
+***************
+*** 223,247 ****
+  				      (regexp-quote from-string))
+  				    "\\b")))
+      (push-mark)
+!     (push-mark)
+      (while (and keep-going
+  		(not (eobp))
+! 		(progn
+! 		 (set-mark (point))
+! 		 (funcall search-function search-string nil t)))
+        ;; Don't replace the null string 
+        ;; right after end of previous replacement.
+        (if (eq lastrepl (point))
+  	  (forward-char 1)
+- 	(undo-boundary)
+  	(if (not query-flag)
+! 	    (replace-match to-string nocasify literal)
+! 	  (let (done replaced)
+  	    (while (not done)
+  	      ;; Preserve the match data.  Process filters and sentinels
+  	      ;; could run inside read-char..
+! 	      (let ((data (match-data))
+! 		    (help-form
+  		     '(concat "Query replacing "
+  			      (if regexp-flag "regexp " "")
+  			      from-string " with " to-string ".\n\n"
+--- 226,250 ----
+  				      (regexp-quote from-string))
+  				    "\\b")))
+      (push-mark)
+!     (undo-boundary)
+      (while (and keep-going
+  		(not (eobp))
+! 		(funcall search-function search-string nil t))
+        ;; Don't replace the null string 
+        ;; right after end of previous replacement.
+        (if (eq lastrepl (point))
+  	  (forward-char 1)
+  	(if (not query-flag)
+! 	    (progn
+! 	      (replace-match to-string nocasify literal)
+! 	      (setq count (1+ count)))
+! 	  (let (done replaced data)
+! 	    (undo-boundary)
+  	    (while (not done)
+  	      ;; Preserve the match data.  Process filters and sentinels
+  	      ;; could run inside read-char..
+! 	      (setq data (match-data))
+! 	      (let ((help-form
+  		     '(concat "Query replacing "
+  			      (if regexp-flag "regexp " "")
+  			      from-string " with " to-string ".\n\n"
+***************
+*** 258,284 ****
+  		     (setq keep-going nil)
+  		     (setq done t))
+  		    ((= char ?^)
+! 		     (goto-char (mark))
+! 		     (setq replaced t))
+  		    ((or (= char ?\ )
+  			 (= char ?y))
+  		     (or replaced
+! 			 (replace-match to-string nocasify literal))
+! 		     (setq done t))
+  		    ((= char ?\.)
+  		     (or replaced
+! 			 (replace-match to-string nocasify literal))
+  		     (setq keep-going nil)
+! 		     (setq done t))
+  		    ((= char ?\,)
+  		     (if (not replaced)
+  			 (progn
+  			   (replace-match to-string nocasify literal)
+  			   (setq replaced t))))
+  		    ((= char ?!)
+  		     (or replaced
+! 			 (replace-match to-string nocasify literal))
+! 		     (setq done t query-flag nil))
+  		    ((or (= char ?\177)
+  			 (= char ?n))
+  		     (setq done t))
+--- 261,299 ----
+  		     (setq keep-going nil)
+  		     (setq done t))
+  		    ((= char ?^)
+! 		     (if repl-stack
+! 			 (let ((last (car repl-stack)))
+! 			   (setq repl-stack (cdr repl-stack))
+! 			   (goto-char (car last))
+! 			   (if (setq replaced (cdr last))
+! 			       (store-match-data replaced))
+! 			   (setq replaced (not replaced)))))
+  		    ((or (= char ?\ )
+  			 (= char ?y))
+  		     (or replaced
+! 			 (progn
+! 			   (replace-match to-string nocasify literal)
+! 			   (setq count (1+ count))))
+! 		     (setq replaced t done t))
+  		    ((= char ?\.)
+  		     (or replaced
+! 			 (progn
+! 			   (replace-match to-string nocasify literal)
+! 			   (setq count (1+ count))))
+  		     (setq keep-going nil)
+! 		     (setq replaced t done t))
+  		    ((= char ?\,)
+  		     (if (not replaced)
+  			 (progn
+  			   (replace-match to-string nocasify literal)
++ 			   (setq count (1+ count))
+  			   (setq replaced t))))
+  		    ((= char ?!)
+  		     (or replaced
+! 			 (progn
+! 			   (replace-match to-string nocasify literal)
+! 			   (setq count (1+ count))))
+! 		     (setq replaced t done t query-flag nil))
+  		    ((or (= char ?\177)
+  			 (= char ?n))
+  		     (setq done t))
+***************
+*** 297,304 ****
+  		    (t
+  		     (setq keep-going nil)
+  		     (setq unread-command-char char)
+! 		     (setq done t))))))
+  	(setq lastrepl (point))))
+!     (pop-mark)
+!     keep-going))
+! 
+--- 312,319 ----
+  		    (t
+  		     (setq keep-going nil)
+  		     (setq unread-command-char char)
+! 		     (setq done t))))
+! 	    (setq repl-stack
+! 		  (cons (cons (point) (if replaced nil data)) repl-stack))))
+  	(setq lastrepl (point))))
+!     (list keep-going count)))
+

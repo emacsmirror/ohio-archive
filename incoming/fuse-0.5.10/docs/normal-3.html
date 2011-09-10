@@ -1,0 +1,140 @@
+<HTML>
+<HEAD>
+<TITLE>Normal: Keywords</TITLE>
+</HEAD>
+<BODY>
+<A HREF="normal-2.html">Previous</A>
+<A HREF="normal-4.html">Next</A>
+<A HREF="normal.html#toc3">Table of Contents</A>
+<HR>
+<H2><A NAME="s3">3. Keywords</A></H2>
+
+
+
+<P>The input file for <SF>Normal</SF> is an ascii text file containing
+keywords and values associated with those keywords.  A simple syntax
+is used.  Keywords and their values are delimited by white spaces,
+where white space can be any number of spaces or tabs and one comma
+(,) or equals sign (=).  Most keywords have one value associated with
+them.  The keyword <CODE>files</CODE> is special.  It must be the last
+keyword in the input file and it precedes the list of files containing
+data to be normalized and aligned.  Each filename following the
+<CODE>files</CODE> keyword must be on its own line.  See 
+<A HREF="normal-5.html#app1">the appendix</A> for an example input file. </P>
+
+
+<H2><A NAME="ss3.1">3.1 A Brief List of the Keywords</A></H2>
+
+
+
+
+<P>
+<OL>
+<LI><B> !, %, #  </B> characters denoting comments</LI>
+<LI><B> outfile </B> name of output file</LI>
+<LI><B> format </B> i/o file format</LI>
+<LI><B> formin </B> input file format</LI>
+<LI><B> formout </B> output file format</LI>
+<LI><B> e0 </B> edge energy of standard</LI>
+<LI><B> ee </B> edge energy of standard</LI>
+<LI><B> pre1 </B> beginning energy for pre-edge subtraction</LI>
+<LI><B> pre2 </B> end energy for pre-edge subtraction</LI>
+<LI><B> nor1 </B> beginning energy for normalization</LI>
+<LI><B> nor2 </B> end energy for normalization</LI>
+<LI><B> emax </B> end energy for alignment fit</LI>
+<LI><B> nofit </B> flag to only normalize data</LI>
+<LI><B> noalign </B> flag to only normalize data</LI>
+<LI><B> derivative </B> flag to calculate and write derivative function</LI>
+<LI><B> norm </B> flag to only normalize data</LI>
+<LI><B> end </B> flag to end reading input file</LI>
+<LI><B> files </B> flag indicating that data filenames follow</LI>
+</OL>
+ </P>
+
+
+<H2><A NAME="ss3.2">3.2 Full Explanation of Keywords</A></H2>
+
+
+
+<P>
+<DL>
+<DT><B> !, %, and #</B><DD><P>These characters denote comments in the input file.  Anything on a
+line following any one of these characters will be ignored. </P>
+
+<DT><B> Outfile</B><DD><P>This is the name for the file(s) containing the aligned data.  If
+no output file name is specified, the input file name will be used
+with the extension changed to <CODE>nor</CODE> or with <CODE>_norm</CODE>
+added to the filename.  The file extension is defined as all
+characters after the final dot (.) in the file name.  This definition
+meets the definition of an extension in DOS and VMS, and is well
+defined in a Unix environment. </P>
+
+<DT><B> Format, Formin, Formout </B><DD><P>These specify the formats for the input and output data files.
+By default, files are read in the ASCII format.  The other option is
+the UWXAFS format.  The <CODE>format</CODE> keyword specifies both input
+and output format.  Note that the input and output formats do not need
+to be the same. </P>
+
+<DT><B> e0, ee</B><DD><P>This specifies the edge energy of the standard data set. </P>
+
+<DT><B> pre1, pre2</B><DD><P>These specify the beginning and end values of the energy range to
+be used for the pre-edge subtraction.  These values are relative to
+the edge energy, e0, as specified in the input file.  Their default
+values are -200 and -50, respectively.  Note that pre1 is lower in
+energy than pre2. </P>
+
+<DT><B> nor1, nor2</B><DD><P>These specify the beginning and end values of the energy range to
+be used for the normalization.  These values are relative to
+the edge energy, e0, as specified in the input file.  Their default
+values are 100 and 500, respectively.  Note that nor1 is lower in
+energy than nor2. </P>
+
+<DT><B> emax</B><DD><P>This specifies the largest energy value used in the alignment
+fit.  The value is relative to the edge energy, e0, as specified in
+the input file.  If unspecified, it is the last energy point in the
+standard or in the data, whichever is smaller.  If there are features
+in either the standard or the data that might bias the fit, for
+instance glitches or Bragg peaks, it may improve the quality of the
+alignment to specify emax such that these features are avoided.
+Generally, however, the default for emax should produce the most
+reliable alignment. </P>
+
+<DT><B> nofit, noalign, norm </B><DD><P>These keywords are synonymous.  They are flags telling <SF>Normal</SF> to
+skip the alignment fit and only normalize the input data.  These
+keywords take no value, simply placing one in the input file tells the
+code to skip the alignment.  The default is to align the data.</P>
+
+<DT><B> derivative </B><DD><P>This keyword is a logical flag telling <SF>Normal</SF> to calculate the
+derivative of the normalized data.  This keyword takes no value,
+simply placing it in the input file tells the code to perform this
+calculation.  The default is to not calculate and write the derivative
+functions.  </P>
+
+<DT><B> end</B><DD><P>When this keyword is encountered in the input file,
+<SF>Normal</SF> will stop reading the input file and begin
+processing the data.  Everything after this keyword in the input file
+will be ignored.  This keyword takes no value. </P>
+
+<DT><B> files</B><DD><P>This keyword tells <SF>Normal</SF> to go to the next line and
+begin reading the names of the input data files.  This must be the
+last keyword in the input file.  Each input filename must be on its
+own line.  Every thing on the line after the filename is assumed to be
+a comment unique to that data set.  This comment will be written to
+the header of the output data file.  If the UWXAFS binary format is
+used for the input data, the nkey or skey follow the filename and
+everything after the key is assumed to be the comment.  If the comment
+begins with one of the comment characters then it will be ignored and
+not written to the header of the output file. </P>
+
+</DL>
+</P>
+
+
+
+
+<HR>
+<A HREF="normal-2.html">Previous</A>
+<A HREF="normal-4.html">Next</A>
+<A HREF="normal.html#toc3">Table of Contents</A>
+</BODY>
+</HTML>

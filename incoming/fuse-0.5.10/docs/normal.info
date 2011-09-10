@@ -1,0 +1,568 @@
+This is Info file normal.info, produced by Makeinfo version 1.67 from
+the input file /tmp/sgml2info30768tmp2.
+
+   \input texinfo
+
+
+File: normal.info,  Node: Top,  Next: Introduction,  Up: (dir)
+
+Normal
+******
+
+     Bruce Ravel, `ravel@u.washington.edu'
+     version 0.9, 15 August, 1995
+
+   Normalize and align xmu data.
+
+* Menu:
+
+* Introduction::
+* Input and Output Files::
+* Keywords::
+* References and Program Notes::
+* Example Input File::
+
+
+File: normal.info,  Node: Introduction,  Next: Input and Output Files,  Prev: Top,  Up: Top
+
+Introduction
+************
+
+   Normal takes multiple, raw xmu data sets as its input and returns
+them with a pre-edge line subtracted, normalized to the value of the
+edge step, and aligned in energy.  NOrmal can also calculate numerical
+derivatives of the normalized data.  Normal requires an input file
+which is a simple text file containing instructions for the
+normalization and alignment.  It also requires data in either the
+UWXAFS binary or ASCII format.  It will write the output data to either
+file format.
+
+   The pre-edge subtraction of each of the input data sets is performed
+in the standard fashion for XAFS data.  A line is chosen by regression
+from data before the absorption edge.  This line is subtracted from the
+entire data range, leaving data that is zero-valued before the edge.
+
+   Alignment in energy requires that one data set be chosen as the
+standard and that all other data sets be shifted in energy to best
+match that standard.  The standard is normalized to the height of the
+edge step.  The edge step is found by regressing a line to the data in
+some energy range after the edge.  This line is extrapolated back to
+the edge energy and the value of the intercept at the edge energy is
+used as the edge step.  The data is divided at all points by this
+number.  Thus the data starts at zero and rises values near one.  The
+normalization for all other data sets is chosen as part of the
+alignment algorithm.
+
+   A Levenberg-Marquardt non-linear least-squares minimization is used
+to align each individual data set to the standard.  Three variables are
+used to minimize the difference between the data set and the standard.
+These variables are an energy shift, an edge step, and the slope of a
+line added to the region after the edge.  The best-fit value for the
+energy shift is added to the output data so that the standard and all
+other files lie on grids referenced to the same energy origin.  Each
+data set is normalized to the best fit value of the edge step.  A line
+which is zero at the edge energy is subtracted from the data set in the
+region after the edge to compensate for any differences in, say, the
+detector responses in the data and the standard.  The slope of this
+subtracted line is the third fitting variable.
+
+   The results of the alignment fit are written to the header of the
+output file.  (See *Note Data File Formats::  for a description of the
+file formats.)  The original data can be reconstructed from the
+normalized and aligned data using the fit results.   The energy scale
+is shifted by subtracting the best-fit e0 shift, then the xmu data is
+modified by this formula:
+     xmu(normalized) = xmu(original) / step + [theta(e-e0)*slope*(e-e0)]
+
+   Here theta indicates a step function, theta(e-e0)=0 when e>e0 and
+theta(e-e0)=1 when e<e0.  The e0 value is relative to the shifted
+energy scale.
+
+   The numerical derivative is performed by Ridder's method of
+polynomial extraction.  This is somewhat slower than an n-point
+difference, but much less prone to error.
+
+
+File: normal.info,  Node: Input and Output Files,  Next: Keywords,  Prev: Introduction,  Up: Top
+
+Input and Output Files
+**********************
+
+* Menu:
+
+* Input Files::
+* Running Normal Output Messages Warnings and Errors::
+* Output Files::
+* Data File Formats::
+
+
+File: normal.info,  Node: Input Files,  Next: Running Normal Output Messages Warnings and Errors,  Up: Input and Output Files
+
+Input Files
+===========
+
+   Normal uses the input file `normal.inp' to control the running of
+the program.  If this file cannot be found in either lower case or
+upper case characters, Normal will stop and complain.  The form and
+contents of `normal.inp' will be discussed further in Chapter 3.
+Normal also needs a list of input data files for normalization and
+alignment.  The input data should be xmu data, that is absorption data
+as a function of energy.  There are no constraints on the input energy
+grid.  The data file name can be up to 72 characters long and can
+contain a directory path.  The file name and path must be allowed by
+your operating system.
+
+
+File: normal.info,  Node: Running Normal Output Messages Warnings and Errors,  Next: Output Files,  Prev: Input Files,  Up: Input and Output Files
+
+Running Normal Output Messages Warnings and Errors
+==================================================
+
+   Normal is a compiled program, so should be executable from the
+command interface on your computer.  Normal writes the name of each
+file containing the data as it is processed.  If Normal encounters a
+problem, the run-time messages will describe it.  If the problem is
+serious, Normal will complain and stop running.  The error messages
+that Normal writes should supply enough information to correct the
+problems encountered.  If this is not true, contact .
+
+
+File: normal.info,  Node: Output Files,  Next: Data File Formats,  Prev: Running Normal Output Messages Warnings and Errors,  Up: Input and Output Files
+
+Output Files
+============
+
+   As soon as each data set is processed it will be written to the
+output file.  If the output is a UWXAFS binary file, the data set will
+be appended as a new record.  If it is an ASCII file, that file will be
+written to disk.
+
+   This is the naming convention for the output files:
+  1.  If an output file name is specified in the input file and the the
+     UWXAFS binary format is chosen for the output file, that name will
+     be used verbatim.
+
+  2.  If no output file name is specified and the UWXAFS binary format
+     is chosen, the extension of the input file will be replaced with
+     the extension `nor' for the normalized data and with `der' for the
+     derivative data.  The extension is defined as all characters after
+     the final dot (.) in the file name.  This definition of extension
+     is unambiguous on all operating systems.
+
+  3.  If an output file name is specified and the ASCII format is
+     chosen, then successive output files are differentiated by adding
+     numeric extensions.  The standard will have the extension `001',
+     the next data set will have `002', and so on.
+
+  4.  If no output file name is specified and the ASCII format is
+     chosen, each output file will be named by appending `_norm' or
+     `_der' to the filename before the extension.  Note that on MS DOS
+     machines, this may cause the file name to exceed eight characters.
+
+
+File: normal.info,  Node: Data File Formats,  Prev: Output Files,  Up: Input and Output Files
+
+Data File Formats
+=================
+
+   As for all UWXAFS3.0 data analysis programs, there are two options
+for the format of the data files.  The data may be in either a specially
+formatted binary file known as a UWXAFS file (also called an RDF file),
+or in a specially formatted ASCII column file.  More information on
+these file formats, including the format specifications and a
+discussion of the relative merits of the two file formats can be found
+in the UWXAFS3.0 document `fileh.doc'.  The two file handling formats
+can be mixed in Normal, so that the input data can be in the UWXAFS
+format and the output data can be in the ASCII format, or vice versa.
+
+   If the input data is in UWXAFS format, it must be in a file of file
+type `xmu'.  Both the file name and record key (either nkey or skey)
+must be specified for the input.  Output files in the UWXAFS format
+will be written to a single file.  Output files in the ASCII format
+will be written to files named by the convention described above.
+
+   If the input data is in ASCII format, it must be in a file with one
+or more document lines, followed by a required line of minus signs ( -
+), followed by an ignored line containing column labels, and then
+columns of numerical data for x, and y(x).
+
+   Output files in the ASCII format will each contain only one set of
+data, and will be named as described above.  They will be written to a
+two column file with a header like that described above.  Each line in
+the header will begin with a hash (#), which is the character denoting a
+comment line in the plotting program Gnuplot.
+
+
+File: normal.info,  Node: Keywords,  Next: References and Program Notes,  Prev: Input and Output Files,  Up: Top
+
+Keywords
+********
+
+   The input file for Normal is an ascii text file containing keywords
+and values associated with those keywords.  A simple syntax is used.
+Keywords and their values are delimited by white spaces, where white
+space can be any number of spaces or tabs and one comma (,) or equals
+sign (=).  Most keywords have one value associated with them.  The
+keyword `files' is special.  It must be the last keyword in the input
+file and it precedes the list of files containing data to be normalized
+and aligned.  Each filename following the `files' keyword must be on
+its own line.  See *Note Example Input File::  for an example input
+file.
+
+* Menu:
+
+* A Brief List of the Keywords::
+* Full Explanation of Keywords::
+
+
+File: normal.info,  Node: A Brief List of the Keywords,  Next: Full Explanation of Keywords,  Up: Keywords
+
+A Brief List of the Keywords
+============================
+
+  1. ` !, %, #  ' characters denoting comments
+
+  2. ` outfile ' name of output file
+
+  3. ` format ' i/o file format
+
+  4. ` formin ' input file format
+
+  5. ` formout ' output file format
+
+  6. ` e0 ' edge energy of standard
+
+  7. ` ee ' edge energy of standard
+
+  8. ` pre1 ' beginning energy for pre-edge subtraction
+
+  9. ` pre2 ' end energy for pre-edge subtraction
+
+ 10. ` nor1 ' beginning energy for normalization
+
+ 11. ` nor2 ' end energy for normalization
+
+ 12. ` emax ' end energy for alignment fit
+
+ 13. ` nofit ' flag to only normalize data
+
+ 14. ` noalign ' flag to only normalize data
+
+ 15. ` derivative ' flag to calculate and write derivative function
+
+ 16. ` norm ' flag to only normalize data
+
+ 17. ` end ' flag to end reading input file
+
+ 18. ` files ' flag indicating that data filenames follow
+
+
+File: normal.info,  Node: Full Explanation of Keywords,  Prev: A Brief List of the Keywords,  Up: Keywords
+
+Full Explanation of Keywords
+============================
+
+`!, %, and #'
+     These characters denote comments in the input file.  Anything on a
+     line following any one of these characters will be ignored.
+
+`Outfile'
+     This is the name for the file(s) containing the aligned data.  If
+     no output file name is specified, the input file name will be used
+     with the extension changed to `nor' or with `_norm' added to the
+     filename.  The file extension is defined as all characters after
+     the final dot (.) in the file name.  This definition meets the
+     definition of an extension in DOS and VMS, and is well defined in
+     a Unix environment.
+
+`Format, Formin, Formout'
+     These specify the formats for the input and output data files.  By
+     default, files are read in the ASCII format.  The other option is
+     the UWXAFS format.  The `format' keyword specifies both input and
+     output format.  Note that the input and output formats do not need
+     to be the same.
+
+`e0, ee'
+     This specifies the edge energy of the standard data set.
+
+`pre1, pre2'
+     These specify the beginning and end values of the energy range to
+     be used for the pre-edge subtraction.  These values are relative to
+     the edge energy, e0, as specified in the input file.  Their default
+     values are -200 and -50, respectively.  Note that pre1 is lower in
+     energy than pre2.
+
+`nor1, nor2'
+     These specify the beginning and end values of the energy range to
+     be used for the normalization.  These values are relative to the
+     edge energy, e0, as specified in the input file.  Their default
+     values are 100 and 500, respectively.  Note that nor1 is lower in
+     energy than nor2.
+
+`emax'
+     This specifies the largest energy value used in the alignment fit.
+     The value is relative to the edge energy, e0, as specified in the
+     input file.  If unspecified, it is the last energy point in the
+     standard or in the data, whichever is smaller.  If there are
+     features in either the standard or the data that might bias the
+     fit, for instance glitches or Bragg peaks, it may improve the
+     quality of the alignment to specify emax such that these features
+     are avoided.  Generally, however, the default for emax should
+     produce the most reliable alignment.
+
+`nofit, noalign, norm'
+     These keywords are synonymous.  They are flags telling Normal to
+     skip the alignment fit and only normalize the input data.  These
+     keywords take no value, simply placing one in the input file tells
+     the code to skip the alignment.  The default is to align the data.
+
+`derivative'
+     This keyword is a logical flag telling Normal to calculate the
+     derivative of the normalized data.  This keyword takes no value,
+     simply placing it in the input file tells the code to perform this
+     calculation.  The default is to not calculate and write the
+     derivative functions.
+
+`end'
+     When this keyword is encountered in the input file, Normal will
+     stop reading the input file and begin processing the data.
+     Everything after this keyword in the input file will be ignored.
+     This keyword takes no value.
+
+`files'
+     This keyword tells Normal to go to the next line and begin reading
+     the names of the input data files.  This must be the last keyword
+     in the input file.  Each input filename must be on its own line.
+     Every thing on the line after the filename is assumed to be a
+     comment unique to that data set.  This comment will be written to
+     the header of the output data file.  If the UWXAFS binary format is
+     used for the input data, the nkey or skey follow the filename and
+     everything after the key is assumed to be the comment.  If the
+     comment begins with one of the comment characters then it will be
+     ignored and not written to the header of the output file.
+
+
+File: normal.info,  Node: References and Program Notes,  Next: Example Input File,  Prev: Keywords,  Up: Top
+
+References and Program Notes
+****************************
+
+   If you have any good suggestions for expanding the functionality of
+Normal, please contact .
+
+* Menu:
+
+* Bibliography::
+* Copyright Issues::
+* Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs::
+* Source Code Parameters::
+* Code Portability and Code Compilation::
+* Adding More Data Formats to Normal::
+* About this document-::
+
+
+File: normal.info,  Node: Bibliography,  Next: Copyright Issues,  Up: References and Program Notes
+
+Bibliography
+============
+
+  1.  Bevington, Philip R., `Data Reduction and Error Analysis for the
+     Physical Sciences', McGraw-Hill, New York, (1969)
+
+  2.  `Netlib' software archive,
+
+  3.  Press, W.H., S.A. Teukolsky, W.T. Vettering, B.P. Flannery
+     `Numerical Recipes in Fortran, The Art of Scientific Programming',
+     Cambridge University Press, (1992)
+
+  4.  Stern, E.A. and Heald, S.M. `Basic Priciple and Applications of
+     EXAFS', chapter 10 from `Handbook on Synchrotron Radiation' E.E.
+     Kock, ed., North Holland (1983)
+
+
+File: normal.info,  Node: Copyright Issues,  Next: Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs,  Prev: Bibliography,  Up: References and Program Notes
+
+Copyright Issues
+================
+
+   Normal uses the `MINPACK' package of subroutines from AT&T's Netlib
+repository.  This is freely available software.  Several other
+algorithms are taken from `Numerical Recipes' by Press, `et al.'  By
+the terms stated in that book, the algorithms contained therein are
+freely available to anyone who transcribes them.  The rest of routines
+in Normal are copyright of the University of Washington.  Version
+numbers below 1.0 are not licensed software, but are only released to
+holders of the UWXAFS3.0 software license.  The terms of that agreement
+apply.
+
+
+File: normal.info,  Node: Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs,  Next: Source Code Parameters,  Prev: Copyright Issues,  Up: References and Program Notes
+
+Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs
+===============================================================
+
+   If you do not have a license to use FEFF or the UWXAFS analysis
+programs and are interested in obtaining one contact:
+
+   Ed Stern c/o UWXAFS Project University of Washington Department of
+Physics, FM-15 Seattle WA, 98195, USA phone: (206) 543-2023 fax: (206)
+543-0635 electronic mail: stern@phys.washington.edu url:
+http://krazy.phys.washington.edu/people/ed.html
+
+   or
+
+   John Rehr c/o FEFF Project University of Washington Department of
+Physics, FM-15 Seattle WA, 98195, USA phone: (206) 543-8593 fax: (206)
+543-0635 electronic mail: jjr@phys.washington.edu
+url=http://pauli.phys.washington.edu/~jjr/
+
+   You should request copies of the licensing agreements for Feff and
+the UWXAFS programs.  These are licensed separately.  atoms is
+distributed with both packages.
+
+
+File: normal.info,  Node: Source Code Parameters,  Next: Code Portability and Code Compilation,  Prev: Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs,  Up: References and Program Notes
+
+Source Code Parameters
+======================
+
+   Normal is shipped with the following hard-wired parameters:
+           parameter (nptx=2**11, nfilx=50, ndocx=25)
+
+   These parameters are defined as follows:
+
+``nptx''
+     max number of input or output data points
+
+``nrangx''
+     max number of data sets to process
+
+``ndocx''
+     max number of documents in i/o data
+
+   If any of these are too small, they can be changed in the source code
+and the source code can be recompiled.
+
+
+File: normal.info,  Node: Code Portability and Code Compilation,  Next: Adding More Data Formats to Normal,  Prev: Source Code Parameters,  Up: References and Program Notes
+
+Code Portability and Code Compilation
+=====================================
+
+   The 1977 ANSI Standard for Fortran has been followed closely, so that
+feffit should easily compile on any machine and run without any
+problems.  The only significant departures from Fortran 77 are the
+assumption of the ASCII character set and the use of `integer*2'
+variables for the UWXAFS binary file handling routines.  A non standard
+trick is occasionally used in manipulating character strings, but the
+author has never seen this fail on any machine in his experience.
+
+   There are, unfortunately, aspects of Fortran which are machine- and
+compiler-dependent by design.  One such aspect occurs in Normal in the
+form of a compiler-dependent dimension for the "word-length" of the
+data in the UWXAFS binary files.  The code cannot easily be made truly
+standard without significant changes to the UWXAFS binary file handling
+routines.  The distributed code will, however, work on most machines,
+with the notable exception of a Vax.  Changing the first executable
+statement of Normal from `lvax = .false.' to `lvax = .true.' will make
+the code work on a Vax.
+
+   The UWXAFS binary file handling routines also use character strings
+which are 2048 characters long.  Though standard, some compilers need
+to be told to accept character strings this long.  The notable example
+of such a compiler is xlf (for AIX, IBM's Unix flavor), which needs the
+compiler switch "-qcharlen=2048".  While compiling on any machine, we
+recommend including some form of array bounds checking.  And if you
+have any problems with the compilation, it may be worthwhile to turn
+off compiler optimization flags.  There may be some persistent, benign
+compiler warnings when you compile feffit.  There may also be
+"comparison is always false" warnings when using f2c.  These can both
+be safely ignored.
+
+
+File: normal.info,  Node: Adding More Data Formats to Normal,  Next: About this document-,  Prev: Code Portability and Code Compilation,  Up: References and Program Notes
+
+Adding More Data Formats to Normal
+==================================
+
+   If the two data file formats (UWXAFS, ASCII) are not acceptable or
+convenient to your needs (that is, if you prefer using some other
+format), other choices could be added with a minimal amount of coding.
+The input and output of data files is fairly well-isolated, with
+subroutine `inpdat' and `outdat' controlling which data format to use.
+If you'd like another file format either contact us about it or follow
+the example of the routines `inpcol' and `outcol', which read and write
+files in the ASCII column data format.
+
+
+File: normal.info,  Node: About this document-,  Prev: Adding More Data Formats to Normal,  Up: References and Program Notes
+
+About this document-
+====================
+
+   This document was composed using a mark-up language called
+`linuxdoc-sgml'.  This is the documentation standard of the .
+`linuxdoc-sgml' is an adaptation of the QWERTZ document type definition
+written by Tom Gordon.  `linuxdoc-sgml' is available on .
+
+   The value of a Standard Generalized Markup Language (SGML) is that it
+can be processed into any number of formats from a common source.
+Using `linuxdoc-sgml', a single marked up file can be used to produce
+LaTeX, PostScript, plain ASCII, HTML, TeXinfo, or dvi documentation.
+
+
+File: normal.info,  Node: Example Input File,  Prev: References and Program Notes,  Up: Top
+
+Example Input File
+******************
+
+   Here is the input file the author used to align some data taken on a
+single crystal of Lead Titanate.    The K-edge energy of titanium is
+specified by the `e0' keyword.  The file format and output file names
+are specified on the next line.  The list of input filenames follows
+the `files' keyword.  Note that numeric keys are specified  for each
+data set.
+             e0 = 4966
+             format = uwxafs         out = tipb_c.nor
+             nor1 = 171      nor2 = 261
+             pre1 = -100     pre2=-29
+             emax = 134
+             files
+                     tipb_c.xmu  5
+                     tipb_c.xmu  6
+                     tipb_c.xmu  7
+                     tipb_c.xmu  8
+             end
+                     tipb_c.xmu  9
+                     tipb_c.xmu  10
+
+   Normally it is not necessary to specify `pre1', `pre2', `nor1',
+`nor2', and `emax'.  I use them in this example simply as a
+demonstration of these keywords.  The default values will yield
+acceptable results for most data.  The derivatives of the data will not
+be calculated since the `derivative' keyword is not specified.
+
+
+
+Tag Table:
+Node: Top130
+Node: Introduction446
+Node: Input and Output Files3559
+Node: Input Files3826
+Node: Running Normal Output Messages Warnings and Errors4617
+Node: Output Files5331
+Node: Data File Formats6905
+Node: Keywords8591
+Node: A Brief List of the Keywords9434
+Node: Full Explanation of Keywords10420
+Node: References and Program Notes14425
+Node: Bibliography14942
+Node: Copyright Issues15588
+Node: Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs16355
+Node: Source Code Parameters17444
+Node: Code Portability and Code Compilation18133
+Node: Adding More Data Formats to Normal20165
+Node: About this document-20936
+Node: Example Input File21641
+
+End Tag Table

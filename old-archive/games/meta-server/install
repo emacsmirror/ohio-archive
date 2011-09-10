@@ -1,0 +1,90 @@
+#!/usr/local/bin/tcsh
+if ($#argv == 1) then
+   test -d $1
+   if ($status) then    # destination directory doesn't exist, create it
+      mkdir $1
+      echo "Created directory " $1 "..."
+   else
+      echo "Directory " $1 " already exists, installing there..."
+   endif
+
+   test -f meta-server.elc
+   if (! $status) then  # already compiled
+      echo "You already compiled the code..."
+   else
+      echo "Compiling the code..."
+      emacs -nw -batch -f batch-byte-compile meta-server.el > /dev/null
+      test -f meta-server.elc
+      if ($status) then
+         echo "Something is wrong with the compiling... aborting."
+         exit 1
+      endif
+   endif
+   cp meta-server.el meta-server.elc $1
+   if (! $status) then
+      echo "Successfully copied the lisp files to "$1"."
+   else
+      echo "There was an error copying to " $1 "."
+      exit 1
+   endif
+
+   echo "Do you want me to add "$1" to your load-path"
+   echo -n "in your .emacs automatically? (y/n)"
+   set answer = $<
+   if ($answer == "y" || $answer == "Y") then
+      test -f ~/.emacs
+      if (! $status) then   # .emacs already exists
+         echo '(setq load-path (append (list "'$1'") load-path))' >> ~/.emacs
+      else
+	 echo '(setq load-path (append (list "'$1'") load-path))' > ~/.emacs
+      endif   
+      echo "Check the line (setq load-path ...) to make sure it is correct."
+   endif
+
+   echo "Adding auto-loading and keybinding to the end of your .emacs"
+   test -f ~/.emacs
+   if (! $status) then    # .emacs exists
+      echo "(autoload 'metaserver-refresh "'"meta-server" "Netrek info" t)' >> ~/.emacs
+      echo '(global-set-key "\C-c\C-n"'"'metaserver-refresh)" >> ~/.emacs
+   else 
+      echo "(autoload 'metaserver-refresh "'"meta-server" "Netrek info" t)' > ~/.emacs
+      echo '(global-set-key "\C-c\C-n"'"'metaserver-refresh)" >> ~/.emacs
+   endif
+
+   echo -n "Do you want the background package installed also?"
+   set answer = $<
+   if ($answer == "y" || $answer == "Y") then
+      test -f background.el
+      if (! $status) then
+	 cp background.el $1
+      else
+         echo "Could not find background.el in the current directory!"
+	 exit 1
+      endif
+      test -f ~/.emacs
+      if (! $status) then
+	 echo "(autoload 'background"' "background" "Background processes." t)' >> ~/.emacs
+	 echo "(setq metaserver-use-background t)" >> ~/.emacs
+      else
+	 echo "(autoload 'background"' "background" "Background processes." t)' > ~/.emacs
+	 echo "(setq metaserver-use-background t)" >> ~/.emacs
+      endif
+
+      echo -n "Do you have the ck_players program installed anywhere? "
+      set answer = $<
+      if ($answer == "y" || $answer == "Y") then
+	 echo "Please enter the path to the ck_players program.  Enter just"
+	 echo "the name of the binary if it is somewhere in your PATH."
+	 echo -n "Ck_players program: "
+	 set answer = $<
+	 echo "(setq metaserver-auto-fallback t)" >> ~/.emacs
+	 echo "(setq metaserver-ck-players-program" '"'$answer'")' >> ~/.emacs
+      endif
+      
+   endif
+
+   echo "Installation complete..."         
+
+else
+   echo "usage: " $0 " <destination-directory>"
+endif

@@ -1,0 +1,47 @@
+
+Python version 1.0, VM version Intel x86 on 24 JAN 01 06:28:25 pm.
+Compiling: /usr/src/cvs/lisp-brkdb/brkdb.lisp 20 JAN 01 07:35:36 pm
+
+Converted %BRKDB_OPEN.
+Compiling DEF-ALIEN-ROUTINE ("brkdb_open" %BRKDB_OPEN): 
+
+File: /usr/src/cvs/lisp-brkdb/brkdb.lisp
+
+In: DEF-ALIEN-ROUTINE ("brkdb_open" %BRKDB_OPEN)
+  (DEF-ALIEN-ROUTINE ("brkdb_open" %BRKDB_OPEN) (* T) (FILENAME C-STRING))
+--> BLOCK WITH-ALIEN COMPILER-LET SYMBOL-MACROLET VALUES PROG1 LET 
+--> ALIEN-FUNCALL ALIEN::NATURALIZE 
+==>
+  (ALIEN::%SAP-ALIEN ALIEN '#<ALIEN::ALIEN-POINTER-TYPE (* T)>)
+Note: Unable to optimize because:
+      Could not optimize away %SAP-ALIEN: forced to do runtime 
+allocation of alien-value structure.
+
+Converted %BRKDB_PUT.
+Compiling DEF-ALIEN-ROUTINE ("brkdb_put" %BRKDB_PUT): 
+Converted %BRKDB_GET.
+Compiling DEF-ALIEN-ROUTINE ("brkdb_get" %BRKDB_GET): 
+Converted %BRKDB_CLOSE.
+Compiling DEF-ALIEN-ROUTINE ("brkdb_close" %BRKDB_CLOSE): 
+Converted DB-OPEN.
+Compiling DEFUN DB-OPEN: 
+Byte Compiling Top-Level Form: 
+Converted DB-PUT.
+Compiling DEFUN DB-PUT: 
+Byte Compiling Top-Level Form: 
+Converted DB-GET.
+Compiling DEFUN DB-GET: 
+Byte Compiling Top-Level Form: 
+Converted DB-CLOSE.
+Compiling DEFUN DB-CLOSE: 
+Byte Compiling Top-Level Form: 
+Converted WITH-OPEN-DATABASE.
+Compiling DEFMACRO WITH-OPEN-DATABASE: 
+Byte Compiling Top-Level Form: 
+
+Compilation unit finished.
+  1 note
+
+
+src:cvs/lisp-brkdb/brkdb.x86f written.
+Compilation finished in 0:00:00.

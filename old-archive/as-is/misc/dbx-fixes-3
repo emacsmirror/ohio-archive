@@ -1,0 +1,22 @@
+To: unix-emacs@bbn.com
+Date: 6 Mar 89 19:51:43 GMT
+From: rkc <rkc@xn.ll.mit.edu>
+Subject: dbx.el
+
+In the dbx.el file kindly provided by Robert Lupton, if you change the
+variable dbx-break-point to 
+
+	(defvar dbx-break-point
+	  "in .* at line \\([0-9]*\\) in file \"\\([^\"]*\\)\""
+	  "Regexp of pattern that dbx writes at break point.")
+
+Then dbx-where will work for segmentation violations as well as for break
+points.
+
+Now for the question:
+	dbx-where doesn't print out the overlay-arrow-string.
+	It looks like the code is trying to--but it doesn't succeed.
+
+What's wrong?
+	-Rob
+

@@ -1,0 +1,52 @@
+Return-Path: certify@faline.bellcore.com 
+Delivery-Date: Thu, 10 Aug 1995 07:19:56 -0700
+Return-Path: certify@faline.bellcore.com
+Received: from cthulhu.engr.sgi.com by dblues.engr.sgi.com via ESMTP (940816.SGI.8.6.9/940406.SGI.AUTO)
+	for <jackr@dblues.engr.sgi.com> id HAA20490; Thu, 10 Aug 1995 07:19:52 -0700
+Received: from sgi.sgi.com by cthulhu.engr.sgi.com via ESMTP (940816.SGI.8.6.9/911001.SGI)
+	for <jackr@wpd.sgi.com> id HAA01855; Thu, 10 Aug 1995 07:19:51 -0700
+Received: from faline.bellcore.com by sgi.sgi.com via ESMTP (950405.SGI.8.6.12/910110.SGI)
+	for <jackr@wpd.sgi.com> id HAA17077; Thu, 10 Aug 1995 07:19:49 -0700
+Received: (from certify@localhost) by faline.bellcore.com (8.6.9/8.6.10) id KAA21230 for jackr@wpd.sgi.com; Thu, 10 Aug 1995 10:19:46 -0400
+Date: Thu, 10 Aug 1995 10:19:46 -0400
+From: certify@faline.bellcore.com (Avi Rubin)
+Message-Id: <199508101419.KAA21230@faline.bellcore.com>
+To: jackr@cthulhu
+Subject: Betsi certificate
+
+-----BEGIN PGP SIGNED MESSAGE-----
+
+                        Betsi Certificate
+
+CA: Betsi Version 1.0
+Author Name: Jack Repenning
+Author Organization: Silicon Graphics, Inc.
+Hash function: MD5
+Date of certificate creation: 8/10/95
+
+e28e58a5751d4bb88da2bc1737619929  ./pgp.el
+69506d8621d4d2ec57159165f55dd5b5  ./authors.key
+d3c7c1f03c154bb62b27d59dfc25065b  ./CHANGES.pgp.el
+34eaf6d2cdf9b47ddec53cae77584fd8  ./README
+edbb0111a59a14469deed84fcd4fd005  ./pgp-bbdb.el
+fef16954e74a2197b1b9f256122b0323  ./CHANGES.pgp-bbdb.el
+8ff0f6ea6a86d6ba5ec67cd966e746e1  ./ancillary/advice.el
+5bc940c5b7431ff3cba5e32ac6fd21ab  ./ancillary/passwd.el
+d18ecdfee74a1ebe491624d0ed1914c4  ./ancillary/README
+722ebaa77773e290bbd0d6238d46f713  ./ancillary/reporter.el
+c10d7817f9eb524837fe95aa72140b01  ./ReleaseNotes
+
+For info. on Betsi, send mail to certify@bellcore.com
+with subject: help.
+
+Betsi home page: http://info.bellcore.com/BETSI/betsi.html
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.7
+
+iQCVAwUBMCoVRxPcEwSgd4ahAQHbrAP/XnU2DPUb0SojhQcb2w8flFu+S/Y9v4HO
+UIeJvhuDdVaXEQ1LyoOGsdeXsTOcwzLv/q+VbHuora0sJTc5GmrSys6jUX3oicbx
+H3uYh3vF4CWZcubyNLvr2r4xuK70xW/BB53PkZTTzdddZQ0E1UyaiO2p8Krtd06f
+iobz0OUduKs=
+=uvPa
+-----END PGP SIGNATURE-----

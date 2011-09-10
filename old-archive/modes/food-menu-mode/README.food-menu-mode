@@ -1,0 +1,25 @@
+	This is food-menu-mode.el, an Emacs major mode for planning
+meals at restaurants.  It takes care of adding up the prices of
+dishes, figuring tax and tip, etc.  It requires Emacs 19 or higher,
+due to floating-point calculations and some other dependencies.  It is
+designed to be used with menu-format documents, an example of which is
+included here (see the file mandarin.mnu).  An explanation of
+menu-format is included in food-menu-mode.el.
+
+	Please send comments/bugs/suggestions to Karl Fogel,
+kfogel@cs.oberlin.edu.  Installation and usage instructions can be
+found at the beginning of food-menu-mode.el.
+
+	It would be nice if people would put other restaurant menus
+into menu-format.  My dream is a world-wide database of
+restaurant-menus, accessible via ftp or something.  For now, I'll
+archive them at cs.oberlin.edu for anon ftp, if you send them to me.
+
+	Anyway, the rest of what you need to know is at the beginning
+of food-menu-mode.el.  I'd love to hear what you think of it, even if
+you don't have a bug report!
+
+	Thanks,
+	karl fogel
+	kfogel@cs.oberiln.edu
+

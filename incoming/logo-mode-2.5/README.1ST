@@ -1,0 +1,23 @@
+To install Emacs logo-mode cd to the directory where you extracted
+logo-mode-2.5.tar.gz, and edit makefile to suit the situation on your
+system. Lines to be edited are at the top of the file, and each is
+clearly commented. You *must* change at least two lines (starting with
+USERDIR and USERACCNT).
+
+To compile and install logo-mode you will (probably) have to be logged
+in as root. Then say:
+
+	"make"
+
+This will compile and install logo-mode, and run a short check. For
+further info see the readme file in this directory.
+
+If make barfs on "make", try using gmake:
+
+	"gmake"
+
+If this doesn't work either, you don't have GNU make installed. 
+Install logo-mode manually, or install GNU make first.
+
+One last remark; logo-mode can not be used if you don't have emacs
+20.+ installed on your system.

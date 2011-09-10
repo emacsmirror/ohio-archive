@@ -1,0 +1,5 @@
+1. Better checking of whether to save the .metaserver file.
+
+2. Make so can't move cursor above the '-----' line.
+   a. metaserver-previous-line - go up, if looking-at -, bomb and move
+      back down   

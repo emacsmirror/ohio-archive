@@ -1,0 +1,1817 @@
+From mike@ists.ists.ca Wed Sep 12 23:55:52 1990
+From: mike@ists.ists.ca (Mike Clarkson)
+Subject: LaTeXinfo - patch to version 1.3.2
+Date: 25 Aug 90 05:05:34 GMT
+Organization: Institute for Space and Terrestrial Science
+
+
+This is the third patch to LaTeXinfo, which brings it to version 1.3.2.
+Unshar this file with
+
+	unshar file
+
+or delete the head and foot of the message by hand and feed it to /bin/sh
+
+	sh < file
+
+Then patch the distribution with
+
+	patch -p0 < patch.3
+
+You should be able to update the distribution with
+
+	make
+
+mike@ists.ists.ca
+
+-------------------------------------------------------------------------------
+
+#! /bin/sh
+# This is a shell archive.  Remove anything before this line, then unpack
+# it by saving it into a file and typing "sh file".  To overwrite existing
+# files, type "sh file -c".  You can also feed this as standard input via
+# unshar, or by typing "sh <file", e.g..  If this archive is complete, you
+# will see the following message at the end:
+#		"End of shell archive."
+# Contents:  patch.3
+# Wrapped by mike@sam on Sat Aug 25 00:35:59 1990
+PATH=/bin:/usr/bin:/usr/ucb ; export PATH
+if test -f 'patch.3' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'patch.3'\"
+else
+echo shar: Extracting \"'patch.3'\" \(74654 characters\)
+sed "s/^X//" >'patch.3' <<'END_OF_FILE'
+Xdiff -cr /tmp/old1.3.1/CHANGES ./CHANGES
+X*** /tmp/old1.3.1/CHANGES	Wed Jul 25 13:20:48 1990
+X--- ./CHANGES	Sat Aug 25 00:27:40 1990
+X***************
+X*** 21,23 ****
+X--- 21,29 ----
+X  1.3.1	Second Patch - June 24, 1990
+X  	Fixed a blunder that broke the description environment.
+X  	Changed the manual to tell people to use .login instead .cshrc.
+X+ 
+X+ 1.3.2	Third Patch - Auguest 25, 1990
+X+ 	Fixed bug in synindex
+X+ 	Fixed the description environment.
+X+ 	Changed the manual to incorporate the proofreading from Nelson Beebe.
+X+ 	Added \\ to replace the \* command.
+Xdiff -cr /tmp/old1.3.1/MANIFEST ./MANIFEST
+X*** /tmp/old1.3.1/MANIFEST	Wed Jul 25 13:20:48 1990
+X--- ./MANIFEST	Sat Aug 25 00:27:40 1990
+X***************
+X*** 19,28 ****
+X   manual/Makefile            1	
+X   manual/README              1	
+X   manual/latexinfo-aa        7	
+X!  manual/latexinfo-ab        5	
+X!  manual/latexinfo-ac        3	
+X   manual/latexinfo-ad        6	
+X!  manual/latexinfo-ae        4	
+X   manual/latexinfo.bbl       1	
+X   manual/latexinfo.bib       1	
+X   manual/makeinfo.el         1	
+X--- 19,28 ----
+X   manual/Makefile            1	
+X   manual/README              1	
+X   manual/latexinfo-aa        7	
+X!  manual/latexinfo-ab        4	
+X!  manual/latexinfo-ac        3	
+X   manual/latexinfo-ad        6	
+X!  manual/latexinfo-ae        5	
+X   manual/latexinfo.bbl       1	
+X   manual/latexinfo.bib       1	
+X   manual/makeinfo.el         1	
+Xdiff -cr /tmp/old1.3.1/latexinfo.el ./latexinfo.el
+X*** /tmp/old1.3.1/latexinfo.el	Wed Jul 25 13:21:42 1990
+X--- ./latexinfo.el	Sat Aug 25 00:28:30 1990
+X***************
+X*** 40,46 ****
+X  (put 'latexinfoversion 'latexinfo-format 'latexinfo-format-latexinfoversion)
+X  (defun latexinfo-format-latexinfoversion ()
+X    (latexinfo-parse-noarg)
+X!   (insert "1.3.1"))
+X  
+X  (defvar latexinfo-format-syntax-table nil)
+X  
+X--- 40,46 ----
+X  (put 'latexinfoversion 'latexinfo-format 'latexinfo-format-latexinfoversion)
+X  (defun latexinfo-format-latexinfoversion ()
+X    (latexinfo-parse-noarg)
+X!   (insert "1.3.2"))
+X  
+X  (defvar latexinfo-format-syntax-table nil)
+X  
+X***************
+X*** 761,767 ****
+X  
+X  (put 'description 'latexinfo-format 'latexinfo-description)
+X  (defun latexinfo-description ()
+X!   (latexinfo-push-stack 'description 0)
+X    (setq fill-column (- fill-column 5))
+X    (latexinfo-discard-line))
+X  
+X--- 761,767 ----
+X  
+X  (put 'description 'latexinfo-format 'latexinfo-description)
+X  (defun latexinfo-description ()
+X!   (latexinfo-push-stack 'description "")
+X    (setq fill-column (- fill-column 5))
+X    (latexinfo-discard-line))
+X  
+X***************
+X*** 773,778 ****
+X--- 773,784 ----
+X  	 (latexinfo-pop-stack 'description)))
+X      (latexinfo-do-itemize (nth 1 stacktop))))
+X  
+X+ (put 'description 'latexinfo-item 'latexinfo-description-item)
+X+ (defun latexinfo-description-item ()
+X+   (let ((arg (latexinfo-parse-arg-discard)))
+X+     (insert ?\b arg "\n     \n"))
+X+   (forward-line -2))
+X+ 
+X  ;; At the \end, indent all the lines within the construct
+X  ;; except those marked with backspace.  FROM says where
+X  ;; construct started.
+X***************
+X*** 804,816 ****
+X      (setcar (cdr (car latexinfo-stack)) next)
+X      (insert ?\b (format "%3d. " next) ?\n))
+X    (forward-line -1))
+X- 
+X- (put 'description 'latexinfo-item 'latexinfo-description-item)
+X- (defun latexinfo-description-item ()
+X-   (let ((arg (latexinfo-parse-arg-discard))
+X- 	(itemfont (car (cdr (car latexinfo-stack)))))
+X-     (insert ?\b itemfont ?\{ arg "}\n     \n"))
+X-   (forward-line -2))
+X  
+X  
+X  (put 'ifinfo 'latexinfo-format 'latexinfo-discard-line)
+X--- 810,815 ----
+Xdiff -cr /tmp/old1.3.1/latexinfo.sty ./latexinfo.sty
+X*** /tmp/old1.3.1/latexinfo.sty	Wed Jul 25 13:21:10 1990
+X--- ./latexinfo.sty	Sat Aug 25 00:27:57 1990
+X***************
+X*** 3,9 ****
+X  %   Copyright (C) 1985, 1986 Richard M. Stallman
+X  %   Copyleft  (0) 1988, 1989 Michael E. Clarkson
+X  
+X! \def\latexinfoversion{1.3.1}
+X  \message{Loading Latexinfo package [Version \latexinfoversion]:}
+X  \message{}
+X  
+X--- 3,9 ----
+X  %   Copyright (C) 1985, 1986 Richard M. Stallman
+X  %   Copyleft  (0) 1988, 1989 Michael E. Clarkson
+X  
+X! \def\latexinfoversion{1.3.2}
+X  \message{Loading Latexinfo package [Version \latexinfoversion]:}
+X  \message{}
+X  
+X***************
+X*** 338,344 ****
+X  % \synindex{foo}{bar}    makes index foo feed into index bar.
+X  \def\synindex#1#2{\expandafter\xdef \csname @#1index\endcsname{%
+X  	\noexpand\csname @#2index\endcsname}%
+X! \expandafter \chardef \csname @#1indfile\endcsname=\csname @#2indfile\endcsname}
+X  
+X  
+X  % Define the macros used in formatting output of the sorted index material.
+X--- 338,344 ----
+X  % \synindex{foo}{bar}    makes index foo feed into index bar.
+X  \def\synindex#1#2{\expandafter\xdef \csname @#1index\endcsname{%
+X  	\noexpand\csname @#2index\endcsname}%
+X! \expandafter \chardef \csname @#1indexfile\endcsname=\csname @#2indexfile\endcsname}
+X  
+X  
+X  % Define the macros used in formatting output of the sorted index material.
+XCommon subdirectories: /tmp/old1.3.1/manual and ./manual
+Xdiff -cr /tmp/old1.3.1/manual/latexinfo.tex ./manual/latexinfo.tex
+X*** /tmp/old1.3.1/manual/latexinfo.tex	Wed Jul 25 13:21:56 1990
+X--- ./manual/latexinfo.tex	Sat Aug 25 00:28:49 1990
+X***************
+X*** 61,67 ****
+X  
+X  \begin{ifinfo}
+X  This file documents \LaTeX info, a documentation system that uses a single
+X! source file to produce both on-line help and a printed manual.  
+X  
+X  This is edition \latexinfoversion\ of the \LaTeX info documentation, and is 
+X  for Version 18 of GNU Emacs.\refill
+X--- 61,67 ----
+X  
+X  \begin{ifinfo}
+X  This file documents \LaTeX info, a documentation system that uses a single
+X! source file to produce both on--line help and a printed manual.  
+X  
+X  This is edition \latexinfoversion\ of the \LaTeX info documentation, and is 
+X  for Version 18 of GNU Emacs.\refill
+X***************
+X*** 144,156 ****
+X  so that any problems introduced by others will not reflect on our
+X  reputation.
+X  
+X!   The precise conditions of the licenses for the programs currently
+X! being distributed that relate to \LaTeX info are found in the General Public
+X! Licenses that accompany them.  The programs that are part of GNU Emacs
+X! are covered by the GNU Emacs copying terms 
+X! (\pxref{License, , , emacs, The GNU Emacs Manual}), 
+X! and other programs are covered by licenses that are contained in their 
+X! source files.
+X  
+X  \node Overview of LaTeXinfo, Advantages of LaTeXinfo over TeXinfo, Licensing Information, Top
+X  \chapter{Overview of LaTeXinfo}
+X--- 144,155 ----
+X  so that any problems introduced by others will not reflect on our
+X  reputation.
+X  
+X! The precise conditions of the licenses for the programs currently being
+X! distributed that relate to \LaTeX info are found in the General Public
+X! Licenses that accompany them.  The programs that are part of GNU Emacs are
+X! covered by the GNU Emacs copying terms (\pxref{License, , , emacs, The GNU
+X! Emacs Manual}), and other programs are covered by licenses that are
+X! contained in their source files.
+X  
+X  \node Overview of LaTeXinfo, Advantages of LaTeXinfo over TeXinfo, Licensing Information, Top
+X  \chapter{Overview of LaTeXinfo}
+X***************
+X*** 158,165 ****
+X  \cindex{LaTeXinfo overview}
+X  
+X  \LaTeX info is a documentation system that uses a single source file for both
+X! on-line help and a printed manual.  This means that instead of writing two
+X! different documents, one for the on-line help and the other for the printed
+X  manual, only one document needs to be written.  When the system is revised,
+X  only one file has to be revised.\refill
+X  
+X--- 157,164 ----
+X  \cindex{LaTeXinfo overview}
+X  
+X  \LaTeX info is a documentation system that uses a single source file for both
+X! on--line help and a printed manual.  This means that instead of writing two
+X! different documents, one for the on--line help and the other for the printed
+X  manual, only one document needs to be written.  When the system is revised,
+X  only one file has to be revised.\refill
+X  
+X***************
+X*** 166,192 ****
+X  Using \LaTeX info, you can create a document with the normal features of a
+X  book such as chapters, sections, cross references and indices.  The
+X  chapters and sections of the printed manual can be made to correspond to
+X! the nodes of the on-line help.  The cross references and indices can be
+X! used in both the on-line help and in the printed document.  Indices are
+X  generated semi-automatically.\refill
+X  
+X  To make the printed manual, the \LaTeX info source file is processed by the
+X  \LaTeX\ typesetting program; the resulting DVI file can be typeset and
+X! printed as a book.  To make the on-line help, the \LaTeX info source file
+X! is by processed the \kbd{M-x latexinfo-format-buffer} command in GNU Emacs;
+X! the resulting Info file should be installed in the \file{info}
+X! directory.\refill
+X  
+X  Since the \LaTeX info source file is used for a dual task---to create both
+X! the on-line help and the printed manual---it must be written in a special
+X  format that uses commands (words preceded by a \samp{\back }) to
+X  indicate chapters, sections, nodes, examples, index entries and the
+X  like.\refill
+X  
+X  Before writing a \LaTeX info source file, you should be familiar with the
+X! on-line Info documentation reading program.  (\inforef{Info, info, info},
+X  for more information.)  If you are writing a document that will be both
+X! on-line and printed, you will need both Info and \LaTeX.
+X  
+X  To make a printed manual, you need to use \LaTeX, which is based on the
+X  powerful, sophisticated typesetting program written by Donald Knuth,
+X--- 165,191 ----
+X  Using \LaTeX info, you can create a document with the normal features of a
+X  book such as chapters, sections, cross references and indices.  The
+X  chapters and sections of the printed manual can be made to correspond to
+X! the nodes of the on--line help.  The cross references and indices can be
+X! used in both the on--line help and in the printed document.  Indices are
+X  generated semi-automatically.\refill
+X  
+X  To make the printed manual, the \LaTeX info source file is processed by the
+X  \LaTeX\ typesetting program; the resulting DVI file can be typeset and
+X! printed as a book.  To make the on--line help file, the \LaTeX info source
+X! file is by processed the \kbd{M-x latexinfo-format-buffer} command from
+X! within GNU Emacs; the resulting Info file should then be installed in the
+X! \file{info} directory.\refill
+X  
+X  Since the \LaTeX info source file is used for a dual task---to create both
+X! the on--line help and the printed manual---it must be written in a special
+X  format that uses commands (words preceded by a \samp{\back }) to
+X  indicate chapters, sections, nodes, examples, index entries and the
+X  like.\refill
+X  
+X  Before writing a \LaTeX info source file, you should be familiar with the
+X! on--line Info documentation reading program.  (\inforef{Info, info, info},
+X  for more information.)  If you are writing a document that will be both
+X! on--line and printed, you will need both Info and \LaTeX.
+X  
+X  To make a printed manual, you need to use \LaTeX, which is based on the
+X  powerful, sophisticated typesetting program written by Donald Knuth,
+X***************
+X*** 228,234 ****
+X  \begin{enumerate}
+X  
+X  \item
+X! The point size or layout style of a document can be changed easily using
+X  as can the \code{documentstyle} (\t{article, report, book, twoside, \dots}).
+X  
+X  \item
+X--- 227,233 ----
+X  \begin{enumerate}
+X  
+X  \item
+X! The point size or layout style of a document can be changed easily,
+X  as can the \code{documentstyle} (\t{article, report, book, twoside, \dots}).
+X  
+X  \item
+X***************
+X*** 242,248 ****
+X  a \LaTeX info command starts, and where it ends.
+X  
+X  \item
+X! Any \LaTeX\ commands not understood by the on-line manual generator
+X  (\file{latexinfo.el}) are simply ignored.  This means that you are free to add
+X  a considerable number of \LaTeX\ commands to make you manual look pretty,
+X  as long as you don't care that there will be no action taken by the 
+X--- 241,247 ----
+X  a \LaTeX info command starts, and where it ends.
+X  
+X  \item
+X! Any \LaTeX\ commands not understood by the on-line manual generator\\
+X  (\file{latexinfo.el}) are simply ignored.  This means that you are free to add
+X  a considerable number of \LaTeX\ commands to make you manual look pretty,
+X  as long as you don't care that there will be no action taken by the 
+X***************
+X*** 253,259 ****
+X  by making GNU Emacs handlers for your \LaTeX\ extensions.  This is
+X  the Emacs counterpart to the \code{documentstyle} options.  \LaTeX info looks
+X  in a specified directory for GNU Elisp code that corresponds to each
+X! style file.  This makes it easy to modularize you style files.
+X  
+X  \item \LaTeX\ has many advantages over \TeX, such as being able to
+X  incorporate the Bib\TeX\ bibliography formatting program, and is much more
+X--- 252,258 ----
+X  by making GNU Emacs handlers for your \LaTeX\ extensions.  This is
+X  the Emacs counterpart to the \code{documentstyle} options.  \LaTeX info looks
+X  in a specified directory for GNU Elisp code that corresponds to each
+X! style file.  This makes it easy to modularize your style files.
+X  
+X  \item \LaTeX\ has many advantages over \TeX, such as being able to
+X  incorporate the Bib\TeX\ bibliography formatting program, and is much more
+X***************
+X*** 426,439 ****
+X  \end{verbatim}
+X  
+X  \noindent
+X! The \samp{\back documentstyle[12pt,latexinfo]} line tells
+X! \LaTeX\ to use the \file{latexinfo.sty} style file.  The \code{\back
+X! pagestyle\{headings\}} command is the \LaTeX\ command to put the chapter
+X! and section headings and page numbers at the top of each page.  The
+X! \code{\back begin\{document\}} command starts the document, and makes
+X  the characters \code{# $ % ^ \& _ |} all begin to print as normal
+X! characters.  This line must be followed (sooner or later) by the
+X! \samp{\back setfilename\{\var{info-file-name}\}}. It is is needed to
+X  provide a name for the Info file to output to.\refill
+X  
+X  \node A Short Sample LaTeXinfo File, Beginning a LaTeXinfo File, General Syntactic Conventions, Overview of LaTeXinfo
+X--- 425,440 ----
+X  \end{verbatim}
+X  
+X  \noindent
+X! The \samp{\back documentstyle[12pt,latexinfo]\{book\}} line tells \LaTeX\
+X! to use the \file{latexinfo.sty} and \file{book.sty} style files.  The
+X! \code{\back pagestyle\{headings\}} command is the \LaTeX\ command to put
+X! the chapter and section headings and page numbers at the top of each page.
+X! The \code{\back begin\{document\}} command starts the document, and makes
+X  the characters \code{# $ % ^ \& _ |} all begin to print as normal
+X! characters.  (These characters retain their normal \LaTeX\ meanings in the
+X! preamble between the \samp{\back documentstyle} and \code{\back
+X! begin\{document\}} commands.) This line must be followed (sooner or later)
+X! by the \samp{\back setfilename\{\var{info-file-name}\}}. It is is needed to
+X  provide a name for the Info file to output to.\refill
+X  
+X  \node A Short Sample LaTeXinfo File, Beginning a LaTeXinfo File, General Syntactic Conventions, Overview of LaTeXinfo
+X***************
+X*** 441,450 ****
+X  \cindex{A Short Sample LaTeXinfo File}
+X  \cindex{Sample LaTeXinfo file}
+X  
+X  A \LaTeX info file looks like the following, which is a complete but very
+X! short \LaTeX info file.  The \code{\back comment} command introduces
+X! comments that will not appear in either the Info file or the printed
+X! manual; they are for the person who reads the \LaTeX info file.
+X  
+X  The first part of the file, from \samp{\back documentstyle} through to
+X  \samp{\back setfilename}, looks more intimidating than it is.  Most of the
+X--- 442,454 ----
+X  \cindex{A Short Sample LaTeXinfo File}
+X  \cindex{Sample LaTeXinfo file}
+X  
+X+ \findex{c}
+X+ \findex{comment}
+X+ 
+X  A \LaTeX info file looks like the following, which is a complete but very
+X! short \LaTeX info file.  The \code{\back comment} or \code{\back c} command
+X! introduces comments that will not appear in either the Info file or the
+X! printed manual; they are for the person who reads the \LaTeX info file.
+X  
+X  The first part of the file, from \samp{\back documentstyle} through to
+X  \samp{\back setfilename}, looks more intimidating than it is.  Most of the
+X***************
+X*** 451,457 ****
+X  material is standard boilerplate; when you write a manual, you just put in
+X  the name of your own manual in this section.\refill
+X  
+X! All the commands that tell \LaTeX\ how to typeset the printed manual and tell\*
+X  \code{latexinfo-format-buffer} how to create an Info file are preceded
+X  by \samp{\back }; thus, \code{\back node} indicates a node and 
+X  \code{\back chapter} indicates the start of a chapter.\refill
+X--- 455,461 ----
+X  material is standard boilerplate; when you write a manual, you just put in
+X  the name of your own manual in this section.\refill
+X  
+X! All the commands that tell \LaTeX\ how to typeset the printed manual and tell\\
+X  \code{latexinfo-format-buffer} how to create an Info file are preceded
+X  by \samp{\back }; thus, \code{\back node} indicates a node and 
+X  \code{\back chapter} indicates the start of a chapter.\refill
+X***************
+X*** 477,483 ****
+X  
+X  \c The following commands start the copyright page for the printed manual.
+X  \clearpage
+X! \vpace{0pt plus 1filll}
+X  Copyright \copyright\ year copyright-owner
+X  
+X  Permission is granted to copy and distribute modified versions of this
+X--- 481,487 ----
+X  
+X  \c The following commands start the copyright page for the printed manual.
+X  \clearpage
+X! \vspace{0pt plus 1filll}
+X  Copyright \copyright\ year copyright-owner
+X  
+X  Permission is granted to copy and distribute modified versions of this
+X***************
+X*** 615,624 ****
+X  \cindex{LaTeXinfo file header}
+X  
+X  \LaTeX info files start with at least three lines that provide Info and 
+X! \LaTeX\  with necessary information.  If you want to run \LaTeX\ on just
+X! a part of the \LaTeX info File, you also have to mark these heading lines
+X! with start-of-header and end-of-header lines.\refill
+X  
+X  \begin{menu}
+X  * The First Line of a LaTeXinfo File::
+X  * Titlepage::
+X--- 619,632 ----
+X  \cindex{LaTeXinfo file header}
+X  
+X  \LaTeX info files start with at least three lines that provide Info and 
+X! \LaTeX\  with necessary information.  
+X  
+X+ \begin{verbatim}
+X+ \documentstyle[12pt,latexinfo]{book}
+X+ \pagestyle{headings}
+X+ \begin{document}
+X+ \end{verbatim}
+X+ 
+X  \begin{menu}
+X  * The First Line of a LaTeXinfo File::
+X  * Titlepage::
+X***************
+X*** 700,706 ****
+X  the sample, the \code{\back clearpage} that ends the titlepage is
+X  followed by the somewhat mysterious line that reads: 
+X  \samp{\back vspace*\{0pt plus 1filll\}}.  This is a line that uses
+X! \LaTeX commands to push the copyright notice and the other text 
+X  on the copyright page towards the bottom of the page.  The \code{\back
+X  vspace*} command means to put in white space.  The \samp{0pt plus 1filll}
+X  means to put in zero points of mandatory white space, and as much optional
+X--- 708,714 ----
+X  the sample, the \code{\back clearpage} that ends the titlepage is
+X  followed by the somewhat mysterious line that reads: 
+X  \samp{\back vspace*\{0pt plus 1filll\}}.  This is a line that uses
+X! \LaTeX\ commands to push the copyright notice and the other text 
+X  on the copyright page towards the bottom of the page.  The \code{\back
+X  vspace*} command means to put in white space.  The \samp{0pt plus 1filll}
+X  means to put in zero points of mandatory white space, and as much optional
+X***************
+X*** 795,801 ****
+X  \cindex{Top node}
+X  \cindex{Master menu}
+X  
+X! The \samp{Top} node contains an extensive, master menu for the whole
+X  Info file.  The contents of this node appear only in the Info file.
+X  Nothing in this node should appear in the printed file.  Since a node
+X  line by itself and a menu by itself are not printed, the contents of
+X--- 803,809 ----
+X  \cindex{Top node}
+X  \cindex{Master menu}
+X  
+X! The \samp{Top} node contains an extensive master menu for the whole
+X  Info file.  The contents of this node appear only in the Info file.
+X  Nothing in this node should appear in the printed file.  Since a node
+X  line by itself and a menu by itself are not printed, the contents of
+X***************
+X*** 812,818 ****
+X  \begin{itemize}
+X  
+X  \item
+X! The first part contains the major nodes in the \LaTeX info file: the
+X  
+X  \item
+X  The second part contains entries for the indices.  In an Info file, it
+X--- 820,826 ----
+X  \begin{itemize}
+X  
+X  \item
+X! The first part contains the major nodes in the \LaTeX info file.
+X  
+X  \item
+X  The second part contains entries for the indices.  In an Info file, it
+X***************
+X*** 1158,1164 ****
+X  You could put variables into the function index by writing \code{\back findex}
+X  commands for them instead of \code{\back vindex} commands, and produce a
+X  consistent manual by printing the function index with the title `Function
+X! and Variable Index' and not printing the `Variable Index' at all; but this
+X  is not a robust procedure.  It works only as long as your document is never
+X  included in part of or together with another document that is designed to
+X  have a separate variable index; if you did that, the variables from your
+X--- 1166,1172 ----
+X  You could put variables into the function index by writing \code{\back findex}
+X  commands for them instead of \code{\back vindex} commands, and produce a
+X  consistent manual by printing the function index with the title `Function
+X! and Variable Index' and not printing the `Variable Index' at all, but this
+X  is not a robust procedure.  It works only as long as your document is never
+X  included in part of or together with another document that is designed to
+X  have a separate variable index; if you did that, the variables from your
+X***************
+X*** 1188,1204 ****
+X  print an index, you must include the \code{\back printindex} command at
+X  the place in the document where you want the index to appear.  Also, for
+X  the case of the printed manual, you must run a program that is supplied
+X! with GNU Emacs called \code{texindex} to sort the raw data to produce a
+X  sorted index file, which is what will actually be used to print the
+X  index.\refill
+X  
+X  The \LaTeX info command that is used to print indices is 
+X! \code{\back printindex}.  It takes the two-letter index name (\pxref{Combining
+X  Indices}) as an argument without braces, and reads the corresponding sorted
+X  index file and formats it appropriately into an index.\refill
+X  
+X  \begin{ifinfo}
+X! The two-letter index names are:
+X  
+X  \begin{description}
+X  \item[cp]
+X--- 1196,1212 ----
+X  print an index, you must include the \code{\back printindex} command at
+X  the place in the document where you want the index to appear.  Also, for
+X  the case of the printed manual, you must run a program that is supplied
+X! with GNU Emacs, called \code{texindex}, to sort the raw data to produce a
+X  sorted index file, which is what will actually be used to print the
+X  index.\refill
+X  
+X  The \LaTeX info command that is used to print indices is 
+X! \code{\back printindex}.  It takes the two--letter index name (\pxref{Combining
+X  Indices}) as an argument without braces, and reads the corresponding sorted
+X  index file and formats it appropriately into an index.\refill
+X  
+X  \begin{ifinfo}
+X! The two--letter index names are:
+X  
+X  \begin{description}
+X  \item[cp]
+X***************
+X*** 1270,1281 ****
+X  and as a printed manual.  The only time you are likely to use the chapter
+X  structuring commands without using the node structuring commands is if you
+X  are writing a document that will never be put into Info format, for
+X! example, a novel, a letter, an article or a memorandum.
+X  
+X  Although a \LaTeX info file can be structured in a variety of ways, it is
+X  usually structured like a book with chapters, sections, subsections and the
+X  like.  This structure can also be visualized as a tree (or rather as an
+X! upside down tree) with the root at the top and each level corresponding to
+X  chapters or sections.  In Info format, you reach the nodes on
+X  each level by using the the `Next' and `Previous' pointers in the node
+X  line.  For example, you go from one chapter to the next or previous chapter
+X--- 1278,1289 ----
+X  and as a printed manual.  The only time you are likely to use the chapter
+X  structuring commands without using the node structuring commands is if you
+X  are writing a document that will never be put into Info format, for
+X! example, a novel, a letter, an article, or a memorandum.
+X  
+X  Although a \LaTeX info file can be structured in a variety of ways, it is
+X  usually structured like a book with chapters, sections, subsections and the
+X  like.  This structure can also be visualized as a tree (or rather as an
+X! upside--down tree) with the root at the top and each level corresponding to
+X  chapters or sections.  In Info format, you reach the nodes on
+X  each level by using the the `Next' and `Previous' pointers in the node
+X  line.  For example, you go from one chapter to the next or previous chapter
+X***************
+X*** 1326,1336 ****
+X  just before Section 2.1.
+X  
+X  Note that a menu entry has three parts: the menu item name, the name of the
+X  menu item name and the name of the node are the same, you can put two
+X! colons after the item name, as is shown in the example. (If the second part
+X! is different from the first, the first part is terminated by a colon and
+X! the second part terminated by a tab, newline, comma or period.)
+X! (\xref{Menu Environment}.)
+X  
+X  The node for Sect. 2.1 will look like this:
+X  
+X--- 1334,1343 ----
+X  just before Section 2.1.
+X  
+X  Note that a menu entry has three parts: the menu item name, the name of the
+X+ node and, optionally, a description of the item (in that order).  If the
+X  menu item name and the name of the node are the same, you can put two
+X! colons after the item name, as is shown in the example.
+X! \xref{Menu Environment}.
+X  
+X  The node for Sect. 2.1 will look like this:
+X  
+X***************
+X*** 1352,1358 ****
+X  \cindex{File ending}
+X  \end{verbatim}
+X  
+X! The \code{\back node} command is the only one in \LaTeX info where its
+X  arguments are not delineated by braces.  The arguments are separated by
+X  commas, and are terminated at the end of the line.  This is because
+X  the Info format itself requires the \code{node} arguments to be like
+X--- 1359,1365 ----
+X  \cindex{File ending}
+X  \end{verbatim}
+X  
+X! The \code{\back node} command is the only one in \LaTeX info where the
+X  arguments are not delineated by braces.  The arguments are separated by
+X  commas, and are terminated at the end of the line.  This is because
+X  the Info format itself requires the \code{node} arguments to be like
+X***************
+X*** 1523,1535 ****
+X  In \LaTeX, \code{\back node} is nearly ignored.  It generates no text.
+X  Its only function is to identify the name to use for cross-references to
+X  the chapter or section which follows the \code{\back node} command and
+X! which which makes up the body of the node.  (Cross references are made
+X  with \code{\back xref}.  \xref{Making Cross References}.) 
+X  \code{\back node} should be followed immediately by a
+X  chapter-structuring command such as \code{\back chapter}, \code{\back
+X  section}, \code{\back subsection} or \code{\back subsubsection}.\refill
+X  
+X! The easiest way to write a node is to use the LaTeXinfo Mode keyboard
+X  command \ctrl{c} \ctrl{c} \key{n} to insert \samp{\back node} and a
+X  comment line listing the names of each of the pointers in their proper
+X  order.  This way you won't lose track of which arguments are for which
+X--- 1530,1542 ----
+X  In \LaTeX, \code{\back node} is nearly ignored.  It generates no text.
+X  Its only function is to identify the name to use for cross-references to
+X  the chapter or section which follows the \code{\back node} command and
+X! which makes up the body of the node.  (Cross references are made
+X  with \code{\back xref}.  \xref{Making Cross References}.) 
+X  \code{\back node} should be followed immediately by a
+X  chapter-structuring command such as \code{\back chapter}, \code{\back
+X  section}, \code{\back subsection} or \code{\back subsubsection}.\refill
+X  
+X! The easiest way to write a node is to use the \LaTeX info Mode keyboard
+X  command \ctrl{c} \ctrl{c} \key{n} to insert \samp{\back node} and a
+X  comment line listing the names of each of the pointers in their proper
+X  order.  This way you won't lose track of which arguments are for which
+X***************
+X*** 1625,1630 ****
+X--- 1632,1638 ----
+X  newline; or with a period.
+X  
+X  \clearpage
+X+ \noindent
+X  For example:
+X  
+X  \begin{example}
+X***************
+X*** 1938,1946 ****
+X  \noindent
+X  produces in the Info file
+X  
+X- \noindent
+X- \noindent
+X  \begin{quotation}
+X  \begin{itemize}
+X  \item
+X  Some text for foo.
+X--- 1946,1953 ----
+X  \noindent
+X  produces in the Info file
+X  
+X  \begin{quotation}
+X+ \noindent
+X  \begin{itemize}
+X  \item
+X  Some text for foo.
+X***************
+X*** 2045,2050 ****
+X--- 2052,2058 ----
+X  produces
+X  
+X  \begin{quotation}
+X+ \noindent
+X  \begin{description}
+X  \item[foo]
+X  This is the text for \samp{foo}.
+X***************
+X*** 2092,2102 ****
+X  
+X  \begin{description}
+X  \item[\back xref]
+X! Used to start a sentence in the printed manual saying, `See \dots' \*
+X  or an entry in the Info file saying \samp{*note \dots}.
+X  
+X  \item[\back pxref]
+X! Used to make a reference that starts with a lowercase \samp{see} \*
+X  and is usually contained within parentheses.\refill
+X  
+X  \item[\back inforef]
+X--- 2100,2110 ----
+X  
+X  \begin{description}
+X  \item[\back xref]
+X! Used to start a sentence in the printed manual saying, `See \dots' \\
+X  or an entry in the Info file saying \samp{*note \dots}.
+X  
+X  \item[\back pxref]
+X! Used to make a reference that starts with a lowercase \samp{see} \\
+X  and is usually contained within parentheses.\refill
+X  
+X  \item[\back inforef]
+X***************
+X*** 2133,2139 ****
+X  
+X  \code{\back xref} must refer to an Info node created by 
+X  \code{\back node}, by the node's name.  It uses the \LaTeX\ commands 
+X! \code{ref} and \code{pageref}.
+X  
+X  \code{\back xref} is followed by an argument inside braces; but actually the
+X  text inside the braces is treated as several arguments, separated by
+X--- 2141,2147 ----
+X  
+X  \code{\back xref} must refer to an Info node created by 
+X  \code{\back node}, by the node's name.  It uses the \LaTeX\ commands 
+X! \code{\back ref} and \code{\back pageref}.
+X  
+X  \code{\back xref} is followed by an argument inside braces; but actually the
+X  text inside the braces is treated as several arguments, separated by
+X***************
+X*** 2315,2321 ****
+X  \cindex{Formatting paragraphs}
+X  \cindex{Paragraphs, formatting}
+X  
+X! Usually, a \LaTeX info file will be processed both by \LaTeX\ and by the
+X  \kbd{M-x latexinfo-format-buffer} command.  Consequently, you must make sure
+X  that text will come out looking right both in the printed manual and in the
+X  on-line help.\refill
+X--- 2323,2329 ----
+X  \cindex{Formatting paragraphs}
+X  \cindex{Paragraphs, formatting}
+X  
+X! Usually, a \LaTeX info file will be processed both by \LaTeX\ and by the\\
+X  \kbd{M-x latexinfo-format-buffer} command.  Consequently, you must make sure
+X  that text will come out looking right both in the printed manual and in the
+X  on-line help.\refill
+X***************
+X*** 2369,2376 ****
+X  \cindex{Refill}
+X  \findex{refill}
+X  
+X! If a paragraph contains sizable constructs, it may look badly filled
+X! after \code{latexinfo-format-buffer} is through with it.  Put
+X  \code{\back refill} at the end of the paragraph to tell
+X  \code{latexinfo-format-buffer} to refill the paragraph after finishing
+X  all other processing on it.  \code{\back refill} has no effect on
+X--- 2377,2384 ----
+X  \cindex{Refill}
+X  \findex{refill}
+X  
+X! If a paragraph contains sizable constructs, it may look badly filled after\\
+X! \code{latexinfo-format-buffer} is through with it.  Put
+X  \code{\back refill} at the end of the paragraph to tell
+X  \code{latexinfo-format-buffer} to refill the paragraph after finishing
+X  all other processing on it.  \code{\back refill} has no effect on
+X***************
+X*** 2410,2416 ****
+X  \cindex{Noindent}
+X  \findex{noindent}
+X  
+X! If you have text following a \code{example} or other similar ``special
+X  paragraph'' that reads as a continuation of the text before the
+X  \code{example}, it is good to prevent this text from being indented as a
+X  new paragraph.  To accomplish this, put \code{\back noindent} on a line
+X--- 2418,2424 ----
+X  \cindex{Noindent}
+X  \findex{noindent}
+X  
+X! If you have text following an \code{example} or other similar ``special
+X  paragraph'' that reads as a continuation of the text before the
+X  \code{example}, it is good to prevent this text from being indented as a
+X  new paragraph.  To accomplish this, put \code{\back noindent} on a line
+X***************
+X*** 2452,2460 ****
+X  from one page to the next.
+X  
+X  \begin{description}
+X! \item[\back *]
+X! Force a line break in the printed manual.  This
+X! command has no effect on the Info file.\refill
+X  
+X  \item[\back sp]
+X  Generate blank lines in both the printed manual and in the Info file.\refill
+X--- 2460,2469 ----
+X  from one page to the next.
+X  
+X  \begin{description}
+X! \item[\back \back]
+X! Force a line break in the printed manual.  This command has no effect on
+X! the Info file.  (For compatibility with \TeX info, \code{\back *} also
+X! forces a line break in the printed manual.)\refill
+X  
+X  \item[\back sp]
+X  Generate blank lines in both the printed manual and in the Info file.\refill
+X***************
+X*** 2663,2669 ****
+X  * Ctrl::	Indicates the ASCII control character.
+X  * Var::		A variable.
+X  * Dfn::		The introductory or defining use of a term.
+X! * Cite::	The name of a BiBTeX entry.
+X  \end{menu}
+X  
+X  \node Code, Samp, Specifying Definitions Files and Commands, Specifying Definitions Files and Commands
+X--- 2672,2678 ----
+X  * Ctrl::	Indicates the ASCII control character.
+X  * Var::		A variable.
+X  * Dfn::		The introductory or defining use of a term.
+X! * Cite::	The name of a bibliography entry.
+X  \end{menu}
+X  
+X  \node Code, Samp, Specifying Definitions Files and Commands, Specifying Definitions Files and Commands
+X***************
+X*** 2873,2884 ****
+X  \findex{ctrl}
+X  
+X  \code{\back ctrl} is used to describe an ASCII control character.  The pattern
+X! of usage is \code{\back ctrl\{\var{ch}\}}, where \var{ch} is an ASCII character
+X! whose control-equivalent is wanted.  Thus, you put in an \samp{f} when
+X! you want to indicate a \samp{control-f}
+X  
+X- Thus, to specify \samp{control-f}, you would enter
+X- 
+X  \begin{example}
+X  \back ctrl\{f\}
+X  \end{example}
+X--- 2882,2892 ----
+X  \findex{ctrl}
+X  
+X  \code{\back ctrl} is used to describe an ASCII control character.  The pattern
+X! of usage is \code{\back ctrl\{\var{ch}\}}, where \var{ch} is an ASCII
+X! character whose control-equivalent is wanted.  Thus you put in an \samp{f}
+X! when you want to indicate a \samp{control-f}.  For example, to specify
+X! \samp{control-f}, you would enter
+X  
+X  \begin{example}
+X  \back ctrl\{f\}
+X  \end{example}
+X***************
+X*** 2890,2895 ****
+X--- 2898,2904 ----
+X  \ctrl{f}
+X  \end{quotation}
+X  
+X+ \noindent
+X  In the Info file, this generates the specified control character, output
+X  literally into the file.  This is done so a user can copy the specified
+X  control character (along with whatever else he or she wants) into another
+X***************
+X*** 2911,2922 ****
+X  arguments that are passed to that function.
+X  
+X  \code{\back var} is not used for names of particular variables in programming
+X! languages.  For example, the \LaTeX info variable \code{latexinfo-tex-command} is
+X! not a metasyntactic variable.
+X  
+X- Its effect in the Info file is to upcase the argument; in the printed
+X- manual, to italicize it.  Example:
+X- 
+X  \begin{example}
+X  To delete file \back var\{filename\}, type \back code\{rm \back var\{filename\}\}.
+X  \end{example}
+X--- 2920,2930 ----
+X  arguments that are passed to that function.
+X  
+X  \code{\back var} is not used for names of particular variables in programming
+X! languages.  For example, the \LaTeX info variable
+X! \code{latexinfo-tex-command} is not a metasyntactic variable.
+X! Its effect in the Info file is to to convert the argument to uppercase; in
+X! the printed manual, to italicize it.  For, example:
+X  
+X  \begin{example}
+X  To delete file \back var\{filename\}, type \back code\{rm \back var\{filename\}\}.
+X  \end{example}
+X***************
+X*** 2964,2975 ****
+X  \findex{cite}
+X  
+X  \code{\back cite} is the \LaTeX\  command for a bibliographic citations.
+X! Citations are prepared using the program \t{BibTeX}, which formats the
+X! citations for use with \LaTeX.  The argument to the \code{\back cite}
+X  command is the citation key, which appears in the printed manual as the
+X  citation key surrounded by square brackets.  How it appears in the printed
+X! manual is dependent on the bibliographic style chosen.
+X! See the \LaTeX\ Manual for more details (\cite{Lamport}).\refill
+X  
+X  Before you use the \code{\back cite} command, you must declare the
+X  bibliography style that you are going to use.
+X--- 2972,2983 ----
+X  \findex{cite}
+X  
+X  \code{\back cite} is the \LaTeX\  command for a bibliographic citations.
+X! Citations are usually prepared using the program \t{BibTeX}, which formats
+X! the citations for use with \LaTeX.  The argument to the \code{\back cite}
+X  command is the citation key, which appears in the printed manual as the
+X  citation key surrounded by square brackets.  How it appears in the printed
+X! manual is dependent on the bibliographic style chosen.  See the \LaTeX\
+X! Manual for more details (\cite{Lamport}).\refill
+X  
+X  Before you use the \code{\back cite} command, you must declare the
+X  bibliography style that you are going to use.
+X***************
+X*** 2984,2990 ****
+X  \cindex{Commands to insert single characters}
+X  
+X  \samp{\back } and curly braces are special characters in \LaTeX info.  
+X! To insert a parenthese you have to put a \samp{\back } in front of these
+X  characters in order to insert them into text.  To insert a backslash,
+X  you must use the \code{\back back} command.
+X  
+X--- 2992,2998 ----
+X  \cindex{Commands to insert single characters}
+X  
+X  \samp{\back } and curly braces are special characters in \LaTeX info.  
+X! To insert parentheses, you have to put a \samp{\back } in front of these
+X  characters in order to insert them into text.  To insert a backslash,
+X  you must use the \code{\back back} command.
+X  
+X***************
+X*** 3214,3220 ****
+X  are writing different sections of a document simultaneously.  
+X  
+X  Input files are simply inserted at the place where the \code{input} command
+X! occurs, both in the Infor file and the \LaTeX\ file.
+X  
+X  \begin{menu}
+X  * Input Files::
+X--- 3222,3228 ----
+X  are writing different sections of a document simultaneously.  
+X  
+X  Input files are simply inserted at the place where the \code{input} command
+X! occurs, both in the Info file and the \LaTeX\ file.
+X  
+X  \begin{menu}
+X  * Input Files::
+X***************
+X*** 3263,3279 ****
+X  
+X  An \code{\back include} file should not start with 
+X  \samp{\back documentstyle[latexinfo]}, as that has already been done by
+X! the outer file, and the character \samp{\back } has already been
+X! redefined to generate a backslash in the output.  Instead, a \code{\back
+X! include} file usually begins with a node; it lacks the beginning and
+X! ending of a
+X! \LaTeX info file that are described in the chapters on beginning and
+X! Ending a LaTeXinfo File. \xref{Beginning a LaTeXinfo File}, and
+X! \pxref{Ending a LaTeXinfo File}.  Likewise, a \code{\back include} file
+X! should not end with \code{\back end\{document\}}, since that would
+X! terminate \LaTeX\ processing immediately.\refill
+X  
+X! Here is an example of a outer \LaTeX info file with \code{\back include} files
+X  within it:\refill
+X  
+X  \clearpage
+X--- 3271,3284 ----
+X  
+X  An \code{\back include} file should not start with 
+X  \samp{\back documentstyle[latexinfo]}, as that has already been done by
+X! the outer file.  A \code{\back include} file usually begins with a node; it
+X! lacks the beginning and ending of a \LaTeX info file that are described in
+X! the chapters on beginning and Ending a LaTeXinfo File. \xref{Beginning a
+X! LaTeXinfo File}, and \pxref{Ending a LaTeXinfo File}.  Likewise, a
+X! \code{\back include} file should not end with \code{\back end\{document\}},
+X! since that would terminate \LaTeX\ processing immediately.\refill
+X  
+X! Here is an example of an outer \LaTeX info file with \code{\back include} files
+X  within it:\refill
+X  
+X  \clearpage
+X***************
+X*** 3325,3330 ****
+X--- 3330,3337 ----
+X  \findex{ifinfo}
+X  \findex{iftex}
+X  \findex{ignore}
+X+ \findex{c}
+X+ \findex{comment}
+X  
+X  You may not always be able to use the same text for both the printed manual
+X  and the on-line Info file.  In this case, you can use the conditional
+X***************
+X*** 3372,3378 ****
+X--- 3379,3390 ----
+X  lines delimit text that will not appear in either the Info file or
+X  the printed manual.\refill
+X  
+X+ The \code{\back comment} or \code{\back c} command introduces comments that
+X+ will not appear in either the Info file or the printed manual; anything
+X+ following the \code{\back c} command will be ignored, up to and including
+X+ the end of the line.
+X  
+X+ 
+X  \begin{menu}
+X  * Using LaTex Commands::		Using commands from regular LaTeX.
+X  \end{menu}
+X***************
+X*** 3397,3406 ****
+X  \end{verbatim}
+X  
+X  \noindent
+X! is how you would include a \LaTeX\ bibliography.
+X! In  the Info file, nothing between \code{\back begin\{tex\}} and 
+X! \code{\back end\{tex\}} will appear, i.e\. \code{tex} implies \code{iftex}.
+X! .\refill
+X  
+X  \node Printing Hardcopy, Formatting Requirements, Using LaTeX Commands, Top
+X  \chapter{Printing Hardcopy}
+X--- 3409,3417 ----
+X  \end{verbatim}
+X  
+X  \noindent
+X! is how you would include a \LaTeX\ bibliography.  In the Info file, nothing
+X! between \code{\back begin\{tex\}} and \code{\back end\{tex\}} will appear,
+X! i.e\. \code{tex} implies \code{iftex}.\refill
+X  
+X  \node Printing Hardcopy, Formatting Requirements, Using LaTeX Commands, Top
+X  \chapter{Printing Hardcopy}
+X***************
+X*** 3417,3430 ****
+X  commands, you can either work directly in the operating system shell or
+X  work within a shell inside of GNU Emacs.
+X  
+X! The typesetting program \LaTeX\ is used for formatting a \LaTeX info
+X! file.  \LaTeX\ is a very powerful typesetting program and, if used
+X! right, does an exceptionally good job.  The commands in a \LaTeX info
+X! file are defined by a file called \file{latexinfo.sty} into make \LaTeX\
+X! understand them.  (That is why the beginning of every \LaTeX info file
+X! starts with the line that says \samp{\back documentstyle[latexinfo]};
+X! this command tells \LaTeX\ to use the\*
+X! \file{latexinfo.sty} file in processing the \LaTeX info file.)
+X  \code{latexinfo-format-buffer} reads the very same commands in the
+X  \LaTeX info file and processes them differently from \LaTeX\ to make an
+X  Info file.\refill
+X--- 3428,3440 ----
+X  commands, you can either work directly in the operating system shell or
+X  work within a shell inside of GNU Emacs.
+X  
+X! The typesetting program \LaTeX\ is used for formatting a \LaTeX info file.
+X! \LaTeX\ is a very powerful typesetting program and, if used correctly, does
+X! an exceptionally good job.  The macros used in a \LaTeX info file are
+X! defined by a file called \file{latexinfo.sty}, which is why the beginning
+X! of every \LaTeX info file starts with the line that says\\
+X! \samp{\back documentstyle[latexinfo]}; this command tells \LaTeX\ to use the
+X! \file{latexinfo.sty} file in processing the \LaTeX info file.
+X  \code{latexinfo-format-buffer} reads the very same commands in the
+X  \LaTeX info file and processes them differently from \LaTeX\ to make an
+X  Info file.\refill
+X***************
+X*** 3444,3450 ****
+X  index output files for the input file \file{foo.texinfo} would be
+X  \file{foo.cp}, \file{foo.vr}, \file{foo.fn}, \file{foo.tp},
+X  \file{foo.pg} and \file{foo.ky}.  Those are exactly the arguments to
+X! give to \code{texindex}.  Or else, you can use \samp{??} as
+X  ``wild-cards'' and give the command in this form:\refill
+X  
+X  \begin{example}
+X--- 3454,3460 ----
+X  index output files for the input file \file{foo.texinfo} would be
+X  \file{foo.cp}, \file{foo.vr}, \file{foo.fn}, \file{foo.tp},
+X  \file{foo.pg} and \file{foo.ky}.  Those are exactly the arguments to
+X! give to \code{texindex}.  Or else, on UNIX, you can use \samp{??} as
+X  ``wild-cards'' and give the command in this form:\refill
+X  
+X  \begin{example}
+X***************
+X*** 3470,3478 ****
+X  Run the shell command \code{texindex} on the raw index files to sort them.
+X  The arguments to \code{texindex} are the names of the raw index files.
+X  \code{texindex} creates sorted index files whose names are the names of the
+X! raw index files with an \samp{s} appended.  To cause \code{texindex} to
+X! sort all the raw index files, append \samp{??} to the \LaTeX info file name in
+X! place of the \file{.texinfo} extension.\refill
+X  
+X  \item
+X  Rerun the \LaTeX\ command on the \LaTeX info file.  This regenerates a formatted
+X--- 3480,3486 ----
+X  Run the shell command \code{texindex} on the raw index files to sort them.
+X  The arguments to \code{texindex} are the names of the raw index files.
+X  \code{texindex} creates sorted index files whose names are the names of the
+X! raw index files with an \samp{s} appended.\refill
+X  
+X  \item
+X  Rerun the \LaTeX\ command on the \LaTeX info file.  This regenerates a formatted
+X***************
+X*** 3553,3558 ****
+X--- 3561,3567 ----
+X  \end{document}
+X  \end{verbatim}
+X  
+X+ \noindent
+X  which terminates \LaTeX\ processing and forces out unfinished pages.
+X  
+X  You also have to include a line that specifies the Info file name.
+X***************
+X*** 3591,3603 ****
+X  \LaTeX\ lines are in `horizontal boxes', hence the term, `hbox'.)
+X  
+X  If the \LaTeX info file has an overfull hbox, you can rewrite the sentence
+X! so the overfull hbox does not occur or you can decide to leave it.  A
+X! small excursion into the right margin often does not matter and may not
+X! even be noticable.  However, unless told otherwise, \LaTeX\ will print a
+X! large, ugly, black rectangle beside every line that is overfull.  This is
+X! so you will notice the location of the problem if you are correcting a
+X! draft.  To prevent such monstrosities from marring your final printout,
+X! put the following in the beginning of the \LaTeX info file  before the \code{\back setfilename} command:
+X  
+X  \begin{verbatim}
+X  \finalout
+X--- 3600,3613 ----
+X  \LaTeX\ lines are in `horizontal boxes', hence the term, `hbox'.)
+X  
+X  If the \LaTeX info file has an overfull hbox, you can rewrite the sentence
+X! so the overfull hbox does not occur or you can decide to leave it.  A small
+X! excursion into the right margin often does not matter and may not even be
+X! noticable.  However, unless told otherwise, \LaTeX\ will print a large,
+X! ugly, black rectangle beside every line that is overfull.  This is so you
+X! will notice the location of the problem if you are correcting a draft.  To
+X! prevent such monstrosities from marring your final printout, put the
+X! following in the beginning of the \LaTeX info file before the \code{\back
+X! setfilename} command:
+X  
+X  \begin{verbatim}
+X  \finalout
+X***************
+X*** 3661,3668 ****
+X  
+X  \noindent
+X  A new buffer is created and the Info file text is generated there.
+X! \ctrl{x} \ctrl{s} will save it under the name specified in the
+X! \code{\back setfilename} command.\refill
+X  
+X  If the \LaTeX info file has more than 30,000 bytes,
+X  \code{latexinfo-format-buffer} will automatically create a \dfn{tag
+X--- 3671,3678 ----
+X  
+X  \noindent
+X  A new buffer is created and the Info file text is generated there.
+X! \ctrl{x} \ctrl{s} (\code{save-buffer}) will save it under the name 
+X! specified in the \code{\back setfilename} command.\refill
+X  
+X  If the \LaTeX info file has more than 30,000 bytes,
+X  \code{latexinfo-format-buffer} will automatically create a \dfn{tag
+X***************
+X*** 3672,3678 ****
+X  into shorter Indirect subfiles of about 50,000 bytes each.  Files are
+X  split so that Info does not have to make a large buffer to hold the
+X  whole of a large Info file; instead, Info allocates just enough memory
+X! for the small, split off file that is needed at the time.  This way,
+X  Emacs avoids wasting memory when you run Info.  (Before splitting was
+X  implemented, Info files were always short and \dfn{include} files were
+X  designed as a way to create a single, large printed manual out of the
+X--- 3682,3688 ----
+X  into shorter Indirect subfiles of about 50,000 bytes each.  Files are
+X  split so that Info does not have to make a large buffer to hold the
+X  whole of a large Info file; instead, Info allocates just enough memory
+X! for the small, split--off file that is needed at the time.  This way,
+X  Emacs avoids wasting memory when you run Info.  (Before splitting was
+X  implemented, Info files were always short and \dfn{include} files were
+X  designed as a way to create a single, large printed manual out of the
+X***************
+X*** 3681,3689 ****
+X  
+X  When the file is split, Info itself works through a shortened version of
+X  the original file that contains the tag table and references to the files
+X! that were split off.  The split off files are called \dfn{indirect} files.
+X  
+X! The split off files have names that are created by appending \samp{-1},
+X  \samp{-2}, \samp{-3} and so on to the file names specified by the
+X  \code{\back setfilename} command.  The shortened version of the original file
+X  continues to have the name specified by \code{\back setfilename}.
+X--- 3691,3699 ----
+X  
+X  When the file is split, Info itself works through a shortened version of
+X  the original file that contains the tag table and references to the files
+X! that were split--off.  The split--off files are called \dfn{indirect} files.
+X  
+X! The split--off files have names that are created by appending \samp{-1},
+X  \samp{-2}, \samp{-3} and so on to the file names specified by the
+X  \code{\back setfilename} command.  The shortened version of the original file
+X  continues to have the name specified by \code{\back setfilename}.
+X***************
+X*** 3695,3701 ****
+X  Info file: test-texinfo,    -*-Text-*-
+X  produced by latexinfo-format-buffer
+X  from file: new-texinfo-manual.texinfo
+X- 
+X  ^_
+X  Indirect:
+X  test-texinfo-1: 102
+X--- 3705,3710 ----
+X***************
+X*** 3709,3715 ****
+X  
+X  \noindent
+X  (But \file{test-texinfo} had far more nodes than are shown here.)  Each of
+X! the split off, indirect files, \file{test-texinfo-1},
+X  \file{test-texinfo-2}, and \file{test-texinfo-3}, is listed in this file
+X  after the line that says \samp{Indirect:}.  The tag table is listed after
+X  the line that says \samp{Tag table:}. \refill
+X--- 3718,3724 ----
+X  
+X  \noindent
+X  (But \file{test-texinfo} had far more nodes than are shown here.)  Each of
+X! the split--off, indirect files, \file{test-texinfo-1},
+X  \file{test-texinfo-2}, and \file{test-texinfo-3}, is listed in this file
+X  after the line that says \samp{Indirect:}.  The tag table is listed after
+X  the line that says \samp{Tag table:}. \refill
+X***************
+X*** 3734,3746 ****
+X  An Info file is usually installed in the GNU Emacs directory called
+X  \file{info}.  This directory is the values of the Emacs variable
+X  \code{Info-directory}.  For Info to work, this directory must contain
+X! all the Info files, including the split off files.  In addition, the
+X! \file{info} directory must have a file that serves as a top level
+X  directory for the Info system.  This file is called \file{dir}.
+X  
+X  
+X  For example, in the \file{info} directory, the file called \file{dir}
+X! has the top level menu for all the Info files in the system.  This
+X  directory is the one defined by the GNU Emacs variable
+X  \code{Info-directory}.  This file has a master menu that looks like
+X  this:
+X--- 3743,3755 ----
+X  An Info file is usually installed in the GNU Emacs directory called
+X  \file{info}.  This directory is the values of the Emacs variable
+X  \code{Info-directory}.  For Info to work, this directory must contain
+X! all the Info files, including the split--off files.  In addition, the
+X! \file{info} directory must have a file that serves as a top--level
+X  directory for the Info system.  This file is called \file{dir}.
+X  
+X  
+X  For example, in the \file{info} directory, the file called \file{dir}
+X! has the top--level menu for all the Info files in the system.  This
+X  directory is the one defined by the GNU Emacs variable
+X  \code{Info-directory}.  This file has a master menu that looks like
+X  this:
+X***************
+X*** 3783,3789 ****
+X  
+X  Let's say that you wanted to develop a special format for a program
+X  called \code{macsyma}, which defined the command \code{\back f} to be
+X! used for specifying function.  This command would put its argument in
+X  the function index, and set the function in the printed manual in a
+X  special font.  You could create a style file called \file{macsyma.sty}
+X  that contained this definition (and any others you might want for
+X--- 3792,3798 ----
+X  
+X  Let's say that you wanted to develop a special format for a program
+X  called \code{macsyma}, which defined the command \code{\back f} to be
+X! used for specifying functions.  This command would put its argument in
+X  the function index, and set the function in the printed manual in a
+X  special font.  You could create a style file called \file{macsyma.sty}
+X  that contained this definition (and any others you might want for
+X***************
+X*** 3851,3857 ****
+X  the nodes and chapters.  There are two tools for catching the first kind
+X  of mistake and two for catching the second.
+X  
+X! For finding problems with commands, your best action is to run\*
+X  \kbd{M-x latexinfo-format-region} on regions of your file as you write
+X  it.  In \LaTeX info mode, the \code{latexinfo-format-region} command is
+X  bound to \ctrl{c} \ctrl{f}.  In addition, you can run \LaTeX\ on the
+X--- 3860,3866 ----
+X  the nodes and chapters.  There are two tools for catching the first kind
+X  of mistake and two for catching the second.
+X  
+X! For finding problems with commands, your best action is to run\\
+X  \kbd{M-x latexinfo-format-region} on regions of your file as you write
+X  it.  In \LaTeX info mode, the \code{latexinfo-format-region} command is
+X  bound to \ctrl{c} \ctrl{f}.  In addition, you can run \LaTeX\ on the
+X***************
+X*** 3874,3880 ****
+X  \cindex{Catching errors with Info Formatting}
+X  \cindex{Debugging with Info Formatting}
+X  
+X! After you have written part of a \LaTeX info file, you can use the\*
+X  \kbd{M-x latexinfo-format-region} command to see whether the region
+X  formats properly.  In LaTeXinfo Mode, this command is bound to the
+X  keyboard command \ctrl{c} \ctrl{f}.  If you have made a mistake with a
+X--- 3883,3889 ----
+X  \cindex{Catching errors with Info Formatting}
+X  \cindex{Debugging with Info Formatting}
+X  
+X! After you have written part of a \LaTeX info file, you can use the\\
+X  \kbd{M-x latexinfo-format-region} command to see whether the region
+X  formats properly.  In LaTeXinfo Mode, this command is bound to the
+X  keyboard command \ctrl{c} \ctrl{f}.  If you have made a mistake with a
+X***************
+X*** 3908,3918 ****
+X  it produced output that looked like this:
+X  
+X  \begin{example}
+X!      name of the latexinfo file as an extension.  The `??' are `wildcards'
+X!      that cause the shell to substitute all the raw index files.  (*Note for more information about sorting indices.) \back refill \back cindex Sorting indices \back cindex Indices: sorting indices), rerun the TeX command on the latexinfo file.  This
+X!      regenerates a formatted DVI file with the index entries in the correct
+X!      order.  This second run also makes all the cross references and table of
+X!      contents correct as well.
+X  \end{example}
+X  
+X  \noindent
+X--- 3917,3927 ----
+X  it produced output that looked like this:
+X  
+X  \begin{example}
+X! name of the latexinfo file as an extension.  The `??' are `wildcards'
+X! that cause the shell to substitute all the raw index files.  (*Note for more information about sorting indices.) \back refill \back cindex Sorting indices \back cindex Indices: sorting indices), rerun the TeX command on the latexinfo file.  This
+X! regenerates a formatted DVI file with the index entries in the correct
+X! order.  This second run also makes all the cross references and table of
+X! contents correct as well.
+X  \end{example}
+X  
+X  \noindent
+X***************
+X*** 3984,3994 ****
+X  
+X  The backtrace is read from the bottom up.  \code{latexinfo-format-region} was
+X  called interactively; and it in turn called various functions, including
+X! \code{latexinfo-format-scan}, \code{latexinfo-format-xref}\*
+X! and \code{latexinfo-format-parse-args}.  Inside the function
+X! \code{latexinfo-format-parse-args}, the function \code{re-search-forward} was
+X! called; it was this function that could not find the missing right hand
+X! brace.\refill
+X  
+X  \xref{Lisp Debug, , Debugging Emacs Lisp, emacs, The GNU Emacs Manual}, for
+X  more information.\refill
+X--- 3993,4004 ----
+X  
+X  The backtrace is read from the bottom up.  \code{latexinfo-format-region} was
+X  called interactively; and it in turn called various functions, including
+X! \code{latexinfo-format-scan},\\
+X! \code{latexinfo-format-xref} and \code{latexinfo-format-parse-args}.
+X! Inside the function\\
+X! \code{latexinfo-format-parse-args}, the function
+X! \code{re-search-forward} was called; it was this function that could not
+X! find the missing right hand brace.\refill
+X  
+X  \xref{Lisp Debug, , Debugging Emacs Lisp, emacs, The GNU Emacs Manual}, for
+X  more information.\refill
+X***************
+X*** 4001,4010 ****
+X  
+X  You can also catch mistakes when you format a file with \LaTeX.
+X  Usually, you will want to do this after you have run
+X! \code{latexinfo-format-buffer} on the same file.
+X! \code{latexinfo-format-buffer} is usually faster and sometimes gives
+X! error messages that make more sense.  \xref{Catching Errors with Info
+X! Formatting}, for more information.\refill
+X  
+X  \clearpage
+X  For example, \LaTeX\ was run on the same itemized list discussed in the
+X--- 4011,4019 ----
+X  
+X  You can also catch mistakes when you format a file with \LaTeX.
+X  Usually, you will want to do this after you have run
+X! \code{latexinfo-format-buffer} on the same file, as it
+X! is usually faster and sometimes gives error messages that make more sense.
+X! \xref{Catching Errors with Info Formatting}, for more information.\refill
+X  
+X  \clearpage
+X  For example, \LaTeX\ was run on the same itemized list discussed in the
+X***************
+X*** 4106,4119 ****
+X  or adding to a \LaTeX info file that someone else has written.
+X  
+X  In GNU Emacs, in LaTeXinfo Mode, there is a command that will list all the
+X! lines that begin with the commands that specify the structure: 
+X! \code{\back node}, \code{\back chapter}, \code{\back section},
+X! \code{\back appendix} and so on.  This is the\*
+X! \code{latexinfo-show-structure} command.  It is bound to the keyboard command
+X! \ctrl{c} \ctrl{s}. \code{latexinfo-show-structure} displays the lines that
+X! begin with the node and chapter structuring commands in another window
+X! called the \samp{*Occur*} buffer.  For example, when it is run on the
+X! first part of this chapter, it produces the following:\refill
+X  
+X  \begin{example}
+X  Lines matching
+X--- 4115,4128 ----
+X  or adding to a \LaTeX info file that someone else has written.
+X  
+X  In GNU Emacs, in LaTeXinfo Mode, there is a command that will list all the
+X! lines that begin with the commands that specify the structure: \code{\back
+X! node}, \code{\back chapter}, \code{\back section}, \code{\back appendix}
+X! and so on.  This is the \code{latexinfo-show-structure} command.  It is
+X! bound to the keyboard command \ctrl{c} \ctrl{s}.
+X! \code{latexinfo-show-structure} displays the lines that begin with the node
+X! and chapter structuring commands in another window called the
+X! \samp{*Occur*} buffer.  For example, when it is run on the first part of
+X! this chapter, it produces the following:\refill
+X  
+X  \begin{example}
+X  Lines matching
+X***************
+X*** 4129,4135 ****
+X  \code{\back chapter}, \code{\back node}, and \code{\back section}
+X  respectively.  If you move your cursor into the \samp{*Occur*} window, you
+X  can position the cursor over one of the lines and use the \ctrl{c} \ctrl{c}
+X! command (\code{occur-mode-goto-occurrence}), to jump to the corresponding
+X  spot in the \LaTeX info file. \xref{Other Repeating Search, , Using Occur,
+X  emacs, The GNU Emacs Manual}, for more information about
+X  \code{occur-mode-goto-occurrence}.\refill
+X--- 4138,4145 ----
+X  \code{\back chapter}, \code{\back node}, and \code{\back section}
+X  respectively.  If you move your cursor into the \samp{*Occur*} window, you
+X  can position the cursor over one of the lines and use the \ctrl{c} \ctrl{c}
+X! command\\
+X! (\code{occur-mode-goto-occurrence}), to jump to the corresponding
+X  spot in the \LaTeX info file. \xref{Other Repeating Search, , Using Occur,
+X  emacs, The GNU Emacs Manual}, for more information about
+X  \code{occur-mode-goto-occurrence}.\refill
+X***************
+X*** 4136,4142 ****
+X  
+X  The first line in the \samp{*Occur*} window describes the \dfn{regular
+X  expression} specified by \var{latexinfo-heading-pattern}.  This regular
+X! expression is the pattern that \code{latexinfo-show-structure} looks for.
+X  \xref{Regexps, , Using Regular Expressions, emacs, The GNU Emacs Manual},
+X  for more information.\refill
+X  
+X--- 4146,4153 ----
+X  
+X  The first line in the \samp{*Occur*} window describes the \dfn{regular
+X  expression} specified by \var{latexinfo-heading-pattern}.  This regular
+X! expression is the pattern that\\
+X! \code{latexinfo-show-structure} looks for.
+X  \xref{Regexps, , Using Regular Expressions, emacs, The GNU Emacs Manual},
+X  for more information.\refill
+X  
+X***************
+X*** 4180,4190 ****
+X  the cursor in the buffer to the end of the buffer.  If you want to run
+X  \code{occur} on the whole buffer, place the cursor at the beginning of the
+X  buffer.  For example, to see all the lines that contain the word
+X! \samp{\back chapter} in them, just type \samp{\back \back chapter}.
+X  This will produce a list of the chapters.  It will also list all the
+X! sentences with \samp{\back \back chapter} in the middle of the line.  If
+X  you want to see only those lines that start with the word 
+X! \samp{\back back chapter}, type \samp{^\back chapter} when prompted by
+X  \code{occur}.  If you want to see all the lines that end with a word or
+X  phrase, end the last word with a \samp{$}; for example, \samp{catching
+X  mistakes$}.  This can be helpful when you want to see all the nodes that
+X--- 4191,4201 ----
+X  the cursor in the buffer to the end of the buffer.  If you want to run
+X  \code{occur} on the whole buffer, place the cursor at the beginning of the
+X  buffer.  For example, to see all the lines that contain the word
+X! \samp{\back chapter} in them, just type \samp{\back chapter}.
+X  This will produce a list of the chapters.  It will also list all the
+X! sentences with \samp{\back chapter} in the middle of the line.  If
+X  you want to see only those lines that start with the word 
+X! \samp{\back chapter}, type \samp{^\back chapter} when prompted by
+X  \code{occur}.  If you want to see all the lines that end with a word or
+X  phrase, end the last word with a \samp{$}; for example, \samp{catching
+X  mistakes$}.  This can be helpful when you want to see all the nodes that
+X***************
+X*** 4277,4283 ****
+X  table.  When you have done this, you can run \code{Info-validate} and look
+X  for badly referenced nodes.\refill
+X  
+X! After you have validated the node structure, you can rerun\*
+X  \code{latexinfo-format-buffer} in the normal way so it will construct
+X  the tag table and split the file automatically or, you can make the tag
+X  table and split the file manually.  To prevent the
+X--- 4288,4294 ----
+X  table.  When you have done this, you can run \code{Info-validate} and look
+X  for badly referenced nodes.\refill
+X  
+X! After you have validated the node structure, you can rerun\\
+X  \code{latexinfo-format-buffer} in the normal way so it will construct
+X  the tag table and split the file automatically or, you can make the tag
+X  table and split the file manually.  To prevent the
+X***************
+X*** 4310,4322 ****
+X  M-x Info-tagify
+X  \end{example}
+X  
+X! This creates a file which you can validate.\refill
+X  
+X  \begin{example}
+X  M-x Info-validate
+X  \end{example}
+X  
+X! After you have checked the validity of the nodes, you can either run\*
+X  \kbd{M-x latexinfo-format-buffer} as you would normally, or else tagify and
+X  split the file manually with the two commands \code{Info-tagify} and
+X  \code{Info-split}.\refill
+X--- 4321,4333 ----
+X  M-x Info-tagify
+X  \end{example}
+X  
+X! This creates a file which you can validate:\refill
+X  
+X  \begin{example}
+X  M-x Info-validate
+X  \end{example}
+X  
+X! After you have checked the validity of the nodes, you can either run\\
+X  \kbd{M-x latexinfo-format-buffer} as you would normally, or else tagify and
+X  split the file manually with the two commands \code{Info-tagify} and
+X  \code{Info-split}.\refill
+X***************
+X*** 4330,4336 ****
+X  else let the \code{latexinfo-format-buffer} command do it for you
+X  automatically.  (Generally you will let \code{latexinfo-format-buffer} do
+X  this job for you.  \xref{Creating an On-line Info File}.)
+X! The split off files are called the indirect subfiles.\refill
+X  
+X  Info files are split to save memory.  With smaller files, Emacs does not
+X  have make such a large buffer to hold the information.  This way, Emacs
+X--- 4341,4347 ----
+X  else let the \code{latexinfo-format-buffer} command do it for you
+X  automatically.  (Generally you will let \code{latexinfo-format-buffer} do
+X  this job for you.  \xref{Creating an On-line Info File}.)
+X! The split--off files are called the indirect subfiles.\refill
+X  
+X  Info files are split to save memory.  With smaller files, Emacs does not
+X  have make such a large buffer to hold the information.  This way, Emacs
+X***************
+X*** 4391,4400 ****
+X  Formatting a part of a file for Info, rather than the whole file.
+X  \end{itemize}
+X  
+X! In general, in LaTeXinfo Mode, the GNU Emacs editing commands are like those
+X! in text-mode.  The major difference is that the paragraph separation
+X! variable and syntax table are set up so expression commands skip \LaTeX info
+X! bracket groups.  This means, for example, that the\*
+X  \kbd{M-q} (\code{fill-paragraph}) command will refill a paragraph but
+X  not the command on a line adjacent to it.\refill
+X  
+X--- 4402,4411 ----
+X  Formatting a part of a file for Info, rather than the whole file.
+X  \end{itemize}
+X  
+X! In general, in LaTeXinfo Mode, the GNU Emacs editing commands are like
+X! those in text-mode.  The major difference is that the paragraph separation
+X! variable and syntax table are set up so expression commands skip \LaTeX
+X! info bracket groups.  This means, for example, that the
+X  \kbd{M-q} (\code{fill-paragraph}) command will refill a paragraph but
+X  not the command on a line adjacent to it.\refill
+X  
+X***************
+X*** 4419,4425 ****
+X  \samp{*Info Region*}.\refill
+X  
+X  For \code{latexinfo-format-region} to work, the file \strong{must} include a
+X! line that has\*
+X  \code{\back setfilename} in its header.\refill
+X  
+X  \comment  node-name,  next,  previous,  up
+X--- 4430,4436 ----
+X  \samp{*Info Region*}.\refill
+X  
+X  For \code{latexinfo-format-region} to work, the file \strong{must} include a
+X! line that has\\
+X  \code{\back setfilename} in its header.\refill
+X  
+X  \comment  node-name,  next,  previous,  up
+X***************
+X*** 4431,4448 ****
+X  \cindex{LaTeXinfo file structure, showing it}
+X  
+X  You can show the structure of a \LaTeX info file by using the \ctrl{c}
+X! \ctrl{s} command\*
+X! (\code{latexinfo-show-structure}).  This command shows the structure of
+X! a \LaTeX info file by listing the lines with the commands for
+X  \code{\back{}node}, \code{\back{}chapter}, \code{\back{}section} and the
+X  like.  These lines are displayed in another window called the
+X  \samp{*Occur*} window.  In that window, you can position the cursor over
+X  one of the lines and use the \ctrl{c} \ctrl{c} command 
+X  (\code{occur-mode-goto-occurrence}), to jump to the
+X! corresponding spot in the \LaTeX info file.\refill
+X  
+X- The two commands are:
+X- 
+X  \begin{description}
+X  \item[C-c C-s ]
+X  latexinfo-show-structure
+X--- 4442,4457 ----
+X  \cindex{LaTeXinfo file structure, showing it}
+X  
+X  You can show the structure of a \LaTeX info file by using the \ctrl{c}
+X! \ctrl{s} command\\
+X! (\code{latexinfo-show-structure}).  This command shows the structure of a
+X! \LaTeX info file by listing the lines with the commands for
+X  \code{\back{}node}, \code{\back{}chapter}, \code{\back{}section} and the
+X  like.  These lines are displayed in another window called the
+X  \samp{*Occur*} window.  In that window, you can position the cursor over
+X  one of the lines and use the \ctrl{c} \ctrl{c} command 
+X  (\code{occur-mode-goto-occurrence}), to jump to the
+X! corresponding spot in the \LaTeX info file. The two commands are:\refill
+X  
+X  \begin{description}
+X  \item[C-c C-s ]
+X  latexinfo-show-structure
+X***************
+X*** 4465,4479 ****
+X  \cindex{Frequently used commands, inserting them}
+X  \cindex{Commands, inserting them}
+X  
+X! \LaTeX info Mode provides commands that insert various frequently used
+X  commands into the buffer.  You can use these commands to save
+X! keystrokes.  And you can insert balanced curly braces with the\*
+X!  \kbd{M-\{} command, (\code{latexinfo-insert-braces}) and later use the 
+X  \kbd{M-\}} command (\code{up-list}) to move forward past the closing brace.
+X- \refill
+X- 
+X  The special commands are invoked by typing \kbd{C-c} twice and then the
+X! first letter of the command.
+X  
+X  \begin{description}
+X  \item[C-c C-c c]
+X--- 4474,4486 ----
+X  \cindex{Frequently used commands, inserting them}
+X  \cindex{Commands, inserting them}
+X  
+X! \LaTeX info mode provides commands that insert various frequently used
+X  commands into the buffer.  You can use these commands to save
+X! keystrokes.  And you can insert balanced curly braces with the
+X! \kbd{M-\{} command, (\code{latexinfo-insert-braces}) and later use the 
+X  \kbd{M-\}} command (\code{up-list}) to move forward past the closing brace.
+X  The special commands are invoked by typing \kbd{C-c} twice and then the
+X! first letter of the command.\refill
+X  
+X  \begin{description}
+X  \item[C-c C-c c]
+X***************
+X*** 4585,4591 ****
+X  WARRANTY sections of a document, see the latest version of the
+X  GNU Emacs Manual \cite{GNUEmacsManual}.
+X  
+X! The texts of the Free Software Foundation copying permission notice in the
+X  \code{\back begin\{ifinfo\}} section and in the Titlepage section
+X  are slightly different.
+X  
+X--- 4592,4598 ----
+X  WARRANTY sections of a document, see the latest version of the
+X  GNU Emacs Manual \cite{GNUEmacsManual}.
+X  
+X! The texts of the Free Software Foundation copying permission notice in the\\
+X  \code{\back begin\{ifinfo\}} section and in the Titlepage section
+X  are slightly different.
+X  
+X***************
+X*** 4610,4617 ****
+X  
+X  In the printed manual, the Free Software Foundation copying permission
+X  notice follows the copyright notice and publishing information and is
+X! located before the \code{\back setfilename}.  The copying permission
+X! notice is exactly the same as the notice in the 
+X  \code{\back begin\{ifinfo\}} section except that the paragraph enclosed in
+X  \code{\back begin\{ignore\}} and \code{\back end\{ignore\}} commands is
+X  not part of the notice.\refill
+X--- 4617,4625 ----
+X  
+X  In the printed manual, the Free Software Foundation copying permission
+X  notice follows the copyright notice and publishing information and is
+X! located before the\\
+X! \code{\back setfilename}.  The copying permission
+X! notice is exactly the same as the notice in the
+X  \code{\back begin\{ifinfo\}} section except that the paragraph enclosed in
+X  \code{\back begin\{ignore\}} and \code{\back end\{ignore\}} commands is
+X  not part of the notice.\refill
+X***************
+X*** 4702,4713 ****
+X  \cindex{LaTeXinfo and TeXinfo}
+X  
+X  Documentation for GNU utilities and libraries is usually written in a
+X! format called \dfn{\TeX info}.  Prehaps the most significant difference
+X  of \LaTeX info from \TeX info is that if a \LaTeX\ command is found that
+X! the Info formatter does not know about, a error is not signalled, and
+X  processing simply continues.  This means that as long as you don't mind
+X! having the commands ignored in the Info file, you can use any \LaTeX
+X! command.
+X  
+X  \node Differences from TeXinfo, Differences from LaTeX, LateXinfo and TeXinfo, LateXinfo and TeXinfo
+X  \section{Differences from TeXinfo}
+X--- 4710,4720 ----
+X  \cindex{LaTeXinfo and TeXinfo}
+X  
+X  Documentation for GNU utilities and libraries is usually written in a
+X! format called \dfn{\TeX info}.  Perhaps the most significant difference
+X  of \LaTeX info from \TeX info is that if a \LaTeX\ command is found that
+X! the Info formatter does not know about, an error is not signalled, and
+X  processing simply continues.  This means that as long as you don't mind
+X! having the commands ignored in the Info file, you can use any \LaTeX\ command.
+X  
+X  \node Differences from TeXinfo, Differences from LaTeX, LateXinfo and TeXinfo, LateXinfo and TeXinfo
+X  \section{Differences from TeXinfo}
+X***************
+X*** 4841,4846 ****
+X--- 4848,4854 ----
+X  \end{table}
+X  \end{verbatim}
+X  
+X+ \begin{same}
+X  \noindent
+X  produces in the Info file
+X  \begin{verbatim}
+X***************
+X*** 4853,4858 ****
+X--- 4861,4867 ----
+X  A 3               B 3             C 3             D 3           
+X  ------------------------------------------------------------------------
+X  \end{verbatim}
+X+ \end{same}
+X  
+X  \begin{iftex}
+X  \noindent
+X***************
+X*** 4921,4933 ****
+X  
+X  \noindent
+X  If you say \code{yes}, all the \code{@input} files will be included, so
+X! you can doo all of the subfiles at the same time.  You will also be asked
+X  
+X! \code{Would you like all occurences of `@@' replaced by `@'?}
+X  
+X  This is normally the case, but if you say no, you will be asked
+X  
+X! \code{Would you like all occurences of `@@' replaced by `\back \back '?}
+X  
+X  \noindent
+X  You must choose one of these two options.
+X--- 4930,4946 ----
+X  
+X  \noindent
+X  If you say \code{yes}, all the \code{@input} files will be included, so
+X! you can doo all of the subfiles at the same time.  You will also be asked:
+X  
+X! \begin{example}
+X! Would you like all occurences of `@@' replaced by `@'?
+X! \end{example}
+X  
+X  This is normally the case, but if you say no, you will be asked
+X  
+X! \begin{example}
+X! Would you like all occurences of `@@' replaced by `\back \back '?
+X! \end{example}
+X  
+X  \noindent
+X  You must choose one of these two options.
+Xdiff -cr /tmp/old1.3.1/manual/makeinfo.el ./manual/makeinfo.el
+X*** /tmp/old1.3.1/manual/makeinfo.el	Wed Jul 25 13:20:59 1990
+X--- ./manual/makeinfo.el	Sat Aug 25 00:27:48 1990
+X***************
+X*** 18,23 ****
+X--- 18,26 ----
+X  				"head-fmt.el"
+X  				"scheme-fmt.el"
+X  				"tabular-fmt.el"
+X+ 				"praxis-fmt.el"
+X+ 				"tabular-fmt.el"
+X+ 				"tolatexinfo.el"
+X  				"nodify.el"))
+X  
+X  (find-file "MANUAL.tex")
+END_OF_FILE
+if test 74654 -ne `wc -c <'patch.3'`; then
+    echo shar: \"'patch.3'\" unpacked with wrong size!
+fi
+# end of 'patch.3'
+fi
+echo shar: End of shell archive.
+exit 0
+-- 
+Mike Clarkson					mike@ists.ists.ca
+Institute for Space and Terrestrial Science	uunet!attcan!ists!mike
+York University, North York, Ontario,		FORTRAN - just say no. 
+CANADA M3J 1P3					+1 (416) 736-5611
+

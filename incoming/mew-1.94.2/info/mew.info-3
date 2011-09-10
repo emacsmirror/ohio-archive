@@ -1,0 +1,1056 @@
+Info file: mew.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `mew.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+
+
+INFO-DIR-SECTION Message User Agent
+START-INFO-DIR-ENTRY
+* Mew: (mew.info).           Messaging in the Emacs World.
+END-INFO-DIR-ENTRY
+
+
+
+
+
+
+File: mew.info, Node: MIME, Next: mime-ct, Prev: Convention, Up: Top
+
+What's MIME?
+************
+
+Messages so far, more exactly RFC822 messages, cannot contain objects
+other than text. MIME is multi-purpose message to extend RFC822.
+
+MIME has
+
+     MIME-Version: 1.0
+
+field in its header. Without this field, it is an RFC822 message. In
+MIME, Content-Type: to indicate data type and Content-Transfer-Encoding
+to specify encoding are important fields. The following sections
+describe these fields and feature of MIME.
+
+* Menu:
+
+* mime-ct::                     Labeling data type
+* mime-cte::                    Encoding for transport-safe
+* mime-multi::                  Multipart structure
+* mime-header::                 Header extensions
+
+
+
+File: mew.info, Node: mime-ct, Next: mime-cte, Prev: MIME, Up: MIME
+
+Labeling data type
+==================
+
+
+With MIME, data type can be specified in Content-Type:(CT:) field. The
+following is an example message whose body is US-ASCII text.
+
+     MIME-Version: 1.0
+     Content-Type: Text/Plain; charset=us-ascii
+     Content-Transfer-Encoding: 7bit
+     Subject: hello
+     From: Kazu
+
+     Hi all,
+
+If CT: is omitted, the content is treated as "Text/Plain;
+charset=us-ascii". And if CT: is "Text/Plain" and charset is not
+specified, its charset is considered as US-ASCII.
+
+Likewise, if CT: is text, charset can be specified in the context of
+MIME. For Japanese, ISO-2022-JP is used.
+
+MIME can embed multiple objects in its body, so called multipart. Each
+part in multipart consists of content-header and content-body. CT:
+appears in content-header as well as header. In the contrary, you can
+take header as a special type of content-header.
+
+For more information, please refer to *Note mime-multi::.
+
+Important CT: is listed below.
+
+`Text/Plain'
+     Text
+`Message/Rfc822'
+     Message including MIME which has a header and a body
+`Multipart/Mixed'
+     Multipart
+`Application/Postscript'
+     PostScript
+`Application/Octet-stream'
+     Binary stream. Can be considered as a binary file
+`Image/Gif'
+     GIF
+`Image/Jpeg'
+     JPEG
+`Audio/Basic'
+     Audio file with AU format
+`Video/Mpeg'
+     MPEG
+`Message/External-body'
+     An phantom object whose real object exists outside of the message
+
+
+
+File: mew.info, Node: mime-cte, Next: mime-multi, Prev: mime-ct, Up: MIME
+
+Encoding for transport-safe
+===========================
+
+"uuencode" has been used for a long time to transport binary. It encodes
+three 8-bit characters into four 6-bit characters, however, the result
+contains many kinds of symbols. Some of them have special meanings in
+header so they cannot be used to extent header functionality.
+
+Space character bothers the transport system. Space character cannot
+exist in end of line of the file system of BITNET. Suppose that an
+encoded object with uuencode contains space character in end of line.
+When a message gateway BITNET received this kind of message, it removes
+the space character, of course. In the result, receivers cannot decode
+and extract the original object.
+
+MIME specified 2 encoding methods for body.
+
+Base64 encoding
+     Encode three 8-bit characters into four 6-bit characters with 64
+     letters, "0-9A-Za-z/+". PEM originates it.
+Quoted-Printable encoding
+     Represent non-printable characters in hexagonal preceded by "=".
+
+Encoding is specified by Content-Transfer-Encoding:(CTE:) in
+content-header. The candidate values are as follows:
+
+7bit
+     No encoding is applied. The content consists of 7 bit lines.
+8bit
+     No encoding is applied. The content consists of 8 bit lines.
+binary
+     No encoding is applied. The content is 8 bit stream.
+base64
+     Encoded with Base64. The content consists of 7 bit lines.
+quoted-printable
+     Encoded with Quoted-Printable. The content consists of 7 bit lines.
+
+If CTE: is omitted, it is treated as `7bit'.
+
+Since ISO-2022-JP is 7bit character set, CTE: is 7bit. That it, CTE: can
+be omitted. You may encode it with base64 or quoted-printable, of
+course. However, you cannot read messages in folder directly with such a
+encoding, I don't recommend.
+
+
+
+File: mew.info, Node: mime-multi, Next: mime-header, Prev: mime-cte, Up: MIME
+
+Multipart structure
+===================
+
+If CT: is multipart, its content-body has multiple objects. They are
+separated with a string specified in the "boundary" parameter. Let's
+look at an example.
+
+     Message-Id: <13060.789566615@iijlab.net>
+     From: Kazuhiko Yamamoto =?ISO-2022-JP?B?GyRCOzNLXE9CSScbKEI=?=
+             <kazu@iijlab.net>
+     Subject: =?ISO-2022-JP?B?GyRCPC8kTjMoGyhC?=
+     To: m-sakura@ccs.mt.nec.co.jp
+     Mime-Version: 1.0
+     Content-Type: Multipart/Mixed; boundary=simple
+     Content-Transfer-Encoding: 7bit
+
+     --simple
+     Content-Type: Text/Plain; charset=us-ascii
+     Content-Transfer-Encoding: 7bit
+
+     Here is a picture of deer.
+
+     --Kazu
+    
+     --simple
+     Content-Type: Image/Gif
+     Content-Transfer-Encoding: base64
+     Content-Description: "Deer on the Nara park"
+    
+     R0lGODdhFwG8ANUAABETDCoYDC8lFi4dJxcnKTMwLkUUC04uG2opEkgeJ04yMWg4Ly1FLVJG
+     NWdSMywyTks1Tmc3RjdRVjNcalRMUG9UU1xbY051eG9pcIcxEp5bM8d1NI1VSJhrVrRwUpR0
+     cKZ1dcN9WXuHOWmHc7WJN6yLbcyEWNCZdDZjjml0i5t7im+TmGeRonWly5aLlrCLlK+arJmn
+     pbettMabktWumM+zsrnCrtTLua21ycq6x6/J3NbQ1+bk29na5dzp8+7w8ywAAAAAFwG8AAAG
+     /8CLcPhYtVgNyirWasZYEgDhIWGxRiXWcTIATHS/Hs6K2+1wt59azYtdJnBhKrVaWYcp7==
+    
+     --simple--
+
+In this case, a string "simple" is used. A string specified in the
+"boundary" parameter is preceded with "--". The last one is also
+followed by "--".
+
+Each part consists of a content-header and a content-body. They are
+separated with a null line as header and body. Changing a point of view,
+header and body is special content-header and special content-body
+respectively.
+
+When you send objects other than text, you should use multipart. Of
+course, it is not illegal to contain, for example, Audio/Basic in body
+but the receivers would be really confused. You are kind if you enclose
+describing text in the first part and embed Audio/Basic in the second
+part.
+
+Multipart can take recursive. So, you can enjoy multipart of multipart.
+
+By the way, preceding CRLF is included in a boundary. For example up
+above, the boundary is "CRLF--simpleCRLF".
+
+
+
+File: mew.info, Node: mime-header, Next: Kanji, Prev: mime-multi, Up: MIME
+
+Header extensions
+=================
+
+Header contains information used for transportation, so it should be
+strongly prohibited to insert improper characters that make transport
+agents misoperated. With MIME, non-ASCII characters are encoded into
+transport-safe characters then stored as a field value with the
+following format.
+
+     =?<charset>?<encoding>?<encoded-string>?=
+
+<charset> is identical to the charset parameter of CT: Text/Plain. For
+<encoding>, `B' or `Q' is used. The former is exactly base64 and the
+latter is a kind of Quoted-Printable.
+
+For ISO-2022-JP, `B' is encouraged. `Q' is also acceptable, however, few
+message interfaces support it(of course, Mew does).
+
+For instance, the author's Japanese name in Subject: is encoded as
+follows:
+
+     Subject: =?ISO-2022-JP?B?GyRCOzNLXE9CSScbKEI=?=
+
+It is not parameter values but field values that this format can handle.
+One of the reasons why this format must not be applied to parameter
+values is that the "=" keyword conflicts the separator between parameter
+names and parameter values. To encode non-ASCII characters in a
+parameter value, another format should be used. Please see the following
+example to understand the differences:
+
+     Content-Disposition: attachment;
+      filename*=iso-2022-jp"%1B%24BF%7CK%5C8l%24N%25U%25%21%25%24%25k%1B%28B
+
+
+
+
+File: mew.info, Node: Kanji, Next: rfc822, Prev: mime-header, Up: Top
+
+Ahhh, Kanji code
+****************
+
+"Kanji" is main characters for Japanese which typically have meanings
+and two sounds. The total number of Kanji usually used is over
+3,000. Kanji was originated from Chinese characters and had been
+modified and simplified in Japan for a long time.
+
+There are also about 80 characters, so called "Hiragana", each expresses
+just one sound and has a soft shape. Kanji is mainly used for nouns and
+beginning portion of verbs while Hiragana is used for other parts
+including last portion of verbs. Japanese sentences typically consist of
+Kanji in 30% and Hiragana in 70%. There is one more character set,
+called "Katakana", which is another notation of Hiragana. Katakana has
+exactly same sound of Hiragana and a little hard shape and is used to
+express exported words from other countries based on their sounds.
+
+I describe an example of struggle history for non-alphabetical character
+set in messaging system.
+
+* Menu:
+
+* rfc822::                      Email and localization
+* mime-comes::                  The appearance of MIME
+* canonical::                   The concept of canonicalization
+
+
+
+File: mew.info, Node: rfc822, Next: mime-comes, Prev: Kanji, Up: Kanji
+
+Email and localization
+======================
+
+A spec of Email, RFC822, was defined with a hope to ensure
+interoperability in 1982. Since Email was grown in America, its header
+and body could not contains other character sets than US-ASCII.
+
+It is, however, very inconvenient for people whose language is not
+English. So, despite of extension of header, many people from various
+countries extended RFC822 messages to contain non-English characters
+from their native language.
+
+In Europe, Latin 1 started to be used that presents umlaut(accent)
+characters by 8 bit word. Latin 1 is sometime called ISO-8859-1.
+
+In Japan, there are three major codes, (1) JIS code which is 7-bit 2
+characters, (2) EUC code which is 8-bit 2 characters and is used in
+UNIX, (3) SJIS which is 8-bit 2 characters and is used in PCs. Pioneers
+of JUNET which is the antecedent of Japanese Internet chose a switch
+mechanism of ASCII and JIS with ESC sequence, so called JUNET code, for
+transportation.
+
+JUNET code is sometime called ISO-2022-JP. With JUNET code, we can tell
+what their character sets are in addition to switch them.
+
+The extension such as Latin 1 and JUNET code is an agreement within the
+region. You are compelled to use English to send a message across
+regions in the context of RFC822.
+
+RFC822 is so ambiguous that we misunderstand that JUNET code can be used
+for header and body since it is 7 bit. Probably this is a good
+explanation to blow away your misunderstanding. "RFC822 defines that the
+syntax of header and body is 7bit and the semantics of header and body
+is US-ASCII". JUNET code is syntactically legal but its semantics is
+illegal.
+
+
+
+File: mew.info, Node: mime-comes, Next: canonical, Prev: rfc822, Up: Kanji
+
+The appearance of MIME
+======================
+
+To satisfy users' desire such as transportation of picture and audio and
+to bridge localized RFC822, MIME was defined in 1992. With MIME, the
+character parameter can be specified. Since JUNET code is called
+ISO-2022-JP, Japanese message looks as follows:
+
+     Content-Type: Text/Plain; charset=iso-2022-jp
+     Content-Transfer-Encoding: 7bit
+
+     Japanese text.
+
+Is this charset useful? Absolutely! The charset parameter can tell user
+interface an exact character set. Suppose that a Norway guy send a
+message with ISO-8859-1 to Japanese. If his interface supports
+ISO-8859-1 then it is no problem to display the body. Otherwise the
+interface can safely ignore the body. Mew makes use of the charset
+parameter to convert messages to Mule's internal representation.
+
+Some people say like this; "If we use ISO-2022-JP-2 which is upper
+compatible to ISO-2022-JP and can handle numerous character set, the
+charset parameter is not necessary since ISO-2022-JP-2 itself contains
+information about character set." Maybe, just maybe, such people don't
+understand MIME.
+
+Ideally speaking, this assessment is correct. But MIME takes a practical
+stance. MIME does not suppose that all people in the world will start
+using ISO-2022-JP-2 tomorrow. Moreover, MIME is designed to be robust
+against unstable transfer programs. All transfer program in the world
+are not well implemented. And all site cannot use rich resources. If you
+ask to use UNICODE as of today, how do you feel?
+
+MIME provides the charset parameter to bridge between numerous localized
+regions. The additional procedure under MIME is to label the charset
+parameter and we can use ISO-2022-JP as we used to. If you wish to make
+ISO-2022-JP-2 an Internet standard, you should make an effort to spread
+region where ISO-2022-JP-2 is used by default. Likewise, ISO-2022-JP-2
+and MIME is not inconsistent. Rather, ISO-2022-JP-2 can make most use of
+MIME to make itself widely spread. Of course, the name of "charset" is
+not proper for character switching mechanisms such as ISO-2022-xx.
+
+With MIME, you can encode non-ASCII character set and insert it into
+header. This scheme prevents errors of Email transfer programs and makes
+it possible to convey non-ASCII strings in header. We don't have to say
+"Do not use Japanese on Subject:" anymore!
+
+MIME is not a spec to prohibit localized RFC822. So, MIME interfaces are
+supposed to act as follows:
+
+Viewing
+
+  1. Allow user to choose a default charset.
+  2. If MIME-Version: doesn't exist, the body is treated as the default
+     charset.
+  3. If MIME-Version: exists and Content-Type: is not provided, the body
+     is treated as US-ASCII.
+  4. If both MIME-Version: and Content-Type: exist, specified charset is
+     used.
+
+Composing
+
+  1. Specify MIME-Version:, Content-Type:, and its charset.
+  2. Choose minimum character set for charset. For instance, US-ASCII
+     for English. If the rule is violated, it is likely that a message
+     to be read cannot be read. For instance, consider a message labeled
+     ISO-2022-JP whose body is US-ASCII in fact. Mailers which support
+     US-ASCII only could not handle such a message.
+
+If you store messages in a spool or folders after conversion from
+ISO-2022-JP to EUC-Japan, please don't be blind. You should check
+charset out, and convert only ISO-2022-JP messages to EUC-Japan.
+
+Insertion of non-ASCII in header is one of MIME features but in fact
+MIME-Version: is not necessary.
+
+
+
+File: mew.info, Node: canonical, Next: Policy, Prev: mime-comes, Up: Kanji
+
+The concept of canonicalization
+===============================
+
+Unfortunately, each computer in the world represents data with its own
+format. The followings are end of lines used in major OSes.
+
+   - UNIX :: LF(0x0a)
+   - MS-DOS :: CRLF(0x0d0a)
+   - MacOS :: CR(0x0d)
+
+As you know, if there is no agreement for end of line, text is not
+transfered between these OSes safely. RFC822 defines to transform end of
+line into CRLF. This kind of format conversion is called
+canonicalization. Converting SJIS and EUC-Japan to JUNET code is a kind
+of canonicalization.
+
+OK, let's think about encryption and signature with PGP. Suppose that a
+Mac user signed text whose line breaks are CR then sent it to a UNIX
+user. If the UNIX user transforms line break to LF then verifies the
+signature, it is obvious that the verification fails. You thus
+understand that canonicalization is necessary.
+
+When you encrypt or sign text with PGP, first convert it to ISO-2022-JP
+then transform its end of lines into CRLF.
+
+
+
+
+File: mew.info, Node: Policy, Next: History, Prev: canonical, Up: Top
+
+Mew's policy
+************
+
+The following words mention Mew's spirit:
+
+     Mew wants something simple or nothing at all.
+
+That is, complicated mechanism is not necessary. What Mew provides is
+simple yet comprehensive feature.
+
+Many people tell me like this: "A mailer that I used before has this
+kind of feature and I think it's very convenient. So, please implement
+it in Mew". Sorry, such a explanation might not convince me. Mew is
+trying to carry out stuff that other programs have not ever done so.
+The word "good-old" seems to me not enough.
+
+If you believe in your opinion, please pursue the author
+patiently. Since I'm hell-of-a busy person I'm prone to forget what you
+explained before. And because I'm just a man I regret to say I'm
+subjective. It is quite possible for me not to understand your novel
+ideas. So, please don't give up!
+
+
+
+
+File: mew.info, Node: History, Next: mh-e, Prev: Policy, Up: Top
+
+Where did Mew come from?
+************************
+
+It might not be useful but let's open the book about Mew's history...
+
+* Menu:
+
+* mh-e::                        Departure from mh-e
+* birth::                       Birth of Mew
+* pgp::                         Meet to PGP
+* im::                          Independence from MH
+* netnews::                     Integration of NetNews
+
+
+
+File: mew.info, Node: mh-e, Next: birth, Prev: History, Up: History
+
+Departure from mh-e
+===================
+
+I took part in the FJPEM research project of WIDE Project in the fall of
+1993. At that time, Mine had implemented mhpem to make it convenient to
+use FJPEM with mh-e. Inspired by mhpem, I spend many time to enhance
+mhpem as escape from my master thesis in winter 1994. :)
+
+mhpem was a lovely program to decrypt cipher messages automatically,
+however, we met some problems. The biggest one was that mh-e was not
+flexible enough to enhance some features. I really wanted to cache
+decrypted message to display it quickly for the second time but it was
+quite hard to enhance mh-e to do so. When a new version of mh-e was
+released and it appeared that mhpem didn't work with it, I decided to
+kick it out.
+
+I want to cache decrypted PEM. Also MIME. Why isn't there a good
+interface to handle MIME with easy operations? Tell me the reason not to
+be able to cite multiple messages to one replying message. It's
+ridiculous that we cannot enjoy cheerful marks. I'd hate to refile
+messages with difficult operations. All in all, it appeared impossible
+for me to implement what I want by modifying mh-e.
+
+Auto decryption in mhpem, asynchronous scan in mhasync, dynamic window
+setup in GNUS, cheerful mark system for multiple messages in gnus-mark,
+refile feature in VM, message cache mechanism, and beautiful and
+flexible programming style.... A pieces of puzzle was gradually getting
+together in my mind. It was early in the spring of 1994.
+
+
+
+File: mew.info, Node: birth, Next: pgp, Prev: mh-e, Up: History
+
+Birth of Mew
+============
+
+In April 1994, I started to program Mew. Since there were references,
+inc and scan not to wait the exit, dynamic window configuration, marks,
+and message cache were implemented in early time.
+
+To tell the truth, Mew displayed MIME messages in MIME mode. When you
+type `SPC' on a multipart MIME message, Mew moved from Summary mode to
+MIME mode. Utashiro said to me, however, "Why MIME mode? Summary mode is
+enough, isn't it?". It's a really breakthrough.
+
+At this time, big problems were how to refile messages and to compose
+complex MIME.
+
+It is certain that if users are always forced to write Lisp, message
+refile becomes easy. But I really hate to require users to setup Lisp by
+themselves. "It is ridiculous to try to choose default refile-folder
+from message header since there are thousands of candidates. Rather, it
+is quite reasonable to select the default from existing folder". When
+this idea hit my head, I could not wait for the next morning. After
+that, refile feature was enhanced by Nomura.
+
+How to compose complicated MIME message with easy operations? It is a
+tragedy for users to be compelled to learn a composition grammar. I
+really wanted to provide simple yet comprehensive method to users. It
+was Youki that gave me the answer. Yes, MIME is file structure! We can
+consider that a singlepart is a file while a multipart is a
+directory. Users can create a file tree without any troubles, of course,
+and it is a Mew's job to convert the file structure to MIME format.
+
+
+
+File: mew.info, Node: pgp, Next: im, Prev: birth, Up: History
+
+Meet to PGP
+===========
+
+I couldn't swipe out reservations to the implementation of FJPEM for a
+long time, then PGP finally appeared in front of me in the early summer
+of 1994. At that time, MIT tried to find a solution to make
+non-commercial PGP legal against the RSA patent, so called PGP 2.5. The
+release of PGP 2.6 settled down the relationship between Phil and
+RSADSI, yet PGP 2.6 based on RSAREF was under US export control.
+
+Meet to 2.6ui based on 2.3a finally leaded me to be a PGP user. I cannot
+forget my first impression to PGP. It's a really well-designed program.
+In the summer of 1995, I took part in NDSS, so called ISOC Security
+Symposium in San Diego. In addition of the proceedings, PGP by Simson
+published from O'Reilly was delivered to early registered
+participants. It's a masterpiece of masterpieces.  For these reasons, I
+have spent time to integrate PGP and MIME rather than to integrate PEM
+and MIME.
+
+The idea that marks can represent encryption and signature was given by
+Mine when we wrote a paper for IPSJ together. It took a time a bit to
+understand its merit that marks could be canceled at any time.
+
+
+
+File: mew.info, Node: im, Next: netnews, Prev: pgp, Up: History
+
+Independence from MH
+====================
+
+"Get together in Fukuoka for good sushi!" Under these words, excellent
+programmers came to Momochi, Fukuoka, where Fukuoka dome locates, in
+April, 1997. Using Institute of Systems & Information Technologies,
+Kyushu as a hacking room and Hyatt Regency as sleeping rooms, MH
+independence project for 3 nights started.
+
+Eating anyway, hacking as we like, and discussing comprehensively. We
+repeated these steps over and over. As we left Fukuoka, Mew became
+somehow independent on MH by using IM instead. (Engel's coefficient of
+this week is, of course, very high...)
+
+Afterwords, we discussed on mailing list, tried to achieve consensus,
+and then hacked again and again. Finally master Utashiro casted a spell
+to make IM much faster then IM beta version was released in early July.
+
+
+
+File: mew.info, Node: netnews, Next: Future, Prev: im, Up: History
+
+Integration of NetNews
+======================
+
+In the fall of 1994, I held Mew BOF(Birds Of a Feather) at WIDE camp.
+Mr. Sano left unforgettable words to me: "Mailing-list is some between
+Email and NetNews". It's like I saw a light in darkness. Now that Perl 5
+become stable, the integration of NetNews is coming soon.
+
+
+
+
+File: mew.info, Node: Future, Next: Avail, Prev: netnews, Up: Top
+
+Where will Mew go?
+******************
+
+Mew 1.95 would be the last version of the version 1 series. The
+followings are features to be implemented in Mew 1.95.
+
+Real multi-lingualization
+     Though The current multi-lingualization feature of Mew is really
+     cool, there are some shortcoming such as inability of 8bit message
+     forwarding, difficulty of Korean processing, etc. Mew 1.95 will aim
+     at real multi-lingualization solving these problems.
+MIME editor
+     Currently, it is hard to re-edit multipart messages. Mew 1.95 will
+     implement a generic mechanism to re-edit multipart messages.
+Customizing
+     Making it easy to customize Mew's options with `defcustom'.
+Template in Draft mode
+     Draft mode will provide template features. For example, a typical
+     greeting sentence can be inserted according to the To: field.
+
+It is planed that Mew 2 will be independent on IM.
+
+IMAP daemon
+     One of shortcomings of Mew 1.9x is that users are made to wait
+     every time Perl is executed and reads configuration files. To solve
+     this, we are planing to implement an IMAP daemon running on a local
+     computer and make Mew communicate with it.
+Database for full body search
+     Mew 2 will support database for full body search (WAIS for
+     English?).
+Database for message relations
+     Mew 2 will support database for message relations. Thanks to this,
+     thread can be implemented. Also, it will be possible to manage
+     unread messages. Possibly refiling messages will be unnecessary.
+NetNews
+     Mew 2 will support NetNews.
+
+
+
+
+File: mew.info, Node: Avail, Next: ftp, Prev: Future, Up: Top
+
+Availability and mailing-list
+*****************************
+
+This chapter describes how to get Mew and related mailing-lists.
+
+* Menu:
+
+* ftp::                         How to get Mew?
+* ml::                          Mailing list
+
+
+
+File: mew.info, Node: ftp, Next: ml, Prev: Avail, Up: Avail
+
+How to get Mew?
+===============
+
+The latest Mew is available from the following repository.
+
+     ftp://ftp.Mew.org/pub/Mew/mew-current.tar.gz
+
+Samples are given time to time under the following file name:
+
+     ftp://ftp.Mew.org/pub/Mew/samples.tar.gz
+
+
+
+File: mew.info, Node: ml, Next: Ack, Prev: ftp, Up: Avail
+
+Mailing list
+============
+
+A new version is announced to
+
+     mew-release@Mew.org
+
+in English. If you wish to join, please send a message to
+
+     mew-release-ctl@Mew.org
+
+whose the first line of its body is "#help" (without quotes). This list
+is under access control so that nobody but the author can post.
+
+
+
+
+
+File: mew.info, Node: Ack, Next: Copyright, Prev: ml, Up: Top
+
+Acknowledgement
+***************
+
+First and foremost, I would like to thank Mine Sakurai. If she had not
+have implemented mhpem and inspired me, Mew would not be realistic. She
+also implemented most part of mew-url and mew-pem(that are obsolete,
+though). It is she that gives me an idea of mark based composing. To her
+goes my deepest gratitude.
+
+The author of Mew would sincerely like to acknowledge Kazumasa Utashiro
+for telling me simplicity of Summary mode, Youki Kadobayashi for
+noticing me a scheme to map file structures to MIME, Motonori Nakamura
+for his precious suggestions regarding with Email, and Susumu Sano for
+giving me a hint to integrate Email and NetNews.
+
+Kiyotaka Sakai always contributes neat codes. Yoshinari Nomura enhanced
+functionality of message refile. Mikitomo Ushijima always proofreads my
+poor English. Keiichi Shima encouraged me to write Info. I very much
+appreciate.
+
+I would like to thank David Worenklein for contributing many codes. I'm
+grateful to Atsushi Shionozaki, Darren Stalder, and David Worenklein for
+proofreading my paper. I'd like to acknowledge to Scandinavia guys for
+their good suggestions.
+
+My deep gratitude goes to Jun'ichiro Ito, Yoshiaki Kasahara, Motonori
+Nakamura, Yoshinari Nomura, Kazunori Nishi, and Hidenori Ohta for their
+help to create IM. My thank also goes to Kazumasa Utashiro for making IM
+much faster. I would acknowledge to Fujikazu Okunishi for his
+contribution on OS/2 area and his comprehensive tests. Significant works
+to run Mew on Win95/WNT were mostly accomplished by Shuichi Kitaguchi
+and Shuhei Yamaguchi. Yuuichi Teranishi made Mew funny on XEmacs.
+
+I would like to express my thanks to devoted users: Hidetaka Koie,
+Hideyuki Shirai, and Shun-ichi Goto.
+
+Mew is supported by contributions from many users. I'd like to express
+hearty thanks to those who are not listed here. The author is hell-of-a
+busy guy, so he cannot afford to respond all Emails. I'm so sorry if you
+have not received my reply.
+
+
+
+
+File: mew.info, Node: Copyright, Next: Author, Prev: Ack, Up: Top
+
+Copyright
+*********
+
+Mew conforms the following copyright.
+
+Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999 Mew developing team.
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions are
+met:
+
+  1. Redistributions of source code must retain the above copyright
+     notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the above copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the
+     distribution.
+  3. Neither the name of the team nor the names of its contributors may
+     be used to endorse or promote products derived from this software
+     without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE TEAM AND CONTRIBUTORS "AS IS" AND ANY
+EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE TEAM OR CONTRIBUTORS BE
+LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
+THE POSSIBILITY OF SUCH DAMAGE.
+
+If you wish to distribute Mew in CD or something, please let me know. I
+do not go mad even if you don't tell me but I'm very grad if you do so.
+I have not declined requirements.
+
+The copyright of this Info belongs to the author. It is granted to copy,
+modify, redistribute this Info but no warranty.
+
+
+
+
+File: mew.info, Node: Author, Next: Terminology, Prev: Copyright, Up: Top
+
+About the author
+****************
+
+Kazuhiko YAMAMOTO // Kazu
+        
+        
+In 1970, Kazu was born at Hikari city, Yamaguchi prefecture, Japan,
+where is surrounded by a beach with "Rainbow pine forest" in the south,
+by an abundant river in the east, by gentle mountains in the north and
+the west. When he was a junior high-school student, he watched the movie
+"War Game", which made him interested in computer security. He had been
+grown with beautiful nature at Hikari city until high school.
+
+He was moved to Fukuoka city to take a course of electronic engineering
+at Kyushu university in 1988. Despite of pain from the urban city, the
+dirty ocean, and the language barrier, he somehow graduated from the
+university. Email appeared to him in the third year and the Internet
+fascinated him through the fourth. The trial to be a employee of Sun
+Microsystems to visit the US failed because US' visa policy became
+severe at that time.
+
+He took a course of Computer Science and Communication Engineering at
+the graduate school of Kyushu university in 1992. The specialty was
+Internet routing. He started to make security knowledge and technology
+widely spread to the Japan portion of the Internet community. He finally
+released "Happy Networking", one of the most popular beginner's guide of
+the Internet, in the spring of 1993.
+
+He moved to Nara Institute of Science and Technology as a research
+associate in 1994. During the four years of faculty life, he developed
+Mew. Since he reached a conclusion that he should concentrate on
+programming in young days and it's possible to educate students when he
+will became older, he moved to IIJ Research Laboratory in 1998.
+
+Research areas: Messaging system, IP version 6
+Favorite words: "Challenges start everyday."
+Favorite words: "Living is learning. Giving is taking."
+
+Email: Kazu@Mew.org
+URL: http://www.mew.org/~kazu/
+PGP fingerprint:  6B 63 38 88 67 5E 96 8E  CE A4 62 73 3F 11 64 94
+
+
+
+
+File: mew.info, Node: Terminology, Next: Bib, Prev: Author, Up: Top
+
+Terminology
+***********
+
+Here is terminology for Mew.
+
+`folder'
+     Directories to save received messages.
+`Summary mode'
+     A mode to display a list of messages.
+`Message mode'
+     A mode to display a content of a text message.
+`Draft mode'
+     A mode to write or compose a message.
+`MIME'
+     A format to contain objects other than text in a body and to embed
+     non-alphabetical words in a header. With MIME you can enclose text
+     files, picture files and audio files at the same time, and insert
+     your first language such as Japanese into Subject:. It is an
+     acronym of "Multipurpose Internet Mail Extensions". For more
+     information, please refer to *Note MIME::.
+`PGP'
+     A program to accomplish encrypted message and digital signature
+     created by Phil Zimmermann. An acronym for "Pretty Good Privacy".
+`composer'
+     An interface to write or compose a message. Regarding with Mew, it
+     is Draft mode.
+`viewer'
+     An interface to read or view messages. As far as Mew is concerned,
+     it is Summary mode and Message mode.
+`Email'
+     A short word for "electronic mail".
+`NetNews'
+     It was also known as "USENET news".
+`message'
+     An integrated concept of Email, NetNews, MIME, etc. A short word of
+     "Internet message".
+
+
+
+
+File: mew.info, Node: Bib, Next: Variable Index, Prev: Terminology, Up: Top
+
+Bibliography
+************
+
+This section shows you bibliography. RFC(Request For Comments) is a
+series of documents to share our knowledge about the Internet Protocol
+suite. It is available, for instance, from the following repository.
+
+     ftp://ftp.isi.edu/in-notes/
+
+Please read the following RFC to learn manner on the Internet.
+
+   * S. Hambridge, "Netiquette Guidelines", RFC 1855, 1995
+
+To understand the format of good old text Email and the delivery system,
+please refer to:
+
+   * D. Crocker, "Standard for the format of ARPA Internet text
+     messages", RFC 822, 1982
+   * J. Postel, "Simple Mail Transfer Protocol", RFC 821, 1982
+
+MIME is specified in the following RFCs.
+
+   * N. Freed and N. Borenstein, "Multipurpose Internet Mail Extensions
+     (MIME) Part One: Format of Internet Message Bodies", RFC 2045,
+     1996.
+   * N. Freed and N. Borenstein, "Multipurpose Internet Mail Extensions
+     (MIME) Part Two: Media Types" RFC 2046, 1996.
+   * K. Moore, "MIME (Multipurpose Internet Mail Extensions) Part Three:
+     Message Header Extensions for Non-ASCII Text", RFC 2047, 1996.
+   * N. Freed, J. Klensin and J. Postel, "Multipurpose Internet Mail
+     Extensions (MIME) Part Four: Registration Procedures", RFC 2048,
+     1996.
+   * N. Freed and N. Borenstein, "Multipurpose Internet Mail Extensions
+     (MIME) Part Five: Conformance Criteria and Examples", RFC 2049,
+     1996.
+   * R. Troost, S. Dorner, K. Moore, "Communicating Presentation
+     Information in Internet Messages: The Content-Disposition Header
+     Field", RFC 2183, 1997.
+   * N. Free and K. Moore, "MIME Parameter Value and Encoded Word
+     Extensions: Character Sets, Languages, and Continuations", RFC
+     2231, 1997.
+
+You can find the format and distribution protocol of NetNews in the
+following RFCs.
+
+   * M. Horton and R. Adams, "Standard for interchange of USENET
+     messages", RFC 1036, 1987.
+   * B. Kantor and P. Lapsley, "Network News Transfer Protocol: A
+     Proposed Standard for the Stream-Based Transmission of News", RFC
+     977, 1986.
+
+The following document contains concise yet comprehensive explanations
+about PGP.
+
+   * PGP: Petty Good Privacy, Simson Garfinkel, O'Reilly & Associates,
+     Inc, 1995.
+
+For details of an integration of PGP and MIME, please refer to:
+
+   * J. Galvin, S. Murphy, S. Crocker and N. Freed, "Security Multiparts
+     for MIME: Multipart/Signed and Multipart/Encrypted", RFC 1847,
+     1995.
+   * M. Elkins, "MIME Security with Pretty Good Privacy (PGP)", RFC
+     2015, 1996.
+
+
+
+
+
+File: mew.info, Node: Variable Index, Prev: Bib, Up: Top
+
+Variable Index
+**************
+
+
+* Menu:
+
+* mail-citation-hook:           cite.                   4.
+* mail-user-agent:              Composing.              4.
+* mail-user-agent:              Start.                  4.
+* mew-addrbook-for-cite-label:  cite.                   4.
+* mew-addrbook-for-cite-prefix: cite.                   4.
+* mew-addrbook-mode-hook:       hooks.                  4.
+* mew-addrbook-override-by-newone: addrbook.            4.
+* mew-auto-get:                 Start.                  4.
+* mew-before-cite-hook:         hooks.                  4.
+* mew-cc:                       level-one.              4.
+* mew-cite-fields:              level-three.            4.
+* mew-cite-format:              level-three.            4.
+* mew-cite-hook:                hooks.                  4.
+* mew-cite-prefix:              level-three.            4.
+* mew-config-insert-when-composed: config.              4.
+* mew-config-insert-when-prepared: config.              4.
+* mew-dcc:                      level-one.              4.
+* mew-decode-quoted:            illegal.                4.
+* mew-draft-mode-hook:          hooks.                  4.
+* mew-draft-mode-hook:          level-one.              4.
+* mew-draft-mode-newdraft-hook: hooks.                  4.
+* mew-draft-mode-reedit-hook:   hooks.                  4.
+* mew-end-of-message-string:    multipart.              4.
+* mew-end-of-part-string:       multipart.              4.
+* mew-env-hook:                 hooks.                  4.
+* mew-fcc:                      level-one.              4.
+* mew-field-circular-completion-switch: cheader.        4.
+* mew-field-completion-switch:  header.                 4.
+* mew-field-delete-for-forwarding: forward.             4.
+* mew-fields:                   header.                 4.
+* mew-file-max-size:            singlepart.             4.
+* mew-from:                     cheader.                4.
+* mew-from:                     level-one.              4.
+* mew-from-list:                cheader.                4.
+* mew-fromme-cc-list:           reply.                  4.
+* mew-fromme-to-list:           reply.                  4.
+* mew-header-alist:             level-three.            4.
+* mew-highlight-mark-folder-list: level-two.            4.
+* mew-icon-directory:           Start.                  4.
+* mew-init-hook:                hooks.                  4.
+* mew-lisp-max-length:          addrbook.               4.
+* mew-lisp-max-length:          by-from.                4.
+* mew-lisp-max-length:          by-thread.              4.
+* mew-mail-address-list:        reply.                  4.
+* mew-mail-domain-list:         cheader.                4.
+* mew-mail-domain-list:         Start.                  4.
+* mew-make-message-hook:        hooks.                  4.
+* mew-message-hook:             hooks.                  4.
+* mew-message-mode-hook:        hooks.                  4.
+* mew-msg-rm-folder-list:       delete mark.            4.
+* mew-msg-rm-policy:            delete mark.            4.
+* mew-multipart-icon-position:  XEmacs.                 4.
+* mew-noreplyto-cc-list:        reply.                  4.
+* mew-noreplyto-to-list:        reply.                  4.
+* mew-prog-gpg:                 pgp-viewing.            4.
+* mew-prog-pgp:                 pgp-viewing.            4.
+* mew-prog-pgp2:                pgp-viewing.            4.
+* mew-prog-pgp5:                pgp-viewing.            4.
+* mew-quit-hook:                hooks.                  4.
+* mew-real-send-hook:           hooks.                  4.
+* mew-refile-auto-refile-skip-any-mark: auto-refile.    4.
+* mew-refile-ctrl-multi:        guess-rule.             4.
+* mew-refile-guess-alist:       by-alist.               4.
+* mew-refile-guess-control:     guess-rule.             4.
+* mew-refile-guess-from-me-is-special: by-from.         4.
+* mew-refile-guess-from-me-is-special: by-from-folder.  4.
+* mew-refile-guess-strip-domainpart: by-default.        4.
+* mew-replyto-cc-list:          reply.                  4.
+* mew-replyto-to-list:          reply.                  4.
+* mew-send-hook:                hooks.                  4.
+* mew-signature-as-lastpart:    send.                   4.
+* mew-signature-file:           send.                   4.
+* mew-signature-insert-last:    send.                   4.
+* mew-sort-default-key:         sorting.                4.
+* mew-sort-default-key-alist:   sorting.                4.
+* mew-sort-key-alist:           sorting.                4.
+* mew-summary-exec-hook:        hooks.                  4.
+* mew-summary-inc-sentinel-hook: hooks.                 4.
+* mew-summary-mark-direction:   level-one.              4.
+* mew-summary-mode-hook:        hooks.                  4.
+* mew-summary-scan-sentinel-hook: hooks.                4.
+* mew-summary-show-direction:   level-one.              4.
+* mew-suspend-hook:             hooks.                  4.
+* mew-syntax-format-hook:       hooks.                  4.
+* mew-use-cached-passwd:        folder.                 4.
+* mew-use-folders-file-p:       features.               4.
+* mew-use-highlight-body:       level-two.              4.
+* mew-use-highlight-cursor-line: level-two.             4.
+* mew-use-highlight-header:     level-two.              4.
+* mew-use-highlight-mark:       level-two.              4.
+* mew-use-highlight-mouse-line: level-two.              4.
+* mew-use-highlight-url:        level-two.              4.
+* mew-use-highlight-x-face:     level-two.              4.
+* mew-use-pgp-cached-passphrase: pgp-viewing.           4.
+* mew-virtual-mode-hook:        hooks.                  4.
+* mew-window-use-full:          level-one.              4.
+* mew-x-pgp-key-list:           pgp-viewing.            4.
+
+
+
+

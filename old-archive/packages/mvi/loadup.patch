@@ -1,0 +1,20 @@
+*** loadup.el.orig	Fri Nov 17 15:50:22 1989
+--- loadup.el	Fri Nov 17 15:54:31 1989
+***************
+*** 30,35
+  (garbage-collect)
+  (load "files")
+  (garbage-collect)
+  (load "indent")
+  (load "window")
+  (load "paths.el")  ;Don't get confused if someone compiled paths by mistake.
+
+--- 30,37 -----
+  (garbage-collect)
+  (load "files")
+  (garbage-collect)
++ (load "mvi")
++ (garbage-collect)
+  (load "indent")
+  (load "window")
+  (load "paths.el")  ;Don't get confused if someone compiled paths by mistake.

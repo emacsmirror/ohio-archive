@@ -1,0 +1,703 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; sql-mode.el - modes for editing SQL code and interacting with SQL servers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  Author:        Peter D. Pezaris <pez@atlantic2.sbi.com>
+;;  Maintainer:    sql-mode-help@atlantic2.sbi.com
+;;  Version:       0.922 (beta)
+;;  Last Modified: Fri Jan 19 10:40:21 1996
+;;  Keywords:      sql editing major-mode languages
+;;
+;;  Copyright © 1994, 1995, 1996 Peter D. Pezaris
+;;
+;;  This file is not part of GNU Emacs
+;;
+;;  This program is free software; you can redistribute it and/or
+;;  modify it under the terms of the GNU General Public License as
+;;  published by the Free Software Foundation; either version 1, or (at
+;;  your option) any later version.
+;;
+;;  This program is distributed in the hope that it will be useful, but
+;;  WITHOUT ANY WARRANTY; without even the implied warranty of
+;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;;  General Public License for more details.
+;;
+;;  You should have received a copy of the GNU General Public License
+;;  along with this program; if not, write to the Free Software
+;;  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Description:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  sql-mode.el offers four major modes relating to SQL code:
+;;
+;;  sql-mode              major mode for editing SQL code
+;;  sql-batch-mode        major mode for entering and execution of SQL
+;;                        commands in batches
+;;  sql-interactive-mode  major mode for interaction with SQL servers
+;;  sql-results-mode      major mode for viewing results returned by the
+;;                        execution of commands in sql-batch-mode
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Features:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  New features to this release are marked with a '+'
+;;
+;;  o Batch editing of sql commands
+;;  o Interactive editing of sql commands
+;;  o Warnings for missing `where' clauses
+;;  o Warnings for number of rows affected with updates, deletes, etc.
+;;  o Command history in batch and interactive modes
+;;  o Abbrev definitions for sql commands
+;;  o Specialized syntax table for sql code
+;;  o Extensive comment and un-comment functionality
+;;  o Server/user/password/database associations using mnemonics or menus
+;;  o Menubar support
+;;  o Popup menu support
+;;  o Drag scrolling of results buffers
+;;  o Full font-lock support
+;;  o Automatic indentation of sql code (still very alpha)
+;;  o Printing of results buffers with support for enscript
+;;  o Minibuffer completion on servers and users
+;;  o Keyword completion
+;;  o Table name completion
+;;  o Column name completion
+;;  o Stored procedure name completion
+;;  o Database name completion
+;;  o User name completion
+;;  + Column value completion
+;;  + Operator completion
+;;  o Options menu, including save current options
+;;  o Changes are marked (highlighted) in results buffers
+;;  o Linked batch and results buffers
+;;  o Improved table header management
+;;  o Global command history
+;;  o Top ten list of commonly used queries
+;;  o Automagically builds server list from interfaces file
+;;  o Error parsing of results buffers
+;;  o SQL Mode specific help system
+;;  o SQL Mode specific toolbar
+;;  o Loading of stored procedures
+;;  o Big menubar for novice users
+;;  o bcp in and out
+;;  o Canned inserts into a table
+;;  o Perform updates simply by typing in the results buffer
+;;  o Background evaluation so that you can continue to use emacs
+;;  + Customizable subprocess behavior
+;;  + bcp support for arbitrary rows returned in results buffer
+;;  + Dynamic query building
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Installation:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  SQL Mode was written for XEmacs (formerly Lucid Emacs) version 19.8 or
+;;  later.  Version 19.10 or later is recommended.  Many features in SQL Mode,
+;;  like toolbars and horizontal scrollbars, rely on later versions of XEmacs.
+;;
+;;  In addition, sql-mode now works with FSF Emacs version 19 in a slightly
+;;  limited way.  The package easymenu is required if you are using FSF
+;;  Emacs.  SQL Mode has been tested for FSF Emacs version 19.28.  It may
+;;  work with some earlier versions, but has not been tested.  Toolbars are
+;;  not supported in FSF Emacs version 19.28.
+;;
+;;  To install SQL Mode, you need to add three lines to your $HOME/.emacs
+;;  file.  The first line tells emacs where to look for SQL Mode, the
+;;  second line load SQL Mode, and the third line does the initialization.
+;;  For things to work properly, you need all three things to happen in
+;;  that order.  If you put *all* off the .el files that came with the
+;;  distribution in a directory in your load-path, then don't bother with
+;;  the first line.
+;;
+;;      (setq load-path (cons "<PATH-TO-SQL-MODE>/" load-path))
+;;      (require 'sql-mode)
+;;      (sql-initialize)
+;;
+;;  To make full use of the help system, you will need to copy the file
+;;  SQL-MODE-README into the directory specified by the variable
+;;  `data-directory'.  The file should have come with the SQL Mode
+;;  distribution.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Basic Usage:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  INVOCATION
+;;
+;;  To automatically enter sql-mode when editing a file with a ".sql", a
+;;  ".tbl" or a ".sp" extension, add the following to your .emacs file.
+;;
+;;      (autoload 'sql-mode "sql-mode" "SQL Editing Mode" t)
+;;      (setq auto-mode-alist
+;;         (append '(("\\.sql$" . sql-mode)
+;;                   ("\\.tbl$" . sql-mode)
+;;                   ("\\.sp$"  . sql-mode))
+;;                 auto-mode-alist))
+;;
+;;  sql-batch-mode and sql-interactive-mode are invoked with
+;;  M-x sql-batch-mode and M-x sql-interactive-mode respectively.  You will
+;;  be prompted for the SQL server, the login id of the user, and the
+;;  password.  Passwords are echoed with `*' characters as you are typing
+;;  them by default.  If you would rather see the password as you are
+;;  typing it, see the variable `sql-secure-passwords'.
+;;
+;;  EVALUATION
+;;
+;;  In an sql-batch-mode buffer, you can evaluate the buffer by invoking
+;;  sql-evaluate-buffer (bound to C-c C-e by default, and also M-i for
+;;  backwards compatibility).  A region can be evaluated by passing an
+;;  argument to sql-evaluate-buffer.
+;;
+;;  In an sql-interactive-mode buffer, you can evaluate the command you just
+;;  entered by typing `go' followed by RETURN (if you are using isql) or
+;;  type a semicolon at the end of the line followed by RETURN (if you are
+;;  using fsql).
+;;
+;;  One very important user-definable variable is `sql-command'.  This
+;;  variable should be set to "isql", or "fsql" etc., as appropriate.  See
+;;  the section on customization for details on how to set sql-command.
+;;  Also make sure that the sql-command is in your path.
+;;
+;;  Switches can be passed to sql-command by setting the variable
+;;  sql-batch-command-switches.  Do not, for instance, set sql-command to
+;;  "isql -i file".  Instead, set sql-command to "isql" and 
+;;  sql-batch-command-switches to "-i file".
+;;
+;;  COMMENTING
+;;
+;;  Lines of code can be commented out and un-commented out using various
+;;  sql-comment- functions.  The most basic (and most useful) is
+;;  sql-comment-line-toggle.  This function will comment out a line of
+;;  code if it is not already commented, or un-comment it if it is
+;;  commented.  This function is bound to C-c C-c in sql-mode and
+;;  sql-batch-mode buffers by default.
+;;
+;;  If the region is active, sql-comment-line-toggle will invoke the
+;;  function sql-comment-region-toggle, having the effect of toggling the
+;;  state of commentedness (yes, I know, that's probably not a word) on
+;;  every line in the region.
+;;
+;;  COMMAND HISTORY
+;;
+;;  You can scan through your previous commands with sql-previous-history
+;;  and sql-next-history (bound to M-p and M-n in sql-batch-mode buffers
+;;  by default).  As you evaluate new commands, they are added to the
+;;  history list.  The most recent 40 command are kept by default.
+;;
+;;  DRAG SCROLLING
+;;
+;;  sql-mode supports drag-scrolling.  By default this is bound to
+;;  shift-button1 in sql-interactive-mode and sql-results-mode buffers.  To
+;;  scroll the results, simply click and hold the left mouse button while
+;;  holding the shift key, and drag the mouse.  The text should scroll
+;;  appropriately.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Customization:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  To change the value of a user-definable variable, don't change the file
+;;  sql-mode.el.  Instead, put a line in either your .emacs file, or the
+;;  file $HOME/.sql-mode, as follows:
+;;
+;;      (setq VARIABLE VALUE)
+;;
+;;  The usage of the file $HOME/.sql-mode removes some of the clutter from
+;;  your .emacs file, speeds up the loading of Emacs, and is therefore
+;;  recommended.  The file $HOME/.sql-mode will be loaded once, when
+;;  you invoke the function `sql-initialize'.  Subsequent loadings can be
+;;  done manually with M-x load-file, or with a direct call to the function
+;;  `sql-load-customizations'.
+;;
+;;  Similarly to changing variable values, if you want to change key
+;;  bindings, don't alter the file sql-mode.el, but instead use the
+;;  function define-key.  For instance, to bind the key sequence C-c C-a
+;;  to the function sql-association-mode, add the following line to your 
+;;  $HOME/.emacs file *after* you load sql-mode.el, or add it to your
+;;  $HOME/.sql-mode file:
+;;
+;;      (define-key sql-mode-map "\C-c\C-a" 'sql-association-mode)
+;;
+;;  This should be used merely as an example, since sql-association-mode
+;;  is already bound to C-c C-a by default.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Advanced Usage:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  ASSOCIATION
+;;
+;;  One of the most convienient features is the ability to specify
+;;  server/login-id/password/database associations, and log into a specific
+;;  server as a specific user (and optionally use a specific database)
+;;  with a single key-stroke, without having to specify a password.  To do
+;;  this, you need to specify an sql-asociation-alist.  Here is an example
+;;  that features two labels, three separators, and four entries.  The
+;;  separators and labels are for decorating the popup-menus.
+;;
+;;  For each association, there are two required fields, and two optional
+;;  ones.  The server and login-id are required, but password and database
+;;  are optional.  If no password is supplied, you will be prompted for one
+;;  when you invoke the association.  If no database is supplied, the
+;;  default (master) database is simply used.
+;;
+;;  By default the entry in the menubar will contain the mnemonic, the
+;;  server, and the user separated by spaces.  If you prefer a different
+;;  string, you can include it as the third element in the list.
+;;
+;;      (setq sql-association-alist
+;;  <1>       '(("-" ("LABEL1" "" ""))
+;;  <2>         ("-" ("----" "" ""))
+;;  <3>         ("MNEMONIC1" ("SERVER1" "LOGIN-ID1" "PASSWORD1" "DATABASE1"))
+;;  <4>         ("MNEMONIC2" ("SERVER2" "LOGIN-ID2" "PASSWORD2") "ALIAS2")
+;;  <5>         ("-" ("----" "" ""))
+;;  <6>         ("-" ("LABEL2" "" ""))
+;;  <7>         ("-" ("----" "" ""))
+;;  <8>         ("MNEMONIC3" ("SERVER3" "LOGIN-ID3" nil "DATABASE3") "ALIAS3")
+;;  <9>         ("MNEMONIC4" ("SERVER4" "LOGIN-ID4" "PASSWORD4"))))
+;;
+;;  <1> a label
+;;  <2> a separator
+;;  <3> this association has all four components of an association
+;;  <4> this association doesn't specify a database, but has a menubar alias
+;;  <5> another separator
+;;  <6> another label
+;;  <7> yet another separator
+;;  <8> this association specifies a database, but no password.  It also
+;;      has a menubar alias
+;;  <9> this association is the same format as <4> -- the most common
+;;
+;;  MNEMONIC should be a string of one or more characters that you will use 
+;;  to reference your association.  You should have a unique mnemonic for
+;;  each association, otherwise you will be unable to reference the
+;;  duplicates.
+;;
+;;  This should be put in your $HOME/.sql-mode file.
+;;
+;;  WARNING: You may have un-encrypted passwords in this file.  This may
+;;           pose a security risk.  At the very least, you should change
+;;           the permissions on this file so that only you can read it.
+;;           If this is unacceptable, you should omit the password entries.
+;;           Omitting the passwords will, however, require you to type
+;;           them in on each invocation of either sql-batch-mode or
+;;           sql-interactive-mode.
+;;
+;;  To utilize your association list, invoke sql-association-mode.  You
+;;  will be prompted for your association mnemonic, and you will get a
+;;  new sql-batch-mode buffer with the appropriate server, user, password,
+;;  and database set.  If you prefer using the menubar, there should be
+;;  an entry off the top-level menu (under either Apps, Utilities or
+;;  SQL-Assoc depending on which version of Emacs you are running) called
+;;  "Use Association...".  This menu should contain an entry for each
+;;  association you have defined.  By selecting one of them you can easily
+;;  switch to a new server/login-id/password/database association.
+;;
+;;  In addition, you can select an association by invoking
+;;  sql-popup-association-menu (bound to button3 in sql-batch-mode and
+;;  sql-interactive-mode buffers by default).
+;;
+;;  If the value of the variable `sql-add-to-menu-bar' is non-nil,
+;;  associations will be accessible through the `Apps', `Utilities', or
+;;  `SQL-Assoc' menu, or under the menu specified by `sql-parent-menu'.
+;;  This is perhaps the best way to utilize your associations, since they
+;;  can be launched from any buffer.
+;;
+;;  RESULTS BUFFERS
+;;
+;;  Results buffers can be configured to be disposable -- each new result
+;;  will overwrite the previous (the default).  They can also be saved, so
+;;  that every results buffer is given a unique buffer name.  If you have
+;;  disposable results buffers (sql-save-all-results set to nil), and wish
+;;  to save a particular buffer, invoke sql-pop-and-rename-buffer.
+;;
+;;  It is recommended that you keep results buffers in their default
+;;  state (disposable), since the results are saved in the history of the
+;;  buffer.
+;;
+;;  Results buffers can also be configured to appear in a separate frame.
+;;  Set sql-results-in-new-frame to t for this to occur.
+;;
+;;  When results buffers appear in new frames, you can set the size infor-
+;;  mation by setting sql-resize-results-frames to t, and
+;;  sql-results-frame-width and sql-results-frame-height to appropriate
+;;  values.
+;;
+;;  ABBREVS
+;;
+;;  You can use abbrevs in sql-mode, sql-batch-mode and
+;;  sql-interactive-mode by changing the value of  sql-abbrev-mode to a
+;;  non-nil value (it is nil by default).  There are a default set of
+;;  abbrevs, but you can customize them by the existance of a file:
+;;
+;;      $HOME/.sql-abbrevs
+;;
+;;  This file should be created by M-x write-abbrev-file, or something
+;;  similar.  See the help on abbrev-mode, write-abbrev-file, and
+;;  define-abbrev-table for details.
+;;
+;;  There is a default set of abbrevs that map common keywords to one and
+;;  two-letter keystrokes.
+;;
+;;  FONT LOCKING
+;;
+;;  Font-lock-mode can be turned on by setting the variable
+;;  sql-font-lock-buffers to a non-nil value.  You can select which types
+;;  of buffers you wish to font lock.  If you want them all to be
+;;  font-locked set this variable to 'all.  If you would only like a
+;;  subset of the four modes to be font-locked, set this variable to a
+;;  list of the mode types you wish to font-lock.  For example, to
+;;  font-lock only sql-mode and sql-interactive-mode buffers, add this
+;;  to your $HOME/.sql-mode file.
+;;
+;;      (setq sql-font-lock-buffers '(sql-mode sql-interactive-mode))
+;;
+;;  See the variable sql-mode-font-lock-keywords for details on what will
+;;  get font-locked.  By default, it is assumed that you are using a light
+;;  background.  If you are using a dark background, set the variable
+;;  sql-video-type to 'inverse.  If you are using a monochrome monitor,
+;;  set sql-vidoe-type to 'monochrome (see the section Customization).
+;;
+;;  To change the faces that are used in font-lock-mode, you will need to
+;;  set the values of the face variables in your $HOME/.sql-mode file.  An
+;;  example, if you want conjunctions to appear blue, include thiese lines:
+;;
+;;      (make-face 'sql-conjunction-face)
+;;      (set-face-foreground 'sql-conjunction-face "blue")
+;;
+;;  The face names are: sql-query-face, sql-set-face, sql-special-face,
+;;                      sql-conjunction-face, sql-sysadm-face,
+;;                      sql-aggregate-face, sql-prompt-face,
+;;                      and sql-results-face.
+;;
+;;  To change the regexp that searches for words to font-lock, you will have
+;;  to set the value of the variable sql-mode-font-lock-keywords.  See the
+;;  help on the variable font-lock-keywords for more details.
+;;
+;;  GLOBAL COMMAND HISTORY
+;;
+;;  If you want to execute a command in one sql-batch-mode buffer that
+;;  has already been entered in another sql-batch-mode buffer, you can
+;;  access it by browsing the global command history.  The last 40
+;;  commands evaluated in *any* sql-batch-mode buffer are saved in the
+;;  global command history.  To insert the previous global command in
+;;  the current buffer, simply invoke sql-previous-global-history
+;;  (bound to M-P (that's meta-shift-p) by default).  Similarly, the
+;;  next global history element is accessed via sql-next-global-history
+;;  (bound to M-N by default).
+;;
+;;  This can be a useful way to execute similar commands in different
+;;  batch mode buffers.
+;;
+;;  TOP TEN LIST
+;;
+;;  If you are commonly executing a small set of SQL commands, you can save
+;;  them in a top ten list, and later reference them easily.  The commands
+;;  are saved in the file $HOME/.sql-top-ten.  To save a common command to
+;;  your list, invoke sql-add-top-ten (bound to C-c t by default), which
+;;  will save the contents of the current sql-batch-mode buffer into one
+;;  of the ten positions available.  To later access a top ten command,
+;;  invoke sql-insert-top-ten<n>, where n is a number between 0 and 9.
+;;  These functions are bound by default to C-c 0 through C-c 9.
+;;
+;;  Your top ten list is saved automatically every time you make an
+;;  addition to it.
+;;
+;;  If you have any entries in your top ten list, and you are using XEmacs
+;;  version 19.12 or later, a top ten toolbar will appear on the left hand
+;;  side of the frame.  If you do not want this toolbar to appear, a simple
+;;  menu selection from the options menu will turn it off/on.
+;;
+;;  SQL ERRORS
+;;
+;;  The commands sql-next-error and sql-previous-error (bound to C-c n and
+;;  C-c p in sql-batch-buffers by default) make it easy to go to the line
+;;  of SQL code on which the error occured.  These functions work similarly
+;;  to next-error and previous-error.
+;;
+;;  MOUSE-BASED COMPLETION
+;;
+;;  If you click with the right mouse button on a completable word in a
+;;  sql-batch-mode buffer, it will pop up a list of completions for that
+;;  word.  This makes it easy to change a column in a table query, for
+;;  instance.
+;;
+;;  If the mouse pointer is not over a completable word, then the
+;;  association list is popped up in a menu.
+;;
+;;  WORD YANKING
+;;
+;;  Clicking on the middle mouse button in a results buffer will yank
+;;  the word under point up into the batch-mode buffer.  This makes it
+;;  easy to create queries based on results shown in the results
+;;  buffer.  Quotes go around values that need it, and column names
+;;  are inserted as necessary.
+;;
+;;  If you don't want the column name or quotes, hold down the shift
+;;  key and click the middle mouse button.  This will simply copy the
+;;  word under the mouse into the batch buffer.
+;;
+;;  PREVIOUS MATCHING HISTORY
+;;
+;;  Have you ever though to yourself: "Where's that update command
+;;  that I ran about 30 queries ago?" Well, now you'll be able to
+;;  find it more easily with the function sql-previous-matching-history
+;;  (bound to M-m by default).  In this case do:
+;;
+;;      M-m update RET
+;;
+;;  TOOLBAR SUPPORT
+;;
+;;  Toolbar support for XEmacs version 19.11 has been dropped.  It was
+;;  based on a package called toolbar.el, which had some problems.  In
+;;  XEmacs 19.12, "real" toolbars were introduced, and SQL Mode tries
+;;  to make good use of them.  You can turn the toolbars on/off from
+;;  the Options menu.
+;;
+;;  ROW INSERTION
+;;
+;;  The function sql-insert-row is an interactive function that guides
+;;  you through an insert into a table.  It prompts for the table name
+;;  and a value for each column, and then builds an insert statement,
+;;  putting quotes around fields that need them.
+;;
+;;  BCP SUPPORT
+;;
+;;  SQL Mode now supports the functions sql-bcp-out and sql-bcp-in.
+;;  Try them, they're really easy to use.
+;;
+;;  LOADING OF STORED PROCEDURES
+;;
+;;  sql-load-sp is a new function that will load a stored procedure.
+;;  There are options for configuring it as you need, but by default
+;;  the stored procedure file is run through the C preprocessor,
+;;  loaded into the current buffer, and then sent to the SQL server.
+;;
+;;  ASYNCHRONOUS BUFFER EVALUATION
+;;
+;;  Buffer evaluation can now be done in the background.  The function
+;;  sql-evaluate-buffer-asynchronous is bound to M-e by default.  After
+;;  evaluating a buffer in the background, you should be able to continue
+;;  to use XEmacs normally.  The variable sql-finished-query-options
+;;  determines how SQL Mode will notify you when the evaluation completes.
+;;
+;;  NOTE: If your query is output-intensive, you probably still won't be
+;;  able to use XEmacs fully until the query finished, because XEmacs
+;;  will be busy putting the output in the results buffers.
+;;
+;;  If you find yourself doing background evaluation all the time, set
+;;  the value of the variable `sql-evaluation-method' to 'background.
+;;  You can set this variable from the menubar by selecting the item
+;;  `Options-->Evaluation Method'.  The value of this variable will
+;;  affect the keybindings M-i and C-c C-e, as well as the "GO" button
+;;  from the toolbar.  If you want to do most of your evaluations in
+;;  the foreground, but occasionally run a background query, you can
+;;  invoke the command `sql-evaluate-buffer-asynchronous' directly
+;;  (bound to the M-e key by default).
+;;
+;;  TYPE TO UPDATE
+;;
+;;  If you perform a simple query on a table like:
+;;  
+;;      select * from table1 where column1 = value1
+;;
+;;  You can then type directly into the results buffer to change the data
+;;  in a particular row, and SQL Mode will determine what has changed,
+;;  and perform the appropriate update.
+;;
+;;  The specific steps to do this are as follows:
+;;  
+;;  1. Perform the select
+;;  2. Tell SQL Mode that you want to edit the data by either typing
+;;     `u' or clicking the update button on the toolbar.
+;;  3. You are now in sql-results-edit-mode.  The keybindings have
+;;     returned to normal.  You are in overtype mode to facilitate
+;;     the keeping of the alignment of the columns.  Edit the text
+;;     as you need to.  You may edit multiple rows of data.
+;;  4. Type M-i or C-c C-e to build the update statement.
+;;  5. Review the update statement in the batch buffer.
+;;  6. Evaluate the update statement by doing a M-i (or C-c C-e).
+;;
+;;  See the help on the functions sql-edit-row and sql-update for
+;;  more details.
+;;
+;;  WARNING: SQL Mode relies on the alignment of the columns, so you
+;;           have to be very careful when typing, and additionally the 
+;;           columns have to be lined up to begin with, otherwise you
+;;           will lose.
+;;
+;;  CACHE SAVING AND LOADING
+;;
+;;  Completion is a nice feature, but the most common complaint from
+;;  people who don't use it is that it's too slow.  Now it is possible
+;;  (and in fact the default) to save the cached data between Emacs
+;;  sessions.  When you exit SQL Mode (by killing the buffer or exiting
+;;  Emacs) the cached data is saved to disk in the directory
+;;  ~/.sql-cache-dir (you can, of course, tell SQL Mode to save it
+;;  somewhere else).  The next time you start SQL Mode it will load the
+;;  cache file, and you won't have to wait for completions.
+;;
+;;  The one drawback to this scheme is when ddls change, or new tables,
+;;  stored procedures, or databases are added.  The solution in these
+;;  cases is to clear the cached data.  There are menu items under the
+;;  Actions menu that enable you to clear all the cached data, or any
+;;  specific cache that you like.
+;;
+;;  The cache data is saved in a file that is based on the current
+;;  server and database in the ~/.sql-cache.dir directory.
+;;
+;;  DELAYED COMPLETION
+;;
+;;  As more and more functions require table names or column names
+;;  as arguments, there was a growing need for "delayed"
+;;  completion.  If SQL Mode prompts you for a table or column
+;;  name, you will be able to type immediately if you don't need
+;;  completion.  If you do wish to see a completion list, then hit
+;;  TAB or SPACE, at which point SQL Mode will go to the server to
+;;  get the information it needs (if it isn't cached already).
+;;
+;;  Along with saving the cache data, this feature should serve to make
+;;  completion more pleasant and more useful.
+;;
+;;  DELETE, CUT, COPY, AND PASTE FUNCTIONALITY
+;;
+;;  Results buffers now have some added functionality to help move
+;;  data around.  If you wish to delete a row from the database, simply
+;;  type C-k on the row you wish to delete.  Deleting multiple rows is
+;;  as simple as highlighting the rows and hitting C-w.  The expected
+;;  functionality for delete, cut, copy, and paste all have a database
+;;  slant to them when invoked in the results buffer, but are bound to
+;;  the keys you would expect in Emacs.
+;;
+;;  There is a special SQL Mode clipboard for storing data between cut,
+;;  copy, and paste operations.
+;;
+;;  sql-delete-row, sql-delete-region:
+;;      Deletes the row that point is on, or all rows in the region.
+;;      The data is *not* copied to the clipboard.
+;;
+;;  sql-cut-row, sql-cut-region:
+;;      Deletes the row that point is on, or all rows in the region.
+;;      The data *is* copied to the clipboard.
+;;
+;;  sql-copy-row, sql-copy-region:
+;;      Copies the row that point is on, or all rows in the region, to
+;;      the clipboard.  Does not do any database manipulation.
+;;
+;;  sql-paste:
+;;      Pastes the data from the clipboard into the batch buffer by way
+;;      of an insert statement.
+;;
+;;  PREFERED EVALUATION METHOD
+;;
+;;  If you find yourself doing sql-evaluate-buffer-background more
+;;  often than it's synchronous counterpart, there is a variable that
+;;  will control the behavior of the "GO" button.  Set the variable
+;;  sql-evaluation-method to either 'foreground or 'background.
+;;
+;;  BCP SINGLE ROW
+;;
+;;  The function sql-bcp-row-out fakes a bcp out of the database, but
+;;  what it really does is to parse the results buffer and put a "|"
+;;  between columns and then write the result to a file.  If all goes
+;;  well, you should be able to then bcp this file into another
+;;  database as if it was a real bcp file.  This makes it easy to copy
+;;  out just one row.
+;;
+;;  STAY LOGGED INTO THE DATASERVER
+;;
+;;  By setting the value of the variable `sql-stay-logged-in' to a
+;;  non-nil value (or by selecting the menu item
+;;  `Options-->Dataserver Connection-->Stay Logged In') you can keep an
+;;  open connection to the dataserver to do your queries.  This
+;;  increases the performance of almost all aspects of SQL Mode
+;;  dramatically, as you remove the overhead of invoking a new isql
+;;  process, and logging in.
+;;
+;;  ASSOCIATED EVALUATION BUFFERS FOR SQL-MODE BUFFERS
+;;  If you edit a file in sql-mode, you can now send conents of
+;;  that file to a sql-batch-mode buffer for evaluation.  You can
+;;  specify the batch mode buffer to perform the evaluations by
+;;  selecting "SQL-->Set Evaluation Buffer" from the menu bar.
+;;  Once an evaluation buffer has been set, you can send it the
+;;  contents of the whole buffer with `sql-mode-evaluate-buffer'
+;;  (bound to M-i), `sql-mode-evaluate-region', and
+;;  `sql-mode-evaluate-statement'.  The function
+;;  `sql-mode-evaluate-statement' will operate on the current
+;;  block of SQL code, inbetween the preceeding "go" and up to and
+;;  including the next "go".
+;;  
+;;  HISTORY SAVING AND LOADING
+;;
+;;  Your history can now be saved between emacs sessions.  Just
+;;  set the value of the variables `sql-save-history-on-exit' and
+;;  `sql-always-load-history' to t (you can do this from the Options
+;;  menu as well).  The history information is saved to files in the
+;;  ~/.sql-history-dir directory.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Mailing Lists:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  If you would like to join the beta testers list, or the sql-mode
+;;  discussion mailing list, send add/drop requests to
+;;  sql-mode-request@atlantic2.sbi.com.  Discussions can be sent to
+;;  sql-mode-discuss@atlantic2.sbi.com.  Bug reports and enhancement
+;;  requests should still be sent to sql-mode-help@atlantic2.sbi.com only
+;;  (see below for how to submit a bug report).
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Bug Reports:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  You can submit a bug report by typing M-x submit-bug-report or
+;;  selecting `Submit Bug Report' from the menu bar.  Try to be as specific
+;;  as possible in the description of your problem.
+;;
+;;  Similarly, enhancement requests can be submitted by typing
+;;  M-x submit-enhancement-request or selecting `Submit Enhancement Request'
+;;  from the menu bar.
+;;
+;;  A mail buffer will be set up with some information that will make it
+;;  easier to diagnose the problem.  In addition, to To: field will be
+;;  filled out for you.  Please don't send bug reports and enhancement
+;;  requests to my personal account, as I try to keep them separate from my
+;;  `real' work.
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Known Bugs:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  o Indentation.  It is in a horrible state.
+;;  o False `where clause' warning messages (perhaps fixed when the
+;;    variable `sql-risky-searches' is set to t)
+;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Future Enhancements:
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;
+;;  Things I'd like to see in SQL Mode: (in approximate order of importance)
+;;
+;;  If you would like to volunteer to help implement any of these items,
+;;  please send mail to sql-mode-help@atlantic2.sbi.com.
+;;
+;;  * Accurate indentation of SQL code
+;;      - syntax parser (good for more than just indentation)
+;;      - indentation engine (based on cc-mode.el?)
+;;  * Support for Sql*Plus, mSQL, Postgress95, and any other sql really
+;;  * An Info page
+;;  * Accurate `where' warnings (right now there are some false positives)
+;;      - this may be fixed by setting sql-risky-searches to `t'
+;;  o Exit on termination of an interactive process
+;;  o Enhanced printing of results buffers (split pages) to printer
+;;      - portrait and landscape modes
+;;  * A more accurate sql-get-completion-context
+;;  o Toolbars should use transparent backgrounds
+;;  * Split the file sql-mode.el into more manageable chunks
+;;  o sql-save-window-configuration
+;;  o fix sql-frame-icon
+;;  o mnemonics in top-ten menu
+;;
+;;  `*' means that the item is in progress, `o' means that it isn't (yet)
+;;

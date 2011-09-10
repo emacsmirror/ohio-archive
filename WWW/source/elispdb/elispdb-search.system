@@ -1,0 +1,8 @@
+;; -*- mode: lisp -*-
+
+(defsystem elispdb-search
+  :source-pathname "src:cvs/elispdb"
+  :depends-on ("elispdb" "araneida")
+  :components ((:file "variables")
+	       (:file "elispdb-search" :depends-on ("variables"))
+	       (:file "elispdb-araneida" :depends-on ("elispdb-search"))))

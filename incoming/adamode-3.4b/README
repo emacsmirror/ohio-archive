@@ -1,0 +1,123 @@
+README for Ada Mode
+-----------------------------------
+
+In this directory you find all the files to use Emacs for programming in
+Ada.  There is also a manual in ada-mode.texi which has been updated
+for the current release.  Please report any discrepancies between the
+doc and the code.  Documentation bugs are as serious as code bugs.
+
+This release was built on Gnu Emacs 20.3. It is known to work
+with Emacs 20.3, XEmacs 20.4, and Emacs 19.28 on VMS.
+
+
+Installation
+------------
+
+Installing the ada-mode is really easy. You have to know where
+Emacs (or Xemacs) is installed on your system (for instance,
+you can try a "wich emacs" command on your system).
+
+We will suppose in the rest of this document that it is installed
+in /usr/local/ on a UNIX system, or in c:\emacs on a Windows
+system.
+
+Copy the files *.el and *.elc from the current directory to
+   
+     /usr/local/share/emacs/site-lisp   on Unix
+     c:\emacs\site-lisp                 on Windows
+
+If you had a previous installation of the ada-mode (not the one
+packaged with Emacs), you should edit the file site-start.el
+in the same directory, and delete any the following lines if you
+see them
+    
+    (load "ada-xref")
+    (load "ada-prj")
+    (require 'ada-xref)
+    (require 'ada-prj)
+
+This should be done also in your .emacs.
+
+These are no longer required for the ada-mode.
+
+If it is not already there, you might want to add the following line
+either to your .emacs or to site-start.el (the system-wide configuration
+file):
+
+   (require 'ada-mode)
+   (unless ada-xemacs
+       (global-font-lock-mode t)
+     (add-hook 'find-file-hooks 'turn-on-font-lock-if-enabled))
+
+The second line will force Emacs to use color highlighting whenever
+possible.
+
+
+Installation on VMS
+-------------------
+
+On a VMS system (using Emacs 19.28), you will need to copy the files 
+from the VMS/ subdirectory to your Emacs site-lisp/ directory, 
+as described above.
+This will provide you with some files that where not distributed 
+with Emacs 19.28, but that are required for the ada-mode.
+
+One of these file is called dot_emacs.
+You can either copy its content to your .emacs file, or if you
+want everybody on your system to have access to the ada-mode, copy
+its content to a file called  site-start.el in the site-lisp
+directory as described above.
+
+Troubleshooting
+---------------
+
+In case you get an error message when you start Emacs (something like
+"Symbol's value as variable is void: ada-...."), this means that one
+of Emacs's initialisation files in trying to read or set a variable
+that has not yet been defined.
+Try to add a (load "ada-mode") a the beginning of your .emacs. This will
+load the ada-mode, and define all the variables.
+
+If you have problems with the Ada mode, please make sure you are using the
+correct version. For this, type the following from Emacs:
+  M-x locate-library RET ada-mode RET
+(M-x means press and release ESC, and then press x)
+The result should be a directory called site-lisp. If it is not the case,
+then it means that you are using an old version of the Ada mode, and that
+Emacs is not able to find the correct files.
+Try setting the following in your .emacs :
+
+   (add-to-list 'load-path "directory/where/ada-mode/is/installed")
+
+
+Documentation
+---------------
+
+For printing pass it through TeX with 'tex ada-mode.texi'.  This will
+generate a 'ada-mode.dvi'.  Ask your sysadmin how to print dvi files
+(usually with dvips).  I recently discovered texi2html.  This makes up
+another nice way to see the documentation online. 
+
+Files
+-----
+
+The main Ada mode is in ada-mode.el.  It contains the standard setup
+with support routines for imenu, font-lock, and find-file.  Its principal
+code contains the indenting functions.
+
+As extensions to this mode you get an ada-stmt.el for statement
+templates, ada-xref.el for using your Ada sources like a hyperlinked
+document (show declarations of entities in another window), and
+ada-prj.el to handle the projects files (see the documentation)
+
+Bugs
+----
+
+If you have any problems, please report the bugs to
+Emmanuel Briot <briot@gnat.com> with a subject line including 
+'emacs ada mode'.
+If you are a supported customer of Ada Core Technologies, please report 
+your bugs to report@gnat.com in the usual manner so that they get priority
+attention.
+
+Have fun with Ada and Emacs

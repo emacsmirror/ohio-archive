@@ -1,0 +1,1546 @@
+\input texinfo   @c -*-texinfo-*-
+@setfilename etalk.info
+@settitle Emacs Talk
+
+@ifinfo
+@format
+START-INFO-DIR-ENTRY
+* Etalk: (etalk).       Emacs mode used to talk with other users.
+END-INFO-DIR-ENTRY
+@end format
+@end ifinfo
+
+@titlepage
+@sp 10
+@center @titlefont{Emacs Talk v0.8}
+@vskip 0pt plus 1 fill
+Copyright @copyright{} 1994 Free Software Foundation
+@end titlepage
+
+@node Top, , (dir),   (dir)
+
+This file documents Emacs Talk v0.8B.  An emacs mode used to talk with
+other users who are running emacs talk, or the system level talk
+program.
+
+Copyright @copyright{} 1994 Free Software Foundation
+
+@menu
+* Introduction::
+* Setup Problems::       How to identify problems and fix them
+* Known Bugs::           Stuff I need to fix
+* Wishes::               Stuff I'd like to have done
+* Connecting::           Creating a connection to another user
+* Talking::              How to edit, and manipulate talk buffers
+* Advanced Features::    Special things you can to in etalk
+* Tyrant Mode::          Game playing sub-system
+* Log Buffer::           The etalk server command and log buffer
+* Finger Mode::          Special mode for perusing finger lists
+* Hooks and Variables::  Customization with available hooks
+* Configuration Files::  Config files to help etalk go faster.
+* Programmer Goodies::   Routines other programmers may like to use.
+* Index::
+@end menu
+
+@node Introduction, Setup Problems, ,Top
+@chapter Introduction
+@cindex Introduction
+@cindex BSD talk
+
+Emacs talk is a program written in c and emacs-lisp which allows the
+user to create talk connections to other users following the BSD talk
+standard.  
+
+The BSD talk standard allows a user program to send network messages
+to a talk daemon on any supporting machine which will produce an
+announcement message on their terminal.  Through the use of a talk
+program on their machine, they are able to complete a network
+connection.  This connection allows typed text to be displayed in a
+window on their terminal, and for their typed text to be displayed on
+your window as well.
+
+Emacs Talk takes the standard talk protocol one step further, by
+allowing connections to more than one individual to take place and be
+displayed on one terminal.  From within emacs talk you are able to
+manage connections to several people, all using different talk programs.
+
+Additionally, SunOS's older talk message format is also supported, and
+with etalk one can connect between a Sun using this older daemon, and
+any other machine with the newer protocol, but only if both sides use
+etalk. (There is a program known as ytalk, which may work with etalk
+over these barriers as well.)
+
+This manual starts by discussing the nuances of creating a connection to
+another user with etalk, which is followed by a discussion on how to use
+the various editing commands, the advanced features, and Tyrant mode, a
+game playing feature.  The last two chapters discusses manipulation of the
+etalk server binary through the log buffer, and @code{finger-mode}, and
+extra mode which treats finger information the way @code{dired} treats
+directory listings.
+
+@node Setup Problems, Known Bugs, Introduction, Top
+@chapter Setup Problems
+@cindex setup problems
+
+Binary Problems:
+
+  I have seen this program compile flawlessly on:
+
+@enumerate
+@item
+Linux 0.99, GCC 2.4.5, NTALK.  
+@item
+IRIX 4.05h, GCC 2.x and cc, NTALK.
+@item
+IRIX 5.1.1.2, cc, NTALK.
+@item
+OSF1 v1.3 112 alpha, cc, NTALK.
+@item
+sunOS 4.1.3, cc (standard c), OTALK.
+@item
+HP-UX 8, cc, NTALK
+@end enumerate
+
+
+  The results of a @code{make check} should look like this:
+
+@example
+choochoo:~/etalk> make check
+echo test | etalk
+ETALK version 0.8 (c) 1994 Free Software Foundation
+Initializing Network Interface.
+1170
+1172
+Initialization complete.
+Checking for daemon: Sending test lookup message [V 1].
+Brief daemon check successful!
+Initiating protocol test.
+Sending invitation...
+Received response Not Here to invitation!
+Sending lookup message for previous invite...
+Received response Success to lookup request!
+Our remote connect socket is:F:(2) P:(1172) IN:(16777343)
+Daemon thinks it is         :F:(2) P:(1172) IN:(16777343)
+Address to our socket transferred correctly.
+Sending deletion message for previous invite...
+Received response Success to delete request!
+Protocol test successful.
+Clean shutdown complete...
+@end example
+
+  Note that the daemon responds to the ``Leave Invite'' message with Not
+Here, meaning there are no current invites known to exist, which is the
+correct response.
+
+  When building this program, there are several things which can go
+wrong.  Primarily, I have found that talk daemons on different systems
+can be very finicky about answering your queries.
+
+  When etalk does not initially contact a daemon, the result is really
+quite anticlimactic.  It doesn't blow up or anything quite so
+satisfactory, it just does nothing.  The following have happened to me,
+and I have tried my best to account for these problems.
+
+  No talk daemon at all.  HP-UX (at least the version I have used) let
+me build with no problem, but had no talk capability.  Sorry.
+
+  64 bit architecture.  The alpha is the obvious culprit.  I have checks
+for this, but if your system doesn't have 4byte ints, it still won't
+work. If protocols/talkd.h exists, try using that instead of the talk.h
+that comes with etalk.  If you still have problems, change the entries
+in talk.h and otalk.h so that the id_num variable is SOMETHING that is
+1) an integer type number 2) 4bytes long.
+
+  gethostbyname fails.  For IRIX, when this program is built on IRIX4
+(COFF objects) and run on IRIX5 (ELF objects) gethostbyname yacks all
+over.  You must have 2 binaries for the two platforms.  This can also
+effect emacs!  If you use COFF emacs on IRIX5, you must change the
+variable @var{etalk-local-host} to be your local system ip address
+before you can even connect locally.  (You can use "127.0.0.1", but that
+breaks other systems which can't parse the numbers, ACK)
+
+  Announcements are sent, but person can't reply.  If you and the person
+you are calling are on machines with different daemons, etalk will
+happily make announcements.  If the other user attempts to use normal
+talk, they will not be able to connect.  Both sides MUST use etalk (or
+ytalk possibly) to make such a connection.
+
+  Someone is logged on, but etalk always responds "Not Here". 
+
+  Solution 1:
+  This problem can occur when someone starts emacs on a machine to an X
+display, and promptly logs out.  The result is that there is no TTY for
+the daemon to write to.  The person can call you, but you can't call
+them.  The solution resides in that individual.
+
+  Solution 2:
+  When using completion, it is possible to end up with something like:
+"zappo@@hal.gnu.ai.mit.edu ttyq" The problem here is that the tty
+representation is incomplete because there are two posibilities.  Hit
+TAB to choose the tty with the least idle time.
+
+  Solution 3:
+  When using completion, you can get a result like:
+"zappo@@gnu.ai.mit.edu ttyq1" As many know, the GNU finger daemon will
+list me at the generic site, when I am actually logged into some other
+machine. Use M-TAB to get a sub-listing, where a portion of the machine
+that user is really on will be listed for you.
+
+  Solution 4:
+  If you spend much time in the completion buffer, you can get out-of
+date listings of users.  Use C-r to clear up this problem periodically.
+
+  Posibility 5:
+  It could be that etalk built itself incorrectly.  Obvious problems are
+all checked for by "make check", which include:
+
+@table @asis
+@item Message sizes
+The messages sizes are all verified each time etalk starts.
+@item Daemon protocol type
+The protocol is examined by the check target to verify correct
+responses.
+@item Daemon byte order
+The byte order of sent addresses is tested by the check target.
+@end table
+
+  If the problem gets really hairy, and you are familiar with how the
+talk protocol works, or would like to know, rebuild etalk with the
+option: --enable-TALKDTEST to enable extra options.  Start etalk from
+the command line, and use the commands LOOKUP, LEAVE, ANNOUNCE etc to
+send specific messages to your daemon.  Set the verbosity as well.  This
+may help you identify specific errors.
+  An example series of commands may look like this:
+
+@example
+name zappo
+look zappo
+leave zappo
+look zappo
+dele invite
+ann zappo
+dele announce
+@end example
+
+  Be sure to replace zappo with your user name (of course).  This will
+test each of the parts of the talk daemon services.  It is very similar
+to the "make check" option.
+
+Lisp Problems:
+
+  @code{talk-batch}, or @code{etalk} for the first time in one session
+fails to get socket ids or user ids.  I have implemented delays to
+accommodate this, but it may still happen on other slower systems.  This
+can be fixed by doing each part separately.
+@enumerate
+@item
+M-x load-library etalk
+@item
+M-x etalk-start-one-process
+@item
+etalk
+@end enumerate
+
+  "It claims I am already talking to somebody."  This can occur when
+something is killed and the sentinel doesn't get called right. If you
+are talking to people, return to the buffer which was hung up and hit
+@kbd{C-c C-c} a second time just to make sure.  If you have killed all
+buffers, the variable @var{etalk-tcp-list} needs to be niled.  Do this
+with the command @kbd{M-x etalk-zorch-all-processes}.
+
+  "My first keystroke in tyrant mode does something weird" This occurs
+with emacs 19.22 and 19.23.  I believe it may may occur in earlier
+versions of 19 as well.  Emacs 19.24 has this supposedly fixed.  What
+happens is your first keystroke is sent to the previously displayed
+buffer. To handle this, make sure anyone using these buggy versions of
+emacs hits @kbd{C-h} first thing.
+
+  "Game buffers suddenly appear as remotes talk buffer." Etalk depends
+on some amount of user kindness.  When playing a tyrant game, do not
+switch back to the talk buffer and try to do anything.  The result will
+de-synchronize the game buffers, and confuse the other person to no end.
+Tyrant mode tends to be very finicky.
+
+@node Known Bugs, Wishes, Setup Problems, Top
+@chapter Known Bugs
+@cindex bugs
+
+@enumerate
+@item 
+GTALK protocol does not exist.
+@item 
+OTALK version is actually a misnomer, since it is not compatible with
+versions before BSD 4.2.  Instead, it represents the protocol used on
+sunOS.
+@item
+The first keystroke in tyrant mode seems to go to the last buffer the
+process was bound to.  This is a bug in emacs 19.23 and before.  It has
+been fixed in future versions.  My suggestion is to hit @kbd{C-h} if you
+use such a version as your first keystroke.  Things work ok after that.
+@item
+While byte compiling, the out of date variable unread-command-char is
+used.  I assume that leaving this in will preserve compatability to 18.
+I don't know much about this aside from that it works now.
+@item
+Hostname completion on systems with really huge lists used to get weird
+sometimes.  In addition, when done in conjunction with a ~/.hosts.talk
+file, duplicates appear.  Therefore /etc/hosts is no longer parsed. The
+only files checked now are /etc/hosts.talk and ~/.hosts.talk
+@item
+The c function strtok is checked for, but I don't do anything if it
+isn't there.
+@item
+The word-thing game will only work if the initiator has spell installed
+on their system.  If anyone knows how to use ispell to do the same
+thing, please let me know, and look at the function
+@code{word-thing-spell}.
+@end enumerate
+
+@node Wishes, Connecting, Known Bugs, Top
+@chapter Wishes
+@cindex wishes
+
+Some things I'd like to have done:
+
+@table @kbd
+@item Interfaces
+The etalk binary was meant to be a subprocess used for handling
+connections to other machines via talk deamons, or any other method of
+communication.  Someday I would like to have several interfaces to this
+talk program.  A tty/termcap version, and an X version would be kool.
+@item GTALK
+The talk program is designed to handle GTALK, a non-existant talk
+protocol.  I hope to have time to create the GTALK protocol daemon
+sometime after releasing this version for emacs.  For those interested,
+the GTALK protocol will hopefully work with any V1 talk program, but
+offer some new V2 services handling a REPLY with no name (the local talk
+deamon knows everything you need to REPLY, you just can't get to it.)
+and mabee an announcement redirect to XPHONE, which I envision being
+like XBIFF, bleeping at you when someone tries to connect.  This could
+also be used to create a lisp command etalk-wait-for-anyone, which would
+then hang out in the background until someone connected.
+@item OTALK
+This talk program is designed for older talk protocols to be used.  It's
+supposed to work with suns, but my access is limited.  Bug reports in
+this area would be greatly appreciated.
+@item GAMES!
+I'd love to have more games under emacs talk.  Some of the interfacing
+has simplified from the last version, making this much easier to deal
+with.  There is little documentation on it just yet, but that for the
+future.  If you have an AI program you would like to share, please let
+me know and chances are we can design an interface under tyrant-ai.
+@end table
+
+@node Connecting, Talking ,Wishes , Top
+@chapter Connecting
+@cindex connecting
+
+There are several methods for creating a connection to another user.
+These methods should be used in conjunction with the restrictions to be
+dealt with while connecting to the individual in question.
+
+For those commands within emacs, a special minibuffer completion for
+usernames is provided.
+
+Only one connection of any type may be waiting for an answer at a time.
+
+@menu
+* etalk::               Generating a talk connection within emacs
+* etalk-mail::          Using email as your talk service.
+* etalk completion::    Using etalk minibuffer completion
+* etalk-batch command:: A command line startup function.
+@end menu
+
+@node etalk, etalk-mail, Connecting, Connecting
+@section @code{etalk}
+@findex @code{etalk}
+@cindex @code{etalk}
+
+To create a standard connection through use of the BSD talk daemon, one
+must simply type:
+
+@example
+M-x etalk RET
+@end example
+
+which will then prompt for the user to connect to.  After typing in a
+username of the form:
+
+@example
+user@@machine.name tty
+or
+machine.name!user tty
+@end example
+
+where the tty is optional, one must hit return and wait for the
+connection to complete.  @xref{etalk completion}
+
+While the connection is being created, a status is displayed in the
+minibuffer each second, declaring how many rings have been sent, and how
+long we have waited.  Once a connection has been completed, the result
+is displayed in the minibuffer.
+
+To cancel a call, one must simply use the hang up command to cancel the
+connection.  
+
+@node etalk-mail, etalk completion, etalk,  Connecting
+@section etalk-mail
+@cindex etalk-mail
+@findex etalk-mail
+
+The use of etalk-mail will be out dated with the addition of support for
+both the talk protocols NTALK and OTALK.  This method of connection
+overrides the need for compatible talk daemons, or even the existence of
+one.
+
+To use, one must simply say:
+
+@example
+M-x etalk-mail RET username@@machine.name tty01
+@end example
+
+Where the tty is technically irrelevant.  @xref{etalk completion} for
+more details on using the prompt.
+@refill
+
+The user is then greeted with an emacs mail buffer which is mostly
+filled out for you.  All that is required is to send it with
+@kbd{C-cC-c}.  Additional comments, however, certainly don't hurt.
+
+The user on the machine receiving this message will eventually notice
+that it exists.  At this point there are two options.
+
+If you receive a message from etalk, and you use rmail, vm, or other
+emacs mail program, simply set the message buffer as your default and
+type:
+
+@example
+M-x etalk-mail-reply RET
+@end example
+
+and your message will be parsed and a connection made directly from the
+port number listed in the talk message.
+
+Option two is to read the message, and find the port number from the
+Etalk-Reply-To: field.  Then type:
+
+@example
+M-x etalk-mail-reply RET port RET
+@end example
+
+where port is typed text from the mail message.
+
+For people stuck with UUCP based mailers, this option will not work for
+you when sending mail off site, no matter how hard you try.
+
+@node etalk completion, etalk-batch command, etalk-mail, Connecting
+@section etalk minibuffer completion
+@cindex etalk completion
+
+When being prompted for a username by etalk, several completion methods
+are available.  First, the form of the internet address must be chosen,
+which can be of the form:
+
+@example
+user@@machine.name tty
+or
+machine.name!user tty
+@end example
+
+For convenience, we will use the @@ form here.
+
+Lets say we wish to connect to someone on a remote machine, but we are
+unsure which user to connect to.  We simply start the address on the
+command line like this:
+
+@example
+Talk to whom? @@c-!-
+@end example
+
+where -!- is the cursor, and hitting @kbd{SPC} starts short completion.
+We are then rewarded with all machines which start with @samp{c}.  Once
+this name is unique, the name will be completed, leaving us something
+like this:
+
+@example
+Talk to whom? -!-@@choochoo.dmc.com
+@end example
+
+Now, if we hit @kbd{SPC}, finger is run with the host name as the
+parameter, the output is read in, and parsed, and available completions
+are listed as combinations of username and tty.  If we type in a
+part of someone's username, we can complete that.
+
+@example
+Talk to whom? zappo@@choochoo.dmc.com-!-
+@end example
+
+Now @kbd{SPC} will move the cursor one space preparing for the tty.
+Completion here is the same as for the username, leaving us with
+@samp{tty} at the end of the line.  When more than one tty is available,
+and you are unsure which one to use, hitting @kbd{TAB} will look at each
+of the available completions, and choose the individual with the least
+amount of idle time.
+
+@kbd{TAB} will complete as far as possible from any other point in this
+example as well.
+
+If we hit @kbd{SPC} or @kbd{TAB} now, we will be given a completion
+message of @samp{[Matched: 240 minutes idle]}, indicating how long that
+tty had been idle.
+@refill
+
+To accept this information, simply hit @kbd{RET}.  In this case, we will
+get the question:
+
+@example
+zappo has been idle for 240 minutes.  Really call? (y/n)
+@end example
+
+A no response will return you to the username query.
+
+Other available keystrokes are:
+
+@table @kbd
+@item M-TAB
+Use finger on this individual and print all finger and process
+information in a new buffer.
+@item C-r
+Rescan the selected host to get new users, or logout information.
+Changes are summarized in the minibuffer.
+@item C-h
+Help buffer.
+@end table
+
+Managing lists of hosts for completion:
+@vindex etalk-morehosts-file
+
+Host names are read from the files @file{/etc/hosts.talk}
+@file{~/.hosts.talk}.  When these files are too large, a query of
+
+@example
+@samp{Hosts file will take a long time to parse. Parse?} 
+@end example
+
+A no answer will result in no host completion unless a list of your own
+hosts are available in @file{~/.hosts.talk}.  If this file is not
+satisfactory, you may choose your own filename by filling in the
+variable @code{etalk-morehosts-file}.  The format is the same as found
+in @file{/etc/hosts}, which is the IP address followed by the name, and
+the type of talk daemon just after it.
+@refill
+
+@node etalk-batch command, , etalk completion, Connecting
+@subsection etalk-batch
+@cindex etalk-batch
+
+@code{etalk-batch} is a function which will allow a user to execute a
+shell command and start emacs instantly into etalk mode.
+
+To use this feature, simply create a shell alias with the value
+
+@example
+emacs -f etalk-batch
+@end example
+
+Binding this to some string, such as to @samp{etalk} will allow you to
+say:
+
+@example
+etalk zappo@@choochoo.dmc.com tty02
+@end example
+
+which will start an emacs up, and make it automatically connect.
+
+Hopefully, someday this will also work with @samp{emacsclient} to allow
+some really nifty and handy functionality, but I am unsure if that kind
+of information processing is possible.
+
+@node Talking, Advanced Features, Connecting, Top
+@chapter Using talk mode
+@cindex etalk-mode
+
+Once a talk connection is completed, a wide selection of options becomes
+available, the extent of which depends on if the remote user is also
+using emacs talk or not.
+
+The simplest act is simply to type.  Any typed character is sent
+verbatum to the remote machine. Other editing commands are listed below:
+
+@table @kbd
+@item DEL
+Delete one character backwards.
+@item C-w
+Delete one word backwards, and store text in yank buffer.
+@item C-k
+Delete one line of text backwards, and store text in yank buffer.
+@item C-y
+Yank text from kill-ring into the talk buffer.
+@item C-x i
+Load text from a file, and insert it into the talk buffer.
+@item C-g
+Sound the bell (both sides).
+@item C-h
+Help in minibuffer, or describe mode.
+@end table
+
+Other commands are used to manage the windows the talk buffers are in.
+The buffers are labeled with the usernames of the individuals.  The
+local talk buffer will have your full finger name in it.  Remote talk
+buffers will contain their address in the form @samp{zappo@@choochoo}
+with the option of their finger name following that, if they are using
+emacs talk as well.
+
+Commands to manage windows are as follows:
+@table @kbd
+@item C-r
+Refresh the windows.  This gives each window the same number of lines
+(or at least an approximation there of) with the local buffer on the
+bottom of the screen.
+@item C-c r
+Refresh windows with one other buffer at the top.  This is useful when
+referencing some other file while talking to another user.
+@item C-c c-r
+Refresh windows with the log buffer as the top buffer. @xref{Log Buffer}
+This allows a view of what the server is doing while talking or waiting
+for connections.
+@item C-l
+Refresh/clear screen.  This acts as @code{re-center} does, except all
+text is scrolled above the top of the window, effectively clearing the
+screen.  Handy if someone wanders in and you don't want them to see what
+you typed.  It is similar to the VMS PHONE command, except the text
+isn't completely erased.
+@end table
+
+Lastly, there is a keystroke to delete a connection, which is simply
+@kbd{C-c C-c}.  This will send a hang up message to the server, and close
+the connection to a user.
+
+@cindex Multiple connections
+In all cases, except when refreshing window geometry, the keystrokes
+entered are connection specific.  When only one connection is open,
+there is only one possibility.  Initiating multiple connections is
+identical to initiating one connection.  The result is more windows
+open to more people.  If more than one window is open, any command
+entered in the local window affects all connections.  Thus text entered
+is sent to all windows.  Even the hang up command will hang up on everyone
+if entered in the local window.
+
+To allow more selective communication, one must simply move the point
+into one of the available remote windows to make editing commands affect
+that individual only.  This holds true for all of the advanced features
+as well.
+
+@node  Advanced Features, Tyrant Mode, Talking, Top
+@chapter Advanced Features
+@cindex advance features
+
+There are several features only available when two individuals are both
+using emacs talk.  None require that there be only one connection from
+each server, but it often does help ones sanity.
+
+The features are varied, and listed in the following table:
+@table @kbd
+@item C-x I
+Send a file to the remote emacs, and place in it's own buffer, and
+display that at the top of their buffer list.
+@item C-c m
+Send a message to the remote which will appear in their minibuffer.
+@item C-c C-h
+Send a message string ``*HUG*'' into the remote minibuffer.
+@item C-c o
+Get a list of all users the remote is talking to who are also using emacs
+talk.  When the list is returned, you are prompted for each individual
+to create a connection to them.
+@item C-c g
+Query the remote and ask if they wish to play a tyrant mode game.
+@xref{Tyrant Mode}
+@end table
+
+Each of these commands are connection specific.  @xref{Talking}
+
+@node  Tyrant Mode, Log Buffer, Advanced Features, Top
+@chapter Tyrant Mode
+@cindex tyrant mode
+
+Tyrant mode is a minor-mode used for taking over innocent modes.  Tyrant
+mode will usually be seen under the controlled use of emacs talk for the
+playing of games against other network bound users.
+
+To initiate a game, one must have an open connection to someone using
+emacs talk.  Then the keystroke @kbd{C-c g} will prompt you for the game
+you wish to play.
+
+Once a game is selected, the remote is queried to play that game against
+you.  If they choose yes, then that game is automatically started.
+
+It also possible to start up a select few games to play against the
+computer.  To do this, use the command @code{tyrant-play-computer} which
+uses tyrant mode to play against some function written in lisp (which can
+do whatever it wants to make decisions.)  Tyrant-ai has the same
+controls as tyrant mode under etalk.
+
+@menu
+* Playing a Game::      General game features, and specific rules.
+* Installing Games::    How to install and configure all the games.
+@end menu
+
+@node Playing a Game, Installing Games, Tyrant Mode, Tyrant Mode
+@section Playing Tyrant mode games
+@cindex tyrant-mode games
+
+Once a game has been started, there are some standard commands
+available, which are:
+
+@table @kbd
+@item C-c C-c or C-x k
+Cancel this game.  Doing so asks both sides to hit return, which
+restores the original talk windows.  The reason @kbd{C-x k} is also
+listed is because killing the buffer would terminate the connection, not
+cancel the game.
+@item C-h
+Tyranted game mode help.  This will offer some help for tyrant mode, or
+the game in question.  @kbd{C-h} twice will do a @code{display-mode}.
+@item C-c m
+Send a message to the opponent in the minibuffer.  This allows some
+communication during the game.
+@end table
+
+For the impatient, most games have the following key bindings for
+consistency:
+
+@table @kbd
+@item f, C-f
+Move forward (left)
+@item b, C-b
+Move backwards (right)
+@item p, C-p
+Move previous (up)
+@item n, C-n
+Move next (down)
+@item SPC
+Do something (grab, move, etc)
+@end table
+
+For these keys, when possible, the arrow keys (vt100 under 18, and all
+emacs 19 terminals supported) will be mapped to the correct direction,
+and converted into the sequence @kbd{C-f}, @kbd{C-b}, @kbd{C-p} or
+@kbd{C-n} so the remote can interpolate it. @refill
+
+Also, in many games, there is mouse support under emacs 19.  In general
+a @code{click} event moves the mouse to the clicked on square, and does
+the same thing @kbd{SPC} would.  @code{mouse-movement} and @code{drag}
+events simply move the cursor about within the confines of the board.
+@refill
+The only caution is with mouse movement events.  When playing over the
+network, you can seriously overload the net and the parsing ability of
+the remote, and pull the two boards out of sync.  I strongly suggest you
+drag slowly when using tyrant mode, or just skip it and only use 'clicks
+to do what you want.
+
+Because mouse commands are converted into tyrant control messages, mouse
+commands will be allowed when the other user is not using an X display.
+
+In addition, when playing over the network, tyrant-mode will keep track
+of the current turn, and your keystrokes will only be valid if it is
+currently your turn.  You can tell when it is your turn because the
+string ``T-Con'' appears in the list of minor modes, meaning the console
+is in your terminal.
+
+The etalk distribution comes with the following games, plus a few
+extras, however, it is very easy to add or write new games.
+
+@menu
+* Talk Tac Toe::    Simplistic tic-tac-toe game
+* Hangman::         Hangman!  Player one makes up a word, player2 guesses.
+* Drop 4::          Drop pieces to get 4 in a row.
+* 4 by 4::          A drop 4 derivative that is even more challenging.
+* Word-Thing::      Make words from tiles, and place them on a board.
+* Dots::            DOTS! Not just for paper anymore.
+* Reversi::         An othello like game where you battle for stones.
+* Chinese Checkers::That weird marble game.
+* Order and Chaos:: A weird game of pure Offense/Defense for Order/Chaos
+* Ataxx::           That funny blob game.
+* Checkers::        Checkers.
+@end menu
+
+@node Talk Tac Toe, Hangman, Playing a Game, Playing a Game
+@subsection Playing talk-tac-toe
+@cindex talk-tac-toe
+
+@dfn{Talk-tac-toe} does not require the use of tyrant mode and can be run
+without it.  It makes a buffer with a simple tic tac toe board in it.
+To play, just hit a number and your move is recorded in the
+appropriate square.  When it isn't your move, the tyrant will tell you
+so. 
+
+@node Hangman, Drop 4, Talk Tac Toe, Playing a Game
+@subsection Playing hangman
+@cindex Hangman
+
+Hangman does require talk to be running.  It too is simple.  The
+initiator is required to type in an initiation string.  This string has
+to be < 30 characters, and all upper case letters and symbols are not
+turned into @dfn{_} characters.
+
+The initiator then watches, and can send messages @kbd{C-c m} while player
+two hits letters until he gets the word, or runs out of body parts.
+
+It's fun.  Trust me. :)
+
+@node Drop 4, 4 by 4, Hangman, Playing a Game
+@subsection drop 4
+@cindex drop4
+
+Drop 4 is a tic tac toe like game.  Your pieces start at the top of the
+screen, and hitting SPC drops that piece.  The purpose is to get 4 in a
+row.  The pieces are:
+
+@example
+Player 1  /##\   Player 2 /--\
+          \##/            \__/
+@end example
+
+@noindent
+Keys:
+
+@table @kbd
+@item 0-9
+Select that numbered column.
+@item f, C-f, . 
+Move the piece to the left.
+@item b, C-b, ,
+Move the piece to the right. (note. @kbd{,} and @kbd{.} are
+just under the @kbd{<} and @kbd{>} on most keyboards.)
+@item RET, SPC
+Drop piece.
+@item q
+quit.
+@item mouse
+Drags move the piece left and right.  A click drops.
+@end table
+
+This game is very addicting, so be careful.
+@node 4 by 4, Word-Thing, Drop 4, Playing a Game
+@subsection 4 by 4
+@cindex 4 by 4
+
+4 by 4 is a game of my own invention.  It can be played with, or without
+tyrant mode running.
+
+It is based on an 8x8 board, and the purpose is to get 4 pieces in a
+row.  Like drop 4, pieces always start on one side of the board.
+Unlike Drop 4, that side can be any of the 4 walls. (Thus, 4X4)
+
+The player pieces are ``##'' for player 1, and ``::'' for player 2.
+
+The movement keys are the typical emacs movement keys, @kbd{C-f},
+@kbd{C-b}, @kbd{C-n}, @kbd{C-p} and their non-control versions @kbd{SPC}
+will attempt to place a peice.  The strategies for playing are very
+similar to that of drop 4, with the extra elements of the additional
+building blocks.  Mouse drag actions will move the selected square, and
+a click places a piece.
+
+This game has similar addicting properties as Drop 4.
+
+@node Word-Thing, Dots, 4 by 4, Playing a Game
+@subsection Word-Thing
+@cindex word-thing
+
+Word-Thing works for both tyrant mode, and by itself.  The concept of
+the game is the same as the popular Scrabble game except that many rules
+are changed.
+
+The idea is to take your tiles, (in the ``WORD-THING COMMAND'' window)
+build a word, and move the outline of that word in the ``WORD-THING
+BOARD'' window.  All key presses take place in the ``WORD-THING COMMAND''
+window.
+
+A typical hand may look like this:
+
+@example
+ +---+ . . . +---+ +---+ +---+ +---+ +---+ +---+ +---+
+ |   | .   . |   | |   | |   | |eow| |   | |   | |   |
+ | T | . R . | A | | I | | N | |   | | W | | M | | E |
+ |   | .   . |   | |   | |   | |   | |   | |   | |   |
+ +---+ . . . +---+ +---+ +---+ +---+ +---+ +---+ +---+
+Word is now -> TAIN WME <-Score Them [9] You [0]
+@end example
+
+Where the tile surrounded by periods ( . . . ) is already on the board,
+and the tile with @code{eow} in it marks the @dfn{end-of-word}.  The
+score is then placed in the following line.  This hand will place the
+word ``TRAIN'' on the board over a word that has an ``R'' in it.
+
+When it isn't your turn, the letters in the tiles are replaced with the
+@kbd{?} character, and the letters to your hand are placed where the
+``word is now'' points to, so that you may contemplate possible moves.
+
+The currently ``selected'' tile is the one with the cursor on it.
+Tile movement is based on the selected tile.
+
+The command keys are as follows.
+
+@table @kbd
+@item ,
+Select tile to your left.
+@item .
+Select tile to your right.
+@item <
+Move selected tile to the left.
+@item >
+Move the selected tile to the right.
+@end table
+
+The choice of some of these keys are based on the configurations of PC
+and DEC post VT420 keyboards which have the following keys next to each
+other.
+
+@example
++-----+ +-----+
+|  <  | |  >  |
+|     | |     |
+|  ,  | |  .  |
++-----+ +-----+
+@end example
+
+Thus, moving a tile is simply a difference of holding down a shift key.
+
+Other important keys are:
+
+@table @kbd
+@item C-f, f
+Move word marker left on board.
+@item C-b, b
+Move word marker right.
+@item C-n, n
+Move word marker down.
+@item C-p, p
+Move word marker up.
+@item t
+Turn the word between horizontal and vertical.
+@item RET
+Place the word at this location.
+@item g
+Give up your turn if you have a REALLY bad hand.
+@item G
+Give up your turn, and get some new tiles if your hand is worse than that.
+@end table
+
+The following rules hold when playing this version of word-thing.
+@enumerate
+@item
+There must be at least 1 three letter word in a placement.
+@item
+A word must either overlap the @kbd{*} piece, or another word.
+@item
+All new or changed words are scored together, including duplicated
+letters only if the duplicated letter is one you place down.
+@item
+Valid words are those passed by the emacs spell checker except for two
+letter words which must be in an alist in the word-thing source.
+@item
+There are no bonus squares since they made the words unlegible on the screen.
+@end enumerate
+
+This game will only work if the initiator has spell installed.
+
+@node Dots, Reversi , Word-Thing, Playing a Game
+@subsection Dots
+@cindex dots
+
+Dots is an old game.  The board is made of lots of dots (hence it's
+name) and in emacs' case, plus signs.  A move is to place a line between
+two points, either vertically or horizontally.  The goal is to capture a
+box.  A box being when you make 4 lines around a center.  At this point,
+you have captured a box.  The person with the most boxes is the winner.
+
+The keys are the typical emacs movement keys [C-]f,b,n,p with optional
+control being held down.  SPC will place a line.  Mouse actions will
+select a line, and a click will put a line down.
+
+When you capture a box, turns are not swapped, and you may move again.
+
+@node Reversi, Chinese Checkers, Dots, Playing a Game
+@subsection Reversi
+@cindex Reversi
+
+Reversi is like Othello. A legal move is one where the new piece and an
+old piece surround the opponent linearly.  Upon placing a piece, all of
+the opponents pieces are scarfed up.  To win, get as many pieces as you
+can.
+
+Movement is done with the arrows, and SPC tries to place a piece.  Mouse
+actions select, or place peices.
+
+@node Chinese Checkers, Order and Chaos ,Reversi, Playing a Game
+@subsection Chinese Checkers
+@cindex Chinese Checkers
+
+Chinese checkers is a game where both players move all their pieces to
+opposite sides of the board.  In this ``O'' is player 1, and ``X'' is
+player 2.  Movement can consist of one piece either moving to one
+adjacent square, or to jump, one piece at a time, as many as they can.
+
+Movement is done with ``Empire'' keys.  Mainly, a map where:
+@table @kbd
+@item y
+Goes up and left.
+@item u
+Goes up and right.
+@item g
+Goes left.
+@item j
+Goes right.
+@item b
+Goes down and left.
+@item n
+Goes down and right.
+@item SPC, h
+Point.  Either grab or drop.
+@end table
+
+To make a move, put the cursor on a piece, and hit @kbd{SPC}.  This
+marks it.  Then use movement keys to make it go.  Going to an adjacent
+square unmarks and changes turns.  Jumping requires that you hit
+@kbd{SPC} a second time to drop it.  Once jumping has commenced, moving
+to an adjacent square at the end is illegal.
+
+There is no mouse support yet.
+
+@node Order and Chaos, Ataxx, Chinese Checkers, Playing a Game
+@subsection Order and Chaos
+@cindex Order and Chaos
+
+Order and Chaos is a weird game someone asked me to write.  The rules
+are that ORDER tries to get 5 in a row of either type (X or O pieces)
+Chaos tries to prevent him from doing that.  Both players can place a
+piece of any type on the board.
+
+Movement is done with the standard emacs movement keys. An @kbd{x}
+places and X piece, and an @kbd{o} places and O piece.
+
+Mouse drags will move the selected square.  A click with mouse button 1
+will place an X piece, and a click with button 2 will place an O piece.
+
+@node Ataxx, Checkers, Order and Chaos, Playing a Game
+@subsection Ataxx
+@cindex Ataxx
+
+Ataxx is a game where the winner is the person with the most pieces when
+the board is full.  Play is done by moving the cursor, grabbing a
+target.  Then move the cursor to a new location, and place it there.
+
+A move to an adjacent piece will make a new piece in that location, and
+take all of your opponents pieces neighboring it.
+
+A move 2 away will jump that piece into that location, and grab all
+of your opponents pieces adjacent to it.
+
+Movement is done with the standard emacs movement keys.
+SPC will grab a piece you own.
+SPC will drop that piece after it has been grabbed.
+
+Mouse drags will move the selected square, and a click will GRAB or DROP
+a piece somewhere.
+
+@node Checkers,, Ataxx, Playing a Game
+@subsection Checkers
+@cindex checkers
+
+The rules for checkers:
+@enumerate
+@item
+A piece may move forward any one diagonal square.
+@item
+A piece may jump forward diagonally and capture over any opponent's piece.
+@item
+A piece reaching the far side of the board is kinged.
+@item
+A king may move forwards or backwards to an adjacent diagonal.
+@item
+A king may jump in any diagonal over an opponent and capture them.
+@item
+A king may jump over his own men without penalty.
+@item
+Several jumps are allowed.
+@end enumerate
+
+To play, use the arrow keys to select a piece.  Then use @kbd{SPC} to
+mark.  Move the cursor to where you want to place the piece and hit
+@kbd{SPC} a second time to go there.  To release a piece, and grab a
+different piece if you haven't jumped anyone, place the cursor on the
+grabbed piece and hit @kbd{SPC}.
+
+Mouse drags move the selected square.  A click will GRAB or MOVE a
+checker.
+
+@node Installing Games, , Playing a Game, Tyrant Mode
+@section Installing games
+@cindex installing games
+
+If a new game is written, and you wish to install it, it can simply be
+placed in the @file{games} directory wherever etalk is installed.  If
+you do not have permission to this directory, you may create a
+@file{games} directory wherever your local lisp library is, and place it
+there.  The games list is built by searching @code{load-path} for all
+lisp files in a @file{games} subdirectory.
+
+Whoever you are talking to, however, must also have this game installed,
+to be able to play against them.
+
+There are many configurable features to the games available.  The
+variables you can set to modify behavior are:
+
+@table @code
+@item game-lib-use-colors
+Default is set if you use emacs 19, and have a window system active.  If
+you are on a monochrome monitor, you may wish to set this to nil.
+@item game-lib-player1-face-color
+Default "red".  This is the color used for player one pieces in all
+games which use game-lib.
+@item game-lib-player2-face-color
+Default "yellow".  This is the color used for player two pieces in all
+games which use game-lib.
+@item game-lib-invert-foreground-color
+Default "black".  For games which use inverse colors (to improve
+visibility of small peices), this is the foreground placed on top of the
+backgrounds which are specified in @code{game-lib-player[1|2]-face-color}. 
+@end table
+
+@node  Log Buffer, Finger Mode, Tyrant Mode, Top
+@chapter Log Buffer
+@cindex log buffer
+
+The buffer @samp{*ETALK LOG*} is the buffer the etalk server subprocess
+is linked to.  All output from this program, unless specifically
+requested, is logged here.  Any bugs relating to interfacing with the
+etalk process are best when accompanied by a copy of the log which may
+describe what emacs and the etalk process know as true.  If possible, a
+@samp{DEVICE} or @samp{USER} list may also prove useful.
+
+To get an obscene amount of information out of etalk, simply define
+@samp{DEBUG_2} to add lots of extra print statements into the device
+read loop, and rc file reading.
+
+Any key pressed in this buffer will bring up the minibuffer prompt
+@samp{Command:}. The other keys are:
+@table @kbd
+@item RET
+rebuild the windows for the users you are currently talking to.
+@item C-c C-c
+The emergency destroy key, which will delete the etalk process.
+@end table
+
+Available commands to send the etalk binary are:
+@table @samp
+@item ABORT
+If there is a call currently active, this will abort that call, and
+perform the clean up necessary to allow a new outgoing call.
+@item ANNOUNCE user[@@machine][ tty]
+Send a talk announcement to the specified user.  They will not be able
+to connect to you.  The response message is printed in the log.
+@item CALL UID user[@@machine][ tty]
+Go through the talk protocol to attach to user.  UID is a user ID which
+is received by creating a TCP connection to the etalk process through
+the local port.
+@item CLEAN
+Go through all devices, and user structures, and remove all structures
+labeled as DEAD.
+@item CLIENT UID DEFAULT|ETALK|YTALK
+Set the type of of client UID is using to the default, or etalk.  Ytalk
+is provided for the future when I understand how to determine that
+someone is using it.
+@item CONNECT UID socket user[@@machine][ tty]
+If the socket of another talk process is available, we can use this
+command to simply connect there directly.
+@item DELETE announce|invite [host]
+Send a DELETE command to host, and print the response message.
+@item DEVICE
+This command will print a formatted list of all devices created within
+the context of this talk process.  It will contain TCP and UDP sockets
+active or closed to remote and local machines.
+@item ECHO
+This command simply echoes whatever you type right back.  Useful if you
+are unsure etalk is responding to typed commands.
+@item EDITCHAR 123
+This changes the active edit characters used in the etalk process.
+Sequences such as @samp{^H} will parsed to ASCII(8).  The order is
+1 DELETE-CHAR, 2 DELETE-LINE, 3 DELETE-WORD.
+@item HANGUP UID
+This command will hang up on the user specified by UID, where UID is
+received when a TCP connection is made to the local port.
+@item HELP
+Print out help for each command.
+@item HOSTS
+This prints a list of all hosts read into the program, and their known
+statistics, including if they were read from a local, or system RC file,
+or added at run time.
+@item LEAVE user[@@machine][ tty]
+This command will leave an invite for user on your machine.  The
+response message is printed out.
+@item LOOKUP user[@@machine][ tty]
+This command will request a lookup response to see if you are invited by
+user.  The response message is printed out.
+@item TEST [VERBOSE]
+Execute a test for the current system.  This is usually used during
+building to aid in configuration and make sure nothing is installed
+unless the binary works.  Typing this command will automagically test
+the system for BSD 4.3 talk unless your system is in a @file{hosts.talk}
+entry as OTALKD or something else.  The option VERBOSE flag turns
+verbosity on just before the test, and also prints the runtime status.
+The test is described more elsewhere. @xref{Setup Problems}.
+@item QUIT
+This closes all ports and exits the etalk process.
+@item READ
+Re-read the files @file{/etc/hosts.talk} and @file{~/.hosts.talk} for
+any new hosts, or changed information.  Allows a VERBOSE setting during
+a read if there are problems.
+@item STATUS
+Print out the compile status, and all run time statuses that might prove
+interesting.
+@item USERS
+This prints a formatted list of all user structures created which have
+not been cleaned.
+@item WAIT UID user[@@machine][ tty]
+If we have a method to communicate with another emacs talk process,
+(such as @code{etalk-mail}) then we may not wish to use the TALK
+protocol.  In this case, wait will simply hang out and wait for another
+process to connect to it via this user id.
+@item VERBOSE
+Toggles the verbosity of the program.  This includes the printing of
+statuses of all daemon related messages, plus other useful stuff.
+@item VERSION
+Display the current running version of ETALK.  It is the same string
+printed when etalk starts.
+@end table
+
+The commands @samp{DEVICE}, @samp{HOSTS} and @samp{USER} are useful when
+debugging, and interesting to view statistically.  The commands
+@samp{ANNOUNCE}, @samp{DELETE}, @samp{LEAVE}, and @samp{LOOKUP} are
+academically for testing functions for the TALK protocol, but can prove
+useful when debugging talk servers and the like.  The @samp{ECHO}
+command is purely debugging, and is handy when you just want to verify
+that the process is alive.
+
+The @samp{TEST} command is for the @samp{check:} rule in the
+@file{Makefile} to provide configuration aid.
+
+@node Finger Mode, Hooks and Variables, Log Buffer, Top
+@chapter Finger mode
+@cindex finger-mode
+
+@dfn{finger} is a networking command which allows a user to access
+log-on information on different machines via TCP.  The result is a list
+of users, their TTYs, idle time, and other truly nifty bits of
+information.
+
+The @code{finger} emacs command queries the user for a node name, then
+runs finger on that node.  There is minor completion allowed on this
+command line based on rules described in the etalk minibuffer commands
+section.  @xref{etalk completion}
+
+Once loaded, all extraneous information is nuked from the top.
+(Welcomes, disk utilization errors and the like) The header is then
+parsed to determine how the columns line up dependant on that systems
+architecture.
+
+The keystrokes to manuver in the finger buffer are:
+
+@table @kbd
+@item n, C-n, SPC
+Move forward one line in the finger buffer.
+@item p, C-p, DEL
+Move  backward one line in the finger buffer.
+@item f
+Call finger on the username specified on the current line.  This returns
+more information such as selected shell, mail, and all sorts of other
+goodies.
+@item g
+Get new finger buffer.  Basically, get any updates.
+@item m
+Send mail to the user on the current line.  Initializes the mail buffer
+with that individuals user name. (See Mail under emacs info file)
+@item q, x
+Quit finger mode, and delete the buffer.
+@item t
+Talk to user on the current line (No wonder this is documented under
+etalk.)  Initializes the prompt to the user on the current line.
+@xref{etalk}
+@end table
+
+@node  Hooks and Variables, Configuration Files, Finger Mode, Top
+@appendix Customization
+@cindex customization
+
+Some general configuration hooks are:
+
+@table @code
+@item etalk-hooks
+Default @code{nil}.  This hook is run after the windows are setup from
+initiating a new talk connection.
+@item etalk-mode-local-hooks
+Default turns on @code{auto-fill}. This hook is called after
+initialization of the local talk buffer.
+@item etalk-mode-remote-hooks
+Default @code{nil}.  This is run after a remote buffer is created.
+@item etalk-mode-hooks
+This is run after any etalk buffer is created.
+@item etalk-log-mode-hooks
+Default @code{nil}.  This is run after the etalk log buffer is created.
+The etalk log buffer does not count as an etalk-buffer.
+@item etalk-mail-hooks
+Default @code{nil}.  Run this after an etalk mail function has been called.
+@end table
+
+Some generic customization variables are:
+
+@table @code
+@item etalk-hangup-redo-windows
+Default @code{t}. Non-nil means that when a connection closes, to redo
+windows to exclude it from the screen.  This has the side affect of
+mangling any other window geometry that may have been setup.
+@item etalk-process-file
+Default @samp{"etalk"}. If etalk is not on your path, then it is
+necessary to set this to it's true file name.
+@item etalk-log-buffer-name
+Default @samp{"*ETALK LOG*"}.  This string represents the buffer name of
+the talk log buffer within which etalk logs all process transactions.
+@item etalk-local-buffer-name
+Default @samp{"%P"}. The name given to a local talk buffer.  Follows
+rules for etalk-format.
+@item etalk-remote-buffer-name
+Default @samp{"%u@@%:1m %t"}. The name given to a local talk buffer.
+Follows rules for etalk-format.
+@item etalk-remote-display-preferred-name
+Default @samp{"@{%:2p@}"}. Non-nil, display the remote's preferred name in
+the minibuffer after connection.  This string is simply appended to
+etalk-remote-buffer-name, and follows the rules for etalk-format.
+@item etalk-inhibit-startup-message
+Default @samp{nil}. If non-nil, don't print startup message about
+etalk.
+@item etalk-goofy-message-delay
+Default @samp{5}. Initial length of time between goofy messages. 0 means
+turn off.  Goofy messages have not been re-implemented under the new
+etalk binary.
+@item etalk-buffer-logging-directory
+Default @samp{nil}. Where conversations are logged.  Nil is no logging,
+NAME logs files in this directory where the file name = username.
+@item etalk-clear-buffer-on-call
+Default @samp{nil}. Clear buffers if non-nil for remote.
+@item etalk-announce-as
+Default @samp{(user-login-name)}. This string contains a name passed to
+the remote talk daemon as your username.  Changing this means you
+announce yourself with a different name.  Most sysadmins would probably
+be upset if you did this to unknowing users.
+@item etalk-preferred-name
+Default @samp{(user-full-name)}. The user name you wish to use as your
+preferred name.
+@item etalk-C-x4t-to-global-map
+Default @samp{t}. Should i add etalk-setup-windows to the keystroke
+C-x4t???
+@item etalk-log-all-minibuffer-messages
+Default @samp{t}. Dictate whether message from tcp processes are logged
+in the log buffer.
+@item etalk-edit-characters-mine
+Default @samp{"^?^K^W"}. This string represents the characters used when
+sending edit characters to remote system.  This variable must be changed
+if you wish to change key bindings.
+@end table
+
+Some etalk process control variables are:
+
+@table @code
+@item etalk-process-string-internal
+Default @samp{"etalk-process"}. String used to identify the single
+running version of etalk.
+@item etalk-local-host
+Default @samp{(system-name)}.  This variable identifies your local
+machine.  Used when opening sockets to the etalk process.  Beware
+because some systems are finicky about using names vs numbers.
+@item etalk-tcp-string-internal
+Default @samp{"talk-tcp-%u-%M-%T"}. String used to identify multiple TCP
+connections to the talk binary.  It follows the rules of etalk-format.
+@end table
+
+Some minibuffer completion variables are:
+
+@table @code
+@item etalk-finger-backup-command
+Default @samp{"finger %s"}. Command used to do a finger if the regular
+finger command doesn't work.
+@item etalk-idle-pester-limit
+Default @samp{10}. The upper time limit reached before talk asks if you
+really want to talk to someone because they have been idle for so
+long. (In minutes)
+@item etalk-host-file-size-limit
+Default @samp{10000}. Maximum size of file /etc/hosts.talk before the question
+is asked to really read from it.  Setting this to NIL never reads it.
+@item etalk-morehosts-file
+Default @samp{"~/.hosts.talk"}. File containing more remote nodes for
+talk completion.  Doubles as a table of daemon types for the etalk
+binary.
+@end table
+
+Some variables controlling aspects of editing are:
+
+@table @code
+@item etalk-nice-fill-offset
+Default @samp{5}. Any SPC after (fill-column - etalk-nice-fill-offset)
+inserts a CR automatically.
+@item etalk-hard-fill-offset
+Default @samp{5}. Any char after (fill-column + etalk-hard-fill-offset)
+column will fill that line down right away.
+@item etalk-insert-pester-limit
+Default @samp{1000 }. Limit at which talk pesters you about inserting
+_THAT MUCH_ across the network during any of the insert-file commands.
+@end table
+
+And finally, some tyrant mode/emacs 18 specific variables are:
+
+@table @code
+@item etalk-tyrant-vt100-enable
+Default @samp{t}. Should the vt100 style arrow keys be remapped to emacs
+control directionals within tyrant mode?
+@item game-lib-use-colors
+Default @code{window-system} means true when you are using X.  Set this
+to nil to never use colors.
+@item game-lib-player1-face-color
+Default "red".  The color used for player one in most games.
+@item game-lib-player2-face-color
+Default "yellow".  The color used for player two in most games.
+@item game-lib-invert-foreground-color
+Default "black".  Color used for games where the peices are inverted to
+improve visibility.
+@end table
+
+For the cards lib, and checkers, these colors were not enough, and they
+defined thier own extended colors.  (See sources)
+
+For those variables which follow @code{etalk-format}, the format
+parameters are as follows:
+
+@table @code
+@item %u
+Remote's username. *
+@item %m
+Remote's machine name. *
+@item %M
+Remote's machine name up to first '.'
+@item %t
+Remote's tty |
+@item %T
+Remote's tty without the TTY prefix. |
+@item %p
+Remote's preferred name. *
+@item %P
+Your preferred name. *
+@end table
+
+Where a @samp{*} represents that it takes integer arguments.  When @code{c} is
+the format character, and #1 and #2 are two numbers, the form
+
+@example
+%#1c    or
+%:#2c   or
+%#1:#2c
+@end example
+
+Means to take the string represented by c, and make sure it has a
+maximum of #1 characters, and a maximum of #2 words.  When both are
+specified, then fill out the string with pad characters.
+
+The symbol @samp{|} indicates that the word argument #2 being > 0 adds a
+conditional preceding space, thus
+
+@example
+%:1t
+@end example
+
+@noindent
+will print " tty01" if the tty is "01", and will print nothing if it
+does not exist.  Lack of the word argument means no space will be added.
+
+@node Configuration Files, Programmer Goodies, Hooks and Variables, Top
+@chapter Configuration Files
+@cindex configuration files
+
+There are two configuration files used by etalk, both have the same
+format.  They are @file{/etc/hosts.talk} and @file{~/.hosts.talk}.  Both
+files are much like the file @file{/etc/hosts} with the exception of the
+number of fields.  Each line starting with a @kbd{#} symbol is a
+comment, and blank lines are ignored.  The columns are:
+
+@enumerate
+@item
+IP address.  This is technically unnecessary, but it may someday be used
+for something more useful. (Like machine which can't parse names)
+Currently it is for compatibility with the format in @file{/etc/hosts}
+@item
+Host name.  This is the verbose machine name, such as "choochoo.dmc.com"
+which is used for minibuffer completion and for etalk daemon type
+matching.  It must be the complete name as would be returned by the C
+function "gethostbyname".
+@item
+Daemon type.  This field is used by the etalk binary to determine what
+talk version to use while contacting this machine.
+@end enumerate
+
+These files are useful on the system and local level to aid in making
+etalk faster.  The files are used in completion, which makes everyone
+happy, as well as in the etalk binary.
+
+If your system has a combination of suns and other ntalk compatible
+machines, you can enter the nodes you contact most and list what daemon
+type each has.  This way etalk need not waste it's time trying to
+different talk protocols before finding the correct one.
+
+Valid prototype strings are @dfn{OTALKD}, @dfn{NTALKD}, @dfn{GTALKD}
+where OTALKD is typically used by suns, NTALKD is the most recent BSD
+standard, and GTALKD does not exist yet.
+
+@node Programmer Goodies, Index, Configuration Files, Top
+@appendix Goodies for other Programmers
+@cindex reusable extensions
+
+There are several files used under emacs talk which could be used to
+extend other programs under emacs.  They are:
+
+@file{etalk-mini.el}
+
+This file has been redone to be completely self contained from etalk but
+is, however, dependant on sformat (described next.)  It provides the read
+commands @code{etalk-read-username}, and @code{etalk-read-host}.  They
+allow completion on usernames, and hostnames respectivly.  The only
+unfortunate part is the configuration files for the machine name
+completion is based on talk data.  Otherwise, a lot of work has gone into
+makeing this package able to read from a large number of different finger
+sources, including VMS.
+
+@file{sformat.el}
+
+This file contains a souped up formatter.  Its goal is to allow user
+definable strings with the popular c-syntax arguments.  The goal is to
+provide the same type of configurability as the emacs mode line
+formatting with greater ease, and tons o' options.  (What else to be
+expected from an emacs program, but tons o' options?)
+
+More documentation is available from the function's doc string.
+
+@file{games/game-lib.el}
+
+This file is more specific to tyrant mode games.  It provides a simple
+way for games to provide nifty colors, and tyrant mode support with
+minimal effort.
+
+@file{etalk-x.el}, @code{etalk-x-list-2-menu}
+
+This single function I have found handy in other situations when I wish
+to select an object from any list easilly.  It does some neat things,
+but was not placed in it's own file because it is so short.
+
+@node  Index, , Programmer Goodies, Top
+@unnumbered Concept Index
+@printindex cp
+
+@bye

@@ -1,0 +1,66 @@
+This is Info file ilisp.info, produced by Makeinfo-1.49 from the input
+file ilisp.texi.
+
+   This file documents ILISP.
+
+   This is edition 0.11 of the ILISP manual for ILISP Version 5.0.
+
+   Copyright (C) 1991,1992,1993 Todd Kaufmann
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided that
+the entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Foundation.
+
+Indirect:
+ilisp.info-1: 894
+ilisp.info-2: 48360
+
+Tag Table:
+(Indirect)
+Node: Top896
+Node: Distribution1865
+Node: FTP directions2997
+Node: Acknowledgements3603
+Node: Introduction4819
+Node: Installation6491
+Node: Files of ILISP7001
+Node: Autoloading11389
+Node: Starting up15445
+Node: Buffers of ILISP16675
+Node: Popper buffers18153
+Node: Switching buffers20482
+Node: ILISP Commands21117
+Node: Eval and compile functions21861
+Node: Documentation functions26157
+Node: Macroexpansion28350
+Node: Tracing functions28792
+Node: Package Commands29152
+Node: Source code commands30451
+Node: Batch commands34387
+Node: Files and directories35686
+Node: Keyboard modes36997
+Node: Interrupts38162
+Node: Command history40033
+Node: Completion41201
+Node: Miscellany42985
+Node: Customization44229
+Node: Dialects45845
+Node: Defining new dialects46484
+Node: Writing new commands47056
+Node: Concept index48362
+Node: Key index58935
+Node: Command index63592
+Node: Variable index68933
+Node: Function index71803
+
+End Tag Table

@@ -1,0 +1,152 @@
+                             Quick Reference for dismal
+                              Revision: 0.86
+
+dismal Mode: A major mode for editing SpreadSheets.
+
+A command menu is available by typing C-c C-m (C-m is also RET).
+
+All the numerical values in the spreadsheet are floating point numbers as
+implemented in the float.el package in the standard GNU emacs distribution.
+Therefore you can put arbitrary emacs expressions into the cells which use
+the floating point functions f+, f-, f*, f/, abs, fabs, f%, f=, f>, f>=,
+f<, f<=, f/=, fmin, fmax, fzerop, float-to-string.
+
+General movement commands:
+
+    dismal-set-mark-command           C-@             
+    dismal-first-column               C-a             
+    dismal-end-of-row                 C-e
+    dismal-forward-column             C-f
+    dismal-forward-column             TAB
+    dismal-forward-column             SPC
+    dismal-backward-column            C-b             
+    dismal-forward-row                RET .. C-n
+    dismal-backward-column            ESC SPC
+    dismal-backward-row               C-p
+    dismal-scroll-up-in-place         C-v
+    dismal-jump                       j      (prompts for location)
+    dismal-next-filled-row-cell       n
+    dismal-previous-filled-row-cell   p
+    dismal-end-of-col                 C-x ]
+    dismal-start-of-col               C-x [
+    dismal-exchange-point-and-mark    C-x C-x
+    dismal-backward-row               ESC RET
+    dismal-backward-column            ESC TAB
+    dismal-end-of-buffer              ESC >
+    dismal-beginning-of-buffer        ESC <
+    dismal-backward-filled-column     ESC b
+    dismal-last-column                ESC e
+    dismal-forward-filled-column      ESC f
+    dismal-next-filled-row-cell       ESC n
+    dismal-previous-filled-row-cell   ESC p
+    dismal-move-to-window-line        ESC r
+    dismal-scroll-down-in-place       ESC v
+
+Saving, writing and inserting files:
+    dismal-write-file                 C-x C-w
+    dismal-save-file                  C-x C-s
+    dismal-save-some-buffers          C-x s
+    dismal-insert-file                C-x TAB
+    dismal-insert-file                C-x i
+
+Commands to edit cells:
+    dismal-read-cell-leftjust         <
+    dismal-read-cell-default          =
+    dismal-read-cell-rightjust        >
+    dismal-read-cell-center           |
+    dismal-read-cell-plain            e
+    dismal-transpose-cells            ESC C-t
+
+Copying and pasting things in dismal:
+    dismal-copy-range                 c
+    dismal-paste-range                C-y
+    dismal-paste-range                v
+
+Killing items in dismal (removing the contents from the cells):
+    dismal-copy-range                 ESC w
+    dismal-kill-cell                  ESC d
+    dismal-backward-kill-cell         ESC DEL
+    dismal-backward-kill-cell         DEL
+    dismal-kill-line                  C-k
+    dismal-kill-range                 C-w
+    dismal-kill-range                 x
+    dismal-erase-range                ESC C-e  (doesn't save range)
+
+Deleting items in dismal (removing the cells from sheet):
+    dismal-delete-cell                C-d
+    dismal-delete-blank-rows          d SPC
+    dismal-delete-row                 d r
+    dismal-delete-range               d d
+    dismal-delete-column              d c
+
+Inserting something:
+    dismal-insert-range               ESC o
+    dismal-open-line                  C-o
+    dismal-insert-row                 i r
+    dismal-insert-cells               i .
+    dismal-insert-z-box               i z
+    dismal-insert-range               i i
+    dismal-insert-column              i c
+
+Special commands that work like in normal Emacs:
+    dismal-quoted-insert              C-q
+    dismal-isearch-backwards          C-r
+    dismal-isearch                    C-s
+    describe-mode                     ?
+    dismal-set-mark-command           m
+    dismal-query-replace              ESC %
+    dismal-capitalize-cell            ESC c
+    dismal-upcase-cell                ESC u
+    dismal-downcase-cell              ESC l
+    dismal-query-replace              ESC q
+
+Special new commands for dismal:
+    dismal-read-column-format         f
+    dismal-hard-redraw-row            r
+    dismal-redraw-range               z
+    dismal-run-menu                   C-c RET
+    dismal-update-ruler               C-x r
+    dismal-update-matrix              ESC C-u
+    dismal-redraw                     ESC C-r
+    dismal-debug-cell                 ESC =
+    dismal-align-metacolumns          ESC j
+
+Many of the standard dismal commands take optional arguments.  Giving a
+prefix argument (such as `C-u') to most commands makes them prompt for
+the arguments.  Optional arguments are remembered on history lists.
+Typing `ESC p' and `ESC n' at an argument prompt moves backward and
+forward through the history.  Optional arguments are automatically reused
+upon subsequent invocations of a command until they are changed.  This
+allows you to set an option and then apply a command repeatedly to
+different target arguments without having to respecify the optional
+arguments each time.
+
+Mouse buttons for use with the X Window System (only works in 18):
+
+    Button                Action
+    ----------------      ---------------------------------------------
+    left                  set point
+
+Special functions:
+
+    M-x dismal-fill-range
+
+
+Functions that can go in a cell taking just a range:
+    (all take an argument including a range like A1:B34)
+
+    dis-count                   dis-sum
+    dis-count-words-in-range    dis-product 
+
+Functions that can go in a cell taking more or less:
+    (dis-count-if-regexp-match RANGE REGEXP)
+    (dis-count-regexp-in-range RANGE REGEXP)
+    (dis-current-date)
+    (dis-date-to-days DATE-AS-INTEGER)
+    (dis-match-list RANGE REGEXPs)
+
+Numeric functions:
+    (dis-div NUM1 NUM2) dis-plus
+    f                   ftrunc
+    fint                f+ f/ f* f-
+    fmax                fmin

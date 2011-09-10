@@ -1,0 +1,59 @@
+This package contains a beta version of Gnus.  The lisp directory
+contains the source lisp files, and the texi directory contains a
+draft of the Gnus info pages.
+
+To use Gnus you first have to unpack the files, which you've obviously
+done, because you are reading this.
+
+You should definitely byte-compile the source files. To do that, you
+can simply say "./configure && make" in this directory.  If you are
+using XEmacs, you *must* say "make EMACS=xemacs".  In that case you
+may also want to pull down the package of nice glyphs from
+<URL:http://www.gnus.org/dist/etc.tar.gz>.  It should be installed
+into the "gnus-5.6.53/etc" directory.
+
+Then you have to tell Emacs where Gnus is. You might put something
+like
+
+   (setq load-path (cons (expand-file-name "~/gnus-5.6.53/lisp") load-path))
+
+in your .emacs file, or wherever you keep such things.  
+
+To enable reading the Gnus manual, you could say something like:
+
+  (setq Info-default-directory-list 
+        (cons "~/gnus-5.6.53/texi" Info-default-directory-list))
+
+or
+
+  (setq Info-directory-list 
+        (cons "~/gnus-5.6.53/texi" Info-directory-list))
+
+depending on which version of Emacs or XEmacs you're using.
+
+Note that Gnus and GNUS can't coexist in a single Emacs. They both use
+the same function and variable names.  If you have been running GNUS
+in your Emacs, you should probably exit that Emacs and start a new one
+to fire up Gnus.
+
+Gnus does absolutely not work with anything older than Emacs 20.3 or
+XEmacs 20.0.  So you definitely need a new Emacs.
+
+Then you do a `M-x gnus', and everything should... uhm... it should
+work, but it might not. Set `debug-on-error' to t, and mail me the
+backtraces, or, better yet, find out why Gnus does something wrong,
+fix it, and send me the diffs. :-)
+
+There are four main things I want your help and input on:
+
+1) Startup. Does everything go smoothly, and why not?
+
+2) Any errors while you read news normally?
+
+3) Any errors if you do anything abnormal?
+
+4) Features you do not like, or do like, but would like to tweak a
+   bit, and features you would like to see.
+
+Send any comments and all your bug fixes/complaints to
+`bugs@gnus.org'. 

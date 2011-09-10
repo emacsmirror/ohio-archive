@@ -1,0 +1,230 @@
+*** ORGx11term.c	Fri Aug 25 08:36:51 1989
+--- x11term.c	Tue Aug 29 13:11:04 1989
+***************
+*** 1200,1205
+  		return("2");
+  	case XK_Delete:
+  		return("3");
+  	case XK_Select:
+  		return("4");
+  	case XK_Prior:
+
+--- 1200,1206 -----
+  		return("2");
+  	case XK_Delete:
+  		return("3");
++ #ifndef LK201
+  	case XK_Select:
+  		return("4");
+  	case XK_Prior:
+***************
+*** 1206,1211
+  		return("5");
+  	case XK_Next:
+  		return("6");
+  	default:
+  		return("-1");
+  	}
+
+--- 1207,1214 -----
+  		return("5");
+  	case XK_Next:
+  		return("6");
++ #endif	/* not LK201 */
++ 
+  	default:
+  		return("-1");
+  	}
+***************
+*** 1210,1215
+  		return("-1");
+  	}
+  }
+  #endif /* not sun */
+  	
+  internal_socket_read(bufp, numchars)
+
+--- 1213,1321 -----
+  		return("-1");
+  	}
+  }
++ 
++ #ifdef LK201
++ char *stringFuncVal_Shifted(keycode)	/* LK201 Function keys - shifted */
++ 	KeySym keycode;
++ {
++ 	switch (keycode) {
++ 	case XK_F1:
++ 		return("41");
++ 	case XK_F2:
++ 		return("42");
++ 	case XK_F3:
++ 		return("43");
++ 	case XK_F4:
++ 		return("44");
++ 	case XK_F5:
++ 		return("45");
++ 	case XK_F6:
++ 		return("47");
++ 	case XK_F7:
++ 		return("48");
++ 	case XK_F8:
++ 		return("49");
++ 	case XK_F9:
++ 		return("50");
++ 	case XK_F10:
++ 		return("51");
++ 	case XK_F11:
++ 		return("53");
++ 	case XK_F12:
++ 		return("54");
++ 	case XK_F13:
++ 		return("55");
++ 	case XK_F14:
++ 		return("56");
++ 	case XK_F15:
++ 		return("58");
++ 	case XK_Help:
++ 		return("58");
++ 	case XK_F16:
++ 		return("59");
++ 	case XK_Menu:
++ 		return("59");
++ 	case XK_F17:
++ 		return("61");
++ 	case XK_F18:
++ 		return("62");
++ 	case XK_F19:
++ 		return("63");
++ 	case XK_F20:
++ 		return("64");
++ 	default:
++ 		return("-1");
++ 	}
++ }
++ 
++ char *stringFuncVal_KP(keycode)	/* LK201 keypad keys */
++ 	KeySym keycode;
++ {
++ 	switch (keycode) {
++ 	case XK_KP_F1:
++ 		return("\033OP");
++ 	case XK_KP_F2:
++ 		return("\033OQ");
++ 	case XK_KP_F3:
++ 		return("\033OR");
++ 	case XK_KP_F4:
++ 		return("\033OS");
++ 
++ 	case XK_KP_Subtract:		/* Minus */
++ 		return("\033Om");
++ 	case XK_KP_Separator:		/* Comma */
++ 		return("\033Ol");
++ 	case XK_KP_Decimal:		/* Period */
++ 		return("\033On");
++ 	case XK_KP_Enter:
++ 		return("\033OM");
++ 
++ 	case XK_KP_0:
++ 		return("\033Op");
++ 	case XK_KP_1:
++ 		return("\033Oq");
++ 	case XK_KP_2:
++ 		return("\033Or");
++ 	case XK_KP_3:
++ 		return("\033Os");
++ 	case XK_KP_4:
++ 		return("\033Ot");
++ 	case XK_KP_5:
++ 		return("\033Ou");
++ 	case XK_KP_6:
++ 		return("\033Ov");
++ 	case XK_KP_7:
++ 		return("\033Ow");
++ 	case XK_KP_8:
++ 		return("\033Ox");
++ 	case XK_KP_9:
++ 		return("\033Oy");
++ 
++ 	default:
++ 		return("-1");
++ 	}
++ }
++ #endif	/* LK201 */
+  #endif /* not sun */
+  	
+  internal_socket_read(bufp, numchars)
+***************
+*** 1336,1341
+        if (IsFunctionKey(keysym) ||
+  	  IsMiscFunctionKey(keysym)) {
+  	strcpy(mapping_buf,"[");
+  	strcat(mapping_buf,stringFuncVal(keysym));
+  #ifdef sun
+  	strcat(mapping_buf,"z");
+
+--- 1442,1452 -----
+        if (IsFunctionKey(keysym) ||
+  	  IsMiscFunctionKey(keysym)) {
+  	strcpy(mapping_buf,"[");
++ #ifdef LK201
++ 	if (event.xkey.state & ShiftMask)
++ 	  strcat(mapping_buf,stringFuncVal_Shifted(keysym));
++ 	else
++ #endif
+  	strcat(mapping_buf,stringFuncVal(keysym));
+  #ifdef sun
+  	strcat(mapping_buf,"z");
+***************
+*** 1344,1349
+  #endif /* sun */
+  	nbytes = strlen(mapping_buf);
+        }
+        else {
+  	switch (keysym) {
+  	case XK_Left:
+
+--- 1455,1467 -----
+  #endif /* sun */
+  	nbytes = strlen(mapping_buf);
+        }
++ #ifdef LK201
++       else
++       if (IsKeypadKey(keysym) || IsPFKey(keysym)) {
++ 	strcpy(mapping_buf,stringFuncVal_KP(keysym));
++ 	nbytes = strlen(mapping_buf);
++       }
++ #endif
+        else {
+  	switch (keysym) {
+  	case XK_Left:
+***************
+*** 1362,1367
+  	  strcpy(mapping_buf,"\016");
+  	  nbytes = 1;
+  	  break;
+  	}
+        }
+        if (nbytes) {
+
+--- 1480,1499 -----
+  	  strcpy(mapping_buf,"\016");
+  	  nbytes = 1;
+  	  break;
++ #ifdef LK201
++ 	case XK_Next:
++ 	  strcpy(mapping_buf,"\033[6~");
++ 	  nbytes = 4;
++ 	  break;
++ 	case XK_Prior:
++ 	  strcpy(mapping_buf,"\033[5~");
++ 	  nbytes = 4;
++ 	  break;
++ 	case DXK_Remove:
++ 	  strcpy(mapping_buf,"\033[3~");
++ 	  nbytes = 4;
++ 	  break;
++ #endif	/* LK201 */
+  	}
+        }
+        if (nbytes) {

@@ -1,0 +1,790 @@
+1999-06-30  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el (ada-gdb-application): Do not guess the name of the
+        buffer created by gud, instead get it directly from gud itself. This
+        is much more reliable than simply trying to guess the name based on
+        ${main} in the project file, when the ${gdb_cmd} may not include this
+        name.
+        (ada-run-application), (ada-compile): Specify the buffer to use for
+        my-local-variable-if-set-p. This was generating an error when
+        compiling or running a file with no associated project file
+
+1999-06-29  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-goto-matching-decl-start): Correctly indent
+        type declaration with unknown discriminant in generic parts, as in
+        "generic
+            type A (<>) is private;
+            package B"
+
+1999-06-28  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-font-lock-keywords): Highlight all the lines in
+        a multi line with_statement, as in:
+        "with long_name,
+           another_long_name;"
+
+1999-06-21  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el (ada-gdb-application): on Emacs>=20.3.8,
+        same-window-regexps now includes the gud-* buffers, so that
+        display-buffer did not work correctly. This was fixed by adding a
+        second parameter to display-buffer.
+        (ada-gdb-application): on Emacs>=20.3.8, the gud commands have been
+        fixed and will only change the current buffer to be the compilation
+        buffer if that latter is not already visible (using pop-to-buffer
+        instead of switch-to-buffer). We can no longer unconditionnaly
+        switch to the source buffer at the end of ada-gdb-application.
+        Fixes 6429-009.
+
+        * ada-mode.el (ada-matching-decl-start-re): Add "loop" in the list of
+        keywords that can precede "begin", so that the following is correctly
+        indented:
+        "   loop
+         begin
+            null;
+         end;"
+
+1999-06-14  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-font-lock-keywords): Highlight "with" when at the
+        end of a line, as in "type ... is new ... with\n...."
+
+1999-06-09  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-search-prev-end-stmt): Add "access" in the list
+        of words that can follow "is", so that "type A is\n access" does not
+        interfer with the next statement.
+        (ada-get-current-indent): Indentation for "is new", "is separate",...
+        should be the same as for "is access"... This changes some indentations
+        in the second line of "package .. is \n new..."
+
+1999-06-07  Samuel Tardieu <sam@gnat.com>
+
+        * ada-mode.el (ada-tab): mark-active and transient-mark-mode are not
+        defined in XEmacs, we have to use region-active-p in that case
+
+1999-06-04  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el (ada-parse-prj-file): When project file is not known, get the
+        directory from the current buffer.
+
+1999-06-02  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el (ada-set-default-project-file): Reassociates the default
+        project file with all opened buffers.
+
+        * ada-mode.el (ada-get-indent-noindent): Add support for indentation
+        of "with private" and "null record" even if they are not on the same
+        code line.
+        (ada-get-current-indent): Correctly indent the "private" statement
+        even if there is a preceding protected type declaration. We used to
+        indent the "private" keyword as if it was part of the protected type
+        declaration.
+        (ada-looking-at-semi-private): Rewritten and sped up. Returns nil if
+        we are looking at "private package A ..."
+        (ada-get-current-indent): When indenting a package with a generic part,
+        return the current-indentation instead of the current-column
+
+        * ada-mode.texi (Comment Handling): Update the section on compilation,
+        since there is now a new variable for cross-compilation.
+
+1999-06-02  Emmanuel Briot  <briot@gnat.com>
+
+        * adamode-3.4-cross released (does not include ada-prj-remote-machine
+        or ada-case-exceptions).
+
+1999-06-01  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-prj.el (ada-prj-save): Save ada-prj-cross-prefix
+        (ada-prj-customize): Show a new widget for ada-prj-cross-prefix
+        and ada-prj-remote-machine
+
+        * ada-xref.el (ada-reread-prj-file): Test mode-name instead of
+        major-mode when deciding whether a buffer should be recompiled.
+        (ada-prj-cross-prefix): New variable for cross-compilation
+        environments
+        (ada-prj-remote-machine): New variable for compiling on
+        another machine
+        (ada-treat-cmd-string): Add support for ada-prj-cross-prefix
+        and ada-prj-remote-machine
+        (ada-parse-prj-file): Add support for ada-prj-cross-prefix and
+        ada-prj-remote-machine
+
+1999-05-29  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-prj.el (ada-prj-customize): Removed argument from-scratch,
+        which was not used
+
+        * ada-xref.el (ada-prj-default-project-file): Default value is "",
+        and type is a file name that must match.
+        (ada-add-ada-menu): New menu Project->Set Default.
+
+        * ada-prj.el (ada-prj-save): Assign the current project file with
+        the current buffer before rereading all the project files. This way,
+        "Edit project file" and "New project file" really behave the same way.
+
+        * ada-mode.texi (Automatic Casing): Update the sections on
+        automatic casing and automatic indentation.
+        (Installation): Change the installation instructions.
+        Corrected spelling mistakes, through the use of ispell.
+
+1999-05-28  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-activate-keys-for-case): Do not map the '_'
+        key to ada-adjust-case-interactive, since there is no real need
+        to readjust the casing of the previous word each time we press _.
+        (ada-adjust-case-identifier): New function, to readjust the casing
+        of an identifier, depending both on the value of ada-case-identifier
+        and the value of ada-case-exception.
+        (ada-case-exception): Provides a list of exceptions to the casing
+        system, in case the casing function does not give the correct
+        result (especially for ada-capitalize-word)
+        (ada-create-case-exception): New function to create a new exception for
+        the casing system, and save the list into ada-case-exception-file
+        (ada-case-exception-file): name of the file that will contain the list
+        of special casing exceptions.
+
+1999-05-27  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-indent-current): Correctly indent the comments
+        at the beginning of the file, before any Ada code. When the user
+        pressed <tab>, they were not reindented at all.
+
+1999-05-26  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-create-keymap): Always assigned \C-m to
+        ada-indent-newline-indent-conditional, since the test for
+        ada-indent-after-return is now done in that function.
+        (ada-indent-newline-indent-conditional): New function, that
+        indents the current line only if ada-indent-after-return is
+        non-nil.
+        (ada-tab): transient-mark-mode is not known in XEmacs, so
+        protect it from being seen in that case.
+
+1999-05-25  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-get-current-indent): Add "select" in the list
+        of words related to "then". Correctly indents
+        "select
+             ...
+         then abort"
+
+1999-05-22  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-capitalize-word): New function to capitalize
+        all the letters after '_', and lower case other letters.
+        (ada-make-subprogram-body): Skip the elaboration part, if any
+        (ada-gen-treat-proc): Simplified a little bit
+
+1999-05-18  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-make-subprogram-body): Modified to create the
+        body in the body file, not in the spec file.
+        (ada-search-ignore-string-comment): Make the 'backward parameter
+        optional
+        (parse-partial-sexp): in the advice for XEmacs, correctly handles
+        gnatprep statements. This is far less efficient than with Emacs,
+        but this is the only solution without the 'syntax-table property.
+        (global): change all the '(forward-comment (buffer-size))' with
+        '(forward-comment 10000), since this might cause problems when
+        the buffer is empty otherwise.
+
+1999-05-17  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el (ada-parse-prj-file): Save the current Ada buffer to
+        go back to after parsing the project file. Otherwise, it is
+        possible to lose the window configuration (for instance if there
+        were two buffers in the same window).
+
+        * ada-mode.el (comment-region): Activate the advice only when the
+        major mode is "Ada". Otherwise, do nothing.
+        (ada-search-paren-char-count-limit): removed since unused
+        (ada-mode): make 'ff-special-construct a buffer-local variable, so
+        as not to mess up with other modes
+
+1999-05-17  Stephen Leake <stephen.leake@gsfc.nasa.gov>
+
+        * ada-mode.el (ada-search-prev-end-stmt): Add support for
+        "is abstract" when indenting a line.
+        (ada-make-subprogram-body): New function to create the body for a
+        single subprogram.
+
+        * ada-xref.el (ada-reread-prj-file): If called with \C-u prefix,
+        then reread the project file for every opened Ada buffer.
+        (ada-xref-initialize): Make the hooks buffer local to protect
+        other major modes
+        * ada-xref.el (ada-xref-initialize): Add .ali in the list of
+        ignored extensions for completion in the minibuffer.
+
+1999-05-17  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-tab): In transient-mark-mode, when the region
+        is active, reindent the whole selected region instead of only
+        the current line.
+
+1999-05-15  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-get-current-indent): Add #else in the list
+        of gnatprep statements
+        (ada-create-syntax-table): the syntax class for # is put back to
+        a normal character, instead of a comment-start, since otherwise
+        base numbers are not recognized correctly (16#12#).
+        (ada-font-lock-syntactic-keywords): Recognize a new pattern for
+        gnatprep statements
+        (ada-initialize-properties), (ada-after-change-function): new
+        patterns for gnatprep statements.
+
+1999-05-12  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-goto-matching-decl-start): Correctly detect
+        that we are in a generic when in a declaration like
+        "  generic
+               N : integer;    --  this line was incorrectly detected
+         "
+
+1999-05-07  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-get-indent-label): Mostly rewritten since it did not
+        handle properly the cases where the label was not on the same line as
+        the loop, or declare, or begin statement.
+
+1999-05-06  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-goto-matching-start): Correct indentation for
+        "task type", as in :
+        "package A is
+            task type (A : Integer);
+            end A;"
+        (ada-mode): Correctly set the variable parse-sexp-lookup-properties
+        even for Emacs20.2, otherwise the handling of '"' is incorrect.
+
+1999-05-04  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-mode): On Emacs20.3, we need to set
+        imenu-case-fold-search otherwise the regular expressions are not
+        recognized as case insensitive
+
+1999-05-03  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-get-indent-label): Correct the indentation for named
+        blocks, when the label and the block start are not on the same line.
+        "L1:
+             for I in 1..4 loop
+                null;
+             end loop;
+             L2:
+                 for I"
+
+1999-04-30  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-search-prev-end-stmt): Correctly indents code
+        that looks like
+        "type A is
+            array (1..2) of Integer;
+            type B is Integer;"
+
+        * ada-xref.el (ada-parse-prj-file): Add the full directory name for
+        the default value of ada-prj-main
+
+1999-04-15  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (comment-region): Provides a way to uncomment lines even
+        if the comment-start is not in the first column (but has to be preceded
+        only by spaces of course).
+        (ada-mode): Add new items at the end of ada-other-file-alist instead of
+        at the beginning, so that a user can set its own ada-other-file-alist and
+        ada-mode won't override his settings.
+
+1999-04-08  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el (ada-get-ali-file-name): When looking for the .ali file
+        for a non-standard file name, always look for the body's ali file, instead
+        of the spec's, which is not as complete.
+
+1999-04-07  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-indent-after-return): New variables, that tells whether
+        to bind \C-m to ada-indent-newline-indent or not.
+
+1999-04-06  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-goto-matching-decl-start): Correctly handles 'generic'
+        statements and packages.
+        (ada-indent-current): Correctly reindent the first line in the buffer
+        (ada-block-start-re): Allow for a \n after limited, as in :
+        "type Foo is limited
+            record
+           A : Integer;"
+
+1999-04-02  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-compile-goto-error): Add an automatic parsing in the
+        compilation output for the references in the error messages.
+        (ada-search-but-not): suppressed
+        (ada-goto-next-nonblank-line): suppressed
+        (ada-goto-prev-nonblank-line): suppressed
+
+1999-03-31  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-imenu-generic-expression): Add a new regexp for
+        packages (useful for subpackages for instance).
+        Reworked the regexp for *Specs*, since "procedure X;" was not recognized.
+        (ada-goto-matching-decl-start): Correctly detects if an "is" is part of
+        a type definition or not. Fixes the indentation in
+        "type Casa_Event_Data_T (Classx : Casa_Event_Class_T := Sit_Timeout) is
+           record
+             null;
+           end record;
+           begin"
+
+1999-03-30  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el: Correct handling of the "subtype" statements (there was
+        some problems wrt indentation.
+        Replaced all the (if (not ..)) with (unless ...) for clarity. There is
+        probably no speed up with this.
+        (ada-imenu-generic-expression): Modified so that a subprogram with
+        "is" in its name and no parameter is fully recognized. There was a
+        problem with a name such a "function Is_Existing return Boolean;"
+        (imenu--mouse-menu): Overrides the function in imenu.el, so that
+        overriden subprograms are correctly handled in submenus.
+        (ada-goto-matching-start): Correctly indent code when a package body
+        is separate, as in :
+        "package Foo is
+            package body Internal is separate;
+            end Foo;"
+        (ada-search-prev-end-stmt): Correctly indent code after an enumeration
+        definition, as in :
+        "   type Casa_Event_Class_T is
+              (Sit_Timeout,
+               Inform_Timeout);
+              procedure X;"
+
+1999-03-29  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-get-indent-noindent): Fix a problem in the
+        handling of "null record" statements (there was a problem with
+        indentation when "null record" was on the same line as the
+        matching "type" statement).
+
+1999-03-25  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-goto-matching-start): Do not go to the previous
+        work to test check for "null record" unless we are already seeing
+        "record" (this was a problem at the beginning of the buffer).
+
+1999-03-24  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-prj.el (ada-prj-list): Correctly set the keymap in the text field.
+        (Used to be an error on XEmacs)
+
+1999-03-23  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-stmt.el (ada-search-ignore-string-comment): new parameter
+        search-func
+
+        * ada-prj.el (ada-customize): Always try to find the project file
+        name (otherwise, 'nil' generates an error)
+
+        * ada-xref.el (ada-prj-find-prj-file): when parse-sexp-lookup-properties
+        was true, directory-file did not work on Emacs <= 20.2
+        (ada-reread-prj-file): Now actually rereads the project file (we used
+        to have only lazy evaluation).
+
+1999-03-19  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-indent-region): Got rid of the condition-case that
+        seem to slow down the code.
+
+1999-03-18  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-search-prev-end-stmt): Correctly detect if there is
+        a semicolon between the current word (loop, record, ...) and the
+        previous end. Indents correctly :
+        "begin
+            null;
+         end;
+         loop
+            begin  --  was indented under loop"
+        (ada-goto-next-non-ws): Rewritten, to use built-in functions rather
+        than lisp functions.
+        (ada-get-indent-noindent): Correctly indents the following:
+        "  procedure Foo (A : Integer;
+                          B : Integer) is private;
+           procedure Bar; --  was indented under B"
+        (ada-get-current-indent): Correctly detect and indent 'private' in
+        a package spec.
+        (ada-create-keymap): Removed the keybinding for \C-c\C-r for
+        adjust-case-region, since it is a duplicate of the binding for
+        ada-find-references in ada-xref, and is much less useful.
+
+1999-03-17  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-in-string-p), (ada-in-comment-p),
+        (ada-in-string-or-comment-p): inlined
+        (ada-search-ignore-string-comment): rewritten to use the new
+        properties scheme (we now use builtin functions, instead of
+        slower lisp functions). Another speed up of 2 on a 5000 lines
+        file.
+        (ada-initialize-properties): New function: to handle the special
+        case for constant characters, we set some properties on the
+        text in the buffer. This allows us to use some builtins functions
+        rather than doing the parsing ourselves.
+
+        * ada-xref.el (ada-xref-create-regexp): Removed, since regexp
+        search is already case insensitive.
+
+1999-03-16  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-goto-stmt-start): Correctly indents the following:
+          "if Horizontal then
+              declare
+                 B : Gtk_HButton_Box;
+              begin
+                 null;
+              end;
+           else
+              declare
+                 B : Gtk_VButton_Box;  --  This line was incorrectly indented"
+        (ada-in-open-paren-p): use ada-search-ignore-string-comment instead
+        of a simple re-search-backward, otherwise parenthesis in comments
+        were a problem.
+
+        * ada-xref.el (ada-read-identifier): Add support for cross-references
+        on operators.
+        (ada-find-in-ali): Add support for cross-references on operators
+        (ada-xref-find-in-modified-ali): Disables when searching for an
+        operator
+        (ada-parse-prj-file): Set up compilation-search-path right after
+        reading the project file, instead of setting it before actually
+        doing a compilation. This allows people to use the usual 'make'
+        command under Emacs, while still using the project file to specify
+        the source path.
+
+        * ada-mode.el (ada-insert-paramlist): Correctly indent the first line
+        with the open parenthesis.
+
+        * ada-xref.el (ada-make-body-gnatstub): Saves all buffers before
+        running gnatstub (ask the user before saving)
+
+        * ada-mode.el (ada-get-indent-end): Correctly indents
+           "type My_Record is
+              record
+                 Unused : Integer;
+              end record;
+            For My_Record use ....    --  used to be uncorrectly indented"
+        (ada-get-indent-end): Correctly indents "begin .. end" statements with
+        no declare section. Fixes 6312-006
+
+1999-03-15  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el (ada-always-ask-project): New variable. If non-nil and no
+        project file was found, always ask the user for a possible name.
+
+        * ada-mode.el (ada-forward-sexp-ignore-comment): Removed since unused
+        (ada-font-lock-keywords): Correctly highlight identifiers with '.'.
+        Fixes 6308-006
+        (ada-in-string-p), (ada-in-comment-p): Now accept an optional parameter
+        to avoid a "slow" call to parse-partial-sexp. Minor speed up
+
+1999-03-12  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-in-string-or-comment-p): do everything internaly
+        instead of calling other functions. Thus only one call to
+        parse-partial-sexp, and things are sped up a little bit.
+        (ada-in-open-paren-p): Completly rewritten, we now gain a factor
+        10 in reindenting a 5000 line file.
+        (ada-format-paramlist): Do not delete strings literal values in the
+        default value for parameters.
+
+        * ada-mode.el: Replaced all looking-at statements with a single
+        character by char-after statements to speed things up a little bit
+
+        * ada-xref.el (ada-require-project-file): New function that loads a
+        project file if none is associated with the buffer
+
+1999-03-11  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el: Moved ada-create-keymap outside of ada-mode, so that
+        we do not set them every time a new file is opened. Same thing in
+        ada-prj and ada-xref.
+
+        * ada-xref.el (ada-prj-find-prj-file): new argument: no-user-question.
+        If this one is not true, then when no project file is found, ask the
+        user which project file to use. Suggested by Stephen Leake.
+
+        * ada-prj.el (ada-prj-get-prj-dir): call ada-prj-find-prj-file with
+        no-user-question set to true, since we only want to find the default
+        file name. Without this variable, and with the above feature, the user
+        was asked twice for the name of the project file he wanted to use...
+
+        * ada-xref.el (ada-xref-initialize): Isolate the gnat-specific
+        initialization stuff, so that people can redefine this.
+        This is called by ada-mode-hook
+        (ada-change-prj): Change the prompt for the name of the new project
+        file to "project file", instead of "file name".
+        (ada-gnatstub-opts): renames ada-gnatsub-opts, and add the group and
+        type for customize.
+
+        * ada-mode.el: Add new submenu "Help->ada-mode", since this is not
+        gnat specific
+        (ada-mode): in ff-special-constructs, accept "[ \t\n]is" instead of
+        " is".
+        (ada-mode): add a new entry to ff-special-constructs for "separate"
+        clauses.
+        (ada-get-indent-end): Do not check the file name and subprogram name
+        to see if we are in a top-level subprogram. This was an incorrect
+        assumption.
+        (ada-outline-level): Correctly ignore hidden text (patch from
+        Dave Love <fx@gnu.org>).
+        (ada-gen-treat-proc): Special case for tasks, otherwise we had an
+        infinite loop.
+
+        * ada-xref.el: (ada-add-ada-menu) Do not create the Help submenu from
+        scratch, just add to it
+
+1999-03-01  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el: Do not highlight ''', otherwise the rest of the buffer
+        is also highlighted as a string. There is apparently no easy way to
+        fix that.
+
+        * ada-xref.el: (ada-convert-file-name): New function, called before
+        calling gcc. Provides a better integration on VMS.
+
+        * ada-mode.el: Better support for find-file.el: we now look for the
+        other files in the directories defined in ADA_INCLUDE_PATH and in the
+        project file (if any).
+
+1999-02-23  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-vms.el: complete rewrite. Provides support for Emacs 19.28 on
+        VMS.
+
+1999-02-17  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el: Add support for speedbar (Emacs 20.3)
+
+        * ada-xref.el (ada-get-ali-file-name): Changed the error message,
+        since anyway nobody is using -gnatx.
+
+        * ada-mode.el : (easy-menu-create-keymaps): is no longer defined in
+        Emacs 20.3, so we just replace it with easy-menu-create-menu.
+
+1999-02-16  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el : removed some unused local variables (found while
+        compiling this file with XEmacs).
+        (ada-set-point-accordingly): When looking for the subprogram, add
+        an "end of word" regexp so that we do not look for
+        substrings. Fixes a bug reported by Philippe Waroquiers
+        <philippe.waroquiers@eurocontrol.be>
+        (ada-font-lock-keywords): Replaces ada-font-lock-keyword-1 and
+        ada-font-lock-keyword-2, since none of them was used
+        independently. Add "raise" and "when" in the list of keywords.
+        (ada-fill-comment-paragraph): There was a bug in Emacs<=20.2 and
+        Xemacs, where a newline was inserted at the end of the comment. Do
+        not attempt to suppress this newline with Emacs20.3
+
+1999-02-15  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-fill-comment-paragraph): Got rid of a redefinition
+        of fill-column that use to override the global value.
+
+1999-02-15  John McCabe   <john@assen.demon.co.uk>
+
+        * ada-mode.el (ada-search-ignore-string-comment): Change the syntax
+        table so that _ is part of a word (needed so that ada-in-paramlist-p
+        returns a correct result).
+
+        * ada-mode.el (ada-set-point-accordingly): new function, does the same
+        as ff-set-point-accordingly, except ignore string or comment.
+
+        * ada-mode.el (ada-make-body): Now handles multi-package files.
+
+1999-02-14  John McCabe   <john@assen.demon.co.uk>
+
+        * ada-mode.el (ada-imenu-generic-expression): Add regexp to search
+        for tasks
+
+        * ada-mode.el (ada-adjust-case-region): Save the previous syntax
+        table and restore it at the end.
+
+        * ada-mode.el (ada-adjust-case-region): Change order of check from
+        Keyword -> Attribute to Attribute -> Keyword to correct a problem
+        casing attributes that are also keywords e.g. access, range
+
+        * ada-mode.el (ada-format-paramlist): Save the previous syntax
+        table and restore it at the end.
+
+        * ada-mode.el (ada-insert-paramlist): Changed so that the
+        parameter list is placed on the same line it currently is on.
+        Changed so that 'is' or 'return' are kept on their current line.
+
+1999-02-14  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-mode): in (font-lock-keywords), does not
+        consider '.' as part of a word (thus allowing 'all' in
+        access_type.all to be fontified). bug reported by John McCabe.
+
+        * ada-prj.el: Changed 'gnat' by 'the compiler' in the buffer...
+
+1999-02-13  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-imenu-generic-expression): Add some '*' around
+        the submenu titles, so that they are always at the top.
+
+1999-02-12  John McCabe   <john@assen.demon.co.uk>
+
+        * ada-mode.el (ada-end-stmt-re): Spaces between "separate" and the
+        following parenthesis are optional
+        * ada-mode.el (ada-gen-treat-proc):  Do not try to skip over paramlist
+        if there is none. Allow the generation of the body even when some
+        subprograms do not have parameter lists.
+
+1999-02-11  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el (ada-xref-goto-previous-reference): New function to go to
+        the place before the last cross-referencing jump.
+
+1999-02-10  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-prj.el: Update the headers
+        Added a defvar for all the variables to avoid some compilation
+        warnings.
+        (ada-prj-add-keymap): new function
+        (ada-prj-customize): ada-prj-default is now associated with properties,
+        instead of relying on the position in the list of the different fields.
+        (ada-prj-customize): the default values for the compilation and make
+        command are now taken from the value of the ada-prj-default-*-cmd
+        variables.
+
+1999-02-09  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-which-compiler): new variable
+        * ada-mode.el: Change the way the other package are included, to
+        automatically include ada-xref and ada-prj when we are using gnat,
+        and ignore them otherwise. site-start.el is no longer needed, and
+        the ada-mode should be easier to modify for other compilers
+        * ada-prj.el (ada-prj-add-to-ada-menu): new function to modify the
+        Ada menu.
+        Got rid of a (require 'ada-mode) at the beginning to avoid circular
+        dependencies between packages
+        * ada-xref.el: Got rid of a (require 'ada-mode) to avoid circular
+        dependencies.
+        * ada-mode.el (ada-create-menu): Do not include an "Index" entry in the menu
+        in case we are using xemacs.
+
+1999-02-08  Philippe Waroquiers <philippe@gull.tact.cfmu.eurocontrol.be>
+
+        * ada-mode.el (ada-search-ignore-string-comment): Correct a bug when at
+        the end of a file, in a comment (there used to be an infinite loop
+        sometimes when pressing <enter>).
+
+1999-02-08  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-stmt.el (ada-stmt-add-to-ada-menu): Updated for Xemacs
+
+        * ada-xref.el (ada-add-ada-menu): Updated for Xemacs
+
+1999-02-07  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el (ada-get-ali-file-name): When the ali file is not found,
+        try to look for the ali file for the other file (the body or the spec).
+        Useful when the file names are not standard (file_s.ada and file_b.ada
+        for instance).
+        (ada-read-identifier): Now takes POS in argument, as well as
+        ada-goto-declaration
+
+        * ada-mode.el (ada-outline-level): Add basic support for
+        outline-minor-mode (some variables added in ada-mode too)
+        (ada-other-file-name): New function to return the name of the other
+        file
+
+        * ada-xref.el: Removed all "autoload", since we anyway need to be in
+        ada major mode for all the functions in ada-xref.el
+        (ada-check-current): New function, using the same command line as
+        ada-compile-current, but adding -gnats
+
+        * ada-mode.el (ada-uncomment-region): Simplified through an
+        improved use of comment-region.
+
+        * ada-xref.el (ada-prj-find-prj-file): If ada-prj-default-project-file
+        is set, then this is the project file to use. Do not try to search with
+        the standard algorithm.
+        (ada-make-body): Wait for the subprocess gnatstub to finish before
+        looking at the output file. New variable ada-gnatsub-opts
+        (ada-make-body-gnatstub): Renames ada-make-body.
+        If gnatstub was not found, use ada-make-body in ada-mode.el
+
+1999-02-07  "Stephen Leake" <stephen.leake@gsfc.nasa.gov>
+
+        * ada-xref.el (ada-make-body): ada-make-body now uses the source path
+        as specified in the project file        .
+
+1999-02-07  John McCabe  <john@assen.demon.co.uk>
+
+        * ada-mode.el: (ada-search-ignore-string-comment): Correct a bug
+        when the limit is inside a comment (we used to continue searching
+        even when the limit had been skipped over)
+
+1999-02-06  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-fill-comment-paragraph): Optimized thanks to an
+        improved use of fill.el. Justification and postfixing now work
+        correctly. Added two new menu items for filling with justification
+        and postfixing.
+        Fix a bug when the comment is at the end or the beginning of the
+        buffer.
+        (ada-in-paramlist-p): As suggested by Stephen Leake
+        <leakstan@erols.com>, accept "access procedure" or "access function"
+        before a parameter list
+        (ada-loose-case-word): As suggested by Stephen Leake
+        <leakstan@erols.com>, make this function interactive.
+        (ada-mode): As suggested by <leakstan@erols.com>, add a new special
+        construct for find-file.el to go to the parent package.
+
+1999-02-05  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el (ada-add-ada-menu): No longer creates the full
+        menu. Instead, just adds new items to the general Ada menu.
+
+        * ada-stmt.el (ada-stmt-add-to-ada-menu): Add a new submenu to the
+        general Ada menu for the statements.
+
+1999-02-04  Emmanuel Briot  <briot@gnat.com>
+
+        * ada-xref.el: Only set the mark when needed, so that it is easy
+        to go back to the previous position.
+        Use match-string wherever possible for optimisation purposes
+        * ada-xref.el: Update the headers
+        * ada-mode.el (ada-other-file-alist): Add a new regexp to convert
+        from _s.ads to _b.adb, since some people seem to be using that quite
+        often
+        * ada-mode.el (ada-create-menu): New function, defining a default
+        menu in the Ada mode.
+
+1999-02-03 Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-make-body): Default version not using gnatstub
+
+1999-02-02 Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el : only one function left with autoload
+
+1999-02-01 Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el (ada-make-filename-from-adaname): Default version
+        not using gnatkr.  The old function is now considered as being
+        GNAT specific, and is moved to another file
+
+1999-01-29 Emmanuel Briot  <briot@gnat.com>
+
+        * ada-mode.el ("find-file"): Change the way the regexp variables
+        are computed: We now use regexp-opt to get some optimized regexps
+        to hopefully speed things up.
+
+        ("ada-imenu-generic-expression"): Imenu now has a better support:
+        there is a submenu for the specifications, and the main menu only
+        includes the bodies

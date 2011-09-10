@@ -1,0 +1,25 @@
+-----------------------------------------------------------------------
+
+title =  Copper example
+title =  Abs   Z=29 Rmt= 1.304 Rnm= 1.454 K  shell
+title =  Pot 1 Z=29 Rmt= 1.273 Rnm= 1.392
+title =  Gam_ch=1.761E+00 H-L exch
+title =  Mu=-5.468E+00 kf=1.722E+00 Vint=-1.677E+01 Rs_int= 2.106
+
+formin = ascii	formout = ascii
+rspout = yes	qspout = yes	kspout = yes
+all = no
+%==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==
+
+title = FUSE tutorial
+data = data/cu10kk.chi
+out = fits/cu10k
+kmin = 2	kmax = 18	dk = 1	kw = 1
+rmin = 1	rmax = 4
+
+%==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==
+
+%  insert sets and guesses here
+%==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==+==
+
+-----------------------------------------------------------------------

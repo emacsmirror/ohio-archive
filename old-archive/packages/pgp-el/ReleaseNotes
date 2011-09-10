@@ -1,0 +1,31 @@
+This is version 197 of pgp.el, released Wed Aug  9 18:04:36 1995.
+The last release was 190, released Jul 27 08:51.
+
+There is only one substantive change in this release:  In the
+last release, I provided new keybindings for the PGP functions,
+conforming them to the GNU standard for minor-mode keybindings.
+Unfortunately, after release, I realized that the keybindings I
+had picked conflicted with those of supercite.  Since both
+supercite and pgp are used when composing mail, this conflict is
+a serious problem.
+
+I have shifted the PGP keybindings to match mailcrypt's.  Since
+the two packages do more or less the same thing, this seemed
+natural, and mailcrypt's don't seem to conflict with anything
+except picture mode (which is good about saving and restoring,
+so you can in fact use it with pgp or mailcrypt).
+
+Interesting changes from previous releases:
+
+17-Jul.16:07   jackr     create version "../homeVob/emacs/pgp.el@@/main/190"
+
+	Most of the configurable options (hopefully, all that
+	make sense) can now have values nil, t, or 'ask.
+
+	When reading a pubkey from a message, show it to the
+	user before adding it, so s/he can reject it.
+
+28-Jun.22:26   jackr     create version "../homeVob/emacs/pgp.el@@/main/176"
+
+	Important security fix: no longer save cleartext and
+	passphrases to world-readable files in /tmp/!

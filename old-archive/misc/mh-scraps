@@ -1,0 +1,256 @@
+;From utkcs2!emory!swrinde!zaphod.mps.ohio-state.edu!uwm.edu!bbn.com Tue Jun  5 13:04:42 EDT 1990
+;Article 4363 of comp.emacs:
+;Path: utkcs2!emory!swrinde!zaphod.mps.ohio-state.edu!uwm.edu!bbn.com
+;>From: jr@bbn.com (John Robinson)
+;Newsgroups: comp.emacs
+;Subject: Re: Some nice utilities for mh-e.el
+;Summary: my own private stock
+;Message-ID: <56974@bbn.BBN.COM>
+;Date: 5 Jun 90 13:45:34 GMT
+;References: <9006050614.AA05560@somewhere>
+;Sender: news@bbn.com
+;Reply-To: jr@bbn.com (John Robinson)
+;Organization: BBN Systems and Technologies Corporation, Cambridge MA
+;Lines: 238
+;In-reply-to: aks@SOMEWHERE.BERKELEY.EDU (Alan Stebbens)
+;
+;In article <9006050614.AA05560@somewhere>, aks@SOMEWHERE (Alan Stebbens) writes:
+;>Again, trying to make mh-e and Emacs Do The Right Thing, I've developed
+;>the following code which you may also find useful.
+;
+;This prompted me to post the following code scraps.  I use them a lot
+;to cope with the comp.emacs mail repeater on a VM (groan) system,
+;which insists on munging the headers most (but not all!) of the time.
+;I have enhanced the mh-reply command to accept three more reply types,
+;and added reply templates to my ~/Mail that make the new response
+;styles.
+;
+;Also, I have written a function that tries to pick up the sender's
+;address from the .signature of the replied-to message.  It could be
+;more clever than it is.  It doesn't grok multi-line to: fields, and it
+;should look further back in the message for the better address.  I
+;optimistically called it smart-address.el.  It needs additional hook
+;functions for rmail and vm.el (and rnews and gnus and jnews and ...).
+;
+;Still wanted: little functions to "unwrap" net addresses.  I have in
+;mind the transformation: a%b.c.d@e.f.g => a@b.c.d.  Maybe also
+;a!b!c!d!u => u@d.uucp.  Or by steps: b!c!d!u@a.uucp => c!d!u@b.uucp,
+;etc.  Anyone done this (it isn't hard, just haven't gotten around to
+;it)?
+;
+;Enjoy.
+;--
+;/jr, nee John Robinson     Life did not take over the globe by combat,
+;jr@bbn.com or bbn!jr          but by networking -- Lynn Margulis
+;--------
+;;; add u option: generate usenet follow-up style with format file
+;;; followcomps, which must be in user's ~/Mail directory, and o
+;;; option: reply only to from: field, ignoring reply-to:, using
+;;; onlycomps.
+
+(defun mh-reply (prefix-provided msg)
+  "Reply to a MESSAGE (default: displayed message).
+If (optional) prefix argument provided, then include the message in the reply."
+  (interactive (list current-prefix-arg (mh-get-msg-num t)))
+  (let ((minibuffer-help-form
+	 "from => Sender only\nto => Sender and primary recipients\ncc or all => Sender and all recipients\nusenet => Usenet-style followup to to: address\nonly from => Use From: field, ignoring reply-to"))
+    (let ((reply-to (or mh-reply-default-reply-to
+			(completing-read "Reply to whom: "
+					 '(("from") ("to") ("cc") ("all") ("usenet") ("only from"))
+					 nil
+					 t)))
+	  (folder mh-current-folder)
+	  (show-buffer mh-show-buffer)
+	  (config (current-window-configuration)))
+      (message "Composing a reply...")
+      (cond ((or (equal reply-to "from") (equal reply-to ""))
+	     (apply 'mh-exec-cmd "repl"
+		    "-build"
+		    "-nodraftfolder" mh-current-folder
+		    msg
+		    "-nocc" "all"
+		    (if prefix-provided
+			(list "-filter" "mhl.reply"))))
+	    ((equal reply-to "to")
+	     (apply 'mh-exec-cmd "repl"
+		    "-build"
+		    "-nodraftfolder" mh-current-folder
+		    msg
+		    "-cc" "to"
+		    (if prefix-provided
+			(list "-filter" "mhl.reply"))))
+	    ((equal reply-to "usenet")
+	     (apply 'mh-exec-cmd "repl"
+		    "-build"
+		    "-form" "followcomps"
+		    "-nodraftfolder" mh-current-folder
+		    msg
+		    "-cc" "to"
+		    (if prefix-provided
+			(list "-filter" "mhl.reply"))))
+	    ((equal reply-to "only from")
+	     (apply 'mh-exec-cmd "repl"
+		    "-build"
+		    "-form" "onlycomps"
+		    "-nodraftfolder" mh-current-folder
+		    msg
+		    "-nocc" "all"
+		    (if prefix-provided
+			(list "-filter" "mhl.reply"))))
+	    ((or (equal reply-to "cc") (equal reply-to "all"))
+	     (apply 'mh-exec-cmd "repl"
+		    "-build"
+		    "-nodraftfolder" mh-current-folder
+		    msg
+		    "-cc" "all" "-nocc" "me"
+		    (if prefix-provided
+			(list "-filter" "mhl.reply")))))
+
+      (let ((draft (mh-read-draft "reply"
+				  (mh-expand-file-name "reply" mh-user-path)
+				  t)))
+	(delete-other-windows)
+	(set-buffer-modified-p nil)
+
+	(let ((to (mh-get-field "To:"))
+	      (subject (mh-get-field "Subject:"))
+	      (cc (mh-get-field "Cc:")))
+	  (goto-char (point-min))
+	  (mh-goto-header-end 1)
+	  (if (not prefix-provided)
+	      (mh-display-msg msg folder))
+	  (mh-add-msgs-to-seq msg 'answered t)
+	  (message "Composing a reply...done")
+	  (mh-compose-and-send-mail draft "" folder msg to subject cc
+				    "-" "Replied:" config))))))
+
+;; smart-address.el
+;; Command for picking up an address from a signature of a replied-to
+;; message and replave the address in the To: field therewith.
+
+;; List of search patterns for extracting addresses from the
+;; replied-to message.  Used in order until one hits.  Use grouping
+;; operators to delimit what is actually the address.
+
+(defvar smart-address-search-list
+  (list 
+   "domain\\W*\\([^ 	([{<]+@[^] 	\n)}>]+\\)"
+   "internet\\W*\\([^ 	([{<]+@[^] 	\n)}>]+\\)"
+   "arpanet\\W*\\([^ 	([{<]+@[^] 	\n)}>]+\\)"
+   "bitnet\\W*\\([^ 	([{<]+@[^] 	\n)}>]+\\)"
+   "\\([^ 	\n([{<]+@[^] 	\n)}>]+\\)"
+   "\\([^ 	\n([{<]+![^] 	\n)}>]+\\)")
+  "List of search patterns for extracting an address from a signature.
+Lists are used in order until one matches.  The  \\\\( and \\\\) in
+the first match surround the address to pick up.")
+
+;; Per-buffer variable for getting to buffer for replied-to message
+
+(defvar smart-address-other-buffer nil
+  "Function which returns the buffer holding the message this is a reply to")
+
+(make-variable-buffer-local 'smart-address-other-buffer)
+
+;; Set things up for gnews replies
+
+(defun gnews-msg-buffer ()
+  mail-reply-buffer)
+
+(setq group-reply-hook '(lambda nil
+			  (fset 'smart-address-other-buffer 
+				'gnews-msg-buffer)))
+
+;; Set things up for mh-e replies
+
+(defun mh-msg-buffer ()
+  (and mh-sent-from-msg mh-sent-from-folder
+       (progn
+	 (set-buffer mh-sent-from-folder)
+	 mh-show-buffer)))
+
+(setq mh-letter-mode-hook '(lambda nil 
+			     (fset 'smart-address-other-buffer
+				   'mh-msg-buffer)))
+
+(defun smart-address-yank ()
+  "Replace addressee with address from from signature of replied-to message.
+Replace entire To: field.
+Buffer local variable smart-address-other-buffer holds function to return
+the name of the other buffer."
+  (interactive)
+  (let ((old-buffer (current-buffer))
+	(search-list smart-address-search-list)
+	(search-result nil)
+	(case-fold-search t)
+	beg end)
+    (set-buffer (funcall 'smart-address-other-buffer))
+    (save-excursion
+      (goto-char (point-max))
+      (re-search-backward "[^ 	\n]")
+      (end-of-line)
+      (setq end (point))
+      (re-search-backward "^[ 	\n]*$\\|^--$")
+      (forward-line 1)
+      (setq beg (point))
+      (and (> end beg)
+	   (while search-list
+	     (goto-char beg)
+	     (if (re-search-forward (car search-list) end t)
+		 (setq search-result (buffer-substring (match-beginning 1) (match-end 1))
+		       search-list nil)
+	       (setq search-list (cdr search-list))))))
+    (set-buffer old-buffer)
+    (if search-result
+	(save-excursion
+	  (goto-char (point-min))
+	  (re-search-forward "^To:[ 	]*")
+	  (end-of-line)
+	  (setq end (point))
+	  (beginning-of-line)
+	  (re-search-forward "^To:[ 	]*")
+	  (or
+	   (save-excursion
+	     (re-search-forward "\\(\\).*\\([ 	](.*)\\)" end t))
+	   (save-excursion
+	     (re-search-forward "\\(.*<\\).*\\(>\\)" end t))
+	   (re-search-forward "\\(\\).*\\(\\)$"))
+	  (replace-match (concat "\\1" search-result "\\2")))
+      (error "No better address found"))))
+--------
+::::::::::::::
+followcomps
+::::::::::::::
+%(lit)%(formataddr{to})\
+%<(nonnull)%(void(width))%(putaddr To: )\n%>\
+%<{fcc}Fcc: %{fcc}\n%>\
+%<{subject}Subject: Re: %{subject}\n%>\
+%<{date}\
+%(lit)%(formataddr %<{reply-to}%|%<{from}%|%{sender}%>%>)\
+%<(nonnull)%(void(width))\
+In-reply-to: %<{reply-to}%(putstr(friendly{reply-to}))\
+%|%<{from}%(putstr(friendly{from}))\
+%|{sender}%(putstr(friendly{sender}))%>%>'s\
+%|In-reply-to: The%>\
+ message of \
+%<(nodate{date})%{date}%|%(tws{date})%>.%<{message-id}
+             %{message-id}%>\n%>\
+Organization: BBN Systems and Technologies Corporation, Cambridge MA
+--------
+::::::::::::::
+onlycomps
+::::::::::::::
+%(lit)%(formataddr{from})\
+%<(nonnull)%(void(width))%(putaddr To: )\n%>\
+%(lit)%(formataddr{to})%(formataddr{cc})%(formataddr(me))\
+%<(nonnull)%(void(width))%(putaddr cc: )\n%>\
+%<{fcc}Fcc: %{fcc}\n%>\
+%<{subject}Subject: Re: %{subject}\n%>\
+%<{date}In-reply-to: Your message of \
+%<(nodate{date})%{date}%|%(tws{date})%>.%<{message-id}
+             %{message-id}%>\n%>\
+Organization: BBN Systems and Technologies Corporation, Cambridge MA
+--------
+/jr, nee John Robinson     Life did not take over the globe by combat,
+jr@bbn.com or bbn!jr          but by networking -- Lynn Margulis
+
+

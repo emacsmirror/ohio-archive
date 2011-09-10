@@ -1,0 +1,251 @@
+From GENTZEL@cpwscb.psc.edu Fri May  5 14:23:47 1989
+Return-Path: <GENTZEL@cpwscb.psc.edu>
+Date:    Wed, 3 May 1989 21:36:22 EDT
+From: GENTZEL@cpwscb.psc.edu   (Dave Gentzel)
+Subject: Fixes/Enhancements to simple.el (18.54)
+To: bug-gnu-emacs@prep.ai.mit.edu
+X-Vmsmail-To: SMTP%"bug-gnu-emacs@prep.ai.mit.edu"
+
+With the exception of 2, these are more enhancements than bug fixes.
+
+1. kill-forward-chars and kill-backward-chars were defined strangely.  Changed
+   them to make more straightforward use of their prefix-args and added an
+   interactive spec.
+
+2. count-lines' doc string was wrong when (/= START END) and (max START END)
+   is not at the beginning of a line.  Corrected, although the wording is
+   somewhat cumbersome.
+
+3. Added kill-whole-line variable.  Causes a kill-line at the beginning of a
+   line to kill the newline as well as the line.  I find it very convenient.
+   Similar to Unipress' &kill-lines-magic variable.
+
+4. Added next-line-add-newlines variable.  If nil, next-line will not insert
+   newlines when invoked at the end of a buffer.
+
+5. Made auto-fill-mode's argument optional.  (auto-fill) with no argument
+   will now toggle.
+
+6. Added random-range function.  This has the same purpose as the one in
+   doctor.el, but is "more random" as it uses the most-significant rather than
+   least-significant bits (which tend to have a fairly short cycle in many
+   pseudo-random number generators).  The one in doctor.el should be deleted
+   and the uses of (random n) in blackbox.el, dissociate.el, fill.el, flame.el,
+   and yow.el should be converted to random-range.  I noticed this problem
+   because on one system (okay, VMS if you must know), rand() returned
+   alternating odd/even numbers which caused blackbox to always place balls in
+   odd columns on even rows!!
+
+					David Gentzel
+					Pittsburgh Supercomputing Center
+					gentzel@godot.psc.edu
+					or gentzel@morgul.psc.edu
+
+*** simple.el;-1	Thu Mar 23 15:17:26 1989
+--- simple.el		Thu Mar 23 15:17:26 1989
+***************
+*** 153,160
+    (indent-according-to-mode))
+  
+  (defun kill-forward-chars (arg)
+!   (if (listp arg) (setq arg (car arg)))
+!   (if (eq arg '-) (setq arg -1))
+    (kill-region (point) (+ (point) arg)))
+  
+  (defun kill-backward-chars (arg)
+--- 153,160 -----
+    (indent-according-to-mode))
+  
+  (defun kill-forward-chars (arg)
+!   "Kill the following ARG characters (previous, with negative ARG)."
+!   (interactive "*p")
+    (kill-region (point) (+ (point) arg)))
+  
+  (defun kill-backward-chars (arg)
+***************
+*** 158,165
+    (kill-region (point) (+ (point) arg)))
+  
+  (defun kill-backward-chars (arg)
+!   (if (listp arg) (setq arg (car arg)))
+!   (if (eq arg '-) (setq arg -1))
+    (kill-region (point) (- (point) arg)))
+  
+  (defun backward-delete-char-untabify (arg &optional killp)
+--- 158,165 -----
+    (kill-region (point) (+ (point) arg)))
+  
+  (defun kill-backward-chars (arg)
+!   "Kill the previous ARG characters (following, with negative ARG)."
+!   (interactive "*p")
+    (kill-region (point) (- (point) arg)))
+  
+  (defun backward-delete-char-untabify (arg &optional killp)
+***************
+*** 246,252
+  	       (1+ (count-lines 1 (point)))))))
+  
+  (defun count-lines (start end)
+!   "Return number of newlines between START and END."
+    (save-excursion
+      (save-restriction
+        (narrow-to-region start end)
+--- 246,254 -----
+  	       (1+ (count-lines 1 (point)))))))
+  
+  (defun count-lines (start end)
+!   "Return number of lines between START and END.
+! This is usually the number of newlines, but will be one more if START is
+! not equal to END and the greater of them is not at the start of a line."
+    (save-excursion
+      (save-restriction
+        (narrow-to-region start end)
+***************
+*** 490,495
+--- 492,501 -----
+    (interactive "p")
+    (forward-line (- arg))
+    (skip-chars-forward " \t"))
++ 
++ (defvar kill-whole-line nil
++   "*If non-nil, kill-line kills the whole line (including the newline)
++  if point is positioned at the beginning of a line.")
+  
+  (defun kill-line (&optional arg)
+    "Kill the rest of the current line; if no nonblanks there, kill thru newline.
+***************
+*** 505,511
+  		     (forward-line (prefix-numeric-value arg))
+  		   (if (eobp)
+  		       (signal 'end-of-buffer nil))
+! 		   (if (looking-at "[ \t]*$")
+  		       (forward-line 1)
+  		     (end-of-line)))
+  		 (point))))
+--- 511,517 -----
+  		     (forward-line (prefix-numeric-value arg))
+  		   (if (eobp)
+  		       (signal 'end-of-buffer nil))
+! 		   (if (or (looking-at "[ \t]*$") (and kill-whole-line (bolp)))
+  		       (forward-line 1)
+  		     (end-of-line)))
+  		 (point))))
+***************
+*** 761,766
+--- 767,777 -----
+      (goto-char omark)
+      nil))
+  
++ (defvar next-line-add-newlines t
++   "*If non-nil, next-line will insert a newline into the buffer
++  when invoked with no newline character between the point and the end
++  of the buffer.")
++ 
+  (defun next-line (arg)
+    "Move cursor vertically down ARG lines.
+  If there is no character in the target line exactly under the current column,
+***************
+*** 766,774
+  If there is no character in the target line exactly under the current column,
+  the cursor is positioned after the character in that line which spans this
+  column, or at the end of the line if it is not long enough.
+! If there is no line in the buffer after this one,
+! a newline character is inserted to create a line
+! and the cursor moves to that line.
+  
+  The command \\[set-goal-column] can be used to create
+  a semipermanent goal column to which this command always moves.
+--- 777,787 -----
+  If there is no character in the target line exactly under the current column,
+  the cursor is positioned after the character in that line which spans this
+  column, or at the end of the line if it is not long enough.
+! If there is no line in the buffer after this one, behavior depends on the
+! value of next-line-add-newlines.  If non-nil, a newline character is inserted
+! to create a line and the cursor moves to that line, otherwise the cursor is
+! moved to the end of the buffer (if already at the end of the buffer, an error
+! is signaled).
+  
+  The command \\[set-goal-column] can be used to create
+  a semipermanent goal column to which this command always moves.
+***************
+*** 778,792
+  using `forward-line' instead.  It is usually easier to use
+  and more reliable (no dependence on goal column, etc.)."
+    (interactive "p")
+!   (if (= arg 1)
+!       (let ((opoint (point)))
+! 	(forward-line 1)
+! 	(if (or (= opoint (point))
+! 		(not (eq (preceding-char) ?\n)))
+! 	    (insert ?\n)
+! 	  (goto-char opoint)
+! 	  (line-move arg)))
+!     (line-move arg))
+    nil)
+  
+  (defun previous-line (arg)
+--- 791,810 -----
+  using `forward-line' instead.  It is usually easier to use
+  and more reliable (no dependence on goal column, etc.)."
+    (interactive "p")
+!   (let ((opoint (point)))
+!     (if next-line-add-newlines
+! 	(if (/= arg 1)
+! 	    (line-move arg)
+! 	  (forward-line 1)
+! 	  (if (or (= opoint (point)) (not (eq (preceding-char) ?\n)))
+! 	      (insert ?\n)
+! 	    (goto-char opoint)
+! 	    (line-move arg)))
+!       (if (eobp)
+! 	  (signal 'end-of-buffer nil))
+!       (line-move arg)
+!       (if (= opoint (point))
+! 	  (end-of-line))))
+    nil)
+  
+  (defun previous-line (arg)
+***************
+*** 1171,1178
+        (if fill-prefix
+  	  (insert fill-prefix)
+  	(indent-according-to-mode)))))
+! 
+! (defun auto-fill-mode (arg)
+    "Toggle auto-fill mode.
+  With arg, turn auto-fill mode on iff arg is positive.
+  In auto-fill mode, inserting a space at a column beyond  fill-column
+--- 1189,1196 -----
+        (if fill-prefix
+  	  (insert fill-prefix)
+  	(indent-according-to-mode)))))
+! 
+! (defun auto-fill-mode (&optional arg)
+    "Toggle auto-fill mode.
+  With arg, turn auto-fill mode on iff arg is positive.
+  In auto-fill mode, inserting a space at a column beyond  fill-column
+***************
+*** 1318,1323
+--- 1336,1355 -----
+  	   (eval-minibuffer (format "Set %s to value: " var)))))
+    (set var val))
+  
++ ;; Note that the use of 15 in the following is to accomodate systems where
++ ;; random has only 15 bits of randomness.  24 is preferable for systems
++ ;; without this limitation, but this should be harmless as long as ranges
++ ;; aren't too large.
++ (defun random-range (arg)
++   "Return a pseudo-random number between 0 and ARG - 1 inclusive."
++   (if (< arg 1)
++       (error "non-positive argument %d to random-range" arg))
++   (let ((num -15) (tmp (lsh arg -1)))
++     (while (/= tmp 0)
++       (setq tmp (lsh tmp -1))
++       (setq num (1+ num)))
++     (mod (lsh (random) num) arg)))
++ 
+  ;These commands are defined in editfns.c
+  ;but they are not assigned to keys there.
+  (put 'narrow-to-region 'disabled t)
+
+

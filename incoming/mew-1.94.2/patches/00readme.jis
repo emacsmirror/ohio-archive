@@ -1,0 +1,88 @@
+		Draft モードでの日本語入力に関する注意
+
+
+Draft モードでは、ヘッダ、本文、および、添付領域で、それぞれ独自のコマ
+ンドが割り当てられています。Mew 1.92 までは、この機能を
+mew-draft-keyswitch で実現していました。
+
+たとえば、C-i には mew-draft-keyswitch が割り当てられていました。
+mew-draft-keyswitch は、C-i が入力された領域を判断し、そこに対応するキー
+マップから C-i を検索して合致したコマンドを起動していました。
+
+ですから、describe-key に C-i と入力しても mew-draft-keyswitch の説明
+が表示されるだけで、自分の知りたい機能の説明は表示されませんでした。
+
+Emacs 19.* ではテキストに local-map という property を設定できます。また、
+Emacs 19.34、および、Emacs 20.2 以上では overlay に local-map を設定でき
+ます。XEmacs 20.3 以上では extent に keymap を設定できます。
+
+そこで、Mew 1.93 では mew-draft-keyswitch という独自の機能を捨て、でき
+るかぎり Emacs/XEmacs 本来の機能を使うことにしました。いろいろ試した結
+果、Emacs 19.34 と Emacs 20.2 以上では、overlay を、XEmacs 20.3 以上で
+は overlay に相当する extent を利用することにしました。このおかげで、
+describe-key がユーザの希望通りの説明を表示します。
+
+しかし、この方式には Emacs のバージョンの違いによる問題がありました。
+
+Emacs 19.34 と Emacs 20.2 以上では、
+	マイナー・モードのマップ (minor-mode-map-alist で利用可なエントリ)
+	メジャー・モードのマップ (use-local-map で指定したマップ)
+	グローバル・マップ	 (global-map)
+の順に検索されます。
+
+また、property あるいは overlay の local-map が存在する場合は、メジャー・
+モードのマップをこれで置き換えて検索します。
+
+canna.el のようにマイナー・モード(正確には FEP)なのに、メジャー・モー
+ドのマップを利用しているパッケージでは、property や overlay の 
+local-map が悪影響を及ぼします。たとえば、Mew のヘッダには overlay の 
+local-map が定義されているので、「かんな」で日本語が入力できなくなりま
+す。
+
+FEP はマイナー・モードのマップを使って実現するのが正しい方法です。この
+ディレクトリにある canna.el-19.34.patch や egg.el-19.34.patch をを当て
+ると、Emacs 19.34 ベースの Mule 2.3 で「かんな」や「たまご」のバグが修
+正できます。
+
+Emacs 20.2 では正式に「かんな」や「たまご」をサポートしていませんので、
+パッチを付属しませんが、問題なくあたるか、reject される部分も簡単に手
+で修正できるかのいづれかだと思います。
+
+Emacs 20.3 では、問題を取り除いた「かんな」や「たまご」を付属するよう
+にしてもらおうと思っています。
+
+さて、日本で最も普及している Mule 2.3 ベースですが、Emacs 19.28 には 
+overlay にlocal-map の機能がないので話がややこしくなります。現在はまだ 
+Emacs 20.x へ移行できる状況ではないので、Emacs 19.28 ベースの Mule 2.3 
+を救う必要があります。そこで、Emacs 19.28 では Mew は昔の
+mew-draft-keyswitch を利用することにしました。
+
+mew-env.el で Emacs のバージョンを判断し、mew-use-overlay-keymap を定
+義します。`t' なら overlay を使った新しい方式、`nil' なら 
+mew-draft-keyswitch を使った古い方式を使用します。Emacs 20 への移行準
+備が完了すれば mew-draft-keyswitch 方式は排除します。
+
+XEmacs 20.3 以上では、
+	extent の keymap
+	マイナー・モードのマップ (minor-mode-map-alist で利用可なエントリ)
+	メジャー・モードのマップ (use-local-map で指定したマップ)
+	グローバル・マップ	 (global-map)
+の順にコマンドを検索します。
+
+よって、メジャー・モードのマップは extent の keymap が存在しても検索の
+対象から外されないので、「かんな」や「たまご」を修正しなくても日本語が
+入力できます。
+
+<<<結論>>>
+
+・Emacs 19.28 ベースの Mule 2.3 を使っている人
+	→なにもしなくてよい
+・Emacs 19.34 ベースの Mule 2.3 を使っている人
+	→「かんな」を使いたいならパッチを当てる
+	→その他問題のある FEP を発見したら minor-mode-map-alist を使って
+          書き直す
+・Emacs 20.2 以上を使っている人
+	→その他問題のある FEP を発見したら minor-mode-map-alist を使って
+          書き直す
+・XEmacs 20.3 以上を使っている人
+	→なにもしなくてよい

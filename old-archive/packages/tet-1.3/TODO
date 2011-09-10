@@ -1,0 +1,11 @@
+1) Fix Num Lock key so it works too.  Maybe something like:
+
+   XTerm.VT100.Translations: #override \
+     <KeyPress>F1: string(0x1b) string("[xyzzy")
+  makes the function key F1 generate the character sequence "ESC [xyzzy".
+
+
+
+
+
+TODO

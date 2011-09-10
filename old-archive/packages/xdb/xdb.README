@@ -1,0 +1,33 @@
+;; LCD Archive Entry:
+;; xdb|K. Shane Hartman|shane@ai.mit.edu|
+;; Run HP PA-RISC symbolic debugger in emacs buffer.|
+;; 92-12-12|$Revision: 1.11 $|~/packages/xdb.tar.Z|
+
+This package, based on gdb.el from the emacs distribution allows you
+to run the HP PA-RISC debugger (xdb) in an emacs buffer.  It steps
+through the source code, sets breakpoints, etc.
+
+For help with commands, read the source or ask for mode help when
+running xdb.
+
+Installation notes:
+
+Check the settings of the following elisp variables and make sure they
+are right for you.
+
+(defvar xdb-command-name "xdb"
+  "Pathname for executing xdb.")
+
+xdb.help is included with the distribution
+
+(defvar xdb-help-file (expand-file-name "xdb.help")
+  "Location of xdb help text")
+
+(defvar xdb-paths nil
+  "A list of directories containing source code that should be made known
+to xdb on startup.  If nil, only source files in the program directory
+will be known to xdb.
+
+The pathnames should be full or relative to the program directory.
+Program directory refers to the directory of the program that is being
+debugged.")

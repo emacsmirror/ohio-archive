@@ -1,0 +1,115 @@
+From cme!durer!warsaw@uunet.uu.net Tue Jun 20 12:17:15 1989
+To: unix-emacs@BBN.COM
+Date: 19 Jun 89 15:50:52 GMT
+From: "Barry A. Warsaw" <cme!durer!warsaw@uunet.uu.net>
+Sender: arpa-unix-emacs-request@BBN.COM
+Subject: SUPERYANK.EL (Latest Version 1.1) [Article 1 of 2]
+Organization: National Institute of Standards and Technology
+Source-Info:  From (or Sender) name not authenticated.
+
+
+A while back, I posted an elisp package called "superyank" which can
+be used to yank messages into reply and followup buffers for both
+RMAIL and GNUS modes.  I have received many comments, suggestions and
+some bug reports from people using superyank and have modified the
+code based on their suggestions.  The diffs were substantial enough
+that I decided to post the whole file (:-), David), with thanks to
+everyone who contacted me concerning superyank.
+
+Major changes from previous version:
+
+1) some user definable variables have been renamed:
+
+	sy-nested-citation  becomes sy-nested-citation-p
+	sy-confirm-always   becomes sy-confirm-always-p
+	sy-downcase         becomes sy-downcase-p
+	sy-left-justify     becomes sy-left-justify-p
+	sy-auto-fill-region becomes sy-auto-fill-region-p
+
+2) some user definable variables have been added:
+
+	sy-rewrite-header-hook allows you to custom modify your own
+		informative headers, or ignore the headers altogether.
+
+	sy-use-only-preference-p is added. It was referenced in version
+		1.0 (as sy-use-only-preference) but never defvar'd.
+
+3) mail-yank-ignored-headers has been expanded to ignore most headers I've
+	seen for RMAIL and GNUS messages.
+
+4) added the idea of a persistant attribution which is really the last
+	attribution string selected by the user.  Its use is described
+	below.
+
+5) Improved the interaction with GNUS replies and followups through
+	some internal changes.
+
+6) Improved sy-fill-paragraph-manually (C-c q and C-c C-q) so that if
+	you are manually filling a paragraph that doesn't all start with
+	the same attribution string, the persistant attribution is
+	assumed.
+
+7) Added function sy-insert-persist-attribution (C-c i and C-c C-i)
+	that will insert the persistant attribution string at the
+	beginning of the line containing point.
+
+8) Added function sy-open-line (C-c C-o) which works just like
+	open-line (C-o) except that it inserts the persistant attribution
+	string at the beginning of the opened line.
+
+That's all I can think of, though performance has been improved in
+many of the functions, transparent to the user.  The sy-open-line
+function, combined with sy-fill-paragraph-manually is *very* useful
+and the custom headers are also nice, so version 1.1 is worth getting.
+
+I've also included a diff file that modifies emacs/lisp/rnewspost.el.
+It seems there was a problem in GNUS followups where you'd get a line
+at the bottom of the buffer saying "In article blah, so-and-so
+writes:" and this is because GNUS uses a function in rnewspost.el that
+explicitly writes this message.  In keeping with superyank's custom
+header style hook, I just added a hook to the news-reply-original
+function called `news-reply-header-hook' and made it do the expected
+thing when using GNUS replies without superyank.  Superyank redefines
+this hook to nil so that this bogus header won't get written when
+using superyank.  This diff is not essential, but if you don't apply
+it, you'll have to remove the bogus header manually.
+
+Anyway, at the bottom of this posting you'll find the diff to
+rnewspost.el and in an accompanying posting you find superyank 1.1.
+As always, send comments, suggestions, bug reports, etc, to me, the
+author.  Enjoy!
+
+NAME: Barry A. Warsaw                USMAIL: National Institute of Standards
+TELE: (301) 975-3460                         and Technology (formerly NBS)
+UUCP: {...}!uunet!cme-durer!warsaw           Rm. B-124, Bldg. 220
+ARPA: warsaw@cme.nist.gov                    Gaithersburg, MD 20899
+
+-------cut here-------------------------------------------------------
+*** rnewspost.el.orig	Fri Mar 10 11:59:37 1989
+--- rnewspost.el	Wed Jun 14 16:06:16 1989
+***************
+*** 118,123 ****
+    (mail-yank-original arg)
+    (exchange-point-and-mark)
+!   (insert "In article " news-reply-yank-message-id
+! 	  " " news-reply-yank-from " writes:\n\n"))
+  
+  (defun news-reply-newsgroups ()
+--- 118,132 ----
+    (mail-yank-original arg)
+    (exchange-point-and-mark)
+!   ;; added 14-Jun-1989 baw: warsaw@cme.nist.gov, uunet!cme-durer!warsaw
+!   ;; for use with superyank.el
+!   (run-hooks 'news-reply-header-hook))
+!  
+! ;; added 14-Jun-1989 baw: warsaw@cme.nist.gov, uunet!cme-durer!warsaw
+! ;; for use with superyank.el
+! (defvar news-reply-header-hook
+!   '(lambda ()
+! 	 (insert "In article " news-reply-yank-message-id
+! 			 " " news-reply-yank-from " writes:\n\n"))
+!   "Hook for inserting a header at the top of a yanked message.")
+  
+  (defun news-reply-newsgroups ()
+
+

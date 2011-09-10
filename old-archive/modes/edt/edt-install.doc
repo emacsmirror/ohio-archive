@@ -1,0 +1,342 @@
+File:  edt-install.doc, v 1.5
+
+               -----   -----------   -------   -----------------
+               E D T   K e y p a d   M o d e   E m u l a t i o n
+               -----   -----------   -------   -----------------
+
+                      -------------   -------------------
+                      I n s t a l l   P r o c e d u r e s
+                      -------------   -------------------
+
+                         BETA Distribution Version 0.5
+                      Copyright (C) 1991 Kevin Gallagher
+                         (kgallagh@digi.lonestar.org)
+
+This version of the EDT emulation package for GNU Emacs is a substantially
+enhanced version of the original.  A large part of the original can still be
+found here, of course, but much of it has been modified and quite a bit is
+new.  Many of the ideas found here are borrowed from others.  In particular,
+some of the code found here was drawn from an earlier re-write of the EDT
+package done at DSC in 1989 by Matthew Frohman.
+   
+Send bug fixes, suggestions for enhancements, and corrections to this
+documentation to Kevin Gallagher (kgallagh@digi.lonestar.org).
+
+Several goals were kept in mind when making this version:
+     
+        1.  Emulate EDT Keypad Mode commands closely so that current
+            EDT users will find that it easy and comfortable to use
+            GNU Emacs with a small learning curve;
+   
+        2.  Make it easy for a user to customize EDT emulation key
+            bindings without knowing much about Emacs Lisp;
+
+        3.  Make it easy to switch between the original EDT default bindings
+            and the user's customized bindings, without having to exit Emacs.
+
+        4.  Provide support for some TPU/EVE functions not supported in
+            EDT. 
+
+        5.  Provide an easy way to restore ALL original Emacs key bindings,
+            just as they existed before the EDT emulation was first invoked.
+   
+        6.  Simplify the process of adding support for additional
+            ascii terminals.
+   
+
+
+SETUP:
+
+The Enhanced EDT emulation package currently supports VT100 series terminals,
+VT200 series terminals (set to VT200 Mode, 7 Bit Controls, which happens to be
+the terminal's default mode) and VT300 series terminals (set to VT300 Mode, 7
+Bit Controls, also the terminal's default mode).  I do not have access to
+other VT series terminals, nor their documentation, but I suspect most of them
+will behave very much like a VT200, if set up properly.  Also included is
+support for the Apollo Workstation using a Low Profile II keyboard.  Support
+for other terminals will be added over time, as users develop such support.
+
+If you are using a terminal not currently supported, refer to the section
+ADDING TERMINAL SUPPORT, at the end of this document.
+
+This distribution contains the following files:
+
+edt-apollo.el         - Support for Apollo Low Profile II Keyboard
+edt-apollo_1280_bw.el - One liner that loads edt-apollo.el
+edt-vt100.el          - Support for VT100/VT200/VT300 Series Terminals
+edt-vt200.el          - One liner that loads edt-vt100.el
+edt-vt300.el          - One liner that loads edt-vt100.el
+edt.el                - EDT Emulation Functions and Default Configuration
+edt-install.doc       - This file
+edt-user.doc          - User instructions
+edt-user.el-1         - Optional file containing User Customizations for a
+                        single terminal.  If you wish to customize, try using
+                        this file first.
+edt-user.el-2         - Optional file containing User Customizations for two
+                        very different terminals.
+termcap.dat-diff-vms  - For VMS users.  A VMS difference file showing how we
+                        added support for several VT series terminals not in
+                        the [.ETC]TERMCAP.DAT in the DECUS distribution of
+                        Emacs 18.55.
+flow-ctrl.el            Code to handle XON/XOFF flow control problems that
+                        occur with certain terminals.
+vt-esc-sub.el           Code to let VT series terminals use F11 as ESC key, in
+                        many, but not all situations.
+
+
+PUBLIC INSTALLATION:  
+
+In the GNU Emacs "/emacs/lisp" directory, or your site equivalent directory,
+rename the old version of edt.el to edt.el-orig.  Then copy the files above,
+except termcap.dat-diff-vms, listed above into the public lisp directory.
+
+NOTE:  The Emacs etc directory contains a termcap.dat file for Emacs to
+       use when running under VMS.  VMS users may wish to make the changes to
+       termcap.dat indicated in termcap.dat-diff-vms to add support for
+       additional VT series terminals missing from the Emacs 18.55 version.
+       These changes add support for VT101, VT102, and VT131 terminals, as
+       well as for VT300 series terminals.
+
+Users, who wish to customize the EDT emulation to use their own key bindings,
+should consult edt-user.doc.  Be sure to remind users to add their private
+lisp directory to the Emacs load path in their .emacs setup file.
+
+PRIVATE INSTALLATION: 
+
+If you do not have your own private lisp directory, create one.  Then copy all
+the files listed above, except termcap.dat-diff-vms, into your private lisp
+directory.  Set up edt-user.el to customize bindings, if you wish.
+
+Be sure to add your private lisp directory to the Emacs load path (see
+edt-user.doc). 
+
+STARTING EDT EMULATION:
+
+In both public and private installations, I recommend that you byte-compile
+edt.el and edt-vt100.el (also, edt-apollo.el and any other terminal support
+files, if used).  But this is not required, of course.  Byte-compiled files
+load faster and usually execute faster.
+
+(See edt-user.doc for information on how to start the EDT emulation.)
+
+
+ADDING TERMINAL SUPPORT:
+
+NOTE: Please be sure to send copies of any terminal support files you write to
+      kgallagh@digi.lonestar.org, so they can be added to the EDT Emulation
+      distribution files.
+
+There are five issues which must be addressed to provide support for a
+terminal:
+
+1.  Writing a terminal specific version of edt-bind-function-key.
+
+The heart of the support for a given terminal is provided by the function
+edt-bind-function-key.  Each terminal type (or series of terminals) has its
+own version.  
+
+To understand what is needed, let's look at the version in edt-vt100.el.
+Here's the most important part:
+
+;;;;
+;;;; KEY TRANSLATIONS
+;;;;
+
+(defvar *vt100-keys*
+  '(("KP0" . "p") ("KP1" . "q") ("KP2" . "r") ("KP3" . "s") ("KP4" . "t")
+    ("KP5" . "u") ("KP6" . "v") ("KP7" . "w") ("KP8" . "x") ("KP9" . "y")
+    ("KP," . "l") ("KP-" . "m") ("KPP" . "n") ("KPE" . "M") ("PF1" . "P")
+    ("PF2" . "Q") ("PF3" . "R") ("PF4" . "S") ("UP" . "A") ("DOWN" . "B")
+    ("RIGHT" . "C") ("LEFT" . "D")))
+
+(defvar *vt200-keys*
+  '(("FIND" . "1~") ("INSERT" . "2~") ("REMOVE" . "3~") ("SELECT" . "4~")
+    ("PREVIOUS" . "5~") ("NEXT" . "6~") ("F6" . "17~") ("F7" . "18~")
+    ("F8" . "19~") ("F9" . "20~") ("F10" . "21~") ("F11" . "23~")
+    ("F12" . "24~") ("F13" . "25~") ("F14" . "26~") ("HELP" . "28~")
+    ("DO" . "29~") ("F17" . "31~") ("F18" . "32~") ("F19" . "33~")
+    ("F20" . "34~") ("UP" . "A") ("DOWN" . "B") ("RIGHT" . "C")
+    ("LEFT" . "D")))
+
+;;;;
+;;;; BINDS VT100/VT200/VT300 FUNCTION KEYS
+;;;;
+;; The function edt-bind-function-key is keyboard/terminal dependent.
+
+;; The arrow keys appear in both maps, so special logic has been
+;; added to ensure that they get defined in both maps.
+
+(defun edt-bind-function-key 
+    (function-key binding gold-binding &optional default)
+  "Terminal specific function which binds commands to keyboard function keys in
+the EDT Emulator."
+  (let ((key-code (cdr (assoc function-key *vt100-keys*)))
+        (key-sequence)
+        (key-found nil))
+    (if (not (null key-code))
+        (progn
+          (setq key-found t)
+          (setq key-sequence (concat "\eO" key-code))
+          (if default
+              (progn
+                (define-key edt-default-global-map key-sequence binding)
+                (define-key 'edt-default-gold-map key-sequence gold-binding))
+              (progn
+                (define-key edt-user-global-map key-sequence binding)
+                (define-key 'edt-user-gold-map key-sequence gold-binding)))))
+    (setq key-code (cdr (assoc function-key *vt200-keys*)))
+    (if (not (null key-code))
+        (progn
+          (setq key-sequence (concat "\e[" key-code))
+          (if default
+              (progn
+                (define-key edt-default-global-map key-sequence binding)
+                (define-key 'edt-default-gold-map key-sequence gold-binding))
+              (progn
+                (define-key edt-user-global-map key-sequence binding)
+                (define-key 'edt-user-gold-map key-sequence gold-binding))))
+        (if (not key-found)
+            (error "%s is not a legal function key name" function-key)))))
+
+
+COMMENTS:  Some VT series special keys (keypad keys, for example) send out
+           sequences with a prefix of "ESC O" followed by a unique third
+character.  This association is defined in the variable "*vt100-keys*", above.
+Other VT200/VT300 series keys (F10, DO, HELP, etc.) send out sequences with a
+prefix of "ESC [" followed by one or more additional characters.  This latter
+association is defined in the variable "*vt200-keys*".  So, the VT terminal
+series version of edt-bind-function-key, above, has to deal with these two
+possibilities, setting up two key maps, one for each prefix.  (In addition,
+the arrow keys can generate "ESC O" sequences OR "ESC [" sequences, depending
+upon the "keypad mode" the terminal is set to!  So the arrow keys appear in
+both maps!)
+
+Now, lets suppose we need to write support for a terminal which presents the
+same prefix to GNU Emacs for ALL keypad keys and ALL function keys on the
+terminal keyboard, a very simple case.  Then, this new version of
+edt-bind-function-key will look much simpler than the one for VT series
+terminals!
+
+First, we have to define a variable to include mappings for the complete
+set of VT200 keypad and function key names, which are:
+
+Keypad Keys:   
+                PF1 PF2 PF3 PF4
+                KP7 KP8 KP9 KP-
+                KP4 KP5 KP6 KP,
+                KP1 KP2 KP3 
+                KP0     KPP KPE
+
+Arrow Keys:
+                LEFT RIGHT DOWN UP
+
+Function Keys:
+                F6 F7 F8 F9 F10  F11 F12 F13 F14  DO HELP  F17 F18 F19 F20
+                FIND   INSERT   REMOVE 
+                SELECT PREVIOUS NEXT
+
+Let's call this new variable "*NEW-terminal-keys*".  Since each one of the
+VT200 keys is assigned a default binding in edt.el, we cannot omit any of them
+from our list of function keys in *NEW-terminal-keys*.  (We do realize that
+one or more of these VT200 function keys may NOT have an equivalent function
+key on the new keyboard.  If HELP is such a key, for example, we will map HELP
+to the empty string like so: ("HELP" . ""), to indicate that it is not a
+function key on our new keyboard.  We then add lisp code to our new
+edt-bind-function-key to skip such keys.)
+
+We have to determine what character codes each keypad key and each function
+key present to GNU Emacs.  We do this using C-h l (view-lossage).  (If you
+discover that one or more keyboard function keys present nothing to GNU Emacs
+when you press it, you will probably have to forget about that key, unless you
+wish to muck around inside the GNU Emacs C source code.)
+
+Next, if the NEW keyboard has additional function keys not found on a VT series
+terminal, and Emacs reports seeing a character string when the key is pressed,
+we will add them to *NEW-terminal-keys* so commands can be bound to
+them within the EDT Emulator.
+
+Finally, let's suppose the prefix generated by function keys on the NEW
+terminal is control-\ (C-\).  Then the following version of
+edt-bind-function-key should work:
+
+(defun edt-bind-function-key 
+    (function-key binding gold-binding &optional default)
+  "Terminal specific function which binds commands to keyboard function keys in
+the EDT Emulator."
+  (catch 'edt-key-not-supported
+    (let ((key-code (cdr (assoc function-key *NEW-terminal-keys*)))
+          (key-sequence))
+      (if (not (null key-code))
+          (progn
+            (if (string-equal "" numeric-code)
+                (throw 'edt-key-not-supported t))
+            (setq key-sequence (concat "\C-\\" key-code))
+            (if default
+                (progn
+                  (define-key edt-default-global-map key-sequence binding)
+                  (define-key 'edt-default-gold-map key-sequence gold-binding))
+                (progn
+                  (define-key edt-user-global-map key-sequence binding)
+                  (define-key 'edt-user-gold-map key-sequence gold-binding))))
+          (error "%s is not a legal function key name" function-key)))))
+
+Once edt-bind-function-key is written, the hard part is done.  But several
+additional points must be addressed to complete support for a NEW terminal.
+
+
+2.  Bind commands to extra terminal function keys.
+
+If the terminal has extra function keys NOT found on a VT200 series terminal,
+then it may make sense to set up some default bindings for those extra
+function keys.  The function edt-setup-extra-default-bindings can be defined
+for this purpose.  See edt-apollo.el for an example.
+
+NOTE: edt.el contains the default bindings for most fuction keys found on
+VT100/VT200/VT300 terminals.  Therefore, the file edt-vt100.el contains no
+key bindings.  In general, however, files supporting other terminals will
+contain terminal specific bindings for function keys not existing on
+VT-series terminals.
+
+
+3.  Set up additional prefix map, if needed.
+
+If the terminal generates more than one prefix for its function keys, then the
+additional prefix maps must be defined in functions with the names
+
+           edt-additional-default-prefix-map-setup
+and        edt-additional-user-prefix-map-setup
+
+See edt-vt100.el for an example.
+
+
+4.  Write terminal specific version of edt-keypad-help.
+
+A terminal specific version of edt-keypad-help should be written.  See
+edt-apollo.el for an example.
+
+
+5.  You may need to customize some default emacs bindings.
+
+Though very unlikely, you may find a need to modify some of the default emacs
+bindings PRIOR to initialization of the EDT emulation.  The function 
+
+         edt-customize-default-emacs-bindings
+
+can be used for this purpose.  See edt-apollo.el for an example of where this
+was needed.
+    
+
+It is our hope that users will find the contents of edt-vt100.el and
+edt-apollo.el clean enough to make it obvious what has to be done to write
+support for a new terminal.
+
+NOTE: edt-apollo.el will be of particular interest if the new terminal needs
+exception handling.  Be warned, however, the Apollo terminal support in
+edt-apollo.el has additional complications not likely needed when writing
+support for other terminals.  For example, the Apollo modifications to GNU
+Emacs, which provide support for all the function keys on the Low Profile II
+keyboard, were changed substantially between GNU Emacs versions 18.54 and
+18.55.  This means that the Apollo version of edt-bind-function-key contains
+some messy exception handling for version 18.54.  
+
+Good luck!

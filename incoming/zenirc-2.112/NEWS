@@ -1,0 +1,304 @@
+User-visible changes in ZenIRC-2.112:
+
+* Removed new-lines from all the different language catalouge
+  entries. zenirc-messages adds this if appropriate.
+
+* zenirc-prime.el, new script. Calculates prime numbers.
+
+* zenirc-eval.el, new script. Evaluate special commands being sent to
+  you from other people on IRC. USE WITH CAUTION!
+
+* zenirc-history.el now binds M-p and M-n to previous- and next-line. 
+
+* zenirc-yow-filter.el, new script. Filter out all the annoying
+  automated yows.
+
+* zenirc-color.el, new script; colorize your ZenIRC. Should work with
+  Emacs-19, Emacs-20 and XEmacs.
+
+* zenirc-8ball.el, new script. Ask 8-ball easy yes/no questions.
+
+* zenirc-trigger.el, new script. Easy creation of triggers to incoming
+  messages.
+
+* zenirc-ignore.el is more vocal to the user, also added
+  zenirc-ignore-last-privmsg on C-c C-i to ignore the user@host of the
+  last seen PRIVMSG. 
+
+  It's also much brighter when it comes to regexp handling.
+
+* zenirc-notify.el, better handling of upper and lower case
+  nicknames. Much better command parser when adding and removing
+  victims in real time.
+
+* zenirc-random-nick.el, added code do automatically change nickname
+  every x number of seconds.
+
+* zenirc-fill.el, rerwritten to look more like the 2.100
+  version. Two new ways of filling are added:
+  zenirc-wrap-region-dynamic and -wrap-region-static. Added functions
+  to fill outgoing messages as well as incoming ones. The filling
+  functions now also uses the correct width of the *right* buffer.
+
+* zenirc-example.el, a lot of new examples.
+
+* All special modes can now be turned on and off with zenirc-*-mode.
+
+* zenirc-signal functions are smarter; doesn't beep when it shouldn't
+  anymore. 
+
+* zenirc-select uses zenirc-server-alist in a much smarter way.
+
+* zenirc-format-privmsg-or-notice now reckons PRIVMSG's to user@server
+  in a better way.
+
+* Better handling of nick!user@host table in zenirc-format.el.
+
+* zenirc-bug, new function.
+
+* zenirc-update-modeline, a function which updates the modeline
+  depending on which version of Emacs you are using. Relevant functions
+  in ZenIRC now uses this.
+
+* zenirc-channel-list, a list of currently joined channels. If you
+  leave your zenirc-current-victim it gets set to the previous channel.
+  C-c C-t toggles between all the channels with zenirc-toggle-channel.
+
+* Added a couple of ircII lookalikes:
+
+  zenirc-always-show-channelname, new variable. If set to nil, strip
+  out the channelnames from incoming PRIVMSGs and NOTICEs if the
+  channelname is the same as the current-victim. 
+
+  zenirc-delete-preceding-whitespaces, newvariable. If set to t, strip
+  off leading whitespaces on outgoing messages.
+
+  zenirc-whowas-on-401, new variable. If set to t, ZenIRC will issue a
+  WHOWAS command if no information is gained by a WHOIS command.
+
+* More additions to conform with ircd2.9 news.
+
+As of 1996-04-24, Per has taken over primary maintenance of ZenIRC.
+
+User-visible changes in ZenIRC 2.101:
+
+* New function, gnus-bug. Initialize mail to make it easier for user
+  to report a newly found bug.
+
+* Comments on how to do automatic things while initializing a server
+  connection in zenirc-example.el.
+
+* Takes care of more new irc2.9 NUMERICS.
+
+* Responds to CTCP ECHO queries.
+
+As of 1995-06-28, Per started adding patches to ZenIRC alpha versions.
+
+* All the notify code is stripped out of zenirc.el into a -notify.el
+  script. The notify code is able to check user@host info on
+  notificated persons. Most of the code is also totally rewritten, 
+  some of the features are much better sanity checking.
+
+* /server, a new command using zenirc-select, lets you connect to
+  servers in an easy way. /server irc-2.mit.edu 6667 ben
+  The command uses zenirc-server-alist, it also defaults to just about
+  every setting you can think of.
+
+* zenirc-ignore.el gives you ircII like /ignore and /unignore, an easier
+  way to maintain your zenirc-ignore-list in real time. If you use the
+  commands with regexps, it doesn't do it the ircII way.
+
+* /resize command in zenirc-fill.el lets you resize the fill values if
+  you change the size of your emacsen.
+
+  There also a new way of filling things, based on the first word of the
+  string. 
+
+* The variable zenirc-command-char lets you decide which char you want
+  to use as a command char. "/" is default and you can change it with
+  /commandchar.
+
+* zenirc-klingon.el and zenirc-bork.el are two new sets of language
+  catalogs.
+
+* /topic is now able to SHOW the topic as well as set it.
+
+* The Makefile is now able to make and install ZenIRC, it uses 
+  zenirc-make.el to do so. Needs some improvment though.
+
+* zenirc-iwantop.el has better documentation for new users.
+
+* ZenIRC is able to display confirmation messages in the echo area
+  instead of in the process buffer, at least better than it did before.
+
+* ZenIRC shows idletime in hours:minutes:seconds instead of plain
+  seconds.
+
+* zenirc-history.el gives you shell-like C-p and C-n on C-cC-p and
+  C-cC-n.
+
+* ZenIRC groks most of the 2.9 news, as well as some ugly additions to
+  2.8 by digital and comstud. FOLLOW THE RFC OR DIE.
+
+* There's code in zenirc.el to let you timestamp PRIVMSG/NOTICE, the
+  code makes it really easy to add timestamps for other thingies.
+
+* Some of the numeric replies parsing are changed to show relevant
+  information. 2.9 changes some of the replies so ZenIRC has to do
+  more sanity checking (this is not totally perfect yet).
+
+* New funny files in the doc directory.
+
+
+As of 1994-10-02, Noah has taken over primary maintenance of zenirc.
+
+User-visible changes in ZenIRC 2.100:
+
+* ZenIRC now configures and installs using an Autoconf-generated configure
+  script.  [Makefile is only 4/5 finished 1995-03-27]
+
+* The version number no longer directly corresponds with the RCS revision
+  number of zenirc.el.  A separate version number is used, which will only
+  change in each release.  As a result, releases won't have arbitrarily
+  incremented version numbers.
+
+* The new file zenirc-fill.el provides a minor mode which formats privmsgs,
+  notices, and whatever kinds of messages you specify, so that they don't
+  exceed the width of your window.  Selective control is provided since
+  some tables produced by the server will look terrible if anything
+  attempts to fold them.
+
+* It is now possible to load multiple language catalogs and switch between
+  them using "/language" or `M-x zenirc-lang-set-current-language'.
+
+* The DCC interface has been largely rewritten.
+  It uses the message catalogs and has more hooks.
+  Another notable change is the fact that subsequent DCC chat requests from
+  the same user are stored and previous requests are discarded.
+  This is in case the port number or IP address have changed in the new
+  request.
+
+* All the external message catalogs have been renamed by removing the
+  `-mode' in their name.  For example, zenirc-latin-mode.el is now
+  zenirc-latin.el.  They are updated to use the new catalog mechanism.
+
+* Almost all tables are now implemented as hash tables instead of
+  linear lists.  This should speed up searches.
+
+* Line input has been completely reimplemented.  It's now safe to send very
+  long lines in private messages and notices; if necessary they are broken
+  into multiple chunks and sent separately.
+
+  Also, it's easier to send text line-at-a-time by yanking text into the
+  buffer, moving point to the beginning of the new input, and hitting
+  return successively.  No excess newlines are inserted any more, and point
+  is automatically positioned on the next line of unsent input.
+
+  You can have confirmation of sending go in the echo area instead of
+  inserting lines in the buffer.
+
+* /kick, /kill, /notice, /privmsg, and /squit commands are now sent to the
+  server in the proper format.
+
+* zenirc-popup is now a minor mode that can be enabled or disabled with the
+  `zenirc-popup-mode' command.  It should also work in emacs 18 now.
+
+* The method of display for matching completions can be controlled by the
+  user via the variable `zenirc-complete-display-function'.  The default is
+  to display completions in the echo area if they will fit.  Otherwise, use
+  a portion of the zenirc window.
+
+  The variable `zenirc-complete-add-final-space-p' controls whether a
+  trailing space is added to unique completions.  The default is to do so
+  since this is consistent with completion in emacs and other GNU programs.
+
+* You can now use `;' and `:' to send a private message to the last person
+  you sent a private message to, or who sent you a private message.  These
+  keys only have this special meaning if they are the first character of
+  your input.
+
+  The other commands which do this used to be bound on `C-c s' and `C-c r'.
+  They are now on `C-c C-s' and `C-c C-r', since the former keys are
+  reserved for the user's private use.  These commands always insert the
+  recipient's name at the beginning of your input, rather than wherever
+  point happens to be.
+
+* The mechanism for specifying how to connect to servers is completely
+  revamped.  The variable `zenirc-server-alist' is used to specify a list
+  of servers (with optional port/password/nick info).  Each one is tried in
+  turn until a successful connection is made.  It is initialized from your
+  IRCSERVER environment variable, which can have the same format as parsed
+  by ircII.
+
+  You can set the variables `zenirc-server-default', `zenirc-nick-default',
+  `zenirc-port-default', etc.  Or if these are unset, the appropriate
+  environment variables are used.
+
+* By default, any message with more than 4 CTCP queries is ignored.
+  This is to avoid being disconnected for flooding.
+  To disable this check, remove the appropriate regexp from
+  zenirc-ignorance-list.
+
+* A new hook, zenirc-message-hook, is called each time a message is
+  inserted in the buffer.  The hook zenirc-send-line-hook is called each
+  time you send a line of text.
+
+* If a command hook is nil, the command is just sent directly to the server,
+  like /quote.  To keep a command from going to the server at all, put the
+  `ignore' function on the appropriate hook.
+
+* The new script zenirc-iwantop.el allows you to accept ctcp queries from
+  users and give them channel operator privileges automatically.
+
+* zenirc-fancy-away.el has been renamed to zenirc-away.el.
+  zenirc-fancy-format.el has been renamed to zenirc-format.el.
+  zenirc-fancy-signal.el has been renamed to zenirc-signal.el.
+
+* Too many bug fixes and other minor improvments to mention here.
+  See the ChangeLog for details.
+
+
+Changes to ZenIRC in version 2.16:
+
+* Added /oper command.
+
+
+Changes to ZenIRC in version 2.15:
+
+* New scripts: zenirc-popup.el, zenirc-fancy-away.el, and zenirc-yow.el
+  The first pops up a window when signals occur and there is presently no
+  window displaying that buffer.
+  The second insures that you see a user's away message only once, until
+  they change it again.
+  The last implements the command /yow, and also allows you to
+  autoreply to victims with zippy quotes.
+
+* zenirc-complete.el has been completely rewritten.
+  The new version is better at insidiously caching data, doesn't tamper
+  with the kill-ring, and has fewer bugs.
+
+* Made most files, including zenirc.el, "provide" themselves.
+  Also made any scripts which refer to symbols declared in zenirc.el
+  require it.
+
+  This means that in emacs 19, you can use M-x unload-feature to easily
+  undo most of the effects of loading a package, except for top-level
+  forms.
+
+* zenirc has a new hook, zenirc-mode-hook, that is called at the end of
+  zenirc-mode.
+
+* Many bugs fixes in process filters to keep point and window display from
+  being munged incorrectly, to keep signal hooks from running when not
+  appropriate (and also so that other hooks can permanently modify the
+  state of buffers if desired).
+
+* Made signal hooks run last, after buffer update has already occured.
+
+* Removed recursion from some basic regexp matching routines.
+
+* Fixed bug in DCC chat code that was occasionally dropping bits of
+  incoming lines.
+
+* New script, zenirc-random-nick.el, can be used to randomly choose
+  nicknames for IRC if you are feeling deconstructionist.

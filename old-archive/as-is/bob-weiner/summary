@@ -1,0 +1,78 @@
+;To: unix-emacs@bbn.com
+;Date: 28 Apr 89 06:03:34 GMT
+;From: Bob Weiner <mailrus!uflorida!novavax!weiner@bbn.com>
+;Sender: arpa-unix-emacs-request@bbn.com
+;Subject: Listing of GNU Emacs Lisp source postings to follow
+;Organization: Nova University, Fort Lauderdale, FL
+;Source-Info:  From (or Sender) name not authenticated.
+
+;;
+;; SUMMARY:      Descriptions of new or heavily modified GNU Emacs lisp
+;;                 libraries that follow this posting.
+;; USAGE:        none
+;;
+;; AUTHOR:       Bob Weiner, Applied Research, Motorola, Inc., (407) 738 - 2087
+;; ORIG-DATE:    09-Mar-89
+;; LAST-MOD:     27-Apr-89 at 23:45:10 by Bob Weiner
+;; DESCRIPTION:  
+;;
+;;	Files that end in:
+;;
+;;		.el 	= Emacs lisp (elisp) source files
+;;              .info   = Info file, modified for transmission
+;;
+;;      A '+' appended to the end of the file means that it is part of the
+;;	standard GNU Emacs distribution but has been modified locally.  A link
+;;	to this file and its '.elc' compiled version should exist in the
+;;	../lisp directory or Emacs may not be able to load it properly.
+;;
+;; DESCRIP-END.
+;;
+
+buff-menu.el+           Improved with electric-buffer-menu like features but no
+			  functionality limitations.
+cmd-menus.el            Support functions for my local 'cmd-menus' info file.
+                          Requires local mods to info.el and informat.el.
+cmd-menus.info          Sample use of Info extensions explained in
+                          info-README.  Not for use, just for reference.
+info-README             Explains my command reference (menu) extensions to the
+                          normal Info file syntax.
+info.el+		Emacs 'Info' subsystem.  LNZ added 'insert' node code.
+			I added '!' and '@' menu entry and cross reference
+			  types for use in command menus and execute-only
+			  nodes.  See info-README for more information.
+informat.el+            I modified to accept expanded Info command reference
+                          syntax.
+par-align.el            My package that aligns and fills paragraphs and
+                          program comments properly.
+rep-region.el           My package that replaces things in a region only.
+rmail.el+		I changed 'e' keybinding to edit current message.  I
+                          also made it automatically update the summary
+                          buffer when needed.
+rmailsum.el+		I modified this and rmail.el so that whenever you delete
+			  a message now, you normally never see it again,
+                          unless all of your messages are deleted.  This is
+                          true in both the RMAIL and RMAIL-summary buffers.
+
+			  Previously, {x} within the RMAIL-summary buffer
+			  exited this buffer, usually leaving you in the RMAIL
+			  buffer.  {e} now performs this function.
+
+                          Now you can perform most Rmail functions from the
+                          summary buffer with the same keys.
+smart-info.el           My package that browses Info networks with one key
+                          and its corresponding meta-key.
+smart-key.el            Driver functions and most mode-specific support
+                          functions that make one key and its meta-key do
+                          different things in different major modes depending
+                          on where point is when the smart key is pressed.
+smart-menu.el           Menu interface to Emacs subsystems that works with
+                          smart-key.el.
+wconfig.el		My package that maintains a save ring of window
+                          configurations for later recall.
+
+
+-- 
+Bob Weiner, Motorola, Inc.,   USENET:  ...!gatech!uflorida!novavax!weiner
+(407) 738-2087
+

@@ -1,0 +1,20 @@
+               CHANGES in 1.3
+
+o  Changed colors to make them easier to read with a gray background.
+
+o  Added a real template file suitable for printing.
+
+o  Added an anonymous FTP netrc file and howto instructions.
+
+o  Reorganized and simplified the function key bindings.
+
+o  Added column number display in addition to line number display.
+
+o  Added the split horizontal and vertical window feature.
+
+o  Added and mouse cut and paste feature.
+
+
+
+
+CHANGES

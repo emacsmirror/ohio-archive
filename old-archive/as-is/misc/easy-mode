@@ -1,0 +1,1391 @@
+From arpa-unix-emacs-request@PIZZA.BBN.COM Wed Nov 16 13:42:31 1988
+Received: from pizza by PIZZA.BBN.COM id aa23220; 15 Nov 88 7:21 EST
+Received: from BBN.COM by PIZZA.BBN.COM id aa23204; 15 Nov 88 7:19 EST
+Received: from USENET by bbn.com with netnews
+	for arpa-unix-emacs@bbn.com (unix-emacs@bbn.com);
+	contact usenet@bbn.com if you have questions.
+To: unix-emacs@bbn.com
+Date: 14 Nov 88 17:16:16 GMT
+From: "David C. Howland" <peregrine!ccicpg!cci632!dch@elroy.jpl.nasa.gov>
+Sender: arpa-unix-emacs-request@bbn.com
+Subject: Easy-mode.
+Reply-To: "David C. Howland" <dch%ccird3.uucp@PIZZA.BBN.COM>,
+        Rick Silterra <ccird3.UUCP@elroy.jpl.nasa.gov>
+Mmdf-Warning:  Parse error in original version of preceding line at PIZZA.BBN.COM
+Message-Id: <22244@cci632.UUCP>
+References: <6770@batcomputer.tn.cornell.edu>
+Organization: CCI, Communications Systems Division, Rochester, NY
+Source-Info:  From (or Sender) name not authenticated.
+Status: R
+
+
+This is Easy-mode.
+
+    Much of this is for a CCI pt terminal.  The only  genric code is in
+    easy.el. Any file that starts with pt is terminal dependent.  There
+    are no guarantees that any of this  is usable.  Use  it AT YOUR OWN
+    RISK! The  two authors are lisp novices, so please be kind!   Sorry
+    this took so long to get  out, for those  of you who asked and have
+    been waiting. This has not been cleaned up, as originally promised.
+    
+--------- cut here ------------------- cut here --------- 
+: to unbundle, "sh" this file -- DO NOT use csh
+:  SHAR archive format.  Archive created Fri Nov 4 16:43:20 EST 1988
+echo x - easy.el
+sed 's/^X//' >easy.el <<'+FUNKY+STUFF+'
+X;;;; Written by Enrico Silterra (rs@ccird3) and David Howland (dch@ccird3)
+X;;;; Easy mode for emacs.  
+X;;;; Nothing can surprise you here, because you can do so little.
+X;;;; Help is designed to fit on half a screen.
+X;;;; When used on a PT (CCI programmable terminal),
+X;;;; menus can be put the tag-message lines. (Top to lines of the terminal)
+X(defvar oglobal-map nil)
+X(defun easy-mode ()
+X  "Emacs mode for people easily confused.
+X   Mostly you can change window, insert, save, find file.
+X   C-<x> is Control (code) <x>.
+X   C-g     interrupt operation
+X   C-x C-c Leave Emacs   C-x C-c Leave Emacs C-c C-c Leave Easy
+X   C-x C-f find file     C-x o other-window  
+X   C-x C-s save file     C-x ? help          
+X   C-x u   undo          C-x b switch-buffer
+X   C-b     backward char C-p   previous line Esc v   backward screen full
+X   C-f     forward  char C-n   forward  line C-v     forward screen full
+X   BackSpace (delete back)
+X   CharDelete (delete forward)"
+X   (interactive)
+X   (setq easy-mode-map (make-keymap))
+X   (let ((i 28))
+X   (while (< i 128)
+X     (aset easy-mode-map i 'self-insert-command)
+X     (setq i (1+ i))))
+X   (let ((i 0))
+X   (while (< i 3) ;; leave ctl c, and ctl x alone.
+X     (aset easy-mode-map i 'self-insert-command)
+X     (setq i (1+ i))))
+X   (let ((i 4))
+X   (while (< i 24) ;; leave ctl c, and ctl x alone.
+X     (aset easy-mode-map i 'self-insert-command)
+X     (setq i (1+ i))))
+X;;;
+X;;; To make this customized for your terminal change
+X;;; easy-custom
+X;;;
+X   (easy-custom)
+X   (define-key easy-mode-map "\C-x\C-f" 'find-file)
+X   (define-key easy-mode-map "\C-xo" 'other-window)
+X   (define-key easy-mode-map "\C-c\C-c" 'easy-mode-off)
+X   (define-key easy-mode-map "\C-x?"     'easy-help)
+X   (define-key easy-mode-map "\C-b"    'backward-char)
+X   (define-key easy-mode-map "\C-f"    'forward-char)
+X   (define-key easy-mode-map "\C-n"    'next-line)
+X   (define-key easy-mode-map "\C-p"    'previous-line)
+X   (define-key easy-mode-map "\C-?"    'delete-char)
+X   (define-key easy-mode-map "\C-m"    'newline)
+X   (define-key easy-mode-map "\C-h"    'backward-delete-char)
+X   (define-key easy-mode-map "\C-xu"    'advertised-undo)
+X   (define-key easy-mode-map "\C-x\C-s"    'save-buffer)
+X   (define-key easy-mode-map "\C-v"    'scroll-up)
+X   (define-key easy-mode-map "\ev"    'scroll-down)
+X   (define-key easy-mode-map "\C-xb"    'switch-to-buffer)
+X   (define-key easy-mode-map "\C-xC-c"    'save-buffers-kill-emacs)
+X   (if ( not oglobal-map ) (setq oglobal-map global-map))
+X   (setq major-mode 'easy-mode)
+X   (setq mode-name "Novice")
+X   (use-local-map easy-mode-map)
+X   (use-global-map easy-mode-map)
+X   (easy-set-mode-line)
+X   (set-buffer-modified-p (buffer-modified-p))
+X   ) 
+X
+X(defun easy-mode-off ()
+X  "Turn off the damage easy-mode has done."
+X   (interactive)
+X   (use-local-map  nil)
+X   (setq global-mode-string "")
+X   (use-global-map oglobal-map)
+X(set-buffer-modified-p (buffer-modified-p))
+X)
+X
+X
+X(defun easy-set-mode-line ()
+X  (setq global-mode-string "^X^F:find ^X^S:save ^X^C:quit ^X?:help"))
+X
+X(defun easy-help ()
+X  "Pop up some easy to lose help."
+X  (interactive)
+X  (save-excursion 
+X    (setq cw (current-window-configuration))
+X    (with-output-to-temp-buffer "*easy-help*"
+X      (princ (documentation 'easy-mode) )
+X      (pop-to-buffer "*easy-help*")
+X      (goto-char (point-min))
+X      (momentary-string-display  "" (point))
+X      )
+X    (set-window-configuration cw)
+X    )
+X  )
+X
+X(defun easy-custom ()
+X  "Custom easy-mode for CCI PT1 or PT2 Terminal."
+X  (if  
+X      (string-equal "pt2" (getenv "TERM"))
+X      (progn
+X	(message "pt2 defined...please wait")
+X	(sit-for 4)
+X	;;(define-key easy-mode-map "\e" esc-map)
+X;;;
+X;;;This must change also
+X;;;
+X	(load "/usr/local/emacs/ccilib/pt2.menu.el")
+X
+X	(define-key easy-mode-map "\eO" soft-map)
+X	(define-key easy-mode-map "\e(" op-map)
+X        (define-key easy-mode-map "\e[" numeric-key-pad-map)
+X	(define-key easy-mode-map "\e)" right-map)))
+X    (if  
+X      (string-equal "pt" (getenv "TERM"))
+X      (progn
+X	(message "pt defined")
+X	(sit-for 4)
+X	;;(define-key easy-mode-map "\e" esc-map)
+X;;;
+X;;;This must change also
+X;;;
+X	(load "/usr/local/emacs/ccilib/pt1.menu.el")
+X
+X	(define-key easy-mode-map "\eO" soft-map)
+X	(define-key easy-mode-map "\e(" op-map)
+X        (define-key easy-mode-map "\e[" numeric-key-pad-map)
+X	(define-key easy-mode-map "\e)" right-map))
+X    )
+X)
++FUNKY+STUFF+
+ls -l easy.el
+echo x - pt1.menu.el
+sed 's/^X//' >pt1.menu.el <<'+FUNKY+STUFF+'
+X;;;; This package places a menu for soft keys A-J on the
+X;;;; message and tag lines of the terminal.
+X;;;; A function is also provided to write to the 'function' line,
+X;;;; the last line on the terminal.
+X;;;; By convention, the last (soft J)key is left as a scroll to next menu key.
+X;;;; Each menu is placed on the screen with a function.
+X;;;; The functions are placed in a list called soft-m-f-list,
+X;;;; and scrolled in the order they are found there.
+X;;;; Code help  toggles between erasing the menu line, and
+X;;;; placing the first menu up again.
+X
+X;;; define one map for first shift of soft keys.
+X(defun ptmenu ()
+X" This package places a menu for soft keys A-J on the
+X message and tag lines of the terminal.
+X A function is also provided to write to the 'function' line,
+X the last line on the terminal.
+X By convention, the last (soft J)key is left as a scroll to next menu key.
+X Each menu is placed on the screen with a function.
+X The functions are placed in a list called soft-m-f-list,
+X and scrolled in the order they are found there.
+X Code help  toggles between erasing the menu line, and
+X placing the first menu up again.
+X A particular menu may be brought up with ESCAPE <its number> SOFT-J.
+X"
+X(interactive)
+X
+X(if (not soft-map )
+X    (setq soft-map (make-keymap))
+X)
+X(define-key global-map "O" soft-map)
+X)
+X(defun pt-save-cursor ()
+X  (if (string-equal ( getenv "TERM") "pt2")
+X      (send-string-to-terminal "7")
+X    ))
+X(defun pt-restore-cursor ()
+X  (if (string-equal ( getenv "TERM") "pt2")
+X      (send-string-to-terminal "8")
+X    ))
+X
+X;;; offsets onto the line where soft key descr begins.
+X(setq soft-alist 
+X  '(
+X    ("A" . "1")
+X    ("B" . "9")
+X    ("C" . "17")
+X    ("D" . "26")
+X    ("E" . "34")
+X    ("F" . "42")
+X    ("G" . "50")
+X    ("H" . "59")
+X    ("I" . "67")
+X    ("J" . "75")
+X     )
+X  )
+X;;; Soft key label terminator.
+X(setq soft-tail-alist
+X  '(
+X    ("A" . "NZ")
+X    ("B" . "NZ")
+X    ("C" . "")
+X    ("D" . "NZ")
+X    ("E" . "NZ")
+X    ("F" . "NZ")
+X    ("G" . "")
+X    ("H" . "NZ")
+X    ("I" . "NZ")
+X    ("J" . "")
+X    )
+X  )
+X;;; softkey label separators.
+X(setq soft-inter-alist
+X  '(
+X    ("A" . "")
+X    ("B" . "")
+X    ("C" . "[0m [7m[2m")
+X    ("D" . "")
+X    ("E" . "")
+X    ("F" . "")
+X    ("G" . "[0m [7m[2m")
+X    ("H" . "")
+X    ("I" . "")
+X    ("J" . "")
+X    )
+X  )
+X
+X;;; width of each field.
+X
+X(setq soft-width-alist 
+X  '(
+X    ("A" . 8)
+X    ("B" . 8)
+X    ("C" . 8)
+X    ("D" . 8)
+X    ("E" . 8)
+X    ("F" . 8)
+X    ("G" . 8)
+X    ("H" . 8)
+X    ("I" . 8)
+X    ("J" . 6)
+X    )
+X  )
+X
+X;;; Soft key unshifted shifted and coded
+X(setq soft-gen-alist
+X  '(
+X    ("A" "P" "p" "`")
+X    ("B" "Q" "q" "a" )
+X    ("C" "R" "r" "b")
+X    ("D" "S" "s" "c")
+X    ("E" "T" "t" "d")
+X    ("F" "U" "u" "e")
+X    ("G" "V" "v" "f")
+X    ("H" "W" "w" "g")
+X    ("I" "X" "x" "h")
+X    ("J" "Y" "y" "i")
+X    )
+X  )
+X;;; retrieve items from assoc - lists.
+X(defun place-of-key (key)
+X(cdr (assoc key soft-alist)))
+X(defun inter-of-key (key)
+X(cdr (assoc key soft-inter-alist)))
+X(defun gen-of-key (key)
+X(cdr (assoc key soft-gen-alist))) 
+X(defun width-of-key (key)
+X(cdr (assoc key soft-width-alist))) 
+X(defun un-shift-of-key (key)
+X(nth 0 (gen-of-key key))) 
+X(defun shift-of-key (key)
+X(nth 1 (gen-of-key key))) 
+X(defun code-of-key (key)
+X(nth 2 (gen-of-key key))) 
+X(defun tail-of-key (key)
+X(cdr (assoc key soft-tail-alist)))
+X
+X
+X
+X
+X(defun clr-tm-line()
+X  "Erase soft keys fields, on message and tag lines"
+X  (interactive)
+X  (pt-save-cursor)
+X  (send-string-to-terminal "[=0;1@        ")
+X  (send-string-to-terminal "[=0;9@          ")
+X  (send-string-to-terminal "[=0;17@           ")
+X  (send-string-to-terminal "[=0;25@           ")
+X  (send-string-to-terminal "[=0;33@           ")
+X  (send-string-to-terminal "[=0;41@        ")
+X  (send-string-to-terminal "[=0;49@        ")
+X  (send-string-to-terminal "[=0;57@        ")
+X  (send-string-to-terminal "[=0;65@        ")
+X  (send-string-to-terminal "[=0;73@        ")
+X  (send-string-to-terminal "[=1;1@         ")
+X  (send-string-to-terminal "[=1;9@         ")
+X  (send-string-to-terminal "[=1;17@        ")
+X  (send-string-to-terminal "[=1;25@        ")
+X  (send-string-to-terminal "[=1;33@        ")
+X  (send-string-to-terminal "[=1;41@        ")
+X  (send-string-to-terminal "[=1;49@        ")
+X  (send-string-to-terminal "[=1;57@        ")
+X  (send-string-to-terminal "[=1;65@        ")
+X  (send-string-to-terminal "[=1;73@       ")
+X
+X  (pt-restore-cursor)
+X  (global-set-key "\e(k" 'tm-line1)
+X  (recenter)
+X  )
+X
+X(global-set-key "\e(k" 'tm-line1)
+X(clr-tm-line)
+X
+X
+X
+X(defun send-soft-message (key string)
+X  (pt-save-cursor)
+X  (send-string-to-terminal (concat 
+X				   "[0m" ;;; bold.
+X				   "[=2;" (place-of-key key) "@"  
+X		;;;		   "Nv"  ;;; little man
+X				   string))
+X  (send-string-to-terminal "[0;m")
+X  (pt-restore-cursor)
+X  )
+X
+X(defun clr-fun-line ()
+X(interactive)
+X(send-soft-message "A" "                                                                                "))
+X
+X
+X
+X(defun send-soft2(key string function)
+X  (interactive)
+X  (setq ww (width-of-key key))
+X  (setq ww1 (1- ww))
+X  (setq ww2 (+ ww ww1))
+X  (setq ww3 (1- ww2))
+X  (define-key soft-map (un-shift-of-key key) function)
+X;;;  (define-key soft-map (shift-of-key key) function)
+X;;;  (define-key soft-map (code-of-key key) function)
+X  (setq string (concat string "               "))
+X  (pt-save-cursor)
+X  (setq place (place-of-key key))
+X  (setq inter (inter-of-key key))
+X  (setq tail  (tail-of-key  key))
+X  (setq lens  (length string))
+X  (send-string-to-terminal (concat "[7m[2m[=0;" place "@"  
+X				   (if (> lens ww)
+X				       (substring string 0 ww1)
+X				     string)
+X				   tail inter
+X    ;;; Second line.
+X                            "[4m[=1;" place "@"  
+X				   (if (> lens ww)
+X				       (if (< lens ww2)
+X					   (substring string ww1 )
+X				       (substring string ww1 ww3))
+X				     nil)
+X				   tail inter 
+X   ;;; restore normal video, and cursor.
+X                           "[0;m")
+X  )
+X  (pt-restore-cursor)
+X  (recenter)
+X  )
+X
+X
+X
+X
+X
+X(load "ptcomm.menu")
++FUNKY+STUFF+
+ls -l pt1.menu.el
+echo x - pt2.menu.el
+sed 's/^X//' >pt2.menu.el <<'+FUNKY+STUFF+'
+X;;;; This package places a menu for soft keys A-J on the
+X;;;; message and tag lines of the terminal.
+X;;;; A function is also provided to write to the 'function' line,
+X;;;; the last line on the terminal.
+X;;;; By convention, the last (soft J)key is left as a scroll to next menu key.
+X;;;; Each menu is placed on the screen with a function.
+X;;;; The functions are placed in a list called soft-m-f-list,
+X;;;; and scrolled in the order they are found there.
+X;;;; Code help  toggles between erasing the menu line, and
+X;;;; placing the first menu up again.
+X
+X;;; define one map for first shift of soft keys.
+X(defun ptmenu ()
+X" This package places a menu for soft keys A-J on the
+X message and tag lines of the terminal.
+X A function is also provided to write to the 'function' line,
+X the last line on the terminal.
+X By convention, the last (soft J)key is left as a scroll to next menu key.
+X Each menu is placed on the screen with a function.
+X The functions are placed in a list called soft-m-f-list,
+X and scrolled in the order they are found there.
+X Code help  toggles between erasing the menu line, and
+X placing the first menu up again.
+X A particular menu may be brought up with ESCAPE <its number> SOFT-J.
+X"
+X(interactive)
+X
+X(if (not soft-map )
+X    (setq soft-map (make-keymap))
+X)
+X(define-key global-map "O" soft-map)
+X)
+X;;; offsets onto the line where soft key descr begins.
+X(setq soft-alist 
+X  '(
+X    ("A" . "1")
+X    ("B" . "9")
+X    ("C" . "17")
+X    ("D" . "26")
+X    ("E" . "34")
+X    ("F" . "42")
+X    ("G" . "50")
+X    ("H" . "59")
+X    ("I" . "67")
+X    ("J" . "75")
+X     )
+X  )
+X;;; Soft key label terminator.
+X(setq soft-tail-alist
+X  '(
+X    ("A" . "NZ")
+X    ("B" . "NZ")
+X    ("C" . "")
+X    ("D" . "NZ")
+X    ("E" . "NZ")
+X    ("F" . "NZ")
+X    ("G" . "")
+X    ("H" . "NZ")
+X    ("I" . "NZ")
+X    ("J" . "")
+X    )
+X  )
+X;;; softkey label separators.
+X(setq soft-inter-alist
+X  '(
+X    ("A" . "")
+X    ("B" . "")
+X    ("C" . "[0m [7m[2m")
+X    ("D" . "")
+X    ("E" . "")
+X    ("F" . "")
+X    ("G" . "[0m [7m[2m")
+X    ("H" . "")
+X    ("I" . "")
+X    ("J" . "")
+X    )
+X  )
+X
+X;;; width of each field.
+X
+X(setq soft-width-alist 
+X  '(
+X    ("A" . 8)
+X    ("B" . 8)
+X    ("C" . 8)
+X    ("D" . 8)
+X    ("E" . 8)
+X    ("F" . 8)
+X    ("G" . 8)
+X    ("H" . 8)
+X    ("I" . 8)
+X    ("J" . 7)
+X    )
+X  )
+X
+X;;; Soft key unshifted shifted and coded
+X(setq soft-gen-alist
+X  '(
+X    ("A" "P" "p" "`")
+X    ("B" "Q" "q" "a" )
+X    ("C" "R" "r" "b")
+X    ("D" "S" "s" "c")
+X    ("E" "T" "t" "d")
+X    ("F" "U" "u" "e")
+X    ("G" "V" "v" "f")
+X    ("H" "W" "w" "g")
+X    ("I" "X" "x" "h")
+X    ("J" "Y" "y" "i")
+X    )
+X  )
+X;;; retrieve items from assoc - lists.
+X(defun place-of-key (key)
+X(cdr (assoc key soft-alist)))
+X(defun inter-of-key (key)
+X(cdr (assoc key soft-inter-alist)))
+X(defun gen-of-key (key)
+X(cdr (assoc key soft-gen-alist))) 
+X(defun width-of-key (key)
+X(cdr (assoc key soft-width-alist))) 
+X(defun un-shift-of-key (key)
+X(nth 0 (gen-of-key key))) 
+X(defun shift-of-key (key)
+X(nth 1 (gen-of-key key))) 
+X(defun code-of-key (key)
+X(nth 2 (gen-of-key key))) 
+X(defun tail-of-key (key)
+X(cdr (assoc key soft-tail-alist)))
+X
+X
+X
+X
+X(defun clr-tm-line()
+X  "Erase soft keys fields, on message and tag lines"
+X  (interactive)
+X  (send-string-to-terminal "7")
+X  (send-string-to-terminal "[=0;1@        ")
+X  (send-string-to-terminal "[=0;9@          ")
+X  (send-string-to-terminal "[=0;17@           ")
+X  (send-string-to-terminal "[=0;25@           ")
+X  (send-string-to-terminal "[=0;33@           ")
+X  (send-string-to-terminal "[=0;41@        ")
+X  (send-string-to-terminal "[=0;49@        ")
+X  (send-string-to-terminal "[=0;57@        ")
+X  (send-string-to-terminal "[=0;65@        ")
+X  (send-string-to-terminal "[=0;73@        ")
+X  (send-string-to-terminal "[=1;1@         ")
+X  (send-string-to-terminal "[=1;9@         ")
+X  (send-string-to-terminal "[=1;17@        ")
+X  (send-string-to-terminal "[=1;25@        ")
+X  (send-string-to-terminal "[=1;33@        ")
+X  (send-string-to-terminal "[=1;41@        ")
+X  (send-string-to-terminal "[=1;49@        ")
+X  (send-string-to-terminal "[=1;57@        ")
+X  (send-string-to-terminal "[=1;65@        ")
+X  (send-string-to-terminal "[=1;73@        ")
+X
+X  (send-string-to-terminal "8")
+X
+X  (global-set-key "\e(k" 'tm-line1)
+X  )
+X
+X(global-set-key "\e(k" 'tm-line1)
+X(clr-tm-line)
+X
+X
+X
+X(defun send-soft-message (key string)
+X  (send-string-to-terminal "7")
+X  (send-string-to-terminal (concat 
+X				   "[0m" ;;; bold.
+X				   "[=2;" (place-of-key key) "@"  
+X		;;;		   "Nv"  ;;; little man
+X				   string))
+X  (send-string-to-terminal "[0;m")
+X  (send-string-to-terminal "8")
+X  )
+X
+X(defun clr-fun-line ()
+X(interactive)
+X(send-soft-message "A" "                                                                                "))
+X
+X
+X
+X(defun send-soft2(key string function)
+X  (interactive)
+X  (setq ww (width-of-key key))
+X  (setq ww1 (1- ww))
+X  (setq ww2 (+ ww ww1))
+X  (setq ww3 (1- ww2))
+X  (define-key soft-map (un-shift-of-key key) function)
+X;;;  (define-key soft-map (shift-of-key key) function)
+X;;;  (define-key soft-map (code-of-key key) function)
+X  (setq string (concat string "               "))
+X  (send-string-to-terminal "7")
+X  (setq place (place-of-key key))
+X  (setq inter (inter-of-key key))
+X  (setq tail  (tail-of-key  key))
+X  (setq lens  (length string))
+X  (send-string-to-terminal (concat "[7m[2m[=0;" place "@"  
+X				   (if (> lens ww)
+X				       (substring string 0 ww1)
+X				     string)
+X				   tail inter
+X    ;;; Second line.
+X                            "[4m[=1;" place "@"  
+X				   (if (> lens ww)
+X				       (if (< lens ww2)
+X					   (substring string ww1 )
+X				       (substring string ww1 ww3))
+X				     nil)
+X				   tail inter 
+X   ;;; restore normal video, and cursor.
+X                           "[0;m8")
+X  ))
+X
+X(defun tm-shell-make-tags()
+X"Build a tags file."
+X(interactive)
+X(shell-command "/usr/local/emacs/etc/etags -e *.c *.h >TAGS" nil)
+X)
+X(clr-fun-line)
+X
+X(setq next-menu-counter 0)
+X(defun next-key-function (menu)
+X"Goto next menu, unless user specifies specific one."
+X(interactive "p")
+X(if (not (equal current-prefix-arg nil))
+X      (setq next-menu-counter menu))
+X(next-menu next-menu-counter)
+X(setq next-menu-counter (if (>= (1+ next-menu-counter) (length soft-m-f-list))
+X			    0
+X			  (1+ next-menu-counter))
+X      )
+X)
+X
+X(defun next-menu(p)
+X"Bring up nth menu"
+X(interactive "p")
+X(setq z (min p (1- (length soft-m-f-list))))
+X(funcall (nth z soft-m-f-list)))
+X
+X
+X
+X;;; Compile has its own sentinel here, to place start and end time
+X;;; on the message line at bottom of screen.
+X(load "compile")
+X
+X(defun compile (command)
+X  "Compile the program including the current buffer.  Default: run make.
+XRuns COMMAND, a shell command, in a separate process asynchronously
+Xwith output going to the buffer *compilation*.
+XYou can then use the command \\[next-error] to find the next error message
+Xand move to the source code that caused it."
+X  (interactive (list (read-string "Compile command: " compile-command)))
+X  (setq compile-command command)
+X  (send-soft-message "A" (concat 
+X			  "compilation: started      " (current-time-string)))
+X(compile1 compile-command "No more errors"))
+X
+X(defun compilation-sentinel (proc msg)
+X  (cond ((null (buffer-name (process-buffer proc)))
+X	 ;; buffer killed
+X	 (set-process-buffer proc nil))
+X	((memq (process-status proc) '(signal exit))
+X	 (let* ((obuf (current-buffer))
+X		(omax (point-max))
+X		(opoint (point)))
+X	   ;; save-excursion isn't the right thing if
+X	   ;;  process-buffer is current-buffer
+X	   (unwind-protect
+X	       (progn
+X		 ;; Write something in *compilation* and hack its mode line,
+X		 (set-buffer (process-buffer proc))
+X		 (goto-char (point-max))
+X		 (insert ?\n mode-name " " msg)
+X		 (forward-char -1)
+X		 (insert " at "
+X			 (substring (current-time-string) 0 -5))
+X		 (forward-char 1)
+X		 (setq mode-line-process
+X		       (concat ": "
+X			       (symbol-name (process-status proc))))
+X		 ;; If buffer and mode line will show that the process
+X		 ;; is dead, we can delete it now.  Otherwise it
+X		 ;; will stay around until M-x list-processes.
+X		 (delete-process proc))
+X	     (setq compilation-process nil)
+X	     ;; Force mode line redisplay soon
+X	     (send-soft-message "A" (concat "compilation" mode-line-process
+X					    (format " status=%d" 
+X						  (process-exit-status proc))
+X					    (current-time-string)))
+X	     (set-buffer-modified-p (buffer-modified-p)))
+X	   (if (< opoint omax)
+X	       (goto-char opoint))
+X	   (set-buffer obuf)))))
+X
+X;;;; Light package.
+X;;;; light a-list gives each light a name, and the sequence to turn it on
+X;;;; and off.
+X;;;; turn-light is passed a light name, and boolean to indicate state to set
+X;;;; to.
+X
+X
+X
+X(setq light-alist 
+X  '(
+X    ("over"  "[=1h" "[=1l" )
+X  ))
+X(defun on-of-light (key)
+X(nth 0 (cdr (assoc key light-alist))))
+X(defun off-of-light (key)
+X(nth 1 (cdr (assoc key light-alist))))
+X
+X(load "ptcomm.menu")
++FUNKY+STUFF+
+ls -l pt2.menu.el
+echo x - ptcomm.menu.el
+sed 's/^X//' >ptcomm.menu.el <<'+FUNKY+STUFF+'
+X;;;; Light package.
+X;;;; light a-list gives each light a name, and the sequence to turn it on
+X;;;; and off.
+X;;;; turn-light is passed a light name, and boolean to indicate state to set
+X;;;; to.
+X
+X(setq light-alist 
+X  '(
+X    ("over"  "[=1h" "[=1l" )
+X  ))
+X(defun on-of-light (key)
+X(nth 0 (cdr (assoc key light-alist))))
+X(defun off-of-light (key)
+X(nth 1 (cdr (assoc key light-alist))))
+X
+X(defun turn-light (light state)
+X"Turn LIGHT to STATE (true for on, nil for off)"
+X(interactive)
+X(progn
+X  (send-string-to-terminal  (if state 
+X				(on-of-light light)
+X			      (off-of-light light)))))
+X
+X
+X
+X
+X(defun pt2-switch-to-buffer(buffer &optional norecord)
+X"switch to buffer and turn on overtype light if overwrite is on."
+X(interactive "BSwitch to buffer: ")
+X(progn 
+X(switch-to-buffer buffer norecord)
+X(turn-light "over" overwrite-mode)
+X))
+X
+X(defun pt2-other-window (arg)
+X"Select the ARGth different window, and play with over-type mode light."
+X(interactive "p")
+X(progn 
+X(other-window arg)
+X(turn-light "over" overwrite-mode)))
+X
+X;;; Watch That Light !!!
+X(define-key ctl-x-map "o"   'pt2-other-window)
+X
+X;;; This package steps thru the buffers.
+X;;; It avoids those already on the screen,
+X;;; and those whose names start with space.
+X;;; This space business is what keeps the minibuffer
+X;;; out of the list.  There must be something else
+X;;; that says that a buffer is a minibuffer, but I am not sure what.
+X;;;
+X
+X(setq blist-pos 0)
+X(defun bnext()
+X "Go to next buffer in list."
+X(interactive)
+X(setq z nil)
+X(while (not z)
+X  (setq zbuffer (nth blist-pos (buffer-list)))
+X  (setq blist-pos (1+ blist-pos))
+X  (if (>= blist-pos (length (buffer-list)))
+X      (setq blist-pos 0))
+X  (setq z ( not  (get-buffer-window zbuffer)))
+X ;;; if this buffer has not a window, check to see if name 
+X ;;; say looks like a minibuffer.
+X  (if  z
+X    (progn
+X      (setq z (not (eq ?  (aref (buffer-name zbuffer) 0))))))
+X  )
+X(switch-to-buffer zbuffer)
+X)
+X
+X
+X
+X(defun bnext-other-window()
+X "Go to next buffer in list,in other window"
+X(interactive)
+X(setq z nil)
+X(while (not z)
+X  (setq zbuffer (nth blist-pos (buffer-list)))
+X  (setq blist-pos (1+ blist-pos))
+X  (if (>= blist-pos (length (buffer-list)))
+X      (setq blist-pos 0))
+X  (setq z(not  (get-buffer-window zbuffer))))
+X(switch-to-buffer-other-window zbuffer)
+X)
+X(load "chistory")
+X;;; some bug in chistory
+X;;; requires that I load the function and redefine it.
+X;;; (lisp-mode-variables requires a parameter, and it does not have it.
+X;;; in the standard
+X(defun Command-history-setup (&optional majormode modename keymap)
+X  (set-buffer "*Command History*")
+X  (use-local-map (or keymap command-history-map))
+X  (lisp-mode-variables t)
+X  (set-syntax-table emacs-lisp-mode-syntax-table)
+X  (setq buffer-read-only t)
+X  (use-local-map (or keymap command-history-map))
+X  (setq major-mode (or majormode 'command-history-mode))
+X  (setq mode-name (or modename "Command History")))
+X(defun next-occur ()
+X  "Goto next occurrence."
+X(interactive)
+X  (progn
+X    (switch-to-buffer "*Occur*")
+X    (forward-line 1)
+X    (if (eobp) (goto-line 2))
+X    (occur-mode-goto-occurrence)
+X    )
+X)
+X
+X(defun help-for-keys()
+X  "get the help screen for pt keys."
+X  (interactive)
+X  (progn
+X    (find-file "/usr/local/emacs/ccilib/menu-help-keys")
+X    )
+X  )
+X
+X(defun tm-line0()
+X  "Send soft definitions to message and tag-line"
+X  (interactive)
+X  (send-soft2 "A" "Find   File"     'find-file)
+X  (send-soft2 "B" "Switch Buffer"   'switch-to-buffer)
+X  (send-soft2 "C" "ReplaceRegexp"   'replace-regexp)
+X  (send-soft2 "D" "Grep   "         'grep)
+X  (send-soft2 "E" "Query  Replace"  'query-replace)
+X  (send-soft2 "F" "Abbrev Mode"   'abbrev-mode)
+X  (send-soft2 "G" "IndentdTxtMode"  'pitm)
+X  (send-soft2 "H" "C      Mode"     'citm)
+X  (send-soft2 "I" "Goto   Line"     'goto-line)
+X  (send-soft2 "J" "Menu 0Next 1"   'next-key-function)
+X  (global-set-key "\e(k" 'clr-tm-line)
+X  )
+X
+X(defun tm-line1()
+X  "Send soft definitions to message and tag-line"
+X  (interactive)
+X  (send-soft2 "A" "Find   File"     'find-file)
+X  (send-soft2 "B" "Switch Buffer"   'switch-to-buffer)
+X  (send-soft2 "C" "Save   Buffer"   'save-buffer)
+X  (send-soft2 "D" "Compile"         'compile)
+X  (send-soft2 "E" "Next   Error"    'next-error)
+X  (send-soft2 "F" "ReplaceRegexp"   'replace-regexp)
+X  (send-soft2 "G" "Query  Replace"  'query-replace)
+X  (send-soft2 "H" "Shell  Mode"     'shell)
+X  (send-soft2 "I" "Goto   Line"     'goto-line)
+X  (send-soft2 "J" "Menu 0Next 1"   'next-key-function)
+X  (global-set-key "\e(k" 'clr-tm-line)
+X  )
+X(defun tm-line2()
+X"Send soft definitions to message and tag-line"
+X
+X(interactive)
+X;(send-soft2 "A" "FndFileOthrWndow" 'find-file-other-window)
+X;(send-soft2 "B" "Switch BufOthrWndw" 'switch-to-buffer-other-window)
+X;(send-soft2 "C" "ReplaceMatch"    'replace-match)
+X(send-soft2 "D" "Grep       "     'grep)
+X(send-soft2 "E" "Next   GrepHit"  'next-error)
+X(send-soft2 "F" "Elec   Command " 'electric-command-history)
+X(send-soft2 "G" "RptMtchCommand " 'repeat-matching-complex-command)
+X(send-soft2 "H" "Occur  Mode"     'occur)
+X(send-soft2 "I" "Next   Occur"    'next-occur)
+X(send-soft2 "J" "Menu 1Next 2"  'next-key-function)
+X)
+X
+X(defun tm-line3()
+X  "Send soft definitions to message and tag-line"
+X  (interactive)
+X;  (send-soft2 "A" "       Mail"     'mail     )
+X;  (send-soft2 "B" "OutlineMode"     'outline-mode )
+X;  (send-soft2 "C" "PictureMode"     'picture-mode)
+X  (send-soft2 "D" "Spell  Word"     'spell-word)
+X  (send-soft2 "E" "Spell  Region"   'spell-region)
+X  (send-soft2 "F" "Spell  Buffer"   'spell-buffer)
+X  (send-soft2 "G" "Spell  String "  'spell-string )
+X  (send-soft2 "H" "Buffer List"  'list-buffers)
+X  (send-soft2 "I" "ElectrcBffrLst"  'electric-buffer-list)
+X  (send-soft2 "J" "Menu 2Next 3"    'next-key-function)
+X  )
+X(defun tm-line4()
+X  "Send soft definitions to message and tag-line"
+X  (interactive)
+X  (send-soft2 "D" "Make   TagFile"  'tm-shell-make-tags)
+X  (send-soft2 "E" "Visit  TagFile"  'visit-tags-table)
+X  (send-soft2 "F" "Next   TagFile"  'next-file)
+X  (send-soft2 "G" "Tags   LoopCont" 'tags-loop-continue)
+X  (send-soft2 "H" "Tags   Search"   'tags-search )
+X  (send-soft2 "I" "TagsQueryRplace" 'tags-query-replace)
+X  (send-soft2 "J" "Menu 3Next 4"    'next-key-function)
+X  )
+X(defun tm-line5()
+X  "Send soft definitions to message and tag-line"
+X  (interactive)
+X  (send-soft2 "D" "Edit   Options"  'edit-options)
+X  (send-soft2 "E" "EditOptSetVariable"     'Edit-options-set)
+X  (send-soft2 "F" "Next   Option"  'forward-paragraph)
+X  (send-soft2 "G" "Back   Option" 'backward-paragraph)
+X  (send-soft2 "H" "EditOptToggle" 'Edit-options-toggle)
+X  (send-soft2 "I" "EditOptSetVar" 'Edit-options-set)
+X  (send-soft2 "J" "Menu 4Next 5"    'next-key-function)
+X  )
+X(defun tm-line6()
+X  "Send soft definitions to message and tag-line"
+X  (interactive)
+X  (send-soft2 "D" "OutlineMode"  'outline-mode)
+X  (send-soft2 "E" "PictureMode"  'picture-mode)
+X  (send-soft2 "F" "Manual Entry" 'manual-entry)
+X  (send-soft2 "G" "Replay Key"   'call-last-kbd-macro)
+X  (send-soft2 "H" "Learn  Mode"  'start-kbd-macro)
+X  (send-soft2 "I" "Stop   Learn" 'end-kbd-macro )
+X  (send-soft2 "J" "Menu 5Next 0" 'next-key-function)
+X  )
+X(defun tm-line7()
+X  "Send soft definitions to message and tag-line"
+X  (interactive)
+X  (send-soft2 "D" "HelpForHelp"  'help-for-help)
+X  (send-soft2 "E" "CommandApropos"     'command-apropos)
+X  (send-soft2 "F" "DescrbeBindings" 'describe-bindings)
+X  (send-soft2 "G" "DisplayInfo" 'info)
+X  (send-soft2 "H" "DescribMode" 'describe-mode)
+X  (send-soft2 "I" "Learn  Emacs" 'help-with-tutorial)
+X  (send-soft2 "J" "Menu 6Next 7"    'next-key-function)
+X  )
+X(defun tm-line8()
+X  "Send soft definitions to message and tag-line"
+X  (interactive)
+X  (send-soft2 "D" "Uucp   Status"  'uucp-status)
+X  (send-soft2 "E" "ProcessStatus"  'vkill)
+X  (send-soft2 "J" "Menu7Next0"    'next-key-function)
+X  )
+X
+X(defun tm-shell-make-tags()
+X"Build a tags file."
+X(interactive)
+X(shell-command "/usr/local/emacs/etc/etags -e *.c *.h >TAGS" nil)
+X)
+X(clr-fun-line)
+X
+X
+X(setq soft-m-f-list 
+X'(tm-line0 tm-line1 tm-line2 tm-line3 tm-line4 tm-line5 tm-line6 tm-line7 tm-line8))
+X
+X(setq next-menu-counter 0)
+X(defun next-key-function (menu)
+X"Goto next menu, unless user specifies specific one."
+X(interactive "p")
+X(if (not (equal current-prefix-arg nil))
+X      (setq next-menu-counter menu))
+X(next-menu next-menu-counter)
+X(setq next-menu-counter (if (>= (1+ next-menu-counter) (length soft-m-f-list))
+X			    0
+X			  (1+ next-menu-counter))
+X      )
+X)
+X
+X(defun next-menu(p)
+X"Bring up nth menu"
+X(interactive "p")
+X(setq z (min p (1- (length soft-m-f-list))))
+X(funcall (nth z soft-m-f-list)))
+X
+X
+X(tm-line0)
+X
+X;;; Compile has its own sentinel here, to place start and end time
+X;;; on the message line at bottom of screen.
+X(load "compile")
+X
+X(defun compile (command)
+X  "Compile the program including the current buffer.  Default: run make.
+XRuns COMMAND, a shell command, in a separate process asynchronously
+Xwith output going to the buffer *compilation*.
+XYou can then use the command \\[next-error] to find the next error message
+Xand move to the source code that caused it."
+X  (interactive (list (read-string "Compile command: " compile-command)))
+X  (setq compile-command command)
+X  (send-soft-message "A" (concat 
+X			  "compilation: started      " (current-time-string)))
+X(compile1 compile-command "No more errors"))
+X
+X(defun compilation-sentinel (proc msg)
+X  (cond ((null (buffer-name (process-buffer proc)))
+X	 ;; buffer killed
+X	 (set-process-buffer proc nil))
+X	((memq (process-status proc) '(signal exit))
+X	 (let* ((obuf (current-buffer))
+X		(omax (point-max))
+X		(opoint (point)))
+X	   ;; save-excursion isn't the right thing if
+X	   ;;  process-buffer is current-buffer
+X	   (unwind-protect
+X	       (progn
+X		 ;; Write something in *compilation* and hack its mode line,
+X		 (set-buffer (process-buffer proc))
+X		 (goto-char (point-max))
+X		 (insert ?\n mode-name " " msg)
+X		 (forward-char -1)
+X		 (insert " at "
+X			 (substring (current-time-string) 0 -5))
+X		 (forward-char 1)
+X		 (setq mode-line-process
+X		       (concat ": "
+X			       (symbol-name (process-status proc))))
+X		 ;; If buffer and mode line will show that the process
+X		 ;; is dead, we can delete it now.  Otherwise it
+X		 ;; will stay around until M-x list-processes.
+X		 (delete-process proc))
+X	     (setq compilation-process nil)
+X	     ;; Force mode line redisplay soon
+X	     (send-soft-message "A" (concat "compilation" mode-line-process
+X					    (format " status=%d" 
+X						  (process-exit-status proc))
+X					    (current-time-string)))
+X	     (set-buffer-modified-p (buffer-modified-p)))
+X	   (if (< opoint omax)
+X	       (goto-char opoint))
+X	   (set-buffer obuf)))))
+X
+X
+X(defun help-for-keys()
+X  "get the help screen for pt keys."
+X  (interactive)
+X  (progn
+X    (find-file "/usr/local/emacs/ccilib/menu-help-keys")
+X    )
+X  )
+X
+X
+X(defun pitm() (interactive)
+X(pt-mode-set 'indented-text-mode))
+X
+X(defun citm() (interactive)
+X(pt-mode-set 'c-mode))
+X
+X
+X
+X(defun soft-time()
+X  (interactive)
+X  (send-soft-message "H" (substring (current-time-string) 4 ))
+X  )
+X
+X(define-key op-map "S" 'soft-time)  ;; Inverse,Normal
+X
+X
+X
+X(defun new-kill-emacs()
+X"New kill emacs invokes save-buffers-kill-emacs.
+XClears message, tag, and status line."
+X(interactive)
+X(progn
+X  (message "bye bye...")
+X  (send-string-to-terminal screen-clear-string)
+X  (save-buffers-kill-emacs)
+X  )
+X)
+X(global-set-key "" 'new-kill-emacs)
++FUNKY+STUFF+
+ls -l ptcomm.menu.el
+echo x - pt.el
+sed 's/^X//' >pt.el <<'+FUNKY+STUFF+'
+X
+X(defvar numeric-key-pad-map nil)
+X(if (not numeric-key-pad-map)
+X    (progn
+X     (setq numeric-key-pad-map (make-keymap))  ;; <ESC>[ commands
+X
+X     (define-key numeric-key-pad-map "A" 'previous-line)         ;; up arrow
+X     (define-key numeric-key-pad-map "B" 'next-line)             ;; down-arrow
+X     (define-key numeric-key-pad-map "C" 'forward-char)          ;; right-arrow
+X     (define-key numeric-key-pad-map "D" 'backward-char)         ;; left-arrow
+X     (define-key numeric-key-pad-map "H" 'get-more-keys)   	 ;; home
+X     (define-key numeric-key-pad-map "T" 'scroll-up)             ;; 7
+X     (define-key numeric-key-pad-map "S" 'scroll-down)           ;; 1
+X
+X     (define-key global-map "\e[" numeric-key-pad-map)))
+X
+X(defvar soft-map nil)
+X(if (not soft-map)
+X   (progn
+X     (setq soft-map (make-keymap)) ;; <ESC> O commands
+X
+X     (define-key soft-map "P" 'find-file)                     ;; soft A
+X     (define-key soft-map "p" 'find-file-other-window)        ;; soft a
+X     (define-key soft-map "`" 'find-alternate-file)           ;; code soft a
+X
+X     (define-key soft-map "Q" 'switch-to-buffer)              ;; soft b
+X     (define-key soft-map "q" 'switch-to-buffer-other-window) ;; soft B
+X     (define-key soft-map "a" 'compare-windows)               ;; code soft b
+X
+X     (define-key soft-map "R" 'replace-regexp)                ;; soft c
+X     (define-key soft-map "r" 'replace-match)                 ;; soft C
+X     (define-key soft-map "b" 'replace-string)                ;; code soft C
+X
+X     (define-key soft-map "S" 'grep)                          ;; soft d
+X     (define-key soft-map "s" 'compile)                       ;; soft D
+X     (define-key soft-map "c" 'byte-compile-file)             ;; code soft D
+X
+X     (define-key soft-map "T" 'query-replace)                 ;; soft e
+X     (define-key soft-map "t" 'tags-query-replace)            ;; soft e
+X     (define-key soft-map "d" 'empty)                         ;; code soft E
+X
+X     (define-key soft-map "U" 'abbrev-mode) 		      ;; soft f
+X
+X     (define-key soft-map "u" 'electric-command-history)      ;; soft F
+X     (define-key soft-map "e" 'empty)                         ;; code soft f
+X
+X     (define-key soft-map "V" '(lambda () (interactive)
+X				 (pt-mode-set 'indented-text-mode))) ;; soft g
+X     (define-key soft-map "v" 'auto-fill-mode)                ;; soft G
+X     (define-key soft-map "f" '(lambda () (interactive)
+X				 (pt-mode-set 'text-mode)))   ;; code soft g
+X
+X     (define-key soft-map "W" '(lambda () (interactive)
+X				 (pt-mode-set 'c-mode)))      ;; soft h
+X     (define-key soft-map "w" '(lambda () (interactive)
+X				 (pt-mode-set 'lisp-mode)))   ;; soft H
+X     (define-key soft-map "g" '(lambda () (interactive)
+X				 (pt-mode-set 'outline-mode))) ;; code soft H
+X
+X     (define-key soft-map "X" 'goto-line)		      ;; soft i
+X     (define-key soft-map "x" 'what-line)		      ;; soft I
+X     (define-key soft-map "h" 'empty)    		      ;; code soft I
+X
+X     (define-key soft-map "Y" 'eval-last-sexp)                ;; soft i 
+X     (define-key soft-map "y" 'empty)                         ;; soft j 
+X     (define-key soft-map "i" 'get-phone-screen)              ;; soft J 
+X
+X     (define-key global-map "\eO" soft-map)))
+X
+X
+X(defvar op-map nil)
+X(if (not op-map)
+X   (progn
+X     (setq op-map (make-keymap))  ;; <ESC> commands
+X
+X     (define-key op-map "P" 'yow)                            ;; sub
+X     (define-key op-map "T" 'pt-delete)                      ;; delete
+X     (define-key op-map "V" 'pt-cut)                         ;; cut
+X     (define-key op-map "v" '(lambda (RegisterName) (interactive "cCut to register: ")
+X       	                       (pt-cut-register RegisterName)))
+X     (define-key op-map "W" 'advertised-undo)                ;; undo
+X     (define-key op-map "w" 'repeat-complex-command)         ;; redo
+X     (define-key op-map "X" 'pt-copy)                        ;; copy
+X     (define-key op-map "x" '(lambda (RegisterName) (interactive "cCopy to register: ")
+X       	                       (pt-copy-to-register RegisterName)))    ;; Copy
+X     (define-key op-map "Y" 'overwrite-mode)                 ;; over type
+X     (define-key op-map "y" 'overwrite-mode)                 ;; over type
+X     (define-key op-map "Z" 'pt-paste)                       ;; paste
+X     (define-key op-map "z" '(lambda (RegisterName) (interactive "cInsert register:")
+X       	                       (pt-paste-register RegisterName))) ;; paste
+X     (define-key op-map "[" 'help-for-keys)                  ;; help
+X     (define-key op-map "{" 'help-for-help)                  ;; help (emacs)
+X
+X     (define-key global-map "\e(" op-map)))
+X
+X
+X(defvar right-map nil)
+X(if (not right-map)
+X   (progn
+X
+X
+X;;; <ESC> ) p commands 
+X     (setq right-map (make-keymap))  
+X
+X     (define-key right-map "p" 'shell-command)             ;; extended function
+X     (define-key right-map "P" 'execute-extended-command)  ;; EXTENDED FUNCTION
+X     (define-key right-map "`" 'shell-command-on-region) ;; code extended function
+X     (define-key right-map "Q" 'split-window-vertically)   ;; window
+X     (define-key right-map "q" 'delete-other-windows)      ;; WINDOW
+X     (define-key right-map "a" 'delete-window)             ;; code window
+X
+X     (define-key right-map "R" 'save-buffers-kill-emacs)   ;; exit
+X     (define-key right-map "r" 'suspend-emacs)             ;; EXIT
+X
+X     (define-key right-map "S" 'forward-word)              ;; word
+X     (define-key right-map "s" 'backward-word)             ;; WORD
+X     (define-key right-map "c" 'kill-word)                 ;; code WORD
+X
+X     (define-key right-map "T" 'forward-sentence)          ;; sentence
+X     (define-key right-map "t" 'backward-sentence)         ;; SENTENCE
+X     (define-key right-map "d" 'kill-sentence)             ;; code SENTENCE
+X
+X     (define-key right-map "U" 'forward-paragraph)         ;; paragraph
+X     (define-key right-map "u" 'backward-paragraph)        ;; PARAGRAPH
+X     (define-key right-map "e" 'kill-paragraph)            ;; code PARAGRAPH
+X
+X     (define-key right-map "V" 'forward-page)              ;; page
+X
+X     (define-key global-map "\e)" right-map)))
+X
+X
+X(defun beginning-of-next-line ()
+X  "Move to the beginning of the next line."
+X  (interactive)
+X  (forward-line 1))
+X
+X
+X(defun code-escape()
+X"Generated a control escape."
+X(interactive)
+X(quote (\c\e))
+X)
+X
+X(defun beginning-of-previous-line ()
+X  "Move to the beginning of the previous line."
+X  (interactive)
+X  (forward-line -1))
+X(defun home-on-screen ()
+X  (interactive)
+X  (progn
+X    	(move-to-window-line 0)
+X  )
+X  )
+X(defun bottom-on-screen ()
+X  (interactive)
+X  (progn
+X    	(move-to-window-line -1)
+X  )
+X  )
+X
+X(defun help-for-keys()
+X  "get the help screen for pt keys."
+X  (interactive)
+X  (progn
+X    (find-file "/usr/local/emacs/ccilib/help-keys")
+X    )
+X  )
+X(defun get-phone-screen ()
+X  "get phone numbers."
+X  (interactive)
+X  (progn
+X    (find-file "~/etc/phone")
+X    )
+X  )
+X
+X(defun get-more-keys ()
+X  "get more key strokes for cursor motion."
+X  (interactive)
+X  (progn
+X    (setq string (read-key-sequence nil))
+X    (if (or (string-equal string "\e[A")	; up-arrow
+X	    (string-equal string "8")   	; 8
+X	    )
+X	(beginning-of-buffer)
+X      (if (or (string-equal string "\e[B")	; down-arrow
+X	      (string-equal string "2") 	; 2
+X	      )
+X	  (end-of-buffer)
+X	)
+X      (if  (or (string-equal string "\e[C")	; rigth-arrow
+X	       (string-equal string "6")	; 6
+X	       )
+X	  (end-of-line)
+X	)
+X      (if (or (string-equal string "\e[D")	; left-arrow
+X	      (string-equal string "4") 	; 4
+X	      )
+X	  (back-to-indentation)
+X	)
+X      (if (or (string-equal string "\e[H")  ; home
+X	      (string-equal string "5")  ; 5
+X	      )
+X	  (exchange-point-and-mark)
+X	)
+X      (if (string-equal string "-")	; search '-'
+X	  (isearch-forward)
+X	)
+X      (if (string-equal string ",")	; mark ','
+X	  (progn
+X	    (set-mark (point))
+X	    (message "Mark set")
+X	    )
+X	)
+X      (if (string-equal string "3")	; open '3'
+X	  (open-line 1)
+X	)
+X      (if (or (string-equal string "9")	; page '9'
+X	      (string-equal string "\e)V")
+X	      )
+X	  (backward-page)
+X	)
+X      )
+X))
+X
+X(defun pt-copy ()
+X  "copy region as kill and message"
+X  (interactive)
+X  (progn
+X    (copy-region-as-kill (region-beginning) (region-end))
+X    (message "Next Paste will insert text")
+X    )
+X)
+X
+X(defun pt-copy-to-register (RegisterName)
+X  "copy region to a register"
+X  (interactive)
+X  (progn
+X    (copy-to-register RegisterName (region-beginning) (region-end) nil)
+X    (message "Text saved in register %c" RegisterName)
+X    )
+X)
+X
+X(defun pt-cut-register (RegisterName)
+X  "copy region to a register and delete it"
+X  (interactive)
+X  (progn
+X    (copy-to-register RegisterName (region-beginning) (region-end) t)
+X    (message "Text saved in register %c" RegisterName)
+X    )
+X)
+X
+X(defun pt-paste()
+X  "copy text from last copy or cut"
+X  (interactive)
+X  (progn
+X    (yank)
+X    (message "Text Inserted")
+X    )
+X)
+X
+X(defun pt-paste-register (RegisterName)
+X  "insert register"
+X  (interactive)
+X  (progn
+X    (insert-register RegisterName)
+X    (message "Register's %c text Pasted" RegisterName)
+X    )
+X)
+X
+X(defun pt-cut()
+X  "kill-region"
+X  (interactive)
+X  (progn
+X    (kill-region (region-beginning) (region-end))
+X    (message "Next Paste will insert text")
+X    )
+X)
+X
+X(defun pt-delete()
+X  "delete-region"
+X  (interactive)
+X  (progn
+X    (delete-region (region-beginning) (region-end))
+X    (message "Text Deleted! NO PASTE")
+X    )
+X)
+X
+X(defun empty ()
+X  "tells user there is nothing on a key [of course this is a joke :-) ]"
+X  (interactive)
+X  (progn
+X    (message "Key has no function bound to it")
+X    (sit-for 1)
+X    )
+X)
+X
+X
+X(defun pt-mode-set(arg)
+X"Set the mode of a buffer to ARG. Updates the  mode line. Useful when called
+Xfrom a define-key."
+X(apply arg nil)
+X(set-buffer-modified-p (buffer-modified-p)) ;No-op, but updates mode line.
+X)
+X
+X(load "pt1.menu.el")
++FUNKY+STUFF+
+ls -l pt.el
+exit 0
+

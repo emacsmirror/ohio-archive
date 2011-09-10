@@ -1,0 +1,39 @@
+******************************* UNKNOWN ********************************
+        Class: \BibTeX-entry-type
+         Code: \BibTeX-tag
+................................................................Required
+................................................................Optional
+       Author: \author
+       Editor: \editor
+        Title: \title
+      Journal: \journal
+        Month: \month
+         Year: \year
+       Volume: \volume
+      Chapter: \chapter
+       Number: \number
+        Pages: \pages
+    Publisher: \publisher
+    Booktitle: \booktitle
+       Series: \series
+      Edition: \edition
+       School: \school
+  Institution: \institution
+ Organization: \organization
+      Address: \address
+         Type: \type
+ Howpublished: \howpublished
+         Note: \note
+          Key: \key
+     Crossref: \crossref
+.................................................................Ignored
+         ISBN: \isbn
+     LCNumber: \lcnum
+       Errata: \errata
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+******************************* UNKNOWN ********************************
+

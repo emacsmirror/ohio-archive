@@ -1,0 +1,1380 @@
+% -*-texinfo-*-
+
+%
+% Get the latest texinfo files to make this manual,
+% Then do the following
+%
+% tex vip.texinfo
+% texindex vip.??
+% tex vip.texinfo
+%
+% A vip.dvi file will be created. The usual printing command is
+% lpr -d vip.dvi
+%
+
+\input texinfo
+
+@setfilename vip.info
+
+@iftex
+@finalout
+@end iftex
+
+@titlepage
+@title VIP
+@subtitle VI emulation for GNU Emacs
+@subtitle October 1991, VIP Version 4.3
+
+@author Aamod Sane
+
+@page
+@vskip 0pt plus 1filll
+@end titlepage
+
+@unnumbered Distribution
+
+Copyright @copyright{} 1991 Aamod Sane.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through Tex and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the same conditions as for modified versions.
+
+@ifinfo
+@node Top, Overview,, (DIR)
+
+VIP
+***
+
+VIP is a VI emulation package for GNU Emacs. VIP implements most VI and EX
+commands. VIP gives you the best of both worlds: VI keystrokes for
+editing combined with the GNU Emacs environment. VIP also fixes some
+common complaints with VI commands.
+This manual describes VIP, concentrating on the differences from VI
+and new features of VIP.
+
+VIP is intended to be usable without reading this manual --- the
+defaults are set to make VIP as close to VI as possible.
+The VIP startup message attempts to tell you the basic GNU Emacs window
+management commands to help you start immediately.
+The full VI/EX macro language is not yet implemented. You need to know
+some emacs lisp to customize VIP.
+
+It is recommended that you read the Overview node. The other nodes may
+be visited as needed.
+
+Comments and bug reports are welcome.
+@code{sane@@cs.uiuc.edu} is the current address for VIP reports.@refill
+
+@end ifinfo
+
+@menu
+* Overview::			Must read to get started
+* Improvements over VI::	New features, Improvements in Commands
+* Customization::		How to customize VIP.
+* Commands::			VI and Ex Commands
+
+* Key Index::			Index of VI and Ex Commands
+* Concept Index::		VI and Ex and Emacs concepts
+
+* Acknowledgments::		
+@end menu
+@iftex
+@unnumbered Introduction
+
+VIP is a VI emulation package for GNU Emacs. VIP implements most VI and EX
+commands. VIP gives you the best of both worlds: VI keystrokes for
+editing combined with the GNU Emacs environment.
+This manual describes VIP, concentrating on the differences from VI
+and new features of VIP.
+
+VIP is intended to be usable without reading this manual --- the
+defaults are set to make VIP as close to VI as possible.
+The VIP startup message attempts to tell you the basic GNU Emacs window
+management commands to help you start immediately.
+The full VI/EX macro language is not yet implemented. You need to know
+some emacs lisp to customize VIP.
+
+It is recommended that you read the chapter Overview. The other chapters
+will be useful for customization and advanced usage.
+
+You should also learn to use the Info On-line manual system that comes
+with Emacs. This manual can also be read as an Info file. Try the
+command @kbd{ESC x info} with vanilla Emacs sometime.
+
+Comments and bug reports are welcome.
+@code{sane@@cs.uiuc.edu} is the current address for VIP reports.@refill
+
+@end iftex
+
+@node Overview,Improvements over VI,Top,Top
+@chapter Overview of VIP
+
+VIP is a VI emulation on top of Emacs. We wish to give access to Emacs
+facilities through VIP. Perfect compatibility with VI is possible but
+not desirable. This chapter tells you about the Emacs ideas that you
+should know about, how to use VIP within emacs and some
+incompatibilities.
+
+@menu
+* Emacs Preliminaries::		Basic concepts in Emacs.
+* Loading VIP::			Loading and Preliminary Configuration.
+* Modes in VIP::		VIP has three modes orthogonal to 
+				modes in Emacs.
+* The Minibuffer::		Command line in Emacs.
+* Multiple Files in VIP::	True multiple file handling.
+* RSN Features::	        Real Soon Now Features.
+@end menu
+
+@node Emacs Preliminaries, Loading VIP, Overview, Overview
+@section Emacs Preliminaries
+
+@cindex buffer
+@cindex point
+@cindex mark
+@cindex text
+@cindex looking at
+@cindex end (of buffer)
+@cindex end (of line)
+@cindex region
+@c
+Emacs can edit several files at once. A file in Emacs is placed in a
+@dfn{buffer} that has the same name as the file. Buffers are also used
+for other purposes, such as shell interfaces, directory editing etc.
+@xref{Dired,,Directory Editor,emacs,The
+Gnu Emacs Manual}, for an example.@refill
+
+A buffer has a distinguished position called the @dfn{point}.
+A @dfn{point} is always between 2 characters, and is @dfn{looking at}
+the right hand character. The cursor is positioned on the right hand
+character. Thus, when the @dfn{point} is looking at the end-of-line,
+the cursor is on the end-of-line character, i.e. beyond the last
+character on the line. This is the default Emacs behavior.@refill
+
+The default settings of VIP try to mimic the behavior of VI,
+preventing the cursor from going beyond the last character on the line.
+However, under some circumstances it is possible for the
+cursor to get beyond the end-of-line, so do not be surprised if this
+happens.@refill
+
+In addition to the @dfn{point}, there is another distinguished buffer
+position called the @dfn{mark}. @xref{Mark,,Mark,emacs,The GNU Emacs
+manual}, for more info on the mark. The text between the @dfn{point} and the
+@dfn{mark} is called the @dfn{region} of the buffer. For the VIP user,
+this simply means that in addition to the VI textmarkers a--z, there is
+another marker called @dfn{mark}. VIP provides access to the region in most
+text manipulation commands as @kbd{r} and @kbd{R} suffix to commands
+that operate on text regions. e.g. @kbd{dr} to delete region etc.
+@xref{Basics}, for more info.@refill
+
+@cindex window
+@cindex mode line
+@cindex buffer information
+@cindex minibuffer
+@cindex command line
+@cindex buffer (modified)
+@c
+Emacs divides the screen into tiled @dfn{windows}. You can see the
+contents of a buffer through the window associated with the buffer.  The
+cursor of the screen is positioned on the character after @dfn{point}.
+Every window has a @dfn{mode line} that displays information about the buffer.
+You can change the format of the mode
+line, but normally if you see @samp{**} at the beginning of a mode line it
+means that the buffer is @dfn{modified}.  If you write out the contents of
+the buffer to a file, then the buffer will become not modified.  Also if
+you see @samp{%%} at the beginning of the mode line, it means that the file
+associated with the buffer is write protected. The mode line will also
+show the buffer name and current major and minor modes (See below).
+A special buffer called @dfn{Minibuffer} is displayed as the last line
+in a Minibuffer window. The Minibuffer window is used for command input
+output. VIP uses the Minibuffer window for @kbd{/} and some other
+commands.@refill
+
+@cindex mode
+@cindex keymap
+@cindex local keymap
+@cindex global keymap
+@cindex major mode
+@cindex minor mode
+@c
+An Emacs buffer can have a @dfn{major mode} that customizes Emacs for
+editing text of a particular sort by changing the functionality of the keys.
+Keys are defined using a @dfn{keymap} that records the bindings between 
+keystrokes and
+functions. The @dfn{global keymap} common to all the
+buffers.  Additionally, each buffer has its @dfn{local keymap} that determines the
+@dfn{mode} of the buffer.  If a function is bound to some key in the local
+keymap then that function will be executed when you type the key.
+If no function is bound to a key in the
+local map, however, the function bound to the key in the global map
+will be executed. @xref{Major Modes,Major Modes,Major Modes,emacs,The
+GNU Emacs Manual}, for more information.@refill
+
+A buffer can also have a @dfn{minor mode}. Minor modes are options that you
+can use or not. A buffer in @code{text-mode} can have
+@code{auto-fill-mode} as minor mode, which can be turned off or on at any
+time. A minor mode changes the local keymap when turned on, and changes
+it back to original when turned off.
+For more information,
+@pxref{Minor Modes,Minor Modes,Minor Modes,emacs,The
+GNU Emacs Manual}. @refill
+
+@cindex VIP as minor mode
+@cindex Control keys
+@cindex Meta key
+@c
+VIP is implemented as a minor mode. This means that you can turn VIP on
+or off at any time in any major mode. @xref{Modes in VIP} for more
+information.@refill
+
+Emacs uses Control and Meta modifiers. These are denoted as C
+and M, e.g. @kbd{^Z} as @kbd{C-z} and @kbd{Meta-x} as @kbd{M-x}. For
+keyboards that do not have a Meta key, the @key{ESC} is used as Meta.
+Thus @kbd{M-x} is typed as @kbd{ESC x}. VIP uses @key{ESC} to switch
+from Insert mode to Vi mode. Therefore VIP defines @kbd{_} as its Meta
+key in Vi mode. @xref{Vi Mode}, for more info.@refill
+
+Emacs is structured as a lisp interpreter around a C core. Emacs keys
+cause lisp functions to be called. It is possible to call these
+functions directly typing @kbd{M-x function-name}.
+
+@node Loading VIP, Modes in VIP, Emacs Preliminaries, Overview
+@section Loading VIP
+
+The most common way to load VIP automatically is to include the line:
+
+@lisp
+(load "vip")
+@end lisp
+
+@noindent
+in your @file{.emacs} file.  The @file{.emacs} file is placed in your home
+directory and it will be executed every time you invoke Emacs.  If you wish
+to be in Vi mode whenever Emacs starts up, you can include the following
+line in your @file{.emacs} file instead of the above line:
+
+@lisp
+(setq term-setup-hook 'vip-mode)
+@end lisp
+@noindent
+(@xref{Vi Mode}, for the explanation of vi mode.)
+
+Once invoked, VIP will arrange to bring up most buffers in Vi mode.
+
+Even if your @file{.emacs} file does not contain any of the above lines,
+you can load VIP and enter vi mode by typing the following from within
+Emacs.
+
+@lisp
+M-x vip-mode
+@end lisp
+
+@noindent
+Ask your local Emacs administrator if this fails to work.
+
+When Emacs first comes up, if you have not specified a file on the
+command line, it will show up the @samp{*scratch*} buffer, in the
+@samp{Lisp Interaction} mode. After you invoke VIP, you can start
+editing files by using @kbd{:e}.
+
+VIP also has its own startup file, called @file{.vip}. Most VIP
+customization commands can be put in @file{.vip} except
+@code{(load "vip")}, which must be in the Emacs startup, @file{.emacs}.
+@refill 
+
+@node Modes in VIP, The Minibuffer, Loading VIP,Overview
+@section Modes in VIP
+
+@kindex @kbd{C-z}
+@kindex @kbd{C-z}
+@kindex @kbd{ESC}
+@kindex @kbd{i}
+@cindex Emacs mode
+@cindex Vi mode
+@cindex Insert mode
+@cindex Replace mode
+@cindex Ex commands
+@c
+VIP has 4 modes, Emacs, Vi, Insert, Replace.
+
+@table @samp
+@item Emacs mode
+This is the mode Emacs is normally in. After you have loaded vip, @kbd{C-z} will
+take you to Vi mode. Another @kbd{C-z} will take you back to Emacs mode.
+This toggle key can be changed, @pxref{Customization}. You can also
+type @kbd{M-x vip-mode} to change to Vi mode.@refill
+
+@item Vi mode
+This is the VI command mode. Any of the VI @kbd{i, o, a} @dots{} etc.
+commands will take you to Insert mode. All VI commands may be used in
+this mode. Most EX commands can also be used.
+
+@item Insert mode
+Insert mode is the VI insertion mode. @kbd{ESC} will take you back to
+Vi mode. Insert mode editing can be done, including autoindentation. By
+default, VIP disables Emacs keybindings in Insert mode.
+
+@item Replace mode
+Commands like @kbd{cw} invoke the Replace mode. When you cross the
+@samp{$} sign, or when you type @kbd{ESC}, it will automatically change
+to Insert mode. You do not have to worry about it. The key bindings
+remain the same as Insert mode. It is invoked for internal use, and
+serves as a reminder to the user.@refill
+@end table
+
+@cindex mode line
+@c
+The modes are indicated on the @dfn{mode line}, so that the multiple
+modes do not confuse you. Most of your editing can be done in Vi and
+Insert modes. VIP will try to make all new buffers be in Vi mode, but
+sometimes they will come up either in Emacs mode, or their own major
+modes. @kbd{C-z} will take you to Vi mode in such a case.
+
+Modes in VIP are orthogonal to Emacs major modes, such as C mode or
+Dired mode. You can turn VIP on and off for any Emacs mode. When VIP is
+turned on, Vi mode can be used to move around. In Insert mode, the
+bindings for these modes can be accessed. 
+By default, these bindings are suppressed in Insert mode, so that a new
+user is not confused by the Emacs modes. Note that unless you turn the
+bindings on in Insert mode, you cannot do interesting things like
+language sensitive editing. @xref{Customization}, to find out how to do
+this.
+
+Now for the details of these modes.
+@menu
+* Emacs Mode::		This is the mode you should know better.
+* Vi Mode::		Vi commands are executed in this mode.
+* Insert Mode::		You can enter text, and also can do editing if you
+			know enough Emacs commands.
+* Replace Mode::	Mode you are not really concerned with.
+@end menu
+
+@node Emacs Mode, Vi Mode, Modes in VIP, Modes in VIP
+@subsection Emacs Mode
+
+@kindex @kbd{C-z}
+@cindex Emacs mode
+
+You will be in this mode only by accident (hopefully). This is the mode
+Emacs is normally in (imagine!!). Now leave it as soon as possible by
+typing @kbd{C-z}. The you will be in Vi mode (sigh of relief) :-).
+
+Emacs mode is actually a VIP'ism to denote all the major and minor modes
+(@pxref{Emacs Preliminaries}.)
+other than VIP that Emacs can be in. Emacs can have several modes, such
+as C mode for C editing, Dired for directory editing etc. These are
+major modes, each with a different set of key-bindings. VIP modes are
+orthogonal to these Emacs major modes. The presence of
+these language sensitive and other modes is a major win over VI.
+@xref{Improvements over VI} for more.@refill
+
+The bindings for these modes can be made available in the VIP Insert
+mode as well as in Emacs mode. It is even possible to bind some keys in
+the manner of VI, and keep the rest according to the major mode. This
+means that you can use specialized behavior in Insert mode, and then
+jump back to Vi mode for any movement, deletion etc.
+
+@xref{Customization}, to find out how to do this.
+
+@node Vi Mode, Insert Mode, Emacs Mode, Modes in VIP
+@subsection Vi Mode
+
+@cindex Vi mode
+@c
+This is the Vi command mode. Most keys will work as in Vi. The notable
+exceptions are:
+
+@table @kbd
+@item C-x
+@kindex @kbd{C-x}
+C-x is used to invoke Emacs commands, mainly those that do window
+management. @kbd{C-x 2} will split a window, @kbd{C-x 0} will close a
+window. @kbd{C-x 1} will close all other windows. @kbd{C-xb} is used to
+switch buffers in a window, and @kbd{C-xo} to move through windows.
+These are about the only necessary keystrokes.
+For the rest see GNU Emacs Manual.
+
+@item C-g and C-]
+@kindex @kbd{C-g}
+@kindex @kbd{C-]}
+@c
+These are the Emacs @samp{quit} keys. I have tried to make VIP use
+@kbd{C-c} as the quit key, but these keys are harcoded in some places in
+Emacs for all but the most recent versions.
+There will be cases where you will have to
+use @kbd{C-g} to quit. Similarly, @kbd{C-]} is used to exit
+@samp{Recursive Edits} in Emacs for which there is no comparable VI
+functionality and no key-binding. Recursive edits are indicated by
+@samp{[]} brackets framing the modes on the mode line.
+@xref{Recursive Edit,Recursive
+Edit,Recursive Edit,emacs,The GNU Emacs Manual}.@refill
+
+Besides, @kbd{C-c} is used in Emacs as a general user binding key. Many
+packages will define key sequences that use @kbd{C-c}. After a little
+experience, you should either free up @kbd{C-c}, or swap the @kbd{C-g}
+and @kbd{C-c} keys.
+@xref{Terminal Input,,Keyboard Translate Table,elisp,GNU Emacs Lisp
+Reference Manual}, to find out how to do this.@refill
+
+@item Underscore
+@kindex @kbd{_}
+@cindex Meta key
+VIP uses @kbd{ESC} as switch between Insert and Vi modes. Emacs uses
+@kbd{ESC} for Meta. We need a Meta key to call the Meta key functions
+such as @kbd{M-x function name}. @kbd{_} key was chosen, since it
+is the only reasonable free VI key left. Thus, in Vi mode, to
+get @kbd{M-x}, you should type @kbd{_x}.
+It is possible to use @kbd{ESC} as Meta, but then you cannot
+press @kbd{ESC} multiple times in Vi mode. @xref{Customization}, to find
+out how to rebind ESC to be Meta.@refill
+@end table
+@noindent
+Other differences are mostly improvements. The ones you should know
+about are:
+
+@table @samp
+@item Undo
+@kindex @kbd{u}
+@kbd{u} will undo. Undo can be repeated by the @kbd{.} key. Undo itself
+can be undone. Another @kbd{u} will change the direction. The presence
+of repeatable undo means that @kbd{U}, undoing lines, is not very
+important. Therefore, @kbd{U} also calls @code{vip-undo}.
+@cindex multiple undo
+@cindex undo
+
+@item Counts
+Most commands, @kbd{~}, @kbd{[[}, @kbd{p}, @kbd{/}, @dots{} etc. take counts.
+
+@comment ]] Just to balance parens
+@cindex regular expressions
+@item Regexps
+VIP uses Emacs Regular Expressions for searches. These are a superset of
+VI regular
+expressions, excepting the change-of-case escapes @samp{\u}, @samp{\L},
+@dots{} etc. @xref{Regular Expressions,,Regular Expressions,emacs,The
+GNU Emacs Manual}, for details.
+Files specified to @kbd{:e} use @code{csh} regular expressions
+(globbing, wildcards, what have you).
+
+@item Ex commands
+@cindex Ex commands
+The directory of a file is automatically prepended to any @kbd{:e
+non-absolute-pathname} done from the corresponding buffer. 
+Absolute filenames are required less
+often in VIP. @kbd{:cd} will change the default directory for the
+buffer the @kbd{:cd} is issued from. @kbd{:e} will interpret the
+filename argument by default in @code{csh}. @xref{Customization} if you
+want to change this.@kbd{:next} takes counts from
+@kbd{:args}, so that @kbd{:rew} is obsolete. Also, @kbd{:args} will show only
+the undisplayed files. The current file should be visible on the mode
+line.@refill
+@end table
+@noindent
+@xref{Improvements over VI} for more information.
+
+@node Insert Mode, Replace Mode, Vi Mode, Modes in VIP
+@subsection Insert Mode
+
+@cindex Insert mode
+By default, VIP makes the standard VI keys available in Insert mode. But
+this also means that Emacs major modes cannot be used in Insert mode.
+It is strongly recommended that as soon as you are comfortable, make the
+Emacs mode bindings visible. @xref{Customization}, 
+to see how to do this.@refill
+
+Once this is done, it is possible to do quite a bit of editing in the
+Insert mode, and also use Shell, Dired and other modes of Emacs.
+
+@cindex Meta key
+You can call Meta functions from Insert mode. The Vi to Emacs toggle
+key, normally @kbd{C-z}, can now be used as Meta. Thus @kbd{M-x} is
+typed as @kbd{C-zx}. @kbd{_} will now insert itself.
+
+@node Replace Mode,, Insert Mode, Modes in VIP
+@subsection Replace Mode
+
+@cindex Replace mode
+As a user, you should not be concerned about this mode. However, if you
+start doing Insert mode editing, then remember that if you move beyond
+the line that the @samp{$} sign is in, Replace will get confused, and
+not remove the @samp{$} after you are done. Otherwise you can use nice
+Emacs features like dynamic abbreviations. @xref{Dynamic Abbrevs,,
+Dynamic Abbreviations,emacs,The GNU Emacs Manual}, for details.@refill
+
+@node The Minibuffer,Multiple Files in VIP, Modes in VIP, Overview
+@section The Minibuffer
+
+@cindex minibuffer
+
+The minibuffer is where commands are entered in. Editing can be done
+by commands from Insert mode, namely:
+
+@table @kbd
+@item C-h
+	Backspace
+@item C-w
+	Delete Word
+@item C-u
+	Erase line
+@item C-c
+	Quit
+@item C-v
+	Quote the following character
+@item ESC
+	Leave minibuffer
+@item RET
+	Execute command
+@item C-g and C-]
+	Emacs quit and abort keys. These may be necessary.
+	@xref{Vi Mode} for an explanation.
+@end table
+
+The Emacs keys are functional in the minibuffer. It is possible to turn
+them off, but this version does not do so. There are some issues to be
+resolved before this happens.
+
+@node Multiple Files in VIP,RSN Features,The Minibuffer,Overview
+@section Multiple Files in VIP
+
+@cindex multiple files
+@cindex managing multiple files
+VIP can edit multiple files. This means, for example that you never need
+to suffer through @code{No write since last change} errors.
+Some VIP elements are common over all the files.
+
+@table @samp
+@item Textmarkers
+@cindex markers
+@cindex textmarkers
+Textmarkers remember @emph{files and positions}.
+If you set marker @samp{a} in
+file @file{foo}, start editing file @file{bar} and type @kbd{'a}, then
+@emph{YOU WILL SWITCH TO FILE @file{foo}}. You can see the contents of a
+textmarker using the VIP command @kbd{[<a-z>} where <a-z> are the
+textmarkers, e.g. @kbd{[a} to view marker @samp{a} .@refill
+@item Repeated Commands
+Command repetitions are common over files. @kbd{!!} will repeat the
+last @kbd{!} command whichever file it was issued from.
+@kbd{.} repetition will repeat the last command from any file, and
+searches will repeat the last search. Ex commands are also common.@refill
+@item Registers
+@cindex registers
+Registers are common to files. Also, @kbd{y} yanked text can be @kbd{p}
+put back into any file. The VIP command @kbd{]<a-z>}, where <a-z> are
+the registers, can be used to look at the contents of a register e.g. 
+@kbd{]a} to view register @samp{a}. 
+@item Absolute Filenames
+@cindex absolute paths
+The directory name for a file is automatically prepended to any @kbd{:e}
+done from the corresponding buffer. Absolute filenames are required less
+often in VIP. @kbd{:cd} will change the default directory for the
+buffer the @kbd{:cd} is issued from. @kbd{:e} will interpret the
+filename argument by default in @samp{csh}. @xref{Customization} if you
+want to change this.
+@end table
+
+Currently undisplayed files can be listed using the @kbd{:ar} command.
+@kbd{:n} can be given counts from the @kbd{:ar} list to switch to other
+files.
+
+@node RSN Features,,Multiple Files in VIP,Overview
+@section RSN Features
+
+Real Soon Now, i.e. Not Yet Implemented features include:
+
+@itemize @bullet
+@item
+@kbd{:map} and @kbd{:map!} do not yet take strings, and the
+@samp{timeout} expansion. I have a version of timeout expansion and
+string maps for the next VIP. @kbd{:map} , i.e. list all mapped
+keys. is not implemented.
+@item
+@kbd{:ab} and @kbd{:una} are not implemented.
+@item
+@kbd{:set option?} and @kbd{:set} are not implemented. The current
+@kbd{:set} can also be used to set Emacs variables.
+@item
+@kbd{:se list} requires modification of the display code for Emacs, so
+it is not implemented.
+A useful alternative is @code{cat -t -e file}. Unfortunately, it cannot
+be used directly inside Emacs, since Emacs will obdurately change @samp{^I}
+back to normal tabs.@refill
+@end itemize
+
+@comment  node-name,  next,  previous,  up
+@node Improvements over VI, Customization, Overview, Top
+@chapter Improvements over VI
+
+Some common problems with VI and EX have been solved in VIP. This
+includes better implementation of existing commands, new commands, and
+the facilities provided by Emacs.
+
+@menu
+* Basics::		    Basic VIP differences, Multi-file effects.
+* Undo and Backups::	    Multiple undo, auto-save, backups and changes
+* History::		    History for Ex and VI commands.
+* Macros and Registers::    Keyboard Macros (extended ".") @@reg execution.
+* Completion::		    Filename Completion for Ex.
+* Improved Search::	    Incremental Search and Buffer Content Search.
+* Improved Abbrevs::	    Normal Abbrevs, Templates and Dynamic Abbrevs.
+* Movement and Markers::    Screen Editor movements, viewing textmarkers.
+* New Commands::	    Commands that do not exist in VI.
+* Useful Packages::         A Sampling of some Emacs packages, and things
+			    you should know about.
+@end menu
+
+@node Basics, Undo and Backups, Improvements over VI, Improvements over VI
+@section Basics
+
+The VI command set is based on the idea of combining motion commands
+with other commands. The motion command is used as a text region
+specifier for other commands.
+We classify motion commands into @dfn{point commands} and
+@dfn{line commands}.@refill
+
+@cindex point commands
+The point commands are:
+
+@quotation
+@kbd{h}, @kbd{l}, @kbd{0},  @kbd{$}, @kbd{w}, @kbd{W}, @kbd{b}, @kbd{B},
+@kbd{e}, @kbd{E}, @kbd{(}, @kbd{)}, @kbd{/}, @kbd{?}, @kbd{`}, @kbd{f}, @kbd{F}, @kbd{t}, @kbd{T}, @kbd{%}, @kbd{;}, @kbd{,}, @kbd{^}
+@end quotation
+
+@cindex line commands
+The line commands are:
+
+@quotation
+@kbd{j}, @kbd{k}, @kbd{+}, @kbd{-}, @kbd{H}, @kbd{M}, @kbd{L}, @kbd{@{},
+@kbd{@}}, @kbd{G}, @kbd{'},  @kbd{[[}, @kbd{]]}, @kbd{[]}
+@end quotation
+
+@cindex region
+@cindex region specification
+@cindex expanding (region)
+@cindex describing regions
+@cindex movement commands
+@noindent
+If a point command is given as an argument to a modifying command, the
+region determined by the point command will be affected by the modifying
+command. On the other hand, if a line command is given as an argument to a
+modifying command, the region determined by the line command will be
+enlarged so that it will become the smallest region properly containing the
+region and consisting of whole lines (we call this process @dfn{expanding
+the region}), and then the enlarged region will be affected by the modifying
+command.
+Text Deletion Commands (@pxref{Deleting Text}.), Change commands
+(@pxref{Changing Text}.), even Shell Commands (@pxref{Shell Commands})
+use these commands to describe a region of text to operate on.
+Thus @kbd{dw} to delete a word, @kbd{>@}} to shift a paragraph, or
+@kbd{!'afmt} to format a region from @samp{point} to textmarker
+@samp{a}.
+
+@cindex r and R region specifiers
+VIP adds the region specifiers @samp{r} and @samp{R}. Emacs has a
+special marker called @dfn{mark}. The text-area between the current cursor
+position @dfn{point} and the @dfn{mark} is called the @dfn{region}.
+@samp{r} specifies the raw region and @samp{R} is the expanded region.
+@kbd{dr} will now delete the region, @kbd{>r} will shift it etc.
+@kbd{r,R} are not motion commands, however. The special mark is set by
+@kbd{m.} and other commands. @xref{Marking}, for more info.
+
+VIP also adds counts to most commands for which it would make sense.
+
+In the Overview chapter, some Multiple File issues were discussed
+(@xref{Multiple Files in VIP}). In addition to the files, Emacs has
+buffers. These can be seen in the @kbd{:args} list and switched using
+@kbd{:next} if you type @kbd{:set ex-cycle-through-non-files t}, or
+specify @code{(setq ex-cycle-through-non-files t)} in your @file{.emacs}
+file. @xref{Customization} for details.
+
+@node Undo and Backups, History, Basics, Improvements over VI
+@section Undo and Backups
+
+@cindex undo
+VIP provides multiple undo. The number of undo's and the size is limited
+by the machine. The VIP command @kbd{u} does and undo. Undo can be
+repeated by @kbd{.}. Another @kbd{u} will undo the undo, and further
+@kbd{.} will repeat it. @kbd{u} does the first undo, and changes the
+direction.
+
+@cindex backup files
+@cindex auto save
+Since the undo size is limited, VIP can create backup files and
+auto-save files. It will normally do this automatically. It is possible
+to have numbered backups etc. For details, @pxref{Backup,,Backup and
+Auto-Save,emacs,The GNU Emacs Manual}.@refill
+
+@comment [ balance parens
+@cindex viewing registers and markers
+@cindex registers
+@cindex markers
+@cindex textmarkers
+The results of the 9 previous changes are available in the 9 numeric
+registers as in VI. The extra goody is the ability to @emph{view} these
+registers, in addition to being able to access them through @kbd{p}.
+The VIP command @kbd{] register} will display the contents of any
+register, numeric or alphabetical. The related command @kbd{[ textmarker}
+will show the text around the textmarker. @samp{register and textmarker}
+can be any letters from a through z.
+@comment ] balance parens
+
+@node History,  Macros and Registers, Undo and Backups,Improvements over VI
+@section History
+
+@cindex history
+@cindex minibuffer
+History is provided for Ex commands and Vi searches. It is especially
+useful to fix those small typos that screw up searches and @kbd{:s//}.
+At the @kbd{:} or @kbd{/}, you can do
+
+@table @kbd
+@item C-p C-n
+    To move to previous and next history items. This causes the history
+    items to appear on the command line, where you can edit them, or
+    simply type Return to execute.
+@item C-r C-s
+    To search backward and forward through the history.
+@item C-t C-l
+    To go to the top and bottom of the history.
+@item C-o
+    To display the history in a buffer
+@item RET
+    Simple RET to return the current history item. The current history
+    item is displayed in brackets.
+@end table
+
+History is provided using the @samp{gmhist} package. History is not
+turned on by default. You have to explicitly call
+
+@example
+(vip-get-history)
+@end example
+
+@noindent
+in your .emacs file.
+
+In normal use, a few @kbd{C-p} an @kbd{C-n} strokes suffice. For further
+details, refer to the @samp{gmhist} package in the distribution.
+
+@node Macros and Registers,Completion,History,Improvements over VI
+@section Macros and Registers
+
+@cindex keyboard macros
+@cindex macros
+@cindex registers
+@cindex register execution
+VIP provides keyboard macros. @kbd{@@#} will start a macro definition.
+As you type, the commands will be executed, and remembered (This is
+called learn mode in some editors). @kbd{@@register} will
+complete the macro, putting it into @samp{register}, where
+@samp{register} is any character from @samp{a} through @samp{z}. Then you can
+execute this macro using @kbd{@@register}. It is, of course,
+possible to yank some text into a register and execute it using
+@kbd{@@register}. @kbd{@@@@}, @kbd{@@RET}, @kbd{@@LF} will execute the
+last macro that was executed using @kbd{@@register}.@refill
+
+VIP will automatically lowercase the register, so that pressing the
+@kbd{SHIFT} key for @kbd{@@} will not create problems. This is for
+@kbd{@@} macros and @kbd{"p} @emph{only}. In the case of @kbd{y},
+@kbd{"Ayy} will append to @emph{register a}. For @kbd{[,],',`}, it
+is an error to use a Uppercase register name.
+
+@comment [ balance parens
+@cindex viewing registers and markers
+The contents of a register can be seen by @kbd{]register}. (@kbd{[textmarker}
+will show the contents of a textmarker).
+@comment ] balance parens
+
+@cindex last keyboard macro
+The last keyboard macro can also be executed using
+@kbd{*}, and it can be yanked into a register using @kbd{@@!register}.
+This is useful for Emacs style keyboard macros defined using @kbd{C-x(}
+and @kbd{C-x)}. Emacs keyboard macros have more capabilities.
+@xref{Keyboard Macros,,Keyboard Macros,emacs, The GNU Emacs Manual}, for
+details.@refill
+
+Keyboard Macros allow an interesting form of Query-Replace.
+@kbd{/pattern and n} to go to the next pattern (the query), followed by a
+Keyboard Macro execution @kbd{@@@@} (the replace).
+
+@node Completion, Improved Search, Macros and Registers, Improvements over VI
+@section Completion
+
+@cindex completion
+VIP can complete filenames for Ex file commands. Filename completion
+must be turned on by calling
+
+@example
+(setq vip-filename-completion t)
+@end example
+
+@noindent
+in your @file{.emacs} file @emph{before turning history on}. The
+completion is base on @file{completer.el} package. This
+completer recognizes partial filename patterns. You
+must get this file from the Emacs archives to get completion
+(@pxref{Useful Packages} for archive locations). It will be
+in Emacs 19 distribution.@refill
+
+Completion is done when you type @kbd{TAB}. The completer does not
+grok wildcards in filenames. Once you type a wildcard, the completer
+will no longer work for that path.
+
+@node Improved Search, Improved Abbrevs, Completion, Improvements over VI
+@section Improved Search
+
+@cindex buffer search
+@cindex word search
+VIP provides buffer search, the ability to search the buffer for a
+region under the cursor. You have to turn this on by calling
+
+@example
+(vip-get-buffer-search)
+@end example
+
+@noindent
+Then, the key @kbd{g} will take movement commands like @kbd{w,/} etc. to
+find a region and search for the contents of this region. This command
+is very useful to search for variable names etc. in a program. The
+search can be repeated by @kbd{n}, or reversed by @kbd{N}.
+
+@cindex incremental search
+Emacs provides incremental search. As you type the string in, the
+cursor will move to the next match. You can snarf words from the buffer
+as you go along. Incremental Search is normally bound to @kbd{C-s} and
+@kbd{C-r}. @xref{Customization}, to find out how to change the bindings
+of @kbd{C-r or C-s}.
+@kbd{:map} cannot be used, since it creates macros bound to keys, not
+lisp functions. For details, @pxref{Incremental Search,,Incremental
+Search,emacs,The GNU Emacs Manual}@refill
+
+@cindex query replace
+VIP also provides a query replace function that prompts through the
+minibuffers. It is invoked by the @kbd{Q} key in Vi mode.
+
+@node Improved Abbrevs,Movement and Markers,Improved Search,Improvements over VI
+@section Improved Abbrevs
+
+@cindex abbrevs
+It is possible in Emacs to define abbrevs based on the contents of the
+buffer. @xref{Abbrevs,,Abbreviations,emacs,The GNU Emacs Manual}, for
+details.
+
+@cindex templates
+Sophisticated templates can be defined using the Emacs abbreviation
+facilities. Check out the @file{templates.el} from the Emacs archives.
+
+@cindex dynamic abbrevs
+Emacs also provides Dynamic Abbreviations. Given a partial word, Emacs
+will search the buffer to find an extension for this word. For instance,
+I typed @samp{Abbreviations} by typing @samp{A}, followed by a keystroke
+that completed the @samp{A} to @samp{Abbreviations}. Repeated typing
+will search further, so that I get @samp{Abbrevs} by repeating the
+keystroke, which appears earlier in the text. Emacs binds this to
+@kbd{ESC /}, so you will have to find a key and bind the function
+@code{dabbrev-expand} to that key. I use @kbd{C-o} for this. By using
+simple keys for commands, VIP frees up a lot of other keys and key
+sequences. I no longer venture outside the basic keyboard for anything.
+
+@node Movement and Markers, New Commands, Improved Abbrevs, Improvements over VI
+@section Movement and Markers
+
+@cindex ex style motion
+@cindex line editor motion
+VIP can be free from the line--limited movements in VI, such as @kbd{l}
+refusing to move beyond the line, @kbd{ESC} moving one character back
+etc. These derive from Ex, which is a line editor. If your .emacs contains
+
+@example
+@code{(setq vip-ex-style-motion nil)}
+@end example
+
+@noindent
+the motion will be a true screen editor motion. One thing you must then
+watch out for is that it is possible to be on the end-of-line character.
+@kbd{x} and @kbd{%} will still work correctly, i.e as if they were on
+the last character.
+
+@cindex textmarkers
+Textmarkers in VIP remember the file and the position, so that you can
+switch files by simply doing @kbd{'a}. If you set up a regimen for using
+Textmarkers, this is very useful. Contents of textmarkers can be viewed
+by @kbd{[marker}. (Contents of registers can be viewed by @kbd{]register}).
+
+@node New Commands, Useful Packages, Movement and Markers, Improvements over VI
+@section New Commands
+
+These commands have no VI analogs.
+
+@table @kbd
+@item C-x
+@kindex @kbd{C-x}
+@kbd{C-x} will exit from Vi mode and return to Emacs mode
+@emph{temporarily}. If
+you hit one of these keys, Emacs will be in emacs mode and will believe
+that you hit that key in Emacs mode. For example, if you hit @kbd{C-x}
+followed by @kbd{2}, then the current window will be split into 2 and you
+will be in Vi mode again. It is possible to make @kbd{C-c} to do the
+same, to use keybindings from packages. @kbd{ESC} can do the same, if
+you configure @key{ESC} as Meta.@xref{Customization}. @kbd{C-z}
+in Insert mode will make Emacs think @kbd{Meta} has been hit.@refill
+@item Q
+@kindex @kbd{Q}
+@cindex query replace
+@kbd{Q} is for query replace.  By default,
+string to be replaced are treated as regular expressions. You can use
+@code{(setq vip-re-query-replace nil)} in your @file{.emacs} file to
+turn this off. (For normal searches, @kbd{:se nomagic} will work. Note
+that @kbd{:se nomagic} turns Regexps off completely unlike VI).
+@item v
+@itemx V
+@kindex @kbd{v}
+@kindex @kbd{V}
+These keys are used to Visit files.  @kbd{v} will switch to a buffer
+visiting file whose name can be entered in the minibuffer. @kbd{V} is
+similar, but will use window different from the current window.
+@item #
+@kindex @kbd{#}
+If followed by a certain character @var{ch}, it becomes an operator whose
+argument is the region determined by the motion command that follows
+(indicated as <move>).
+Currently, @var{ch} can be one of @kbd{c}, @kbd{C}, @kbd{g}, @kbd{q} and
+@kbd{s}.@refill
+@item # c
+@kindex @kbd{#c<move>}
+@cindex changing case
+Change upper case characters in the region to lower case
+(@code{downcase-region}).
+@item # C
+@kindex @kbd{#C<move>}
+Change lower case characters in the region to upper case. For instance,
+@kbd{# C 3 w} will capitalize 3 words from the current point
+(@code{upcase-region}).
+@item # g
+@kindex @kbd{#g<move>}
+Execute last keyboard macro for each line in the region
+(@code{vip-global-execute}).@refill
+@item # q
+@kindex @kbd{#q<move>}
+Insert specified string at the beginning of each line in the region
+(@code{vip-quote-region}).
+@item # s
+@kindex @kbd{#s<move>}
+Check spelling of words in the region (@code{spell-region}).
+@item *
+@kindex @kbd{*}
+Call last keyboard macro.
+@item m .
+Set mark at point and push old mark off the ring
+@item m< m>
+Set mark at beginning and end of buffer resp.
+@item m,
+Jump to mark and pop mark off the ring. @xref{Mark,,Mark,emacs,The GNU
+Emacs Manual}, for more info.
+@item ] register
+@kindex @kbd{]<a-z>}
+View contents of register
+@item [ textmarker
+@kindex @kbd{[<a-z>}
+View filename and position of textmarker
+@item @@#, @@register, @@!
+@kindex @kbd{@@#}
+@kindex @kbd{@@<a-z>}
+@kindex @kbd{@@!}
+@cindex keyboard macros
+@cindex register execution
+Begin keyboard macro. @@register has a different meaning when used after
+a @kbd{@@#}. @xref{Macros and Registers} for details
+@item []
+@kindex @kbd{[]}
+Go to end of heading.
+@item g @emph{movement command}
+Search buffer for text delimited by movement command. The canonical
+example is @kbd{gw} to search for word under cursor.@xref{Improved
+Search} for details.@refill
+@item _
+@kindex @kbd{_}
+Meta key when in Vi mode.@xref{Vi Mode} for an explanation.
+@item C-g and C-]
+@kindex @kbd{C-g}
+@kindex @kbd{C-]}
+Quit and Abort Recursive edit. These may be necessary on occasion.
+@xref{Vi Mode} for a reason.
+@item Ex commands
+@kindex  @kbd{:args}
+@kindex  @kbd{:n}
+@kindex  @kbd{:pwd}
+@kindex  @kbd{:pre}
+@kbd{:args}, @kbd{:next}, @kbd{:pre} behave differently. @kbd{:pwd}
+exists to get current directory.
+@end table
+
+@node Useful Packages, ,New Commands, Improvements over VI
+@section Useful Packages
+
+Some Emacs packages are mentioned here as an aid to the new VIP user, to
+indicate what VIP is capable of.
+These are Emacs packages that I use. A vast number exists
+on the net and on the archives. 
+
+I also mention some Emacs features I think a new user
+should know about. The details for these will be found in the GNU Emacs
+Manual.
+
+The features first. For details, look up the Emacs Manual.
+
+@table @samp
+@item Make
+@cindex make
+@cindex compiling
+Makes and Compiles can be done from the editor. Error messages will be
+parsed and you can move to the error lines.
+@item Shell
+@cindex shell
+@cindex interactive shell
+You can talk to Shells from inside the editor. Your entire shell session
+can be treated as a file.
+@item Mail
+@cindex email
+@cindex mail
+Mail can be read from and sent within the editor. Several sophisticated
+packages exist. I use my own 300 line interface to Berkeley Mail.
+@item Language Sensitive Editing
+Editing modes are written for most languages in existence. By
+controlling indentation, they catch punctuation errors.
+@end table
+
+The packages:
+
+@table @samp
+@item Transparent FTP
+@cindex transparent ftp
+@code{ange-ftp.el} can ftp from the editor to files on other machines
+transparent to the user.
+@item RCS Interfaces
+@cindex version maintenance
+@cindex RCS
+@code{rcs-cks.el} for doing RCS commands from inside the editor
+@item Directory Editor
+@cindex dired
+@code{dired.el} for editing contents of directories.
+@item Navigator - Director Tree Manager
+@cindex navigator
+@code{navigator.el} - Navigate a directory tree, pop up shells on
+directories etc. Like Norton Commander or PCTools for the IBM PC. Do not
+ever use absolute long paths again!!!.
+@end table
+
+Emacs lisp code archives exist on
+@samp{archive.cis.ohio-state.edu (128.146.8.52)}
+@* and @samp{wuarchive.wustl.edu (128.252.135.4)}@refill
+
+@cindex X-windows Emacs
+@cindex Epoch
+And finally, until Emacs 19 arrives, there is Epoch, which can have
+multiple X-windows for editing. The next version of VIP will support
+Epoch, in that the @kbd{:e file} will bring the file up in a new
+X-window etc.
+
+VIP supports Epoch. If you are running epoch, @key{:e} will bring up
+files in a new screen, and @key{:q} will kill the buffer and screen.
+
+@node Customization,Commands,Improvements over VI,Top
+@chapter Customization
+
+@cindex customization
+Customization can be done in 3 ways.
+
+@itemize @bullet
+@item
+@cindex initialization
+@cindex .vip
+Elisp code in a @file{.vip} file in your home directory. VIP
+loads @file{.vip} itself just before it does the binding for mode
+hooks. This is the recommended method for new users.
+@item
+@cindex .emacs
+Elisp code in your @file{.emacs} file before and after loading vip
+using @code{(load "vip")}.
+@item
+Put a file called @file{vip.el} in your load-path, and then
+arrange to call the real @file{vip.el} from inside. This is useful for
+heavy duty customization.@refill
+@end itemize
+
+Emacs customization is done in elisp. For the common cases, I have
+provided examples that you can use directly.
+
+@menu
+* Rudimentary Changes::		Simple constant definitions.
+* Keybindings::			Enabling Emacs Keys, Rebinding keys etc.
+* Packages that change keymaps:: How to deal with such beasts.
+* VIP Specials::		Special customizing commands for VIP.
+* VI Macros::           	How to do VI style macros.
+@end menu
+
+@node Rudimentary Changes,Keybindings,Customization,Customization
+@section Rudimentary Changes
+
+@cindex setting variables
+@cindex variables for customization
+@kindex @kbd{:set}
+@cindex :set
+An easy way to customize VIP is to change the values of constants used
+in VIP.  Here is the list of the constants used in VIP and their default
+values. The corresponding :se command is also indicated. (t and nil are
+true and false in elisp).
+
+@table @code
+@item vip-auto-indent nil
+@itemx :se ai
+If @code{t} then enable auto indentation.
+by @kbd{o} or @kbd{O} command.
+@item vip-case-fold-search nil
+@itemx :se ic
+If @code{t} search ignores cases.
+@item vip-re-search nil
+@itemx :se magic
+If @code{t} then search is reg-exp search, if @code{nil} then vanilla
+search.
+@item buffer-read-only
+@itemx :se ro
+Set current buffer to read only. To change globally put
+@code{(setq-default buffer-read-only t)} in your @file{.emacs} file.
+@item blink-matching-paren t
+@itemx :se sm
+Show matching parens by blinking cursor. 
+@item vip-shift-width 8
+@itemx :se sw=value
+The number of columns shifted by @kbd{>} and @kbd{<} command.
+@item vip-search-wrap-around t
+@itemx :se ws
+If @code{t}, search wraps around the buffer.
+@item vip-tags-file-name "TAGS"
+The name of the file used as the tag table.
+@item vip-re-query-replace nil
+If @code{t} then do reg-exp replace in query replace.
+@item vip-help-in-insert-mode nil
+If @code{t} then @key{C-h} is bound to @code{help-command} in insert mode,
+if @code{nil} then it is bound to @code{delete-backward-char}.
+@item vip-no-multiple-ESC t
+If you reset this, you can use @kbd{ESC} as Meta in Vi mode.
+@item vip-ex-style-motion t
+Reset this to get @kbd{ESC} that does not move back, @kbd{l} to cross
+lines etc.@xref{Movement and Markers} for more info.
+@item vip-filename-completion nil
+Set to t to get filename completion.@xref{Completion} for details.
+@item vip-always t
+Whether you want VIP mode in for all new buffers. This option must be
+set before VIP is loaded or in the @file{.vip} file.
+@item vip-custom-file-name "~/.vip"
+Change this if you want. Must be set before vip is loaded. Note that you
+have to set it as a string inside double quotes.
+@item ex-find-file-shell "csh"
+Shell used to interpret filenames. If you have problems with csh,change
+to something else. Note that you have to set it as a string inside
+double quotes.
+@item ex-cycle-other-window t
+@kbd{:n} will cycle through files in another window if one exists.
+@item ex-cycle-through-non-files nil
+@kbd{:n} does not normally cycle through buffers. Set this to get
+buffers also.
+@end table
+@noindent
+You can reset these constants in VIP by the Ex command @kbd{set}.  Or you
+can include a line like this in your @file{.vip} file:
+@example
+(setq vip-case-fold-search t)
+@end example
+
+@node Keybindings, Packages that change keymaps, Rudimentary Changes,Customization
+@section Keybindings
+
+@cindex keybindings
+VIP uses 2 main keymaps: @code{vip-mode-map} for Vi mode commands, and
+@code{vip-insert-mode-map} for Insert mode commands. By default,
+@code{vip-insert-mode-map} makes non VI keys insert themselves.
+VIP also suppresses Emacs control keys in @code{vip-mode-map}.
+
+To unsuppress emacs bindings in Vi and Insert modes, put the line
+@example
+	(vip-make-emacs-keys-visible)
+@end example
+@noindent
+in your @file{.vip} file.
+To unsuppress bindings in just Insert mode, put
+@lisp
+(setq-default vip-insert-mode-vi-map nil)
+@end lisp
+@noindent
+in your @file{.vip} file.
+This unsuppresses Emacs bindings for all buffers. To do that
+selectively, you will have to
+@lisp
+(setq vip-insert-mode-vi-map nil)
+@end lisp
+@noindent
+in just those buffers.
+This is usually
+accomplished in customization hooks for major modes. @xref{Program
+Modes,,Mode Hooks,emacs,The GNU Emacs Manual}, and
+@xref{Hooks,,Hooks,elisp,GNU Emacs Lisp Reference Manual}, for details.@refill
+
+You can also alter the @code{vip-insert-mode-map} to change the
+bindings. Note that changing to a VI compatible insert mode also
+requires undefining some bindings. This is done in the function
+@code{vip-insert-mode-bindings}. To make a substantial change, you have
+to redefine this function. The @code{vip-insert-mode-map} was defined
+primararily so that @kbd{:map!} could be implemented.
+
+
+That was about VIP bindings. For normal Emacs bindings, read the
+following. @xref{Customization,,Customization,emacs,The GNU Emacs
+Manual}, and the Emacs quick reference card for more info.
+@noindent
+To bind a function to a key, say @kbd{C-s} for incremental search
+@example
+(define-key vip-mode-map "\C-s" 'isearch-forward)
+@end example
+@noindent
+To set a key globally,
+@example
+(global-set-key "\C-s" 'isearch-forward)
+@end example
+@noindent
+Note that local mode maps override the global keymap.
+
+Each Emacs command key calls some lisp function. If you have enabled the
+Help, (@pxref{Rudimentary Changes}) @kbd{C-h k} will show you the function.
+
+@cindex :map
+@kindex @kbd{:map}
+@kbd{:map} and @kbd{:map!} defined Vi/Ex macros, and cannot be used to
+define bindings for Emacs functions. @xref{VI Macros}, for details.
+
+@node Packages that change keymaps,VIP Specials,Keybindings,Customization
+@subsection Packages that change keymaps
+@cindex C-c and VIP
+@cindex VIP and C-c
+
+If you use other packages that change keymaps, remember
+that these packages will assume native Emacs. So let the other packages
+alter the keymaps, and then change to VIP mode, usually by calling
+@code{(vip-mode)} from the hooks for those packages.@refill
+
+VIP is designed as a minor mode --- a feature you can turn on or off.
+Therefore, mode keymap changes must be made to the underlying major
+modes, not VIP itself.
+
+This question usually arises in the context of @kbd{C-c} bindings.
+In Emacs, @kbd{C-c} is reserved for users and packages as a general key.
+Normally, VIP binds @kbd{C-c} in Insert and Vi mode to @code{keyboard-quit},
+to be compatible with VI. @code{vip-make-emacs-keys-visible} will
+bind @kbd{C-c} to @code{vip-ctl-c}, making @kbd{C-c} act like a Emacs key.
+(you might want to change the bindings in the @code{vip-insert-mode-map} and
+@code{vip-mode-map} yourself, if you want other VI bindings to remain)
+Any @kbd{C-c} binding from the current buffer major mode will be
+accessible now under either Vi or Insert mode.@refill
+
+@node VIP Specials,VI Macros,Packages that change keymaps,Customization
+@section VIP Specials
+
+@table @code
+@item (vip-redefine-toggle-key "\C-w")
+Redefine the toggle key @kbd{C-z} from Emacs to Vi to say @kbd{C-w}.
+@item (vip-get-history)
+Enable history for Ex and Vi commands.
+@item (vip-buffer-search-enable)
+Enable buffer search. The key binding can also be changed by redefining
+@code{vip-buffer-search-char}.
+@item vip-heading-start and vip-heading-end
+@cindex headings
+@cindex sections
+@cindex paragraphs
+@cindex sentences
+Regular Expressions for @kbd{[[} and @kbd{]]}. Note that Emacs defines
+to Regexps for paragraphs and sentences. @xref{Paragraphs,,Paragraphs and
+Sentences,emacs,The GNU Emacs Manual}, for details.
+@item (vip-become-vi)
+@cindex vip-become-vi
+@cindex ultimate compatibilty
+This function is intended to be an ultimate compatibility test, mostly
+as a joke.
+@end table
+
+@node VI Macros, ,VIP Specials,Customization
+@section VI Macros
+
+@cindex Vi macros
+@cindex Ex commands
+@cindex vip-ex function
+The function @code{vip-ex} can be called with a string to evaluate. This
+string must be an Ex command without the @samp{:}. Thus @code{(vip-ex
+"se ai")} is the same as @kbd{:se ai} when running vip, or @code{(setq
+vip-ai t)}. The VI @kbd{&} and
+@kbd{C-^} commands (@pxref{Commands}) are implemented by calling the
+corresponding Ex commands in this fashion.@refill
+
+In principle, it s straightforward to parse an external environment
+variable or file and pass it to @code{vip-ex} to get VI macro
+programming. 
+
+However, this feature is not yet been implemented and @code{vip-ex} has
+not been tested in this fashion. I welcome the adventurous to try and
+report bugs and/or fixes to improve VIP.
+
+Note also that @kbd{:map} and @kbd{:map!} can map only single
+characters, not strings, and @kbd{:ab} and @kbd{:una} are not
+implemented. 
+
+@kbd{:map} and @kbd{:map!} cannot be used to bind lisp functions to
+keys. @xref{Keybindings}, to see how to do that.
+
+@include vip-cmd.texinfo
+
+@node Acknowledgments,,,Top
+@comment  node-name,  next,  previous,  up
+@unnumbered Acknowledgments
+
+The original author of VIP was Masahiko Sato. The Manual and VIP 4.3 is
+based on his VIP 3.5 Manual and Code.
+
+Jean-Jacques Moreau contributed code to get small changes with the
+@samp{$} sign instead of through the minibuffer. He also put in the
+completer hooks, and ex commands :pwd, :cd, and :recover.
+
+Jeff Lewis contributed code to make Ex style motion possible.
+
+Many contributors on the net pointed out bugs.
+
+Finally, my advisor Roy Campbell at Illinois did not mind my spending
+inordinate amounts of time on VIP.
+
+@node Key Index, Concept Index,,Top    
+@comment  node-name,  next,  previous,  up
+@unnumbered Key Index
+
+@printindex ky
+
+@node Concept Index,,Key Index,Top    
+@comment  node-name,  next,  previous,  up
+@unnumbered Concept Index
+
+@printindex cp
+
+@contents
+@bye

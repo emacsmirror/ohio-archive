@@ -1,0 +1,129 @@
+This directory contains the current release of the GNU Emacs Lisp hash
+library package.
+
+It consists of the following files:
+
+ChangeLog		History of changes to the package.
+
+COPYING			The GNU GENERAL PUBLIC LICENSE.
+
+Makefile		UNIX Makefile.
+
+NEWS			What's new with this release of the package.
+
+README			This file.
+
+TO-DO			Comments and musings about future versions of
+			the package.			
+
+detexinfo		Simple script for stripping TeXinfo markup
+			prior to spelling checks et al.
+
+hash.dvi		TeX DVI file from hash.texi.
+
+hash.el			GNU Emacs Lisp hash library code.
+
+hash.pdf		Adobe Acrobat Portable Document Format version
+			of the documentation, produced from hash.ps.
+
+hash.ps			PostScript version of the documentation, produced 
+			from hash.dvi.
+
+hash.sok		Customized spelling exception dictionary for hash.texi.
+
+hash.texi		Documentation for the hash library, intended
+			to be dropped into the next edition of the GNU
+			Emacs Lisp Reference Manual, with little more
+			than modification of the initial @node line,
+			and removal of the initial @setfilename line,
+			and the final @bye line.
+
+profile.awk		Simple awk program for computing a relative
+			performance table from run-time profiles; used
+			at the end of hash.texi.
+
+profile-support.el	Additional profile support code for use in
+			test-primes.el.	  This file is independent of
+			the test package, and may be freely duplicated
+			in other Emacs library test packages.  It
+			should eventually be absorbed into
+			emacs/20.x.y/lisp/emacs-lisp/profile.el.
+
+run-tests.el		Simple driver file to test the hash and primes
+			libraries; in Emacs, just do M-x
+			load-file<RET>run-tests.el to load and run the
+			tests.
+
+test-hash.el		Test program for running the torture test
+			suite that validates the correct operation of
+			the hash library.  In Emacs,  do M-x
+			load-file<RET>test-hash.el, then do
+			M-x test-hash or M-x test-hash-with-profile.
+
+To use the hash library, you also require the primes library,
+available at the same location where you got this package.  Both
+should shortly be part of standard Emacs distributions.
+
+NB: at other sites, you will probably need to override the setting of
+DVIPS when you run make, if you want to generate a new PostScript file
+of the documentation.  At the author's site, a special version is used
+to ensure that PostScript Type1 outline, rather than bitmap, fonts are
+used, because they significantly improve the display quality of the
+derived PDF file.
+
+The doubled-word utility, dw, referred to in the Makefile is available
+at
+
+	http://www.math.utah.edu/pub/misc/index.html#dw
+
+or equivalently
+
+	ftp://ftp.math.utah.edu/pub/misc/dw.*
+
+in a variety of distribution formats.
+
+The enhanced tgrind program, tgrind, referred to in the Makefile is
+available at
+
+	http://www.math.utah.edu/pub/misc/index.html#tgrind-3.00
+
+or equivalently,
+
+	ftp://ftp.math.utah.edu/pub/misc/tgrind-3.00.*
+
+in a variety of distribution formats.
+
+The hash library has been successfully tested on these systems:
+
+	DEC Alpha		OSF/1 3.2
+	HP 9000/735		HP-UX 10.01
+	IBM PowerPC		AIX 4.2
+	Intel Pentium II MMX	GNU/Linux 2.0.35
+	Intel Pentium II MMX	Microsoft Windows 98
+	Intel Pentium II MMX	AT&T UWIN32 on top of Microsoft Windows 98
+	NeXT Turbostation	Mach 3.3
+	SGI Indigo/2		IRIX 5.3
+	SGI O2 R10000-SC	IRIX 6.3
+	SGI Origin 200		IRIX 6.4
+	Sun SPARC		Solaris 2.6
+	Sun SPARC		SunOS 4.1.3
+
+with emacs-19.34, emacs-20.2.96, and emacs-20.3.6, where available.
+
+Because it requires floating-point support, which was implemented
+first in emacs-19.xx, it will not run with emacs-18.xx, which, sadly,
+is the latest version available on the Apple Macintosh OS.
+
+Please report comments, errata, bug reports, et al. to the author:
+
+	Nelson H. F. Beebe
+	Center for Scientific Computing
+	University of Utah
+	Department of Mathematics, 322 INSCC
+	155 S 1400 E RM 233
+	Salt Lake City, UT 84112-0090
+	USA
+	Email: beebe@math.utah.edu, beebe@acm.org, beebe@ieee.org (Internet)
+	WWW URL: http://www.math.utah.edu/~beebe
+	Telephone: +1 801 581 5254
+	FAX: +1 801 585 1640, +1 801 581 4148

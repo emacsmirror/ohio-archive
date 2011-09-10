@@ -1,0 +1,1986 @@
+Info file: mew.jis.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `mew.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+
+INFO-DIR-SECTION Message User Agent
+START-INFO-DIR-ENTRY
+* Mew-J: (mew.jis.info).     Messaging in the Emacs World.
+END-INFO-DIR-ENTRY
+
+
+
+
+
+
+
+File: mew.jis.info, Node: Top, Next: Overview, Prev: (dir), Up: (dir)
+
+Mew マニュアル
+**************
+
+                                                                山本和彦
+                                                         作成 1996/02/19
+                                                         更新 1999/11/16
+
+この Info は Mew バージョン 1.94.2 について解説します。この Info の他に、
+Mew に関する有益な情報は Mew の公式ホームページ(http://www.Mew.org/)から
+得られるかもしれません。
+
+
+* Menu:
+
+* Overview::                    はじめに読んでね
+* Start::                       さぁ始めよう！
+* Viewing::                     メッセージを表示する
+* Composing::                   メッセージを作成する
+* Marks::                       愉快なマークたち
+* Refile::                      楽々整理整頓
+* Pick::                        お目当てのメッセージを選択するには
+* Quit::                        一休み
+* Customize::                   自分好みの Mew にするには
+* XEmacs::                      アイコンのある生活
+* Convention::                  メッセージの作法
+* MIME::                        MIME ってなぁに？
+* Kanji::                       嗚呼漢字コード
+* Policy::                      Mew のこだわり
+* History::                     Mew の来た道
+* Future::                      Mew の行く道
+* Avail::                       入手方法とメーリングリスト
+* Ack::                         謝辞
+* Copyright::                   著作権について
+* Author::                      著者紹介
+* Terminology::                 語彙集
+* Bib::                         参考文献
+* Variable Index::              変数索引
+
+
+
+
+File: mew.jis.info, Node: Overview, Next: Start, Prev: Top, Up: Top
+
+はじめに読んでね
+****************
+
+Mew とは、
+
+   - 電子メール
+   - ネットニュース
+   - MIME(Multipurpose Internet Mail Extensions)
+   - PGP(Pretty Good Privacy)
+
+を統合し、簡単に読み書きするためのインターフェイスです。Mew を使えば、友
+達の誕生日にケーキの絵と「Happy Birthday to You」の歌を添えたメッセージ
+を暗号化して送れます。ネットニュースの統合は、2.xx 以降で予定しています。
+
+Mew は 「Messaging in the Emacs World」 の略です。先頭の M は大文字で表
+記し、「みゅう」と読みます。M で始まるかわいらしい単語を選んだ結果 Mew 
+になりました。決して漫画の題名や某アイドルの歌、あるいは、関西の会社に因
+んでいるわけではありません。:p
+
+Mew バージョン 1.9x の特長を以下に示します。
+
+   - 複雑な構造を持つメッセージを簡単に表示できます。メッセージを表示す
+     る作業は、`SPC' を押すだけです。
+
+   - コピー程度のファイルの操作を知っている人ならだれでも簡単に複雑なメッ
+     セージを作成できます。
+
+   - メッセージの一覧表示が終了するまで待たなくても、メッセージを読み始
+     められます。
+
+   - Summary モードのメッセージの一覧を保存しているので、フォルダを移動
+     した場合は、更新された部分だけを一覧表示します。
+
+   - メッセージの整頓先を賢く推測します(たくさんメッセージを受け取る人は、
+     これがないと生きていけません)。
+
+   - Draft モードでは、フィールド名、アドレス、氏名、ドメイン名、フォル
+     ダ名を補完できます。
+
+   - Subject: や Date: などを条件に指定して、簡単にメッセージを選択でき
+     ます。
+
+   - 便利なマークが提供されています。uuencode した後で分割されたメッセー
+     ジにマークを付けて、一度に元のファイルに戻せます。
+
+   - PGP で暗号化されたメッセージを自動的に復号化します。また、電子署名
+     を自動的に検証します。
+
+   - PGP を使って、メッセージを簡単に暗号化したり、署名したりできます。
+
+   - MIME の構造を解析したり、PGP の署名を検証したりするのには少し時間が
+     かかります。そこで、ユーザがあるメッセージを読んでいる間に、次のメッ
+     セージをあらかじめ処理しておくことで高速性を実現しています。解析さ
+     れたメッセージは、しばらくの間保存されます。
+
+   - 複数のフォルダを1つのフォルダに見せかけられます。
+
+   - XEmacs では、Emacs でのキー入力によるインターフェイスと全く同じ機能
+     を持つアイコン・ベースのインターフェイスが提供されています。
+
+
+Mew は、Emacs 19.28、19.34、20.3 以降、Mule 2.3 以降、および、XEmacs
+20.4 以降をサポートしています。これら以外の Emacs、たとえば、Emacs 18、
+Nemacs、Mule 1 および XEmacs 19、20.3 などはサポートしていませんし、今後
+もサポートする予定はありません。また、beta リリースである Emacs をサポー
+トすることもありますが、正式リリースになって仕様が変わったときは、正式リ
+リースである Emacs の仕様に合わせます。
+
+このマニュアルで単に Emacs と言った場合には、サポートしているすべてのプ
+ラットフォームを意味します。Mule といった場合は、多国語が利用できる Mule
+2 と Emacs 20、そして、--with-mule オプション付きでコンパイルした XEmacs
+20.4 を指します。これに対し、Bilingual Emacs と言った場合には、英語と 
+Latin 1 しかサポートしていない Emacs 19 と --with-mule オプション無しで
+コンパイルした XEmacs 20.4 を意味します。また、XEmacs と言った場合には、
+グラフィックを楽しめる XEmacs 20.4 を指します。反対に、テキストしか表示
+できない Emacs は、Text Emacs と呼びます。
+
+
+
+
+File: mew.jis.info, Node: Start, Next: Viewing, Prev: Overview, Up: Top
+
+さぁ始めよう！
+**************
+
+Mew には次の 5 つのモードがあります。
+
+   - Summary モード :: メッセージの一覧を表示し選択するモード。
+
+   - Virtual モード :: 複数のフォルダからある条件に合致したメッセージを
+     取り出し、仮想的に1つのフォルダにしたモード。Summary モードに似てい
+     る。
+
+   - Message モード :: テキストの内容を表示するモード。
+
+   - Draft モード :: メッセージの送信、返答、転送を準備するためのモード。
+
+   - Addrbook モード :: アドレス帳にエントリを登録するためのモード。
+
+Mew を起動するには、以下の方法があります。
+
+  1. `M-x mew' :: Mew を起動する。`mew-auto-get' が `t' なら、到着したメッ
+     セージを +inbox フォルダに保存しながら、+inbox のメッセージを 
+     Summary モードに一覧表示。`mew-auto-get' が `nil' なら、単に +inbox 
+     のメッセージを Summary モードに一覧表示。
+
+  2. `C-uM-x mew' :: `mew-auto-get' の値を逆だと思って、`M-x mew' を実行
+     する。
+
+  3. `M-x mew-send' :: メッセージを書くための Draft モードへ移行する。
+
+  4. `C-xm' :: `mail-user-agent' が設定されている場合、Draft モードへ移
+     行する。
+
+Text Emacs で Mew を起動した際には、Mew を型どった「/\\ - \\/」という図
+形がくるくると回るデモが始まります。XEmacs では、可愛い2匹の子猫がオープ
+ニングを飾ります。
+
+到着したメッセージを +inbox フォルダに取り込む際にはパスワードを訊かれる
+ことがあります。パスワードを入力する前に以下の条件のいずれかが満たされて
+いることを確認しましょう。
+
+   - Emacs がローカルのコンピュータで動いている
+   - Emacs がリモートのコンピュータで動いているが、なんらかの暗号手段を
+     使って通信している。
+
+どちらの条件も満たされない場合は、パスワードを入力しないで下さい。入力す
+ると盗聴される恐れがあります。
+
+もし Mew が起動されない場合は、Mew や IM がインストールされているか、ま
+た以下が組織の設定ファイルか自分の .emacs で設定されているか確かめて下さ
+い。
+
+     (autoload 'mew "mew" nil t)
+     (autoload 'mew-send "mew" nil t)
+     (setq mew-mail-domain-list '("your mail domain"))
+     (setq mew-icon-directory "a directory where Mew's image files are installed.")
+     (autoload 'mew-user-agent-compose "mew" nil t)
+     (if (boundp 'mail-user-agent)
+         (setq mail-user-agent 'mew-user-agent))
+     (if (fboundp 'define-mail-user-agent)
+         (define-mail-user-agent
+           'mew-user-agent
+           'mew-user-agent-compose
+           'mew-draft-send-letter
+           'mew-draft-kill
+           'mew-send-hook))
+
+
+
+
+File: mew.jis.info, Node: Viewing, Next: singlepart, Prev: Start, Up: Top
+
+メッセージを表示する
+********************
+
+`M-x mew' と入力すると、Mew はスプールのメッセージを +inbox フォルダに移
+して以下のように一覧表示します。
+
+         1  07/17 いとぢゅん     v6: items to be no in6_pcbnotify()がなにも
+         2  07/18 歌代先生       Re: behavior after これ、mark-ring がどんど
+         3  07/19 のむさん       refile info.       乃村です。遅くなりました。
+
+これを Summary モードといいます。ここでは、主に Summary モードでのメッセー
+ジの読み方について説明します。
+
+* Menu:
+
+* singlepart::                  読み方の基礎
+* multipart::                   MIME を表示する
+* pgp-viewing::                 PGP/MIME を表示する
+* folder::                      フォルダの更新と移動
+* sum-write::                   送信、返答、転送
+* features::                    便利な機能
+* sorting::                     メッセージのソート
+* illegal::                     化けたメッセージ
+
+
+
+File: mew.jis.info, Node: singlepart, Next: multipart, Prev: Viewing, Up: Viewing
+
+読み方の基礎
+============
+
+メッセージを上から順に読んでいくのであれば、`SPC' を適宜押すだけです。簡
+単でしょ？
+
+しかしそれだけではあんまりなので、以下にページを操作する基本的なコマンド
+を示します。
+
+`SPC'
+     メッセージを読み進める。つまり、メッセージを表示し、スクロールさせ、
+     他のメッセージに移動して表示する。カーソルが移動する方向は、*Note
+     level-one:: を参照のこと。
+`DEL'
+     現在のメッセージを上にスクロールさせる。不必要なヘッダフィールドは、
+     ウインドウの上に隠れている。よって、`DEL' を入力すると、それらが現
+     れる。
+`.'
+     メッセージが `mew-file-max-size' を越えている場合は、MIME の解析が
+     中止され、メッセージの先頭部分が生でメッセージ・バッファに表示され
+     る。このような場合に、`.' を押すと、強制的に MIME が解析されメッセー
+     ジが表示される。
+`,'
+     MIME 解析をしていない生のメッセージを表示する。メッセージの内 
+     `mew-file-max-size' で指定されたバイト数以下の部分を表示する。`C-u' 
+     と共に呼ばれると、メッセージ全体を生で表示する。
+`RET'
+     現在のメッセージを1行上にスクロールする。
+`M-RET'
+`-'
+     現在のメッセージを1行下にスクロールする。
+
+`C-n'
+     下の行へ移動。
+`C-p'
+     上の行へ移動。
+`n'
+     下方向に移動し表示。対象となるのは、パート、`*' マークの付いたメッ
+     セージ、マークの付いていないメッセージ。`C-u' と共に呼ばれると、パー
+     ト部分を飛ばす。
+`p'
+     上方向に移動し表示。対象となるのは、パート、`*' マークの付いたメッ
+     セージ、マークの付いていないメッセージ。`C-u' と共に呼ばれると、パー
+     ト部分を飛ばす。
+`j'
+     入力された番号にしたがってメッセージへ移動。
+
+
+
+File: mew.jis.info, Node: multipart, Next: pgp-viewing, Prev: singlepart, Up: Viewing
+
+MIME を表示する
+===============
+
+マルチパートを読むのは別に大変なことではありません。今まで通り、`SPC' を
+押していけばよいだけです。
+
+マルチパートのメッセージは、以下のように日付の左に "M" という印が付いて
+います。
+
+         4  07/19 しげやさん     Re: imget very fir ということで、こんなもん
+         5 M07/20 いとぢゅん     MagicPoint         今度の発表で使用する資料
+         6  07/21 もとのりさん   Re: imget very fir POPでサーバにメッセージの
+
+"5" のところで、`SPC' を押すと、ヘッダを Message モードに表示すると共に、
+以下のように Summary モードでマルチパートの構造を簡素に表示します。
+
+         4  07/19 しげやさん     Re: imget very fir ということで、こんなもん
+         5 M07/20 いとぢゅん     MagicPoint         今度の発表で使用する資料
+     B    2  Image/Gif                    MagicPoint のロゴ            mgp.gif
+     Q    3  Application/Postscript       資料                         ohp.ps
+         6  07/21 もとのりさん   Re: imget very fir POPでサーバにメッセージの
+
+もし、パート 1 が Text/Plain なら、Summary モードにはパート 1 は可視化さ
+れず、そのかわりパート 1 がヘッダと共に Message モードに表示されます。
+
+マルチパートの各行は
+
+   - マーク(Content-Transfer-Encoding:)
+   - パート番号
+   - データの型(Content-Type:)
+   - 説明(Content-Description:)
+   - ファイル名(Content-Disposition:)
+
+から構成されています。Content-Description: はパートに対する Subject: と
+考えていいでしょう。この表示は Draft モードの添付領域とほとんど同じです。
+それぞれのカラムの詳しい意味は、*Note mime-comp:: を参照して下さい。
+
+
+`SPC' や `n' でパート 1 へ進めば、そのパートがデータ型に応じて表示されま
+す。たとえば、Text/Plain なら Message モードで、PostScript なら 
+ghostview で表示されます。
+
+`n' や `p' は、パート部分まで含んだ行を移動することに注意して下さい。パー
+ト部分を飛ばして下のメッセージを表示するには `C-u n' と入力して下さい。
+また、パート部分を飛ばして 1 つ上のメッセージを表示するには `C-u p' と入
+力して下さい。
+
+Mew は、MIME を再帰的に処理します。以下は転送されたマルチパートのメッセー
+ジの例です。
+
+       501 M02/22 Itojun         Fw: MagicPoint           萩野先生からこんな
+          2  Message/Rfc822               MagicPoint                          
+     B    2.2  Image/Gif                    MagicPoint のロゴ          mgp.gif
+     Q    2.3  Application/Postscript       資料                       ohp.ps
+
+(メモ) テキスト以外のデータを、シングルパートとしてメッセージに格納する
+のは、書式としては間違いではありませんが、お勧めできません。マルチパート
+を作成し、そのパート 1 に説明のテキストを、パート 2 にテキスト以外のデー
+タを入れる作法をお勧めします。
+
+テキスト以外のデータが本文に直接格納されているメッセージに対し、Mew はこ
+れをあたかもマルチパートのように表示します。
+
+このように MIME の構造は複雑になりうるので、解析するのには時間がかかる場
+合があります。しかし、Mew は次に読まれるメッセージを予想し、ユーザが現在
+のメッセージを読んでいる間に、次のメッセージをあらかじめ解析しておくこと
+で高速性を実現しています。解析されたメッセージは、しばらくの間保存されま
+す。
+
+メッセージの終りの部分がはっきりと分かるように、Mew はメッセージの最後に 
+"[End of message]" という文字列を表示します。また、パートの終りでは、
+"[Message is continued]" という文字列を表示します。(Emacs の機能不足によ
+り色は付きません。) この機能は Emacs 19.28 やそれを基にしている Mule 2.3 
+などでは利用できません。これらの文字列はそれぞれ、
+`mew-end-of-message-string' と `mew-end-of-part-string'で指定できます。
+
+
+
+File: mew.jis.info, Node: pgp-viewing, Next: folder, Prev: multipart, Up: Viewing
+
+PGP/MIME を表示する
+===================
+
+今までと同様 `SPC' などを利用することで、Mew では PGP で暗号化や電子署名
+を施されたメッセージを簡単に表示できます。まず、簡単な例から紹介しましょ
+う。
+
+         8 S07/22 酒井さん       Re: home was full  MsgStore.pm のバグです
+         9 E07/23 ニートすみかわ Wine               おはようからおやすみま
+
+8 番と 9 番のメッセージには、それぞれ "S" マークと "E" マークが付いてい
+ます。これはそれぞれ、本文全体が署名されている、および、暗号化されている
+ことを意味します。
+
+PGP/MIME では、一部のパートに電子署名を施したり、暗号化したりできます。
+この場合このようなマークは付きません。マークが付くのは、本文全体が対象に
+なっている場合です。
+
+また、単に署名や暗号化と言いましたが、これは最終的な処理が署名や暗号化で
+あったことを意味しています。やや複雑な話になりますが、もしかすると前者は
+本文全体を暗号化した後署名したのかもしれませんし、後者は一部のパートに署
+名しさらに全体を暗号化している可能性もあります。
+
+本文全体、あるいは、一部のパートが暗号化されている場合、Mew はパスフレー
+ズを訊いてきます。入力されたパスフレーズは、あなたの秘密鍵を復号化するの
+に使われます。そして、復号化された秘密鍵によって、暗号化されているメッセー
+ジを解くわけです。
+
+ある PGP/MIME メッセージを表示するには、暗号化された数だけパスフレーズを
+入力する必要があります。これは Mew が安全を期して、通常パスフレーズを保
+存しないからです。もしこれがわずらわしいなら、以下の設定で Mew にパスフ
+レーズをしばらくの間保存させることも可能です。パスフレーズを保存する際の
+注意事項については、*Note folder::を参照して下さい。
+
+     (setq mew-use-pgp-cached-passphrase t)
+
+パスフレーズを保存しない通常の設定でも、一旦復号化されたメッセージはしば
+らく保存されるので、2回目の表示にはパスフレーズを訊かれないかもしれませ
+ん。
+
+一方、通信相手の署名を検証するためには相手の公開鍵が利用できればよいので、
+パスフレーズを訊かれることはありません。
+
+Mew は自動的に電子署名を検証したり、入力されたパスフレーズを使って暗号メッ
+セージを復号化したりして、元のメッセージを表示します。そこで、ユーザが署
+名の存在に気づかないかもしれませんし、どの部分が暗号化されていたのか分か
+らないかもしれません。
+
+そこで、検証の結果やどの部分が暗号化されていかをユーザに通知するために、
+Mew は以下のようにヘッダに X-Mew: フィールドを挿入します。
+
+     X-Mew: <body> PGP decrypted.
+             Good PGP sign "kazu@mew.org" COMPLETE
+
+"<>" 内の番号は、どのパートの結果であるかを示しています。"body" は、メッ
+セージの本文全体が保護されていることを意味します。この例では、メッセージ
+全体が kazu によって署名され、受信者のために暗号化されています。Mew はま
+ずこれを復号化し、そして署名を検証しています。署名は正しいので、
+kazu@mew.org という ID の付いた秘密鍵で署名されたときから、内容は変更さ
+れていないと分かります。この署名の検証に使われた公開鍵の「有効性」は 
+"complete" です。よって、受信者はこの公開鍵が ID が示すユーザに属してい
+ると信頼していることになります。つまり、このメッセージは信頼をおいている
+公開鍵によって検証され結果が正しいので、改竄されていないということになり
+ます。
+
+以下の例では、まずマルチパートである本文全体の電子署名が検証され、その後
+パート 2 のメッセージ全体が復号化されています。つまり、作成時には、まず
+パート 2 が暗号化され、そして本文全体が署名されたことが分かります。
+
+     X-Mew: <body multi> Good PGP sign "kazu@mew.org" COMPLETE
+     X-Mew: <2 message> PGP decrypted.
+
+するどい人なら、悪い人があらかじめ X-Mew: フィールドを挿入しておき、あな
+たをだますかもしれないと思うかもしれません。でも大丈夫です。Mew は、ヘッ
+ダにある X-Mew: をあらかじめ削り、本物の X-Mew: フィールドを挿入しますか
+ら。
+
+X-Mew: フィールドは他にもさまざまな結果を伝えてくれます。たとえば、署名
+を検証するための公開鍵がないとか、復号化に失敗したなどです。以下の例は、
+鍵 ID が 0x1B8BF431 である公開鍵がないことを示しています。
+
+     X-Mew: <body multi> No his/her public key. ID = 0x1B8BF431
+
+この場合、`C-cC-f' と入力すると、Mew は `mew-pgp-keyserver-url-template' 
+で指定された URL を使ってこの公開鍵の入手を試みます。もし、X-Mew: フィー
+ルドがない場合は、`C-cC-f' は From: を ID と考えます。また、`C-uC-cC-f' 
+は、X-Mew: フィールドに加えて `mew-x-pgp-key-list' に指定されたフィール
+ドも鍵 ID を切り出す対象とし、公開鍵の入手を試みます。
+
+Mew では PGPv2、PGPv5、GNUPG に対応しています。これらは Summary モードに
+おいて、`C-cC-v' で切替え可能です。これら複数の PGP を使いたい人は
+`mew-prog-pgp2'、`mew-prog-pgp5'、`mew-prog-gpg' に対し、それぞれ PGPv2、
+PGPv5、GNUPG のコマンド名を設定して下さい。また、Mew の起動直後に利用す
+る PGP のコマンド名を `mew-prog-pgp' に設定して下さい。なおパスフレーズ
+は、それぞれの PGP に対し独立に保存されます。
+
+
+
+File: mew.jis.info, Node: folder, Next: sum-write, Prev: pgp-viewing, Up: Viewing
+
+フォルダの更新と移動
+====================
+
+到着したメッセージを +inbox フォルダに移動し、一覧を表示するには `i' を
+使います。一覧は、+inbox フォルダの Summary モードの最後に挿入されます。
+
+このときパスワードを訊かれることがあります。パスワードを入力する際の注意
+事項については、*Note Start:: を参照して下さい。パスワードを何回も入力す
+るのが面倒な人は、パスワードを保存する機能を利用して下さい。これには以下
+設定が必要です。
+
+     (setq mew-use-cached-passwd t)
+
+パスワードの保存機能を使うと、パスワードが保存されている間は、パスワード
+の入力を省略できます。パスワードは Emacs の中に保存されていますので、席
+を空けて Emacs が他の人に使用されることがないよう注意して下さい。
+
+フォルダの一覧を再表示するには、`s' を使います。このコマンドを対話的に使
+うと範囲を訊いてきます。Mew で重要な範囲の意味を以下に示します。
+
+`update'
+     「Summary モードの最後のメッセージの次」から「フォルダ内の最後のメッ
+     セージ」まで。つまり、Summary モードと実際のフォルダ内のメッセージ
+     の差分。
+`all'
+     フォルダ内のメッセージすべて。Summary モードの表示がおかしくなった
+     ときに、内容を一新するために用いる。
+
++draft 以外のフォルダでは、デフォルトの範囲が `update' となっています。
+ですから、`s' の後に `RET' を押すだけで、現在のフォルダに対し最新の一覧
+を得られることになります。+draft のデフォルトの範囲は `all' です。
+
+Mew ではあまり重要ではありませんが、以下の範囲も指定できます。
+
+`<num1>-<num2>'
+     <num1> から <num2> まで。
+`<num>:N'
+     <num> から N 個。
+`<num>:-N'
+     <num> までの N 個。
+`first:N'
+     最初から N 個。
+`prev:N'
+     現在のメッセージまでの N 個。
+`next:N'
+     現在のメッセージから N 個。
+`last:N'
+     最後のメッセージまでの N 個。
+
+フォルダの移動には `g' を入力して下さい。フォルダ名は `TAB' で補完できま
+す。もし、移動した際に Summary モードの一覧が古いと判断した場合は、自動
+的に差分を追加表示します。
+
+出てきたコマンドを以下にまとめます。
+
+`i'
+     到着したメッセージを +inbox フォルダに移動し一覧を表示する。
+`s'
+     フォルダの一覧を再表示する。
+`g'
+     フォルダを移動する。
+
+
+
+File: mew.jis.info, Node: sum-write, Next: features, Prev: folder, Up: Viewing
+
+送信、返答、転送
+================
+
+メッセージの送信、返答、転送には、以下のコマンドを使います。
+
+`w'
+     メッセージを書く。新しい草稿が Draft モードに用意される。
+`a'
+     現在のメッセージに返答する。Draft モードに草稿が用意され、To: や 
+     Cc: が自動的に決定される。
+`A'
+     現在のメッセージに返答する。Draft モードに草稿が用意され、To: や 
+     Cc: が自動的に決定された後、本文が引用される。
+`f'
+     現在のメッセージを第3者に転送する。Draft モードに草稿が用意され、現
+     在のメッセージが自動的に添付される。
+`F'
+     `@' マークの付いたメッセージを第3者に転送する。Draft モードに草稿が
+     用意され、`@' マークの付いたメッセージが自動的に添付される。詳しく
+     は *Note multi mark:: を参照のこと。
+
+エラーメッセージが返ってきたら、以下のコマンドで修正し再挑戦しましょう。
+
+`E'
+     メッセージの再編集。または、MIME 形式でカプセル化されて戻ってきたメッ
+     セージの再編集。+draft フォルダでは、そのメッセージを直接編集。その
+     他のフォルダでは +draft フォルダにコピーしてから編集。
+`M-e'
+     "----- Original message follows -----" の後にオリジナルのメッセージ
+     が引用されているエラーメッセージの再編集。
+
+
+
+File: mew.jis.info, Node: features, Next: sorting, Prev: sum-write, Up: Viewing
+
+便利な機能
+==========
+
+Mew では、Summary モードに以下のような便利なコマンドが用意されています。
+
+`v'
+     「Summary モードのみ」と「Summary & Message モード」の切り替え。
+     「Summary モードのみ」を選んでいる場合は、`d' は次のメッセージを表
+     示しないので、連続してすばやく `D' マークを付けられる。
+`M-l'
+     現在の行を Summary モードの中央に移動させる。
+`C-cC-s'
+     Message モードで順方向段階的検索。
+`C-cC-r'
+     Message モードで逆方向段階的検索。
+`y'
+     メッセージ、あるいは、パートを入力したファイル名で保存する。Mule 上
+     で `C-u' と共に呼び出すと、保存するテキストの coding-system を指定
+     できる。
+`#'
+     現在のメッセージかパートを印刷する。
+`|'
+     現在のメッセージかパートをパイプで出力する。
+`O'
+     メッセージを番号詰めして、再び一覧表示する。
+`B'
+     格納されているメッセージを取り出す。
+`D'
+     +trash フォルダのメッセージを全部消去する(*Note delete mark::)。
+`Z'
+     アドレス帳(*Note addrbook::)を読み込んで情報を更新する。`C-uZ' では、
+     アドレス帳に加えフォルダのリストも更新する。
+     `mew-use-folders-file-p' が `t' ならフォルダのリストを 
+     "~/Mail/.folders" に保存する。デフォルトは `t'。
+`C-cC-a'
+     現在のメッセージの情報をアドレス帳に登録する(*Note addrbook::)。
+`C-cC-v'
+     PGP のバージョンを切替える(*Note pgp-viewing::)。
+`C-cC-p'
+     昔ながらの自動処理できない PGP メッセージを PGP に復号化、検証させ
+     る。
+
+
+
+File: mew.jis.info, Node: sorting, Next: illegal, Prev: features, Up: Viewing
+
+メッセージのソート
+==================
+
+フォルダ内のメッセージをソートするには `S' を使います。このとき次のよう
+にどのフィールドでソートするか訊いてくるので、ソートしたいフィールド名を
+入力して下さい。
+
+     Sort by? (default date): 
+
+指定したフィールドに書かれている文字列は単純に文字列比較でソートするべき
+ではありません。たとえば、Subject: はテキストと考えてよいのですが、Date: 
+は日付、X-Mail-Count: は数字と考えてソートすべきです。このように文字列を
+どう取り扱うかをモードと言います。ソートによく指定されるフィールド名に対
+するデフォルトのモードは `mew-sort-key-alist' で設定されています。
+
+ソートのモードを明示的に指定、変更したい場合には `:' で区切って指定しま
+す。たとえば X-Mail-Count フィールドの内容を(テキストとしてではなく) 数
+値とみなしてソートしたい場合には、次のように入力します。
+
+     x-mail-count:num
+
+なお、文字の大文字、小文字は区別しません。また、フィールド名やモードは 
+`TAB' で補完できます。
+
+"Sort by?" と訊かれる際のデフォルトのフィールド名は、
+`mew-sort-default-key' で設定できます。以下は、デフォルトの "date" を 
+"x-ml-count" に変更する例です。
+
+     (setq mew-sort-default-key "x-ml-count")
+
+`mew-sort-default-key-alist' で、フォルダごとにデフォルトのフィールド名
+を設定することもできます。ここで指定しなかったフォルダでは、デフォルトの
+フィールド名として `mew-sort-default-key' の値が使われます。以下は、
++inbox フォルダでのデフォルトを "subject" に、+mew-dist フォルダでのデフォ
+ルトを "x-mail-count" に変更する例です。
+
+     (setq mew-sort-default-key-alist
+           '(("+inbox" . "subject")
+             ("+mew-dist" . "x-mail-count")))
+
+ソートに関するコマンドをまとめると以下のようになります。
+
+`S'
+     入力したフィールドを用いてフォルダ内のメッセージをソートします。
+     `C-u S' のように prefix を付けると、リージョン内のメッセージのみを
+     ソートします。
+`mS'
+     `*' マークの付いたメッセージをソートします。
+
+
+
+File: mew.jis.info, Node: illegal, Next: Composing, Prev: sorting, Up: Viewing
+
+化けたメッセージ
+================
+
+以下のようなメッセージは、charset がなく、US-ASCII と認識されてしまうの
+で、化けます。
+
+     To: kazu
+     Subject: 化けるメッセージ
+     From: Alice
+     MIME-Version: 1.0
+     Content-Type: Text/Plain
+
+     日本語の本文
+
+このような場合は、`C-cC-l' を押すと、文字コードを正しく変換し表示します。
+
+また以下のようにメッセージのヘッダが化けることがあります。
+
+     From: "=?iso-2022-jp?B?GyRCOzNLXE9CSScbKEI=?=" <kazu@iijlab.net>
+
+上の例では "=?" と "?=" で囲まれた部分はもともと日本語でした。メッセージ
+の規格ではヘッダには ASCII のみが格納できると定められています。よって、
+ASCII 以外の文字コードをヘッダに格納するには、ある規則に従って ASCII に
+符号化する必要があります。しかし、この符号化された文字列を 「"」 で囲む
+のは間違いです。「"」で囲まれた文字列は、そのままの形で取り扱われます。
+よって、上の例の "=?" と "?=" で囲まれた部分が日本語に復号化されることは
+ありません。
+
+規格に無頓着な一部のメーラではこのような間違いを平気で犯します。正しい対
+処方法は、このようなメーラの作者に頼んで、規格を正しく実装するように変更
+してもらうことです。しかしそれまで待てない人は、以下の設定をして下さい。
+これで「"」中の "=?" と "?=" で囲まれた部分が、Summary モードでも 
+Message モードでも復号化されます。
+
+     (setq mew-decode-quoted t)
+
+
+
+
+File: mew.jis.info, Node: Composing, Next: header, Prev: illegal, Up: Top
+
+メッセージを作成する
+********************
+
+ここではメッセージの作成方法について説明します。Mew では、MIME 形式のメッ
+セージだけを作成できます(MIME-Version: のないメッセージは作成できません)。
+
+新しいメッセージを書くために、Draft モードに移行するには、次の手段があり
+ます。
+
+  1. `M-x mew-send' と入力する。
+  2. `mail-user-agent' が設定されている場合、`C-xm' と入力する。
+  3. Summary モードで `w' を押す。
+
+すると、以下のようなバッファが用意されます。
+
+     To: 
+     Subject: 
+     X-Mailer: Mew version 1.94 on XEmacs 20.4
+     ----
+
+これを Draft モードといいます。Draft モードにおいて、"----" より上をヘッ
+ダ、下を本文と呼びます。
+
+またメッセージへの返答(`a' や `A')や転送(`f' や `F') でも Summary モード
+から Draft モードへ移行します。
+
+草稿は、+draft フォルダの下に作成されます。同時に複数の草稿を持つことが
+可能です。
+
+以下、Draft モードの使い方を説明します。
+
+* Menu:
+
+* header::                      ヘッダの補完
+* cheader::                     ヘッダの循環的な補完
+* addrbook::                    アドレス帳
+* send::                        メッセージの送信
+* cite::                        引用
+* mime-comp::                   マルチパートの作成
+* charset-guess::               文字コードの推測
+* reply::                       メッセージへの返答と宛先の決定
+* forward::                     メッセージの転送
+* pgp-shortcut::                PGP を利用する
+* mark-b-comp::                 マークを使った PGP/MIME の作成
+* pgp-key::                     PGP の鍵の配布
+
+
+
+File: mew.jis.info, Node: header, Next: cheader, Prev: Composing, Up: Composing
+
+ヘッダの補完
+============
+
+ヘッダでは `TAB' に対し、以下ように各フィールド用の完機能が割り当てられ
+ています。
+
+   - フィールド名の補完
+   - アドレスの短縮名の補完と展開 (To:、Cc: など)
+   - フォルダ名の補完 (Fcc:)
+
+<フィールド名の補完>
+
+行頭の単語中で、しかも、上の行の最後が "," で終る継続行でなければ、`TAB' 
+で `mew-fields' に定義されているフィールド名を補完できます。
+
+     To: kazu@mew.org
+     R`TAB'
+
+上記の場所で `TAB' を押すと以下のようになります。
+
+     To: kazu@mew.org
+     Reply-To: 
+
+<アドレスの短縮名の補完と展開>
+
+Mew では、アドレス帳という機能を使って、長く分かりにくいアドレスに短く覚
+えやすい短縮名を付けられます。たとえば、以下のように設定したとします。
+
+     pooh:           winnie-the-pooh@100acre.woodwest.uk
+
+これは、アドレス "winnie-the-pooh@100acre.woodwest.uk" に "pooh" という
+短縮名付けていることになります。この短縮名は、通常 "~/.im/Addrbook" とい
+うファイルに設定します。アドレス帳の機能の詳細については、*Note
+addrbook:: を参照して下さい。
+
+Draft モードのヘッダ内で、かつ、アドレスを書くべきフィールド上で、しかも、
+1 文字以上の文字列が前にある場所で `TAB' を打つと、アドレスの短縮名が補
+完されます。
+
+例を挙げてみます。
+
+     To: piglet@beech.tree.uk, 
+             po`TAB'
+
+このように `TAB' を押すと、(他に候補が無ければ) "pooh" まで補完されます。
+
+     To: piglet@beech.tree.uk, 
+             pooh`TAB'
+
+もう一度 `TAB' を押すと "winnie-the-pooh@100acre.woodwest.uk" に展開され
+ます。
+
+     To: piglet@beech.tree.uk, 
+             winnie-the-pooh@100acre.woodwest.uk
+
+アドレスが補完できない場所で `TAB' を打つと、単に `TAB' が入ります。たと
+えば、以下の例を考えて下さい。
+
+     To: pooh,`TAB'
+
+この場合、単に `TAB' が挿入されます。
+
+"@"で終る文字列は強制的に展開します。たとえば、以下のように似たような 短
+縮名があった場合を考えて下さい。
+
+     pooh:           winnie-the-pooh@100acre.woodwest.uk
+     pooh-pooh:      pooh-pooh@somewhere.jp
+
+"pooh" を "winnie-the-pooh@100acre.woodwest.uk" に強制的に展開するには、
+以下のようにします。
+
+     To: pooh@`TAB'
+
+<フォルダ名の補完>
+
+Fcc: などのようにフォルダを補完すべきところでは、`TAB' でフォルダを補完
+できます。以下例を挙げてみます。
+
+     Fcc: `TAB'
+
+"+" が補完されます。
+
+     Fcc: +`TAB'
+
+`TAB'をもう1度押すと候補が表示されるので、候補を見ながら適切な文字を入力
+します。
+
+     Fcc: +B`TAB'
+
+候補が一意に定まれば補完されます。
+
+     Fcc: +Backup
+
+<設定のヒント>
+
+アドレスの短縮名とフォルダ名をどのフィールドで補完できるようにするかは、
+`mew-field-completion-switch' で定義できます。デフォルトでは以下のように
+宣言されています。
+
+     (defvar mew-field-completion-switch
+       '(("To:"        . mew-complete-address)
+         ("Cc:"        . mew-complete-address)
+         ("Dcc:"       . mew-complete-address)
+         ("Bcc:"       . mew-complete-address)
+         ("Reply-To:"  . mew-complete-address)
+         ("Fcc:"       . mew-complete-folder)
+         ("Resent-To:" . mew-complete-address)
+         ("Resent-Cc:" . mew-complete-address)
+         ("Config:"    . mew-complete-config)))
+
+Config: の補完に関しては *Note config:: を参照して下さい。
+
+
+
+File: mew.jis.info, Node: cheader, Next: addrbook, Prev: header, Up: Composing
+
+ヘッダの循環的な補完
+====================
+
+ヘッダでは、`C-cTAB' に循環的な補完機能が割り当てられています。循環的な
+補完機能とは、あるリストのある値がそのリストの次の値に置き換えられること
+です。リストの最後は、最初につながっていると考えます。ヘッダ中の循環的な
+補完機能は、以下のようにフィールドごとに異なります。
+
+   - ドメイン名の循環的な補完 (To:、Cc: など)
+   - From: の循環的な補完 (From:)
+
+<ドメイン名の循環的な補完>
+
+アドレスを書くべきフィールドでは、`C-cTAB' でドメインを補完します。補完
+の候補は `mew-mail-domain-list' から選ばれます。
+
+     To: kazu@`C-cTAB'
+
+上記の場所のように候補が一意に定まらない場合は、`mew-mail-domain-list' 
+の最初のドメイン名が挿入されます。
+
+     To: kazu@mew.org`C-cTAB'
+
+補完された後、さらに `C-cTAB' を押すと `mew-mail-domain-list' の次の候補
+に変換します。
+
+     To: kazu@wide.ad.jp
+
+また、以下の補完が一意に定まれば、その候補を挿入します。
+
+     To: kazu@w`C-cTAB'
+
+上記の例は次のようになります。
+
+     To: kazu@wide.ad.jp
+
+<From: の循環的な補完>
+
+From: フィールド上では、`C-cTAB' は`mew-from-list' の値を循環的に補完し
+ます。このリストの最初の値(別名 `mew-from')は、次のように既に挿入されて
+いるかもしれません。
+
+     From: Kazu Yamamoto (山本和彦) <Kazu@Mew.org>
+
+値の場所ならどこでも構いませんが、`C-cTAB' と入力すると、この値を 
+`mew-from-list' の次の値と置き換えます。たとえば、
+
+     From: Kazu Yamamoto (山本和彦) <Kazu@Mew.org>`C-cTAB'
+
+は以下のようになります。
+
+     From: Kazuhiko Yamamoto <kazu@wide.ad.jp>
+
+循環的な補完のフィールドと関数の対応は、
+`mew-field-circular-completion-switch' で定義できます。デフォルトでは以
+下のように宣言されています。
+
+     (defvar mew-field-circular-completion-switch
+       '(("To:"          . mew-circular-complete-domain)
+         ("Cc:"          . mew-circular-complete-domain)
+         ("Dcc:"         . mew-circular-complete-domain)
+         ("Bcc:"         . mew-circular-complete-domain)
+         ("Reply-To:"    . mew-circular-complete-domain)
+         ("Resent-To:"   . mew-circular-complete-domain)
+         ("Resent-Cc:"   . mew-circular-complete-domain)
+         ("From:"        . mew-circular-complete-from)
+         ("Resent-From:" . mew-circular-complete-from)
+         ("Config:"      . mew-circular-complete-config)))
+
+Config: の循環的な補完に関しては *Note config:: を参照して下さい。
+
+
+
+File: mew.jis.info, Node: addrbook, Next: send, Prev: cheader, Up: Composing
+
+アドレス帳
+==========
+
+Mew 1.94 からアドレスの alias とペットネームがアドレス帳に統合されました。
+alias ("~/.im/Aliases")とペットネーム("~/.im/Petname")は今後積極的には保
+守されませんので、できればアドレス帳("~/.im/Addrbook")に乗り換えて下さい。
+アドレス帳には 2 つの書式が用意されています。一方は「展開規則」を指定す
+る書式、他方は「個人情報」を記述するための書式です。
+
+まず、「展開規則」を記述するための書式を示します。
+
+     <shortname>: <address1>[, <address2>, <address3>,...]
+
+このように短縮名と展開すべきアドレスを `:' で区切って書きます。複数のア
+ドレスに展開する場合は、それらのアドレスを `,' で区切ります。(これは、
+To: などでアドレスが `,' で区切られているのと同じです。) `,' の後ろに空
+白を入れても構いません。以下に例を示します。
+
+     pooh:           winnie-the-pooh@100acre.woodwest.uk
+     piglet:         piglet@beech.tree.uk
+     friends:        pooh, piglet
+
+Mew では多段の展開が可能です。たとえばこの例で、次のように "friends" を
+展開してみましょう。
+
+     To: friends`TAB'
+
+"friends" 内部で "pooh" と "piglet" に展開され、さらにそれぞれが展開され
+るので、次のようになります。
+
+     To: winnie-the-pooh@100acre.woodwest.uk, piglet@beech.tree.uk
+
+次に、「個人情報」を記述するための書式を示します。
+
+     <shortname> <address1>[, <address2>, <address3>,...] <nickname> <fullname>
+
+このように 4 つの要素を空白で区切ります。<shortname> が短縮名です。
+<nickname> と <fullname> はそれぞれニックネームと正式な氏名であり、日本
+語でも構いません。2 番目の要素はアドレスです。複数のアドレスをその人が持っ
+ている場合は、`,' で区切って書きます。`,' の後に空白を入れても構いません。
+つまり、この空白は要素の区切りではありません。また、`"' で囲まれた空白も
+要素の区切りにはなりません。以下に例を示します。
+
+     kazu	kazu@mew.org, kazu@iijlab.net	Kazu-kun  "Kazuhiko Yamamoto"
+
+「展開規則」の書式の場合と違って、「個人情報」の書式では、アドレスが順に
+置き換えられていきます。以下の例を考えて下さい。
+
+     To: kazu`TAB'
+
+"kazu" の後で `TAB' を打つと、"kazu@mew.org" に置き換わります。
+
+     To: kazu@mew.org`TAB'
+
+次に "kazu@mew.org" の後で `TAB' を打つと、"kazu@iijlab.net" に置き換わ
+ります。
+
+     To: kazu@iijlab.net`TAB'
+
+さらに "kazu@iijlab.net" の後で `TAB' を打つと、"kazu@mew.org" に戻りま
+す。このように `TAB' を押すと、アドレスが循環的に置換されます。アドレス
+を決定した後は、正式名称が付加できます。
+
+     To: kazu@mew.org`M-TAB'
+
+このように `M-TAB' を押すと、以下のように正式名称が付加されます。
+
+     To: Kazuhiko Yamamoto <kazu@mew.org>
+
+「個人情報」の書式では、各要素を省略できます。中間の要素を省略する場合は、
+`*' と書いて下さい。以下に、アドレスに対してニックネームのみを定義する例
+を示します。
+
+     *	kazu@mew.org, kazu@iijlab.net	Kazu-kun
+
+ニックネームは Summary モードでのアドレスの置き換えと、Draft モードでの
+引用記号の置き換え(*Note cite::)に利用されます。
+
+アドレス帳のコメント文字は `;' と `#' です。`;' は行頭にある場合のみコメ
+ントとなり、その行が無視されます。`#' は任意の場所でコメントとなり、そこ
+から行末までが無視されます。
+
+実はアドレス帳以外にも、自動的に追加される短縮名があります。メッセージを
+送信した場合、To: と Cc: にあるアドレスは、ユーザ名が短縮名として登録さ
+れます。以下の例を考えて下さい。
+
+     To: kazu@mew.org
+
+このメッセージを送信すると、アドレス "kazu@mew.org" に対し、短縮名 
+"kazu" が自動登録されます。ただし、すでに "kazu" という短縮名が自動登録
+されているなら、`mew-addrbook-override-by-newone' の値に応じて上書きする
+かを決定します。`nil' なら古い設定を残し、それ以外なら上書きします。展開
+の際は、アドレス帳の方が優先されます。アドレス帳に無い短縮名のみが有効に
+なります。自動登録されるのは通常 1000 個(`mew-lisp-max-length')のアドレ
+スまでです。それを越えて登録すると古いものから消えていきます。これらの情
+報は Mew を終了する際に、"~/Mail/.mew-alias" に保存されます。
+
+Summary モードには、現在読んでいるメッセージの情報を Addrbook に登録する
+機能があります。展開規則を登録するには `C-cC-a'、個人情報を登録するには
+`C-uC-cC-a' と入力して下さい。以下に個人情報を登録している例を示します。
+
+     #If you want to register this entry, type C-c C-c.
+     #If you want to NOT register this entry, type C-c C-q.
+     Shortname: kazu
+     Addresses: kazu@mew.org
+     Nickname: 
+     Name: Kazuhiko Yamamoto
+     Comments: 
+
+必要であれば加筆訂正します。実際に登録するには `C-cC-c'、登録を取り止め
+る場合は `C-cC-q'と入力して下さい。
+
+
+
+
+File: mew.jis.info, Node: send, Next: cite, Prev: addrbook, Up: Composing
+
+メッセージの送信
+================
+
+草稿を書き上げ送信する準備ができたら、`C-cC-m C-cC-c' と入力して下さい。
+
+たとえば、以下のようなメッセージを送る場合を考えます。
+
+     To: pooh
+     Subject: PGP/MIME を使おうよ
+     X-Mailer: Mew version 1.94 on XEmacs 20.4
+     ----
+     Mew がセキュリティ・マルチパートをサポートしました。
+
+     --かず
+
+`C-cC-m' まで入力すると、以下のようになります。
+
+     To: winnie-the-pooh@100acre.woodwest.uk
+     Subject: PGP/MIME =?iso-2022-jp?B?GyRCJHI7SCQqJCYkaBsoQg==?=
+     X-Mailer: Mew version 1.94 on XEmacs 20.4
+     Mime-Version: 1.0
+     Content-Type: Text/Plain; charset=iso-2022-jp
+     Content-Transfer-Encoding: 7bit
+
+     Mew がセキュリティ・マルチパートをサポートしました。
+
+     --かず
+
+ここで注意して頂きたいのは、Content-Type: に Text/Plain を選び、charset 
+を推測していることです。
+
+次に `C-cC-c' と入力すると通常のテキストメッセージを送れます。メッセージ
+はバックグランドで送信されます。このように `C-cC-m' は MIME の作成、
+`C-cC-c' は送信です。Mew では「できるだけ見たままのメッセージを送信する」
+というポリシーがあるので、ユーザに明示的に MIME を作ってもらうことにして
+います(今までに余分な .signature や Fcc: が勝手に付けられていやな思いを
+した人はいませんか？ :p)。
+
+エラーが起きた場合は、"*Mew watch*" バッファを表示します。エラーが生じて
+消えなかった "*Mew watch*" バッファは、`C-cC-q' で消せます。多くの場合、
+草稿は +draft フォルダに残っています。そこで、Summary モードで `g' と押
+して +draft フォルダに移動し、+draft フォルダの Summary モードで `E' を
+押して再編集して下さい。
+
+メッセージの送信が終っていないのに、`C-xC-c' で Emacs を終了させようとす
+ると、
+
+     Active processes exist; kill them and exit anyway? (yes or no)
+
+と訊かれます。"*Mew watch*" バッファがなくなってから終了させて下さい。
+
+`C-cC-m' は省略できます。この場合、MIMEを自動的に作った後に
+
+     The header was modified. Send this message? (y or n)
+
+と訊いてきますので、`y' を入力して下さい。Mewでは、見たままのメッセージ
+を送信することをモットーにしているので、Mew が勝手にメッセージを書き換え
+た場合は、このように質問を受けます。
+
+すべてのメッセージ作成方法で `C-cC-m' を省略して構いません。ただし、見た
+ままのメッセージを送信したい人は、`C-cC-m C-cC-c' と入力する癖を付けるこ
+とをお勧めします。
+
+カーソルのある場所に "~/.signature" を挿入するコマンドは `C-cTAB' です。
+シグニチャファイルは、`mew-signature-file' で設定できます。
+`mew-signature-as-lastpart' や `mew-signature-insert-last' を設定するこ
+とで、`C-cTAB' の動作をカスタマイズできます。
+
+出てきたコマンドを以下にまとめます。
+
+`C-cC-m'
+     MIME を作成する。Charset の推測、ファイル構造をマルチパートへ変換な
+     ど。
+`C-cC-c'
+     メッセージを送信する。
+`C-uC-cC-c'
+     メッセージを送信するが、草稿は消さない。複数の人に内容を少しずつ変
+     えながらメッセージを送りたい場合に便利。
+`C-cTAB'
+     カーソルの位置に "~/.signature" を挿入する。
+
+
+
+File: mew.jis.info, Node: cite, Next: mime-comp, Prev: send, Up: Composing
+
+引用
+====
+
+Summary モードの `a' や `A' を使ってメッセージに返答するための草稿を用意
+すると、Emacs が3分割されます。上が現在の Summary モード、中が Message 
+モード、下が Draft モードです。
+
+Message モードのテキストを引用するコマンドを以下に示します。
+
+`C-cC-y'
+     Message モードからメッセージの一部をコピーし、引用ラベルと引用記号
+     付でペーストする。
+       1. おおまかに言えば、Message モードの本文がコピーされる。たとえば、
+          Text/Plain が表示されていると、Message モード全体がコピーされ
+          る。Message/Rfc822 が表示されている場合は、ヘッダを除いた本文
+          がコピーされる。
+       2. `C-u' と共に呼ばれると、ヘッダがあればヘッダをコピーする。
+       3. Emacs のマークがあると、そのマークとカーソルの間が対象となる。
+`C-cC-t'
+     Message モードからメッセージの一部をコピーし、引用ラベルと引用記号
+     なしでペーストする。
+
+デフォルトの引用ラベルと引用記号は以下のようになります。
+
+     From: SUMIKAWA Munechika <sumikawa@ebina.hitachi.co.jp>
+     Subject: Wine
+     Date: Wed, 23 Jul 1997 11:40:50 +0900
+
+     > おはようからおやすみまでニートでおなじみの角川です。
+     > 
+     > さて、とろけるワイン作戦ですが、定石通り '90 のボルドーの
+     > カベルネ・ソービニョンを狙いたいと思います。ピノノアール
+     > がちょっぴりブレンドしてあるといいかも。
+
+Draft モードでは Message モード("*mew message*"バッファ)に表示されている
+ものならなんでも引用できます。つまり、複数のメッセージを簡単に引用できる
+のです。引用したいメッセージを表示させて、本文を引用する手順を、引用した
+いメッセージの回数だけ繰り返して下さい。そのための3分割です。
+
+Mew は supercite とリンクできますが、supercite を利用しようと思う前に、
+以下のように設定してみて下さい。
+
+     (setq mew-cite-prefix-function 'mew-cite-prefix-username)
+
+この設定をしておくと、以下のように引用記号にユーザ名が付くようになります。
+
+     From: SUMIKAWA Munechika <sumikawa@ebina.hitachi.co.jp>
+     Subject: Wine
+     Date: Wed, 23 Jul 1997 11:40:50 +0900
+
+     sumikawa> おはようからおやすみまでニートでおなじみの角川です。
+     sumikawa> 
+     sumikawa> さて、とろけるワイン作戦ですが、定石通り '89 のボルドーの
+     sumikawa> カベルネ・ソービニョンを狙いたいと思います。ピノノアール
+     sumikawa> がちょっぴりブレンドしてあるといいかも。
+
+さらに、以下の設定を加えてみましょう。
+
+     (setq mew-addrbook-for-cite-label 'nickname)
+     (setq mew-addrbook-for-cite-prefix 'nickname)
+
+最初の設定でラベルの中のアドレスがニックネーム(*Note addrbook::)に変わり
+ます。また、次の設定で引用記号のユーザ名の部分がニックネームに置き換わり
+ます。
+
+     From: すみっち
+     Subject: Wine
+     Date: Wed, 23 Jul 1997 11:40:50 +0900
+
+     すみっち> おはようからおやすみまでニートでおなじみの角川です。
+     すみっち> 
+     すみっち> さて、とろけるワイン作戦ですが、定石通り '89 のボルドーの
+     すみっち> カベルネ・ソービニョンを狙いたいと思います。ピノノアール
+     すみっち> がちょっぴりブレンドしてあるといいかも。
+
+もし、引用の様式が上記ではなく以下のようになるなら、`mail-citation-hook' 
+が定義されているのかもしれません。
+
+     In article .....
+
+Mew 独自の引用様式を使いたいなら、以下の行を ".emacs" に加えて下さい。
+
+     (setq mail-citation-hook nil)
+
+
+
+File: mew.jis.info, Node: mime-comp, Next: charset-guess, Prev: cite, Up: Composing
+
+マルチパートの作成
+==================
+
+さて、ここでマルチパートの作り方を披露しましょう。
+
+たとえば、+draft/1 でメッセージを書いているときに、`C-cC-a' と入力すると、
+草稿の一番下に
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/     
+          1  Text/Plain(guess)                                       CoverPage*
+          2                                                          .   
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+という行が挿入されます。"1/" はマルチパートを構築するための一時的なディ
+レクトリで、実体は "~/Mail/draft/mime/1" です。パート 1 の CoverPage は
+本文を意味します。ここで Draft モードは次のようになっているでしょう。
+
+     To: mew-dist
+     Subject: ここがヘッダ
+     X-Mailer: Mew version 1.94 on XEmacs 20.4
+     ----
+     本文だよ。
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/     
+          1  Text/Plain(guess)                                       CoverPage*
+          2                                                          .   
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+3つの領域を以下のように呼ぶことにします。
+
+   * "----" より上を 「ヘッダ」
+   * "----" から "attachments" までを「本文」
+   * "attachments" より下を「添付領域」
+
+Draft モードでは、リージョンによってキー割当が違います。
+
+たとえば、`TAB' は以下のようになります。
+
+ヘッダ
+     さまざまな補完。
+本文
+     TAB の挿入。
+添付領域
+     なにもしない。
+
+`c' だと以下のようになります。
+
+ヘッダ
+     c を挿入。
+本文
+     c を挿入。
+添付領域
+     ファイルのコピー。
+
+以下、添付領域でのキー割当です。
+
+`C-p'
+     現在のディレクトリの前のファイルへ移動。
+`C-n'
+     現在のディレクトリの後のファイルへ移動。
+`C-f'
+     1 番目のサブディレクトリに移動。
+`C-b'
+     親ディレクトリに移動。
+`c'
+     ファイルのコピー。"." 上で有効。ネットワーク経由でも可。リモートの
+     ファイルをコピーする場合は、"/[user@]hostname:/filepath"の形式でファ
+     イルを指定。
+`l'
+     ファイルへシンボッリクリンクを張る。"." 上で有効。添付ファイルを 
+     `f' を使って読み込んで編集する場合は、実体を編集してしまわないよう
+     に、`l' ではなく `c' でコピーすべき。
+`d'
+     ファイルとディレクトリの消去。
+`m'
+     サブディレクトリ(つまりマルチパート)の作成。"." 上で有効。
+`f'
+     ファイルをバッファに読み込む。
+`F'
+     新規ファイルをバッファに読み込む。"." 上で有効。
+`y'
+     Message モードに表示されているメッセージにリンクを張る。"." 上で有
+     効。
+`e'
+     external-body の入力。"." 上で有効。
+`a'
+     音をサンプリングしオーディオファイルとして挿入。"." 上で有効。
+`p'
+     入力されたユーザの PGP 公開鍵を取り出す。"." 上で有効。
+`D'
+     ちょっとした説明(Content-Description:)の入力。
+`T'
+     データ型(Content-Type:)の変更。
+`C'
+     Text/* 型のデータの charset を指定する。
+`P'
+     受信側でこのパートを保存する際のファイル名(Content-Disposition:)の
+     変更。ファイル名の入力の際に、単に `RET'を押すと値が消える。そして、
+     送信側のファイル名が `*' と共に表示される。
+
+添付領域では、ファイルのサフィックスによってデータを取り扱います。現在サ
+ポートしているサフィックスは以下の通りです。
+
+     .txt       Text/Plain
+     .html      Text/Html
+     .rfc822    Message/Rfc822
+     [0-9]+     Message/Rfc822
+     .ext       Message/External-body
+     .ps        Application/PostScript
+     .tar       Application/Octet-stream ;; dummy
+     .gif       Image/Gif
+     .jpg       Image/Jpeg
+     .jpeg      Image/Jpeg
+     .png       Image/Png
+     .xwd       Image/X-xwd
+     .xbm       Image/X-xbm
+     .bmp       Image/X-bmp
+     .au        Audio/Basic
+     .mpg       Video/Mpeg
+     .mpeg      Video/Mpeg
+     .pgp       Application/Octet-Stream
+     .pka       Application/Pgp-keys
+     .*         Text/Plain
+
+`c' でファイルをコピーすると、たとえば次のようになります。コピーするとき
+のファイル名は、適切なデータ型を推測できるようサフィックスに気を付ければ
+なんでもよいです。
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/     
+          1  Text/Plain(guess)                                       CoverPage*
+     B    2  Image/Gif                    MagicPoint のロゴ          mgp.gif
+     Q    3  Application/Postscript       資料                       ohp.ps
+          4                                                          .
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+各行は、
+
+   - マーク(Content-Transfer-Encoding:)
+   - パート番号
+   - データの型(Content-Type:)
+   - 説明(Content-Description:)
+   - ファイル名(Content-Disposition:)
+
+から構成されています。
+
+マーク(Content-Transfer-Encoding:)を変更する方法は、*Note mark-b-comp:: 
+を参照して下さい。データの型(Content-Type:)は `T' によって変えられます。
+説明(Content-Description:)は `D' で入力できます。この説明のカラムは、
+*Note mark-b-comp:: で説明する暗号化の際に上書きされます。
+
+第5カラムに表示されるのは、実際にはコピーしたファイル名か 
+Content-Disposition:、つまり、受信者がそのパートを保存する際のファイル名
+です。Content-Disposition: の値があれば、それが表示されます。なければ、
+コピーしたファイル名に `*' を付加して表示します。ファイルをコピーした際
+の Content-Disposition: の値は、コピーしたファイル名が指定されています。
+ただし、Message/* と Multipart/* には Content-Disposition: は設定されま
+せん。Content-Disposition: を指定するには、`P' を利用して下さい。
+
+ファイルはシングルパートに、ディレクトリはマルチパートに対応します。です
+から、ファイル構造を作っていく感覚で複雑なマルチパートを作成できます。簡
+単でしょ？
+
+ディレクトリのデフォルトの Content-Type: は Multipart/Mixed です。これも 
+`T' によって変更できます。
+
+さて、お好みのマルチパートが作成できたら、`C-cC-m' とタイプしましょう。
+あーーーら不思議。ファイル構造がマルチパートへ変換されるではありませんか。
+むろん、多段のマルチパートもサポートしています。あとは、`C-cC-c' で送る
+だけです。
+
+MIME の文法が分かっていない人は、`C-cC-m' の後に草稿を変更しないようにし
+ましょう。もし、どうしても草稿を修正するときは、「最初の境界の前と最後の
+境界の後は無視される」ことに注意して下さい。
+
+マルチパートの変換後、やっぱり元に戻したいと思ったら、`C-cC-u' を使って
+下さい。(`C-xu' や `C-_' ではないことに注意。)
+
+パートの実体が外部にある external-body を作成するコマンド`e' について説
+明しましょう。access-type に ftp か anon-ftp を入力するときは、ange-ftp 
+のおかげでリモートのファイル名が補完できます。access-type がlocal-file 
+の場合は、もちろんファイル名を補完できます。
+
+もし、マルチパートの作成途中でやっぱりシングルパートに戻したくなったら、
+一番上のマルチパート部分で `d' を押して下さい。
+
+
+
+File: mew.jis.info, Node: charset-guess, Next: reply, Prev: mime-comp, Up: Composing
+
+文字コードの推測
+================
+
+Mew はシングルパートとマルチパートの両方に対し、charset を推測する機能を
+持っています。
+
+<シングルパート>
+
+Draft モードで `C-cC-m' と入力すると、Mew は本文の charset を推測します。
+Bilingual Emacs では、7ビットの文字コードに対し US-ASCII を選び、8 ビッ
+トの文字コードに対し ISO-8859-1 を選択します。Mule では、Mule で定められ
+た文字コードの内部表現から charset を推測します。
+
+<マルチパート>
+
+テキストファイルを添付領域に添付した際には、以下のように "(guess)" と表
+示されます。
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/
+          1  Text/Plain(guess)                                       CoverPage*
+          2  Text/Plain(guess)                                       textfile
+          3                                                          .
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+シングルパートとマルチパートで charset を推測することの違いは、データが
+どこに存在するかです。シングルパートはバッファに格納されていますが、マル
+チパートのそれぞれのファイルはディスク上に存在します。charset を推測する
+ためには、Mew はこれらのファイルをバッファに読み込み、そしてシングルパー
+トと同じ要領で文字コードを推測します。
+
+Bilingual Emacs では、Mew はファイルをそのままの形式で読み込みます。です
+から、7ビットのファイルには US-ASCII が、8ビットのファイルには 
+ISO-8859-1 が選ばれます。
+
+Mule では、Mew はファイルをそのサイトの環境(つまり、auto conversion)に従っ
+てファイルを読み込みます。この環境はサイトごとによって異なります。日本語
+の環境では、Mule は 2022-JP、EUC-Japan、そして、Shift_JIS を見事に推測し、
+日本語用の内部表記に変換してバッファに格納します。Mew は、この内部表記か
+ら charset を推測します。よって、ISO-2022-JP、EUC-Japan、そして、
+Shift_JIS のファイルを安全に添付できます。Mule でこの環境を決定する関数
+は、set[up]-<language>-environment という名前ですから、詳しいことが知り
+たいならこれらの関数の説明を読んで下さい。
+
+もし、ファイルの charset を明示的に指定したいなら、`C' を使って下さい。
+典型的な使用例は、日本で ISO-8859-1 のファイルを添付することです。この例
+の場合、添付領域は以下のようになります。
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/     
+          1  Text/Plain(guess)                                       CoverPage*
+          2  Text/Plain(iso-8859-1)                                  textfile
+          3                                                          .    
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+Bilingual Emacs では `C' は利用できません。
+
+
+
+File: mew.jis.info, Node: reply, Next: forward, Prev: charset-guess, Up: Composing
+
+メッセージへの返答と宛先の決定
+==============================
+
+新規にメッセージを書く場合は、To: や Cc: を自分で書くことになります。一
+方 Summary モードで `a' や `A' を使って、あるメッセージに返答しようとす
+ると、To: や Cc: は自動的に用意されます。
+
+返答の際、Mew は以下のような手順に従って To: や Cc: を用意します。
+
+返答するメッセージの From: が自分以外の場合:
+     返答するメッセージに Reply-To: がない場合:
+          返答するメッセージの From: を To: へ (1)
+          返答するメッセージの To: と Cc: を Cc: へ (2)
+     返答するメッセージに Reply-To: がある場合:
+          返答するメッセージの From: と Reply-To: を To: へ (3)
+          返答するメッセージの To: と Cc: を Cc: へ (4)
+返答するメッセージの From: が自分である場合:
+     返答するメッセージの To: を To: へ (5)
+     返答するメッセージの Cc: を Cc: へ (6)
+
+ただし、あるアドレスが複数ある場合は、自動的に 1 つになります。また、匿
+名の宛先を表す ":;" で終るアドレスも、自動的に消去されます。
+
+自分のアドレスは自動的に消去されます。自分のアドレスを定義するには
+`mew-mail-address-list' を使います。以下に例を示します。
+
+     (setq mew-mail-address-list
+            '("pooh@[a-z]*.aist-nara.ac.jp"
+              "pooh@mew.org"
+              "winnie@iijlab.net"))
+
+(1) 〜 (6) でどのフィールドをコピーするかは、以下の変数で指定できます。
+
+   (1) `mew-noreplyto-to-list'
+   (2) `mew-noreplyto-cc-list'
+   (3) `mew-replyto-to-list'
+   (4) `mew-replyto-cc-list'
+   (5) `mew-fromme-to-list'
+   (6) `mew-fromme-cc-list'
+
+Reply-To: がある場合に、Reply-To: だけに返答したいと思うなら、以下のよう
+に設定すればよいでしょう。
+
+     (setq mew-replyto-to-list '("Reply-To:"))
+     (setq mew-replyto-cc-list nil)
+
+`a' や `A' を `C-u' 付で呼び出すと、返答するメッセージの From: が To: に
+入り、Cc: は空になります。送信者のみに返答する場合に利用します。
+
+
+
+File: mew.jis.info, Node: forward, Next: pgp-shortcut, Prev: reply, Up: Composing
+
+メッセージの転送
+================
+
+メッセージを転送するには、Summary モードで `f' や `F' を利用します。する
+と、Draft モードに移行し、あらかじめメッセージが添付領域に添付された草稿
+が準備されます。
+
+また Draft モードで添付領域を用意し、メッセージをコピー(`c')したりメッセー
+ジにリンク(`l')を張ったりしても、メッセージを転送できます。ファイル名が
+数字([0-9]+)の場合は、自動的にメッセージだと判断されます。また、添付領域
+で `y' を使うと、Message モードに表示しているメッセージにリンクを張るの
+で便利です。
+
+通常は添付したメッセージの全体が転送されます。もし、ヘッダの一部を削りた
+い場合は、`mew-field-delete-for-forwarding' を定義して下さい。以下に 
+"Received:" と "Return-Path:" を転送時に削るための設定例を示します。
+
+     (setq mew-field-delete-for-forwarding '("Received:" "Return-Path:"))
+
+
+
+File: mew.jis.info, Node: pgp-shortcut, Next: mark-b-comp, Prev: forward, Up: Composing
+
+PGP を利用する
+==============
+
+ここでは、テキストである本文を PGP で署名したり暗号化したりする方法につ
+いて説明します。出てくるコマンドは以下の通りです。
+
+`C-cC-s'
+     草稿全体を PGP で署名する。パスフレーズを入力すること。
+`C-cC-e'
+     草稿全体を PGP で暗号化する。
+`C-cC-b'
+     草稿全体を PGP で署名後暗号化する。パスフレーズを入力すること。
+`C-cC-r'
+     草稿全体を PGP で暗号化後署名する。パスフレーズを入力すること。
+
+メッセージを暗号化するには受信者の公開鍵を使用します。逆に署名するには自
+分の秘密鍵を使います。よって、署名するためにはパスフレーズを入力する必要
+があります。ただし、パスフレーズの保存機能を使っており、パスフレーズが保
+存されている場合は、パスフレーズを入力する必要はありません(*Note
+pgp-viewing::)。
+
+これらは、次節で説明するマークを使った PGP/MIME の作成方法の省略方法に当
+たります。
+
+Mew で PGP を使うためには、PGP の userid としてアドレスを選ぶ必要があり
+ます(例 "Kazuhiko Yamamoto <kazu@mew.org>")。
+
+以降の説明では、次の例を取り上げます。
+
+     To: pooh
+     Subject: PGP/MIME を使おうよ
+     X-Mailer: Mew version 1.94 on XEmacs 20.4
+     ----
+     Mew がセキュリティ・マルチパートをサポートしました。
+
+     --かず
+
+署名するには、`C-cC-s' と入力します。すると、次のメッセージが得られます。
+
+     To: winnie-the-pooh@100acre.woodwest.uk
+     Subject: PGP/MIME =?iso-2022-jp?B?GyRCJHI7SCQqJCYkaBsoQg==?=
+     X-Mailer: Mew version 1.94 on XEmacs 20.4
+     Mime-Version: 1.0
+     Content-Type: Multipart/Signed;
+             protocol="application/pgp-signature";
+             micalg="pgp-md5";
+             boundary="--Security_Multipart(Sat_Nov_16_03:55:00_1996)--"
+     Content-Transfer-Encoding: 7bit
+
+     ----Security_Multipart(Sat_Nov_16_03:55:00_1996)--
+     Content-Type: Text/Plain; charset=iso-2022-jp
+     Content-Transfer-Encoding: 7bit
+
+     Mew がセキュリティ・マルチパートをサポートしました。
+
+     --かず
+
+     ----Security_Multipart(Sat_Nov_16_03:55:00_1996)--
+     Content-Type: Application/Pgp-Signature
+     Content-Transfer-Encoding: 7bit
+
+     -----BEGIN PGP MESSAGE-----
+     Version: 2.6.3i
+
+     iQCVAwUAMoy8ig9kihyeT3RNAQHt7AQAySDg4n8pOp/YuLaAp68Un/YDtWS0FnOC
+     7EqHJd6fyViPBnZq8d+uGikA7kOBTz+8Kcv+hN6I7BrQVJGEzd0Y9yHHhXvZj++1
+     0D09vgWL5G/Zfk/JMnLBt/BZ1ppOhJPT/L5qi2abk+mBVMKxQe071lfFEfvjF1C2
+     8trTXm/bBz4=
+     =TvAG
+     -----END PGP MESSAGE-----
+
+     ----Security_Multipart(Sat_Nov_16_03:55:00_1996)----
+
+`C-cC-c' で送信して下さい。
+
+暗号化するには、`C-cC-e' と入力して下さい。次のようになります。
+
+     To: winnie-the-pooh@100acre.woodwest.uk
+     Subject: PGP/MIME =?iso-2022-jp?B?GyRCJHI7SCQqJCYkaBsoQg==?=
+     X-Mailer: Mew version 1.94 on XEmacs 20.4
+     Mime-Version: 1.0
+     Content-Type: Multipart/Encrypted;
+             protocol="application/pgp-encrypted";
+             boundary="--Security_Multipart(Sat_Nov_16_03:57:47_1996)--"
+     Content-Transfer-Encoding: 7bit
+
+     ----Security_Multipart(Sat_Nov_16_03:57:47_1996)--
+     Content-Type: Application/Pgp-Encrypted
+     Content-Transfer-Encoding: 7bit
+
+     Version: 1
+
+     ----Security_Multipart(Sat_Nov_16_03:57:47_1996)--
+     Content-Type: Application/Octet-Stream
+     Content-Transfer-Encoding: 7bit
+
+     -----BEGIN PGP MESSAGE-----
+     Version: 2.6.3i
+
+     hIwDD2SKHJ5PdE0BA/9gUkcQYVfT+3LrUmcgLkNepuOnDfjADHrWiNo10t4ijyf8
+     ODBpUBXoBdTg08eNLAWmRFhiJPmI+mxpF6cYFZXhr7gVpa0Qzp3Gr9nYvngRPKNK
+     qUiQjA/ORR3c1TBawufB19jJ9RdU2f0BidhzOSbzsJh1LTgUZu/7Qyd02LxyEqYA
+     AACbrV867PeoFyFc9MVfqTUR6Zw6kGBAlnVYjqQgBhuuyG79vbAbDJMhFiRpoRPf
+     0MqEewxRonwKOik/PoKnLrwFg77Cb5pxRqMiWPyECJnqtX7r7Wg1c8kqPD0VRjI9
+     GhHPiG/RmNbpbj/5g6zZri1YBCe8qxIS0QKa3YO7HRDcdBFARr22RaFGFtgdBQ6X
+     cZB+qNeEaKXt3AneTWc=
+     =djCr
+     -----END PGP MESSAGE-----
+
+     ----Security_Multipart(Sat_Nov_16_03:57:47_1996)----
+
+`C-cC-c' で送信して下さい。このメッセージは、受信者の公開鍵に加えて、自
+分の公開鍵でも暗号化されています。ですから、保存したメッセージを復号化で
+きます(例 `g' で +Backup に移動したとき)。
+
+署名後暗号化するには、`C-cC-b' と入力します。暗号化後署名するには、
+`C-cC-r' とタイプします。いずれの場合も、`C-cC-c' で送信して下さい。
+
+PGP で署名を施したり、暗号化したりしてメッセージを送ろうと思っていても、
+うっかり忘れることがあります。そのため、メッセージを作成するコマンド 
+`C-cC-m' に対し、必要に応じて PGP を起動させる機能があります。
+
+作成するすべてのメッセージのプライバシを保護したいなら、
+`mew-protect-privacy-always' を `t' にして、
+`mew-protect-privacy-always-type' に利用したいサービスを設定します。
+
+暗号化されたメッセージに対する返答メッセージのプライバシを保護したいなら、
+`mew-protect-privacy-encrypted' を `t' にして、
+`mew-protect-privacy-encrypted-type' に利用したいサービスを設定します。
+この設定は、暗号化されたメッセージへの返答する場合、上記のすべてのメール
+に対する設定よりも優先されます。
+
+以下に利用できるサービスを示します。かっこ内はそれぞれのサービスを表すシ
+ンボルです。`C-cC-m' した際に利用されるサービスは、モードラインに表示さ
+れます。
+
+pgp-signature (PS)
+     署名
+pgp-encryption (PE)
+     暗号化
+pgp-signature-encryption (PSPE)
+     署名後暗号化
+pgp-encryption-signature (PEPS)
+     暗号化後署名
+
+以下の例は、すべてのメールに対し `C-cC-m' で署名する設定です。
+
+     (setq mew-protect-privacy-always t)
+     (setq mew-protect-privacy-always-type 'pgp-signature)
+
+以下の例は、暗号化されたメッセージへの返答メッセージに対し、`C-cC-m' で
+暗号化する設定です。
+
+     (setq mew-protect-privacy-encrypted t)
+     (setq mew-protect-privacy-encrypted-type 'pgp-encryption)
+
+Draft モードでは、`C-cC-pC-a' で `mew-protect-privacy-always'、
+`C-cC-pC-e' で `mew-protect-privacy-encrypted' の値を反転できます。
+
+Draft モードにおいて現在書いている草稿対してのみあらかじめサービスを指定
+しておき、送信時にサービスを施すことを忘れないようにできます。現在の草稿
+に対し `C-cC-m' で施されるサービスを指定するには、 `C-cC-pC-d' に続いて
+上記のサービスの 1 つを入力して下さい。
+
+
+
+File: mew.jis.info, Node: mark-b-comp, Next: pgp-key, Prev: pgp-shortcut, Up: Composing
+
+マークを使った PGP/MIME の作成
+==============================
+
+PGP/MIME をサポートするために、マークを使った作成方法が提供されています。
+以前の例を思い出してみましょう。
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/     
+          1  Text/Plain(guess)                                       CoverPage*
+     B    2  Image/Gif                    MagicPoint のロゴ          mgp.gif
+     Q    3  Application/Postscript       資料                       ohp.ps
+          4                                                          . 
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+行頭に `B' や `Q' といったマークがあります。このマークは符号化を意味して
+います。Mew では、新しい概念「符号化」を導入しています。符号化には、
+Base64, Quoted-Printable, Gzip64(Gzip + Base64), PGP で署名, PGPで暗号化
+などがあります。
+
+現在次の 6 つのマークがサポートされています。
+
+`" "'
+     符号化しない。ただし、8ビットのテキストは符号化されるかもしれない。
+`B'
+     Base64
+`Q'
+     Quoted-Printable
+`G'
+     Gzip64(gzip 圧縮し Base64 で符号化する。Mew が実験的に採用している。
+     相手が Mew を使っていない場合は、使用すべきではない。)
+`PS'
+     PGP で電子署名。
+`PE'
+     PGP で暗号化。
+
+添付領域でのマークに関係する新しいキー割当は以下の通りです。
+
+`B'
+     Base64 で符号化するため `B' マークを付ける。
+`Q'
+     Quoted-Printable で符号化するため `Q' マークを付ける。
+`G'
+     Gzip64 で符号化するため `G' マークを付ける。ただし、Text/Plain と 
+     Application/Postscript でしか実行できない。これ以外の型には圧縮は無
+     意味である。なぜなら、jpeg などはあらかじめ圧縮されているから。
+`S'
+     PGP で署名するため `PS' マークを付ける。
+`E'
+     PGP で暗号化するため `PE' マークを付ける。受信者のアドレスを入力す
+     る。
+`U'
+     符号化を元に戻す。元々のマークに戻る。
+
+次の例を考えてみましょう。パート 2 は PGP で署名され、"kazu" 用に PGP で
+暗号化されます。安心して下さい。説明の部分は上書きされていますが、保存さ
+れています。パート 3 は Gzip64 で符号化されます。
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/
+          1  Text/Plain(guess)                                       CoverPage*
+     PSPE 2  Image/Gif                    kazu@mew.org               mgp.gif
+     G    3  Application/Postscript       資料                       ohp.ps
+          4                                                          .
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+適宜マークを付けた後は、`C-cC-m' で MIME(PGP/MIMEなど) を作成し、
+`C-cC-c' で送信して下さい。
+
+
+
+File: mew.jis.info, Node: pgp-key, Next: Marks, Prev: mark-b-comp, Up: Composing
+
+PGP の鍵の配布
+==============
+
+PGP の公開鍵を配布するには、Draft モードの添付領域で `p' を押して下さい。
+だれの公開鍵を配布するか尋ねられます。自分の公開鍵であれば、単に `RET' 
+と入力して下さい。他人の公開鍵であれば、補完を利用しながらその人のアドレ
+スを入力して下さい。PGP の公開鍵は、Application/Pgp-keys というデータ型
+で配送されます。
+
+Summary モード、あるいは、Virtual モードでメッセージを読んでいる際に、あ
+るパートのデータ型が Application/Pgp-keys であれば、Mew は PGP の公開鍵
+リングにそれを登録しようとします。Mew は、「信用度」と「有効性」を全く考
+慮しないことに注意して下さい。これらの値を設定するのは、あなた自身です。
+設定には、"pgp -ke" と "pgp -ks" を使って下さい。もし、「信用度」と「有
+効性」の意味が分からなければ、PGP を使って自分のプライバシを保護しようと
+する前に、PGP が提供する「信用の輪」とは何かを学ぶべきです。
+
+
+
+
+File: mew.jis.info, Node: Marks, Next: delete mark, Prev: pgp-key, Up: Top
+
+愉快なマークたち
+****************
+
+ここでは、Summary モードで利用できるマークについて説明します。マークは以
+下のように、数字の右に付きます。
+
+         1D 07/17 いとぢゅん     v6: items to be no in6_pcbnotify()がなにも
+         2o 07/18 歌代先生       Re: behavior after これ、mark-ring がどんど
+         3* 07/19 のむさん       refile info.       乃村です。遅くなりました。
+
+現在利用できるマークは以下の4つです。
+
+`D'
+     消去のマーク。
+`o'
+     整頓、つまり、フォルダを移動させるマーク。
+`@'
+     複数のメッセージを一度に扱うためのマーク。
+`*'
+     後から読み返すためのマーク。
+
+以下それぞれについて説明します。
+
+* Menu:
+
+* delete mark::                 消去 `D'
+* refile mark::                 整頓 `o'
+* multi mark::                  複数 `@'
+* review mark::                 復習 `*'
+* unmark::                      マークの消去
+* mark level::                  マークの強さ
+
+
+
+File: mew.jis.info, Node: delete mark, Next: refile mark, Prev: Marks, Up: Marks
+
+消去 `D'
+========
+
+メッセージを消去するには、まず Summary モードで `d' を押して、`D' マーク
+を付けます。マークを付けただけでは何も起こらないので、間違って `d' を押
+しても大丈夫です。デフォルトでは、`x' を押すと `D' マークの付いたメッセー
+ジが +trash フォルダに移動します。
+
++trash フォルダ内のメッセージを実際に消去するには、デフォルトでは以下の 
+2 つの方法があります。
+
+  1. Summary モードで `D' を実行する。
+  2. +trash フォルダ内で `D' マークを付けて、`x' を押す。
+
+これまでしつこいように「デフォルトでは」と念を押してきました。ここでいう
+デフォルトとは、`mew-msg-rm-policy' が`'trashonly' であるということです。
+`mew-msg-rm-policy' は以下のような値をとれます。それぞれの説明は `x' を
+押した際の動作についてです。
+
+`'totrash'
+     +trash フォルダ以外のフォルダでは、`D'マークの付いたメッセージが 
+     +trash フォルダに移動します。+trash フォルダでは単にマークが消えま
+     す。
+`'always'
+     `D' マークの付いたメッセージは実際に消去されます。
+`'trashonly'
+     +trash フォルダの `D' マークの付いたメッセージは、実際に消去されま
+     す。それ以外のフォルダにある `D' マークの付いたメッセージは、+trash 
+     フォルダに移動します。
+`'uselist'
+     `mew-msg-rm-folder-list' で指定されたフォルダの `D' マークの付いた
+     メッセージは、実際に消去されます。それ以外のフォルダにある `D' マー
+     クの付いたメッセージは、+trash フォルダに移動します。
+`それ以外'
+     `'totrash' と同様に扱われます。
+
+自分の好きなように `x' の動作をカスタマイズして下さい。
+
+すべての `*' マークを `D' に変換できれば、一度にたくさんの `D' マークを
+付けれて便利です。これには、`md' を利用して下さい。
+
+以下に、`D' マークに関するコマンドをまとめます。
+
+`d'
+     `D' マークを付ける。
+`x'
+     `D' マークの付いたメッセージを `mew-msg-rm-policy' に従って処理する。
+`md'
+     `*' マークすべてを `D'マークに変換する。
+
+
+
+File: mew.jis.info, Node: refile mark, Next: multi mark, Prev: delete mark, Up: Marks
+
+整頓 `o'
+========
+
+メッセージを整頓するには `o' を押して、整頓先のフォルダを入力し、`o' マー
+クを付けます。整頓先のフォルダは、賢く推測してくれるので、ほどんどの場合
+はフォルダ名を入力する代わりに `RET' を押すだけです。"," で区切って複数
+のフォルダを入力することもできます。もちろん、`TAB' で補完できます。詳し
+くは *Note Refile:: を参照して下さい。
+
+`o' マークの付いたメッセージの上で `o' を押すと、整頓先を追加したり変更
+したりできます。また、実際の整頓は `x' と入力されたときに実行されます。
+
+以下に、`o' マークに関するコマンドをまとめます。
+
+`o'
+     `o' マークを付ける。
+`x'
+     `o' マークの付いたメッセージを整頓する。
+`mo'
+     `*' マークの付いたメッセージに対し入力されたフォルダへ整頓するため
+     の `o' マークを付ける。
+
+
+
+File: mew.jis.info, Node: multi mark, Next: review mark, Prev: refile mark, Up: Marks
+
+複数 `@'
+========
+
+複数のメッセージを一度に取り扱うためには、`@' マークを付けます。`@' マー
+クが付いた単数／複数のメッセージを取り扱うコマンドは以下の通りです。
+
+`@'
+     `@' マークを付ける。
+`F'
+     `@' マークの付いたメッセージを MIME 形式で転送するための草稿を準備。
+`M-s'
+     `@' マークの付いたメッセージを "unshar" の入力として渡す。つまり、
+     shar (の後に split)されたデータを取り出す。
+`M-t'
+     `@' マークの付いたメッセージを "uumerge" の入力として渡す。つまり、
+     uuencode(の後に split)されたデータを取り出す。
+`M-b'
+     `@' マークの付いたメッセージに格納されているメッセージを取り出す。
+`J'
+     大きなメッセージは Message/Partial として複数に分割されている場合が
+     ある。このコマンドは、`@' マークの付いた Message/Partial のメッセー
+     ジから元のメッセージを生成する。
+
+`M-s' や `M-t' では、`@' マークの付いたメッセージの番号がきちんと分割順
+になっている必要があります(番号はとびとびでも構いません)。ちゃんと順番に
+なってないなら、`S' でソートするとよいかもしれません。
+
+
+

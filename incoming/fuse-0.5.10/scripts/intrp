@@ -1,0 +1,508 @@
+#!/usr/bin/perl 
+#
+#  type `intrp -h' for usage instructions
+#
+# 	$Id: intrp,v 1.1.1.1 1998/03/14 22:33:04 bruce Exp $	
+#
+# this needs to be tested with rmultiplier
+# for latex output, unlink aux file for -o specified output file
+
+$version    = "1.14p";
+$date       = "3 March 1997";
+@authorlist = ("Bruce Ravel", "Karl Voss");
+$authors    = join(", ", @authorlist);
+$messages   = "This script is copyright (c) Bruce Ravel and may be freely\n        redistributed as is.";
+
+$factor     = 1000;		# multiplicative factor for making tags to
+$cwcrit     = 2.5;		# identify atom positions with labels
+
+$eol = "\n";			# Unix
+# $eol = "\r";			# Mac
+# $eol = "\r\n";		# DOS, also change all `chop;'s to `chomp;'
+
+
+require "getopts.pl";
+$_ = $ENV{"INTRP"};
+@env=split;
+unshift(@ARGV, @env);		# prepend INTRP to argument line
+&Getopts('i:f:p:o:d:r:c:b:m:a:tlsvhH');
+if ( $opt_h ) {
+    print "intrp : (v$version $date) by $authors$eol";
+    $~ = "USAGE";	
+    write;		       
+    exit "$eol";
+}
+if ( $opt_H ) {
+    print "intrp : (v$version $date) by $authors$eol";
+    $~ = "USAGE";	
+    write;		       
+    $~ = "HELP";	
+    write;		       
+    exit "$eol";
+}
+if ( $opt_v ) {
+    print "intrp : version $version ($date)$eol";
+    print "        by $authors.$eol        $messages$eol";
+    exit "$eol";
+}
+				# set i/o file names
+$feffinp  = $opt_i || "feff.inp";
+$fdat     = $opt_l ?  "list.dat" : "files.dat";
+$filesdat = $opt_f ||  $fdat;
+$pathsdat = $opt_p || "paths.dat";
+$intrpdat = $opt_t ? "intrp.tex" : "intrp.dat" ;
+$intrpdat = $opt_o || $intrpdat;
+if ($opt_r) {			# use files from run, overrides -ifp flags
+    $feffinp  = join( '', "feff-",  $opt_r, ".inp" );
+    $filesdat = join( '', "files-", $opt_r, ".dat" );
+    ($opt_l) && ( $filesdat = join( '', "list-", $opt_r, ".dat" ) );
+    $pathsdat = join( '', "paths-", $opt_r, ".dat" );
+    $intrpdat = join( '', "intrp-", $opt_r, ".dat" );
+}
+if ($opt_d) {			# pre-append path to i/o files
+    unless ( $opt_d =~ /\/$/ ) { $opt_d = $opt_d . "/"; }
+    $feffinp  = $opt_d . $feffinp ;
+    $filesdat = $opt_d . $filesdat;
+    $pathsdat = $opt_d . $pathsdat;
+    $intrpdat = $opt_d . $intrpdat;
+}
+$betamax = $opt_b || 20;	# set max beta for shadow count
+$betamax = $betamax * ($betamax <=> 0);	# betamax is pos. def.
+$maxr = $opt_m || 10000;	# set max. radial distance
+$minamp = $opt_a || 0.0001;
+
+open (FEFFINP, $feffinp) || die "intrp : cannot open $feffinp$eol";
+$ntitle = 0;
+$switch = 0;
+$rmult  = 1;
+while (<FEFFINP>) {
+    next if (/^\s*\*/);
+    next if (/^\s*$/);
+    unless ( $switch) {
+	if ( /^\s*crit/i ) {	# get cw crit
+	    @line = split( /[=,\s]+/ );
+	    $cwcrit = $line[2];
+	} elsif ( /^\s*title/i ) { # get title lines
+	    chop;
+	    $title[$ntitle] = substr($_, 0, 69);
+	    ++$ntitle;
+	} elsif ( /^\s*atom/i ) { # beginning of atoms list
+	    $switch = 1;
+	} elsif ( /^\s*rmax/i ) { # get rmax
+	    @line = split( /[=,\s]+/ );
+	    $rmax = $line[2];
+	} elsif ( /^\s*rmult/i ) { # need to apply rmult to correctly make tags
+	    @line = split( /[=,\s]+/ );
+	    $rmult = $line[2];
+	}
+
+
+    } else {			# get token for each atoms
+	@line = split;
+	unless ($line[0]) { shift(@line); }	
+	($line[3] eq "0") && ($core_label = $opt_c || $line[4]);
+	($line[5] > $rmax) && last;
+	$tag = int($rmult*$factor*$line[0]) . int($rmult*$factor*$line[1]) . 
+	    int($rmult*$factor*$line[2]);
+	$label{$tag} = $line[4];
+	++$natom;
+    }
+}
+
+open (FILESDAT, $filesdat) || die "intrp : cannot open $filesdat$eol";
+$switch = 0;
+$maxip  = 0;
+while (<FILESDAT>) {
+    if ( /^\s*--------/ ) {	# find end of header
+	($switch = 1);
+    } elsif ($switch) {
+	next if ( /^\s*file/i );
+	next if ( /^\s*$/ );
+	chop;
+	++$npath;		# get path info for each path
+	@line = split;
+	unless ($line[0]) { shift(@line); } 
+	$ip = substr( $line[0], 4, 4);	# just want index
+	($opt_l) && ($ip = $line[0]);
+	($fname[$ip], $sig2[$ip], $amp[$ip], $degen[$ip],
+	 $nleg[$ip],  $reff[$ip] ) = @line;
+    }	
+}
+
+open (PATHSDAT, $pathsdat) || die "intrp : cannot open $pathsdat$eol";
+unless ($opt_s) {		# write to STDOUT
+    open (INTRPDAT, ">".$intrpdat) || 
+	die "intrp : cannot write to $intrpdat.$eol"; 
+    select(INTRPDAT);
+}
+
+				# write header to intrp.dat or intrp.tex
+($opt_t) ? &texhead : &asciihead;
+
+
+				# write path list to intrp.dat
+$switch = 0;
+$nl=-1;
+$np=0;
+while (<PATHSDAT>) {
+    if ( /^\s*--------/ ) {
+	($switch = 1);
+    }
+    if ($switch) {
+	next if ( /label/i );
+	next if ( /^\s*$/ );
+	chop;
+	if ( /degeneracy/i ) {
+	    @line = split;	# path index is $line[0]
+	    unless ($line[0]) { shift(@line); }
+	    unless ($fname[$line[0]]) { # skip paths in paths.dat that are 
+		$skip = 1;	        # not in files.dat
+		next; }
+	    $skip = 0;
+	    if ( $line[$#line] > $maxr ) {last;}
+	    if ( ($np) && ($fname[$np]) ) { # write path tokens for prev. path
+		if ($opt_t) {
+		    printf " & %1u & %6s", $nshadow, $core_label;
+		} else {
+		    printf "%1u -->%6s", $nshadow, $core_label;
+		}
+		foreach $t (@token) {
+		    ($opt_t) && ($t =~ s/([\_\$\&\{\}])/\\$1/g);
+		    printf " %6s", $t; 
+		}
+		($opt_t) && print "\\\\";
+		undef @token;
+		undef @leg;
+	    }			# write out path information for current path
+	    $np = $line[0];
+	    if ( $amp[$np] < $minamp ) { # skip paths smaller than $opt_a
+		$skip = 1;
+		next; }
+	    if ( $fname[$np] ) { 
+		if ($opt_t) {
+		    printf "$eol      %4.4u & %3u & %5.3f & %6.2f  ",
+		    $np, int($degen[$np]+0.1), 
+		    $reff[$np], $amp[$np];
+		} else {
+		    printf "$eol   %4.4u %3u  %5.3f  %6.2f  ",
+		    $np, int($degen[$np]+0.1), 
+		    $reff[$np], $amp[$np];
+		}
+	    }
+	    $nshadow = 0;
+	    $nl=-1;
+	} else {		# Collect tokens for each leg and count
+	    next if ($skip);
+# 	    ++$iii;
+# 	    print (STDOUT "$eol$iii$_$eol");
+	    ++$nl;		# number of forward scatterings.
+	    $beta = 180;
+	    if (/\'/) {
+		$pos = $[;	# Find beta angle.  Good work Steve, 
+		$pos = index($_, "'"); # this is about as hard as possible.
+		$pos = index($_, "'", $pos+1);
+		@findbeta = split( /\s+/, substr( $_, $pos+1) ); 
+		if (length($findbeta[2])) {
+		    $beta = $findbeta[2]; }
+	    }
+	    @leg = split;
+	    unless ($leg[0]) { shift(@leg); }
+	    unless ($nl == $nleg[$np]-1) {
+		($beta < $betamax) && ++$nshadow; }
+	    if ( $leg[3] eq "0" ) {
+		$token[$nl] = $core_label;
+	    } else {
+		$tag = int($factor*$leg[0]) . int($factor*$leg[1]) . 
+		    int($factor*$leg[2]);
+		$token[$nl] = $label{$tag};
+				# paths.dat might contain hand made entries,
+				# use <?> as token for a hand made atom
+		unless ($token[$nl]) { $token[$nl] = "<?>"; }
+	    }
+	}
+    }
+}    
+# write out path tokens for final path
+if ( $fname[$np] ) {
+    if ($opt_t) {
+	printf " & %1u & %6s", $nshadow, $core_label;
+    } else {
+	printf "%1u -->%6s", $nshadow, $core_label;
+    }
+    foreach $t (@token) { 
+	($opt_t) && ($t =~ s/([\_\$\&\{\}])/\\$1/g);
+	printf " %6s", $t; 
+    }
+    ($opt_t) && print "\\\\";
+    print "$eol";
+}
+
+($opt_t) && do { &textail;
+	     warn "intrp : latex output -- 
+        you must run latex twice to correctly typeset longtable.\n";
+		 unlink "intrp.aux";
+	     };
+
+format USAGE =
+
+usage:
+   intrp [-ifpodlsrcbmvhH]
+
+all switches are optional and several take values:
+  switch   value        meaning
+     i    filename  alternate feff.inp file
+     f    filename  alternate files.dat file
+     p    filename  alternate paths.dat file
+     o    filename  output file name (default = intrp.dat)
+     d    path      path to input/output files
+     l              use list.dat rather than files.dat
+     t              write latex output
+     s              write to standard output rather than to intrp.dat
+     r    string    character string added to input files by the run script
+     c    string    alternate token for central atom
+     b    number    maximum beta for forward scattering
+     m    number    maximum path length for list
+     a    number    minimum amplitude (importance factor) for list
+     v              write version number and exit
+     h              write this message and exit
+     H              write long usage instructions and exit
+
+.
+
+format  HELP =
+
+                -------------------------------------
+
+This script reads the files "feff.inp", "files.dat", and "paths.dat"
+from a FEFF run and presents a synopsis of the information contained
+in those files.  By default this synopsis is written to a file called
+"intrp.dat".  Each line of the synopsis contains information about a
+scattering path calculated by FEFF, including the index of the
+feff.dat file; the curved wave amplitude, degeneracy, number of legs,
+number of forward scatterings, and path length of the path; and a
+tokenized description of the path using the atom labels from the
+"feff.inp" file.
+
+Intrp assumes that it is reading a "feff.inp" file of the sort
+generated by the program Atoms and that the "files.dat" and
+"paths.dat" files generated by FEFF have not been altered.  The
+parsing capabilities of this script are not terribly sophisticated and
+if it runs into an input file in some unexpected format, it probably
+will not read it correctly.  It is possible to edit these files in
+such a way that intrp still produces the expected output, but it is
+far easier to edit them in such a way that they will fail to do so.
+
+The file "intrp.dat" serves no purpose for any program in the UWXAFS
+package, but can be a valuable tool for interpreting the output of
+FEFF and for constructing an input file to FEFFIT.
+
+
+                -------------------------------------
+			 Alternate File Names
+
+There are several command line switches that can be used to modify the
+behavior of intrp.  By default intrp reads "feff.inp", "files.dat",
+and "paths.dat" from the current directory.  The -i, -f, and -p flags
+are used to specify alternate filenames for these three respectively.
+By default intrp writes to a file called "intrp.dat" in the current
+directory.  Another output file name can be specified with the -o
+switch.  The -s switch sends the output to standard output rather than
+to a file.
+
+
+                -------------------------------------
+		  Running intrp in Another Directory
+
+The -d switch is used to specify the path to the input and output
+files if intrp is to be run on files residing in some directory other
+than the current directory.
+
+
+                -------------------------------------
+		   Using intrp with the run Script
+
+The -r switch is intended for use when Atoms and FEFF have been run on
+arbitrary file names with the run script.  Suppose Atoms is run on an
+input file called "cu.inp".  The input file for FEFF is renamed by the
+run script to "feff-cu.inp".  If FEFF is the run on "feff-cu.inp" with
+the run script, the output files will be "files-cu.dat" and
+"paths-cu.dat".  intrp can be run on these files by specifying the -r
+switch:
+          intrp -r cu
+
+The output file will then be called "intrp-cu.dat".
+
+
+                -------------------------------------
+		  Specifying the Central Atom Token
+
+By default intrp uses the atoms label from the "feff.inp" file as the
+token for the central atom in the path description.  This can be
+changed using the -c switch.  Note that if you want a symbol that has
+special meaning to your shell, you will need to use double quotes or
+escape the character.  For example to use & as the token for the
+central atom, type
+          intrp -c "&"
+or
+          intrp -c \&
+
+
+                -------------------------------------
+		     Counting Forward Scatterings
+
+The number of forward scatterings is determined from the information
+about scattering angle for each leg of a path contained in
+"paths.dat".  Each of these angles except for the last one in each
+path is examined.  If it is less than some small angle, it is
+considered a forward scattering.  This count is shown for each path in
+the "fs" column in the output file.  By default the cutoff angle is
+20 degrees, but this can be specified with the -b switch.  (In
+"paths.dat" this angle is denoted "beta", thus -b is intended to be
+mnemonic for this.)
+
+                -------------------------------------
+			Environment Variables
+
+You can specify command line switches an environment variable INTRP
+and these will be used everytime intrp is run.  For example, if you
+use csh/tcsh, you might put this line in your .cshrc file to set the
+default central atom token to + :
+          setenv INTRP "-c +"
+If you use bash or ksh, you might put this line in your .profile:
+          export INTRP="-c +"
+
+                -------------------------------------
+			   Other Miscellany
+
+The -m switch sets the maximum path length for writing to intrp.dat.
+intrp will stop reading paths.dat when it finds a path that exceeds
+the value specified by this switch.
+
+The -a switch sets an amplitude filter for the list.  Any path with an
+amplitude smaller than this value will be excluded from the list.
+
+The -l switch will cause intrp to read the feff output file "list.dat"
+rather than "files.dat".  Specifying a file with the -f switch and
+giving the -l switch will cause the specified file to be read as a
+"list.dat" file.  The -l switch works with the -r and -d switches.
+
+The -t switch will cause intrp to write its output in a format that
+can be run through latex to produce a nicely typeset table.  The latex
+output uses the dcolumn package in latex.
+
+If, for some reason, intrp cannot determine what token to assign to an
+atom, it will print "<?>" in place of its token in the scattering
+path.  This might happen if any of the input files has been edited
+since running feff.
+
+                -------------------------------------
+		  Installation on non-Unix Platforms
+
+ 1.  Uncomment the appropriate line between lines 16 and 18 to
+correctly set the end of line character.
+ 2.  Change all occurences of 
+           chop;
+to
+           chomp;
+if you are using perl5, or to
+           chop; chop;
+if you are using perl4.  That's all, I think.
+
+                -------------------------------------
+This message is rather long.  You might try `run -H | more' if it
+scrolls off the screen.
+
+.
+
+
+sub texhead {
+    $multicol =   '  \multicolumn{6}{l}{' . $eol;
+
+    print '\documentclass{article}', $eol,
+    '\usepackage{dcolumn, longtable}', $eol,
+    '\pagestyle{empty}', $eol,
+    '\begin{document}', $eol, $eol,
+    '\newcolumntype{.}{D{.}{.}{-1}}', $eol,
+    '\setlongtables', $eol,
+    '\begin{longtable}[h]{|c...c|>{\ttfamily}l|}', $eol;
+
+    foreach $x (@title) { 
+	print $multicol, "    $x\}\\\\$eol"; 
+    }
+
+    print $multicol, "    ~\}\\\\$eol",
+    $multicol, 
+    "    Cluster size = $rmax Angstroms, containing $natom atoms.\}\\\\$eol",
+    $multicol, "    $npath paths were calculated by feff.\}\\\\$eol";
+
+    if ( $maxr < 9999 ) {
+	print $multicol, 
+	"    This list is truncated at $maxr Angstroms.\}\\\\$eol"; }
+    if ( $ampmax > 0.0002 ) { 
+	print $multicol, 
+	"    This list contains paths of amplitude larger than ",
+	"$ampmax\}\\\\$eol";}
+    unless ( $rmult == 1) {
+	print $multicol, "    rmultiplier = $rmult\}\\\\$eol"; }
+
+    print $multicol, "    Curved wave criteria = $cwcrit.\}\\\\$eol",
+    $multicol, 
+    "      Cutoff angle for forward scattering is $betamax degrees.\}\\\\$eol",
+    $multicol, "      The central atom is denoted by this token: ",
+    "\\texttt{$core_label}\}\\\\$eol";
+
+    ($opt_l) && print $multicol, "    Used list.dat.\}\\\\$eol";
+
+    print $multicol, "    intrp version $version\}\\\\$eol",
+    '  \hline',$eol,
+    '  \multicolumn{1}{|c}{index}&', $eol,
+    '  \multicolumn{1}{c}{degen}&', $eol,
+    '  \multicolumn{1}{c}{reff}&', $eol,
+    '  \multicolumn{1}{c}{amp}&', $eol,
+    '  \multicolumn{1}{c}{fs}&', $eol,
+    '  \multicolumn{1}{|c|}{scattering path}\\\\', $eol,
+    '  \hline',$eol,'  \hline',
+    '  \endfirsthead', $eol;
+
+    foreach $x (@title) { 
+	print $multicol, "    $x\}\\\\$eol"; 
+    }
+
+    print '  \hline',$eol,
+    '  \multicolumn{1}{|c}{index}&', $eol,
+    '  \multicolumn{1}{c}{degen}&', $eol,
+    '  \multicolumn{1}{c}{reff}&', $eol,
+    '  \multicolumn{1}{c}{amp}&', $eol,
+    '  \multicolumn{1}{c}{fs}&', $eol,
+    '  \multicolumn{1}{|c|}{scattering path}\\\\', $eol,
+    '  \hline',$eol,'  \hline',
+    '  \endhead', $eol, '  \hline', $eol, '  \endfoot';
+
+}
+
+sub textail {
+    print '  \hline',$eol,
+    '\end{longtable}', $eol, $eol,
+    '\end{document}', $eol;
+}
+
+
+sub asciihead {
+    print "#$eol";
+    foreach $x (@title) { print "# $x$eol"; }
+    print "#$eol# Cluster size = $rmax Angstroms, containing $natom atoms.$eol";
+    print "# $npath paths were calculated by feff.$eol";
+    if ( $maxr < 9999 ) {
+	print "# This list is truncated at $maxr Angstroms.$eol"; }
+    if ( $ampmax > 0.0002 ) { 
+	print "# This list contains paths of amplitude larger than $ampmax$eol";}
+    unless ( $rmult == 1) {
+	print "# rmultiplier = $rmult$eol"; }
+    print "# Curved wave criteria = $cwcrit.$eol";
+    print "# Cutoff angle for forward scattering is $betamax degrees.$eol";
+    print "# The central atom is denoted by this token: $core_label$eol";
+    ($opt_l) && print "# Used list.dat.$eol";
+    print "# intrp version $version$eol";
+    print "# ------------------------------------------------------------$eol";
+    print "# index degen reff    amp  fs         scattering path";
+}

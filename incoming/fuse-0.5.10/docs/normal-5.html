@@ -1,0 +1,50 @@
+<HTML>
+<HEAD>
+<TITLE>Normal: Example Input File</TITLE>
+</HEAD>
+<BODY>
+<A HREF="normal-4.html">Previous</A>
+Next
+<A HREF="normal.html#toc5">Table of Contents</A>
+<HR>
+<H2><A NAME="app1"></A> <A NAME="s5">5. Example Input File</A></H2>
+
+
+
+<P>Here is the input file the author used to align some data taken on a
+single crystal of Lead Titanate.    The K-edge energy of titanium is
+specified by the <CODE>e0</CODE> keyword.  The file format and output
+file names are specified on the next line.  The list of input
+filenames follows the <CODE>files</CODE> keyword.  Note that numeric keys
+are specified  for each data set. 
+<BLOCKQUOTE><CODE>
+<PRE>
+        e0 = 4966
+        format = uwxafs         out = tipb_c.nor
+        nor1 = 171      nor2 = 261
+        pre1 = -100     pre2=-29
+        emax = 134
+        files
+                tipb_c.xmu  5
+                tipb_c.xmu  6
+                tipb_c.xmu  7
+                tipb_c.xmu  8
+        end
+                tipb_c.xmu  9
+                tipb_c.xmu  10
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+<P>Normally it is not necessary to specify <CODE>pre1</CODE>, <CODE>pre2</CODE>,
+<CODE>nor1</CODE>, <CODE>nor2</CODE>, and <CODE>emax</CODE>.  I use them in this example
+simply as a demonstration of these keywords.  The default values will
+yield acceptable results for most data.  The derivatives of the data
+will not be calculated since the <CODE>derivative</CODE> keyword is not
+specified. </P>
+
+<HR>
+<A HREF="normal-4.html">Previous</A>
+Next
+<A HREF="normal.html#toc5">Table of Contents</A>
+</BODY>
+</HTML>

@@ -1,0 +1,76 @@
+$Id: README,v 1.7 1993/12/12 01:50:13 flee Exp $
+
+* Introduction.
+
+This kit contains a drop-in replacement for nntp.el in GNUS 3.14.*,
+3.15, and 4.1.  It may work with other versions, but definitely not
+with GNUS2.
+
+This replacement is marginally faster at parsing nntp output in
+general, but the major improvement is it will use the nntp XOVER
+extension if available.  With XOVER, entering a newsgroup is
+substantially faster: reading and parsing 600 headers takes about 3s
+on a Sun-4/20 (but threading is still quite slow).
+
+Without XOVER, this kit may not be worth it.  But it should be easy to
+try it, and easy to back out from.
+
+
+* Installing.
+
+1. Copy chat.el and nntp.el to your emacs lisp or site-lisp directory.
+nntp.el is a replacement for the nntp.el that comes with GNUS.
+chat.el is an auxiliary module needed by nntp.el.
+
+2. Byte-compile chat.el and nntp.el, in that order.  It's best if you
+use Jamie Zawinski's byte compiler, which is better than the one in
+Emacs 18.  This byte compiler is shipped with Emacs 19, and can also
+be found in the elisp archive (archive.cis.ohio-state.edu).
+
+
+* XOVER support.
+
+There are two types of news servers that support XOVER:
+
+1. INN version 1.3 and later supports an overview database and XOVER
+directly.
+
+Note, there's some bug in INN 1.3 that causes the server to drop the
+connection after certain XOVER requests.  If you keep getting "NNTP:
+connection closed" messages when talking to INN 1.3 server, then you
+probably have this bug.  In this case, you can either upgrade the
+server to INN 1.4, or avoid using XOVER.  I don't know of any other
+simple workarounds.
+
+2. C News/nntpd.  C News needs to be augmented with Geoff Collyer's
+nov.dist.tar.Z (available from world.std.com).  nntpd needs to be
+augmented with the XOVER patch (included in this distribution), which
+should become "standard" with the next release of nntpd.
+
+
+* About Xrefs.
+
+GNUS relies on the Xref: header to mark crossposted articles
+correctly.  By default, the overview database does not include Xref:
+information.
+
+If you do not have Xref: data, then this nntp.el will try to adapt by
+grabbing the Xref: header when you retrieve an article.  This works
+much of the time, but isn't perfect.  In particular, kill files and
+catch-up will not mark crossposted articles correctly.
+
+A better idea is to include Xref: data in the overview database.  For
+C news and nov.dist, you need to uncomment the line in mkov.c that
+says:
+	/* putextfld("xref", hdrp->h_xref); */
+and then rebuild mkov.
+
+For INN, you just need to uncomment the line in /news/lib/overview.fmt
+that says:
+	#Xref:full
+
+
+* Feedback.
+
+Send bugs, comments to:
+	Felix Lee <flee@cse.psu.edu>

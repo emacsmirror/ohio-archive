@@ -1,0 +1,2172 @@
+(defun mvi-0 (arg number &optional motion-arg text)
+  "mvi move to first non-whitespace character on line."
+  (interactive "P\nV")
+	(let ((raw-number (mvi-nth 0 arg))
+				(register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(if (not raw-number) (setq number 0))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(mvi-forward-line number)
+				(mvi-execute-com 'mvi-0))
+			(mvi-forward-line number))))
+
+(defun mvi-bol (arg number &optional motion-arg text)
+  "mvi to beginning of line."
+  (interactive "P\nV")
+	(let ((raw-number (mvi-nth 0 arg))
+				(register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(if (not raw-number) (setq number 0))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(forward-line number)
+				(mvi-execute-com 'mvi-bol))
+			(forward-line number))))
+
+(defun mvi-paren (arg number &optional motion-arg text)
+  "mvi find matching parenthetical character."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(if (looking-at "[[({]") 
+					(progn
+						(move-marker mvi-com-point (point))
+						(forward-list number))
+					(if (looking-at "[])}]") 
+						(progn
+							(forward-char)
+							(move-marker mvi-com-point (point))
+							(backward-list number))
+						(error "Not on parenthetical character")))
+				(mvi-execute-com 'mvi-paren))
+			(if (looking-at "[[({]") 
+				(progn
+					(forward-list number)
+					(backward-char))
+				(if (looking-at "[])}]") 
+					(progn
+						(forward-char)
+						(backward-list number))
+					(error "Not on parenthetical character"))))))
+
+(defun mvi-f-list (arg number &optional motion-arg text)
+  "mvi forward list."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(forward-list number)
+				(mvi-execute-com 'mvi-f-list))
+			(forward-list number))))
+
+(defun mvi-b-list (arg number &optional motion-arg text)
+  "mvi backward list."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(backward-list number)
+				(mvi-execute-com 'mvi-b-list))
+			(backward-list number))))
+
+(defun mvi-f-sexp (arg number &optional motion-arg text)
+  "mvi forward sub-expression."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(forward-sexp number)
+				(mvi-execute-com 'mvi-f-sexp))
+			(forward-sexp number))))
+
+(defun mvi-b-sexp (arg number &optional motion-arg text)
+  "mvi backward sub-expression."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(backward-sexp number)
+				(mvi-execute-com 'mvi-b-sexp))
+			(backward-sexp number))))
+
+(defun forward-text-sexp (arg &optional no-error)
+  "Move forward over text sub-expressions.
+Arguments are COUNT and optionally NO-ERROR on incomplete expressions.
+When interactive, COUNT is the processed prefix argument.
+
+This function relies on 2 variables to parse the text.  The first is
+\"text-sexp-delim\" which is a regular expression that matches all the 
+delimeters. The second is \"text-sexp-data\" which is an a-list, the
+car of which is a string representing the opening delimeter, the cdr
+contains a list of data related to it.  The elements of the list in
+order are:
+
+0. A string that is used as a regular expression of the corresponding
+   closing delimiter.
+1. If t nesting of sub-expressions inside this one is allowed.
+2. A string that is used as a regular expression of a delimiter that is an
+   error if found before the closing delimiter.
+3. If t after a closing delimeter if found, go to the end of the delimiter.
+4. If t after a full text sub-expression, go to the end of the delimiter.
+5. On moving backward over a text sub-expression, if starting on a delimiter,
+   if t, it is a valid starting point."
+  (interactive "p")
+  (let ((case-fold-search nil)
+				(end nil)
+				(not-done t)
+				(exit-status t)
+				(flag)
+				(key)
+				(data)
+				(hold-end))
+		(while (and (> arg 0) not-done)
+			(if (re-search-forward text-sexp-delim nil 1 1)
+					(progn
+						(setq key (buffer-substring (match-beginning 0) (point)))
+						(setq data (cdr (assoc key text-sexp-data)))
+						(setq end (list data))
+						(or data (setq not-done nil exit-status nil)))
+				(setq not-done nil))
+			(setq flag t)
+			(while (and flag not-done)
+				(if (re-search-forward (if (nth 1 data) text-sexp-delim (nth 0 data)) nil 1 1)
+						(progn
+							(setq hold-end (point))
+							(goto-char (match-beginning 0))
+							(cond
+							 ((looking-at (nth 0 data))
+								(if (nth 3 data) (goto-char (match-end 0)))
+								(setq end (nthcdr 1 end))
+								(setq data (nth 0 end))
+								(or end 
+										(progn 
+											(if (nth 4 data) (goto-char (match-end 0)))
+											(setq flag nil))))
+							 ((and (nth 2 data) (looking-at (nth 2 data)))
+								(goto-char (match-end 0))
+								(setq not-done nil exit-status nil))
+							 (t
+								(setq key (buffer-substring (point) hold-end))
+								(setq data (cdr (assoc key text-sexp-data)))
+								(setq end (cons data end))
+								(goto-char hold-end)
+								(or data (setq not-done nil exit-status nil)))))
+					(setq not-done nil)))
+			(setq arg (1- arg)))
+    (if exit-status
+				t
+      (if no-error
+					nil
+				(error "Incomplete text sub-expression")))))
+
+(defun backward-text-sexp (arg &optional no-error start-at)
+  "Move backward over text sub-expressions.
+Arguments are COUNT and optionally NO-ERROR on incomplete expressions
+and START-AT to start the search at a different point.
+When interactive, COUNT is the processed prefix argument."
+  (interactive "p")
+  (let ((exit-status t)
+				(not-done t)
+				(hold-beg)
+				(hold-end)
+				(top))
+		(if (and (looking-at text-sexp-delim)
+						 (nth 5 (cdr (assoc (buffer-substring (point) (match-end 0))
+																text-sexp-data))))
+				(setq hold-beg (match-beginning 0) hold-end (match-end 0))
+			(if (re-search-backward text-sexp-delim nil 1 1)
+					(setq hold-beg (match-beginning 0) hold-end (match-end 0))
+				(setq exit-status nil not-done nil)))
+		(if start-at (goto-char start-at))
+		(while not-done
+			(if (re-search-backward text-sexp-delim nil 1 1)
+					(progn
+						(setq top (point))
+						(and (forward-text-sexp arg t)
+								 (or (= (point) hold-beg) (= (point) hold-end))
+								 (setq not-done nil))
+						(goto-char top))
+				(setq exit-status nil not-done nil)))
+    (if exit-status
+				t
+      (if no-error
+					nil
+				(error "Incomplete text sub-expression")))))
+
+(defun mvi-f-text-sexp (arg number &optional motion-arg text)
+  "mvi forward text sub-expression."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(forward-text-sexp number)
+				(mvi-execute-com 'mvi-f-text-sexp))
+			(forward-text-sexp number))))
+
+(defun mvi-b-text-sexp (arg number &optional motion-arg text)
+  "mvi backward text sub-expression."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(orig-char (point))
+				(start-at (point))
+				(flag t)
+				(c)
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command (move-marker mvi-com-point (point)))
+		(if (>= number 0)
+				(backward-text-sexp number)
+			(while flag
+				(if (backward-text-sexp (- number) t start-at) 
+						(if (progn (message "Go back further?") 
+											 (setq c (read-char)) (or (= c ?y) (= c ?Y)))
+								(progn
+									(setq start-at (point))
+									(goto-char orig-char))
+							(setq flag nil))
+					(error "Incomplete text sub-expression"))))
+		(if command (mvi-execute-com 'mvi-b-text-sexp))))
+
+(defun mvi-forward-sentence (arg)
+  "Move forward to next sentence-end.  Differs from gnus by moving to
+the beginning of the next sentence if possible."
+  (while (< arg 0)
+    (let ((par-beg (save-excursion (start-of-paragraph-text) (point))))
+      (if (re-search-backward (concat sentence-end "[^ \t\n]") par-beg t)
+	  (goto-char (1- (match-end 0)))
+	(goto-char par-beg)))
+    (setq arg (1+ arg)))
+  (while (> arg 0)
+    (let ((par-end (save-excursion (end-of-paragraph-text) (point))))
+      (if (re-search-forward sentence-end par-end t)
+				(progn
+					(skip-chars-backward " \t\n")
+					(and (= arg 1) (looking-at "[ \t]+\\w\\|[ \t]*\n[ \t]*\\w") 
+						(goto-char (1- (match-end 0)))))
+				(goto-char par-end)))
+    (setq arg (1- arg))))
+
+(defun mvi-f-sent (arg number &optional motion-arg text)
+  "mvi forward sentence."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(mvi-forward-sentence number)
+				(mvi-execute-com 'mvi-f-sent))
+			(mvi-forward-sentence number))))
+
+(defun mvi-b-sent (arg number &optional motion-arg text)
+  "mvi backward sentence."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(mvi-forward-sentence (- number))
+				(mvi-execute-com 'mvi-b-sent))
+			(mvi-forward-sentence (- number)))))
+
+(defun mvi-f-par (arg number &optional motion-arg text)
+  "mvi forward paragraph."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(forward-paragraph number)
+				(mvi-execute-com 'mvi-f-par))
+			(forward-paragraph number))))
+
+(defun mvi-b-par (arg number &optional motion-arg text)
+  "mvi backward paragraph."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(backward-paragraph number)
+				(mvi-execute-com 'mvi-b-par))
+			(backward-paragraph number))))
+
+(defun mvi-forward-page (count)
+  "Move forward to page boundary.  Differs from gnus in that it stops at
+the beginning of the next page."
+	(and (> count 0) (looking-at page-delimiter) (goto-char (match-end 0)))
+  (while (and (> count 0) (not (eobp)))
+    (if (re-search-forward page-delimiter nil t)
+			(if (= count 1) (goto-char (match-beginning 0)))
+      (goto-char (point-max)))
+    (setq count (1- count)))
+  (while (and (< count 0) (not (bobp)))
+    (or (re-search-backward page-delimiter nil t)
+      (goto-char (point-min)))
+    (setq count (1+ count))))
+
+(defun mvi-f-page (arg number &optional motion-arg text)
+  "mvi forward page."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(mvi-forward-page number)
+				(mvi-execute-com 'mvi-f-page))
+			(mvi-forward-page number))))
+
+(defun mvi-b-page (arg number &optional motion-arg text)
+  "mvi backward page."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(mvi-forward-page (- number))
+				(mvi-execute-com 'mvi-b-page))
+			(mvi-forward-page (- number)))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; moving around
+
+(defun mvi-to-col (arg number &optional motion-arg text)
+  "mvi move to column."
+  (interactive "P\nV")
+	(let ((raw-number (mvi-nth 0 arg))
+				(register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(if (not raw-number) (setq number 0))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(move-marker mvi-com-point (point))
+				(move-to-column number)
+				(mvi-execute-com 'mvi-to-col))
+			(move-to-column number))))
+
+(defun mvi-what-col (arg)
+  "mvi display current column."
+  (interactive "P")
+	(let ((command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(message (format "Current column = %s" (current-column)))))
+
+(defun mvi-G (arg number &optional motion-arg text)
+  "mvi goto line number."
+  (interactive "P\nV")
+	(let ((raw-number (mvi-nth 0 arg))
+				(register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(if (not raw-number) (setq number 8000000))
+		(move-marker mvi-g-point (point))
+		(if (< number 0)
+			(setq number (- number))
+			(push-mark nil t))
+		(if command 
+			(progn
+				(mvi-enlarge-region (point) (progn (goto-line number) (point)))
+				(setq number raw-number)
+				(mvi-execute-com 'mvi-G))
+			(goto-line number))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; window scrolling etc.
+
+(defun mvi-H (arg number &optional motion-arg text)
+  "mvi move to top of screen."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(mvi-enlarge-region (point) (progn (move-to-window-line (1- number))
+					(point)))
+				(mvi-execute-com 'mvi-H))
+			(move-to-window-line (1- number)))))
+
+(defun mvi-L (arg number &optional motion-arg text)
+  "mvi move to bottom of screen."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(mvi-enlarge-region (point) (progn (move-to-window-line (- number))
+					(point)))
+				(mvi-execute-com 'mvi-L))
+			(move-to-window-line (- number)))))
+
+(defun mvi-M (arg number &optional motion-arg text)
+  "mvi move to the middle of screen."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(mvi-enlarge-region (point) (progn 
+					(move-to-window-line (+ (/ (1- (window-height)) 2) (1- number)))
+					(point)))
+				(mvi-execute-com 'mvi-M))
+			(move-to-window-line (+ (/ (1- (window-height)) 2) (1- number))))))
+
+(defun mvi-line-to (arg number)
+  "Move point to top, middle, or bottom of screen."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(move-marker mvi-g-point (point))
+		(cond
+		 ((= last-command-char ?t)
+				(recenter (1- number))) 
+		 ((= last-command-char ?m) 
+				(recenter (+ (1- number) (/ (1- (window-height)) 2))))
+		 ((= last-command-char ?b)
+				(recenter (- (window-height) (1+ number)))))))
+
+(defun mvi-search-recenter (arg number)
+  "Move point to top, middle, or bottom of screen after a search."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(cond
+		 ((= last-command-char ?T)
+			(setq mvi-search-func (list 'lambda '() (list 'recenter (1- number)))))
+		 ((= last-command-char ?M) 
+			(setq mvi-search-func (list 'lambda '() (list
+				'recenter (list '+ (1- number) 
+												(list '/ (list '1- (list 'window-height)) 2))))))
+		 ((= last-command-char ?B)
+			(setq mvi-search-func (list 'lambda '() (list
+				'recenter (list '- (list 'window-height) (1+ number))))))
+		 ((> number 1)
+			(setq mvi-search-func (list 'lambda '() (list 'mvi-search-context number))))
+		 (t
+			(setq mvi-search-func '(lambda ()))))))
+
+(defun mvi-search-context (number)
+	"After a search, try to force at least NUMBER lines of context on screen."
+	(let ((height (window-height))
+				(line (count-lines (window-start) (point))))
+		(cond
+		 ((>= number height))
+		 ((< line number) (recenter (1- number)))
+		 ((< (- height line) number) (recenter (- height (1+ number)))))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; scrolling
+
+(defun mvi-scroll-back (arg number)
+  "mvi scroll back page."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(move-marker mvi-g-point (point))
+		(if arg
+			(scroll-down (* (1- (window-height)) number))
+			(scroll-down))))
+
+(defun mvi-scroll-forward (arg number)
+  "mvi scroll forward page."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(move-marker mvi-g-point (point))
+		(if arg
+			(scroll-up (* (1- (window-height)) number))
+			(scroll-up))))
+
+(defun mvi-scroll-up (arg number)
+  "mvi scroll up a half of page."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(move-marker mvi-g-point (point))
+		(scroll-down (/ (* (1- (window-height)) number) 2))))
+
+(defun mvi-scroll-down (arg number)
+  "mvi scroll down a half of page."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(move-marker mvi-g-point (point))
+		(scroll-up (/ (* (1- (window-height)) number) 2))))
+
+(defun mvi-scroll-up-one (arg number)
+  "mvi scroll up a line."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(move-marker mvi-g-point (point))
+		(scroll-down number)))
+
+(defun mvi-scroll-down-one (arg number)
+  "mvi scroll down a line."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(move-marker mvi-g-point (point))
+		(scroll-up number)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; searching
+
+(defun mvi-f-search-beg (arg number &optional motion-arg text no-update)
+  "Search forward to beginning."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(count (if (> number 0) number (- number)))
+				(fold case-fold-search)
+				(case-fold-search nil)
+				(orig-char (point))
+				(regexp)
+				(start)
+				(hist-tmp))
+		(or motion-arg
+			(progn
+				(if mvi-magic 
+					(setq motion-arg (read-string "Enter re-string: "))
+					(setq motion-arg (read-string "Enter string: ")))
+				(or (string= motion-arg "")
+					(setq command-history 
+						(cons (list 'mvi-f-search-beg nil number motion-arg nil) 
+							command-history)))))
+		(if (string= motion-arg "")
+			(setq motion-arg mvi-search-string)
+			(setq mvi-search-string motion-arg))
+		(or no-update (setq mvi-last-search (list 'mvi-f-search-beg 
+			(if (> number 0) t nil))))
+		(move-marker mvi-g-point (point))
+		(if (> number 0) (push-mark nil t))
+		(if (and fold (not (string-match "[A-Z]" motion-arg)))
+			(setq case-fold-search t)
+			(setq case-fold-search nil))
+		(if mvi-magic 
+		  (setq regexp motion-arg)
+		  (setq regexp (regexp-quote motion-arg)))
+		(if command (move-marker mvi-com-point (point)))
+		(condition-case ERR
+			(progn
+				(if (and folded-display search-skip-fold)
+					(progn
+						(if (looking-at regexp) (goto-char (match-end 0)))
+						(setq start (point))
+						(while (and (/= count 0) (re-search-forward regexp nil mvi-wrap 1))
+							(or (folded-p (match-beginning 0)) (setq count (1- count))))
+						(if (= count 0)
+							(goto-char (match-beginning 0))
+							(progn
+								(goto-char (point-min))
+								(while (and (re-search-forward regexp start nil 1)
+									(folded-p (match-beginning 0)))) 
+								(goto-char (match-beginning 0))
+								(setq command nil)
+								(message "Search wrapped around buffer"))))
+					(if (looking-at regexp) (goto-char (match-end 0)))
+					(setq start (point))
+					(if (re-search-forward regexp nil mvi-wrap count)
+						(goto-char (match-beginning 0))
+						(progn
+							(goto-char (point-min))
+							(re-search-forward regexp start nil 1)
+							(goto-char (match-beginning 0))
+							(setq command nil)
+							(message "Search wrapped around buffer"))))
+				(and command (mvi-execute-com 'mvi-f-search-beg))
+				(funcall mvi-search-func))
+		(error 
+			(goto-char orig-char)
+			(error "Search failed: %s" (prin1-to-string motion-arg)))
+		(quit 
+			(goto-char orig-char)))))
+
+(defun mvi-b-search-beg (arg number &optional motion-arg text no-update)
+  "Search backward to beginning."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(count (if (> number 0) number (- number)))
+				(fold case-fold-search)
+				(case-fold-search nil)
+				(orig-char (point))
+				(regexp)
+				(start)
+				(hist-tmp))
+		(or motion-arg
+			(progn
+				(if mvi-magic 
+					(setq motion-arg (read-string "Enter re-string: "))
+					(setq motion-arg (read-string "Enter string: ")))
+				(or (string= motion-arg "")
+					(setq command-history 
+						(cons (list 'mvi-b-search-beg nil number motion-arg nil) 
+							command-history)))))
+		(if (string= motion-arg "")
+			(setq motion-arg mvi-search-string)
+			(setq mvi-search-string motion-arg))
+		(or no-update (setq mvi-last-search (list 'mvi-b-search-beg 
+			(if (> number 0) t nil))))
+		(move-marker mvi-g-point (point))
+		(if (> number 0) (push-mark nil t))
+		(if (and fold (not (string-match "[A-Z]" motion-arg)))
+			(setq case-fold-search t)
+			(setq case-fold-search nil))
+		(if mvi-magic 
+		  (setq regexp motion-arg)
+		  (setq regexp (regexp-quote motion-arg)))
+		(if command (move-marker mvi-com-point (point)))
+		(condition-case ERR
+			(progn
+				(if (and folded-display search-skip-fold)
+					(progn
+						(setq start (point))
+						(while (and (/= count 0) 
+							(re-search-backward regexp nil mvi-wrap 1))
+								(or (folded-p) (setq count (1- count))))
+						(or (= count 0)
+							(progn
+								(goto-char (point-max))
+								(while (and (re-search-backward regexp start nil 1)
+									(folded-p))) 
+								(setq command nil)
+								(message "Search wrapped around buffer"))))
+					(setq start (point))
+					(or (re-search-backward regexp nil mvi-wrap count)
+						(progn
+							(goto-char (point-max))
+							(re-search-backward regexp start nil 1)
+							(setq command nil)
+							(message "Search wrapped around buffer"))))
+				(and command (mvi-execute-com 'mvi-b-search-beg))
+				(funcall mvi-search-func))
+		(error 
+			(goto-char orig-char)
+			(error "Search failed: %s" (prin1-to-string motion-arg)))
+		(quit 
+			(goto-char orig-char)))))
+
+(defun mvi-f-search-end (arg number &optional motion-arg text no-update)
+  "Search forward to end."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(count (if (> number 0) number (- number)))
+				(fold case-fold-search)
+				(case-fold-search nil)
+				(orig-char (point))
+				(regexp)
+				(start)
+				(hist-tmp))
+		(or motion-arg
+			(progn
+				(if mvi-magic 
+					(setq motion-arg (read-string "Enter re-string: "))
+					(setq motion-arg (read-string "Enter string: ")))
+				(or (string= motion-arg "")
+					(setq command-history 
+						(cons (list 'mvi-f-search-end nil number motion-arg nil) 
+							command-history)))))
+		(if (string= motion-arg "")
+			(setq motion-arg mvi-search-string)
+			(setq mvi-search-string motion-arg))
+		(or no-update (setq mvi-last-search (list 'mvi-f-search-end 
+			(if (> number 0) t nil))))
+		(move-marker mvi-g-point (point))
+		(if (> number 0) (push-mark nil t))
+		(if (and fold (not (string-match "[A-Z]" motion-arg)))
+			(setq case-fold-search t)
+			(setq case-fold-search nil))
+		(if mvi-magic 
+		  (setq regexp motion-arg)
+		  (setq regexp (regexp-quote motion-arg)))
+		(if command (move-marker mvi-com-point (point)))
+		(condition-case ERR
+			(progn
+				(if (and folded-display search-skip-fold)
+					(progn
+						(setq start (point))
+						(while (and (/= count 0) (re-search-forward regexp nil mvi-wrap 1))
+							(or (folded-p (match-beginning 0)) (setq count (1- count))))
+						(or (= count 0)
+							(progn
+								(goto-char (point-min))
+								(while (and (re-search-forward regexp start nil 1)
+									(folded-p (match-beginning 0)))) 
+								(setq command nil)
+								(message "Search wrapped around buffer"))))
+					(setq start (point))
+					(or (re-search-forward regexp nil mvi-wrap count)
+						(progn
+							(goto-char (point-min))
+							(re-search-forward regexp start nil 1)
+							(setq command nil)
+							(message "Search wrapped around buffer"))))
+				(and command (mvi-execute-com 'mvi-f-search-end))
+				(funcall mvi-search-func))
+		(error 
+			(goto-char orig-char)
+			(error "Search failed: %s" (prin1-to-string motion-arg)))
+		(quit 
+			(goto-char orig-char)))))
+
+(defun mvi-b-search-end (arg number &optional motion-arg text no-update)
+  "Search backward to end."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(count (if (> number 0) number (- number)))
+				(fold case-fold-search)
+				(case-fold-search nil)
+				(orig-char (point))
+				(regexp)
+				(start)
+				(hist-tmp))
+		(or motion-arg
+			(progn
+				(if mvi-magic 
+					(setq motion-arg (read-string "Enter re-string: "))
+					(setq motion-arg (read-string "Enter string: ")))
+				(or (string= motion-arg "")
+					(setq command-history 
+						(cons (list 'mvi-b-search-end nil number motion-arg nil) 
+							command-history)))))
+		(if (string= motion-arg "")
+			(setq motion-arg mvi-search-string)
+			(setq mvi-search-string motion-arg))
+		(or no-update (setq mvi-last-search (list 'mvi-b-search-end 
+			(if (> number 0) t nil))))
+		(move-marker mvi-g-point (point))
+		(if (> number 0) (push-mark nil t))
+		(if (and fold (not (string-match "[A-Z]" motion-arg)))
+			(setq case-fold-search t)
+			(setq case-fold-search nil))
+		(if mvi-magic 
+		  (setq regexp motion-arg)
+		  (setq regexp (regexp-quote motion-arg)))
+		(if command (move-marker mvi-com-point (point)))
+		(condition-case ERR
+			(progn
+				(if (and folded-display search-skip-fold)
+					(progn
+						(if (and (re-search-backward regexp nil t 1)
+									(= orig-char (match-end 0)))
+								(goto-char (match-beginning 0))
+								(goto-char orig-char))
+						(setq start (point))
+						(while (and (/= count 0) 
+							(re-search-backward regexp nil mvi-wrap 1))
+								(or (folded-p) (setq count (1- count))))
+						(if (= count 0)
+							(goto-char (match-end 0))
+							(progn
+								(goto-char (point-max))
+								(while (and (re-search-backward regexp start nil 1)
+									(folded-p))) 
+								(goto-char (match-end 0))
+								(setq command nil)
+								(message "Search wrapped around buffer"))))
+					(if (and (re-search-backward regexp nil t 1)
+								(= orig-char (match-end 0)))
+							(goto-char (match-beginning 0))
+							(goto-char orig-char))
+					(setq start (point))
+					(if (re-search-backward regexp nil mvi-wrap count)
+						(goto-char (match-end 0))
+						(progn
+							(goto-char (point-max))
+							(re-search-backward regexp start nil 1)
+							(goto-char (match-end 0))
+							(setq command nil)
+							(message "Search wrapped around buffer"))))
+				(and command (mvi-execute-com 'mvi-b-search-end))
+				(funcall mvi-search-func))
+		(error 
+			(goto-char orig-char)
+			(error "Search failed: %s" (prin1-to-string motion-arg)))
+		(quit 
+			(goto-char orig-char)))))
+
+(defun mvi-n (arg number)
+  "Repeat previous search."
+  (interactive "P\nV")
+	(let ((raw-number (mvi-nth 0 arg))
+				(command (mvi-nth 4 arg))
+				(function (nth 0 mvi-last-search))
+				(do-push (nth 1 mvi-last-search)))
+		(if command (error "Bad command"))
+		(or raw-number (setq number (if do-push 1 -1)))
+		(funcall function nil number "" nil (not raw-number))))
+
+(defun mvi-N (arg number)
+  "Repeat previous search in opposite direction."
+  (interactive "P\nV")
+	(let ((raw-number (mvi-nth 0 arg))
+				(command (mvi-nth 4 arg))
+				(function (nth 0 mvi-last-search))
+				(do-push (nth 1 mvi-last-search)))
+		(if command (error "Bad command"))
+		(or raw-number (setq number (if do-push 1 -1)))
+		(cond
+		 ((eq function 'mvi-f-search-beg) (setq function 'mvi-b-search-beg))
+		 ((eq function 'mvi-b-search-beg) (setq function 'mvi-f-search-beg))
+		 ((eq function 'mvi-f-search-end) (setq function 'mvi-b-search-end))
+		 ((eq function 'mvi-b-search-end) (setq function 'mvi-f-search-end)))
+		(funcall function nil number "" nil (not raw-number))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; yank and pop
+
+(defun mvi-p (arg number &optional motion-arg text not-in-history)
+  "Put back after point/below line."
+  (interactive "*P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(count number)
+				(killed-text)
+				(hist-tmp))
+		(setq mvi-put-number number)
+		(setq mvi-put-command 'mvi-p)
+		(if command (error "Bad command"))
+		(move-marker mvi-put-point (point))
+		(move-marker mvi-g-point (point))
+		(if register
+			(setq killed-text (get-register register))
+			(setq killed-text (car kill-ring-yank-pointer)))
+		(if (null (stringp killed-text)) (error "No text to put"))
+		(if (= (aref killed-text (1- (length killed-text))) ?\n)
+			(progn
+				(next-line 1)
+				(beginning-of-line)
+				(move-marker mvi-put-start (point))
+				(while (> count 0)
+					(insert killed-text)
+					(setq count (1- count)))
+				(move-marker mvi-put-end (point))
+				(goto-char mvi-put-start)
+				(mvi-forward-line 0))
+			(progn
+				(if (not (eolp)) (forward-char 1))
+				(move-marker mvi-put-start (point))
+				(while (> count 0)
+					(insert killed-text)
+					(setq count (1- count)))
+				(move-marker mvi-put-end (point))
+				(backward-char)))
+		(or (pos-visible-in-window-p mvi-put-end)
+			(message (format "%s More lines" 
+				(count-lines mvi-put-start mvi-put-end))))
+		(if g-flag (goto-char mvi-g-point))
+		(or not-in-history executing-macro
+			(equal (aref mvi-com-ring (% mvi-com-ring-point mvi-com-ring-max)) 
+				(setq hist-tmp (vector number register append g-flag command 
+					'mvi-p motion-arg text)))
+			(progn
+				(setq mvi-com-ring-point (1+ mvi-com-ring-point))
+				(aset mvi-com-ring (% mvi-com-ring-point mvi-com-ring-max) 
+					hist-tmp)))))
+
+(defun mvi-P (arg number &optional motion-arg text not-in-history)
+  "Put back before point/above line."
+  (interactive "*P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(count number)
+				(killed-text)
+				(hist-tmp))
+		(setq mvi-put-number number)
+		(setq mvi-put-command 'mvi-P)
+		(if command (error "Bad command"))
+		(move-marker mvi-g-point (point))
+		(move-marker mvi-put-point (point))
+		(if register
+			(setq killed-text (get-register register))
+			(setq killed-text (car kill-ring-yank-pointer)))
+		(if (null (stringp killed-text)) (error "No text to put"))
+		(if (= (aref killed-text (1- (length killed-text))) ?\n)
+			(progn
+				(beginning-of-line)
+				(move-marker mvi-put-start (point))
+				(while (> count 0)
+					(insert killed-text)
+					(setq count (1- count)))
+				(move-marker mvi-put-end (point))
+				(goto-char mvi-put-start)
+				(mvi-forward-line 0))
+			(progn
+				(move-marker mvi-put-start (point))
+				(while (> count 0)
+					(insert killed-text)
+					(setq count (1- count)))
+				(move-marker mvi-put-end (point))))
+		(or (pos-visible-in-window-p mvi-put-end)
+			(message (format "%s More lines" 
+				(count-lines mvi-put-start mvi-put-end))))
+		(if g-flag (goto-char mvi-g-point))
+		(or not-in-history executing-macro
+			(equal (aref mvi-com-ring (% mvi-com-ring-point mvi-com-ring-max)) 
+				(setq hist-tmp (vector number register append g-flag command 
+					'mvi-P motion-arg text)))
+			(progn
+				(setq mvi-com-ring-point (1+ mvi-com-ring-point))
+				(aset mvi-com-ring (% mvi-com-ring-point mvi-com-ring-max) 
+					hist-tmp)))))
+
+(defun mvi-Cp (arg number &optional motion-arg text not-in-history)
+  "Put back right at point."
+  (interactive "*P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(count number)
+				(killed-text)
+				(hist-tmp))
+		(setq mvi-put-number number)
+		(setq mvi-put-command 'mvi-Cp)
+		(if command (error "Bad command"))
+		(move-marker mvi-g-point (point))
+		(move-marker mvi-put-point (point))
+		(if register
+			(setq killed-text (get-register register))
+			(setq killed-text (car kill-ring-yank-pointer)))
+		(if (null (stringp killed-text)) (error "No text to put"))
+		(move-marker mvi-put-start (point))
+		(while (> count 0)
+			(insert killed-text)
+			(setq count (1- count)))
+		(move-marker mvi-put-end (point))
+		(or (pos-visible-in-window-p mvi-put-end)
+			(message (format "%s More lines" 
+				(count-lines mvi-put-start mvi-put-end))))
+		(if g-flag (goto-char mvi-g-point))
+		(or not-in-history executing-macro
+			(equal (aref mvi-com-ring (% mvi-com-ring-point mvi-com-ring-max)) 
+				(setq hist-tmp (vector number register append g-flag command 
+					'mvi-Cp motion-arg text)))
+			(progn
+				(setq mvi-com-ring-point (1+ mvi-com-ring-point))
+				(aset mvi-com-ring (% mvi-com-ring-point mvi-com-ring-max) 
+					hist-tmp)))))
+
+(defun mvi-qp (arg number &optional motion-arg text)
+  "Replace just put stretch of killed-text with a different stretch - p."
+  (interactive "*P\nV")
+	(mvi-yank-pop arg number 'mvi-p 
+		(if (eq mvi-put-command 'mvi-p) t nil) 'mvi-qp))
+
+(defun mvi-qP (arg number &optional motion-arg text)
+  "Replace just put stretch of killed-text with a different stretch - P."
+  (interactive "*P\nV")
+	(mvi-yank-pop arg number 'mvi-P 
+		(if (eq mvi-put-command 'mvi-P) t nil) 'mvi-qP))
+
+(defun mvi-qCp (arg number &optional motion-arg text)
+  "Replace just put stretch of killed-text with a different stretch - Cp."
+  (interactive "*P\nV")
+	(mvi-yank-pop arg number 'mvi-Cp 
+		(if (eq mvi-put-command 'mvi-Cp) t nil) 'mvi-qCp))
+
+(defun mvi-yank-pop (arg number motion same-motion history-func)
+  "Replace just put stretch of killed-text with a different stretch.
+At such a time, the region contains a stretch of reinserted
+previously-killed text.  mvi-yank-pop  deletes that text and inserts in its
+place a different stretch of killed text.
+
+With no argument, the previous kill is inserted.
+With argument n, n puts are done.
+With register, that register is put.
+
+The sequence of kills wraps around, so that after the oldest one
+comes the newest one."
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(put-arg)
+				(offset 1)
+				(hist-number)
+				(hist-tmp))
+		(if command (error "Bad command"))
+		(if (null mvi-put-number) (error "No put done"))
+		(if (null (mvi-nth 0 arg)) (setq number mvi-put-number))
+		(setq hist-number number)
+		(if (< number 0) 
+			(setq 
+				number (- number)
+				offset -1))
+		(move-marker mvi-g-point (point))
+		(move-marker mvi-com-point (point))
+		(delete-region mvi-put-start mvi-put-end)
+		(goto-char mvi-put-point)
+		(setq put-arg (list number register nil nil nil))
+		(if (and (null register) (= mvi-put-number number) same-motion)
+			(rotate-yank-pointer offset))
+		(funcall motion put-arg number nil nil t)
+		(if g-flag (goto-char mvi-g-point))
+		(or executing-macro
+			(equal (aref mvi-com-ring (% mvi-com-ring-point mvi-com-ring-max)) 
+				(setq hist-tmp (vector hist-number register append g-flag command 
+					history-func motion-arg text)))
+			(progn
+				(setq mvi-com-ring-point (1+ mvi-com-ring-point))
+				(aset mvi-com-ring (% mvi-com-ring-point mvi-com-ring-max) 
+					hist-tmp)))))
+
+(defun mvi-goto-put-end (arg number &optional motion-arg text)
+  "mvi move to the end of a previous put.  With number move to the
+beginning of a previous put."
+  (interactive "P\nV")
+	(let ((raw-number (mvi-nth 0 arg))
+				(register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(move-marker mvi-g-point (point))
+		(if command 
+			(progn
+				(setq number raw-number)
+				(move-marker mvi-com-point (point))
+				(goto-char (if raw-number mvi-put-start mvi-put-end))
+				(mvi-execute-com 'mvi-goto-put-end))
+			(goto-char (if raw-number mvi-put-start mvi-put-end)))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; join lines.
+
+(defun mvi-J (arg number &optional motion-arg text)
+  "Join this line to next, if ARG is nil.  Otherwise, join ARG lines"
+  (interactive "*P\nV")
+  (let ((count number)
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(hist-tmp))
+		(if command (error "Bad command"))
+		(move-marker mvi-g-point (point))
+		(move-marker mvi-com-point (point))
+		(while (> count 0)
+			(end-of-line)
+			(mvi-forward-end -1 nil)
+			(if (looking-at sentence-end)
+				(progn
+					(end-of-line)
+					(delete-char 1)
+					(fixup-whitespace)
+					(insert " "))
+				(progn
+					(end-of-line)
+					(delete-char 1)
+					(fixup-whitespace)))
+			(setq count (1- count)))
+		(if g-flag (goto-char mvi-g-point))
+		(or executing-macro
+			(equal (aref mvi-com-ring (% mvi-com-ring-point mvi-com-ring-max)) 
+				(setq hist-tmp (vector number nil nil g-flag command 
+					'mvi-J motion-arg text)))
+			(progn
+				(setq mvi-com-ring-point (1+ mvi-com-ring-point))
+				(aset mvi-com-ring (% mvi-com-ring-point mvi-com-ring-max) 
+					hist-tmp)))))
+
+(defun mvi-m (arg)
+	"Mark position in register."
+  (interactive "P")
+	(if (mvi-nth 4 arg) (error "Bad command"))
+	(let ((char))
+		(or (eq (minibuffer-window) (selected-window))
+			(message "Set mark:"))
+		(setq char (read-char))
+		(if (and (>= char ?a) (<= char ?z))
+			(point-to-register (- char 32))
+			(point-to-register char))))
+
+(defun mvi-to-line (arg number &optional motion-arg text)
+  "mvi move to line pointed to by register."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(buf (current-buffer))
+				(hist-tmp))
+		(or motion-arg (progn
+			(or (eq (minibuffer-window) (selected-window))
+				(message "Go to line of mark:"))
+			(setq motion-arg (read-char))))
+		(cond 
+		 ((= motion-arg ?\e) (message "Command cancelled"))
+		 (command 
+				(if (> number 0) (push-mark nil t))
+				(move-marker mvi-g-point (point))
+				(mvi-enlarge-region (point)
+					(progn
+						(if (and (>= motion-arg ?a) (<= motion-arg ?z))
+							(register-to-point (- motion-arg 32))
+							(register-to-point motion-arg))
+						(point)))
+				(if (not (eq buf (current-buffer))) (error "Differen't buffer"))
+				(mvi-execute-com 'mvi-to-line))
+			(t
+				(if (> number 0) (push-mark nil t))
+				(move-marker mvi-g-point (point))
+				(if (and (>= motion-arg ?a) (<= motion-arg ?z))
+					(register-to-point (- motion-arg 32))
+					(register-to-point motion-arg))
+				(mvi-forward-line 0)))))
+
+(defun mvi-to-point (arg number &optional motion-arg text)
+  "mvi move to point pointed to by register."
+  (interactive "P\nV")
+	(let ((register (mvi-nth 1 arg))
+				(append (mvi-nth 2 arg))
+				(g-flag (mvi-nth 3 arg))
+				(command (mvi-nth 4 arg))
+				(buf (current-buffer))
+				(hist-tmp))
+		(or motion-arg (progn
+			(or (eq (minibuffer-window) (selected-window))
+				(message "Go to mark:"))
+			(setq motion-arg (read-char))))
+		(cond 
+		 ((= motion-arg ?\e) (message "Command cancelled"))
+			(command 
+				(move-marker mvi-g-point (point))
+				(if (> number 0) (push-mark nil t))
+				(move-marker mvi-com-point (point))
+				(if (and (>= motion-arg ?a) (<= motion-arg ?z))
+					(register-to-point (- motion-arg 32))
+					(register-to-point motion-arg))
+				(if (not (eq buf (current-buffer))) (error "Differen't buffer"))
+				(mvi-execute-com 'mvi-to-point))
+			(t
+				(move-marker mvi-g-point (point))
+				(if (> number 0) (push-mark nil t))
+				(if (and (>= motion-arg ?a) (<= motion-arg ?z))
+					(register-to-point (- motion-arg 32))
+					(register-to-point motion-arg))))))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; debug aid
+
+(defun mvi-toggle-debug ()
+  "mvi toggle debug"
+  (interactive)
+  (if debug-on-error 
+	(progn
+	  (setq debug-on-error nil)
+	  (message "Debug off"))
+	(progn
+	  (setq debug-on-error t)
+	  (message "Debug on"))))
+
+(defun mvi-dump-emacs (arg)
+  "mvi dump emacs in a given filename.  Can be re-executed to restore the
+complete state of emacs."
+  (interactive "FDump emacs to: ")
+	(dump-emacs arg "/usr/local/src/gnumacs/src/temacs"))
+
+(defun mvi-version ()
+  "Print version number of emacs."
+  (interactive)
+	(message "MVI Version 1.0, March 26, 1990, send bug reports to: osu-cis!nimbus3!djs"))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; next window
+
+(defun mvi-other-window (arg number)
+  "mvi to other window."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(other-window number)
+		(if (eq (current-local-map) nil)
+				(mvi-emacs-to-vi))))
+
+(defun mvi-call-last-kbd-macro (number)
+  "mvi call last keyboard macro."
+  (interactive "V")
+	(call-last-kbd-macro number))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; fold commands
+
+(defun fold-mode (arg)
+  "Turn on fold mode.  With argument, turn off fold mode."
+  (interactive "P")
+	(let ((raw-number (mvi-nth 0 arg))
+				(command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(if raw-number
+				(setq selective-display nil
+							folded-display nil)
+				(save-excursion
+					(save-restriction
+						(widen)
+						(goto-char (point-min))
+						(skip-chars-forward "^\C-m-\C-z")
+						(if (or (= (point) (point-max)) (y-or-n-p 
+								"Enter fold mode with buffer containing fold charachters? "))
+								(setq selective-display t
+											folded-display t)))))))
+
+(defun unfold-buffer (arg number)
+  "unfold complete buffer by NUMBER, defaults to 1, folds."
+  (interactive "P\nV")
+	(let ((raw-number (mvi-nth 0 arg))
+				(command (mvi-nth 4 arg)))
+		(if command (error "Bad command"))
+		(or folded-display (error "Fold mode not enabled"))
+		(save-excursion
+			(save-restriction
+				(widen)
+				(unfold-region (point-min) (point-max) (if raw-number number 15) t)))))
+
+(defun fold-line (arg number)
+  "fold NUMBER of lines."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg))
+				(orig-char (point)))
+		(if command (error "Bad command"))
+		(or folded-display (error "Fold mode not enabled"))
+		(subst-char-in-region (point) (progn (forward-line number) (point))
+			?\n ?\C-m t)
+		(goto-char orig-char)
+		(scroll-up 0)))
+
+(defun unfold-line (arg number)
+  "unfold line by NUMBER, defaults to 1, folds."
+  (interactive "P\nV")
+	(let ((command (mvi-nth 4 arg))
+				(orig-char (point)))
+		(if command (error "Bad command"))
+		(or folded-display (error "Fold mode not enabled"))
+		(beginning-of-line)
+		(unfold-region (point) (progn (forward-line 1) (point)) number t)
+		(goto-char orig-char)
+		(scroll-up 0)))
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+;; key bindings
+
+(set 'mvi-static-map (make-keymap))
+
+(define-key mvi-static-map "\C-@" 'mvi-set-mark)
+(define-key mvi-static-map "\C-a" global-map)
+(define-key mvi-static-map "\C-b" 'mvi-scroll-back)
+(define-key mvi-static-map "\C-d" 'mvi-scroll-down)
+(define-key mvi-static-map "\C-e" 'mvi-scroll-down-one)
+(define-key mvi-static-map "\C-f" 'mvi-scroll-forward)
+(define-key mvi-static-map "\C-g" 'keyboard-quit)
+(define-key mvi-static-map "\C-h" 'help-command)
+(define-key mvi-static-map "\C-j" 'mvi-j)
+(define-key mvi-static-map "\C-k" 'mvi-command-arg)
+(define-key mvi-static-map "\C-l" 'redraw-display)
+(define-key mvi-static-map "\C-m" 'mvi-forward-line)
+(define-key mvi-static-map "\C-n" 'mvi-other-window)
+(define-key mvi-static-map "\C-o" 'mvi-Co)
+(define-key mvi-static-map "\C-p" 'mvi-Cp)
+(define-key mvi-static-map "\C-t" 'universal-argument)
+(define-key mvi-static-map "\C-u" 'mvi-scroll-up)
+(define-key mvi-static-map "\C-y" 'mvi-scroll-up-one)
+(define-key mvi-static-map "\C-z" 'mvi-vi-to-emacs)
+(define-key mvi-static-map "\e" 'mvi-ESC)
+
+(define-key mvi-static-map " " 'mvi-l)
+(define-key mvi-static-map "!" 'mvi-command-arg)
+(define-key mvi-static-map "\"" 'mvi-register-arg)
+(define-key mvi-static-map "#" 'mvi-to-col)
+(define-key mvi-static-map "$" 'mvi-eol)
+(define-key mvi-static-map "%" 'mvi-paren)
+(define-key mvi-static-map "&" 'mvi-goto-put-end)
+(define-key mvi-static-map "'" 'mvi-to-line)
+(define-key mvi-static-map "(" 'mvi-b-sent)
+(define-key mvi-static-map ")" 'mvi-f-sent)
+(define-key mvi-static-map "*" 'mvi-call-last-kbd-macro)
+(define-key mvi-static-map "+" 'mvi-f-list)
+(define-key mvi-static-map "," 'mvi-r-f-t)
+(define-key mvi-static-map "-" 'mvi-digit-arg)
+(define-key mvi-static-map "." 'mvi-repeat)
+(define-key mvi-static-map "/" 'mvi-f-search-beg)
+
+(define-key mvi-static-map "0" 'mvi-0)
+(define-key mvi-static-map "1" 'mvi-digit-arg)
+(define-key mvi-static-map "2" 'mvi-digit-arg)
+(define-key mvi-static-map "3" 'mvi-digit-arg)
+(define-key mvi-static-map "4" 'mvi-digit-arg)
+(define-key mvi-static-map "5" 'mvi-digit-arg)
+(define-key mvi-static-map "6" 'mvi-digit-arg)
+(define-key mvi-static-map "7" 'mvi-digit-arg)
+(define-key mvi-static-map "8" 'mvi-digit-arg)
+(define-key mvi-static-map "9" 'mvi-digit-arg)
+
+(define-key mvi-static-map ":" 'execute-extended-command)
+(define-key mvi-static-map ";" 'mvi-s-f-t)
+(define-key mvi-static-map "<" 'mvi-command-arg)
+(define-key mvi-static-map "=" 'exchange-point-and-mark)
+(define-key mvi-static-map ">" 'mvi-command-arg)
+(define-key mvi-static-map "?" 'mvi-b-search-beg)
+
+(define-key mvi-static-map "A" 'mvi-A)
+(define-key mvi-static-map "B" 'mvi-B)
+(define-key mvi-static-map "C" 'mvi-C)
+(define-key mvi-static-map "D" 'mvi-D)
+(define-key mvi-static-map "E" 'mvi-E)
+(define-key mvi-static-map "F" 'mvi-F)
+(define-key mvi-static-map "G" 'mvi-G)
+(define-key mvi-static-map "H" 'mvi-H)
+(define-key mvi-static-map "I" 'mvi-I)
+(define-key mvi-static-map "J" 'mvi-J)
+(define-key mvi-static-map "K" 'mvi-command-arg)
+(define-key mvi-static-map "L" 'mvi-L)
+(define-key mvi-static-map "M" 'mvi-M)
+(define-key mvi-static-map "N" 'mvi-N)
+(define-key mvi-static-map "O" 'mvi-O)
+(define-key mvi-static-map "P" 'mvi-P)
+(define-key mvi-static-map "Q" 'query-replace)
+(define-key mvi-static-map "R" 'mvi-overwrite)
+(define-key mvi-static-map "S" 'suspend-emacs)
+(define-key mvi-static-map "T" 'mvi-T)
+(define-key mvi-static-map "U" 'mvi-jump-mark)
+(define-key mvi-static-map "V" 'mvi-V)
+(define-key mvi-static-map "W" 'mvi-W)
+(define-key mvi-static-map "X" 'mvi-X)
+(define-key mvi-static-map "Y" 'mvi-Y)
+(define-key mvi-static-map "Z" 'unfold-line)
+
+(define-key mvi-static-map "[" 'mvi-b-par)
+(define-key mvi-static-map "\\" 'mvi-exc-point-and-g)
+(define-key mvi-static-map "]" 'mvi-f-par)
+(define-key mvi-static-map "^" 'mvi-bol)
+(define-key mvi-static-map "_" 'mvi-b-list)
+(define-key mvi-static-map "`" 'mvi-to-point)
+
+(define-key mvi-static-map "a" 'mvi-a)
+(define-key mvi-static-map "b" 'mvi-b)
+(define-key mvi-static-map "c" 'mvi-command-arg)
+(define-key mvi-static-map "d" 'mvi-command-arg)
+(define-key mvi-static-map "e" 'mvi-e)
+(define-key mvi-static-map "f" 'mvi-f)
+(define-key mvi-static-map "g" 'mvi-g-flag-arg)
+(define-key mvi-static-map "h" 'mvi-h)
+(define-key mvi-static-map "i" 'mvi-i)
+(define-key mvi-static-map "j" 'mvi-j)
+(define-key mvi-static-map "k" 'mvi-k)
+(define-key mvi-static-map "l" 'mvi-l)
+(define-key mvi-static-map "m" 'mvi-m)
+(define-key mvi-static-map "n" 'mvi-n)
+(define-key mvi-static-map "o" 'mvi-o)
+(define-key mvi-static-map "p" 'mvi-p)
+(define-key mvi-static-map "q" 'mvi-q-prefix)
+(define-key mvi-static-map "r" 'mvi-r)
+(define-key mvi-static-map "s" 'mvi-s)
+(define-key mvi-static-map "t" 'mvi-t)
+(define-key mvi-static-map "u" 'mvi-undo)
+(define-key mvi-static-map "v" 'mvi-v)
+(define-key mvi-static-map "w" 'mvi-w)
+(define-key mvi-static-map "x" 'mvi-x)
+(define-key mvi-static-map "y" 'mvi-command-arg)
+(define-key mvi-static-map "z" 'fold-line)
+
+(define-key mvi-static-map "{" 'mvi-b-page)
+(define-key mvi-static-map "|" 'mvi-command-arg)
+(define-key mvi-static-map "}" 'mvi-f-page)
+(define-key mvi-static-map "~" 'mvi-change-case)
+(define-key mvi-static-map "\177" 'mvi-h)
+
+(defvar mvi-q-map (make-keymap)
+  "Keymap for subcommands of q")
+(fset 'mvi-q-prefix mvi-q-map)
+
+(define-key mvi-q-map "\C-i" 'mvi-command-arg)
+(define-key mvi-q-map "\C-p" 'mvi-qCp)
+(define-key mvi-q-map "\C-r" 'isearch-backward-regexp)
+(define-key mvi-q-map "\C-s" 'isearch-forward-regexp)
+(define-key mvi-q-map "\C-t" 'mvi-toggle-debug)
+(define-key mvi-q-map "\C-v" 'mvi-version)
+(define-key mvi-q-map "\C-z" 'mvi-dump-emacs)
+(define-key mvi-q-map "\e" 'mvi-ESC)
+(define-key mvi-q-map " " 'mvi-search-recenter)
+(define-key mvi-q-map "!" 'shell-command)
+(define-key mvi-q-map "#" 'mvi-what-col)
+(define-key mvi-q-map "(" 'mvi-b-sexp)
+(define-key mvi-q-map ")" 'mvi-f-sexp)
+(define-key mvi-q-map "+" 'mvi-command-arg)
+(define-key mvi-q-map "-" 'backward-up-list)
+(define-key mvi-q-map "." 'mvi-edit-history)
+(define-key mvi-q-map "/" 'mvi-f-search-end)
+(define-key mvi-q-map ";" 'repeat-complex-command)
+(define-key mvi-q-map ":" 'repeat-matching-complex-command)
+(define-key mvi-q-map "?" 'mvi-b-search-end)
+(define-key mvi-q-map "@" 'mvi-map-macro)
+(define-key mvi-q-map "[" 'mvi-b-text-sexp)
+(define-key mvi-q-map "]" 'mvi-f-text-sexp)
+(define-key mvi-q-map "_" 'mvi-command-arg)
+(define-key mvi-q-map "5" 'mvi-command-arg)
+(define-key mvi-q-map "B" 'mvi-search-recenter)
+(define-key mvi-q-map "C" 'mvi-command-arg)
+(define-key mvi-q-map "F" 'mvi-command-arg)
+(define-key mvi-q-map "G" 'mvi-command-arg)
+(define-key mvi-q-map "I" 'mvi-insert-all-macro)
+(define-key mvi-q-map "M" 'mvi-search-recenter)
+(define-key mvi-q-map "P" 'mvi-qP)
+(define-key mvi-q-map "Q" 'query-replace-regexp)
+(define-key mvi-q-map "R" 'mvi-command-arg)
+(define-key mvi-q-map "T" 'mvi-search-recenter)
+(define-key mvi-q-map "U" 'mvi-command-arg)
+(define-key mvi-q-map "a" 'mvi-command-arg)
+(define-key mvi-q-map "b" 'mvi-line-to)
+(define-key mvi-q-map "f" 'mvi-command-arg)
+(define-key mvi-q-map "g" 'what-line)
+(define-key mvi-q-map "i" 'mvi-insert-macro)
+(define-key mvi-q-map "l" 'mvi-command-arg)
+(define-key mvi-q-map "m" 'mvi-line-to)
+(define-key mvi-q-map "n" 'mvi-command-arg)
+(define-key mvi-q-map "p" 'mvi-qp)
+(define-key mvi-q-map "r" 'mvi-command-arg)
+(define-key mvi-q-map "t" 'mvi-line-to)
+(define-key mvi-q-map "u" 'mvi-command-arg)
+(define-key mvi-q-map "v" 'set-variable)
+(define-key mvi-q-map "w" 'mvi-command-arg)
+(define-key mvi-q-map "x" 'mvi-edit-saved-history)
+
+(define-key minibuffer-local-map "\e" 'mvi-minibuffer-to-vi)
+(define-key minibuffer-local-ns-map "\e" 'mvi-minibuffer-to-vi)
+(define-key minibuffer-local-completion-map "\e" 'mvi-minibuffer-to-vi)
+(define-key minibuffer-local-must-match-map "\e" 'mvi-minibuffer-to-vi)
+
+(setq mvi-history-edit-map (copy-keymap mvi-static-map))
+(setq mvi-history-q-map (copy-keymap mvi-q-map))
+(fset 'mvi-history-q-prefix mvi-history-q-map)
+
+(define-key mvi-history-edit-map "\C-m" 'exit-minibuffer)
+(define-key mvi-history-edit-map "\C-j" 'exit-minibuffer)
+(define-key mvi-history-edit-map "\C-g" 'abort-recursive-edit)
+(define-key mvi-history-edit-map "q" 'mvi-history-q-prefix)
+
+(define-key mvi-history-q-map "j" 'mvi-edit-next)
+(define-key mvi-history-q-map "k" 'mvi-edit-prev)
+(define-key mvi-history-q-map "\\" 'mvi-edit-match)
+(define-key mvi-history-q-map "N" 'mvi-edit-match-again)
+(define-key mvi-history-q-map "V" 'mvi-save-history)
+
+(setq mvi-history-insert-map (make-sparse-keymap))
+(define-key mvi-history-insert-map "\C-g" 'abort-recursive-edit)
+(define-key mvi-history-insert-map "\e" 'mvi-minibuffer-to-vi)
+(define-key mvi-history-insert-map "\C-m" 'exit-minibuffer)
+(define-key mvi-history-insert-map "\C-n" 'mvi-edit-next)
+(define-key mvi-history-insert-map "\C-p" 'mvi-edit-prev)
+
+(define-key repeat-complex-command-map "\e" 'mvi-minibuffer-to-vi)
+(define-key repeat-complex-command-map "\C-n" 'next-complex-command)
+(define-key repeat-complex-command-map "\C-p" 'previous-complex-command)
+
+(setq enable-recursive-minibuffers t)
+
+(setq mvi-map-map (make-sparse-keymap))
+(fset 'mvi-map-prefix mvi-map-map)
+(fset 'mvi-map-prefix-prefix 'mvi-map-prefix)
+
+;; End of MVI
+;; Local Variables:
+;; tab-width:2
+;; eval:(define-key mvi-map-map "g" "/^(defun mvi-q")
+;; End:

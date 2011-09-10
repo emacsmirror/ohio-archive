@@ -1,0 +1,49 @@
+This is Info file phit.info, produced by Makeinfo version 1.67 from the
+input file /tmp/sgml2info30752tmp2.
+
+   \input texinfo
+
+
+Indirect:
+phit.info-1: 128
+phit.info-2: 49882
+
+Tag Table:
+(Indirect)
+Node: Top128
+Node: Introduction586
+Node: Input and Output Files2183
+Node: Input Files2562
+Node: Running Phit Output Messages Warnings and Errors3978
+Node: Output Files4747
+Node: Keywords6693
+Node: A Brief List of the Keywords7955
+Node: Full Explanation of Keywords9964
+Node: Available functions23512
+Node: List of Functions23959
+Node: Rules for Using Functions26650
+Node: The Peak Function-29209
+Node: Writing Sensible Input Files30642
+Node: Specifying Keywords31041
+Node: Guess and Set Values33143
+Node: Writing Math Expressions34683
+Node: Choosing Variable Labels36898
+Node: Functions Other Than Those Found in Phit38323
+Node: Using Phit without Fitting40066
+Node: Goodness of Fit and Uncertainty in Variables41331
+Node: Acknowledgments References and Program Notes45708
+Node: Acknowledgments46241
+Node: Bibliography46624
+Node: Copyright Issues47191
+Node: Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs47968
+Node: To Do49055
+Node: Source Code Parameters49882
+Node: Code Portability and Code Compilation50868
+Node: Adding More Data Formats to Phit52785
+Node: About this document-53564
+Node: Appendix: Some Worked Examples54281
+Node: Fitting a Line + a Gaussian + Noise54778
+Node: Fitting An Einstein Temperature to XAFS Debye-Waller Factors61425
+Node: Fitting the Near Edge Structure of Barium Titanate65284
+
+End Tag Table

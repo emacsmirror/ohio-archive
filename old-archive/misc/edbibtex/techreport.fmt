@@ -1,0 +1,23 @@
+****************************** TECHREPORT ******************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+        Title: \title
+  Institution: \institution
+         Year: \year
+................................................................Optional
+         Type: \type
+       Number: \number
+      Address: \address
+        Month: \month
+         Note: \note
+          Key: \key
+     Crossref: \crossref
+.................................................................Ignored
+       Errata: \errata
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+****************************** TECHREPORT ******************************

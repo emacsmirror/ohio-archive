@@ -1,0 +1,139 @@
+Path: utkcs2!emory!wuarchive!cs.utexas.edu!tut.cis.ohio-state.edu!ittc.wec.com!fpb
+>From: fpb@ittc.wec.com (Frank P. Bresz)
+Newsgroups: gnu.emacs.bug
+Subject: man.el patches to 18.55
+Date: 17 Aug 90 18:24:53 GMT
+Organization: Westinghouse, ITTC, Pgh, PA.
+
+In GNU Emacs 18.55.8 of Tue Jul 31 1990 on ittc (berkeley-unix)
+
+Here is a patch for man.el
+
+It makes the following modifications.
+
+1) The output buffer is named *topic man*.  This was originally sent out on
+the net before and I snarfed it up then. Sorry I lost the posters name.  
+
+2) Pops to the appropriate *topic man* buffer if it exists instead of
+having to reformat and re-clean the page again.
+
+3) Nukes a little more BS that is created by the Sun man pages.
+
+4) Makes sure the man page is readonly to prevent accidental editing, and
+kludges the keymap to do scrolling ala view-mode.
+
+
+enjoy
+
++--------------------+
+|fbresz@ittc.wec.com |  My opinions are my own, I'm not paid
+|uunet!ittc!fbresz   |  enough to make an official statement  
+|(412)733-6749       |  +-----------------------------------+
+|Fax: (412)733-6444  |  |      THIS SPACE FOR SALE!!!       |
++--------------------+  +-----------------------------------+
+
+
+Patch starts here (should be virgin 18.55 I think)
+
+
+------- man.el -------
+*** /tmp/da01019	Fri Aug 17 14:23:37 1990
+--- man.el	Fri Aug 17 14:23:22 1990
+***************
+*** 18,23 ****
+--- 18,45 ----
+  ;; file named COPYING.  Among other things, the copyright notice
+  ;; and this notice must be preserved on all copies.
+  
++ 
++ ;; Added code here to suppress the changes of the man buffers.
++ ;;  - fbresz@ittc.wec.com - Aug 17, 1990
++ ;; @(#)man.el	1.14
++ (defvar man-map nil "Keymap used inside man pages")
++ 
++ ;; Initialize the keymap if it isn't already
++ (if man-map
++     nil
++   (setq man-map (make-keymap))
++   (suppress-keymap man-map)
++   (define-key man-map "?" 'describe-mode)
++   (define-key man-map "." 'beginning-of-buffer)
++   (define-key man-map " " 'scroll-up)
++   (define-key man-map "\177" 'scroll-down)
++   (define-key man-map "\r" '(lambda () (interactive) (scroll-up 1)))
++ ;; lambda's in keyboard maps ecchh?!? this is gross but I didn't
++ ;; want to create a function because in theory I would want to call it
++ ;; man-scroll-up-1 and that would break the fact that I can now type 
++ ;; M-x man <CR> and it prompts me for the topic.
++ )
++ 
+  (defun manual-entry (topic &optional section)
+    "Display the Unix manual entry for TOPIC.
+  TOPIC is either the title of the entry, or has the form TITLE(SECTION)
+***************
+*** 29,35 ****
+  				     (match-end 2))
+  	    topic (substring topic (match-beginning 1)
+  				   (match-end 1))))
+!   (with-output-to-temp-buffer "*Manual Entry*"
+      (buffer-flush-undo standard-output)
+      (save-excursion
+        (set-buffer standard-output)
+--- 51,61 ----
+  				     (match-end 2))
+  	    topic (substring topic (match-beginning 1)
+  				   (match-end 1))))
+!   (if (get-buffer (concat "*" topic (and section (concat " " section)) " man*"))
+!       (switch-to-buffer-other-window 
+!        (concat "*" topic (and section (concat " " section)) " man*"))
+!   (with-output-to-temp-buffer 
+!       (concat "*" topic (and section (concat " " section)) " man*")
+      (buffer-flush-undo standard-output)
+      (save-excursion
+        (set-buffer standard-output)
+***************
+*** 88,94 ****
+        (message "Cleaning manual entry for %s..." topic)
+        (nuke-nroff-bs)
+        (set-buffer-modified-p nil)
+!       (message ""))))
+  
+  ;; Hint: BS stands form more things than "back space"
+  (defun nuke-nroff-bs ()
+--- 114,122 ----
+        (message "Cleaning manual entry for %s..." topic)
+        (nuke-nroff-bs)
+        (set-buffer-modified-p nil)
+!       (setq buffer-read-only t)
+!       (use-local-map man-map)
+!       (message "")))))
+  
+  ;; Hint: BS stands form more things than "back space"
+  (defun nuke-nroff-bs ()
+***************
+*** 136,141 ****
+--- 164,185 ----
+    (goto-char (point-min))
+    (while (re-search-forward "\n\n\n\n*" nil t)
+      (replace-match "\n\n"))
++ 
++   ;; Nuke the stupid <ESC>8 <ESC>9 that is generated
++   ;; whereever a ~ appears.  Why does this happen???
++   ;; fpb@ittc.wec.com 1/25/89
++   (if (eq system-type 'berkeley-unix)
++       (progn
++ 	(goto-char (point-min))
++ 	(while (re-search-forward "\e[789]" nil t)
++ 	  (replace-match ""))))
++ 
++   ;; Nuke the dumb reformatting message
++   (if (eq system-type 'berkeley-unix)
++       (progn
++ 	(goto-char (point-min))
++ 	(while (re-search-forward "Reformatting page.  Wait... done\n\n" nil t)
++ 	  (replace-match ""))))
+  
+    ;; Nuke blanks lines at start.
+    (goto-char (point-min))
+
+

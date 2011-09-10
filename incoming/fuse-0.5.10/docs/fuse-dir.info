@@ -1,0 +1,42 @@
+This is Info file fuse-dir.info, produced by Makeinfo version 1.68 from
+the input file fuse-dir.texi.
+
+START-INFO-DIR-ENTRY
+* FUSE Directory: (fuse-dir).   Documentation for FUSE
+END-INFO-DIR-ENTRY
+
+
+File: fuse-dir.info,  Node: Top,  Prev: (dir),  Up: (dir)
+
+Master Menu
+***********
+
+     This is the top of the FUSE info tree
+     
+       This node gives a menu of major documentation topics in FUSE.
+     
+       Usage in info-mode of EMACS:
+         Typing "d" goes to the info top level,
+         typing "?" lists all INFO commands,
+         typing "q" exits,     typing "h" gives a primer for using info,
+         pressing 2nd button on a highlighted word follows that cross-reference.
+
+* Menu:
+
+* FUSE: (fuse).				FUSE document
+* FUSE Tutorial: (fuse-tutorial).	A worked example
+
+* Atoms: (atoms).			The Atoms document
+* Feff: (feff7).			The Feff document
+
+* Normal: (normal).			The Normal document
+* Phit: (phit).				The Phit document
+
+* Gnuplot: (gnuplot).			The Gnuplot document
+
+
+
+Tag Table:
+Node: Top199
+
+End Tag Table

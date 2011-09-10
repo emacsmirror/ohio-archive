@@ -1,0 +1,59 @@
+\def\Praxis{{\bf Praxis}}
+\def\Praxima{{\bf Praxima}}
+\def\Macsyma{{\bf Macsyma}}
+
+%\def\pcp#1{\marginpar{{\scriptsize #1}}\kyindex{#1}}
+\def\pcp#1{\kyindex{#1}}
+
+\def\PC{{\bf Personal Consultant}}
+\def\PCES{{\bf Personal Consultant Expert System}}
+
+\setlength{\unitlength}{1in}
+
+\newif\if@praxima	\@praximafalse
+\def\ifpraxima{\@menu\@xifpraxima }
+\let\endifpraxima=\endgroup
+
+\begingroup \catcode `|=0 \catcode `[= 1
+\catcode`]=2 \catcode `\{=12 \catcode `\}=12
+\catcode`\\=12 
+|gdef|@xifpraxima#1\end{ifpraxima}[|end[ifpraxima]]
+|endgroup
+
+\def\praxima{\@praximatrue
+	\global\def\ifpraxima{}
+	\global\def\endifpraxima{}
+	}
+
+\def\boxed{
+\noindent\if@praxima The menu asks the question:\else
+The question that this section addresses is:\fi\par
+\noindent\rule{\textwidth}{1mm}
+	\begin{example}}
+\def\endboxed{
+	\end{example}\noindent\rule{\textwidth}{1mm}
+	\par\noindent\if@praxima The choices are:\else
+			The possibilities are:\fi}
+
+% Make the verbatim and example environments use small tt.
+\def\@verbatim{\trivlist \item[]\if@minipage\else\vskip\parskip\fi
+\leftskip\@totalleftmargin\rightskip\z@
+\parindent\z@\parfillskip\@flushglue\parskip\z@
+\@tempswafalse \def\par{\if@tempswa\hbox{}\fi\@tempswatrue\@@par}
+\obeylines \tt\small\tt \catcode``=13 \@noligs \let\do\@makeother \dospecials}
+
+\renewenvironment{example}{\aboveenvbreak
+	\hfuzz=12truept % Don't be fussy
+	\sepspaces % Make spaces be word-separators rather than space tokens.
+	\singlespace % Single space lines
+	% The following causes blank lines not to be ignored
+	% by adding a space to the end of each line.
+	\let\par=\lisppar
+	\parskip=0pt \advance \rightskip by \lispnarrowing 
+	\advance \leftskip by \lispnarrowing
+	\parindent=0pt
+	\let\exdent=\internalexdent
+	\obeyspaces \obeylines \tt\small\tt \rawbackslash \bgroup\samepage
+		\def\next##1{}\next}{\egroup\afterenvbreak}
+
+

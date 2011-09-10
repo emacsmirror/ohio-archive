@@ -1,0 +1,74 @@
+This is a call for vip 4.3 Beta testing. This version or a close derivative 
+will be in the Emacs 19 distribution. There is a updated manual and card.
+
+VIP 4.3 is available for anon ftp on a.cs.uiuc.edu, pub/vip4.3.tar.Z
+
+Please voice any complaints about incompatibilities, key assignments etc.
+I would also like feedback on the manual and quickref card.
+There is a list at end end of this file about questions I have. 
+
+Thanks
+
+Aamod Sane
+
+c commands are done in the buffer itself.
+:set is more compatible , most sensible :set ai etc. work
+:map! exists
+Insert mode is complete - there are 0^D etc.
+vip-open-with-indent replaced by vip-auto-indent
+Mode is controlled by variable vip-insert-mode-vi-map which is 
+ buffer local
+File completion and wildcards for :e
+Ability to view registers and textmarkers ]register and [marker
+:pwd, :cd :preserve and :recover for ex
+:args and :next with count
+% in Ex commands
+:w !cmd
+@register macros, @# to start kbd macro, end by @register to get into 
+register, and @register to execute. @@ to repeat. @!register to snarf
+c-x( style macro into registers
+
+Support for Epoch. :e gets file into new screen etc.
+
+Updated Manual and QuickRef. 
+
+I have a version of timeout based map expansion for the next version.
+I have not included it in this one, its not very tested. 
+
+UP for debate:
+
+ Since @ is used now, Meta is _.
+
+ Meaning of e# - in the presence of multiple changing windows, this is not
+ very clear. It is probably useless. A "correct" implementation would have
+ to have window-local variables, and remeber the previous file from each
+ window. So for now, my e# does previous correctly if there is only one
+ window, else it is the next file in the buffer listing created by :args.
+ 
+ I think VIP needs a command to pipe a region through a shell-command without
+ replacing the current region. I am thinking of using "\" for such a command
+ (analogous to !). Any comments?.
+
+ Behavior of the Minibuffer
+	It is possible to make the minibuffer be in Vi or Insert mode,
+	but there is a problem with the key assignments.
+	In both Vi and Insert mode, RET and ESC should exit from the minibuffer
+	So you need a toggle key from Insert to Vi mode. The obvious choice
+	is the toggle key. Moreover, the toggle key from Vi - Emacs should be
+	turned off. I have not done any of these changes - I think it is
+	a little confusing to have the toggle key change meaning just
+	in the minibuffer, and at the moment I do not have a better idea.
+	Another question is what should the other Control keys do? self-insert
+	or vip-nil?
+
+	Or just leave the minibuffer in insert mode, making Vi mode transition
+	impossible? But then you do not get real editing.
+
+	I'd like to have some suggestions about this.
+
+
+
+Acknowledgements:
+
+Thanks to Jean Moreau (jjm@hplb.hpl.hp.com) for change within buffer
+:recover,:pwd,:cd and hooks for the completer.

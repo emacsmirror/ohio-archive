@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+#  automated mrofer -- display a record from a uwxafs binary file to STDOUT
+# read command line and pass argument to mrofer
+# requires that mrofer be in the path
+# adapted from a script by Matt Newille
+# by Bruce Ravel  Sep 27 1997
+# 
+# This file is part of FUSE, the Feff/UWXAFS System for Emacs
+#  
+scrap=mr$$
+if [ $# -gt 1 ]; then
+    echo "$1 $2" > $scrap
+    mrofer < $scrap
+    rm $scrap
+elif [ $# -eq 1 ]; then
+    echo "# no nkey or skey for $1 to mr"
+else
+    echo '# no inputs to mr'
+fi
+

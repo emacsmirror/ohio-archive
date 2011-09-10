@@ -1,0 +1,965 @@
+From twwells!novavax!weiner@uunet.uu.net Tue Jun 20 12:11:48 1989
+To: unix-emacs@BBN.COM
+Date: 17 Jun 89 01:06:27 GMT
+From: Bob Weiner <twwells!novavax!weiner@uunet.uu.net>
+Sender: arpa-unix-emacs-request@BBN.COM
+Subject: GNU Emacs rolodex system (new) and smart-menu (old) code
+Organization: Nova University, Fort Lauderdale, FL
+Source-Info:  From (or Sender) name not authenticated.
+
+Here is a feature laden rolodex system I cooked up so that I could
+rapidly find phone numbers and all sorts of random bits of information
+that were previously scattered in many different files.  A simpler
+version of the rolodex for simpler folks is also included.
+
+This shar archive also includes an update of my smart-menu package (used
+in conjunction with smart-key) which includes a number of improvements
+and supports the rolodex system.
+
+Please let me know any innovative uses that you find for the rolodex
+system.
+
+=================================Cut Here===================================
+#! /bin/sh
+# This is a shell archive.  Remove anything before this line, then unpack
+# it by saving it into a file and typing "sh file".  To overwrite existing
+# files, type "sh file -c".  You can also feed this as standard input via
+# unshar, or by typing "sh <file", e.g..  If this archive is complete, you
+# will see the following message at the end:
+#		"End of shell archive."
+# Contents:  rolo.el rolo-logic.el rolo-simple.el smart-menu.el
+# Wrapped by root@ar_weiner on Fri Jun 16 18:09:17 1989
+PATH=/bin:/usr/bin:/usr/ucb ; export PATH
+if test -f 'rolo.el' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'rolo.el'\"
+else
+echo shar: Extracting \"'rolo.el'\" \(16075 characters\)
+sed "s/^X//" >'rolo.el' <<'END_OF_FILE'
+X;;!emacs
+X;;
+X;; FILE:         rolo.el
+X;; SUMMARY:      Retrieves and sorts entries from a list of rolodex files
+X;; USAGE:        GNU Emacs Lisp Library
+X;;
+X;; AUTHOR:       Bob Weiner
+X;; ORG:          Motorola, Inc., Communications Sector, Applied Research
+X;; E-MAIL:       USENET:  weiner@novavax.UUCP
+X;;
+X;; ORIG-DATE:     7-Jun-89 at 22:08:29
+X;; LAST-MOD:     16-Jun-89 at 14:56:11 by Bob Weiner
+X;;
+X;; Copyright (C) 1989 Bob Weiner and Free Software Foundation, Inc.
+X;; Available for use and distribution under the same terms as GNU Emacs.
+X;;
+X;; This file is not yet part of GNU Emacs.
+X;; This could use a key or field limited searching capability.
+X;;
+X;; DESCRIPTION:  
+X;;
+X;;  All I wanted to do was look up a phone number quickly . . .
+X;;
+X;;  FEATURES:
+X;;
+X;;   1.  Multiple rolodex files.
+X;;
+X;;   2.  Hierarchical rolodex entries as in:
+X;;        *    Company
+X;;        **     Manager
+X;;        ***      Underlings
+X;;
+X;;       Searching for Manager turns up all Underlings.  Searching for
+X;;       Company retrieves all listed employees.
+X;;
+X;;       This hierarchical system has proved very effective for retrieving
+X;;       computer system administration problem reports by vendor name,
+X;;       problem number or by subject area without having to resort to a
+X;;       database system.
+X;;
+X;;   4.  String and regular expression searching capabilities.  Ability to
+X;;       restrict number of matches or to report number of matches without
+X;;       displaying entries.
+X;;
+X;;   5.  Smart sorting of entries by hierarchy level.
+X;;
+X;;   See "rolo-logic.el" for logical search functions (and, or, not, xor).
+X;;
+X;;
+X;;  FOR NON-PROGRAMMERS:
+X;;
+X;;   Modify the second file entry in the definition of 'rolo-file-list'
+X;;   before using this package.
+X;;
+X;;   To add personal files to rolo-file-list--when you find these functions are
+X;;   useful for any sort of list lookup--add the following to your ~/.emacs
+X;;   file (substituting where you see <fileN>):
+X;;
+X;;      (require 'rolo)
+X;;      (setq rolo-file-list (append rolo-file-list '("<file1>" "<file2>")))
+X;;
+X;;   The only command you absolutely need that is defined here is
+X;;   'rolo-fgrep'; it locates any matching entries in a set of rolodex files.
+X;;   I recommend that you add the following key binding to one of your site
+X;;   specific Emacs initialization files:
+X;;
+X;;         (global-set-key "\C-x4r" 'rolo-fgrep)
+X;;
+X;;   Calling 'rolo-fgrep' with a prefix argument limits the number of matches
+X;;   to the specified number of entries.
+X;;
+X;;   The following commands are also provided:
+X;;     'rolo-grep' finds all entries matching a regular expression in a set
+X;;       of rolodex files;
+X;;     'rolo-edit' edits one's personal rolodex file;
+X;;     'rolo-sort' sorts all levels of entries in a rolodex file.
+X;;
+X;;   To make the 'rolo' library load whenever you initially call any of these
+X;;   functions, add the following to any of your Emacs init files:
+X;;
+X;;     (autoload 'rolo-fgrep "rolo"
+X;;       "Find entries in rolodex."
+X;;       t)	 
+X;;     (autoload 'rolo-grep "rolo"
+X;;       "Find entries in rolodex."
+X;;       t)	 
+X;;     (autoload 'rolo-edit "rolo"
+X;;       "Edit personal rolodex file."
+X;;       t)
+X;;     (autoload 'rolo-sort "rolo"
+X;;       "Sort rolodex file."
+X;;       t)
+X;;     
+X;;     
+X;;   Entries in rolodex files are separated by patterns matching
+X;;   'rolo-entry-regexp'.  Each entry may have any number of sub-entries
+X;;   which represent the next level down in the entry hierarchy.
+X;;   Sub-entries' separator patterns are always longer than their parents'.
+X;;   For example, if an entry began with '*' then its sub-entries would begin
+X;;   with '**' and so on.  Blank lines in rolodex files will not end up where
+X;;   you want them if you use the rolo-sort commands; therefore, blank lines
+X;;   are not recommended.
+X;;
+X;;   The reasons that the entries in 'rolo-file-list' have ".otl" suffixes
+X;;   are so that they do not conflict with file names that other rolodex
+X;;   programs might use and so that they are edited in 'outline-mode' by
+X;;   default.  If you want the latter behavior, uncomment and add something
+X;;   like the following to one of your GNU Emacs initialization files:
+X;;
+X;;     ;; Add to the list of suffixes that causes automatic mode invocation
+X;;     (setq auto-mode-alist
+X;;        (append '(("\\.otl$" . outline-mode)) auto-mode-alist))
+X;;
+X;;   Here is a snippet from our group rolodex file (the ';'s should be
+X;;   removed of course and the '*'s should begin at the start of the line):
+X;;
+X;;=============================================================================
+X;;			      GROUP ROLODEX
+X;;    <Last Name>, <First Name>  <Co/Categ>   W<Work #>   H<Home #>  P<Pager #>
+X;;					      F<Fax #>    M<Modem #> C<Cellular #>
+X;;					      R<Other-radio #>
+X;;        <Address>	   <Miscellaneous Info, Key Words>
+X;;=============================================================================
+X;;*   EX594, Digital-Systems-Research
+X;;**  Weiner, Bob		  Motorola    W2087	             P7-7489
+X;;	  FL19, L-1035
+X;;
+X;;
+X;;  FOR PROGRAMMERS:
+X;;
+X;;   If you change the value of 'rolo-entry-regexp', you will have to modify
+X;;   'rolo-sort'.
+X;;
+X;;   The following additional functions are provided:
+X;;     'rolo-sort-level' sorts a specific level of entries in a rolodex file;
+X;;     'rolo-map-level' runs a user specified function on a specific level of
+X;;       entries in a rolodex file.
+X;;     'rolo-fgrep-file', same as 'rolo-fgrep' but operates on a single file
+X;;     'rolo-grep-file, same as 'rolo-grep' but operates on a single file
+X;;
+X;;   The buffers containing the rolodex files are not killed after a search
+X;;   on the assumption that another search is likely to follow within this
+X;;   Emacs session.  You may wish to change this behavior.
+X;;
+X;;   This code works fine on properly formatted rolodex files but probably
+X;;   will fail on certain improperly formatted ones.
+X;;
+X;; DESCRIP-END.
+X
+X(defconst rolo-file-list '("~/.rolodex.otl" "~ex594/.rolodex.otl")
+X  "List of files containing rolodex entries.
+XThe first file should be a user-specific rolodex file, typically in the home
+Xdirectory.  The second file is often a shared, group-specific rolodex file.
+X
+XA rolo-file consists of:
+X   (1) an optional header beginning with and ending with a line which matches
+X       rolo-hdr-regexp;
+X   (2) one or more rolodex entries beginning with rolo-entry-regexp, which
+X       may be nested.")
+X
+X(defconst rolo-entry-regexp "^\*+"
+X  "Regular expression to match the beginning of a rolodex entry.
+XThis pattern must match the beginning of the line.  Entries may be nested
+Xthrough the use of increasingly longer beginning patterns.")
+X
+X(defconst rolo-hdr-regexp "^==="
+X  "Regular expression to match the first and last lines of rolodex file headers.
+XThis header is inserted into rolo-display-buffer before any entries from the
+Xfile are added.")
+X
+X(defconst rolo-display-buffer "*Rolodex*"
+X  "Buffer used to display set of last matching rolodex entries.")
+X
+X(defun rolo-fgrep (string &optional max-matches rolo-file count-only)
+X  "Display rolodex entries matching STRING, to a maximum of prefix arg MAX-MATCHES,
+Xin file(s) from optional ROLO-FILE or rolo-file-list.  Default is to find all
+Xmatching entries.  Each entry is displayed with all of its sub-entries.
+XOptional COUNT-ONLY non-nil means don't display matching entries.
+XReturns number of entries matched.  See also documentation for the variable
+Xrolo-file-list."
+X  (interactive "sRolodex string to match: \nP")
+X  (let ((total-matches
+X	  (rolo-grep (regexp-quote string) max-matches rolo-file count-only)))
+X    (if (interactive-p)
+X	(message (concat (if (= total-matches 0) "No" total-matches)
+X			 " matching entr"
+X			 (if (= total-matches 1) "y" "ies")
+X			 " found in rolodex.")))
+X    total-matches))
+X
+X(defun rolo-grep (regexp &optional max-matches rolo-bufs count-only)
+X  "Display rolodex entries matching REGEXP, to a maximum of prefix arg MAX-MATCHES,
+Xin buffer(s) from optional ROLO-BUFS or rolo-file-list.  Default is to find all
+Xmatching entries.  Each entry is displayed with all of its sub-entries.
+XOptional COUNT-ONLY non-nil means don't display matching entries.
+XReturns number of entries matched.  See also documentation for the variable
+Xrolo-file-list."
+X  (interactive "sRolodex regular expression to match: \nP")
+X  (let ((rolo-file-list
+X	  (cond ((null rolo-bufs) rolo-file-list)
+X		((listp rolo-bufs) rolo-bufs)
+X		((list rolo-bufs))))
+X	(obuf (current-buffer))
+X	(display-buf (if count-only
+X			 nil
+X		       (set-buffer (get-buffer-create rolo-display-buffer))))
+X	(total-matches 0))
+X    (if count-only nil (setq buffer-read-only nil) (erase-buffer))
+X    (mapcar '(lambda (file)
+X	       (if (or (null max-matches) (> max-matches 0))
+X		   (let ((num-matched
+X			   (rolo-grep-file file regexp max-matches count-only)))
+X		     (setq total-matches (+ total-matches num-matched))
+X		     (or (null max-matches)
+X			 (setq max-matches (- max-matches num-matched))))))
+X	    rolo-file-list)
+X    (if (or count-only (= total-matches 0))
+X	nil
+X      (pop-to-buffer display-buf)
+X      (goto-char (point-min))
+X      (set-buffer-modified-p nil)
+X      (setq buffer-read-only t)
+X      (let ((buf (get-buffer-window obuf)))
+X	(if buf (select-window buf) (switch-to-buffer buf))))
+X    (if (interactive-p)
+X	(message (concat (if (= total-matches 0) "No" total-matches)
+X			 " matching entr"
+X			 (if (= total-matches 1) "y" "ies")
+X			 " found in rolodex.")))
+X    total-matches))
+X
+X(defun rolo-edit ()
+X  "Display personal rolodex file for editing."
+X  (interactive)
+X  (find-file (car rolo-file-list)))
+X
+X(defun rolo-sort (&optional rolo-file)
+X  "Sort up to 14 levels of entries in ROLO-FILE (default is personal rolodex file).
+XUses default rolo-entry-regexp for sort.  Returns list of number of groupings
+Xat each entry level." 
+X  (interactive "fRolodex file to sort: ")
+X  (if (not rolo-file) (setq rolo-file (car rolo-file-list)))
+X  (let ((level-regexp (regexp-quote "**************"))
+X	(entries-per-level-list)
+X	(n))
+X    (while (not (equal level-regexp ""))
+X      (setq n (rolo-sort-level rolo-file level-regexp))
+X      (if (or (/= n 0) entries-per-level-list)
+X	  (setq entries-per-level-list
+X		(append (list n) entries-per-level-list)))
+X      (setq level-regexp (substring level-regexp 0 (- (length level-regexp) 2))))
+X    entries-per-level-list))
+X
+X(defun rolo-sort-level (rolo-file level-regexp &optional max-groupings)
+X  "Sort groupings of entries in ROLO-FILE at hierarchy level given by LEVEL-REGEXP
+Xto a maximum of optional MAX-GROUPINGS.  Nil value of MAX-GROUPINGS means all
+Xgroupings at the given level.  LEVEL-REGEXP should simply match the text of
+Xany rolodex entry of the given level, not the beginning of a line (^); an
+Xexample, might be (regexp-quote \"**\") to match level two.  Returns number
+Xof groupings sorted."
+X  (interactive "sRolodex file to sort: \nRegexp to match text of level's entries: \nP")
+X  (rolo-map-level
+X    '(lambda (start end) (sort-lines nil start end))
+X    rolo-file
+X    level-regexp
+X    max-groupings))
+X
+X(defun rolo-map-level (func rolo-buf level-regexp &optional max-groupings)
+X  "Perform FUNC on each grouping of ROLO-BUF entries at hierarchy level LEVEL-REGEXP
+Xto a maximum of optional argument MAX-GROUPINGS.  Nil value of MAX-GROUPINGS
+Xmeans all groupings at the given level.  FUNC should take two arguments, the
+Xstart and the end of the region that it should manipulate.  LEVEL-REGEXP
+Xshould simply match the text of any rolodex entry of the given level, not the
+Xbeginning of a line (^); an example, might be (regexp-quote \"**\") to match
+Xlevel two.  Returns number of groupings matched."
+X  (if (and (or (null max-groupings) (< 0 max-groupings))
+X	   (or (bufferp rolo-buf)
+X	       (if (file-exists-p rolo-buf)
+X		   (setq rolo-buf (find-file-noselect rolo-buf t)))))
+X      (let ((num-found 0)
+X	    (exact-level-regexp (concat "^\\(" level-regexp "\\)[ \t\n]"))
+X	    (outline-regexp rolo-entry-regexp)
+X	    (level-len))
+X	;; Load 'outline' library since its functions are used here.
+X	(if (not (boundp 'outline-mode-map))
+X	    (load-library "outline"))
+X	(set-buffer rolo-buf)
+X	(goto-char (point-min))
+X	;; Pass buffer header if it exists
+X	(if (re-search-forward rolo-hdr-regexp nil t 2)
+X	    (forward-line))
+X	(while (and (or (null max-groupings) (< num-found max-groupings))
+X		    (re-search-forward exact-level-regexp nil t))
+X	  (setq num-found (1+ num-found))
+X	  (let* ((opoint (prog1 (point) (beginning-of-line)))
+X		 (grouping-start (point))
+X		 (start grouping-start)
+X		 (level-len (or level-len (- (1- opoint) start)))
+X		 (next-level-len)
+X		 (next-entry-exists)
+X		 (grouping-end)
+X		 (no-subtree))
+X	    (while (and (progn
+X			  (if (setq next-entry-exists
+X				    (re-search-forward rolo-entry-regexp nil t 2))
+X			      (setq next-level-len (- (point)
+X						      (progn (beginning-of-line)
+X							     (point)))
+X				    grouping-end (< next-level-len level-len)
+X				    no-subtree (<= next-level-len level-len))
+X			    (setq grouping-end t no-subtree t)
+X			    (goto-char (point-max)))
+X			  (let ((end (point)))
+X			    (goto-char start)
+X			    (hide-subtree) ; And hide multiple lines of entry
+X			    ;; Move to start of next entry at equal or higher level
+X			    (setq start
+X				  (if no-subtree
+X				      end
+X				    (if (re-search-forward rolo-entry-regexp
+X							   nil t)
+X					(progn (beginning-of-line) (point))
+X				      (point-max))))
+X			    ;; Remember last expression in 'progn' must always
+X			    ;; return non-nil
+X			    (goto-char start)))
+X			(not grouping-end)))
+X	    (let ((end (point)))
+X	      (goto-char grouping-start)
+X	      (funcall func grouping-start end)
+X	      (goto-char end))))
+X	(show-all)
+X	num-found)
+X    0))
+X
+X(defun rolo-fgrep-file (rolo-buf string &optional max-matches count-only)
+X  "Retrieve entries in ROLO-BUF matching STRING to a maximum of optional MAX-MATCHES.
+XNil value of MAX-MATCHES means find all matches.  Optional COUNT-ONLY non-nil
+Xmeans don't retrieve matching entries.  Returns number of matching entries
+Xfound."
+X  (rolo-grep-file rolo-buf (regexp-quote string) max-matches count-only))
+X
+X(defun rolo-grep-file (rolo-buf regexp &optional max-matches count-only)
+X  "Retrieve entries in ROLO-BUF matching REGEXP to a maximum of optional MAX-MATCHES.
+XNil value of MAX-MATCHES means find all matches.  Optional COUNT-ONLY non-nil
+Xmeans don't retrieve matching entries.  Returns number of matching entries
+Xfound."
+X  (if (and (or (null max-matches) (< 0 max-matches))
+X	   (or (bufferp rolo-buf)
+X	       (if (file-exists-p rolo-buf)
+X		   (setq rolo-buf (find-file-noselect rolo-buf t)))))
+X      (let ((hdr-pos) (num-found 0) (curr-entry-level))
+X	(set-buffer rolo-buf)
+X	(goto-char (point-min))
+X	(if (re-search-forward rolo-hdr-regexp nil t 2)
+X	    (progn (forward-line)
+X		   (setq hdr-pos (cons (point-min) (point)))))
+X	(re-search-forward rolo-entry-regexp nil t)
+X	(while (and (or (null max-matches) (< num-found max-matches))
+X		    (re-search-forward regexp nil t))
+X	  (re-search-backward rolo-entry-regexp nil t)
+X	  (let ((start (point))
+X		(next-entry-exists))
+X	    (re-search-forward rolo-entry-regexp nil t)
+X	    (rolo-to-entry-end
+X	      t (setq curr-entry-level (buffer-substring start (point))))
+X	    (or count-only
+X		(and (= num-found 0) hdr-pos
+X		     (progn (append-to-buffer rolo-display-buffer
+X					      (car hdr-pos) (cdr hdr-pos)))))
+X	    (setq num-found (1+ num-found))
+X	    (or count-only
+X		(append-to-buffer rolo-display-buffer start (point)))))
+X	num-found)
+X    0))
+X
+X;;
+X;; INTERNAL FUNCTIONS.
+X;;
+X
+X(defun rolo-to-entry-end (&optional include-sub-entries curr-entry-level)
+X"Go to end of whole entry if optional INCLUDE-SUB-ENTRIES is non-nil.
+XCURR-ENTRY-LEVEL is a string whose length is the same as the last found entry
+Xheader.  If INCLUDE-SUB-ENTRIES is nil, CURR-ENTRY-LEVEL is not needed."
+X  (while (and (setq next-entry-exists
+X		    (re-search-forward rolo-entry-regexp nil t))
+X	      include-sub-entries
+X	      (> (- (point) (save-excursion
+X			      (beginning-of-line)
+X			      (point)))
+X		 (length curr-entry-level))))
+X  (if next-entry-exists
+X      (progn (beginning-of-line) (point))
+X    (goto-char (point-max))))
+X
+X	  
+X(provide 'rolo)
+END_OF_FILE
+if test 16075 -ne `wc -c <'rolo.el'`; then
+    echo shar: \"'rolo.el'\" unpacked with wrong size!
+fi
+# end of 'rolo.el'
+fi
+if test -f 'rolo-logic.el' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'rolo-logic.el'\"
+else
+echo shar: Extracting \"'rolo-logic.el'\" \(7746 characters\)
+sed "s/^X//" >'rolo-logic.el' <<'END_OF_FILE'
+X;;!emacs
+X;;
+X;; FILE:         rolo-logic.el
+X;; SUMMARY:      Performs logical retrievals on rolodex files
+X;; USAGE:        GNU Emacs Lisp Library
+X;;
+X;; AUTHOR:       Bob Weiner
+X;; ORG:          Motorola, Inc., Communications Sector, Applied Research
+X;; E-MAIL:       USENET:  weiner@novavax.UUCP
+X;;
+X;; ORIG-DATE:    13-Jun-89 at 22:57:33
+X;; LAST-MOD:     16-Jun-89 at 18:05:05 by Bob Weiner
+X;;
+X;; Copyright (C) 1989 Bob Weiner and Free Software Foundation, Inc.
+X;; Available for use and distribution under the same terms as GNU Emacs.
+X;;
+X;; This file is not yet part of GNU Emacs.
+X;;
+X;; DESCRIPTION:  
+X;;
+X;;  INSTALLATION:
+X;;
+X;;   See also rolo.el.  These functions are separated from rolo.el since many
+X;;   users may never want or need them.  They can be automatically loaded when
+X;;   desired by adding the following to one of your Emacs init files:
+X;;
+X;;    (autoload 'rolo-logic "rolo-logic"
+X;;      "Logical rolodex search filters."
+X;;     t)
+X;;
+X;;  FEATURES:
+X;;
+X;;   1.  One command, 'rolo-logic' which takes a logical search expression as
+X;;       an argument and displays any matching entries.
+X;;
+X;;   2.  Logical 'and', 'or', 'not', and 'xor' rolodex entry retrieval filter
+X;;       functions. They take any number of string or boolean arguments and
+X;;       may be nested.  NOTE THAT THESE FUNCTIONS SHOULD NEVER BE CALLED
+X;;       DIRECTLY UNLESS THE FREE VARIABLES 'start' and 'end' ARE BOUND
+X;;       BEFOREHAND.
+X;;
+X;;  EXAMPLE:
+X;;
+X;;     (rolo-logic '(lambda ()
+X;;                     (rolo-and
+X;;                        (rolo-xor "secretary" "Tool-And-Die")
+X;;                        "secretary")))
+X;;
+X;;   would find all non-Tool-And-Die Corp. secretaries in your rolodex.
+X;;
+X;;
+X;;
+X;;   The logical matching routines are not really optimal, but then most
+X;;   rolodex files are not terribly lengthy either.
+X;;
+X;; DESCRIP-END.
+X
+X(require 'rolo)
+X
+X(defun rolo-logic (func &optional in-bufs count-only include-sub-entries
+X			      no-sub-entries-out)
+X  "Apply FUNC to all entries in optional IN-BUFS, display entries where FUNC is non-nil.
+XIf IN-BUFS is nil, 'rolo-file-list' is used.  If optional COUNT-ONLY is
+Xnon-nil, don't display entries, return count of matching entries only.  If
+Xoptional INCLUDE-SUB-ENTRIES flag is non-nil, FUNC will be applied across all
+Xsub-entries at once.  Default is to apply FUNC to each entry and sub-entry
+Xseparately.  Entries are displayed with all of their sub-entries unless
+XINCLUDE-SUB-ENTRIES is nil and optional NO-SUB-ENTRIES-OUT flag is non-nil.
+XFUNC should use the free variables 'start' and 'end' which contain the limits
+Xof the region on which it should operate.  Returns number of applications of
+XFUNC that return non-nil."
+X  (interactive "xLogic function of no arguments, (lambda () (<function calls>): ")
+X  (let ((obuf (current-buffer))
+X	(display-buf (if count-only
+X			 nil
+X		       (prog1 (set-buffer (get-buffer-create rolo-display-buffer))
+X			 (setq buffer-read-only nil)
+X			 (erase-buffer)))))
+X    (let ((result
+X	    (mapcar
+X	      '(lambda (in-bufs)
+X		 (rolo-map-logic func in-bufs count-only include-sub-entries
+X				 no-sub-entries-out))
+X	      (cond ((null in-bufs) rolo-file-list)
+X		    ((listp in-bufs) in-bufs)
+X		    ((list in-bufs))))))
+X      (let ((total-matches (apply '+ result)))
+X	(if (or count-only (= total-matches 0))
+X	    nil
+X	  (pop-to-buffer display-buf)
+X	  (goto-char (point-min))
+X	  (set-buffer-modified-p nil)
+X	  (setq buffer-read-only t)
+X	  (let ((buf (get-buffer-window obuf)))
+X	    (if buf (select-window buf) (switch-to-buffer buf))))
+X	(if (interactive-p)
+X	    (message (concat (if (= total-matches 0) "No" total-matches)
+X			     " matching entr"
+X			     (if (= total-matches 1) "y" "ies")
+X			     " found in rolodex.")))
+X	total-matches))))
+X
+X(defun rolo-map-logic (func rolo-buf &optional count-only
+X			    include-sub-entries no-sub-entries-out)
+X  "Apply FUNC to all entries in ROLO-BUF, write to buffer entries where FUNC is non-nil.
+XIf optional COUNT-ONLY is non-nil, don't display entries, return count of
+Xmatching entries only.  If optional INCLUDE-SUB-ENTRIES flag is non-nil, FUNC
+Xwill be applied across all sub-entries at once.  Default is to apply FUNC to
+Xeach entry and sub-entry separately.  Entries are displayed with all of their
+Xsub-entries unless INCLUDE-SUB-ENTRIES is nil and optional NO-SUB-ENTRIES-OUT
+Xflag is non-nil.  FUNC should use the free variables 'start' and 'end' which
+Xcontain the limits of the region on which it should operate.  Returns number
+Xof applications of FUNC that return non-nil."
+X  (if (or (bufferp rolo-buf)
+X	  (if (file-exists-p rolo-buf)
+X	      (setq rolo-buf (find-file-noselect rolo-buf t))))
+X      (let* ((display-buf (set-buffer (get-buffer-create rolo-display-buffer)))
+X	     (buffer-read-only))
+X	(let ((hdr-pos) (num-found 0))
+X	  (set-buffer rolo-buf)
+X	  (goto-char (point-min))
+X	  (if (re-search-forward rolo-hdr-regexp nil t 2)
+X	      (progn (forward-line)
+X		     (setq hdr-pos (cons (point-min) (point)))))
+X	  (let* ((start)
+X		 (end)
+X		 (end-entry-hdr)
+X		 (curr-entry-level))
+X	    (while (re-search-forward rolo-entry-regexp nil t)
+X	      (setq start (save-excursion (beginning-of-line) (point))
+X		    next-entry-exists nil
+X		    end-entry-hdr (point)
+X		    curr-entry-level (buffer-substring start end-entry-hdr)
+X		    end (rolo-to-entry-end include-sub-entries curr-entry-level))
+X	      (let ((fun (funcall func)))
+X		(or count-only 
+X		    (and fun (= num-found 0) hdr-pos
+X			 (append-to-buffer display-buf
+X					   (car hdr-pos) (cdr hdr-pos))))
+X		(if fun 
+X		    (progn (goto-char end)
+X			   (setq num-found (1+ num-found)
+X				 end (if (or include-sub-entries
+X					     no-sub-entries-out)
+X					 end
+X				       (goto-char (rolo-to-entry-end
+X						    t curr-entry-level))))
+X			   (or count-only
+X			       (append-to-buffer display-buf start end)))
+X		  (goto-char end-entry-hdr)))))
+X	  num-found))
+X    0))
+X
+X
+X;;
+X;; INTERNAL FUNCTIONS.
+X;;
+X
+X;; Do NOT call the following functions directly.
+X;; Send them as parts of a lambda expression to 'rolo-logic'.
+X
+X(defun rolo-not (&rest list-of-pats)
+X  "Logical <not> rolodex entry filter.  LIST-OF-PATS is a list of pattern elements.
+XEach element may be t, nil, or a string."
+X  (let ((pat-list list-of-pats)
+X	(pat))
+X    (while (and pat-list
+X		(or (not (setq pat (car pat-list)))
+X		    (and (not (eq pat t))
+X			 (goto-char start)
+X			 (not (search-forward pat end t)))))
+X      (setq pat-list (cdr pat-list)))
+X    (if pat-list nil t)))
+X
+X(defun rolo-or (&rest list-of-pats)
+X  "Logical <or> rolodex entry filter.  LIST-OF-PATS is a list of pattern elements.
+XEach element may be t, nil, or a string."
+X  (let ((pat-list list-of-pats)
+X	(pat))
+X    (while (and pat-list
+X		(or (not (setq pat (car pat-list)))
+X		    (and (not (eq pat t))
+X			 (goto-char start)
+X			 (not (search-forward pat end t)))))
+X      (setq pat-list (cdr pat-list)))
+X    (if pat-list t nil)))
+X
+X(defun rolo-xor (&rest list-of-pats)
+X  "Logical <xor> rolodex entry filter.  LIST-OF-PATS is a list of pattern elements.
+XEach element may be t, nil, or a string."
+X  (let ((pat-list list-of-pats)
+X	(pat)
+X	(matches 0))
+X    (while (and pat-list
+X		(or (not (setq pat (car pat-list)))
+X		    (and (or (eq pat t)
+X			     (not (goto-char start))
+X			     (search-forward pat end t))
+X			 (setq matches (1+ matches)))
+X		    t)
+X		(< matches 2))
+X      (setq pat-list (cdr pat-list)))
+X    (= matches 1)))
+X
+X(defun rolo-and (&rest list-of-pats)
+X  "Logical <and> rolodex entry filter.  LIST-OF-PATS is a list of pattern elements.
+XEach element may be t, nil, or a string."
+X  (let ((pat-list list-of-pats)
+X	(pat))
+X    (while (and pat-list
+X		(setq pat (car pat-list))
+X		(or (eq pat t)
+X		    (not (goto-char start))
+X		    (search-forward pat end t)))
+X      (setq pat-list (cdr pat-list)))
+X    (if pat-list nil t)))
+X
+X(provide 'rolo-logic)
+END_OF_FILE
+if test 7746 -ne `wc -c <'rolo-logic.el'`; then
+    echo shar: \"'rolo-logic.el'\" unpacked with wrong size!
+fi
+# end of 'rolo-logic.el'
+fi
+if test -f 'rolo-simple.el' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'rolo-simple.el'\"
+else
+echo shar: Extracting \"'rolo-simple.el'\" \(2466 characters\)
+sed "s/^X//" >'rolo-simple.el' <<'END_OF_FILE'
+X;;!emacs
+X;;
+X;; FILE:         rolo-simple.el
+X;; SUMMARY:      Very simple routines to display entries matching a string
+X;;                 from a rolodex file.  For those who find "rolo.el" too
+X;;                 intimidating.
+X;; USAGE:        GNU Emacs Lisp Library
+X;;
+X;; AUTHOR:       Bob Weiner
+X;; ORG:          Motorola, Inc., Communications Sector, Applied Research
+X;; E-MAIL:       USENET:  weiner@novavax.UUCP
+X;;
+X;; ORIG-DATE:     7-Jun-89 at 22:08:29
+X;; LAST-MOD:     16-Jun-89 at 00:27:20 by Bob Weiner
+X;;
+X;; Copyright (C) 1989 Bob Weiner and Free Software Foundation, Inc.
+X;; Available for use and distribution under the same terms as GNU Emacs.
+X;;
+X;; This file is not part of GNU Emacs.
+X;;
+X;; DESCRIPTION:  
+X;; DESCRIP-END.
+X
+X(defconst rolo-file "~/.rolodex.otl"
+X  "User-specific file in which rolodex entries are stored.")
+X
+X(defconst rolo-entry-regexp "^\*+"
+X  "Regular expression to match the beginning of a rolodex entry.")
+X
+X(defconst rolo-hdr-regexp "^==="
+X  "Regular expression to match the last line of the rolodex file header.
+XThis header is inserted into rolo-display-buffer before any entries are
+Xadded.")
+X
+X(defconst rolo-display-buffer "*Rolodex*"
+X  "Buffer used to display set of last matching rolodex entries.")
+X
+X(defun rolo-fgrep (string)
+X  "Find entries in rolo-file matching STRING.
+XThe rolo-file consists of a header terminated by a line which matches
+Xrolo-hdr-regexp.  And rolodex entries beginning with rolo-entry-regexp."
+X  (interactive "sRolodex string to match: ")
+X  (let ((obuf (current-buffer)))
+X    (save-excursion
+X      (set-buffer (get-buffer-create rolo-display-buffer))
+X      (erase-buffer)
+X      (find-file rolo-file)
+X      (goto-char (point-min))
+X      (save-excursion
+X	(if (re-search-forward rolo-hdr-regexp nil t)
+X	    (progn (forward-line)
+X		   (append-to-buffer rolo-display-buffer
+X				     (point-min) (point)))))
+X      (re-search-forward rolo-entry-regexp nil t)
+X      (beginning-of-line)
+X      (while (search-forward string nil t)
+X	(re-search-backward rolo-entry-regexp nil t)
+X	(let ((start (point)))
+X	  (if (re-search-forward rolo-entry-regexp nil t 2)
+X	      (beginning-of-line)
+X	    (goto-char (point-max)))
+X	  (append-to-buffer rolo-display-buffer start (point)))))
+X    (pop-to-buffer rolo-display-buffer)
+X    (set-buffer-modified-p nil)
+X    (select-window (get-buffer-window obuf))))
+X
+X(defun rolo-edit ()
+X  "Display user-specific rolodex file for editing."
+X  (interactive)
+X  (find-file rolo-file))
+X
+X(provide 'rolo)
+END_OF_FILE
+if test 2466 -ne `wc -c <'rolo-simple.el'`; then
+    echo shar: \"'rolo-simple.el'\" unpacked with wrong size!
+fi
+# end of 'rolo-simple.el'
+fi
+if test -f 'smart-menu.el' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'smart-menu.el'\"
+else
+echo shar: Extracting \"'smart-menu.el'\" \(6580 characters\)
+sed "s/^X//" >'smart-menu.el' <<'END_OF_FILE'
+X;;!emacs
+X;;
+X;; FILE:         smart-menu.el
+X;; SUMMARY:      Display subsystem menu for use with 'smart-key.el' package.
+X;; USAGE:        GNU Emacs Lisp Library
+X;;
+X;; AUTHOR:       Bob Weiner, Applied Research, Motorola, Inc.
+X;; E-MAIL:       USENET:  weiner@novavax.UUCP
+X;; ORIG-DATE:    20-Apr-89
+X;; LAST-MOD:     15-Jun-89 at 23:11:21 by Bob Weiner
+X;;
+X;; Copyright (C) 1989 Bob Weiner and Free Software Foundation, Inc.
+X;; Available for use and distribution under the same terms as GNU Emacs.
+X;;
+X;; This file is not part of GNU Emacs.
+X;;
+X;; DESCRIPTION:  
+X;;;
+X;;; This code is machine independent.
+X;;;
+X;;; To install:
+X;;;
+X;;;   See smart-key.el
+X;;;
+X;;; You need this function if you don't already have it.
+X;;; (defun alist-value (compar-op tag alist)
+X;;;   "Use COMPAR-OP (comparison operator) and TAG to extract matching value from ALIST."
+X;;;   (let ((val))
+X;;;     (while (and (null val) alist)
+X;;;       (if (funcall compar-op (car (car alist)) tag)
+X;;; 	  (setq val (cdr (car alist))))
+X;;;       (setq alist (cdr alist)))
+X;;;     val))
+X;;;
+X;; DESCRIP-END.
+X
+X(require 'rolo)
+X
+X(defconst smart-menu-at-bottom t
+X  "Non-nil means display menu below current window, nil means above.")
+X
+X(defconst smart-menu-alist
+X  (list
+X    (cons "Buffer-Menu" '(buffer-menu nil))
+X    (cons "Calendar" '(calendar))
+X    (cons "Dired-Home-Dir" '(dired "~"))
+X    (cons "<Help>" '(smart-menu-help))
+X    (cons "Info" '(info))
+X    (cons "Rmail" '(rmail))
+X    (cons "Mail" '(mail))
+X    (cons "Shell" '(shell))
+X    (cons "Tutorial" '(help-with-tutorial))
+X    (cons "Search-Rolodex-for-String" '(call-interactively 'rolo-fgrep))
+X    (cons "Search-Rolodex-for-Regexp" '(call-interactively 'rolo-grep))
+X    (cons "Search-Rolodex-Using-Logical-Expression" '(call-interactively
+X						       'rolo-logic))
+X    (cons "Edit-Personal-Rolodex" '(rolo-edit))
+X    (cons "Sort-Personal-Rolodex" '(rolo-sort))
+X    (cons "<Quit>" t))
+X  "Alist of smart menu items vs corresponding expressions to execute.
+XEach element looks like (STRING . EXPRESSION).
+XSelecting an item that matches STRING causes evaluation of EXPRESSION.")
+X
+X(defconst smart-menu-buffer "*Smart Menu*"
+X  "Name of the buffer used for the smart subsystem menu.")
+X
+X(defvar *smart-menu-window-config* nil
+X  "Window configuration prior to entry of smart menu mode.")
+X
+X(defvar *smart-menu-prev-mode* nil
+X  "Records major-mode prior to entry of smart-menu.")
+X
+X(defvar *smart-menu-height* 0
+X  "Records window height to use for smart menu display.")
+X
+X(defvar smart-menu-mode-map nil
+X  "Keymap containing smart-menu commands.")
+X(if smart-menu-mode-map
+X    nil
+X  (setq smart-menu-mode-map (copy-keymap text-mode-map))
+X  (define-key smart-menu-mode-map "h" 'smart-menu-help)
+X  (define-key smart-menu-mode-map "q" 'smart-menu-quit)
+X  (define-key smart-menu-mode-map " " 'smart-menu-select)
+X  (define-key smart-menu-mode-map "\C-m" 'smart-menu-select))
+X
+X;; Smart menu mode is suitable only for specially formatted data.
+X(put 'smart-menu-mode 'mode-class 'special)
+X
+X(defun smart-menu-mode ()
+X  "Smart-menu mode provides a menu of commands for entering subsystems.
+XSee also the documentation for 'smart-menu'.
+X
+X\\[smart-menu-select] or \\[smart-key] selects entries in the menu.
+X\\[smart-menu-quit] or \\[smart-key-meta] quits from the menu."
+X  (kill-all-local-variables)
+X  (use-local-map smart-menu-mode-map)
+X  (setq major-mode 'smart-menu-mode)
+X  (setq mode-name "smart-menu")
+X  (set-syntax-table text-mode-syntax-table)
+X  (setq local-abbrev-table text-mode-abbrev-table)
+X  (setq case-fold-search t)
+X  (setq buffer-read-only t)
+X  (run-hooks 'smart-menu-mode-hook))
+X
+X(defun smart-menu ()
+X  "Smart-menu pops up a window with a menu of commands for entering subsystems.
+X\\[smart-menu-select] or \\[smart-key] selects entries in the menu.
+X\\[smart-menu-quit] or \\[smart-key-meta] quits from the menu."
+X  (interactive)
+X  (setq *smart-menu-window-config* (current-window-configuration))
+X  (let ((buf (get-buffer-create smart-menu-buffer))
+X	(pop-up-windows t))
+X    (setq *smart-menu-prev-mode* major-mode)
+X    (split-window-vertically)
+X    (if smart-menu-at-bottom
+X	(pop-to-buffer buf)
+X      (switch-to-buffer buf))
+X    (or (eq major-mode 'smart-menu-mode)
+X	(smart-menu-mode))
+X    ;; If empty buffer
+X    (if (= (save-excursion (end-of-buffer) (point)) 1)
+X	(let ((buffer-read-only nil)
+X	      (item-str)
+X	      (len 0))
+X	  (mapcar
+X	    '(lambda (s)
+X	       (setq item-str
+X		     (concat item-str
+X			     (if (>= (+ len (length s) 2)
+X				     (window-width))
+X				 (progn
+X				   (setq len 0
+X					 *smart-menu-height*
+X					 (1+ *smart-menu-height*))
+X				   "\n"))
+X			     s "  "))
+X	       (setq len (+ len (length s) 2)))
+X	    (mapcar 'car smart-menu-alist))
+X	  (setq *smart-menu-height* (+ *smart-menu-height* 3))
+X	  (insert "\n" item-str)
+X	  (goto-char (point-min))
+X	  (set-buffer-modified-p nil)))
+X    ;; Smallest size you can shrink a window
+X    (let ((height (window-height)))
+X      (shrink-window (min (- height *smart-menu-height*) (- height 4))))))
+X
+X(defun smart-menu-select (&optional arg)
+X  "Select smart menu item that point is within and execute associated command.
+XAlso quits from smart menu mode.  With prefix ARG, quits only."
+X  (interactive "P")
+X  (if arg
+X      (smart-menu-quit t)
+X    (let ((item (extract-item-around-point)))
+X      (if (string= item "")
+X	  (error "No command selected.")
+X	(let ((exec-cmd (alist-value 'string-match item smart-menu-alist)))
+X	  (if exec-cmd
+X	      (progn (smart-menu-quit)
+X		     (eval exec-cmd))
+X	    (beep)
+X	    (message (format "Unimplemented command selected, '%s'." item))))))))
+X
+X(defun smart-menu-help ()
+X  "Displays description of major mode prior to smart-menu invocation."
+X  (interactive)
+X  (describe-function *smart-menu-prev-mode*))
+X
+X(defun smart-menu-quit (&optional arg)
+X  "Quit from smart menu.  Restore previous window configuration.
+XOptional ARG kills the smart menu buffer rather than just burying it."
+X  (interactive "P")
+X  (let ((buf (get-buffer smart-menu-buffer)))
+X    (if (not buf)
+X	nil
+X      (if (not arg)
+X	  (bury-buffer buf)
+X	(kill-buffer buf)
+X	(setq *smart-menu-height* 0))
+X      ;; Restore window configuration prior to smart menu entry.
+X      (if *smart-menu-window-config*
+X	  (progn
+X	    (set-window-configuration *smart-menu-window-config*)
+X	    (setq *smart-menu-window-config* nil))))))
+X
+X(defun extract-item-around-point ()
+X  "Return whitespace separated menu item that point is within or before."
+X  (interactive)
+X  (save-excursion
+X    (skip-chars-backward "^ \t\n")
+X    (let ((start (point)))
+X      (skip-chars-forward "^ \t\n")
+X      (buffer-substring start (point)))))
+X
+X(provide 'smart-menu)
+END_OF_FILE
+if test 6580 -ne `wc -c <'smart-menu.el'`; then
+    echo shar: \"'smart-menu.el'\" unpacked with wrong size!
+fi
+# end of 'smart-menu.el'
+fi
+echo shar: End of shell archive.
+exit 0
+--
+-- 
+Bob Weiner, Motorola, Inc.,   USENET:  ...!gatech!uflorida!novavax!weiner
+(407) 738-2087
+
+

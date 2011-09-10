@@ -1,0 +1,103 @@
+			     METASERVER MODE v2.1
+				      BY
+			     WILLIAM MICHAEL PERRY
+			     (wmperry@indiana.edu)
+			       February 2, 1992
+
+-------------------------------------------------------------------------------
+This is an elisp package to interface with the netrek metaserver-II.
+It will put a list of all active servers in a buffer.  Listing the #
+of player slots open and the last time a server was checked by the
+metaserver.
+
+The following keys are defined in metaserver-mode:
+  B,b: Toggles whether to use the borg binary or the netrek binary.
+  C,c: Try to find a list of players on a site.
+  I,i: Show the stats for a server.  Source version, hours, etc.
+  L,l: Toggles whether to list all the servers.
+    P: Get the millisecond seek time to the current line's server.
+  Q,q: Kill current buffer and go to a full-size *MetaServer* window if we can.
+ r,: Start the metaserver.  Get site info, put in buffer, etc, etc.
+    R: Toggle whether to use the rsa binary or the netrek binary.
+  S,s: Save the current server states in the file set by metaserver-save-file
+  V,v: Show current version/credits in the minibuffer.
+  Z,z: Hide the metaserver buffer, but don't kill it.
+  RET: Run a netrek client in the background.
+    #: Show the total # of people playing netrek now.
+  ?,h: Describe briefly the keys used in metaserver-mode.
+ESC-l: Restore the metaserver information from metaserver-save-file
+
+-------------------------------------------------------------------------------
+Customizable variables:
+metaserver-auto-fallback:
+    Should the program try to use the ck_players program to get a
+    players list if the (port - 1) query fails?  Must have the
+    ck_players program installed (ftp from: grind.isca.uiowa.edu
+    /unix/netrek/source/ck_players.*).
+
+   metaserver-borg-binary: Borg netrek client to run.
+
+metaserver-ck-players-program: ck_players program.
+
+      metaserver-list-all: List every server, open or not.
+
+ metaserver-netrek-binary: Normal netrek client to run.
+
+  metaserver-ping-packets: # of pings to send to a server.
+
+  metaserver-ping-program: Ping Program.
+
+   metaserver-ping-sizeof: Size of packets to send a server.
+
+          metaserver-port: Which port to query on metaserver
+
+    metaserver-rsa-binary: RSA client to run.
+
+     metaserver-save-file: Where to save the netrek info.
+
+          metaserver-site: What machine the metaserver on?
+
+metaserver-use-background: Use the background.el package or not?
+
+      metaserver-use-borg: Use borg or not?
+
+       metaserver-use-rsa: Use rsa client or not?
+
+metaserver-force-save-file:
+Force metaserver to use backup file.
+
+metaserver-auto-fallback: 
+Use ck_players to get player list if the server doesn't respond to the
+port-1 query?
+
+metaserver-binary-alist: 
+alist of the form '( (server normal-binary borg-binary rsa binary) ...)
+  If the current server is found in the alist, then the appropriate binary
+description is extracted and used to connect to the server.  Otherwise,
+metaserver-borg-binary, metaserver-rsa-binary, or metaserver-netrek-binary
+are used, depending on borg/rsa status.
+
+metaserver-data-regexp: 
+Parenthesized regular expression where the first parenthesized regexp
+matches the host, the second matches the port, and the third matches any
+data to be kept in the MetaServer buffer.
+
+metaserver-empty-site-regexp:
+Regular expression that matches empty sites.
+
+metaserver-info-list: alist of the form ( (sitename . information ) . . .)
+
+metaserver-mode-hooks: 
+Function or list of functions to run when entering metaserver-mode.
+
+metaserver-site-order: 
+How to sort the open sites....  can be "ascending" or "descending".
+Ascending means put sites with wait queues at the bottom of the list.
+
++--------------+-------------------------+------------------+-----------------+
+|   Bill Perry | wmperry@ucs.indiana.edu | Captain Arioch   | Captain Elric   |
++--------------+-------------------------+------------------+-----------------+
+
+
+
+

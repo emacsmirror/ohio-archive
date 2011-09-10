@@ -1,0 +1,54 @@
+From ecb <@relay.cs.net,@utrcgw.utc.com:ecb@utrccm> Fri May  5 13:04:10 1989
+Return-Path: ecb <@utrcgw.utc.com:ecb@utrccm>
+Date: Tue, 25 Apr 89 16:06:20 edt
+From: ecb <@relay.cs.net,@utrcgw.utc.com:ecb@utrccm>
+Subject: filename completion for anywhere in Emacs
+To: unix-emacs@bbn.com
+In-Reply-To: Paul Davis's message of 24 Apr 89 14:40:00 GMT
+ <8904241731.AA19098@AENEAS.MIT.EDU>
+
+Paul Davis writes:
+    > Here is the first of many bits of lisp code I'll mail in the next few
+    > days (I'm leaving this job, and may as well get stuff out for
+    > posterity, if not for function: Datronics Inc. here I come ... )
+    > 
+    > This one provides the function shell-filename-complete, which I
+    > globally bind to M-`, and which will expand the filename before point
+    > anywhere in Emacs. Its so named because I use it mostly in shell-mode.
+    > It does have one problem: unlike minibufer completions, which always
+    > throw away the *Completions* buffer after use, this one leaves it
+    > around. I don't know how to fix this, but you're welcome to try. Let
+    > me know if you succeed.
+
+I "fixed" it by putting the line:
+
+          (kill-buffer "*Help*")
+
+at the end of shell-filename-complete, thusly:
+
+		 (message "Making completion list...")
+		 (let ((list (all-completions partial-name completion-list)))
+		   (with-output-to-temp-buffer "*Help*"
+		     (display-completion-list list))
+		   (message "Making completion list... done")))))
+      (progn
+	(message "No such file or directory")
+	(ding))))
+  (kill-buffer "*Help*"))
+  
+Seems to work, but I'm not a
+Lisp hacker. Can anyone tell me if I did something silly and/or dangerous?
+
+
+
+			Bud Boman
+			United Technologies Research Center
+			MS 129-47
+			Silver Lane
+			East Hartford, CT 06118
+			(203) 727-7128
+
+			ecb@utrccm.smc.utc.com
+
+
+

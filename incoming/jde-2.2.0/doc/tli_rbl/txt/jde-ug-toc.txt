@@ -1,0 +1,70 @@
+0  ; JDE Website                 ; 14 ; 3 ; http://sunsite.auc.dk/jde/   ; _top 
+0  ; Introduction                ; 0 ; ../ug/jde-ug-content.html#Introduction	
+1  ; About the JDE               ; 3 ; ../ug/jde-ug-content.html#AboutJDE
+1  ; JDE Requirements            ; 3 ; ../ug/jde-ug-content.html#JDERequirements
+1  ; JDE Components              ; 3 ; ../ug/jde-ug-content.html#JDEComponents
+1  ; Latest Version              ; 3 ; ../ug/jde-ug-content.html#LatestVersion
+1  ; Contacting Author           ; 3 ; ../ug/jde-ug-content.html#ContactingAuthor
+0  ; Editing Java Source         ; 3 ; ../ug/jde-ug-content.html#EditingJavaSourceFiles
+0  ; Documenting Code            ; 0 ; ../ug/jde-ug-content.html#DocumentingCode
+0  ; Code Completion             ; 0 ; ../ug/jde-ug-content.html#CodeCompletion
+1  ; Java Keywords               ; 3 ; ../ug/jde-ug-content.html#JavaKeywordCompletion
+1  ; Control Flow                ; 3 ; ../ug/jde-ug-content.html#ControlFlowCompletion
+1  ; Dynamic Keywords            ; 3 ; ../ug/jde-ug-content.html#DynamicKeywordCompletion
+1  ; Fields and Methods          ; 3 ; ../ug/jde-ug-content.html#FieldAndMethodCompletion
+0  ; Generating Code             ; 0 ; ../ug/jde-ug-content.html#GeneratingCode
+1  ; Code Wizards                ; 0 ; ../ug/jde-ug-content.html#CodeWizards
+2  ; Import Wizard               ; 3 ; ../ug/jde-ug-content.html#ImportWizard
+2  ; Method Override Wizard      ; 3 ; ../ug/jde-ug-content.html#MethodOverrideWizard
+2  ; Interface Wizard            ; 3 ; ../ug/jde-ug-content.html#InterfaceWizard
+2  ; Delegate Wizard             ; 3 ; ../ug/jde-ug-content.html#DelegateWizard
+1  ; Code Templates              ; 0 ; ../ug/jde-ug-content.html#CodeTemplates
+2  ; Buffer Templates            ; 3 ; ../ug/jde-ug-content.html#BufferTemplates
+2  ; Point Templates             ; 3 ; ../ug/jde-ug-content.html#PointTemplates
+2  ; Customizing Templates       ; 3 ; ../ug/jde-ug-content.html#CustomizingTemplates
+2  ; Creating Templates          ; 0 ; ../ug/jde-ug-content.html#CreatingTemplates
+3  ; Defining                    ; 3 ; ../ug/jde-ug-content.html#DefiningTemplate
+3  ; Registering                 ; 3 ; ../ug/jde-ug-content.html#RegisterTemplate
+3  ; Assigning Keys              ; 3 ; ../ug/jde-ug-content.html#AssignKeyToTemplate
+0  ; Compiling Java Programs     ; 0 ; ../ug/jde-ug-content.html#CompilingJavaPrograms
+1  ; Compilation Options         ; 3 ; ../ug/jde-ug-content.html#CompilationOptions
+0  ; Building Java Applications  ; 0 ; ../ug/jde-ug-content.html#BuildingJavaApplications
+1  ; Build Options               ; 3 ; ../ug/jde-ug-content.html#BuildOptions
+1  ; Sample Makefile             ; 3 ; ../ug/jde-ug-content.html#SampleMakefile
+0  ; Running Java Applications   ; 0 ; ../ug/jde-ug-content.html#RunningJavaApps
+1  ; Startup Directory           ; 3 ; ../ug/jde-ug-content.html#SpecifyingStartupDirectory
+1  ; VM Arguments                ; 3 ; ../ug/jde-ug-content.html#RunVMArgs
+1  ; Application Arguments       ; 3 ; ../ug/jde-ug-content.html#RunAppArgs
+1  ; Customization Variables     ; 3 ; ../ug/jde-ug-content.html#RunOptions
+0  ; Working with Applets        ; 0 ; ../ug/jde-ug-content.html#WorkingWithApplets
+1  ; Runnning Applets            ; 3 ; ../ug/jde-ug-content.html#RunningApplets
+1  ; Debugging Applets           ; 3 ; ../ug/jde-ug-content.html#DebuggingApplets
+1  ; Customization Variables     ; 3 ; ../ug/jde-ug-content.html#AppletOptions
+0  ; Debugging Applications      ; 0 ; ../ug/jde-ug-content.html#DebuggingApps
+1  ; Using jdb                   ; 3 ; ../ug/jdb-guide.html ; _reload jdb-ug
+1  ; Using JDEbug                ; 3 ; ../jdebug/ug/jdebug-ug.html ; _reload content
+0  ; Global Classpath            ; 3 ; ../ug/jde-ug-content.html#SettingGlobalClasspath
+0  ; Project Files               ; 0 ; ../ug/jde-ug-content.html#UsingProjectFiles
+1  ; Project File Contents       ; 3 ; ../ug/jde-ug-content.html#ProjectFileContents
+1  ; Creating Project Files      ; 3 ; ../ug/jde-ug-content.html#CreatingProjectFiles
+0  ; Viewing Source Doc          ; 0 ; ../ug/jde-ug-content.html#DisplayingDoc
+1  ; JDK Documentation           ; 3 ; ../ug/jde-ug-content.html#BrowsingJDKDoc
+1  ; Class Help                  ; 3 ; ../ug/jde-ug-content.html#ClassHelp
+0  ; Browsing Source Code        ; 0 ; ../ug/jde-ug-content.html#BrowsingSourceCode
+1  ; Classes Index Menu          ; 3 ; ../ug/jde-ug-content.html#ClassesMenu
+1  ; Speedbar                    ; 3 ; ../ug/jde-ug-content.html#Speedbar
+1  ; Tags                        ; 0 ; ../ug/jde-ug-content.html#Tags
+2  ; Tagging Files               ; 3 ; ../ug/jde-ug-content.html#TaggingCode
+2  ; Finding Symbols             ; 3 ; ../ug/jde-ug-content.html#FindingSymbols
+0  ; Customizing the JDE         ; 0 ; ../ug/jde-ug-content.html#CustomizingJDE
+1  ; Customization Variables     ; 0 ; ../ug/jde-ug-content.html#CustomizationVariables
+2  ; Setting Variables           ; 3 ; ../ug/jde-ug-content.html#SettingVariable
+2  ; Customization Groups        ; 0 ; ../ug/jde-ug-content.html#JDECustomizationGroups
+3  ; Compile Options             ; 3 ; ../ug/jde-ug-content.html#CompileOptionGroup
+3  ; Run Options                 ; 3 ; ../ug/jde-ug-content.html#RunOptionGroup
+3  ; Debug Options               ; 3 ; ../ug/jde-ug-content.html#RunOptionGroup
+3  ; Autocode Options            ; 3 ; ../ug/jde-ug-content.html#AutocodeGroup
+3  ; General Options             ; 3 ; ../ug/jde-ug-content.html#GeneralGroup
+1  ; Customizing jde-mode        ; 3 ; ../ug/jde-ug-content.html#Customizingjde_mode
+1  ; Keybindings                 ; 3 ; ../ug/jde-ug-content.html#Keybindings
+0  ; Beanshell User's Guide      ; 3 ; ../ug/bsh-ug.html ; _reload bsh_ug

@@ -1,0 +1,41 @@
+#!/bin/cshe -f
+#
+# Builds a pseudoactive file which represents personal mail under
+# $1 plus pseudonews in $1/{comp,soc,rec,talk,sci,soc,misc,...}.
+#
+if ($#argv < 2) then
+	echo make-active: usage: make-active directory-subdirs...
+	exit 87
+endif
+set dir=$1
+shift
+set active=$dir/active
+set nactive=/usr/lib/news/active
+#
+# Find directories and their associated .last files.  Then take
+# base dirnames, change to newsgroup name format, and build the
+# mail-based active file out of it all.
+#
+cd $dir
+set list=($*)
+set count=$#list
+set nlist=()
+set first=()
+set last=()
+foreach i ($list)
+	set first=($first $i/.first)
+	set last=($last $i/.last)
+	set nlist=($nlist `echo $i | tr / .`)
+end
+cp /dev/null $active
+@ i = 1
+while ($i <= $count)
+	echo $nlist[$i] `cat $last[$i]` `cat $first[$i]` n >> $active
+	@ i ++
+end
+#
+## Defunctitude:
+# Now add the whole regular active file.
+cat $nactive >> $active
+#
+exit 0

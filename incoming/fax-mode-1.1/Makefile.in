@@ -1,0 +1,191 @@
+#
+# Copyright (C) 1995 Ralph Schleicher
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU General Public License as
+# published by the Free Software Foundation; either version 2 of
+# the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+emacs_libexecdir = @EMACS_LIBEXECDIR@
+emacs_locallispdir = @EMACS_LOCALLISPDIR@
+
+SHELL = /bin/sh
+
+CC = @CC@
+CPP = @CPP@
+DEFS = @DEFS@
+CPPFLAGS = @CPPFLAGS@ ${DEFS}
+CFLAGS = @CFLAGS@
+LDFLAGS = @LDFLAGS@
+LIBS = @LIBS@
+
+INSTALL = @INSTALL@
+INSTALL_PROGRAM = @INSTALL_PROGRAM@
+INSTALL_DATA = @INSTALL_DATA@
+
+@SET_MAKE@
+MAKEFLAGS =
+
+# ---------------------------------------------------------------
+# You shouldn't have to edit something below this line.
+# ---------------------------------------------------------------
+
+package = fax-mode
+version = 1.1
+
+c_sources = fakefax.c
+c_objects = fakefax.o
+
+lisp_sources = emacs.el makedoc.el \
+	phone.el faxutil.el sendfax.el.in texfax.el faxed.el \
+	snail.el.in snail snail.dba snail.dbf snail.forms
+
+lisp_files = \
+	phone.el faxutil.el sendfax.el texfax.el faxed.el \
+	snail.el snail.dba snail.dbf
+
+tex_sources = texfax.tex latin1-tex.tex latin1-cork.tex
+
+dist_files = COPYING INSTALL README LCD-entry DOC ChangeLog NEWS \
+	Makefile.in aclocal.m4 configure configure.in install.sh \
+	${c_sources} fakefax.1 ${lisp_sources} ${tex_sources}
+
+
+.SUFFIXES: .c .o
+.c.o:
+	${CC} ${CPPFLAGS} ${CFLAGS} -c $<
+
+
+.PHONY: all
+all: fakefax ${lisp_files}
+
+
+fakefax: fakefax.o
+	${CC} ${CFLAGS} ${LDFLAGS} -o $@ fakefax.o ${LIBS}
+
+# Installation targets.
+#
+.PHONY: install
+install: install-exec install-data
+
+.PHONY: install-exec
+install-exec: fakefax
+	${INSTALL_PROGRAM} fakefax ${emacs_libexecdir}/fakefax
+
+.PHONY: install-data
+install-data: ${lisp_files}
+	for f in ${lisp_files}; do \
+	  ${INSTALL_DATA} $$f ${emacs_locallispdir}/$$f; \
+	done
+
+.PHONY: uninstall
+uninstall: uninstall-exec uninstall-data
+
+.PHONY: uninstall-exec
+uninstall-exec:
+	rm -f ${emacs_libexecdir}/fakefax
+
+.PHONY: uninstall-data
+uninstall-data:
+	for f in ${lisp_files}; do \
+	  rm -f ${emacs_locallispdir}/$$f; \
+	done
+
+# Cleaning targets.
+#
+.PHONY: mostlyclean
+mostlyclean:
+	rm -f *.o core fakefax
+
+.PHONY: clean
+clean: mostlyclean
+	rm -f *~ \#*
+
+.PHONY: distclean
+distclean: clean
+	rm -f Makefile config.cache config.log config.status
+	rm -f sendfax.el snail.el
+
+.PHONY: realclean
+realclean: distclean
+	rm -f DOC *.tar *.tar.*
+
+# Testing targets.
+#
+.PHONY: check
+check:
+	@true
+
+# Automatic remaking.
+#
+${srcdir}/configure: configure.in aclocal.m4
+	cd ${srcdir} && autoconf
+
+Makefile: Makefile.in config.status
+	./config.status
+
+sendfax.el: sendfax.el.in config.status
+	./config.status
+
+snail.el: snail.el.in config.status
+	./config.status
+
+config.status: configure
+	./config.status --recheck
+
+# Internal targets.
+#
+DOC: makedoc.el ${lisp_files}
+	( echo "(setq load-path (cons \".\" load-path))"; \
+	  for f in ${lisp_files}; do \
+	    case "$$f" in \
+	    *.el) echo "(load \"$$f\")";; \
+	    esac; \
+	  done; \
+	  echo "(setq symbols '("; \
+	  for f in ${lisp_files}; do \
+	    grep '(def\(var\|const\|un\) ' $$f \
+	      | sed 's/^[^ ]* //' | sed 's/[ ].*//'; \
+	  done; \
+	  echo "))" ) >./symbols
+	emacs -batch -l ./makedoc.el
+	rm -f ./symbols
+
+LCD-entry: force
+	( echo ";; LCD Archive Entry:"; \
+	  echo ";; ${package}|Ralph Schleicher|rs@purple.IN-Ulm.DE|"; \
+	  echo ";; Fax sending commands for GNU Emacs.|"; \
+	  echo `date +';; %d-%b-%y'`"|${version}|~/modes/${package}.tar.gz|" ) >$@
+
+.PHONY: dist
+dist: ${package}-${version}.tar.gz.uu
+
+${package}-${version}.tar.gz: ${dist_files}
+	( rm -f -r ${package}-*; \
+	  mkdir ${package}-${version}; \
+	  cp -p ${dist_files} ${package}-${version}; \
+	  tar -c -v -f ${package}-${version}.tar ${package}-${version}; \
+	  rm -f -r ${package}-${version}; \
+	  gzip -9 ${package}-${version}.tar )
+
+${package}-${version}.tar.gz.uu: ${package}-${version}.tar.gz
+	uuencode $< ${package}.tar.gz >$@
+
+force:
+
+# Dependencies.
+#
+fakefax.o: fakefax.c

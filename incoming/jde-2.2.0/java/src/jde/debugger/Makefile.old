@@ -1,0 +1,79 @@
+# $Revision: 1.1 $
+# The following is a sample makefile 
+# for use with the JDE->Build command.
+#
+# Makefile for jdebug project.
+#
+#JDK = /usr/local/java/jdk1.2.2/solaris/lib/
+JPDA = /home/amitkr/java/jdebug/lib/jpda.jar
+JMAIN = /home/amitkr/java/jdebug/src
+CLASS = /home/amitkr/java/jdebug/class
+CLASSPATH = .:$(JMAIN):$(JPDA):$(CLASS)
+COMPILER = javac
+VM = java
+
+VPATH = ../../../src/jde/debugger
+
+COPTIONS = -g -deprecation -d "../../../class"  -classpath "../../../class:../../../lib/jpda.jar" -sourcepath ../../../src
+
+CLASSES = Debug.class \
+	  Etc.class \
+	  LispForm.class \
+	  Rep.class \
+	  JDE.class \
+	  Protocol.class \
+	  Main.class \
+	  Application.class \
+	  EventHandler.class \
+	  ObjectStore.class \
+	  ApplicationCommands.class \
+	  GeneralCommands.class \
+	  ThreadCommands.class \
+	  BreakpointCommands.class \
+	  JDEException.class \
+	  JDENumberFormatException.class \
+	  spec/EventRequestSpec.class \
+	  spec/EventRequestSpecList.class \
+	  spec/BreakpointSpec.class \
+	  spec/LineBreakpointSpec.class \
+	  spec/MethodBreakpointSpec.class \
+	  spec/WatchpointSpec.class \
+	  spec/AccessWatchpointSpec.class \
+	  spec/ModificationWatchpointSpec.class \
+	  spec/ExceptionSpec.class \
+	  spec/ReferenceTypeSpec.class \
+	  spec/SourceNameReferenceTypeSpec.class \
+	  spec/PatternReferenceTypeSpec.class \
+	  expr/ASCII_UCodeESC_CharStream.class \
+	  expr/ExpressionParser.class \
+	  expr/ExpressionParserConstants.class \
+	  expr/ExpressionParserTokenManager.class \
+	  expr/LValue.class \
+	  expr/ParseException.class \
+	  expr/Token.class \
+	  expr/TokenMgrError.class
+
+#.SUFFIXES: .java .class
+%.class: %.java
+	$(COMPILER) $(COPTIONS) $?
+
+jdebug : $(CLASSES)
+
+all : jdebug
+
+# Rebuild (if necessary) 
+run: $(CLASSES)
+	$(VM) -classpath "$(CLASSPATH)" jde.debugger.Main
+
+# Remove all class files from the project directory.
+clean:
+	rm *.class
+
+# javadoc...
+javadoc:
+	javadoc -private jde.debugger jde.debugger.spec jde/debugger/expr/ExpressionParser.java -windowtitle "jdebug Documentation"
+
+# Implicit rule for making Java class files from Java
+# source files.
+#.java.class:
+#	$(COMPILER) $(COPTIONS) $?

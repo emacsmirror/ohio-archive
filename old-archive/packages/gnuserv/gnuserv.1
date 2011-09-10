@@ -1,0 +1,132 @@
+.TH GNUSERV 1 "" "GNU Emacs Server"
+.UC 4
+.SH NAME
+gnuserv, gnuclient, gnudoit \- Server and Clients for GNU Emacs
+.SH SYNOPSIS
+.B gnuclient
+[-q] [[-h hostname] [-p port] [-r pathname]] [[+line] path] ...
+.br
+.B gnudoit 
+[-q] [[-h hostname] [-p port]] [sexpr] ...
+.br
+.B gnuserv
+.SH DESCRIPTION
+\fIgnuclient\fP allows the user to request a running GNU Emacs process to edit
+the named files or directories.
+.PP
+\fIgnudoit\fP allows the user to request a running GNU Emacs process to
+evaluate the given arguments inside a progn LISP form.
+.PP
+\fIgnuserv\fP is the server program that is set running by GNU Emacs to handle
+all incoming and outgoing requests. It is not usually invoked directly, but is
+started from GNU Emacs by the LISP form (server-start).
+.SH OPTIONS
+.TP 8
+.BI \-q
+This option informs both \fIgnuclient\fP and \fIgnudoit\fP to exit once
+connection has been made with the GNU Emacs process. Normally \fIgnuclient\fP
+waits until all of the files on the command line have been finished with
+(their buffers killed) by the GNU Emacs process, and \fIgnudoit\fP normally
+waits around for evaluation of its arguments by the GNU Emacs process, and
+prints the results or error conditions.
+.TP 8
+.BI \-h " hostname"
+Used only with Internet-domain sockets, this option specifies the host machine
+which should be running \fIgnuserv\fP.  If this option is not specified then
+the value of the environment variable GNU_HOST is used if set, otherwise the
+hostname of the machine running the program is used.
+.br
+Note that an internet address may be specified instead of a hostname which can
+speed up connections to the server by quite a bit, especially if the client
+machine is running YP.
+.br
+Note also that a hostname of \fBunix\fP can be used to specify that the connection
+to the server should use a Unix-domain socket (if supported) rather than an
+Internet-domain socket.
+.TP 8
+.BI \-p " port"
+Used only with Internet-domain sockets, this option specifies the service port
+used to communicate between server and clients. If this option is not
+specified, then the value of the environment variable GNU_PORT is used, if
+set, otherwise a service called ``gnuserv'' is looked up
+in the services database. Finally, if no other value can be found for the
+port, then a default port is used which is usually 21490 + uid.
+.br
+Note that since \fIgnuserv\fP doesn't allow command-line options, the port for
+it will have to be specified via one of the alternative methods.
+.TP 8
+.BI \-r " pathname"
+Used only with Internet-domain sockets, the pathname argument may be needed to
+inform GNU Emacs how to reach the root directory of a remote machine.
+\fIgnuclient\fP prepends this string to each path argument given. For example,
+if you were trying to edit a file on a client machine called otter, whose root
+directory was accessible from the server machine via the path /net/otter, then
+this argument should be set to '/net/otter'. If this option is omitted, then
+the value is taken from the environment variable GNU_NODE, if set, or the
+empty string otherwise.
+.br
+Note that on hp9000/s300 and hp9000/s800, the pathname, if not specified by
+the user, is guessed.
+.TP 8
+.BI "path"
+This is the path of the file to be edited. If the file is a directory, then
+the directory browsers dired or monkey are usually invoked instead.
+.TP 8
+.BI "sexpr"
+This is part of a GNU Emacs LISP expression to evaluate. All the sexprs are
+concatenated together and wrapped in a progn form before sending to GNU Emacs.
+.PP
+.SH SETUP
+In order to use the programs, the file gnuserv.el can be copied into a
+directory on your GNU Emacs load-path, and loaded into GNU Emacs by the GNU
+Emacs LISP form (load "gnuserv"). The server can then be started by the GNU
+Emacs LISP form (server-start).
+.SH EXAMPLE
+.TP 8
+gnudoit -q '(mh-smail)'
+.TP 8
+gnuclient -h otter -r /net/otter /tmp/*
+.SH SYSV IPC
+SysV IPC is used to communicate between \fIgnuclient\fP, \fIgnudoit\fP and
+\fIgnuserv\fP if the symbol SYSV_IPC is defined at the top of gnuserv.h. This
+is incompatible with both Unix-domain and Internet-domain socket communication
+as described below. A file called /tmp/gsrv??? is created as a key for the
+message queue, and if removed will cause the communication between server and
+client to fail until the server is restarted.
+.SH UNIX-DOMAIN SOCKETS
+A Unix-domain socket is used to communicate between \fIgnuclient\fP,
+\fIgnudoit\fP and \fIgnuserv\fP if the symbol UNIX_DOMAIN_SOCKETS is defined
+at the top of gnuserv.h.  A file called /tmp/gsrv??? is created for
+communication and if deleted will cause communication between server and
+client to fail.
+.SH INTERNET-DOMAIN SOCKETS
+Internet-domain sockets are used to communicate between \fIgnuclient\fP,
+\fIgnudoit\fP and \fIgnuserv\fP if the symbol INTERNET_DOMAIN_SOCKETS is
+defined at the top of gnuserv.h. Both Internet-domain and Unix-domain sockets
+can be used at the same time.
+.SH SECURITY
+Using Internet-domain sockets, a more robust form of security is needed that
+wasn't necessary with either Unix-domain sockets or SysV IPC.
+.br
+\fIgnuserv\fP performs a limited form of security at the machine level. By
+default only connections from the host where the server is running will be
+allowed. All other server connections will be rejected with a cryptic message
+(which is displayed only by \fIgnudoit\fP). Alternatively, if the variable
+GNU_SECURE can be found in \fIgnuserv\fP's environment, and it names a
+readable filename, then this file is opened and assumed to be a list of hosts,
+one per line, from which the server will allow requests. Note that a host may
+be either a internet address, or a hostname. If this file contains a lot of
+hostnames then the server may take quite a time to start up.
+.SH KNOWN BUGS
+If GNU Emacs attempts to send a string containing a newline character to
+\fIgnuserv\fP, then \fIgnuserv\fP will die.
+.SH FILES
+.PP
+.TP 8
+.B /tmp/gsrv???
+.TP 8
+.B ~/.emacs
+GNU Emacs customization file, see emacs(1).
+.SH AUTHOR.
+Andy Norman (ange@hplb.hpl.hp.com), based heavily upon etc/emacsclient.c,
+etc/server.c and lisp/server.el from the GNU Emacs 18.52 distribution.

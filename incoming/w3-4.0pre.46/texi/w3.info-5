@@ -1,0 +1,174 @@
+This is w3.info, produced by Makeinfo version 3.12f from w3.txi.
+
+INFO-DIR-SECTION World Wide Web
+INFO-DIR-SECTION GNU Emacs Lisp
+START-INFO-DIR-ENTRY
+* Emacs/W3: (w3).                 Emacs/W3 World Wide Web browser.
+END-INFO-DIR-ENTRY
+   This file documents the Emacs/W3 World Wide Web browser.
+
+   Copyright (C) 1993, 1994, 1995, 1996 William M. Perry Copyright (C)
+1996, 1997 Free Software Foundation
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+
+File: w3.info,  Node: Key Index,  Prev: General Index,  Up: Top
+
+Key Index
+*********
+
+* Menu:
+
+* !:                                     lynx.
+* #:                                     lynx.
+* (:                                     lynx.
+* ):                                     lynx.
+* *:                                     lynx.
+* +:                                     lynx.
+* -:                                     lynx.
+* /:                                     lynx.
+* <:                                     Movement.
+* =:                                     lynx.
+* >:                                     Movement.
+* ? <1>:                                 lynx.
+* ?:                                     Miscellaneous.
+* A-t:                                   Miscellaneous.
+* B:                                     Movement.
+* C-?:                                   Movement.
+* C-a:                                   lynx.
+* C-b:                                   lynx.
+* C-c C-b:                               Action.
+* C-c C-v:                               Miscellaneous.
+* C-f:                                   lynx.
+* C-g:                                   lynx.
+* C-k:                                   lynx.
+* C-n:                                   lynx.
+* C-o:                                   Action.
+* C-p:                                   lynx.
+* C-r:                                   lynx.
+* C-t:                                   lynx.
+* C-u:                                   lynx.
+* C-w:                                   lynx.
+* Control Middle Mouse Button:           Action.
+* D:                                     Action.
+* F:                                     Movement.
+* H F:                                   Movement.
+* HB:                                    Movement.
+* Hv:                                    Action.
+* I:                                     Information.
+* K:                                     Information.
+* M-M:                                   Miscellaneous.
+* M-a:                                   netscape.
+* M-b:                                   netscape.
+* M-del:                                 Movement.
+* M-f:                                   netscape.
+* M-g:                                   netscape.
+* M-h:                                   netscape.
+* M-i:                                   netscape.
+* M-l:                                   netscape.
+* M-left:                                netscape.
+* M-m <1>:                               netscape.
+* M-m:                                   Miscellaneous.
+* M-n:                                   netscape.
+* M-o:                                   netscape.
+* M-p:                                   netscape.
+* M-q:                                   netscape.
+* M-r:                                   netscape.
+* M-right:                               netscape.
+* M-s <1>:                               netscape.
+* M-s:                                   Action.
+* M-space:                               Movement.
+* M-t:                                   Miscellaneous.
+* M-tab <1>:                             Miscellaneous.
+* M-tab:                                 Basic Usage.
+* M-x w3:                                Getting Started.
+* M-x w3-insert-formatted-url:           Miscellaneous.
+* Meta return:                           Action.
+* Meta-tab:                              Movement.
+* Middle Mouse Button:                   Action.
+* P:                                     Action.
+* Q:                                     Action.
+* Q, u:                                  Movement.
+* R:                                     Action.
+* S:                                     Information.
+* U:                                     Miscellaneous.
+* V <1>:                                 lynx.
+* V:                                     Information.
+* [:                                     lynx.
+* \:                                     lynx.
+* ]:                                     lynx.
+* a:                                     lynx.
+* b <1>:                                 lynx.
+* b:                                     Movement.
+* backspace <1>:                         lynx.
+* backspace <2>:                         Movement.
+* backspace:                             Basic Usage.
+* c <1>:                                 lynx.
+* c:                                     Miscellaneous.
+* d <1>:                                 lynx.
+* d:                                     Action.
+* down <1>:                              netscape.
+* down:                                  lynx.
+* e:                                     lynx.
+* f:                                     Movement.
+* g <1>:                                 lynx.
+* g:                                     Action.
+* h:                                     lynx.
+* hA:                                    Hotlist Handling.
+* hI:                                    Hotlist Handling.
+* hR:                                    Hotlist Handling.
+* ha:                                    Hotlist Handling.
+* hd:                                    Hotlist Handling.
+* hi:                                    Hotlist Handling.
+* hr:                                    Hotlist Handling.
+* hu:                                    Hotlist Handling.
+* hv:                                    Hotlist Handling.
+* i <1>:                                 lynx.
+* i:                                     Information.
+* j:                                     lynx.
+* k <1>:                                 lynx.
+* k:                                     Information.
+* l <1>:                                 lynx.
+* l <2>:                                 Action.
+* l:                                     Movement.
+* left <1>:                              netscape.
+* left:                                  lynx.
+* m <1>:                                 lynx.
+* m:                                     Action.
+* n <1>:                                 lynx.
+* n:                                     Movement.
+* o <1>:                                 lynx.
+* o:                                     Action.
+* p <1>:                                 lynx.
+* p:                                     Action.
+* q <1>:                                 lynx.
+* q <2>:                                 Action.
+* q:                                     Movement.
+* r <1>:                                 lynx.
+* r:                                     Action.
+* return <1>:                            lynx.
+* return <2>:                            Action.
+* return:                                Basic Usage.
+* right <1>:                             netscape.
+* right:                                 lynx.
+* s <1>:                                 lynx.
+* s:                                     Information.
+* space <1>:                             lynx.
+* space <2>:                             Movement.
+* space:                                 Basic Usage.
+* tab <1>:                               Movement.
+* tab:                                   Basic Usage.
+* u <1>:                                 lynx.
+* u:                                     Action.
+* up <1>:                                netscape.
+* up:                                    lynx.
+* v <1>:                                 lynx.
+* v:                                     Information.
+* w:                                     Reporting Bugs.
+* x:                                     lynx.
+* z:                                     lynx.
+
+

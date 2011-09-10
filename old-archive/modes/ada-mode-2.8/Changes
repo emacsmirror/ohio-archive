@@ -1,0 +1,36 @@
+Changes since 2.4
+
+	Mainly bug fixes and code cleaning.
+	Replaced Example.emacs by dot.emacs
+	Deleted all files which now come with Emacs 19.28
+	New file ada-verdix with some VADS specific code.
+
+	* ada-mode.el:
+	Added support functions for standard or other external packages, such as
+	  find-file, font-lock, imenu.
+	New user options : ada-font-lock-keywords, ada-krunch-args
+	Deleted automatic loading of Imenu.
+	Deleted automatic activation of ada-remove-trailing-spaces and
+	  ada-untabify-buffer.
+	Avoided most warnings when byte-compiling.
+	Moved calls to ada-stmt and ada-xref to the dot.emacs example.
+	Modifs for compatibility with ada-format as proposed by GEB.
+	Added support for G.E.Barnes' formatting package.
+	Added support for auto-fill mode, fill-paragraph.
+
+	* ada-stmt.el: got the new header template working.
+	Corrected syntax bug when prompting.
+	Rearranged the menu; deleted entries for 'exit', 'with' and 'use'.
+	Reverted back to asking for insertion; no user option any more.
+	Added RCS keywords.
+
+	* ada-xref.el: gnatf-prog is a user option.
+	Deleted use of faces (overlays) when searching for Xrefs.
+	Corrected regexp and simplified ada-xref-get-filename.
+
+	* ada-format.el: Added a (provide 'ada-format).
+	Use variables af-indent-new-element and af-indent-continuation get their
+	values from Ada Mode.
+
+	* ada-verdix.el: added c. curleys ada-hook for compiling with Sun Ada.
+	Added his function for use with find-file.

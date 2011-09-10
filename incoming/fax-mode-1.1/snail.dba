@@ -1,0 +1,79 @@
+;;; snail.dba -- EDB auxiliary file for a simple address database.
+;;;
+;;; Copyright (C) 1995 Ralph Schleicher
+;;;
+;;; This program is free software; you can redistribute it and/or
+;;; modify it under the terms of the GNU General Public License as
+;;; published by the Free Software Foundation; either version 2 of
+;;; the License, or (at your option) any later version.
+;;;
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with this program; if not, write to the Free Software
+;;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;;;
+;;; This file is not part of GNU Emacs.
+;;;
+;;; Author: Ralph Schleicher <rs@purple.IN-Ulm.DE>
+;;; Maintainer: see the `Author' field
+;;; Keywords: local comm
+;;; Time-stamp: "Fri Dec 15 19:03:49 MET 1995 rs@purple.IN-Ulm.DE"
+;;; Code:
+
+
+(db-tagged-setup '(((label . one-line-string) "Label"
+		    "A unique label identifying this record.")
+		   ((organization . string-or-nil) "Organization"
+		    "Name of organization; can be more than one line long.")
+		   ((department . string-or-nil) "Department"
+		    "Name of department; can be more than one line long.")
+		   ((occupation . one-line-string-or-nil) "Occupation"
+		    "A brief job description.")
+		   ((address . one-line-string-or-nil) "Address"
+		    "Title used in speech, e.g., `Mr.'.")
+		   ((title . one-line-string-or-nil) "Title"
+		    "Offical title, e.g., `M. Sc.'.")
+		   ((first-name . one-line-string-or-nil) "First-Name"
+		    "First name.")
+		   ((family-name . one-line-string-or-nil) "Family-Name"
+		    "Family name.")
+		   ((street . one-line-string-or-nil) "Street"
+		    "Name of street or P.O. box code.")
+		   ((zip-code . one-line-string-or-nil) "Zip-Code"
+		    "Zip (brit. postal) code.")
+		   ((location . one-line-string-or-nil) "Location"
+		    "Name of city or town.")
+		   ((country . one-line-string-or-nil) "Country"
+		    "Name of country.")
+		   ((phone . one-line-string-or-nil) "Phone"
+		    "Phone number.")
+		   ((fax . one-line-string-or-nil) "Fax"
+		    "Fax number.")
+		   ((e-mail . one-line-string-or-nil) "E-Mail"
+		    "E-mail address.")
+		   ((birthday . one-line-string-or-nil) "Birthday"
+		    "Date of birth.")
+		   ((comment . string-or-nil) "Comment"
+		    "Additional information or notes.")))
+
+(database-set-local 'db-tagged-tag-chars database "a-zA-Z-")
+(database-set-local 'db-tagged-separator-regexp database ":[ \t]*")
+(database-set-local 'db-tagged-separator-output database ": ")
+(database-set-local 'db-tagged-continuation-regexp database "\t")
+(database-set-local 'db-tagged-continuation-output database "\t")
+
+(sepinfo-set-pre-first-string (database-record-sepinfo database) "\f\n")
+(sepinfo-set-sep-string (database-record-sepinfo database) "\n\f\n")
+
+(database-set-print-name database "Address List")
+
+
+;;; local variables:
+;;; mode: emacs-lisp
+;;; end:
+
+;;; snail.dba ends here

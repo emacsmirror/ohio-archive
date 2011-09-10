@@ -1,0 +1,327 @@
+<HTML>
+<HEAD>
+<TITLE>Phit: Keywords</TITLE>
+</HEAD>
+<BODY>
+<A HREF="phit-2.html">Previous</A>
+<A HREF="phit-4.html">Next</A>
+<A HREF="phit.html#toc3">Table of Contents</A>
+<HR>
+<H2><A NAME="s3">3. Keywords</A></H2>
+
+
+<P>Take a peek at the Appendix.  Included there are a few examples of input
+files for <SF>Phit</SF>.  This chapter explains the meanings of all the
+keywords recognized by <SF>Phit</SF>.</P>
+<P><CODE>Phit.inp</CODE> uses keywords to describe the input parameters. With
+only a few exceptions, the keywords are allowed to occur in any order
+in the file, and usually have transparent meanings.  This structure
+allows the input file to be easily read and modified.  All keywords
+use the syntax:
+<BLOCKQUOTE><CODE>
+<PRE>
+        keyword delimiter value(s) delimiter ...
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+<P>The delimiter can be:  
+<OL>
+<LI>one or more white spaces (blanks and/or TABs)</LI>
+<LI>one equal sign and any number of white spaces</LI>
+<LI>one comma and any number of white spaces   </LI>
+</OL>
+</P>
+<P>Most keywords take only one value. Many keywords can be put on one
+line (though some keywords require their own line).  Internal comments
+can be written anywhere in <CODE>phit.inp</CODE>, which help remind
+you what the keywords mean, or how you chose the input
+values. Keywords can be in upper, lower, or mixed case. <SF>Phit</SF>
+is not sensitive to the case of keywords or their values. </P>
+
+<H2><A NAME="ss3.1">3.1 A Brief List of the Keywords</A></H2>
+
+<P>
+<OL>
+<LI>  <B>!, %, # </B> --  characters denoting comments</LI>
+<LI>  <B>title</B> --  user supplied title line</LI>
+<LI>  <B>comment</B> --  synonymous with title</LI>
+<LI>  <B>include</B> -- name of an include file</LI>
+<LI>  <B>data</B> --  name of input data file</LI>
+<LI>  <B>read</B> --  synonymous with data</LI>
+<LI>  <B>infile</B> --  synonymous with data</LI>
+<LI>  <B>nkey</B> --  numeric key of input UWXAFS data record</LI>
+<LI>  <B>skey</B> --  symbolic key of input UWXAFS data record</LI>
+<LI>  <B>outfile</B> --  name of output file</LI>
+<LI>  <B>logfile</B> --  name of log file</LI>
+<LI>  <B>format</B> --  i/o file format</LI>
+<LI>  <B>formin</B> --  input file format</LI>
+<LI>  <B>formout</B> --  output file format</LI>
+<LI>  <B>write</B> --  output data range</LI>
+<LI>  <B>xaxis</B> --  abscissa label in math expressions</LI>
+<LI>  <B>sigma</B> --  logical flag for input measurement uncertainty </LI>
+<LI>  <B>sigdat</B> --  constant input measurement uncertainty</LI>
+<LI>  <B>cormin</B> --  minimum correlation reported in log file</LI>
+<LI>  <B>x1 - x10</B> --  fitting range values</LI>
+<LI>  <B>xmin</B> --  minimum fitting range</LI>
+<LI>  <B>xmax</B> --  maximum fitting range</LI>
+<LI>  <B>npoints</B> --  number of points in nofit output</LI>
+<LI>  <B>end</B> --  flag marking end of input file</LI>
+<LI>  <B>all</B> --  logical flag for writing out individual functions </LI>
+<LI>  <B>residual</B> --  logical flag for writing out array of residuals</LI>
+<LI>  <B>nosum</B> --  logical flag for not writing sum of functions </LI>
+<LI>  <B>noout</B> --  logical flag for writing no output files</LI>
+<LI>  <B>norun</B> --  logical flag for stopping after reading 
+input file and data file</LI>
+<LI>  <B>dryrun</B> --  synonymous with norun</LI>
+<LI>  <B>nofit</B> --  logical flag for only summing functions</LI>
+<LI>  <B>noerr</B> --  logical flag for skipping error analysis</LI>
+<LI>  <B>guess</B> --  parameter to vary in fit</LI>
+<LI>  <B>set</B> --  parameter set by a math expression</LI>
+<LI>  <B>function</B> --  math expression, part of sum in fit</LI>
+<LI>  <B>id</B> --  description line for corresponding function</LI>
+</OL>
+ </P>
+
+
+
+<H2><A NAME="ss3.2">3.2 Full Explanation of Keywords</A></H2>
+
+<P>
+<DL>
+<DT><B> <B>!</B>, <B>%</B>, and <B>#</B> </B><DD><P>These characters denote comments in the input file.  Anything on a
+line following any one of these characters will be ignored unless they
+follow the keywords <CODE>title</CODE>, <CODE>comment</CODE>, or <CODE>id</CODE>
+in which case they will be part of the title or id line. </P>
+
+<DT><B> <B>Title</B> or <B>Comment</B> </B><DD><P>This is a title line that will be written to the log file and to
+each output data file.  It can be used to describe and document a run
+of the program.  Up to 9 title lines of 72 characters each are allowed. </P>
+
+<DT><B> <B>Include</B> </B><DD><P>This is the name of a file that contains additional keywords to
+be parsed when the input file is read.  The include file name can be
+up to 72 characters long and may contain a directory path.  The
+include file is read according to the same syntax as
+<CODE>phit.inp</CODE>.  All keywords read in the include file are
+handled equivalently to those in <CODE>phit.inp</CODE>.  The line
+containing the keyword <CODE>include</CODE> is entirely parsed before
+the include file is opened and read.  When the include file is
+finished, parsing of the input file will continue.  Nested include
+files are allowed although there is a limit to how deeply they may be
+nested.  Include files are never necessary but are allowed as an
+organizational convenience for complicated input files. </P>
+
+<DT><B> <B>Data</B>, <B>Read</B>, or <B>Infile</B> </B><DD><P>This is the name of the input data file.  It may be up to 72
+characters long and may contain a directory path.  The filename should
+not contain spaces, tabs, commas (,), or equal signs (=).  These
+characters will confuse the parsing algorithm.  The abscissa grid
+provided in the input file is used for writing out the output data.
+See the full description of the <CODE>x1 - x10</CODE> keywords for a
+discussion of how a limited fitting range can be chosen. Not providing
+an input file name is equivalent to setting the <CODE>nofit</CODE> flag
+or to providing no guess values.  In this case, <SF>Phit</SF> will
+evaluate and sum the functions using the guess and set values as
+stated in the input file.  See the full description of the
+<CODE>npoints</CODE> keyword for a discussion of how the output abscissa
+grid is chosen if no input data file is provided. </P>
+
+<DT><B> <B>Nkey</B> and <B>Skey</B> </B><DD><P>These are the numeric and symbolic keys that identify a record in
+a UWXAFS data file.  See the data format document in the UWXAFS
+package for more details on this file format.  At least one of these
+two must be specified if the UWXAFS file format is used. </P>
+
+<DT><B> <B>Outfile</B> </B><DD><P>This is the name for the file containing the sum of functions.
+The file names for the individual functions will be the same with the
+extension replaced with the function number from the input file.  If
+no output file name is specified, the input file name will be used
+with the extension changed to <CODE>fit</CODE>, <CODE>out</CODE>, or the
+function number, as appropriate.  The file extension is defined as all
+characters after the final dot (.) in the file name.  This definition
+meets the definition of an extension in DOS and VMS, and is well defined
+in a Unix environment. </P>
+
+<DT><B> <B>Logfile</B> </B><DD><P>This is the name of the log file.  The input parameters, set math
+expressions, functions and ids, results of the fit, and results of the 
+error analysis will be written to this file.  Much of this information
+will not be written anywhere else, so this is an important file!  The
+default name for this file is <CODE>phit.log</CODE>. </P>
+
+<DT><B> <B>Format</B>, <B>Formin</B>, and <B>Formout</B> </B><DD><P>These specify the formats for the input and output data files.
+By default, files are read in the ASCII format.  The other option is
+the UWXAFS format.  The <CODE>format</CODE> keyword specifies both input
+and output format.  Note that the input and output formats do not need
+to be the same. </P>
+
+<DT><B> <B>Write</B> </B><DD><P>This determines how the output data will be written to the output
+data files.  If this keyword is set to <CODE>full</CODE>, the sum of
+functions and individual functions will be evaluated at each input
+abscissa value in the input file.  If it is set to <CODE>fit</CODE>, the
+functions will only be evaluated at abscissa values within the fitting
+ranges.  This is set to <CODE>full</CODE> by default. </P>
+
+<DT><B> <B>Xaxis</B> </B><DD><P>This is a character string that will be used to denote the
+abscissa in all math expressions.  By default this is <CODE>x</CODE>, but
+something else might be more appropriate for a specific problem.  For
+instance if the input data is an XAFS spectrum in energy, this might
+be set to <CODE>e</CODE>.  If the input data is in temperature, it might
+be <CODE>T</CODE>. </P>
+
+<DT><B> <B>Sigma</B> </B><DD><P>If a third column containing measurement uncertainties at each
+abscissa value is provided in the input file, <SF>Phit</SF> will use
+those in calculating chi-square and in the error analysis if this
+keyword is found in the input file.  This keyword does not take any
+value.  Simply placing it somewhere in the input file will toggle this
+logical flag.  If no information about measurement uncertainties is
+provided in the input file, a single number which is the standard
+deviation of the residuals of the fit will be used.  </P>
+
+<DT><B> <B>Sigdat</B> </B><DD><P>To evaluate chi-square using a single, user-chosen number,
+specify it with this keyword.  It will be used to evaluate
+chi-square and to perform the error analysis.  If no information about
+measurement uncertainties is provided in the input file, a single
+number which is the standard deviation of the residuals of the fit
+will be used.  This value of sigma will be used to normalize
+chi-square and the error bars. </P>
+
+<DT><B> <B>Cormin</B> </B><DD><P>Part of the error analysis is the computation of correlations between
+variables.  By default, only those variables with more than 15%
+correlation will be written to the log file.  This limit can be
+changed with this keyword.  It takes a value between 0 and 1.</P>
+
+<DT><B> <B>X1</B> through <B>X10</B> </B><DD><P>These values can be used to limit the range of the fit to some
+subset of the input data range.  They take values within the range of
+the abscissas of the input data and are specified in pairs.  Only the
+input data between <CODE>x1</CODE> and <CODE>x2</CODE> and between <CODE>x3</CODE>
+and <CODE>x4</CODE> and so on will be included in the fit.  The data
+between <CODE>x2</CODE> and <CODE>x3</CODE> and so on will be excluded from
+the fit.  Chi-square and the error analysis will be computed using
+only the data contained within these abscissa ranges.  By default
+<CODE>x1</CODE> is the first data point, <CODE>x2</CODE> is the last data
+point, and the other eight are unused.  The values of these keywords
+will be sorted on input and if an odd number of values are found, the
+last data point will be inserted into the list.  When functions are
+evaluated with the fitting results and written to the output data
+files, they can either be evaluated in the fitting range as specified
+by these keywords or in the range of the input data.  This is
+determined by the keyword <CODE>write</CODE>. </P>
+
+<DT><B> <B>Xmin</B> and <B>Xmax</B> </B><DD><P>These are synonymous with <CODE>X1</CODE> and <CODE>X10</CODE>.  When
+only the ends of the input data range are being excluded, these
+keywords are perhaps more mnemonic. </P>
+
+<DT><B> <B>Npoints</B> </B><DD><P>This keyword is only used in the situation where functions are
+evaluated without performing any fit.  If no input data is specified,
+then <SF>Phit</SF> needs some way to determine an abscissa
+grid over which to evaluate the functions.  In this situation,
+<SF>Phit</SF> will make an even grid containing
+<CODE>npoints</CODE> points between <CODE>xmin</CODE> and <CODE>xmax</CODE> and
+evaluate the function on that grid.  If an input data file is
+specified and no fit is called for, the <SF>Phit</SF> will use
+the abscissa grid between <CODE>xmin</CODE> and <CODE>xmax</CODE> from that
+data file and ignore the value of <CODE>npoints</CODE>.  By default,
+<CODE>npoints</CODE> is 100.  </P>
+
+<DT><B> <B>End</B> </B><DD><P>When this keyword is encountered in the input file,
+<SF>Phit</SF> will stop reading the input file and begin the
+fit.  Everything after this keyword in the input file will be ignored.
+This keyword takes no value. </P>
+
+<DT><B> <B>All</B> </B><DD><P>This is a logical flag telling <SF>Phit</SF> to write out
+each individual function.  This keyword takes no value, simply writing
+it to the input file will toggle this logical flag. </P>
+
+<DT><B> <B>Residuals</B>  </B><DD><P>This is a logical flag telling <SF>Phit</SF> to write out an
+array containing the residual at each data point written to the output
+file.  If the value of the keyword <CODE>write</CODE> is <CODE>fit</CODE>
+and the output files only contain the function evaluations at the data
+points used in the fit, then the residual file will contain the
+residual used in evaluating chi-square.  If <CODE>write</CODE> is set to
+<CODE>full</CODE>, then the residual file will contain the difference
+between the function evaluations and the data at every data point in
+the input data file and is not the residual array used to evaluate
+chi-square.  This keyword takes no value, simply writing it to the
+input file will toggle this logical flag. </P>
+
+<DT><B> <B>Nosum</B> </B><DD><P>This is a logical flag telling <SF>Phit</SF> not to write
+out the sum of functions.  This keyword takes no value, simply writing
+it to the input file will toggle this logical flag. </P>
+
+<DT><B> <B>Noerr</B> </B><DD><P>This is a logical flag telling <SF>Phit</SF> not to
+perform any error analysis.  This keyword takes no value, simply writing
+it to the input file will toggle this logical flag. </P>
+
+<DT><B> <B>Noout</B> </B><DD><P>This is a logical flag telling <SF>Phit</SF> to write out
+neither the sum of functions nor the individual functions.  This
+keyword  takes no value, simply writing
+it to the input file will toggle this logical flag. </P>
+
+<DT><B> <B>Norun</B> or <B>Dryrun</B> </B><DD><P>This is a logical flag telling <SF>Phit</SF> to stop after
+reading the input data file.  The input file and the data file will be
+read and all math expressions will be interpreted before stopping.
+This option is useful for ``spell checking'' your input file.  This
+keyword takes no value, simply writing it to the input file will
+toggle this logical flag. </P>
+
+<DT><B> <B>Nofit</B> </B><DD><P>This is a logical flag telling <SF>Phit</SF> to not
+perform a fit.  Instead the functions and set values will be evaluated
+at the initial guess values specified in the input file and will be
+written to output files.  This keyword takes no value, simply writing
+it to the input file will toggle this logical flag. </P>
+
+<DT><B> <B>Guess</B> </B><DD><P>This keyword takes two values and must be placed on its own line.
+The first value is the label that will be used in your math
+expressions and the second value is the initial guess of this
+parameter.  The label is a character string of up to 20 characters and
+the initial guess is a number.  Up to 50 guess values can be specified.
+It is prudent to choose an initial
+guess that is somewhat close to what you expect for the best fit
+value.  For some line shapes, a poor initial guess can confound the
+minimization algorithm resulting either in an inability to minimize
+chi square or in the location of a false minimum of the parameter set.
+See chapter 5 for more discussion of appropriate initial guesses.
+Setting no guess values is equivalent to setting the <CODE>nofit</CODE>
+flag. </P>
+
+<DT><B> <B>Set</B> </B><DD><P>This keyword takes two values and must be placed on its own line.
+The first value is a label that will be used to identify this value in
+other math expressions.  The second value is a math expression which
+will be evaluated and whose value will be assigned to its label for
+use in evaluating other math expressions.  The label is a character
+string of up to 20 characters.  The math expression is a character
+string of up to 74 characters.  Up to 300 set values can be specified.
+The set value must be contained on one
+line.  <SF>Phit</SF> will not read a math expression that
+stretches over more than one line.  If a math expression is very long,
+it would be prudent to break it up into smaller ones.
+See Chapter 5 for more discussion of writing good math expressions. </P>
+
+<DT><B> <B>Function</B> </B><DD><P>This keyword takes two values and must be placed on its own line.
+The first value is an integer which is the index identifying the
+function.  The second is a math expression which will be evaluated as
+part of the sum of functions to fit to the data.  This is a character
+string of up to 74 characters.  Up to 20 functions can be specified.
+The function must be contained on one line -- <SF>Phit</SF>
+will not read a math expression that stretches over more than one
+line.  If the math expression is very long, it would be prudent to
+write it in terms of several set values.  See chapter 5 for more discussion
+of writing good math expressions. </P>
+
+<DT><B> <B>Id</B> </B><DD><P>This keyword takes two values and must be placed on its own line.
+The first values is an integer which is the index of the function
+associated with this id line.  The second value is a character string
+of up to 74 characters.  This is a comment line specifically
+associated with a particular function.  It will be written to
+individual function data file, if that output is requested, and it
+will be written along with its function in the log file.  Id lines
+with an integer index shared by no functions will be ignored. </P>
+
+</DL>
+</P>
+
+
+
+<HR>
+<A HREF="phit-2.html">Previous</A>
+<A HREF="phit-4.html">Next</A>
+<A HREF="phit.html#toc3">Table of Contents</A>
+</BODY>
+</HTML>

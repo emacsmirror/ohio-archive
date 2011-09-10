@@ -1,0 +1,35 @@
+New games included in this file are:
+
+    battleship, reversi, ataxx, chinese checkers, dots, gofish,
+    and order and chaos.
+
+    The file "cards.el" is used by gofish, and other games in production.
+
+To install these games, simply put all the files on everyone's
+load-path, then copy the following into your .emacs, or modify the
+variable listed in talk-spec.el to contain these new games.  Don't
+forget to re-bytecompile talk-spec in this case.
+
+(setq talk-legal-multiuser-functions 
+      '(("Talk Tac Toe"  talk-tac-toe) ("Hangman" hangman) 
+	("Drop 4" drop4) ("Word Thing" word-thing) ("Go Fish" gofish)
+	("4 by 4" 4-by-4) ("Dots" dots) ("Battle ship" battleship)
+	("Checkers" checkers) ("Reversi" reversi) ("Ataxx" ataxx)
+	("Chinese Checkers" china-check) ("Order and Chaos" order-chaos))
+      )
+
+Installing the ai game included hering require modifiying a variable like so:
+
+(setq tyrant-ai-games
+  '( ("Drop 4" drop4 drop4-ai) ("Gofish" gofish gofish-ai) ) )
+
+Or change tyrn-ai to include the extra game.  Don't forget to
+re-bytecompile everything in this case!
+
+!Remember!  Always place the games in everyones load-path and make
+them readable, otherwise they are all useless.
+
+Documentation for most of these games are available in the etalk
+documentation that comes with the emacs talk distribution.
+
+

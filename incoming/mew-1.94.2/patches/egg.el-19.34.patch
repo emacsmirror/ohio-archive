@@ -1,0 +1,155 @@
+Emacs 19.34 ベースの Mule 2.3 に付いてくる egg.el と wnn-egg.el を
+minor-mode-map-alist を使うようにするパッチです。これを当てると、Draft 
+モードのヘッダで、「たまご」を使って日本語を入力できます。
+
+Emacs 19.28 ベースの Mule 2.3 には当てる必要はありません。
+
+ライブラリ・ディレクトリで直接当てる場合は、
+	patch < egg.el-19.34.patch
+として、egg.elc と wnn-egg.elc を削除する必要があります。また、この 
+*.el をあらかじめ読み込んでいる場合は、Mule をダンプし直す必要があるか
+もしれません。
+
+インストールからやり直す場合は、lisp ディレクトリの下で
+	patch < egg.el-19.34.patch
+としてください。
+
+山本和彦
+*** egg.el.orig	Thu Jul  9 22:25:13 1998
+--- egg.el	Thu Jul  9 22:25:28 1998
+***************
+*** 2471,2479 ****
+  (make-variable-buffer-local 'egg:*region-end*)
+  (set-default 'egg:*region-start* nil)
+  (set-default 'egg:*region-end* nil)
+- (defvar egg:*global-map-backup* nil)
+- (defvar egg:*local-map-backup*  nil)
+- 
+  
+  ;;;
+  ;;; (defvar disable-undo nil "*Compatibility for Nemacs")
+--- 2471,2476 ----
+***************
+*** 2603,2613 ****
+    (and (boundp 'disable-undo) (setq disable-undo t))
+    (setq egg:*in-fence-mode* t)
+    (egg:mode-line-display)
+-   ;;;(setq egg:*global-map-backup* (current-global-map))
+-   (setq egg:*local-map-backup*  (current-local-map))
+-   ;;;(use-global-map fence-mode-map)
+-   ;;;(use-local-map nil)
+-   (use-local-map fence-mode-map)
+    (egg:check-fence-in-cont)            ; for Wnn6
+    (insert egg:*fence-open*)
+    (or (markerp egg:*region-start*) (setq egg:*region-start* (make-marker)))
+--- 2600,2605 ----
+***************
+*** 2722,2729 ****
+  correspoding to character position.")
+  
+  (defun egg:quit-egg-mode ()
+-   ;;;(use-global-map egg:*global-map-backup*)
+-   (use-local-map egg:*local-map-backup*)
+    (setq egg:*in-fence-mode* nil)
+    (egg:mode-line-display)
+    (if overwrite-mode
+--- 2714,2719 ----
+***************
+*** 2819,2824 ****
+--- 2809,2818 ----
+  (define-key fence-mode-map [kp-right] 'fence-forward-char)
+  (define-key fence-mode-map [kp-left] 'fence-backward-char)
+  
++ (or (assq 'egg:*in-fence-mode* minor-mode-map-alist)
++     (setq minor-mode-map-alist
++           (cons (cons 'egg:*in-fence-mode* fence-mode-map)
++ 		minor-mode-map-alist)))
+  
+  ;;;----------------------------------------------------------------------
+  ;;;
+*** wnn-egg.el.orig	Thu Jul  9 22:25:19 1998
+--- wnn-egg.el	Thu Jul  9 22:25:28 1998
+***************
+*** 847,854 ****
+  			    (set-marker-insertion-type egg:*region-end* t)))
+  		      (if (null (marker-position egg:*region-start*))
+  			  (progn
+- 			    ;;;(setq egg:*global-map-backup* (current-global-map))
+- 			    (setq egg:*local-map-backup* (current-local-map))
+  			    (and (boundp 'disable-undo) (setq disable-undo t))
+  			    (delete-region start end)
+  			    (goto-char start)
+--- 847,852 ----
+***************
+*** 878,886 ****
+  		      (egg:henkan-face-on)
+  		      (egg:bunsetu-face-on)
+  		      (henkan-goto-bunsetu 0)
+- 		      ;;;(use-global-map henkan-mode-map)
+- 		      ;;;(use-local-map nil)
+- 		      (use-local-map henkan-mode-map)
+  		      (run-hooks 'egg:henkan-start-hook)))))
+  	    (setq finished t))
+  	(or finished (setq disable-undo nil) (setq egg:henkan-mode-in-use nil)))))
+--- 876,881 ----
+***************
+*** 1096,1105 ****
+      ;;;(set-marker egg:*region-end* (point))
+      (goto-char point))
+    (setq egg:*mode-on* t)
+-   ;;;(use-global-map fence-mode-map)
+-   ;;;(use-local-map  nil)
+    (setq egg:henkan-mode-in-use nil)
+-   (use-local-map fence-mode-map)
+    (egg:mode-line-display))
+  
+  (defun sai-henkan ()
+--- 1091,1097 ----
+***************
+*** 1111,1117 ****
+  	 (setq egg:henkan-mode-in-use t)
+  	 (mode-line-egg-mode-update (egg:msg-get 'henkan-mode-indicator))
+  	 (goto-char egg:*sai-henkan-start*)
+- 	 (setq egg:*local-map-backup* (current-local-map))
+  	 (and (boundp 'disable-undo) (setq disable-undo t))
+  	 (delete-region egg:*sai-henkan-start* egg:*sai-henkan-end*)
+  	 (goto-char egg:*sai-henkan-start*)
+--- 1103,1108 ----
+***************
+*** 1124,1130 ****
+  	 (egg:henkan-face-on)
+  	 (egg:bunsetu-face-on)
+  	 (henkan-goto-bunsetu 0)
+- 	 (use-local-map henkan-mode-map)
+  	 (setq finished t))
+         (or finished (setq disable-undo nil) (setq egg:henkan-mode-in-use nil)))))
+    )
+--- 1115,1120 ----
+***************
+*** 1361,1370 ****
+    (egg:fence-face-on)
+    (wnn-server-henkan-quit)
+    (setq egg:*mode-on* t)
+-   ;;;(use-global-map fence-mode-map)
+-   ;;;(use-local-map  nil)
+    (setq egg:henkan-mode-in-use nil)
+-   (use-local-map fence-mode-map)
+    (egg:mode-line-display)
+    )
+  
+--- 1351,1357 ----
+***************
+*** 1487,1492 ****
+--- 1474,1485 ----
+  (define-key henkan-mode-map [kp-left] 'henkan-backward-bunsetu)
+  (define-key henkan-mode-map [kp-down] 'henkan-next-kouho)
+  (define-key henkan-mode-map [kp-up] 'henkan-previous-kouho)
++ 
++ (or (assq 'egg:henkan-mode-in-use minor-mode-map-alist)
++     (setq minor-mode-map-alist
++           (cons (cons 'egg:henkan-mode-in-use henkan-mode-map)
++ 		minor-mode-map-alist)))
++ 
+  
+  (defun henkan-help-command ()
+    "Display documentation for henkan-mode."

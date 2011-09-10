@@ -1,0 +1,117 @@
+README for CC Mode 5.26
+Current maintainer : Martin Stjernholm
+Contact address    : bug-cc-mode@gnu.org (or cc-mode-help@python.org)
+
+INTRODUCTION
+
+    The canonical Web location for all knowledge CC Mode is:
+
+	<http://www.python.org/emacs/cc-mode/>
+
+    Please read the cc-mode.texi manual for details on using CC Mode.
+    This is available on-line from:
+
+        <http://www.python.org/emacs/cc-mode/cc-mode-html/Top.html>
+
+    As of this writing (22-Nov-1999), CC Mode version 5 currently
+    works out of the box with XEmacs versions 19.15, 19.16, 20.3,
+    20.4, 21.0, 21.1, and 21.2, and with Emacs versions 19.34, 20.2,
+    20.3, and 20.4.
+
+MORE INFORMATION
+
+    NOTE: Since there are now multiple maintainers of CC Mode, you
+    MUST address all correspondence to bug-cc-mode@gnu.org (or
+    cc-mode-help@python.org, but that address is being phased out).
+
+    Check out the CC Mode Web site for the latest information,
+    updates, tips, installation and compatibility notes, etc. on using
+    CC Mode.  The installation instructions given below are an excerpt
+    of the on-line instructions.  If you have problems installing CC
+    Mode, please check out the URL above before submitting a bug
+    report.  Thanks!
+
+    The MANIFEST file contains a description of all the files you
+    should have gotten with this distribution.
+
+MANUALS
+
+    Preformatted versions of the manual in DVI, PostScript, and Info,
+    are all available at the CC Mode Web page.
+
+    To build the manual yourself, you will need the latest Texinfo
+    release (as of this writing, Texinfo 3.11).  Specifically, you
+    must make sure that your are using at least version 2.185 of the
+    texinfo.tex file.  To build the Info manual, simply type:
+
+        % makeinfo cc-mode.texi
+
+    To make the DVI version, simply type:
+
+        % texi2dvi cc-mode.texi
+
+    Note that I've heard of other package releases that purport to
+    include a texinfo.tex file newer than 2.185, but these don't
+    support the @macro{} command.  If you have problems building the
+    manuals, pick up a pre-built version.
+
+INSTALLATION
+
+    Here is a quick guide for installing CC Mode.  For the latest
+    information on installing CC Mode, including compatibility notes
+    for the various flavors of Emacs, please see the CC Mode Web site
+    given above.
+
+  Setting load-path
+
+    You need to make sure that this new version of CC Mode is on your
+    load-path, before any version that is distributed with your
+    X/Emacs.  Note that the CC Mode distribution unpacks into its own
+    subdirectory.  You can use this test to see which version of CC
+    Mode your X/Emacs finds first:
+
+        M-x locate-library RET cc-mode RET
+                                 
+    Make sure this finds the one you expect.  If not, you can add this
+    to your .emacs file:
+
+        (setq load-path (cons "/dir/of/cc-mode/" load-path))
+                                 
+    The path you use should be an absolute path (starting with a
+    slash).  You cannot use a path beginning with "~" in the load-path
+    variable.
+
+  Byte Compiling
+
+    It is highly recommended that you byte-compile CC Mode, for both
+    performance and compatibility reasons.  Running CC Mode
+    un-bytecompiled is not supported and may not work at all depending
+    on the flavor of X/Emacs you are using.
+
+    To compile CC Mode, do the following from your shell:
+
+        % cd /path/to/cc-mode
+        % $(EMACS) -batch -no-site-file -q -l cc-make.el cc-*.el
+
+    where $(EMACS) is either emacs or xemacs depending on the flavor
+    you use.
+
+    You can safely ignore any byte compiler warnings; they are due to
+    the cross X/Emacsen support.
+
+    Note: It is important that CC Mode is byte compiled in the correct
+    way.  Avoid compiling from inside an X/Emacs session, since that
+    can produce incorrect byte code files that will generate strange
+    errors later during normal use.
+
+    Be sure to see the list of compatibility issues (in the CC Mode
+    canonical Web pages -- see above), for special notes about X/Emacs
+    versions and package interactions.
+
+    To test that you have things set up correctly, visit a C file and
+    then type:
+
+        M-x c-version RET
+        => Using CC Mode version 5.XX
+
+    where XX is the correct minor revision number.

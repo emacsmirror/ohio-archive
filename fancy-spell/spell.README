@@ -1,0 +1,367 @@
+-*-outline-*-
+
+* Overview
+
+This is a greatly enhanced GNU Emacs interface to spell(1), or a
+similar non-interactive spell-checking program.  It applies a
+mode-specific clean-up function to the buffer, and sends it to a
+mode-specific spell-program, with mode-specific flags.  Optionally, it
+can run in the background.  A personal dictionary is supported.  If
+spelling-mistakes were caught, it enters a dialogue with the user,
+allowing him to accept the word, edit it, calling ispell for near
+misses, insert it in the personal dictionary, etc.  It can also issue
+an operating system command for searching in an on-line dictionary.
+Help is available.  Recursive edit is always available.
+
+It allows use of the program ispell, which recently has been posted to
+comp.sources.unix (or comp.sources.misc?).  If this program is not
+available the only thing that will not work is the i-command in the
+dialogue loop.
+
+** Installation
+
+Probably you should compile the lisp files and bind at least some of
+the user-level functions to keys.  Do ^Hf byte-compile-file, and ^Hf
+define-key for information on how to do this.
+
+This has been developed under GNU Emacs v 18.47.2.  A quick check
+indicated that everything should work under version 17 also, provided
+that the lines containing mode-line-buffer-identification is removed
+(three occurrences).
+
+** Acknowledgements
+
+This code is derived from the original GNU-Emacs source in spell.el
+(although not very much remains...).  The function spell-ispell-word
+is a very light modification of the function ispell-word, stolen from
+ispell.el in the ispell-distribution.  It is written by some convex
+combination of Walt Buehring, Perry Smith, Mark Davies and Andrew
+Vignaux.
+
+The functions in the file detex.el are not derived.  It, and this
+document, can be distributed on the same terms as GNU Emacs.
+
+* User functions
+
+** spell-buffer
+
+*** mode-specific cleaning-up function 
+
+The function spell-buffer first applies a user selectable,
+mode-specific clean-up function to the buffer.  For example, if the
+major mode of the current buffer is latex-mode, the lisp function
+delatex is applied to the buffer, removing all latex-specific
+construction that probably should not be checked against spelling
+mistakes.  (See more on this is the section on mode-specific clean-up
+functions.)  After that, the buffer is sent to a spell-process.  This
+again is user-selectable and (possibly) mode-specific.  Then, if any
+spelling mistake was caught, it enters a dialogue loop with the user.
+
+*** correcting dialogue
+
+For each word the spelling program did not find, the user is asked to
+enter one of the alternatives:
+
+(a)ccept, (e)dit, (h)elp, (i)spell, (I)nsert, (r)ec-edit, (s)earch.  
+
+(a)ccept (or SPACE) will accept the word for this session.  
+(e)dit will let you edit the word in the minibuffer, and then (provided that
+   the word is changed), enters a query-replace.
+(h)elp (or "?") displays a help message.
+(i)spell executes the function ispell-word, and if ispell finds close correct
+   words, you can enter the character associated with the alternative to
+   insert that word instead of the misspelled one.  Enter SPACE to leave
+   unchanged.  If ispell does not find any close matches, this is
+   equivalent to e.
+(I)nsert will insert the word in your personal dictionary, 
+   by default ~/.mywords 
+(r)ec-edit will embark on a recursive edit (C-M-c to exit).  This
+   allow you to temporarily interrupt the correcting session.
+(s)earch will prompt for a regular expression and search for it in an
+   asynchronous process.  By default, this uses grep(1) to search in
+   /usr/dict/words. 
+
+There is no explicit abort-command.  Use ^G instead.
+
+*** Running in the background
+
+If the global variable spell-wait is nil, spell-buffer will start the
+spell-program running in an asynchronous shell, thus letting the user
+doing something else while the process continues.  Giving spell-buffer
+a negative argument forces spell-wait nil, thus making it run in the
+background.  Giving it an argument larger than 1 forces spell-wait t,
+while the argument 0 toggles its value.
+
+When the asynchronous process has finished, the user has to issue the
+command correct-spelling explicitly.  This enters the same correcting
+dialogue as described above.
+
+** spell-region
+
+The command spell-region is analogous to spell-buffer.  It applies to
+the region instead of the buffer.
+
+** spell-word
+
+spell-word checks the spelling of the word at or before point.  The
+mode-specific clean-up function and spell-command corresponding to
+fundamental-mode will be used.  If not found by the spelling program,
+it enters the same correction dialogue as described in spell-buffer.
+Ignores the value of spell-wait, so that it never runs asynchronously.
+
+** spell-string
+
+spell-string is essentially the same function as in the standard spell
+in GNU Emacs.  It prompts the user for a string, typically consisting
+of several words, and checks the spelling of the string.  The words
+not found are reported.  No correcting dialogue is entered.
+
+The spell-command corresponding to fundamental-mode will be used.  No
+clean-up function will be applied.
+
+** correct-spelling
+
+If spell-region or spell-buffer runs asynchronously, Emacs is not told
+when the process finishes.  After the process has finished, the user
+issues the command correct-spelling, which will enter the same
+correcting dialogue as describe under spell-buffer.  There is no need
+to select the correct buffer first.
+
+* The personal dictionary
+
+During the correcting dialogue, each word the spell program did not
+find is first checked agains the private dictionary.  This is by
+default a file named ~/.mywords.  It is an unsorted file with one word
+per line.  The words in the personal dictionary are considered case
+insensitive; I don't know whether this is a good idea or not.  If new
+words are inserted during the correcting dialogue, the buffer is of
+course marked modified, and should probably be saved.  The functions
+in the posting do not save it automatically.
+
+It is advisable to keep this file fairly short, since otherwise it
+will slow down the correcting dialogue considerably.  This is fairly
+unpleasant, since it is in the middle of a dialogue where the user is
+supposed to think and make decisions, and therefore tends to be fairly
+sensitive for delays.  A larger collection of personal words can most
+often be added to the spelling program (in the case of spell(1), see
+spellin(1) and spellout(1)).
+
+* Dependence of operating system features
+
+We next describe the dependence of the program the spell-interface
+uses.  For a fuller description, the reader is referred to the source
+code. 
+
+** spell
+
+Any reasonable spell-checking program can be used with this spell
+interface.  The only requirement is that it takes a file of words as
+input and produces a file of "misspelled" word as output, with one
+word per line.  If the program is good at filtering out mode-specific
+constructions, the lisp-function can be reduced, thereby speeding up
+the execution.
+
+*** other operating systems (read: VMS)
+
+As far as I am aware of, call-process-region does not work under
+VMS--at least it did not under version 17.  spell-string depends on
+this, and also the other spell-xxx functions WHEN running in
+wait-mode.  If spell-wait is nil and an appropriate spelling checker
+is present, I am almost sure of that spell-region, spell-buffer, and
+correct-spelling will work with no or trivial modification.  Probably
+it would be a good idea to make all asynchronous processes to use the
+same shell window, VMS is not exactly known for its ability to handle
+multiple processes.  (My VMS account, on a VAX 11/785, has a
+subprocess quota of 2 (is it :-( or :-)?).)
+
+Probably you would also like to change spell-directory, cd-string,
+semi-colon, redirection-string, etc also.
+
+** ispell
+
+If ispell is not installed the i-command in the correcting dialogue
+will not work.  Period.  Nothing else depends on it.  For replacing it
+with another close-match generator, see ispell.el or the documentation
+of ispell.  (Sorry that these pointers are somewhat circular.)
+
+*** other operating systems (read: VMS)
+
+Highly non-trivial.
+
+** searches, grep etc
+
+When the s-command is given in the correcting dialogue an operating
+system command is constructed by concatenating
+spell-search-first-string (by default "grep"), the user entered
+string, and spell-search-last-string (by default "/usr/dict/words").
+From this description, it should be obvious how to use other programs
+and dictionaries.  The process runs in a separate buffer.
+
+Or you can have this command to do something entirely different...
+
+*** other operating systems (read: VMS)
+
+Should work with "search", possibly with some qualifiers.  Also, see
+the remark on several processes above.
+
+* Mode-specific clean-up functions
+
+This posting comes with several lisp functions, intended to do a
+mode-dependent clean-up.  In general, there are two possibilities for
+doing this: Using a lisp-function in emacs, or letting the external
+spelling program do it.  For example, at Waterloo there are -l and -t
+options for spell(1), which uses delatex and detex filters instead of
+the default deroff.  These are far from perfect (the lex-programs on
+the Unix TeX distribution tape, right?)  The detex and delatex
+functions provided here are very complete, easily user customizable
+(see below) but slow (possibly even SLOW...).  For a more efficient
+approach, the lisp function should be trimmed down to only what the
+spell program doesn't.  May I ask that if some person checks my detex
+and delatex against the lex-code, he/she would posts the minimal lisp
+functions that do only what the lex program is not handling well.
+
+Feel free to use or not to use the functions presented here.  The list
+spell-options contains the functions and spell commands for different
+modes.  See doc-string.
+
+** detex
+
+detex removes all math constructions including displays.  Then it
+removes comments, font declarations, some comments together with their
+argument (given in the list detex-tex-commands-with-garbage-argument),
+all discretionary hyphens, and finally all remaining TeX commands.
+
+*** customization
+
+The list detex-tex-commands-with-garbage-argument can be changed.  If
+you are using a TeX-dialect with another escape character that "\" and
+other grouping characters than the curly brackets, re-define the
+function define-escape-and-group.  See the doc-strings.
+
+*** limitation
+
+Probably also words with accented characters (of the type \"o) and
+containing macros such as \aa should be junked too.
+
+** delatex
+
+delatex is essentially a superset of detex.  It understands latex
+math-construction, and also the "$$" displays (which are not part of
+official latex).  It also removes all environments found in the list
+detex-latex-garbage-environments.  It uses the list
+detex-latex-commands-with-garbage-argument for determining which
+TeX-commands to junk together with its arguments.
+
+*** customization
+
+Should be obvious.  For example, if you define a macro in LaTeX, say 
+
+\newcommand{\eqnref}[1]{(\ref #1)}
+
+you should probably add "eqnref" to the list
+detex-latex-commands-with-garbage-argument.
+
+** programs
+
+Just to demonstrate the power of mode-specific lisp-functions I hacked
+up the functions only-double-quote-strings and
+only-single-quote-strings, which will junk everything except for
+strings enclosed in double or single quotes respectively.  The
+default list (cooked up fairly randomly) calls
+only-double-quote-strings in the modes emacs-lisp-mode, lisp-mode,
+c-mode; while only-single-quote-strings are called in pascal-mode.
+
+** mail
+
+The list in this posting calls the function kill-mail-header from
+mail-mode.  This kills the header of the mail-buffer up to and
+including the current value of mail-header-separator.
+
+* Customization
+
+How to use other spell-checkers, near-match generators, or search
+programs has already been described.  We only describe some of the
+other user-set-able options.  See the doc-strings!
+
+** spell-options
+
+The list spell-options contains the mode-specific functions and
+filters.  See the doc-string.  Note that it must contain
+fundamental-mode, since this acts as default.
+
+** spell-cautious
+
+After a query-replace, the user is asked if he wants to continue
+(SPACE), redo (-) or enter recursive edit (r).  Putting spell-cautious
+nil will disable this.
+
+** more options
+
+See the source.
+
+* Tips
+
+It is a good idea to run the correction dialogue in a smaller window,
+since Emacs displays the misspelled word in its proper place, thereby
+probably rewriting the current window.  (I did not want to make this
+automatic since there are almost too many bells and whistles already.)
+
+The recursive edit is a very nice feature.  Say for example that you
+have started the correction dialogue in a full screen window, and
+then--in accordance with the previous paragraph--want a smaller.  Do
+r, ^X-2, ^X-2, ESC-^C, will do it for you.
+
+Note that the personal dictionary is a standard editable text-file.
+Notice the warning on large personal dictionaries.  This is not the
+place to keep a large personal dictionary.
+
+The i-option in the dialogue is slow the first time, but subsequent
+calls are blindingly fast.  In general, this is much faster than you
+can edit the word with the e-option.
+
+* Bugs/restrictions/todo/problems/discussion
+
+The limitation in detex should be fixed.  
+
+Should possibly allow a file-specific dictionary, together with the
+one on your main directory.
+
+Slow with large personal dictionary; can it be searched more efficiently?
+
+Search in personal dictionary case insensitive, is this good or bad?
+
+Doesn't always find location when redo.
+
+Since it checks in the private dictionary in the correction phase, the
+message to the user is a little funny in the case where all words
+spell does not like are in the personal word list.
+
+Even if only a word or the region is checked, the query replace takes
+place in the entire buffer.  I think this is good.
+
+spell(1) considers for example "comp.sources.unix" as one (misspelled)
+word.  I consider this as correct behavior.
+
+There should be an "-r" (raw) option in spell(1), which surpassed
+deroff.  When passed this document, deroff turns "\newcommand" into
+"wcommand"... Arrrgh!!
+
+Possibly an explicit exit alternative should be presented in the
+correcting dialogue.
+
+I am not sure whether I like ispell-word's habit to echo words in
+upper-case.
+
+Possibly there should be the alternative scroll-other-window in the
+correcting dialogue.  (However, this can be done by first entering
+recursive search.)  There is a problem with this, namely that the
+function scroll-other-window might signal an error if close to end of
+the buffer, in which case the correcting dialogue is aborted.  This
+must be prevented.
+
+In a previous version, the spell-shell window was made small.  I took
+this feature out because, for example help would later use the same
+window... I have left it out-commented if anyone wants it.
+
+This document should be more carefully written, with a simple
+how-to-use-it guide separated from the more technical information.

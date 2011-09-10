@@ -1,0 +1,181 @@
+Lout-mode for Emacs                            -*- indented-text -*-
+===================
+
+   This file documents lout-mode.el, an Emacs mode for the document
+   processing language Lout. Further information about Lout is
+   available at
+
+                 <URL:http://www.spbu.ru/~uwe/lout/>
+
+
+   Lout-mode provides several useful features to help you type Lout
+   documents:
+
+   * fontification of the Lout source to highlight keywords.
+     (when used in conjunction with font-lock-mode).
+     
+   * compilation of your source code and identification of errors.
+     Typing `C-c C-b' will cause the Lout interpreter to be called on
+     the current file. The interpreter messages are displayed in a
+     special buffer called *Compilation*; by typing C-x ` (next-error)
+     the cursor will be moved to the position of the error or warning
+     issued by Lout. Typing C-x ` will move you to the positions of
+     successive errors.
+
+   * previewing with an external Postscript previewer. Typing `C-c C-v'
+     will invoke a previewer on the Postscript file produced by the
+     Lout interpreter. Unfortunately the most popular previewers
+     (Ghostview and the more recent gv) don't provide any mechanism I
+     know of for remote control; if you recompile your file you have
+     to ask the previewer to reload (generally with Control-R).
+
+   * menus to insert common sequences of Lout commands. The lout-mode
+     menubar provides several useful commands for inserting different
+     types of lists, for the various special symbols Lout provides,
+     for changing font, etc. It also provides an alternative form of
+     access to the keyboard shortcuts (use `C-h m' for a list of the
+     keybindings provided in lout-mode).
+
+   * symbol completion. Typing `M-TAB' (or `ESC-TAB' if your window
+     manager traps M-TAB) calls lout-complete-symbol, which tries to
+     complete the word just before the cursor. If the word starts with
+     a '@', it will try to complete it from a list of Lout keywords,
+     and provide a list of completions if there are several possible
+     completions. Otherwise it calls ispell-complete-word, which looks
+     in your system's dictionary for a completion for the word.
+
+   * imenu support. By saying `M-x imenu' you will be presented with
+     a buffer containing the different chapters, sections and
+     subsections in the document. Selecting one of these will position
+     the cursor on it. With `M-x imenu-add-to-menubar' you can add a
+     pulldown menu which contains the same information (imenu is only
+     available on GNU Emacs).
+
+   * outline minor mode. You can use lout-mode in conjunction with
+     outline-minor-mode to help you navigate through large documents.
+     The versions of outline.el distributed with older versions of
+     Emacs and XEmacs are buggy; in GNU Emacs prior to 20.0 you can
+     (require 'noutline) to get a corrected version.
+
+   * faces support. Lout-mode is compatible with the customary Emacs
+     face commands. For example, typing `M-g b' will insert `@B { }'
+     and position the cursor between the braces. The face commands are
+     also available through the Lout-mode menubar.
+
+
+   Compatibility with Ispell:
+   
+   Ispell is a spelling checker available under the GNU Public
+   Licence. It includes built-in support for documents marked up with
+   LaTeX or nroff commands, but nothing for Lout, and the '@' present
+   in Lout keywords upsets it. The best solution I have is to insert
+   all these keywords into your private dictionary; if anyone has a
+   better idea, please tell.
+
+
+   
+Customization ===========================================================
+
+   You can find a list of user-modifiable variables by typing (once
+   Lout-mode is loaded; see below) `C-h v lout- TAB'. The following
+   variables have to be set to values appropriate to your local setup:
+
+   * lout-run-command (default "lout") is the name of the Lout
+     interpreter on your system.
+
+   * lout-run-safely (default t) if non nil, the Lout interpreter will
+     be called with the '-S' switch to put it in safe mode, disabling
+     any potentially malicious system calls embedded in the document.
+
+   * lout-print-command (default "lpx -Fps") is the way you print
+     Postscript files on your system. The name of the Postscript file
+     will be appended to this command. If this is a function rather
+     than a string, it will be called with the Postscript filename as
+     an argument, and should return a string which, when passed to a
+     subshell, will result in the file being printed. Here is an
+     example function:
+
+        (defun my-duplex-print (filename)
+           (format "duplex %s | lpr -P dingo" filename))
+
+        (setq lout-print-command #'my-duplex-print)
+           
+   * lout-view-command (default "gv -safer") is the way you preview
+     Postscript files on your sytem. The name of the Postscript file
+     will be appended to this command.
+
+   * lout-quiet-save (default nil) If non nil, you will be prompted to
+     save the buffer before compiling the document; otherwise the
+     buffer will be saved automatically.
+
+
+   These variables can be changed in your .emacs initialisation file.
+   For example, if you want to be able to use @Filter, do something
+   like this:
+
+       (add-hook 'lout-hook
+          (function
+             (lambda ()
+                (setq lout-run-safely nil))))
+
+   
+   To redefine a key binding in lout-mode use something like :
+
+        (define-key lout-mode-map "\C-cC-k" 'kill-buffer)
+
+
+   Lout-mode uses compilation mode, which can be customized by adding
+   to compilation-mode-hook:
+
+       (add-hook 'compilation-mode-hook
+         (function
+          (lambda ()
+            (font-lock-mode)
+            (setq compilation-window-height 15)
+            (setq compilation-ask-about-save nil)
+            (setq compilation-read-command nil))))
+
+
+        
+Installation ==========================================================
+
+   To use this package you need to copy the file lout-mode.el to your
+   emacs site-lisp directory (often /usr/lib/emacs/site-lisp/), or to
+   some other area in your load path. It will run better if you
+   byte-compile it to produce lout-mode.elc. Then add the following
+   lines to your ~/.emacs initialisation file:
+
+   (autoload 'lout-mode "lout-mode" "Major mode for editing Lout text" t)
+   (setq auto-mode-alist
+      (append '(("\\.lout\\'" . lout-mode)) auto-mode-alist))
+
+
+    I have tested Lout-mode on GNU Emacs versions 19.34 and 20.2, and
+    XEmacs 20.4 on Linux and Solaris. I don't have access to Emacsen
+    running under non-Unixy systems; some of the assumptions made
+    about filenames and process handling may cause problems. If anyone
+    can provide patches I will be glad to incorporate them in future
+    versions.
+
+    
+Availability ==========================================================
+
+   Lout-mode is Copyright (C) 1997-9 Eric Marsden and is distributed
+   free of charge under the terms of the GNU General Public Licence.
+   It comes with no warranty, though I hope you will find it useful.
+
+   The most recent version of lout-mode should be available from
+
+        <URL:http://www.chez.com/emarsden/lout/>
+
+   Thanks to Alexandre Devaure <adevaure@mail.dotcom.fr>, James Ramsey
+   <jjramsey_6x9eq42@yahoo.com> and <cgvadim@swansea.ac.uk>) for
+   bugfixes and improvements. Please send bug reports, suggestions and
+   questions to <emarsden@mail.dotcom.fr>.
+
+   
+
+C-u 1000 M-x hail-emacs !
+
+
+Eric Marsden, 1999-04-21

@@ -1,0 +1,911 @@
+Info file: math-mode,    -*-Text-*-
+produced by texinfo-format-buffer
+from file: math-mode.texinfo
+
+
+
+
+File: math-mode  Node: Top, Prev: (dir), Up: (dir), Next: Math-mode
+
+
+This documents version 1.0 of math-mode.
+
+Math-mode is a GNU Emacs major mode that serves as an interface to
+Mathematica.  It has commands to send expressions to Mathematica for
+evaluation.  Math-mode is an outline editor as well, similar to the
+Macintosh interface to Mathematica.  The buffer that one edits in
+math-mode is called a "notebook".  Mathematica notebooks created on the
+Macintosh can be translated automatically into Emacs math-mode
+notebooks, and vice versa.
+
+This document assumes familiarity with GNU Emacs terminology.  You
+should first become familiar with it by reading from the beginning of
+the GNU Emacs Manual and trying the GNU Emacs tutorial (`C-h t').
+
+This document also assumes familiarity with Mathematica concepts.
+
+* Menu:
+
+* Math-mode::	
+* Tutorial::	
+* Installing math-mode::	
+* Setting up math-mode::	
+* Notebook Structure::	
+
+* Using math-mode::	
+* Starting math-mode::  
+* Commands to Move Between Cells.::     
+* Commands to Modify Cell Attributes.:: 
+* Commands to Create and Delete cells.::        
+* Commands to Communicate with Mathematica.::   
+* Indentation:: 
+* Evaluation::  
+* Math-mode syntax::    
+* Variables::   
+
+
+File: math-mode  Node: Math-mode, Up: Top, Next: Using math-mode
+
+Math-mode
+*********
+
+* Menu:
+
+* Tutorial::    
+* Installing math-mode::        
+* Setting up math-mode::        
+* Notebook Structure::  
+
+
+File: math-mode  Node: Tutorial, Up: Math-mode, Next: Installing math-mode
+
+Tutorial
+========
+
+First, start GNU Emacs and arrange that the math-mode library is loaded
+(see following sections if this is confusing).  Now execute `math' with
+`M-x `math''.  A buffer called `math' is created and the point should be
+positioned after the first cell label (`->').  At this point, you can
+simply type in an expression that you wish Mathematica to evaluate.
+When you are ready to evaluate the expression, enter `C-j' or `LFD'.
+Math-mode will then insert cells that represent the result of the
+evaluation.  In the example below, the expression `2 + 2' is entered.
+The result and another input prompt are inserted.
+
+     In[1]:= 2 + 2
+
+     Out[1]= 4
+
+     In[2]:= 
+
+Although the above example does not show it, the input and output cells
+are grouped with the input cell as the head of the group.  You can see
+the group structure by using the command `C-cC-l'.  Do this now.  Cell
+names (e.g., `In[1]:= ') will be preceded by either a start of group
+indicator of the form `=>' or a regular cell indicator of the form `->'.
+The `>' is repeated to correspond to the depth of the cell in the group
+hierarchy.
+
+In the following example, the group structure is displayed (by using the
+command `C-cC-l'), and the expressions listed on input cells 2 and 3 are
+entered.  Notice that *messages* that result from the evaluation also
+occupy cells in the group.
+
+     => In[1]:= 2 + 2
+
+     ->> Out[1]= 4
+
+     => In[2]:= f::overflow = "Factorial too large."
+
+     ->> Out[2]= Factorial too large.
+
+     -> In[3]:= f[x_Integer] :=
+                  If[x>10, Message[f::overflow]; Infinity, x!]
+
+     => In[3]:= f[20]
+
+     ->> f::overflow: Factorial too large.
+
+     ->> Out[3]= Infinity
+
+     -> In[4]:= 
+
+If you follow this example, you should be positioned after the cell
+labeled `In[4]'.  Move back up to `In[3]' (notice it has the same label
+as the previous input cell - this is a Mathematica bug) by using the
+command `C-cC-b' then hide the group contents with `C-cC-c'.  Show the
+contents again with another `C-cC-c'.  Then move to the `f::overflow'
+cell with `C-cC-n' and hide that cell with `C-cC-c'.  Notice that
+`f::overflow' is part of the label that remains displayed.
+
+Next move back to the cell labeled `In[3]' with `C-cC-u' and change `20'
+to `5'.  Reevaluate this cell with `C-j' (you may be positioned anywhere
+within the cell) and notice that the previous output cells in the group
+are replaced with the result of evaluating this new expression as shown
+in the following.
+
+     => In[4]:= f[5]
+
+     ->> Out[4]= 120
+
+     -> In[5]:= 
+
+
+
+File: math-mode  Node: Installing math-mode, Prev: Tutorial, Up: Math-mode, Next: Setting up math-mode
+
+Installing math-mode
+====================
+
+The math-mode code actually consists of two Emacs Lisp files and three
+executable files.  The Emacs Lisp files, `math-mode.el' and
+`mathtalk.el', should be installed and byte-compiled in a directory that
+is listed in Emacs users' `load-path' variable.  The executable files,
+`emacsfrontend', `macnb2nbl', and `mathremote.emacs', should be
+installed in a directory that is listed in the users' shell environment
+variable PATH.
+
+Note: The Emacs Lisp code should be byte-compiled (by using
+`byte-recompile-directory').  It is important to byte-compile
+`math-mode.el' because the code makes heavy use of macros and would be
+very slow without byte-compilation.
+
+
+
+File: math-mode  Node: Setting up math-mode, Prev: Installing math-mode, Up: Math-mode, Next: Notebook Structure
+
+Setting up math-mode
+====================
+
+To use math-mode conveniently, include the following in your .emacs
+file:
+
+     (setq load-path (cons <math-mode.el directory>
+                       load-path))
+
+     (setq auto-mode-alist (append
+                            (list
+                             (cons "\\.m$" 'math-mode)  ; packages
+                             (cons "\\.nb$" 'math-mode) ; mac notebooks
+                             (cons "\\.nbl$" 'math-mode)) ; math-mode notebooks
+                             auto-mode-alist))
+
+     (autoload 'math "math-mode" "Create a new math-mode buffer." t)
+     (autoload 'math-mode "math-mode" "Start up math-mode for a file.")
+
+You can also include a `math-mode-hook' such as the following:
+
+     (setq math-mode-hook
+           (function (lambda ()
+                       (setq math-show-debug t)
+                       (define-key math-mode-map "\C-c\C-g" 'math-group-region)
+                       ;; more key bindings or other variable settings
+                       )))
+
+
+
+
+File: math-mode  Node: Notebook Structure, Prev: Setting up math-mode, Up: Math-mode
+
+Notebook Structure
+==================
+
+Each component of a math-mode notebook is called a "cell".  Two or more
+cells may be grouped hierarchically.  The first cell in a "group" is
+called the start of the group or the "head" cell and all other cells are
+called "group members".  Note that each cell can be the start of only
+one group, but a cell that does not start a group may be the last cell
+of several groups.  Here is an example of a group with another group
+nested inside it.
+
+     => Start of outer group
+
+     ->> first member of outer group
+
+     =>> Start of inner group
+
+     ->>> first member of inner group and end of both groups
+
+     -> cell after groups
+
+In addition to the group structure, each cell has a number of other
+"attributes" associated with it that constrain which commands can be
+applied to the cell and what they do.  These attributes include whether
+a cell is displayed, whether it may be modified, and whether it may be
+evaluated.
+
+* Menu:
+
+* Cell Labels:: 
+* Open and Closed Cells::       
+* The Current Cell::    
+
+
+
+File: math-mode  Node: Cell Labels, Up: Notebook Structure, Next: Open and Closed Cells
+
+Cell Labels
+-----------
+
+Every cell has a "label".  If a name for the cell is provided by
+Mathematica, such as an input prompt or output prompt, that is used as
+the label.  Otherwise, a default label is created that indicates whether
+a cell is the start of a group and how deeply nested the cell is in the
+group structure.
+
+The default label for a start of group cell is of the form `=>'.  Other
+cells have a default label of the form `->'. The `>' is repeated to
+indicate the depth the cell is at.  Look at the example above again to
+see how the cells are labeled.  Notice that the members of a group are
+one level deeper than the starting cell.
+
+Warning: You should never edit the cell label directly, especially the
+second character of the label (where a mark points).  Math-mode attempts
+to prevent user modification of cell labels by watching most text
+insertions and deletions.  But replacements and some other commands are
+not similarly watched.  If you accidently modify the text of a label,
+however, you should be able to safely undo the action, provided you do
+it before using a math-mode command.  Since the undo command can undo
+changes to the text of labels, legitimate or not, the undo record is
+cleared after each math-mode command that modifies cell labels.
+
+Another Warning: Also, don't put text at the beginning of any line that
+looks like a cell label because math-mode will become confused by the
+apparent existence of a cell that it doesn't know about.  One way this
+might occur is if you copy a text region that includes cell labels and
+yank it into the contents of a cell.
+
+
+
+File: math-mode  Node: Open and Closed Cells, Prev: Cell Labels, Up: Notebook Structure, Next: The Current Cell
+
+Open and Closed Cells
+---------------------
+
+Since notebooks may be become rather large and complex, it is useful to
+be able to hide portions of it.  Each cell may be open or closed.  An
+"open" cell (that is not the start of a group) is displayed, whereas a
+"closed" cell is hidden except for its label.  The text that is hidden
+is replaced by the string `...'.  (Warning: The `...' characters
+themselves may not be edited, but the text that they represent *may* be
+edited, so be careful around `...'.)
+
+An open group is displayed by showing the start of the group and showing
+or hiding each of its group members depending on whether each is open or
+closed.  A closed group is displayed by also showing the cell that
+starts the group, but all of the group members are replaced with a
+single `...' regardless of whether they are open or closed.  The
+following example shows the same group as the earlier example but with
+the first member of the outer group closed and the inner group also
+closed.
+
+     => Start of outer group
+
+     ->>  ...
+
+     =>> Start of inner group
+      ...
+
+     -> cell after groups
+
+
+
+File: math-mode  Node: The Current Cell, Prev: Open and Closed Cells, Up: Notebook Structure
+
+The Current Cell
+----------------
+
+The "current cell" is the cell that contains the point.  Some commands
+behave differently depending on whether the current cell is the start of
+a group or a normal cell.  The boundaries of a cell extend from the
+beginning of its label to just before the beginning of the next label.
+
+If the point is positioned within a cell that is not the start of a
+group, then the command applies to just that cell.  If the point is
+positioned within a cell that *is* the start of a group, then the
+command applies to the whole group.  If the point is positioned within a
+closed group, the cell that starts the closed group is the current cell
+rather than whatever hidden cell the point may actually be positioned
+within.  (Currently, no editing is allowed *before* the first cell.)
+
+
+
+File: math-mode  Node: Using math-mode, Prev: Math-mode, Up: Top
+
+Using math-mode
+***************
+
+
+Several interactive commands are provided in math-mode, most with
+default key bindings.  The full set of commands described here is also
+displayed with the `describe-mode' command (`C-h m').
+
+In the following sections, commands are described that start up
+math-mode, create and modify cells, move between cells, and interact
+with Mathematica.
+
+* Menu:
+
+* Starting math-mode::  
+* Commands to Move Between Cells.::     
+* Commands to Modify Cell Attributes.:: 
+* Commands to Create and Delete cells.::        
+* Commands to Communicate with Mathematica.::   
+* Indentation:: 
+* Evaluation::  
+* Math-mode syntax::    
+* Variables::   
+
+
+
+File: math-mode  Node: Starting math-mode, Up: Using math-mode, Next: Commands to Move Between Cells.
+
+Starting math-mode
+==================
+
+Once you have set up math-mode as described in the previous chapter
+(*Note Setting up math-mode::), execute ``M-x' `math'' to start up
+math-mode in a buffer called `math'.  Subsequent calls to `math' will
+find that same buffer.  This buffer does not have a file associated with
+it, so when you quit from emacs, you will not be asked to save it.
+
+You can also start up math-mode simply by visiting a file that has a
+`.m', `.nb' or `.nbl' suffix.  Whichever one you initially visit, if
+there is a newer file with the same basename that has a different
+suffix, you will be asked if you would rather use the newer file.
+
+If you edit a file with `.m' suffix, it is assumed that the file is a
+Mathematica package file that should be converted; this is done for you
+and a buffer for editing the corresponding `.nbl' file is created for
+you.  Similarly, if you edit a file with `.nb' suffix, it is assumed
+that the file is a Macintosh notebook that should be converted; this is
+done for you (using `macnb2nbl') and a buffer for editing the `.nbl'
+file is created for you.  Because of this conversion, you never actually
+edit a `.m' or `.nb' file.  No matter which of the three kinds of files
+you initially edit, you will instead edit a file with `.nbl' suffix.
+
+Notice, you never call the function `math-mode' yourself, unlike other
+major modes.  A math-mode notebook file (one with `.nbl' suffix)
+contains extra information at the end of the file which is used to
+remember the structure of the notebook and attributes of cells.  This
+extra information must be processed and striped off; this is done by
+math-mode when you first visit the file.
+
+Warning: Never directly edit a math-mode file (one that has `.nbl'
+suffix) with another editor or try to defeat the math-mode conversion
+because the position of every character in the file is critical.
+Although it is a text file, treat it as a binary file.  However, you may
+safely edit a `.m' or `.nb' file as plain text.
+
+Only one Mathematica process can be associated with each Emacs process.
+But more than one math-mode buffer may be active at a time.  Mathematica
+does not know which buffer you are editing, so cell numbers are provided
+consecutively across all buffers.
+
+The following commands are associated with starting up math-mode, saving
+notebooks, and terminating Mathematica.
+
+`M-x `math''
+     Start up math-mode in a buffer without a file.  Currently, only one
+     of these buffers is supported.  If you call `math' again, you will
+     be popped to that buffer.  However, if you rename this buffer, you
+     can start another math buffer with another call to `math'.
+
+`C-x C-f'
+     Find a file (with this or another Emacs find-file command) that has
+     `.m', `.nb' or `.nbl' suffix.  Any necessary conversion will be
+     done and math-mode will be started on the buffer.
+
+`C-x C-s'
+     Save a buffer (with this or other Emacs save command) that is in
+     math-mode.  The file is saved in math-mode notebook format.  Use
+     `C-c W' to save the file in Macintosh notebook format.
+
+`C-c M'
+     `write-math-mac-notebook' saves a buffer that is in math-mode as a
+     Macintosh notebook file with a `.nb' suffix.  This file may be
+     transfered to a Macintosh for use there, or read into Mathematica
+     using the `<<' command.
+
+`C-c P'
+     `write-math-package' saves a buffer that is in math-mode as a
+     Mathematica package format file with a `.m' suffix.  Every cell
+     that is not an input cell is enclosed in comments (`(* ... *)').
+
+`C-c K'
+     `kill-math' kills the Mathematica process.  You will be asked if
+     you really wish to do this.  Any math-mode buffers will remain
+     active, and any evaluation of Mathematica expressions will cause a
+     new Mathematica process to start up automatically.  It is not
+     necessary to kill Mathematica before terminating your Emacs
+     session.  But it may be convenient if you wish to start up a new
+     Mathematica process from scratch.
+
+
+
+
+File: math-mode  Node: Commands to Move Between Cells., Prev: Starting math-mode, Up: Using math-mode, Next: Commands to Modify Cell Attributes.
+
+Commands to Move Between Cells.
+===============================
+
+Each of the movement commands first determines which cell the point is
+positioned within.  *Note The Current Cell:: for a description of how
+the current cell is determined.  The movement commands then move
+relative to the current cell.
+
+`C-c C-n'
+     `math-next-cell' moves to the next cell irrespective of the group
+     structure.  If the next cell is not visible (hidden) then try to
+     move to the forward cell.
+
+`C-c C-p'
+     `math-previous-cell' moves to the previous cell irrespective of the
+     group structure.
+
+`C-c C-u'
+     `math-parent-cell' moves to the parent cell.  Every cell has a
+     parent except top level cells.
+
+`C-c C-f'
+     `math-forward-cell' moves to the next cell at the same level as the
+     current cell and within the same group.  The last cell in a group
+     has no forward-cell.
+
+`C-c C-b'
+     `math-backward-cell' moves to the previous cell at the same level
+     as the current cell and within the same group.  The first cell in a
+     group after the startgroup cell has no backward-cell.
+
+
+
+
+
+
+File: math-mode  Node: Commands to Modify Cell Attributes., Prev: Commands to Move Between Cells., Up: Using math-mode, Next: Commands to Create and Delete cells.
+
+Commands to Modify Cell Attributes.
+===================================
+
+The following commands modify the attributes of cells.  Some of the
+attributes show up visibly in the display of the cells, such as whether
+a cell is the start of a group, and whether it is open or closed.  Other
+attributes are hidden.
+
+
+`C-c C-c'
+     `math-toggle-close-cell' toggles whether the current cell or group
+     is open or closed.  If the current cell is closed, it will be
+     opened, and vice versa.  *Note Notebook Structure:: for a
+     description of how closed cells and groups are displayed.
+
+`C-c A'
+     `math-toggle-active' asks whether to toggle active attribute of
+     current cell.  This attribute determines whether a cell can be
+     evaluated.  Ordinarily, cells containing text meant to be evaluated
+     as Mathematica expressions are active, and cells containing
+     explanatory text or titles are inactive.  Output from Mathematica
+     is usually inactive.
+
+`C-c I'
+     `math-toggle-initialization' asks whether to toggle the
+     initialization attribute of the current cell.  Ordinarily, when you
+     visit a notebook, math-mode asks if you want to automatically
+     evaluate all the initialization cells.  If you want the initial
+     evaluation to occur without asking, set the variable
+     `math-eval-init-cells' to `t'.
+        
+     When you use the Mathematica command `<<filename' to read in and
+     evaluate a notebook file, only cells marked as active
+     initialization cells are evaluated.
+
+`C-c F'
+     `math-set-style' asks for the style of the current cell.  Only
+     cells with style `input' are indented automatically by math-mode.
+     The input cells inserted automatically after an evaluation have the
+     `input' style.  Many more style attributes are possible than are
+     useful.  This is to support attributes used in the Macintosh
+     interface to Mathematica.
+
+`C-c U'
+     `math-toggle-autoActive' asks whether to toggle autoActive
+     attribute of current cell.  The current cell must be an active cell
+     that is the start of a group.  This attribute determines whether a
+     cell is automatically evaluated everytime some cell in its group is
+     evaluated.  It is only evaluted once for evaluation pass.  This
+     might be useful to perform some initialization before a cell is
+     evaluated.
+
+`C-c C-o'
+     `math-toggle-cell-output' toggles whether the current cell displays
+     the input or output form.  By default, the output form of an
+     evaluation result is used.  The input form may be edited and
+     evaluated.
+
+`C-c C-l'
+     `math-toggle-structure-labels' toggles whether the group structure
+     is shown in cell labels, even for cells that have a name provided
+     by Mathematica.  When this command is used, all cell labels will be
+     updated.  *Note Notebook Structure::for a description of how the
+     group structure is displayed.
+
+`C-c g'
+     `math-group-region' groups the cells within the region between mark
+     and point.  The region is expanded so that all cells that are
+     within the enclosing group common between mark and point are
+     grouped.  The first cell in the expanded region becomes the group
+     head, if it is not already a group head.  But if the first cell is
+     already a group head, a new cell is inserted before that to serve
+     as the group head.
+
+`C-c G'
+     `math-ungroup-current-group' ungroups the cells of the smallest
+     group that contains point.  As a result, the head cell of that
+     group and all cells at the top level become group members of the
+     parent of the group.
+
+`C-c C-s'
+     `math-split-group' splits the current group by dropping the current
+     cell and all following cells in the group to the next lower level.
+     If you split off the last remaining member of a group, the head of
+     the group becomes a normal cell.  You cannot split at the top
+     level.
+
+`C-c C-j'
+     `math-join-cell' joins the current cell with the previous group, or
+     if the previous cell is not the end of a group, create a group from
+     the previous cell and the current cell.  Note that cells following
+     the current cell are not included in the join.  You cannot join
+     with a previous cell that is the start of a group.
+
+`C-c C-@'
+     `math-mark-current-cell' puts mark at the end of the current cell
+     contents and point at the beginning.  Use this followed by `M-w'
+     (`copy-region-as-kill') to later yank the text back with `C-y'.
+     Your terminal may send `C-@' for `C-SHIFT'.
+
+`C-c c'
+     `math-copy-backward-cell' inserts a copy of the contents of the
+     previous cell at the same level as this cell into the current cell.
+     This is often the previous input cell.
+
+
+
+
+File: math-mode  Node: Commands to Create and Delete cells., Prev: Commands to Modify Cell Attributes., Up: Using math-mode, Next: Commands to Communicate with Mathematica.
+
+Commands to Create and Delete cells.
+====================================
+
+The following commands that create or delete cells.  In addition,
+commands that evaluate cells, described in the next section, use these
+commands to create or delete cells.
+
+
+`C-c C-i'
+     `math-insert-new-text-cell' creates and inserts a text cell after
+     the cell at point.  If you insert after the head cell in a group,
+     the cell is inserted before the first member of the group - and it
+     then becomes the new first member of the group.  If you insert
+     after the last cell in a group, the new cell becomes the new last
+     cell of the group.  (Use `C-c C-s' to split this cell off the
+     group.)  With prefix argument, insert before the current cell
+     instead of after.  This command is not used often if you simply
+     evaluate cells in succession since each evaluation creates a new
+     input cell.
+
+`C-c C-k'
+     `math-kill-current-cell' kills the current cell or group.  The
+     killed cell or group of cells is removed from the notebook and may
+     be yanked back in the same place or a different place with
+     `math-yank-killed-cells'.  If you kill the head cell of a group,
+     the whole group is killed.  If you kill the last remaining member
+     of a group, the head cell of the group becomes a normal cell.
+
+`C-c C-w'
+     `math-set-current-cell-as-kill' does not kill a cell, but allows
+     you to yank a copy of it somewhere else.
+
+`C-c C-y'
+     `math-yank-killed-cells' yanks the last killed cell or group as an
+     insertion before or after the current cell.  See
+     `math-insert-new-text-cell' for a description of how insertions are
+     done. With prefix argument, insert before.  An implementation
+     restriction is that killed cells can only be yanked once.  Thus, no
+     way is provided to duplicate cells other than by copying the text
+     of cell contents.
+
+
+
+
+File: math-mode  Node: Commands to Communicate with Mathematica., Prev: Commands to Create and Delete cells., Up: Using math-mode, Next: Indentation
+
+Commands to Communicate with Mathematica.
+=========================================
+
+`C-j'
+     (`math-eval-current-cell') Evaluate the current cell by sending it
+     to Mathematica.  Any `autoActive' cells are also evaluated.  For
+     each evaluated cell, the result of the evaluation is inserted
+     following the cell and the input and all output cells are grouped.
+     If the input cell was already the start of a group, then all
+     following output cells of that group are replaced by the evaluation
+     results.  Several other things can happen while Mathematica is
+     evaluating expressions such as requests for input, and interrupt
+     and debug modes.  These are described below (*Note Evaluation::).
+
+`C-c c'
+     (`math-complete-symbol') Perform completion on the symbol preceding
+     point.  That symbol is sent to Mathematica where it is compared
+     against all symbols that are currently defined.  If there is only
+     one possible extension of the symbol, even if it does not complete
+     the symbol, then that extension is applied by inserting the
+     additional characters.  If there is more than one possible
+     extension, then all possible completion symbols are temporarily
+     displayed in a *Completions* buffer.
+
+
+
+
+File: math-mode  Node: Indentation, Prev: Commands to Communicate with Mathematica., Up: Using math-mode, Next: Evaluation
+
+Indentation
+===========
+
+When the following indenting commands are used within cells that use the
+input font (as active cells do), context sensative indenting is
+performed.  In other cells, `C-m' merely starts a new line and `TAB'
+inserts a tab.
+
+The indenting philosophy followed by math-mode, as well as most other
+Emacs major modes that do indenting, is that the user should be allowed
+to break lines wherever desired, but each broken line may be
+automatically indented relative to previous lines.
+
+A line that is a continuation of an expression is indented two columns
+past the start of the expression.  A line that is preceded by an
+expression ending with `;' is indented to the start of the first
+expression in the semi-colon separate list plus two (not yet!!).  A line
+that is preceded by an expression ending with `,' is indented to the
+start of the first expression in the comma separated list, unless it is
+a `[]' list.
+
+Comma separated lists within square brackets are handled specially
+because another indenting style is desirable for this common case.  For
+most such lists, each top-level expression in the list is indented two
+columns past the start of the head of the list (the name before the
+square brackets).
+
+The head of the list may be recognized as the name of a contruct with
+special indenting requirements.  For such a name, the Emacs Lisp symbol
+with the same name will have a `math-indent-hook' property in its
+property list with the number of distinguished expressions.  Each
+expression in the list numbered less than or equal to this number of
+distinguished expressions (starting with 1) is indented four columns
+past the start of the head instead.  The rest are indented two columns
+past the start of the head.  This is similar to Lisp style indenting in
+Emacs.
+
+     -> Median[list_List] :=
+          Block[{s1,len},
+            len = Length[list];
+              s1 = Sort[list];
+            If[OddQ[Length[s1]],
+                s1[[len/2]],
+              (s1[[len/2]]
+                 + s1[[len/2+1]]) / 2
+                ]]
+
+Mathematica comments are indented to the same column as the next
+non-comment line would be.  An exception is if the comment starts with
+an extra `*'; in this case the comment is shifted to the beginning of
+line.
+
+`C-m'
+     `math-newline-and-indent' breaks the line and indents the remainder
+     of the line as appropriate.
+
+`\t'
+     `math-maybe-indent-command' reindents the current line, no matter
+     where the point is in the line.
+
+`M-C-q'
+     `math-indent-exp' reindents every line of the expression starting
+     on the current line relative to this line.  Use TAB first to ensure
+     that the first line is indented properly.
+
+
+
+
+File: math-mode  Node: Evaluation, Prev: Indentation, Up: Using math-mode, Next: Math-mode syntax
+
+Evaluation
+==========
+
+When Mathematica is evaluating expressions, it may evaluate one of the
+functions that cause special actions.  These functions are Input,
+InputString, and Debug.  You may also interrupt the evaluation in
+progress with the `C-g' command.  The interaction that occurs for each
+of these is described in the following sections.
+
+* Menu:
+
+* Input::       
+* Debug::       
+* Interrupts::  
+
+
+File: math-mode  Node: Input, Up: Evaluation, Next: Debug
+
+Input
+-----
+
+When either the Input or InputString function is evaluated by
+Mathematica, you are requested to enter an expression or string in the
+minibuffer.  You can simply type in the expression, or switch to another
+buffer to copy the desired string and switch back to yank it in.
+Warning: Be careful while visiting other buffers not to exit to the
+top-level of Emacs since this will cause the input request to be
+aborted.  (This could happen, for example, by entering the debugger and
+using the "q" command to quit debugging and return to the top-level.)
+
+If the expression that you enter in response to the Input function call
+contains a syntax error, a message to that effect will be flashed for
+one second and the input request is repeated with the erroneous text as
+the initial value of your input.
+
+
+
+File: math-mode  Node: Debug, Prev: Input, Up: Evaluation, Next: Interrupts
+
+Debug
+-----
+
+When the Debug function is evaluated by Mathematica, the first argument
+in the Debug call is displayed in a buffer and a menu of choices appears
+in the minibuffer.  The choices are Step, Next, Continue, Finish, and
+Abort.  The meanings of these are described in the Mathematica book.
+You should enter the first letter of one of the choices in lower case.
+When Mathematica receives your response, if another expression is to be
+displayed, it is appended to the previous display.  While in the Debug
+menu, you are not permitted to do any other editing.
+
+
+
+File: math-mode  Node: Interrupts, Prev: Debug, Up: Evaluation
+
+Interrupts
+----------
+
+While Mathematica is evaluating something, the message "Waiting for
+Mathematica..." will appear in the minibuffer.  You may interrupt the
+evaluation by entering `C-g' (or whatever your `quit-char' is).  A menu
+of choices appears in the minibuffer.  The choices are Abort, Continue,
+One-step, or Quit.  As for Debug, you should enter the first letter of
+one of these choices.
+
+Abort will abort the evaluation immediately, but any subsequent
+evaluations will still be started (is this a bug??).  Continue will
+continue the evaluation as if the interrupt had not occurred.  For
+One-step, the next expression to be evaluated is displayed in a buffer
+called `*math-output*' and then the menu of choices will be displayed
+again.  Subsequent One-step output will be appended to this buffer.  For
+Quit, you will be asked if you want to quit from Mathematica entirely.
+This does not quit from the Emacs session, however.
+
+
+
+File: math-mode  Node: Math-mode syntax, Prev: Evaluation, Up: Using math-mode, Next: Variables
+
+Math-mode syntax
+================
+
+All characters except those listed below are symbol characters.
+
+space tab and newline
+     are whitespace
+
+`[' 
+     matches `]'
+
+`{' 
+     matches `}'
+
+`(' 
+     matches `)' and starts a comment
+
+`)' 
+     matches `(' and ends a comment
+
+`*'
+     is punctuation and is part of a comment start or end
+
+`+ - = < > | ' , . ; : ? @ ^ &'
+     are punctuation characters
+
+`"' 
+     is a quote character
+
+`~'
+     is a symbol character
+
+`` _ # $ %'
+     are prefix characters
+
+`\'
+     is an escape character within strings, but is ignored unless
+     followed by b, e, f, n, r, t, or three octal digits.
+
+
+
+
+File: math-mode  Node: Variables, Prev: Math-mode syntax, Up: Using math-mode
+
+Variables
+=========
+
+Several variables and constants are provided for customization.
+
+
+`math-path'
+     The absolute or relative path to the mathremote.emacs shell script
+     that runs Mathematica via Mathtalk.  Set it in your
+     `math-mode-hook'.  (This constant will be changed it to a var.)
+     Default is `"mathremote.emacs"'.
+
+`math-macnb2nbl'
+     This constant holds the name of the program to convert macintosh
+     notebooks to nbl form.  Default is `"macnb2nbl"'.
+
+`math-eval-init-cells'
+     The value is `nil' if math-mode should never evaluate
+     initialization cells; `t' if it should always evaluate without
+     asking.  Otherwise ask.  Default is `ask'.
+
+`math-use-structure-labels'
+     If non-`nil', then include in the label the cell structure
+     indicator.  Default is `nil'.
+
+`math-mode-map'
+     This is the keymap used by math-mode.  You can set entries with
+     `(define-key math-mode-map "key" 'function)'.
+
+`math-mode-syntax-table'
+     This is the syntax table used by math-mode.  There is probably no
+     need for you to modify it.
+
+`math-buffer-name'
+     This constant holds the name of the buffer for doing math in when
+     not associated with a file.  Default is "math".
+
+`math-show-debug '
+     If non-`nil', show the communication between math-mode and
+     Mathematica.  Default is `nil'.
+
+
+
+Tag table:
+Node: Top105
+Node: Math-mode1341
+Node: Tutorial1548
+Node: Installing math-mode4183
+Node: Setting up math-mode4990
+Node: Notebook Structure6141
+Node: Cell Labels7277
+Node: Open and Closed Cells8966
+Node: The Current Cell10192
+Node: Using math-mode11095
+Node: Starting math-mode11833
+Node: Commands to Move Between Cells.15946
+Node: Commands to Modify Cell Attributes.17199
+Node: Commands to Create and Delete cells.22105
+Node: Commands to Communicate with Mathematica.24181
+Node: Indentation25590
+Node: Evaluation28414
+Node: Input28923
+Node: Debug29793
+Node: Interrupts30438
+Node: Math-mode syntax31441
+Node: Variables32178
+
+End tag table

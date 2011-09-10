@@ -1,0 +1,2014 @@
+Info file: mew.jis.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `mew.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+
+INFO-DIR-SECTION Message User Agent
+START-INFO-DIR-ENTRY
+* Mew-J: (mew.jis.info).     Messaging in the Emacs World.
+END-INFO-DIR-ENTRY
+
+
+
+
+
+
+
+File: mew.jis.info, Node: review mark, Next: unmark, Prev: multi mark, Up: Marks
+
+復習 `*'
+========
+
+後から読み返したいメッセージには、`*' で `*' マークを付けて下さい。また、
+選択コマンド `?' を使うと、入力した条件にマッチするメッセージに`*' マー
+クが付きます(詳しくは、*Note Pick:: を参照して下さい)。`N' や `P' で `*' 
+マークの付いたメッセージに移動し表示できます。
+
+以下に、`*' に関連するコマンドを示します。
+
+`*'
+     `*' マークを付ける。
+`N'
+     下方向の `*' マークの付いたメッセージへ移動し表示。
+`P'
+     上方向の `*' マークの付いたメッセージへ移動し表示。
+`ma'
+     マークの付いていないメッセージすべてに `*' マークを付ける。
+`mr'
+     入力した正規表現にマッチしたメッセージに `*' マークを付ける。
+`md'
+     `*' マークを `D' マークに変換。選択コマンド `?' で選んだメッセージ
+     を消去するときに便利。
+`mo'
+     `*' マークを `o' マークに変換。選択コマンド `?' で選んだメッセージ
+     をあるフォルダに整頓する場合に便利。
+
+
+
+File: mew.jis.info, Node: unmark, Next: mark level, Prev: review mark, Up: Marks
+
+マークの消去
+============
+
+`o' マークや `D' マークが付いたメッセージは、マーク実行コマンド `x' を押
+さない限り処理されません。よって、`x' を押す前に、マークを取り止めるコマ
+ンド `u' でマークを消せば、誤ってメッセージを消すことはありません。
+
+以下にマークを消去するコマンドをまとめます。
+
+`u'
+     現在のメッセージのマークを消す。
+`U'
+     入力したマークが付いているすべてのメッセージのマークを消す。
+
+
+
+File: mew.jis.info, Node: mark level, Next: Refile, Prev: unmark, Up: Marks
+
+マークの強さ
+============
+
+マークには「強いマーク」と「弱いマーク」があります。同じレベルのマークは
+上書きできます。強いマークは弱いマークを上書きできます。
+
+マークを付けた際の動作は、以下の通りです。
+
+強いマーク :: `o' と `D'
+     新たにマークしたときは、次のメッセージを表示。上書きした場合は、そ
+     の行に留まる。
+弱いマーク :: `*' と `@'
+     常にその行に留まる。
+
+強いマークを付けた後にカーソルが動く方向については、*Note level-one:: を
+参照して下さい。
+
+マークは以下のように交換できます。
+
+`m@'
+     `*' -> `@' :: 選択コマンド `?' で選び、"uumerge" を起動するコマンド 
+     `M-t' を利用する場合に便利。
+`m*'
+     `@' -> `*'
+`ms'
+     `@' <-> `*'
+`md'
+     `*' -> `D' :: 選択コマンド `?' で選んだメッセージを消去するときに便
+     利。
+`mo'
+     `*' -> `o' :: 選択コマンド `?' で選んだメッセージをあるフォルダに整
+     頓する場合に便利。
+
+
+
+
+File: mew.jis.info, Node: Refile, Next: by-folder, Prev: mark level, Up: Top
+
+楽々整理整頓
+************
+
+1日に数百のメッセージを受け取るようになると整理整頓が大変になります(え、
+そんなに受け取らないですって？ 幸せですね :) 。Mew では、`o' でメッセー
+ジを整頓する際に、整頓先を推測しデフォルト値として表示してくれます。たと
+えば、次のようになります。
+
+     Folder name (+work/mew-dist): +
+
+もし、() の中のデフォルト値が自分の希望通りであれば、`RET' を押すだけで
+よいのです。整頓先が決定しているメッセージには、`o' マークが付きます。
+
+この整頓先の推測が賢ければ賢い程ユーザは楽になります。Mew では以下のよう
+なルールが用意されています。
+
+* Menu:
+
+* by-folder::                   メーリングリスト用のフォルダから推測
+* by-alist::                    指定したルールから推測
+* by-thread::                   対話関係から推測
+* by-from-folder::              個人用のフォルダから推測
+* by-from::                     From: から推測
+* by-newsgroups::               Newsgroups: から推測
+* by-default::                  デフォルトの規則
+* guess-rule::                  ルールの制御
+* auto-refile::                 自動で整理整頓
+
+
+
+File: mew.jis.info, Node: by-folder, Next: by-alist, Prev: Refile, Up: Refile
+
+メーリングリスト用のフォルダから推測
+====================================
+
+あるメーリングリスト宛のメッセージを、そのメーリングリスト名のフォルダに
+整理することは多いと思います。Mew ではメーリングリスト宛に届いたメッセー
+ジに対して、それ用のフォルダを推測する機能があります。
+
+たとえば、+misc/pooh-lovers というフォルダがあったとしましょう。次のよう
+なメッセージは、このフォルダに整頓すればよい可能性が高いといえます。
+
+     To: pooh-lovers@mew.org 
+
+このように、To: や Cc: のアドレスが、フォルダ名の一番右側にマッチするも
+のがないか探すわけです。フォルダを階層化していない人が多いようですが、
+Mew を使う限り、階層化しない手はありません。
+
+さて、鋭い人は次のように個人のアドレスが To: や Cc: にある場合、困るので
+はないかと思うでしょう。
+
+     To: piglet@mew.org
+     Cc: pooh-lovers@mew.org
+
+たとえば、pooh は pooh-lovers の一員ですから、このメッセージが届きます。
+しかし、piglet と仲がいいので、+from/piglet にマッチしてしまいます。
+
+そこで、Mew では無視するフォルダを設定できるようになっています。デフォル
+トでは、+from 以下を無視します。ですから、個人からのメッセージは +from 
+以下にに収めて下さい
+
+候補が決定できたら
+
+     Folder name (+misc/pooh-lovers): +
+
+と訊いてきます。あっていれば `RET' を、違っていればお望みのフォルダを入
+力して下さい。
+
+`o' で新しいフォルダを指定すると、そのフォルダが自動的に作成され、次から
+は推測用の候補にも加わります。便利でしょ？
+
+この機能を提供する関数は `mew-refile-guess-by-folder' です。
+
+
+
+File: mew.jis.info, Node: by-alist, Next: by-thread, Prev: by-folder, Up: Refile
+
+指定したルールから推測
+======================
+
+フォルダ名から推測する機能だけでは、思うようなフォルダを推測してくれない
+場合があります。たとえば、To: が staff@mew.org であるメッセージと To: が 
+staff@iijlab.net であるメッセージに対し、フォルダ名からの推測では同じフォ
+ルダ(たとえば、"+net/staff")が選ばれてしまいます。そこで、Mew では、変数 
+`mew-refile-guess-alist' に明示的にルールを設定できます。
+
+1つ例を挙げてみましょう。
+
+     (setq  mew-refile-guess-alist
+       '(("To:"
+           ("staff@mew.org" . "+net/mew/staff")
+           ("staff@iijlab.net" . "+net/iijlab/staff")
+          )))
+
+これは、メッセージヘッダ中の To: の横の文字列に staff@mew.org があれば 
++net/mew/staff へ、staff@iijlab.net があれば +net/iijlab/staff へ整頓す
+るという意味です。
+
+ルールは、以下のように書きます。
+
+     rule ::= '((<key> <alist>) (<key> <alist>) (<key> <alist>) ...)
+
+全体は (<key> <alist>) のリストです。<key> はフィールド名を書きます。
+<alist> は以下のようになります。
+
+     <alist> ::= (<value> . <folder>|<rule>) (<value> . <folder>|<rule>) ...
+
+<value> は <key> で示したフィールドにくる値です。<folder> は <key> にマッ
+チした際にどのフォルダに整頓するかを意味しています。<value> と <folder> 
+を `.' で区切るのを忘れないで下さい。<folder> の代りに <rule> を再帰的に
+記述することもできます。
+
+特殊な <key> として `nil' と `t' があります。`nil' は、何も推測できなかっ
+た場合に返す <value> を指定するために用います。`t' は、推測した値に加え
+て返す <value> を指示するために使います。
+
+正規表現を知っている人は、以下のような複雑なルールを設定できます。
+
+     (setq mew-refile-guess-alist
+       '(("Newsgroups:"
+         ("^nifty\\.\\([^ ]+\\)" . "+Nifty/\\1")
+         (".*"         . "+rec/news"))
+        ("To:"
+         ("\\(inet\\|wide\\)@wnoc-fuk" . "+wide/\\1-wnoc-fuk"))
+        ("From:" 
+         ("uucp@"      . "+adm/uucp")
+         ("ftpsync@"   . "+adm/ftpsync"))
+        (nil . "+unknown")))
+
+この機能を提供する関数は `mew-refile-guess-by-alist' です。
+
+
+
+File: mew.jis.info, Node: by-thread, Next: by-from-folder, Prev: by-alist, Up: Refile
+
+対話関係から推測
+================
+
+Mew には、整頓しようとしているメッセージの親のメッセージが以前整頓された
+フォルダを選択してくれる機能があります。
+
+たとえば、pooh、piglet、roo との間で、蜂蜜を取りに行こうという話題が盛り
+上がったとしましょう。pooh は、+project/honey というフォルダを作って、最
+初のメッセージをそこに 整頓したとしましょう。以降、3人の間のメッセージが
+きちんとした返答であるかぎり、+project/honey を推測してくれます。
+
+あるメッセージをどこに保存したかという情報は、
+"~/Mail/.mew-refile-msgid-alist" に保存されています。この情報を過去何通
+のメッセージに関して保存するかは、`mew-lisp-max-length' で決定します。デ
+フォルトは 1000 通です。2000 通にしたい場合は"~/.emacs" 中で以下のように
+設定して下さい。
+
+     (setq mew-lisp-max-length 2000)
+
+この機能を提供する関数は `mew-refile-guess-by-thread' です。
+
+
+
+File: mew.jis.info, Node: by-from-folder, Next: by-from, Prev: by-thread, Up: Refile
+
+個人用のフォルダから推測
+========================
+
+*Note by-folder:: で説明したメーリングリスト用のフォルダを推測するに加え
+て、個人用のフォルダを推測する機能があります。個人用のフォルダは +from 
+以下にありますから、+from 以下のフォルダを選択する機能だともいえます。以
+下の例を考えてみましょう。
+
+     To: pooh@mew.org
+     From: piglet@mew.org
+
+piglet から pooh にメッセージが来ました。pooh がこの機能を使うと、From: 
+を手がかりに +from/piglet が選択されます。(+from 以下は階層化されていて
+も構いません。また、フォルダ名はユーザ名だけではなくアドレス全体でも OK 
+です。)
+
+この機能を提供する関数は、`mew-refile-guess-by-from-folder' といいます。
+
+次に、pooh が piglet に返答した場合を考えましょう。pooh は自分自身に Cc: 
+していたので、自分にメッセージが戻ってきました。
+
+     To: piglet@mew.org
+     Cc: pooh@mew.org
+     From: pooh@mew.org
+
+pooh の立場になって考えてみて下さい。このメッセージを +from/pooh に整頓
+するか、あるいは +from/piglet に整頓するのかは、好みが分かれるところでしょ
+う。そこで、どちらを選択するのかカスタマイズできるようになっています。
+
+`mew-refile-guess-from-me-is-special' が `t' なら、
+`mew-refile-guess-by-from-folder' は、From: が自分のアドレスの場合に、
+To: と Cc: にあるアドレスをもとに、+from 以下のフォルダを選択します。
+
+
+
+File: mew.jis.info, Node: by-from, Next: by-newsgroups, Prev: by-from-folder, Up: Refile
+
+From: から推測
+==============
+
+From: に同一のアドレスを持つメッセージが、かつてどこに整頓されたかによっ
+て推測する機能があります。
+
+たとえば、piglet は piglet@beech.tree.uk と p-p-p@mew.org の 2 つのアド
+レスを持っているとしましょう。どちらのアドレスからメッセージが届いても、
+pooh はそれらを +from/piglet に整頓したいと思っています。もちろん、以下
+のように明示的にルールを書けば実現できます。
+
+     (setq  mew-refile-guess-alist
+       '(("From:"
+           ("piglet@beech.tree.uk" . "+from/piglet")
+           ("p-p-p@mew.org"        . "+from/piglet"))))
+
+しかし、いちいちルールを書くのは面倒です。そこで、まず From: が 
+piglet@beech.tree.uk であるメッセージを +from/piglet に整頓します。これ
+でフォルダ +from/piglet が作成されます。次に、From: が p-p-p@mew.org で
+あるメールを +from/piglet に整頓したとします。ここで Mew は、
+p-p-p@mew.org が +from/piglet に整頓されたことを学習します。以後 From: 
+が p-p-p@mew.org であるメッセージを整頓しようとすると、+from/piglet を選
+択するようになります。
+
+その他、機械からくるメッセージは、いつも +adm/misc に入れることにしたい
+場合なども、明示的なルールを書かずに済ませられます。
+
+From: とフォルダの情報は、"~/Mail/.mew-refile-from-alist" に保存されてい
+ます。この情報を過去何通のメッセージに関して保存するかは、*Note
+by-thread:: と同様に `mew-lisp-max-length' で決定します。
+
+この機能を提供する関数は `mew-refile-guess-by-from' です。
+
+`mew-refile-guess-from-me-is-special' が `t' の場合、
+`mew-refile-guess-by-from' は `mew-refile-guess-by-from-folder'(*Note
+by-from-folder::)と同様な動きをします。
+
+
+
+File: mew.jis.info, Node: by-newsgroups, Next: by-default, Prev: by-from, Up: Refile
+
+Newsgroups: から推測
+====================
+
+ネットニュースをメッセージで受けて Mew で読んでいる人のために、
+Newsgroups: からフォルダを推測する機能を用意しました。将来 Mew がネット
+ニュースをサポートした場合にも有効でしょう。関数名は 
+`mew-refile-guess-by-newsgroups' です。
+
+
+
+File: mew.jis.info, Node: by-default, Next: guess-rule, Prev: by-newsgroups, Up: Refile
+
+デフォルトの規則
+================
+
+デフォルトの規則は、From: からアドレス名を切り出して、
+`+from/user@domain' を選ぶようになっています。ただし、
+`mew-refile-guess-strip-domainpart' が `t' ならユーザ名を切り出すので、
+`+from/user' が選択されます。
+
+関数名は、`mew-refile-guess-by-default' です。
+
+
+
+File: mew.jis.info, Node: guess-rule, Next: auto-refile, Prev: by-default, Up: Refile
+
+ルールの制御
+============
+
+Mew では、フォルダ推測のルールを2つの変数、`mew-refile-guess-control' と 
+`mew-refile-ctrl-multi' で制御します。`mew-refile-guess-control' は、呼
+び出す関数を順に定義します。候補を複数にしたい場合は 
+`mew-refile-ctrl-multi' を `t' に、単数にしたい場合は `nil' に設定します。
+
+標準では、`mew-refile-guess-control' は以下のように宣言されています(宣言
+なので `defvar' が使われています)。
+
+     (defvar mew-refile-guess-control
+       '(mew-refile-guess-by-alist
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-newsgroups
+         mew-refile-guess-by-folder
+         mew-refile-ctrl-throw
+         mew-refile-ctrl-auto-boundary
+         mew-refile-guess-by-thread
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-from-folder
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-from
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-default))
+
+Mew は `mew-refile-guess-control' に並べられた関数を順番にすべて実行しま
+す。各々の関数が複数の候補を推測することがあります。
+
+`mew-refile-guess-control' の動作例として以下を考えてみましょう。
+
+`mew-refile-guess-by-alist'
+         が +aaa, +bbb を推測。
+`mew-refile-guess-by-folder'
+         が +ccc, +ddd を推測。
+`mew-refile-guess-by-default'
+         が +eee を推測。
+
++aaa 〜 +eee すべてをユーザに提示して欲しい場合は、
+`mew-refile-ctrl-multi' を `t' に, +aaa だけを提示して欲しい場合は、
+`nil' に設定します。
+
+また、+aaa 〜 +ddd は提示して欲しいけれどもそれ以降はいらない、つまり、
++eee を提示するのは先に実行された関数群が何も推測できなかったときだけに
+したい場合は、`mew-refile-ctrl-multi' を `t' にして、
+`mew-refile-guess-by-folder' と `mew-refile-guess-by-default' の間に 
+`mew-refile-ctrl-throw' を入れて下さい。
+
+`C-uo' は、この推測の流れを Message バッファに表示します。
+
+
+
+File: mew.jis.info, Node: auto-refile, Next: Pick, Prev: guess-rule, Up: Refile
+
+自動で整理整頓
+==============
+
+毎日メッセージをたくさんもらう人は、まだ整頓していないメッセージを 
++inbox フォルダに大量に溜めてしまうことがあります。そんなときは、「メッ
+セージ達よ、とにかく +inbox フォルダからどこかに行ってしまえ」と叫びたく
+なることがあるでしょう。Mew は、そんなわがままなを満足させるための自動整
+理整頓関数を提供しています。:) `M-o' がその呪文です。
+
+この関数を実行すると、現在のフォルダ内の特定のメッセージに対して、自動的
+に `o' マークを付けてくれます。特定のメッセージとは、
+`mew-refile-auto-refile-skip-any-mark' が `nil'なら、`o' や `D' マークが
+付いていないメッセージです。`mew-refile-auto-refile-skip-any-mark' が 
+`t' なら、なにもマークが付いてないメッセージです。
+`mew-refile-auto-refile-skip-any-mark' のデフォルト値は `nil' です。また、
+`C-u' 付で呼び出すと、`mew-refile-auto-refile-skip-any-mark' の値とは関
+係なく `*' マークの付いたメッセージを対象にします。
+
+整頓先の決定には、先に説明した推測関数群が働くようになっています。この関
+数は、`o' を付けるだけですので、`x' を押さない限り実際にメッセージがどこ
+かに行ってしまうことはありません。
+
+Mew の整頓先推測はあまりにも賢すぎるので、この機能には仇となってしまいす。
+というのは、Mew が推測機能をフルに使って勝手に整頓してしまうと、大抵のユー
+ザはどこにメッセージが整頓されたか分からなくなってしまうのからです。:) 
+そのために、Mew が使う推測関数を制限する機能が提供されています。前に出て
+きた宣言をもう一度思い出して下さい。
+
+     (defvar mew-refile-guess-control
+       '(mew-refile-guess-by-alist
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-newsgroups
+         mew-refile-guess-by-folder
+         mew-refile-ctrl-throw
+         mew-refile-ctrl-auto-boundary
+         mew-refile-guess-by-thread
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-from-folder
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-from
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-default))
+
+`mew-refile-guess-control' の中に `mew-refile-ctrl-auto-boundary' という
+関数があります。これがその仕掛です。自動整理整頓のときに限り、Mew はこの
+関数より下に記述してある推測を無視します。
+`mew-refile-ctrl-auto-boundary' より上に記述している関数が何も推測できな
+かった場合は、そのメッセージには `o' が付きません。破滅が訪れる前に 
+`mew-refile-ctrl-auto-boundary' の御札を貼って下さい。
+
+
+
+
+File: mew.jis.info, Node: Pick, Next: condition, Prev: auto-refile, Up: Top
+
+お目当てのメッセージを選択するには
+**********************************
+
+たとえば、Subject: に party という文字が含まれているメッセージを見つけ出
+したり、From: が kazu@mew.org であるメッセージを選択したいと思うことがあ
+ります。このように、入力した条件にあるメッセージを見つけ出すコマンドを 
+Mew は 3 つ提供しています。
+
+`?'
+     入力した条件に合うメッセージに `*' マークを付ける。現在の Summary 
+     モードの一覧を利用する。`?' を押した後に、条件を入力して下さい。
+`/'
+     入力した条件に合うメッセージを Summary モードに一覧表示する。現在の 
+     Summary モードの一覧は上書きされます。`/' を押した後に、フォルダ名
+     と条件を入力して下さい。
+`V'
+     複数のフォルダから入力した条件に合うメッセージを見つけ出して 
+     Virtual モードに一覧表示する。操作は、*Note virtual:: を参照して下
+     さい。
+
+以下条件の入力方法と Virtual モードに付いて解説します。
+
+* Menu:
+
+* condition::                   条件の入力方法
+* virtual::                     Virtual モード
+
+
+
+File: mew.jis.info, Node: condition, Next: virtual, Prev: Pick, Up: Pick
+
+条件の入力方法
+==============
+
+Mew が条件の入力をユーザに促すときは以下のように訊いてきます。
+
+     pick pattern: 
+
+以下に示すキーワードを組み合わせて条件を入力して下さい。
+
+`field=string'
+     フィールド field に文字列 string が含まれているときマッチ。フィール
+     ド field が、head、body、および、all の場合は、それぞれヘッダ全体、
+     本文、メッセージ全体を意味する。
+`<pattern1> & <pattern2>'
+     <pattern1> かつ <pattern2> のときマッチ。
+`<pattern1> | <pattern2>'
+     <pattern1> または <pattern2> のときマッチ。
+`! <pattern>'
+     <pattern> でないときマッチ。
+`( <pattern> )'
+     <pattern> の内容を先に評価。
+
+
+以下に例を示します。
+
+(a) From: に kazu か含まれるメッセージ
+
+     from=kazu
+
+(b) To: が mew、または、Cc: が mew であるメッセージ
+
+     to=mew | cc=mew
+
+(c) To: が mew、または、Cc: が mew で、かつ、from が kazu であるメッセー
+ジ
+
+     (to=mew | cc=mew) & from=kazu
+
+後は類推して下さい。
+
+
+
+File: mew.jis.info, Node: virtual, Next: Quit, Prev: condition, Up: Pick
+
+Virtual モード
+==============
+
+Virtual モードは、複数のフォルダから入力した条件に合うメッセージを選びだ
+し、単一の仮想的なフォルダとして扱います。Summary モードで `V' を押すと、
+Virtual モードが作れます。
+
+最初に、仮想フォルダ名を訊かれます。
+
+     Virtual folder name (virtual) : 
+
+任意の文字列を入力して下さい。単に `RET' を押すと、"++virtual" になりま
+す。次に、単数または複数のフォルダ名を入力します。複数のフォルダを入力す
+る場合は、"," で区切って下さい。もちろん、`TAB' で補完できます。
+
+     Folder name (+inbox) : +inbox, +mew
+
+そして、条件を入力します。
+
+     pick pattern: 
+
+すると仮想フォルダができあがります。Virtual モードは、整頓や消去、検索な
+ど一部のコマンドを除いて、Summary モードと一緒です。仮想フォルダはまさし
+く仮想であり、ファイルシステムなどには存在しないことに注意して下さい。
+Emacs を終了すると、仮想フォルダはなくなります。
+
+
+
+
+File: mew.jis.info, Node: Quit, Next: Customize, Prev: virtual, Up: Top
+
+一休み
+******
+
+Mew を終了させたり、一時中断させたり、そのモード(正確にはバッファ)を消去
+する方法を以下に示します。
+
+<Summary モードと Virtual モード>
+
+`q'
+     Mew を一時中断し、他のバッファに切り替えます。Mew 用のバッファはす
+     べて残っていますから、バッファ操作で選べば再開できます。
+`Q'
+     Mew を終了します。Mew が使ったすべてのバッファを消去します。
+`C-cC-q'
+     そのモード(正確にはバッファ)を消去します。
+
+<Draft モード>
+
+`C-cC-q'
+     その草稿を消去します。
+
+<"*Mew watch*" バッファ>
+
+`C-cC-q'
+     そのバッファを消去します。
+
+
+
+
+File: mew.jis.info, Node: Customize, Next: level-one, Prev: Quit, Up: Top
+
+自分好みの Mew にするには
+*************************
+
+ここでは、Mew のデフォルトの動作を変更し、自分好みの Mew にする方法を説
+明します。主に "~/.emacs" で設定して下さい。
+
+* Menu:
+
+* level-one::                   初級
+* level-two::                   中級
+* level-three::                 上級
+* hooks::                       フック
+* config::                      IM Config
+
+
+
+File: mew.jis.info, Node: level-one, Next: level-two, Prev: Customize, Up: Customize
+
+初級
+====
+
+ここでは、以下の変数について説明します。
+
+   - mew-draft-mode-hook
+   - mew-from
+   - mew-fcc
+   - mew-cc
+   - mew-dcc
+   - mew-window-use-full
+   - mew-summary-show-direction
+   - mew-summary-mark-direction
+
+Draft モードでは、フックを `text-mode-hook'、`mew-draft-mode-hook' の順
+で評価します。`text-mode-hook' で `auto-fill-mode' を設定していない人は、 
+`mew-draft-mode-hook' を以下のように設定するのがよいかもしれません。
+
+     (setq mew-draft-mode-hook (function (lambda () (auto-fill-mode 1))))
+
+電子メールの管理者が設定しているのとは違うアドレスで送信したいことがあり
+ます。たとえば、管理者の設定が甘く、不要なホスト名が付いてしまう場合など
+です(この場合は管理者に頼み設定を修正してもらうのが一番です)。Mew では草
+稿のヘッダに From: アドレスがあれば、それがそのまま From: となります。補
+完を使いながら書いて下さい。いつも草稿に From: を用意するには、以下の例
+のように `mew-from' を指定して下さい。
+
+     (setq mew-from "Kazu Yamamoto (山本和彦) <Kazu@Mew.org>")
+
+From: 行を自分で指定できるということは、簡単にだれかになりすませるという
+ことです。くれぐれもこの機能を使ったいたずらをしないで下さい。また、他人
+も容易にだれかになりすませることに注意して下さい。大切な用件は、PGP/MIME 
+で保護して送りましょう。
+
+毎回 Fcc: でバックアップを取りたい人は、以下を .emacs に設定して下さい。
+
+     (setq mew-fcc "+Backup")
+
+自分へ Cc:(Dcc:) したい人は `mew-cc'(`mew-dcc')を設定して下さい。
+
+いつも Emacs のフレーム全体で Mew を使いたい人は、以下の設定をして下さい。
+
+     (setq mew-window-use-full t)
+
+Summary モードの `SPC' は、`mew-summary-show-direction' によって、次のメッ
+セージの表示の仕方が変わります。また同様に、強いマークを付けた後カーソル
+が動く方向は `mew-summary-mark-direction' により指定できます。以下の値を
+設定できます。
+
+`up'
+     上のメッセージを表示する。
+`down'
+     下のメッセージを表示する。
+`next'
+     読み進めている方向の次のメッセージを表示する。
+`stop'
+     次は表示しない。
+
+両方ともデフォルトは `next' です。いつもメッセージを下から読む人は、以下
+のようにすればよいでしょう。
+
+     (setq mew-summary-show-direction 'up)
+
+
+
+File: mew.jis.info, Node: level-two, Next: level-three, Prev: level-one, Up: Customize
+
+中級
+====
+
+ここでは、以下の変数について説明します。
+
+   - mew-use-highlight-cursor-line
+   - mew-use-highlight-mouse-line
+   - mew-use-highlight-mark
+   - mew-use-highlight-header
+   - mew-use-highlight-body
+   - mew-use-highlight-url
+   - mew-use-highlight-x-face
+
+`mew-use-highlight-cursor-line' が `t' の場合、Summary モードでカーソル
+のある行に下線が引かれます。デフォルトは `t' です。
+
+XEmacs では `mew-use-highlight-mouse-line' が `t' の場合、Summary モード
+でマウスのある行に色がつきます。真中のボタンをクリックしながら、マウスだ
+けでメッセージを読む際にはとても便利です。XEmacs でのデフォルトの値は、
+`t' になっています。
+
+`mew-use-highlight-mark' が `t' で、かつ、
+`mew-highlight-mark-folder-list' に列挙したフォルダが Summary モードであ
+る場合、マークの付いている行に色がつきます。
+`mew-highlight-mark-folder-list' のデフォルトは '("+inbox") であり、
+`mew-use-highlight-mark' のデフォルトは `t' です。
+`mew-highlight-mark-folder-list' を `t' に設定すると、すべてのフォルダで
+色が付くようになります。
+
+`mew-use-highlight-header' が `t' の場合、Message モードと Draft モード
+でヘッダが色付けされます。デフォルトは `t' です。
+
+`mew-use-highlight-body' が `t' の場合、Message モードと Draft モードで
+本文が色付けされます。デフォルトは `nil' です。
+
+`mew-use-highlight-url' が `t' の場合、Message モードの URL を示す文字列
+が強調されます。デフォルトは `t' です。
+
+`mew-use-highlight-x-face' が `t' で、かつ XEmacs を使っている場合、ヘッ
+ダ中の X-Face: が Message モードでアイコン化されます。XEmacs でのデフォ
+ルトは `t' です。
+
+
+
+File: mew.jis.info, Node: level-three, Next: hooks, Prev: level-two, Up: Customize
+
+上級
+====
+
+ここでは、以下の変数について説明します。
+
+   - mew-header-alist
+   - mew-cite-fields
+   - mew-cite-format
+   - mew-cite-prefix
+
+いつも入れて欲しいヘッダは、`mew-header-alist' に連想リスト形式で定義し
+て下さい。以下に例を示します。
+
+     (setq mew-header-alist
+           '(("X-fingerprint:" . "6B 63 38 88 67 5E 96 8E  CE A4 62 73 3F 11 64 94")
+             ("X-URL:" . "http://www.mew.org/~kazu/")))
+
+引用ラベルは、引用するフィールドを `mew-cite-fields'、ラベルの書式を 
+`mew-cite-format' に定義します。引用記号は `mew-cite-prefix' に指定しま
+す。デフォルトは、以下のようになっています。
+
+     (defvar mew-cite-fields '("From:" "Subject:" "Date:"))
+     (defvar mew-cite-format "From: %s\nSubject: %s\nDate: %s\n\n")
+     (defvar mew-cite-prefix "> ")
+
+引用ラベルに Message-ID: を加え、ユーザ名付の引用記号にするには、以下の
+ようにします。
+
+     (setq mew-cite-fields '("From:" "Subject:" "Date:" "Message-ID:"))
+     (setq mew-cite-format "From: %s\nSubject: %s\nDate: %s\nMessage-ID: %s\n\n")
+     (setq mew-cite-prefix-function 'mew-cite-prefix-username)
+
+
+
+File: mew.jis.info, Node: hooks, Next: config, Prev: level-three, Up: Customize
+
+フック
+======
+
+Mew で用意されているフックをまとめます。
+
+`mew-env-hook'
+     Mew の起動時の環境が設定される前に評価される。
+`mew-init-hook'
+     Mew の起動時に評価される。
+`mew-summary-mode-hook'
+     Summary モードに入るときに評価される。
+`mew-virtual-mode-hook'
+     Virtual モードに入るときに評価される。
+`mew-message-mode-hook'
+     Message モードに入るときに評価される。
+`mew-message-hook'
+     メッセージが Message モードで表示される度に評価される。
+`mew-addrbook-mode-hook'
+     アドレス帳の登録モードに入るときに評価される。
+`mew-draft-mode-hook'
+     Draft モードに入るときに評価される。
+`mew-draft-mode-newdraft-hook'
+     Draft モードにおいて新しい草稿が用意された際に評価される。
+`mew-draft-mode-reedit-hook'
+     Draft モードにおいて古い草稿を再編集した際に評価される。
+`mew-cite-hook'
+     Draft モードで引用する際に呼ばれる。通常 supercite を設定するために
+     使う。
+`mew-before-cite-hook'
+     Draft モードでメッセージを引用する直前に呼ばれる。
+`mew-make-message-hook'
+     Draft モードで MIME メッセージを作る前、つまり `C-cC-m' の際の最初
+     に評価される。例：(add-hook 'mew-make-message-hook 'ispell-message)
+`mew-send-hook'
+     メッセージを送信する前に評価される。現在では無意味であり、互換性の
+     ために残してある。
+`mew-real-send-hook'
+     メッセージを送信する前に評価される。
+`mew-quit-hook'
+     Mew の終了時に評価される。
+`mew-suspend-hook'
+     Mew を一時中断した際に評価される。
+`mew-summary-inc-sentinel-hook'
+     imget が終了する際に評価される。
+`mew-summary-scan-sentinel-hook'
+     imls が終了する際に評価される。
+`mew-summary-exec-hook'
+     Summary モードの `x' の実行が終了する際に評価される。
+`mew-syntax-format-hook'
+     マルチパートの書式を作成する関数 `mew-syntax-format' が呼ばれた際に
+     評価される。
+
+
+
+File: mew.jis.info, Node: config, Next: XEmacs, Prev: hooks, Up: Customize
+
+Config
+======
+
+IM の "Config" ファイルに case 文を記述すると imget や imput の挙動を変
+化させられます。たとえば、Config が以下のように記述されていたとしましょ
+う。
+
+     Imget.Src=pop/apop:kazu@mail.mew.org
+     User=kazu
+     FromDomain=Mew.org
+     case wide
+     Imget.Src=pop/rpop:robby@mx.wide.ad.jp
+     User=robby
+     FromDomain=wide.ad.jp
+     case iijlab
+     Imget.Src=imap:kazu@mailbox.iijlab.net
+     FromDomain=iijlab.net
+
+通常では、imget は APOP を使って mail.mew.org から kazu のメッセージを読
+み込みます。また、imput は送信されるメッセージに From: がない場合
+(mew-from が nil の場合など)、ユーザ名である kazu と Mew.org を @ で連結
+した文字列を From: に指定します。
+
+もし --config=wide が指定されると、imget は RPOP を使って mx.wide.ad.jp 
+から robby のメッセージを読み込みます。また、imput は From: に対し 
+robby@wide.ad.jp を選ぶようになります。
+
+このように imget や imput は、--config オプションで指定された文字列をも
+とに、有効な case 文を選択します。上の例から明らかですが、この機能を使う
+と読み込むメールボックスや送信時の From: を変更できて便利です。
+
+Mew は起動時に Config の case 文を調べます。もし、1 種類以上の case があ
+る場合、`mew-config-list' に設定します。--config が指定されない場合に読
+まれる部分は、default という文字列で表現されます。上の例では、
+`mew-config-list' には、'("default" "wide" "iijlab") が設定されます。
+
+Summary モードで `C' を押すと、`mew-config-list' を補完の候補として利用
+しながら、imget に渡す --config の値を選択できます。デフォルトでは 
+"default" です。もし他の値が設定されていた場合、たとえば "wide" が設定さ
+れていた場合、`i' は次のように表示します。
+
+     Getting +inbox (wide)...
+
+imput に case の選択を指示するには、送信するメッセージのヘッダ中の 
+Config: フィールドで指定できます。Draft モードでは、*Note header:: で説
+明したように、Config: というフィールド名を `TAB' で補完できます。また、
+`mew-config-list' の値を `TAB' で補完可能です。さらに、`C-cTAB' を使えば、
+`mew-config-list' の値を循環的に補完できます。
+
+しかし、自分で値を選ぶのはめんどうです。Mew は整頓先のフォルダを推測する
+のだから、Config: の値も推測して欲しいと思うでしょう。もちろん、Mew は 
+Config: の値を推測できます。Config: の推測ルールは、
+`mew-config-guess-alist' に設定できます。書式は、*Note by-alist:: で説明
+した `mew-refile-guess-alist' と同じです。
+
+1 つ例を挙げてみましょう。
+
+     (setq mew-config-guess-alist
+        '(("To:"
+           ("wide.ad.jp" . "wide")
+           ("mew.org" . "mew"))))
+
+この場合、To: が wide.ad.jp に合致すれば "Config: wide" を、mew.org にマッ
+チすれば "Config: mew" を挿入します。
+
+この推測を利用して Config: を挿入できるタイミングは以下の 3 つです。
+
+  1. `mew-config-insert-when-prepared' が `t' なら、草稿を用意した時点。
+  2. `mew-config-insert-when-composed' が `t' なら、`C-cC-m' でメッセー
+     ジを作成した時点。
+  3. `C-cC-o' と入力した任意の時点。
+
+参考までに書きますが、ホスト名で Config を変更したい場合は、以下の行を
+".emacs" に入れるとよいでしょう。
+
+     (setq mew-config-guess-alist
+        (list (cons nil (system-name))))
+
+
+
+
+File: mew.jis.info, Node: XEmacs, Next: Convention, Prev: config, Up: Top
+
+アイコンのある生活
+******************
+
+XEmacs で Mew を使えば、アイコン・ベースのインターフェイスでメッセージを
+読み書きできます。アイコン・ベースのインターフェイスは、従来のキー入力に
+よるインターフェイスと親和性が高いように設計されています。
+
+アイコン・インターフェイスの使い方は.....、説明するまでもありません。直
+感的にわかるはずです。でも少しだけ手ほどきを。
+
+Summary、Virtual、および、Draft モードの標準のアイコンに束縛されている機
+能を利用するには、左ボタンをクリックして下さい。
+
+マルチパートのメッセージを読み書きする際に表示されるアイコンは、左ボタン
+のクリックでそのバーを表示し、右ボタンを押すとポップアップ・メニューが表
+示されます。このメニューのおかげで、パートに対しさまざまな処理が可能となっ
+ています。
+
+マルチパートのアイコンは、デフォルトで標準のアイコンの右に表示されます。
+左に表示するのが好きな人は、以下のように設定して下さい。
+
+     (setq mew-multipart-icon-position 'left)
+
+
+
+
+File: mew.jis.info, Node: Convention, Next: MIME, Prev: XEmacs, Up: Top
+
+メッセージの作法
+****************
+
+メッセージをやりとりする際には、最低限のマナーがあります。マナーを守って
+いないメッセージは読みにくいため、大変損します。簡潔かつ適切な文章を書き、
+なるべく相手に理解してもらえるよう努力しましょう。
+
+メッセージを書く際に気を付けるべき項目を以下に示します。
+
+To: と Cc: を正しく書く
+     To: が目的の人で、Cc: は参考までに送り付ける人です。自分のアドレス
+     が Cc: の場合は、読み飛ばす人がいますから注意して下さい。また、不必
+     要なアドレスを To: や Cc: に書いて、相手に迷惑をかけないようにしま
+     しょう。
+
+To: と Cc: に書くアドレスの数は少なくする
+     アドレスをたくさん To: や Cc: に書くのはよくないことです。面倒でも
+     メーリングリストを作りましょう。
+
+Subject: には本文の内容を的確に短く書く
+     Subject: を見て読むか決める人がいますから、不適切な Subject: だと読
+     んでもらえないかもしれません。長い Subject: は読みにくいので止めま
+     しょう。
+
+改行は行末を、空行は改段落を表す。1行は半角70文字程度にとどめる
+     意味もなく1行おきに書いたり、なん行にも渡って改行しないのは読みづら
+     いです。とくに行が長いと引用するのに困ります。また、行頭にいくつか
+     の空白文字を入れて右によせて書く人がいますが、これも無意味です。テ
+     キストの表示は、使っているコンピュータでまちまちですから、結局自分
+     のコンピュータでみためがよくても、他人のコンピュータでそうであると
+     は限らないのです。
+
+必要な部分だけを引用する
+     面倒でも不要な部分は削りましょう。Mew を使っていれば、引用は楽勝の
+     はずです。
+
+シグニチャは簡素にする
+     長いシグニチャは単なる自己満足です。
+
+いたずらメッセージを送らない
+     こんなことは注意したくありませんが、それでも不幸のメッセージなどを
+     送ってくる人がいます。人格を疑われることを理解すべきです。
+
+相手の読めるデータのみを添付する
+     なんの合意もなしに送ってよいデータはテキストのみです。それ以外のデー
+     タを送る場合は、あらかじめ相手に送ってよいか確認をとりましょう。メー
+     リングリストには、テキストのみを投稿するのが無難でしょう。
+
+また、インターネットのマナーは RFC1855 を読むといいでしょう。*Note Bib:: 
+を参照して下さい。著者は、正確な文章の書き方について学生のためにまとめた
+入門書を WWW で公開しています。興味があれば、以下の URL にアクセスして下
+さい。
+
+     http://www.mew.org/~kazu/doc/japanese.html
+
+
+
+
+
+File: mew.jis.info, Node: MIME, Next: mime-ct, Prev: Convention, Up: Top
+
+MIME ってなぁに？
+*****************
+
+今までのメッセージ、正確には RFC822 メッセージは、本文にテキストしか格納
+できない規格でした。MIME は RFC822 を拡張した多目的メッセージです。
+
+MIME は、ヘッダに
+
+     MIME-Version: 1.0
+
+というフィールドを持ちます。このフィールドがない場合は、RFC822 メッセー
+ジです。MIME では、データの型を示す Content-Type: と符号化方式を示す
+Content-Transfer-Encoding: が重要なフィールドです。以下ではこれらのフィー
+ルドや MIME の特長について説明します。
+
+* Menu:
+
+* mime-ct::                     データの型の指定
+* mime-cte::                    安全な符号化
+* mime-multi::                  マルチパート
+* mime-header::                 ヘッダの拡張
+
+
+
+File: mew.jis.info, Node: mime-ct, Next: mime-cte, Prev: MIME, Up: MIME
+
+データの型指定
+==============
+
+
+MIME では、Content-Type:(以下 CT:)というフィールドにデータの型を指定でき
+ます。以下は、本文が US-ASCII である MIME の例です。
+
+     MIME-Version: 1.0
+     Content-Type: Text/Plain; charset=us-ascii
+     Content-Transfer-Encoding: 7bit
+     Subject: hello
+     From: Kazu
+
+     Hi all,
+
+CT: が省略された場合は、Text/Plain; charset=us-ascii として取り扱われま
+す。また、CT: Text/Plain のときに、charset が省略されると US-ASCII と解
+釈されます。
+
+このように MIME では、CT: がテキストの場合は、charset で文字コードを指定
+できます。日本語には ISO-2022-JP を使います。
+
+MIME では、本文に複数のデータを格納できます。これをマルチパートといいま
+す。マルチパートのそれぞれのパートは、コンテントヘッダとコンテントボディ
+から構成されています。CT: はヘッダだけでなく、コンテントヘッダ中にも現れ
+ます。逆に、ヘッダは特殊なコンテントヘッダだと考えても構いません。
+
+詳しくは、*Note mime-multi:: を参照して下さい。
+
+以下に重要な CT: を示します。
+
+`Text/Plain'
+     テキスト
+`Message/Rfc822'
+     MIME を含むメッセージ。ヘッダと本文という構造がある。
+`Multipart/Mixed'
+     マルチパート
+`Application/Postscript'
+     PostScript
+`Application/Octet-Stream'
+     バイトストリーム。バイナリファイルと思ってよい。
+`Image/Gif'
+     GIF
+`Image/Jpeg'
+     JPEG
+`Audio/Basic'
+     AU 形式の音声ファイル
+`Video/Mpeg'
+     MPEG
+`Message/External-Body'
+     メッセージの外部に実体がある
+
+
+
+File: mew.jis.info, Node: mime-cte, Next: mime-multi, Prev: mime-ct, Up: MIME
+
+安全な符号化
+============
+
+以前からバイナリを配送するために uuencode という符号化プログラムが使われ
+ていました。uuencode は、8ビット3文字を6ビット4文字に変換しますが、変換
+後にたくさんの記号が現れます。これらの記号はメッセージのヘッダで特殊な意
+味を持つものが含まれており、ヘッダの拡張のためには利用できません。
+
+また、空白文字も使われているのも厄介です。なぜなら、BITNET のファイルシ
+ステムには、行末に空白がありえないのです。もし、uuencode で符号化したと
+きに、行末にたまたま空白が現れたとしましょう。これを BITNET のメッセージ
+ゲートウェイが受け取ると、当然行末の空白を削ってしまいます。よって、受信
+者は元のバイナリファイルを復元できません。
+
+そこで、MIME では本文用に 2 つの符号化方式を定めました。
+
+Base64 符号化方式
+     "0-9A-Za-z/+" の64文字を用いて、8ビット3文字を6ビット4文字に変換す
+     る。元々は PEM で考え出された。
+Quoted-Printable 符号化方式
+     表示不可能な文字を "=" に続けて16進表記する。
+
+各コンテントヘッダ中の Content-Transfer-Encoding:(CTE:)で符号化方式を指
+定します。取り得る値は以下の通りです。
+
+7bit
+     無変換。7ビットの行から構成される。
+8bit
+     無変換。8ビットの行から構成される。
+binary
+     無変換。8ビットのデータ・ストリーム。
+base64
+     Base64 で符号化した。7ビットの行から構成される。
+quoted-printable
+     Quoted-Printable で符号化した。7ビットの行から構成される。
+
+CTE: が省略された場合は `7bit' として扱われます。
+
+ISO-2022-JP は7ビットの文字コードですから、CTE: は 7bit です。つまり、
+CTE: は省略して構いません。もちろん、base64 や quoted-printable で符号化
+しても構いませんが、フォルダにあるメッセージを more などで直接読めなくな
+るので、お勧めではありません。
+
+
+
+File: mew.jis.info, Node: mime-multi, Next: mime-header, Prev: mime-cte, Up: MIME
+
+マルチパート
+============
+
+CT: が Multipart である場合、そのコンテントボディには複数のデータが格納
+されることを意味します。データの境界は boundary に指定された文字列で区切
+られます。以下に例を示します。
+
+     Message-Id: <13060.789566615@mew.org>
+     From: Kazuhiko Yamamoto =?ISO-2022-JP?B?GyRCOzNLXE9CSScbKEI=?=
+             <kazu@mew.org>
+     Subject: =?ISO-2022-JP?B?GyRCPC8kTjMoGyhC?=
+     To: m-sakura@ccs.mt.nec.co.jp
+     Mime-Version: 1.0
+     Content-Type: Multipart/Mixed; boundary=simple
+     Content-Transfer-Encoding: 7bit
+
+     --simple
+     Content-Type: Text/Plain; charset=iso-2022-jp
+     Content-Transfer-Encoding: 7bit
+
+     奈良名物「鹿」の絵を送ります。
+ 
+     --かず
+    
+     --simple
+     Content-Type: Image/Gif
+     Content-Transfer-Encoding: base64
+     Content-Description: "Deer on the Nara park"
+    
+     R0lGODdhFwG8ANUAABETDCoYDC8lFi4dJxcnKTMwLkUUC04uG2opEkgeJ04yMWg4Ly1FLVJG
+     NWdSMywyTks1Tmc3RjdRVjNcalRMUG9UU1xbY051eG9pcIcxEp5bM8d1NI1VSJhrVrRwUpR0
+     cKZ1dcN9WXuHOWmHc7WJN6yLbcyEWNCZdDZjjml0i5t7im+TmGeRonWly5aLlrCLlK+arJmn
+     pbettMabktWumM+zsrnCrtTLua21ycq6x6/J3NbQ1+bk29na5dzp8+7w8ywAAAAAFwG8AAAG
+     /8CLcPhYtVgNyirWasZYEgDhIWGxRiXWcTIATHS/Hs6K2+1wt59azYtdJnBhKrVaWYcp7==
+    
+     --simple--
+
+この例では、"simple" という文字列で区切られています。boundary に指定され
+た文字列には、先頭に "--" が付きます。最後の区切りには、後ろにも "--" が
+付きます。
+
+各パートは、コンテントヘッダとコンテントボディから構成されます。両者は、
+ヘッダと本文のように空行で区切られます。逆にいうと、ヘッダと本文は、それ
+ぞれ特殊なコンテントヘッダとコンテントボディです。
+
+テキスト以外を MIME で送信する場合は、必ずマルチパートを利用するようにし
+ましょう。たとえば、本文にいきなり Audio/Basic を格納できますが、そんな
+メッセージを受け取ったらびっくりします。パート 1 に説明のテキスト、パー
+ト 2 に Audio/Basic を入れた方が親切でしょう。
+
+マルチパートは、入れ子構造にできます。つまり、マルチパートのマルチパート
+なども作成できます。
+
+ちなみに境界ですが、前後の改行まで含みます。上記の例では、
+"CRLF--simpleCRLF" が区切りです。
+
+
+
+File: mew.jis.info, Node: mime-header, Next: Kanji, Prev: mime-multi, Up: MIME
+
+ヘッダの拡張
+============
+
+ヘッダはメッセージの配送に関わる情報を格納しているため、配送プログラムが
+誤動作するような文字列を入れるべきではありません。MIME では、フィールド
+値に ASCII 以外の文字列を格納する場合、以下のような形式で符号化し、安全
+な文字列に変えて挿入します。
+
+     =?<charset>?<encoding>?<encoded-string>?=
+
+指定できる <charset> は CT: Text/Plain の charset と同じです。<encoding> 
+には、`B' と `Q' 符号化方式があり、前者は Base64 符号化方式、後者は 
+Quoted-Printable 符号化方式の亜種を意味します。
+
+ISO-2022-JP には、`B' 符号化方式が奨励されていますが、`Q' 符号化方式でも
+構いません。しかし、`Q' 符号化方式に対応しているインターフェイスはあまり
+ないようです(もちろん Mew は対応しています)。
+
+たとえば、Subject: に「山本和彦」と書いた場合、以下のように符号化されま
+す。
+
+     Subject: =?ISO-2022-JP?B?GyRCOzNLXE9CSScbKEI=?=
+
+上記の形式で符号化してもよいのはフィールド値であって、パラメータ値ではあ
+りません。パラメータ値の符号に使ってはならない理由としては、キーワードと
+なっている `=' が、パラメータ名とパラメータ値の区切り文字と重なっている
+ことが挙げられます。パラメータを符号化するには、別の形式を利用します。以
+下に、「日本語のファイル」というファイル名をパラメータ値に指定した例を示
+します。
+
+     Content-Disposition: attachment;
+      filename*=iso-2022-jp"%1B%24BF%7CK%5C8l%24N%25U%25%21%25%24%25k%1B%28B
+
+
+
+
+File: mew.jis.info, Node: Kanji, Next: rfc822, Prev: mime-header, Up: Top
+
+嗚呼漢字コード
+**************
+
+ここでは、非 ASCII 文字をメッセージで使うために人々が奮闘してきた歴史を
+漢字を例に取って振り返ります。
+
+* Menu:
+
+* rfc822::                      電子メールと地域化
+* mime-comes::                  MIME の登場
+* canonical::                   正規化の概念
+
+
+
+File: mew.jis.info, Node: rfc822, Next: mime-comes, Prev: Kanji, Up: Kanji
+
+電子メールと地域化
+==================
+
+1982年、互換性を保証するために、電子メールの規格 RFC822 が記述されました。
+電子メールはアメリカ育ちであったため、残念ながら本文やヘッダには、ASCII 
+文字列しか格納できない規格でした。
+
+しかし、英語以外の言語を母国語としている人達にはとても不便です。そこで、
+配送に関わるヘッダはともかく、本文に母国語を格納するため RFC822 はさまざ
+まな国で拡張されました。
+
+ヨーロッパ諸国では、ウムラウト(アクセント)文字を表す8ビット1文字のコード 
+Latin 1 がよく使われるようになりました。Latin 1 は ISO-8859-1 と呼ばれる
+ことがあります。
+
+日本では、7ビット2文字の JIS コード、UNIX でよく使われる 8ビット2文字の 
+EUC コード、パソコンで使われている 8ビット2文字の SJIS コードが存在しま
+した。日本のインターネットの前身である JUNET の先駆者達は、配送のための
+コードとして JIS コードを ESC シーケンスで切り替える、いわゆる JUNET コー
+ドを選びました。
+
+JUNET コードは ISO-2022-JP と呼ばれることがあります。ISO-2022-JP を使え
+ば、複数の文字コードを切り替えるだけでなく、使われている文字コードが何か
+という情報を得られます。
+
+Latin 1 や ISO-2022-JP に見られる本文の拡張は、あくまで地域に限定された
+紳士協定です。RFC822 を使う限り、地域間を越えてメッセージをやりとりする
+には、結局英語を使うしかないのです。
+
+RFC822 は記述が曖昧なので、ヘッダや本文に 7 ビット文字である ISO-2022-JP 
+を入れてもよいように読めます。たぶん、この説明を読めば誤解が解けるでしょ
+う。「RFC822 は、ヘッダと本文のシンタックス(構文)を7ビット、それらのセマ
+ンティックス(意味)を US-ASCII と定めています。ISO-2022-JP のシンタックス
+は RFC822 に従っていますが、セマンティックスは RFC822 に違反しています。」
+
+
+
+File: mew.jis.info, Node: mime-comes, Next: canonical, Prev: rfc822, Up: Kanji
+
+MIME の登場
+===========
+
+絵や音声などを配送したい、地域化された RFC 822 の架け橋となる規格が欲し
+いなどの要望を満たすために、1992年に MIME が規定されました。MIME では、
+テキストの文字コードを charset というパラメータに指定できます。たとえば、
+ISO-2022-JP は以下のように指定します。
+
+     Content-Type: Text/Plain; charset=iso-2022-jp
+     Content-Transfer-Encoding: 7bit
+
+     日本語のテキスト
+
+この charset は役に立つのでしょうか？ もちろんです。charset は、インター
+フェイスに正しくテキストの文字コードを伝える役割を果たします。ノルウェー
+の人が ISO-8859-1 で日本にメッセージを送ってきたとしましょう。ISO-8859-1 
+に対応しているインターフェイスなら、対応するフォントで表示すればいいし、
+対応していないなら無視すればいいのです。Mew では、Mule の内部コードに変
+換する関数の引数に charset を利用しています。
+
+「ISO-2022-JP の上位互換規格であり、さまざまな文字コードを格納できる 
+ISO-2022-JP-2 などを使えば charset など要らない。なぜなら ISO-2022-JP-2 
+自体に文字コードの情報が含まれているから」という人がいます。しかし、これ
+らの人は MIME を理解できているとは思えません。
+
+確かに理想的にいえば、この主張は正しいのです。しかし、MIME は現実主義で
+す。MIME はユーザが明日から ISO-2022-JP-2 を使うようになるという大胆な仮
+定はしていません。また、世の中に存在する脆弱な配送プログラムでも安定して
+動くように考慮されています。世の中は、そんなにお行儀のよいプログラムばか
+りではないし、たくさんの資源を使えるほど豊かでもないのです。「明日から
+UNICODE を使え」と言われたらいやでしょう？
+
+MIME は、さまざまに地域化されたメッセージの架け橋として charset を用意し
+ました。MIME で増えた作業は、charset の挿入だけであり、今まで通り我々は 
+ISO-2022-JP を使えます。ISO-2022-JP-2 を標準にしたいなら、ISO-2022-JP-2 
+をデフォルトで使う地域を広げていけばよいのです。この意味で、
+ISO-2022-JP-2 と MIME は相反してはなく、逆に、ISO-2022-JP-2 の普及のため
+に MIME を利用できると言えます。もちろん文字コードの符号化方式である 
+ISO-2022-xx に charset という単語が相応しくないのは、MIME の開発者も認め
+ているところです。
+
+MIME を使えば、非 ASCII 文字を ASCII 文字列に符号化し、ヘッダに挿入でき
+ます。このような枠組で、電子メールの配送プログラムの誤動作を防止し、また、
+ヘッダに英語以外の言語を書くことを実現しているのです。もう、Subject: に
+「日本語を書いてはいけません」なんて言わなくてよくなりました。:)
+
+MIME は地域化された RFC 822 を禁止する規格ではありません。よって、MIME 
+のインターフェイスは、以下のような動作が望まれています。
+
+読むとき
+
+  1. ユーザがデフォルトの charset を選べるようにしておく。
+  2. MIME-Version: がないメッセージの場合は、本文をデフォルトの charset 
+     として扱う。
+  3. MIME-Version: があり、Content-Type: がない場合は、US-ASCII として扱
+     う。
+  4. MIME-Version: と Content-Type: がある場合は、Content-Type: に指示さ
+     れた charset を利用する。
+
+書くとき
+
+  1. MIME-Version: と Content-Type: Text/Plain の charset を必ず付ける。
+  2. charset には、最小限の文字集合を選ぶようにする。たとえば、英語だけ
+     なら US-ASCII を選ぶようにする。これを守らないと、読めるべきメッセー
+     ジが読めなくなる可能性がある。たとえば、US-ASCII だけなのに、
+     ISO-2022-JP と書いてあると、US-ASCII にしか対応してないメーラで読め
+     ないかもしれない。
+
+スプールやフォルダに ISO-2022-JP を EUC-Japan に変更して格納する場合は、
+無条件に変換してはいけません。きちんと charset を確かめ、ISO-2022-JP だ
+けを EUC-Japan に変換するようにして下さい。
+
+ヘッダに非 ASCII 文字を挿入する機能は MIME の一機能ですが、実際には、
+MIME-Version: フィールドは必要ありません。
+
+
+
+File: mew.jis.info, Node: canonical, Next: Policy, Prev: mime-comes, Up: Kanji
+
+正規化の概念
+============
+
+残念ながら、世の中のコンピュータは、データをさまざまな方法で表現します。
+以下によく利用されている OS とその行末を示します。
+
+   - UNIX :: LF(0x0a)
+   - MS-DOS :: CRLF(0x0d0a)
+   - MacOS :: CR(0x0d)
+
+よって、行末に関して取り決めがないと、これらの OS 間では安全にテキストが
+交換できません。RFC822 では、メッセージの再送の際に行末を CRLF に変換す
+ることになっています。このように、共通の書式への変換を「正規化」といいま
+す。SJIS や EUC-Japan を ISO-2022-JP に直すのも正規化の一種です。
+
+さて、PGP の暗号化や署名ついて考えてみましょう。たとえば、Mac のユーザが
+行末が CR である文章に署名し UNIX ユーザに送ったとします。UNIX ユーザが
+行末を LF に変換し署名を確認したとしたら、検証が失敗するのは明らかでしょ
+う。そこで、PGP への入力はあらかじめ正規化されている必要があるのがお分か
+りになると思います。
+
+PGP で暗号化したり署名したりする場合は、まずテキストを ISO-2022-JP に変
+換し、行末を CRLF に直して下さい。
+
+
+
+
+File: mew.jis.info, Node: Policy, Next: History, Prev: canonical, Up: Top
+
+Mew のこだわり
+**************
+
+Mew の精神を一言で表すと、
+
+     Mew wants something simple or nothing at all.
+
+となります。つまり、複雑な機能は要らないのです。単純で吟味された機能しか
+提供しません。
+
+たくさんの方が「昔使っていたメーラにはこんな機能があって便利だから、Mew 
+にも付け加えて欲しい」といいます。しかし、こんな説明では著者を説得するの
+は難しいでしょう。なぜなら、Mew は他のプログラムが今までやっていないこと
+を実現しようとしているからです。「昔はこうだった」という理由はあまりにも
+力不足です。
+
+もし自分の意見が正しいと思うのでしたら、根気強く著者を説得して下さい。著
+者は忙しいので昔説明されたことはすぐ忘れてしまいますし、人間ですから思い
+込みや偏見があります。素晴らしいアイディアを理解できないことが多分にある
+でしょう。どうか、くじけないで下さい。
+
+
+
+
+File: mew.jis.info, Node: History, Next: mh-e, Prev: Policy, Up: Top
+
+Mew の来た道
+************
+
+役には立ちませんが、Mew の歴史をひもといてみましょう。
+
+* Menu:
+
+* mh-e::                        mh-e からの脱却
+* birth::                       Mew の誕生
+* pgp::                         PGP との出会い
+* im::                          MH からの独立
+* netnews::                     ニュースの統合
+
+
+
+File: mew.jis.info, Node: mh-e, Next: birth, Prev: History, Up: History
+
+mh-e からの脱却
+===============
+
+1993年の秋に WIDE Project の FJPEM の実験に参加しました。そのころ、櫻井
+さんが FJPEM を mh-e で利用しやすくするため、mhpem を作りました。mhpem 
+に触発され、1994年の冬は修論の逃避行動を兼ねて mhpem の改良に励みました。
+
+mhpem は暗号メッセージを自動的に復号化するおしゃれなプログラムでしたが、
+いくつか問題がありました。大きな問題は、mh-e が簡単に拡張できない柔軟性
+に欠けたプログラムだったことです。復号化したメッセージは、次に読むときは
+速くなるよう保存したいと思いますが、mh-e を改良するのは難しいのです。
+mh-e がバージョンアップし、mhpem が新しい mh-e で動かなかったとき、著者
+は切れました。
+
+復号化した PEM を保存したい。MIME も保存したい。どうして、簡単に MIME を
+取り扱えるインターフェイスがないのか。なぜ、複数のメッセージから簡単に引
+用できないのか。マークを駆使して面白いことができないなんて。メッセージの
+整頓が大変なのはいやだ。結局、mh-e を改良することでは、自分の欲しいプロ
+グラムは書けなかったのです。
+
+mhpem の自動復号機能、mhasync の非同期な scan 機能、ウインドウの大きさを
+動的に変更できる GNUS の機能、マークを付けて複数のニュースを取り扱える 
+gnus-mark の機能、VM のような整頓機能、解析したメッセージの保存、美しく
+柔軟性のあるプログラミングスタイル.... さまざま断片が著者の中で1つにまと
+まり始めました。1994年3月、奈良への引越し前のことでした。
+
+
+
+File: mew.jis.info, Node: birth, Next: pgp, Prev: mh-e, Up: History
+
+Mew の誕生
+==========
+
+1994年4月、本格的に Mew の製作に取り掛かりました。一覧表示の終了を待たな
+くてよい機能、動的なウインドウ設定、マーク、解析したメッセージの保存など
+は、お手本があったので早くから実装されていました。
+
+はじめの頃は MIME を MIME モードで表示していました。マルチパートのメッセー
+ジで `SPC' を押すと、Summary モードから MIME モードに移動していたのです。
+しかし、歌代さんは言いました、「なぜ MIME モードかあるの？ Summary だけ
+で十分ではないか」。目から鱗の落ちる思いでした。
+
+このころの大きな障害は、メッセージの整頓方法と MIME の作成方法でした。
+
+確かに VM のように、ユーザにいちいち Lisp を書かせれば、整頓は簡単になり
+ます。しかし、ユーザにこまめに設定させること自体が嫌だったのです。「メッ
+セージのヘッダから無限の可能性のある整頓先を模索するのは馬鹿だ。限りのあ
+る実際のフォルダの中から候補を選べばいい」。このアイディアを思いついたと
+きは、次の朝が来るのが待ち遠しかったものです。整頓機能は、後に乃村さんに
+よって強化されました。
+
+複雑な MIME を簡単に作成するにはどうすればよいか？ ユーザには作成文法と
+か MIME の書式などの理解を押しつけるのはあんまりだ。一言説明すれば、だれ
+でも直感的に MIME を作れるようにしたい。この答えをくれたのは門林さんです。
+「MIME の構造ってファイルシステムに似ているよね」。そうです、シングルパー
+トをファイル、マルチパートをディレクトリと考えればよいのです。ファイル操
+作はだれにでもできるし、ファイル構造を MIME に変換する仕事は Mew が請け
+負います。
+
+
+
+File: mew.jis.info, Node: pgp, Next: im, Prev: birth, Up: History
+
+PGP との出会い
+==============
+
+FJPEM の実装に疑問を感じていた著者は、1994年の初夏 PGP と出会いました。
+そのころは PGP 2.5、つまり、MIT が RSAREF を使って、RSA の特許に抵触しな
+い非商用の PGP を模索していた時期です。PGP 2.6 のリリースによって、Phil 
+と RSADSI は和解しましたが、RSAREF を使っている 2.6 は米国国外への持ち出
+しが禁止されています。
+
+しかし、2.3a を基にした 2.6ui の存在を知り、PGP ユーザになりました。PGP 
+を始めて使ったときの感動は忘れられません。本当に計算し尽くされたプログラ
+ムです。1995年の冬、サンディエゴで開かれた通称 ISOC Security
+Symposium(NDSS)という国際会議に参加しました。このとき、プロシーディング
+と共に O'Reilly から発売されてすぐの Simson の PGP という本をもらいまし
+た。久々に読みふけった傑作中の傑作です。このような理由から、PEM と MIME 
+の統合よりも、PGP と MIME の統合に力を注ぐようになりました。PGP/MIME は
+現在実験段階であり、標準化にはまだ時間がかかります。
+
+「暗号化とか署名はマークで表せばいい」というアイディアは、櫻井さんと情報
+処理全国大会の論文を書いたときに教えてもらいました。マークならいつでも好
+きなときにキャンセルできるという利点を理解するのは少し時間がかかりました
+けど。
+
+
+
+File: mew.jis.info, Node: im, Next: netnews, Prev: pgp, Up: History
+
+MH からの独立
+=============
+
+「うまい寿司を食わせてやるからみんな福岡に集合だ」のかけ声のもと、1997年
+4月にそうそうたるプログラマが福岡ドームのある百道に結集しました。九州シ
+ステム情報技術研究所にハック部屋を借り、近くのハイヤット・リージェンシー
+を寝床にして、3泊4日に及ぶ MH からの独立作戦が開始されました。
+
+とにかく食べる、気に入るまでハックする、とことんまで議論するという作業を
+なんども繰り返し、福岡を後にするころにはほぼ Mew が MH から独立し、IM を
+使うようになっていました。(この週のエンゲル係数が高かったのは言うまでも
+ありません。)
+
+その後もメーリングリストで議論を戦わせ、合意を取り、またハックするという
+作業を繰り返し、最後に歌代先生が高速化の魔法を唱えて、ようやく7月頭にベー
+タリリースにこぎつけました。
+
+
+
+File: mew.jis.info, Node: netnews, Next: Future, Prev: im, Up: History
+
+ニュースの統合
+==============
+
+1994年秋の WIDE 合宿で Mew の BOF(Birds Of a Feather::井戸端会議)をしま
+した。この BOF で佐野さんは「電子メールとニュースの中間がメーリングリス
+トだよね」という忘れられない言葉を残しました。闇の中で手探り状態だったと
+ころに、一筋の光を見た思いです。Perl 5 が安定してきた現在、ニュースの統
+合は間近に迫っています。
+
+
+
+
+File: mew.jis.info, Node: Future, Next: Avail, Prev: netnews, Up: Top
+
+Mew の行く道
+************
+
+Mew 1.95 がバージョン 1 としては最後になる予定です。以下に Mew 1.95 で実
+装する機能を挙げます。
+
+真の多言語対応
+     Mew の多言語対応は今でも素晴らしいのですが、8bit のメッセージをうま
+     く転送できない、韓国語の取り扱いが難しいなどの欠点があります。これ
+     らを欠点を修正して真の多言語対応を目指します。
+MIME エディタ
+     現在、マルチパート・メッセージを再編集するのは困難です。Mew 1.95 で
+     は、あたかも新規メールを扱っているかのような再編集機能を実現します。
+カスタマイズ
+     `defcustom' などを利用して、カスタマイズを容易にします。
+Draft モードの定型書式とサブモード
+     Draft モードで定型の文書をあらかじめ用意したり、携帯電話メールへメッ
+     セージを書くために便利なモードを用意したりします。
+
+Mew 2 では IM から独立する予定です。このプロジェクトは 「Mew 2 の逆襲」
+と呼ばれています。
+
+IMAP デーモン
+     Mew 1.9x の欠点の 1 つは、IM を何度も呼び出すので、Perl が起動し IM 
+     のファイル群を読む時間その都度待たされることです。そこで、ローカル
+     のコンピュータに常駐する IMAP デーモンを作成し、Mew は IMAP デーモ
+     ンと通信するようにします。
+全文検索のデータベース
+     全文検索のためのデータベースに対応します。実は現在でも Namazu が利
+     用できます。"contrib/00readme-namazu.jis" を参照して下さい。
+親子関係のデータベース
+     メッセージの親子関係を保存するデータベースに対応します。これによっ
+     てスレッドが実現できます。また、メッセージの未読管理もできるように
+     なります。ひょっとすると、メッセージの整頓という作業はまったくなく
+     なるかもしれません。
+ネットニュース
+     そろそろネットニュースにも対応しないといけませんね。
+
+
+
+
+File: mew.jis.info, Node: Avail, Next: ftp, Prev: Future, Up: Top
+
+入手方法とメーリングリスト
+**************************
+
+ここでは、Mew の入手方法とメーリングリストについて触れます。
+
+* Menu:
+
+* ftp::                         Mew の入手方法
+* ml::                          メーリングリスト
+
+
+
+File: mew.jis.info, Node: ftp, Next: ml, Prev: Avail, Up: Avail
+
+Mew の入手方法
+==============
+
+Mewの最新バージョンは以下から入手できます。
+
+     ftp://ftp.Mew.org/pub/Mew/mew-current.tar.gz
+
+ときどきサンプルメッセージが以下のように提供されます。
+
+     ftp://ftp.Mew.org/pub/Mew/samples.tar.gz
+
+
+
+File: mew.jis.info, Node: ml, Next: Ack, Prev: ftp, Up: Avail
+
+メーリングリスト
+================
+
+新しいバージョンは、
+
+     mew-release@Mew.org
+
+で英語でアナウンスしています。入りたい人は
+
+     mew-release-ctl@Mew.org
+
+宛に本文に "#help" と書いて電子メールを送って下さい。mew-release には著
+者以外が投稿できないように制限が加えられています。
+
+Mew の質問や議論などは、
+
+     mew-dist@Mew.org
+
+に日本語で投稿できます。mew-dist へ入りたい人は
+
+     mew-dist-ctl@Mew.org
+
+宛に本文に "#help" と書いて電子メールを送って下さい。mew-dist は 
+mew-release に含まれているので、mew-dist に登録すれば、自動的に 
+mew-release 宛の電子メールを受け取るようになります。
+
+Mew の質問はできるだけ mew-dist へお願いします。著者には受け取ったすべて
+の質問に答えている時間はありません。mew-dist へ質問すると、他の人が答え
+てくれることを期待できます。
+
+
+
+
+File: mew.jis.info, Node: Ack, Next: Copyright, Prev: ml, Up: Top
+
+謝辞
+****
+
+まずはじめに、櫻井三子さんにお礼を述べたいと思います。彼女が mhpem を作
+り触発してくれなかったら Mew を作ることはなかったからです。(もうなくなっ
+てしまいましたが) mew-url や mew-pem の多くの部分を書いています。また、
+複雑なメッセージの作成にマークを使うというヒントも与えてくれました。
+
+Summary モードをもっと簡素にと助言して頂いた歌代和正さん、MIME とファイ
+ル構造って似てるよねと言ってくれた門林雄基さん、いつも電子メールに関して
+貴重な助言をしてくれる中村素典さん、電子メールとニュースを統合するきっか
+けを与えてくれた佐野晋さんに心から感謝します。
+
+いつも素晴らしいコードを提供しくれる酒井清隆さん、メッセージの整頓機能を
+賢くしてくれた乃村能成さん、こまめに英語を直してくれる牛島幹友さん、info 
+を書く気にさせてくれた島慶一さん、ありがとうございます。
+
+I would like to thank David Worenklein for contributing many codes. I'm
+grateful to Atsushi Shionozaki, Darren Stalder, and David Worenklein for
+proofreading my paper. I'd like to acknowledge to Scandinavia guys for
+their good suggestions.
+
+IM の作成に協力してくれた萩野純一郎さん、笠原義晃さん、中村素典さん、乃
+村能成さん、西和則さん、太田英憲さん、IM を高速にしてくれた歌代和正さん
+に感謝します。Mew を OS/2 で動かす努力とたくさんのテストをしてくれる奥西
+藤和さんにお礼を申し上げます。Mew が Win95/WNT で動くようになったのは、
+主に北口修一さんと山口修平さんの努力によるところが大きいです。Mew が 
+XEmacs で楽しいのは、寺西裕一さんのおかげです。
+
+Mew に対し献身的な白井秀行さん、鯉江英隆さん、そして後藤俊一さんに感謝し
+ます。
+
+Mew はたくさんの人の貢献の上に成り立っています。ここに名前を挙げていない
+方にも心から感謝しています。著者はなにぶん多忙ですので、すべての電子メー
+ルに答える時間が取れません。返事が帰って来なかった人は、本当にすみません
+でした。
+
+
+
+
+File: mew.jis.info, Node: Copyright, Next: Author, Prev: Ack, Up: Top
+
+著作権について
+**************
+
+Mew は以下の著作権に従います。
+
+Copyright (C) 1994, 1995, 1996, 1997, 1998, 1999 Mew developing team.
+All rights reserved.
+
+変更の有無にかかわらず、ソースおよびバイナリ形式の再配布および利用は、以
+下の条件を満たしていれば、これを許可する。
+
+  1. ソース・コードの再配布は、上記の著作権表示、この条件項目、および、
+     以下の免責事項を保存しなければならない。
+  2. バイナリ形式の再配布は、上記の著作権表示、この条件項目、および、以
+     下の免責事項を、その配布に付随する説明書、あるいはその他の資料のい
+     ずれかに明記しなければならない。
+  3. 前もって特別に許諾を得ない限り、このソフトウェアから派生した製品の
+     推奨や販売促進のために、このチーム名と貢献者達の名前を利用してはな
+     らない。
+
+このソフトウェアは「このままの形で」提供され、明示的あるいは言外の保証は、
+商用利用および特定目的への適合に対する言外の保証も含み、またこれらだけに
+限らず、存在しない。たとえ以下のような損害の可能性を示唆されていたとして
+も、どのような形にしろこのソフトウェアの利用から発生した問題において、こ
+のチームと貢献者達は、(代替製品やサービスの調達; 利用権、データ、あるい
+は利益の損失; あるいは営業の中断を含む、またこれらだけに限らず)直接的に、
+間接的に、偶然に、特別に、懲罰上、あるいは、必然的に生じてしまった損害に
+対し責任はなく、いかなる責任理論上でも契約の有無に係わらず厳密な責任はな
+く、また(過失あるいはその他を含む)不法行為に対しても責任はない。
+
+CD ROM に入れて配布したいという方は、できるだけ教えて下さい。教えてくれ
+なくても怒りませんが、教えて頂けるとありがたいです。配布を断ったことはあ
+りません。
+
+この Info の著作権は、著者に属します。配布、利用共に自由ですが、無保証で
+す。また、この Info から発生した被害に対し、著者は一切責任を負いません。
+
+
+
+
+File: mew.jis.info, Node: Author, Next: Terminology, Prev: Copyright, Up: Top
+
+著者紹介
+********
+
+Kazuhiko YAMAMOTO // Kazu
+        
+山本和彦 // かず(くん)
+        
+1970年、南を虹の松原を湛える海岸、東をウグイが泳ぐ川、北と西をなだらかな
+山に囲まれる山口県光市に生まれる。中学生のときに映画「ウォーゲーム」を見
+てセキュリティに関心を持つ。自然と遊びながら、高校まで光市で過ごす。
+
+1988年、九州大学工学部電気系入学のため福岡へ。都会の殺伐さ、汚れた海、言
+葉の違いに苦しみながらも卒業まで至る。3年生のときに初めて電子メールに触
+れ、4年生のころにインターネットに惹かれていく。Sun に入社渡米を試みるが、
+不幸にも米国のビザ発行ポリシーが厳しくなった時期と重なり、失敗。
+
+1992年、九州大学大学院工学研究科情報工学専攻へ進学。本格的にインターネッ
+トの研究に従事。経路制御を専門とする。セキュリティの普及活動を開始。修士
+2年の春に、書く書くと言ってなかなか書かなかった「ハッピーネットワーキン
+グ」をリリース。
+
+1994年、奈良先端科学技術大学院大学に助手として就任。約4年の大学教官生活
+中に、Mew の開発に取り組む。「若いうちにプログラムを書こう、教育は歳をとっ
+てからもできるよね」という結論に至り、1998年 IIJ 技術研究所に新たな研究
+環境を求めた。
+
+研究分野 :: メッセージ・システム、IP version 6
+ひとこと :: 「うまく説明できないものは、本質的に優れていない」
+ふたこと :: 「優しいものが優れている」
+
+Email: Kazu@Mew.org
+URL: http://www.mew.org/~kazu/
+PGP fingerprint:  6B 63 38 88 67 5E 96 8E  CE A4 62 73 3F 11 64 94
+
+
+
+
+File: mew.jis.info, Node: Terminology, Next: Bib, Prev: Author, Up: Top
+
+用語集
+******
+
+Mew で使う単語をまとめます。
+
+`フォルダ'
+     受け取ったメッセージを保存するファイルやディレクトリ
+`Summary モード'
+     メッセージの一覧を表示するモード
+`Message モード'
+     テキストメッセージの内容を表示するモード
+`Draft モード'
+     メッセージを書いたり、作成したりするモード
+`MIME'
+     本文にテキスト以外のオブジェクトを格納したり、ヘッダに非 ASCII 文字
+     を挿入したりできる規格。MIME を使えば、本文にテキスト、絵、音声など
+     を同時に取り込め、また、Subject: に日本語を書ける。Multipurpose
+     Internet Mail Extensions の略称で、「多目的メール」と呼ぶことがある。
+     詳しくは、*Note MIME:: を参照。
+`PGP'
+     Phil Zimmermann 氏が作成した暗号メッセージや電子署名を実現するプロ
+     グラム。Pretty Good Privacy の略。
+`ニュース'
+     ネットニュース、あるいは、USENET ニュースのこと。
+`メッセージ'
+     電子メールやニュース、あるいは、MIME などの総称。インターネットメッ
+     セージの省略語。
+
+
+
+
+File: mew.jis.info, Node: Bib, Next: Variable Index, Prev: Terminology, Up: Top
+
+参考文献
+********
+
+ここでは、参考文献を紹介します。RFC(Request For Comments) は、インターネッ
+トで知識を共有するために書かれた文献です。たとえば、以下のサイトから入手
+できます。
+
+     ftp://ftp.isi.edu/in-notes/
+
+インターネットでのマナーは、以下の RFC を読んで学んで下さい。
+
+   * S. Hambridge, "Netiquette Guidelines", RFC 1855, 1995
+
+昔のテキスト・メールの書式や配送の仕組みは以下の RFC を参照しましょう。
+
+   * D. Crocker, "Standard for the format of ARPA Internet text
+     messages", RFC 822, 1982
+   * J. Postel, "Simple Mail Transfer Protocol", RFC 821, 1982
+
+MIME については、以下の RFC を読んで下さい。
+
+   * N. Freed and N. Borenstein, "Multipurpose Internet Mail Extensions
+     (MIME) Part One: Format of Internet Message Bodies", RFC 2045,
+     1996.
+   * N. Freed and N. Borenstein, "Multipurpose Internet Mail Extensions
+     (MIME) Part Two: Media Types" RFC 2046, 1996.
+   * K. Moore, "MIME (Multipurpose Internet Mail Extensions) Part Three:
+     Message Header Extensions for Non-ASCII Text", RFC 2047, 1996.
+   * N. Freed, J. Klensin and J. Postel, "Multipurpose Internet Mail
+     Extensions (MIME) Part Four: Registration Procedures", RFC 2048,
+     1996.
+   * N. Freed and N. Borenstein, "Multipurpose Internet Mail Extensions
+     (MIME) Part Five: Conformance Criteria and Examples", RFC 2049,
+     1996.
+   * R. Troost, S. Dorner, K. Moore, "Communicating Presentation
+     Information in Internet Messages: The Content-Disposition Header
+     Field", RFC 2183, 1997.
+   * N. Free and K. Moore, "MIME Parameter Value and Encoded Word
+     Extensions: Character Sets, Languages, and Continuations", RFC
+     2231, 1997.
+
+ニュースの書式と配送プロトコルは、以下の RFC で定義されています。
+
+   * M. Horton and R. Adams, "Standard for interchange of USENET
+     messages", RFC 1036, 1987.
+   * B. Kantor and P. Lapsley, "Network News Transfer Protocol: A
+     Proposed Standard for the Stream-Based Transmission of News", RFC
+     977, 1986.
+
+PGP を学ぶなら、以下の書籍がいいでしょう。
+
+   * PGP: Petty Good Privacy, Simson Garfinkel, O'Reilly & Associates,
+     Inc, 1995.  (訳書:: "PGP 暗号メールと電子署名", Simson Garfinkel 著, 
+     山本和彦監訳, 株式会社オライリージャパン, 1996.)
+
+PGP と MIME の統合については、以下を参照して下さい。
+
+   * J. Galvin, S. Murphy, S. Crocker and N. Freed, "Security Multiparts
+     for MIME: Multipart/Signed and Multipart/Encrypted", RFC 1847,
+     1995.
+   * M. Elkins, "MIME Security with Pretty Good Privacy (PGP)", RFC
+     2015, 1996.
+
+メールの基礎知識は、Mew ニュースレターにまとめられています。
+http://www.Mew.org/ を参照して下さい。
+
+
+
+
+File: mew.jis.info, Node: Variable Index, Prev: Bib, Up: Top
+
+変数索引
+********
+
+
+* Menu:
+
+* mail-citation-hook:           cite.                   4.
+* mail-user-agent:              Composing.              4.
+* mail-user-agent:              Start.                  4.
+* mew-addrbook-for-cite-label:  cite.                   4.
+* mew-addrbook-for-cite-prefix: cite.                   4.
+* mew-addrbook-mode-hook:       hooks.                  4.
+* mew-addrbook-override-by-newone: addrbook.            4.
+* mew-auto-get:                 Start.                  4.
+* mew-before-cite-hook:         hooks.                  4.
+* mew-cc:                       level-one.              4.
+* mew-cite-fields:              level-three.            4.
+* mew-cite-format:              level-three.            4.
+* mew-cite-hook:                hooks.                  4.
+* mew-cite-prefix:              level-three.            4.
+* mew-config-insert-when-composed: config.              4.
+* mew-config-insert-when-prepared: config.              4.
+* mew-dcc:                      level-one.              4.
+* mew-decode-quoted:            illegal.                4.
+* mew-draft-mode-hook:          hooks.                  4.
+* mew-draft-mode-hook:          level-one.              4.
+* mew-draft-mode-newdraft-hook: hooks.                  4.
+* mew-draft-mode-reedit-hook:   hooks.                  4.
+* mew-end-of-message-string:    multipart.              4.
+* mew-end-of-part-string:       multipart.              4.
+* mew-env-hook:                 hooks.                  4.
+* mew-fcc:                      level-one.              4.
+* mew-field-circular-completion-switch: cheader.        4.
+* mew-field-completion-switch:  header.                 4.
+* mew-field-delete-for-forwarding: forward.             4.
+* mew-fields:                   header.                 4.
+* mew-file-max-size:            singlepart.             4.
+* mew-from:                     cheader.                4.
+* mew-from:                     level-one.              4.
+* mew-from-list:                cheader.                4.
+* mew-fromme-cc-list:           reply.                  4.
+* mew-fromme-to-list:           reply.                  4.
+* mew-header-alist:             level-three.            4.
+* mew-highlight-mark-folder-list: level-two.            4.
+* mew-icon-directory:           Start.                  4.
+* mew-init-hook:                hooks.                  4.
+* mew-lisp-max-length:          addrbook.               4.
+* mew-lisp-max-length:          by-from.                4.
+* mew-lisp-max-length:          by-thread.              4.
+* mew-mail-address-list:        reply.                  4.
+* mew-mail-domain-list:         cheader.                4.
+* mew-mail-domain-list:         Start.                  4.
+* mew-make-message-hook:        hooks.                  4.
+* mew-message-hook:             hooks.                  4.
+* mew-message-mode-hook:        hooks.                  4.
+* mew-msg-rm-folder-list:       delete mark.            4.
+* mew-msg-rm-policy:            delete mark.            4.
+* mew-multipart-icon-position:  XEmacs.                 4.
+* mew-noreplyto-cc-list:        reply.                  4.
+* mew-noreplyto-to-list:        reply.                  4.
+* mew-prog-gpg:                 pgp-viewing.            4.
+* mew-prog-pgp:                 pgp-viewing.            4.
+* mew-prog-pgp2:                pgp-viewing.            4.
+* mew-prog-pgp5:                pgp-viewing.            4.
+* mew-quit-hook:                hooks.                  4.
+* mew-real-send-hook:           hooks.                  4.
+* mew-refile-auto-refile-skip-any-mark: auto-refile.    4.
+* mew-refile-ctrl-multi:        guess-rule.             4.
+* mew-refile-guess-alist:       by-alist.               4.
+* mew-refile-guess-control:     guess-rule.             4.
+* mew-refile-guess-from-me-is-special: by-from.         4.
+* mew-refile-guess-from-me-is-special: by-from-folder.  4.
+* mew-refile-guess-strip-domainpart: by-default.        4.
+* mew-replyto-cc-list:          reply.                  4.
+* mew-replyto-to-list:          reply.                  4.
+* mew-send-hook:                hooks.                  4.
+* mew-signature-as-lastpart:    send.                   4.
+* mew-signature-file:           send.                   4.
+* mew-signature-insert-last:    send.                   4.
+* mew-sort-default-key:         sorting.                4.
+* mew-sort-default-key-alist:   sorting.                4.
+* mew-sort-key-alist:           sorting.                4.
+* mew-summary-exec-hook:        hooks.                  4.
+* mew-summary-inc-sentinel-hook: hooks.                 4.
+* mew-summary-mark-direction:   level-one.              4.
+* mew-summary-mode-hook:        hooks.                  4.
+* mew-summary-scan-sentinel-hook: hooks.                4.
+* mew-summary-show-direction:   level-one.              4.
+* mew-suspend-hook:             hooks.                  4.
+* mew-syntax-format-hook:       hooks.                  4.
+* mew-use-cached-passwd:        folder.                 4.
+* mew-use-folders-file-p:       features.               4.
+* mew-use-highlight-body:       level-two.              4.
+* mew-use-highlight-cursor-line: level-two.             4.
+* mew-use-highlight-header:     level-two.              4.
+* mew-use-highlight-mark:       level-two.              4.
+* mew-use-highlight-mouse-line: level-two.              4.
+* mew-use-highlight-url:        level-two.              4.
+* mew-use-highlight-x-face:     level-two.              4.
+* mew-use-pgp-cached-passphrase: pgp-viewing.           4.
+* mew-virtual-mode-hook:        hooks.                  4.
+* mew-window-use-full:          level-one.              4.
+* mew-x-pgp-key-list:           pgp-viewing.            4.
+
+
+
+

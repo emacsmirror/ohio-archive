@@ -1,0 +1,160 @@
+<HTML>
+<HEAD>
+<TITLE>Feff : Output files</TITLE>
+</HEAD>
+<BODY>
+<A HREF="feff7-5.html">Previous</A>
+<A HREF="feff7-7.html">Next</A>
+<A HREF="feff7.html#toc6">Table of Contents</A>
+<HR>
+<H2><A NAME="s6">6. Output files</A></H2>
+
+
+
+
+<H2><A NAME="ss6.1">6.1 phase.bin</A></H2>
+
+<P>This is a binary file with the scattering phase shifts for each unique
+potential.  It is used by GENFMT and the pathfinder. </P>
+
+
+
+<H2><A NAME="ss6.2">6.2 paths.dat</A></H2>
+
+<P>Written by the pathfinder, this is a description of all the paths that
+fit the criteria used by the pathfinder.  It is used by GENFMT. The
+path descriptions include cartesian coordinates of atoms in the path,
+scattering angles, leg lengths and degeneracy. For details on editing
+this by hand, see section 4. </P>
+
+
+
+<H2><A NAME="ss6.3">6.3 crit.dat</A></H2>
+
+<P>Values of the quantities tested against the various criteria in the
+pathfinder. </P>
+
+
+
+<H2><A NAME="ss6.4">6.4 geom.dat</A></H2>
+
+<P>Written by feff for use with the pathfinder, and deleted after use.  It
+is an atom list created from the user-input list in feff.inp.  For more
+information, see the NOGEOM card in section 4. </P>
+
+
+
+<H2><A NAME="ss6.5">6.5 list.dat</A></H2>
+
+<P>List of files to use to create chi.dat.  Written by GENFMT when the
+xafs parameters are calculated and used by FF2CHI.  This contains the
+curved wave importance ratios, which you may wish to study. For details
+on editing this by hand, see section 5. </P>
+<P>The curved wave importance ratios are the importance of a particular
+path relative to the most important path encountered so far in the
+calculation.  If the first path is the most important in the problem,
+all the importance factors will be expressed as a fraction of that path.
+However, if the third path considered is the most important, and the first
+path is the next most important, path 1 will have a factor of 100%, path 2
+will be a fraction of the first path's importance, path 3 will have an
+importance of 100% (since it is now the most important path), and subsequent
+paths will be expressed as a percent of path 3's importance.</P>
+
+
+
+<H2><A NAME="ss6.6">6.6 chi.dat</A></H2>
+
+<P>Standard xafs data k, chi(k), |chi(k)| relative to threshold (k=0): The
+header also contains enough information to specify what model was used
+to create this file. </P>
+
+
+
+<H2><A NAME="ss6.7">6.7 feff.bin</A></H2>
+
+<P>A binary file that contains all the information about the XAFS from all
+of the paths.  This replaces the old feffNNNN.dat files (which you can
+make using the PRINT card).  If you want to use this file with your own
+analysis package, use the code in subroutine feffdt
+as an example of how to read it.</P>
+
+
+<H2><A NAME="ss6.8">6.8 feffNNNN.dat</A></H2>
+
+<P>You have to use PRINT option to obtain these files.
+Effective scattering amplitude and phase shift data, with   k
+referenced to threshold for shell nn: k,  phi_c, |feff|,
+ph(feff),
+redfac, lambda,  Re(p)</P>
+<P>If you need these, use PRINT option for ff2chi greater than 3,
+which will read
+feff.bin and write the feffNNNN.dat files in exactly the form you're
+used to.</P>
+
+
+<H2><A NAME="ss6.9">6.9 Diagnostic files from POTPH</A></H2>
+
+<P>
+<DL>
+<DT><B> misc.dat         </B><DD><P>Header file for quick reference. </P>
+<DT><B> phaseNN.dat </B><DD><P>Complex phase shifts for each shell.</P>
+<DT><B> phminNN.dat </B><DD><P>Real part of phase shifts for l=0,1,2 only.</P>
+<DT><B> potNN.dat        </B><DD><P>Detailed atomic potentials and densities.</P>
+<DT><B> atomNN.dat       </B><DD><P>Diagnostic information on Desclaux free atom NN.</P>
+</DL>
+</P>
+
+
+
+<H2><A NAME="ss6.10">6.10 xsect.bin, rkk.bin and xmu.dat files</A></H2>
+
+<P>Dipole matrix elements and absolute energies for XANES calculations.
+Note: the file xsect.bin does not contain the fermi-function cutoff
+at the edge, while xmu.dat does. Dipole matrix elements in rkk.bin
+normalized to the total cross-section in xsect.bin. 
+The file xmu.dat contains both
+XANES and XAFS data mu, mu_0, and chi as functions of absolute
+energy E, relative energy E-e_f and wave number k. </P>
+
+
+
+
+<H2><A NAME="ss6.11">6.11 Variables in output files and in calculation of XAFS</A></H2>
+
+<P>
+<DL>
+<DT><B> k </B><DD><P>wave number (ang**-1); <CODE>k=sqrt(e-e_f)</CODE> where <CODE>e</CODE>
+is energy and <CODE>e_f</CODE> is
+the fermi level computed from electron gas theory at the avg
+interstitial charge density </P>
+
+<DT><B> chi(k) </B><DD><P><CODE>s0&circ;2 * redfac sum_shells ( natsh * (|feff|
+/kR**2) * exp(-2R/lambda) * sin(2kR + ph(feff) + phi_c)) * exp(-2*k**2*sigma**2) )</CODE></P>
+
+<DT><B> phi_c </B><DD><P><CODE> 2*delta_l_c - l*pi </CODE> (total central atom phase)</P>
+
+<DT><B> feff </B><DD><P>effective curved-wave backscattering amplitude
+<CODE>feff(k)</CODE> in xafs formula for each shell</P>
+<DT><B> ph(feff)  </B><DD><P>phase of <CODE>feff(k)</CODE> for each shell</P>
+<DT><B> redfac   </B><DD><P><CODE>exp(-2 imag (delta_c) )</CODE>, total central atom loss factor</P>
+<DT><B> R </B><DD><P>distance to central atom for each shell</P>
+<DT><B> natsh </B><DD><P>mean number atoms in each shell</P>
+<DT><B> sigma**2 </B><DD><P>mean square variation of <CODE>R</CODE> for each shell</P>
+<DT><B> lambda </B><DD><P>mean free path (angstroms) <CODE>=-1./imag (p)</CODE></P>
+<DT><B> kf </B><DD><P>fermi momentum at avg interstitial charge density</P>
+<DT><B> p=p(r)  </B><DD><P>local momentum (<CODE>p(r)**2=k**2+kf(r)**2+sigma-sigma_f)</CODE></P>
+<DT><B> sigma    </B><DD><P>self energy at energy <CODE>e, sigma_f</CODE> at energy <CODE>e_f</CODE></P>
+<DT><B> mu        </B><DD><P>total absorption cross-section</P>
+<DT><B> mu_0      </B><DD><P>atomic background absorption</P>
+</DL>
+</P>
+
+
+
+
+<HR>
+<A HREF="feff7-5.html">Previous</A>
+<A HREF="feff7-7.html">Next</A>
+<A HREF="feff7.html#toc6">Table of Contents</A>
+</BODY>
+</HTML>

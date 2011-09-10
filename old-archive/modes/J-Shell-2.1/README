@@ -1,0 +1,49 @@
+$Id: README,v 2.1 1994/07/12 13:51:02 jthompso Exp $
+
+This is Jim's Pretty-Good Shell Mode (J-Shell), a shell-mode for GNU Emacs.
+
+NOTE: Version 2.1 fixes a problem in running J-Shell under FSF
+      Emacs version 19.24 and later.  J-Shell 2.1 should also work
+      with earlier versions of FSF Emacs 19, Lucid Emacs 19
+      (XEmacs), and Emacs 18.
+
+Written and maintained by: Jim Thompson
+			   jimt@sugar.neosoft.com
+
+J-Shell is a shell mode derived from Emacs 18's shell mode (although
+it has been changed so much that it bears little resemblance to the
+original).  J-Shell's features include:
+
+  *  Accurate working-directory tracking
+
+  *  Filename completion
+
+  *  Command completion
+
+  *  Environment variable completion, substitution, and tracking
+
+  *  Host tracking and a simple interface to ange-ftp
+
+  *  A browseable command history stack
+
+  *  Password detection and hiding (with some security features)
+
+  *  Automatic generation of new buffers
+
+  *  Input buffering (a fix for the ^G problem)
+
+J-Shell can be used with most popular shells; the exception is sh, which
+cannot be used because it provides no means of aliasing its cd command.
+(You *could* use sh with J-Shell, but you would have no directory
+tracking.)  Sh users would be better off using the shell-mode that comes
+with Emacs.
+
+Note that J-Shell requires that you modify your shell's startup
+script so that it can communicate with J-Shell.  This is how J-Shell
+achieves its directory and environment variable tracking.  If you
+you're not comfortable modifying your startup script, then J-Shell is
+probably not for you.
+
+See the file DOC for instructions on using J-Shell
+
+NOTE: To report bugs use the C-c C-b binding.  See file DOC, section BUGS.

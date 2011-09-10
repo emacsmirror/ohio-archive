@@ -1,0 +1,979 @@
+Info file: eieio.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `eieio.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+START-INFO-DIR-ENTRY
+* eieio: (eieio).       Objects for Emacs
+END-INFO-DIR-ENTRY
+
+
+
+
+
+File: eieio.info, Node: Top, Up: (dir)Top
+
+EIEIO is a framework for writing object oriented applications in emacs
+lisp, and is a result of my taking various object oriented classes at
+work and my attempt to understand some of it better by implementing it.
+The real reason I started eieio is because someone in one of my classes
+said "I bet emacs can't do that!".  Well then, I just had to prove them
+wrong!
+
+* Menu:
+
+* Introduction::          Why use eieio?  Basic overview, samples list.
+* CLOS compatibility::    What are the differences?
+* Building Classes::      How to write out new class structures.
+* Default Superclass::    The grand-daddy of all superclasses.
+* Making New Objects::    How to construct new objects.
+* Accessing Fields::      How to access a field.
+* Writing Methods::       How to write a CLOS style method.
+* Writing Methods::       How to write an embedded class method.
+* Predicates::            Class-p, Object-p, etc-p.
+* Association Lists::     List of objects as assoc lists.
+* Introspection::         Looking inside a class.
+* Signals::               When you make errors
+* Browsing::              Browsing your class lists.
+* Class Values::          Displaying information about a class or object.
+* Customizing::           Customizing objects.
+* Documentation::         Automatically creating texinfo documentation
+* Demo Programs::         Some examples using eieio.
+* Function Index::
+
+As of this writing, updates can be found at:
+`ftp://ftp.ultranet.com/pub/zappo'.
+
+
+
+File: eieio.info, Node: Introduction, Next: CLOS compatibility, Prev: Top, Up: Top
+
+Introduction
+************
+
+  One thing emacs lisp does not support is structured data organization,
+and restricted function access unless one uses the cl package.  As a
+programmer it's easy to break up a program into modules, and say "I
+won't access function or variable XYZ anywhere but here", but it's not
+protected from other programmers doing an apropos and thinking "Hey,
+this is a useful function and I will use it".  Then a program is
+upgraded, and the second programmer is unhappy.
+
+  I've have attempted to make EIEIO CLOS compatible (Common Lisp Object
+System).  This compatibility is only at a fairly basic level.
+
+
+What EIEIO supports
+===================
+
+  1. A structured framework for the creation of basic classes with
+     attributes and methods using singular inheritance similar to CLOS.
+  2. Public and private classifications for slots (extensions to CLOS)
+  3. Customization support in a class (extension to CLOS)
+  4. Method definitions similar to CLOS.
+  5. Simple and complex class browsers.
+  6. Edebug support.
+  7. Imenu updates
+  8. Byte compilation support of methods
+  9. Complex documentation maintenance for emacs symbols
+ 10. Automatic texinfo documentation generator
+
+
+What EIEIO doesn't support
+==========================
+
+Multiple inheritance
+     We could say EIEIO is still in the Fungal stages of development as
+     a class can have but one parent.  (This is being worked on)
+Complete `defclass' tag support
+     All CLOS tags are currently supported, but some are not currently
+     implemented correctly.
+Mock object initializeres
+     Each class contains a mock object used for fast initialization of
+     instantiated objects.  Using functions with side effects on object
+     slot values can potentially cause modifications in the mock object.
+     EIEIO should use a deep copy but currently does not.
+:AROUND method tag
+
+
+EIEIO example programs that are almost useful.
+==============================================
+
+tree
+     Draw a structured tree by building a series of embeded lists of
+     `tree-node' class objects.  Includes the functions
+     `eieio-class-tree' to browse your current eieio inheritance
+     structure
+call-tree
+     Pass it an elisp function (not byte compiled) to generate a call
+     tree using the tree tool
+chart
+     Uses eieio to manage charts/axis/sequences, and allows display of
+     simple bar-charts.  Example programs are available displaying emacs
+     memory usage and list occupation, in addition to file counts and
+     size charts.  Theres even a sample that will display a chart of who
+     sends you the most email!  See doc-string for `chart-bar-quickie'
+     to make your own bar charts easily.
+
+
+EIEIO wish list
+===============
+
+  1. More CLOS compatibility.
+  2. Integrate in the desired built-in methods into the object browser.
+  3. Create some objects over pre-existing emacs-lisp stuff for fun,
+     like faces, processes, buffers, frames and windows as examples.
+
+
+
+File: eieio.info, Node: CLOS compatibility, Next: Building Classes, Prev: Introduction, Up: Top
+
+CLOS compatibility
+******************
+
+As I write this, it is important to know that I have just recently
+learned some of the CLOS syntax, but have never used it myself.  I'm
+primarilly and emacs-lisp hacker who wrote eieio to help myself learn
+some of the mechanics of Object Oriented programming.
+
+Currently, the following functions should behave as expected from CLOS,
+or are mostly compatible.
+
+`defclass'
+     All slot keywords are avaliable but not all work correctly.  Only
+     single inheritance is currently supported.  Slot keyword
+     differences are:
+
+     :reader, and :writer tags
+          Create methods that throw errors instead of creating an
+          unqualified method.
+     :accessor
+          should create an unqualified method to access a slot, but
+          instead pre-builds a method that gets the slot's value.
+     :type
+          specifier uses the `typep' function from the `cl' package.
+          *Note (cl)Type Predicates::. It therefore has the same issues
+          as that package.
+     :initform specifier
+          is implemented correctly, but slots are not `unbound', and
+          merely gain a value of `nil'
+
+     Defclass also supports class options, but does not currently use
+     values of `:metaclass', and `:default-initargs'.
+
+`make-instance'
+     Make instance works as expected, however it just uses the EIEIO
+     instance creator automatically created when a new class is
+     generated.  *Note Making New Objects::.
+`slot-value'
+     Accesses the value of a named slot within an object
+`defgeneric'
+     Creates the desired symbol, and accepts most of the expected
+     arguments
+`defmethod'
+     Calls defgeneric, and accepts most of the expected arguments.  Only
+     the first argument to the created method may be typecast, though
+     any argument can be syntactically typecast.  (And promptly ignored)
+     To typecast against a class, the class must exist before defmethod
+     is called.
+`call-next-method'
+     Inside a method, calls the next available method up the inheritance
+     tree for the given object.  This is different than that found in
+     CLOS because in eieio this function accepts replacement arguments.
+     This permits subclasses to modify arguments as they are passed up
+     the tree.  If no arguments are given, the expected CLOS behavior is
+     used.
+`setf'
+     If the common-lisp subsystem is loaded, the setf parameters are
+     also loaded so the form `(setf (slot-value object value) t)' should
+     work.
+
+Some top-level CLOS functions which I am aware of but are not yet
+defined in EIEIO which are defined in CLOS.
+
+describe
+     Pretty print an object.  Can be found as `eieio-describe-class' for
+     a bufferized version.
+
+When creating a new class (*Note Building Classes::) there are several
+keywords supported by EIEIO.
+
+In EIEIO tags are in lower case, not mixed case.
+
+
+
+File: eieio.info, Node: Building Classes, Next: Default Superclass, Prev: CLOS compatibility, Up: Top
+
+Building Classes
+****************
+
+A class in EIEIO has a similar structure to that found in other
+languages.  A new class is created with `defclass'
+
+ -- Function: defclass CLASS-NAME SUPERCLASS-LIST FIELD-LIST OPTIONS-AND-DOC
+
+     The format for this defun is specified by CLOS, and EIEIO conforms
+     in structure.
+
+     Creates a new class called `class-name'. The created variable's
+     documentation string is set to a modified version of the doc string
+     found in OPTIONS-OR-DOC.  Each time a slot is defined the variables
+     documentation string is updated to include the methods
+     documentation as well.
+
+     The parent class for `class-name' must be a list.  At this time
+     only the first element of that list is used.  In the future,
+     multiple inheritance may be supported.
+
+     The field list is a list of lists.  Each sublist defines an
+     attribute.  These lists are of the form `(name :tag1 value1 :tag2
+     value2 :tagn valuen)'.  Some valid tags are:
+
+     :initarg
+          The argument used during initialization.  *Note Making New
+          Objects::.
+     :initform
+          A lisp expression used to generate the default value for this
+          slot.  If :initform is left out, that slot defaults to being
+          unbound.
+     :accessor
+          Name of a generic function which can be used to fetch the
+          value of this slot.
+     :writer
+          Name of a generic function which will write this slot.
+     :reader
+          Name of a generic function which will read this slot.
+     :type
+          An unquoted type specifier used to validate data set into this
+          slot.  *Note (cl)Type Predicates::.
+     :allocation
+          Unsupported: Either :class or :instance (defaults to
+          :instance) used to specify how data is stored.
+     :documentation
+          Documentation detailing the use of this slot.
+     :custom
+          A custom :type specifier used when editing an object of this
+          type.
+     :protection
+          A CLOS unsupported specifier which indicates that only methods
+          of this class may access this slot.
+
+     Additionally, CLOS style class options are available.  These are
+     various options attached to a class.  These options can occur in
+     place or in addition to a documentation string.  If both occur,
+     then the options appear before the documentation string.  In CLOS,
+     documentation is one of the options available to a class, so the
+     ability to have a standalone documentation string is specific to
+     Emacs.
+
+     Possible class options are:
+     `:documentation'
+          Doc string to use for this class.
+     `:allow-nil-initform'
+          This is not a CLOS option.
+
+          If this option is non-nil, and the `:initform' is `nil', but
+          the `:type' is specifies something such as `string' then allow
+          this to pass.  The default is to have this option be off.
+     `:metaclass'
+          Unsupported CLOS option.  Enables the use of a different base
+          class other than `standard-class'.
+     `:default-initargs'
+          Unsupported CLOS option.  Specifies a list of initargs to be
+          used when creating new objects.  This duplicates the function
+          of `:initform'
+
+     *Note CLOS compatibility::, for more details on CLOS tags versus
+     EIEIO specific tags.
+
+     The whole definition may look like this:
+          (defclass data-object ()
+            ((value :initarg :value
+          	  :initform nil
+          	  :accessor get-value
+          	  :documentation "Lisp object which represents the data this 
+          object maintains."
+          	  :protection private)
+             (reference :initarg :reference
+          	      :initform nil
+                        :type list
+                        :custom (repeat object)
+          	      :documentation "List of objects looking at me.  The method 
+          `update-symbol' is called for each member of `reference' whenever 
+          `value' is modified."
+          	      :protection private)
+             )
+            "Data object which tracks referencers.")
+
+
+
+
+File: eieio.info, Node: Default Superclass, Next: Making New Objects, Prev: Building Classes, Up: Top
+
+Default Superclass
+******************
+
+All defined classes, if created as a superclass (With no specified
+parent class) will actually inherit from a special superclass stored in
+`eieio-default-superclass'.  This superclass is actually quite simple,
+but with it, certain default methods or attributes can be added to all
+objects at any time, without updating their code in the future (If there
+is a change).  In CLOS, this would be named `STANDARD-CLASS' and is
+aliased.
+
+Currently, the default superclass is defined as follows:
+
+     (defclass eieio-default-superclass nil
+       nil
+       )
+      "Default class used as parent class for superclasses.  It's
+     fields are automatically adopted by such superclasses but not stored
+     in the `parent' field.  When searching for attributes or methods, when
+     the last parent is found, the search will recurse to this class.")
+
+When creating an object of any type, you can use it's constructor, or
+`make-instance'.  This, in turns calls `shared-initialize'.
+
+ -- Function: initialize-instance OBJ &rest FIELDS
+     Initialize OBJ.  Sets fields of OBJ with FIELDS which is a list of
+     name/value pairs.  These are actually just passed to
+     `shared-initialize'.
+
+ -- Function: shared-initialize OBJ &rest FIELDS
+     Sets fields of OBJ with FIELDS which is a list of name/value pairs.
+
+ -- Function: clone OBJ &rest PARAMS
+     Make a deep copy of OBJ.  Once this copy is made, make
+     modifications specified by PARAMS.  PARAMS uses the same format as
+     the FIELDS of `initialize-instance'.  The only other change is to
+     modify the name with an incrementing numeric.
+
+ -- Function: object-print OBJ &rest STRINGS
+     Construct a printing lisp symbol for OBJ.  This would look like:
+     #<class-name "objname"> STRINGS are additional parameters passed in
+     by overloading functions to add more data into the printing
+     abbreviation.
+
+          (defclass data-object ()
+             (value)
+             "Object containing one data slot.")
+
+          (defmethod object-print ((this data-object) &optional strings)
+            "Return a string with a summary of the data object as part of the name."
+            (apply 'call-next-method this 
+          	 (cons (format " value: %s" (render this)) strings)))
+
+     here is what some output could look like:
+          (object-print test-object)
+             => #<data-object test-object value: 3>
+
+ -- Function: object-write OBJ &optional COMMENT
+     Write OBJ onto a stream in a readable fashion.  The resulting
+     output will be lisp code which can be used with `read' and `eval'
+     to recover the object.  Only fields with `:initarg's are written to
+     the stream.
+
+
+
+File: eieio.info, Node: Making New Objects, Next: Accessing Fields, Prev: Default Superclass, Up: Top
+
+Making New Objects
+******************
+
+Once we have defined our classes, it's time to create objects with the
+specified structure.  After we call `defclass' two new functions are
+created, one of which is `classname'.  Thus, from the example at the end
+of the previous chapter *Note Building Classes::, we would have the
+functions `data-object' and `data-object-p'.
+
+ -- Function: classname OBJECT-NAME &rest FIELDS
+
+     This creates and returns a new object.  This object is not assigned
+     to anything, and will be garbage collected if not saved.  This
+     object will be given the string name OBJECT-NAME.  There can be
+     multiple objects of the same name, but the name field provides a
+     handy way to keep track of your objects.  FIELDS is just all the
+     fields you wish to preset.  Any field set as such WILL NOT get it's
+     default value, and any side effects from an attributes default
+     function will not occur.  An example pair would appear simply as
+     `:value 1'.  Of course you can do any valid lispy thing you want
+     with it, such as `:value (if (boundp 'special-symbol)
+     special-symbol nil)'
+
+     Example of creating an object from a class, *Note Building
+     Classes:::
+
+          (data-object "test" :value 3 :reference nil)
+
+
+
+
+File: eieio.info, Node: Accessing Fields, Next: Writing Methods, Prev: Making New Objects, Up: Top
+
+Accessing Fields
+****************
+
+There are several ways to access field values in an object.  The naming
+convention and argument order is similar to that found in elisp for
+referencing vectors.  The basics for referencing, setting, and calling
+methods are all accounted for.
+
+ -- Function: oset OBJECT FIELD VALUE
+
+     This sets the value behind FIELD to VALUE in OBJECT.  `oset'
+     returns VALUE.
+
+ -- Function: oset-default CLASS FIELD VALUE
+
+     This sets the slot FIELD in CLASS which is initialized with the
+     `:initform' tag to VALUE.  This will allow a user to set both
+     public and private defaults after the class has been constructed.
+     This function is pretty intrusive, and is offered as a way to allow
+     users to configure the default behavior of packages built with
+     classes more easily.
+
+     For example, if a user wanted all `data-objects' (*Note Building
+     Classes::) to inform a special object of his own devising when they
+     changed, this can be arranged by simply executing this bit of code:
+
+          (oset-default data-object referece (list my-special-object))
+
+
+ -- Function: oref OBJECT SLOT
+
+     This recalls the value in slot SLOT in OBJECT and returns it.
+
+ -- Function: oref-default OBJECT SLOT
+
+     This gets the default value in OBJECT's class definition for
+     `slot'.  This can be different from the value returned by `oref'.
+     OBJECT can also be a class symbol or an instantiated object.
+
+ -- Function: slot-value OBJECT SLOT
+     This function is mearly an alias for oref
+
+ -- Function: slot-makeunbound OBJECT SLOT
+     This function unbinds SLOT in OBJECT.  Referencing an unbound slot
+     can throw an error.
+
+When using `oref' or `oset', if the value behind FIELD is private, then
+the current scope of operation must be within a method of the calling
+object.  The scope is tracked with the variable `this'.  You can set the
+field `this' by making it the name of your object passed into your
+methods.  It is not necessary to name your object `this', or to use
+private fields.
+
+ -- Function: with-slots ENTRIES OBJECT FORMS
+     Bind ENTRIES lexically to the specified slot values in OBJECT, and
+     execute FORMS.  In CLOS, it would be possible to set values in
+     OBJECT by using `setf' to assign to these values, but in Emacs, you
+     may only read the values, or set the local variable to a new value.
+
+          (defclass myclass () (x :initarg 1))
+          (setq mc (make-instance 'myclass))
+          (with-slots (x) mc x)                      => 1
+          (with-slots ((something x)) mc something)  => 1
+
+ -- Function: slot-missing OBJECT FIELD OPERATION &optional NEW-VALUE
+     This method is called when there is an attempt to access a slot
+     that does not exist for a given object.  The default method signals
+     an error of type `invalid-slot-name'.  *Note Signals::.
+
+     You may override this behavior, but it is not expected to return in
+     the current implementation.
+
+     This function takes arguments in a different order than in CLOS.
+
+ -- Function: slot-unbound OBJECT CLASS FIELD OPERATION
+     This method is called when there is an attempt to reference an
+     unbound slot.  A slot is unbound if it has no :initform, and was
+     never set.
+
+     If a class implements this method, and it has a return value, then
+     that return value is returned by `slot-value'.
+
+
+
+File: eieio.info, Node: Writing Methods, Next: Predicates, Prev: Accessing Fields, Up: Top
+
+Writing Methods
+***************
+
+Writing a CLOS style method is similar to writing a function, except
+some extra options are made available, and there can be multiple
+implementations of a single method which interact interestingly with
+each other.
+
+Each method created verifies that there is a "generic method" available
+to attach to.  A generic method has no body, and is mearly a symbol upon
+which methods are attached.
+
+ -- Function: defgeneric METHOD ARGLIST [DOC-STRING]
+
+     METHOD is the symbol to turn into a function.  ARGLIST is the
+     default list of arguments to use (not implemented yet) DOC-STRING
+     is the documentation used for this symbol
+
+     A generic function acts as a place holder for methods.  There is no
+     need to call defgeneric yourself, as defmethod will call it if
+     necessary.  Currently the argument list is unused.
+
+     The function part of a created generic function creates a couple
+     local variables and then calls `eieio-generic-call'.  This is the
+     engine that makes sure that different method implementations are
+     called in the correct order.
+
+     `defgeneric' will prevent you from turning an existing emacs lisp
+     function into a generic function.
+
+ -- Function: defmethod METHOD [:BEFORE | :AFTER] ARGLIST [DOC-STRING] FORMS
+
+     METHOD is the name of the function to be created.
+
+     :BEFORE | :AFTER represent when this form is to be called.  If
+     neither of these symbols are present, then the default priority is
+     before :AFTER and after :BEFORE, and is represented in CLOS as
+     :PRIMARY.
+
+     `arglist' is the argument list.  Unlike CLOS, only the FIRST
+     argument may be type-cast, and it may only be type-cast to an eieio
+     object.  An arglist such as `(a b)' would classify the function as
+     generic call, which has no object it can talk to (none is passed
+     in) and mearly allows the creation of side-effects.  If the arglist
+     appears as `((this data-object) b)' then the form is stored as
+     belonging to the class `data-object'.  If two `defmethods' appear
+     with arglists such as `(a b)' and `(c d)' then one of the
+     implementations will be overwritten, but generic and multiple type
+     cast arglists can co-exist.
+
+     When called, if there is a method cast against the object's parent
+     class, but not for that object's class, the parent class' method
+     will be called.  If there is a method defined for both, only the
+     child's method is called.
+
+     DOC-STRING is the doc string attached to the implementation.  All
+     method doc-strings are concatenated into the generic method's
+     function documentation.
+
+     FORMS is the body of the function.
+
+
+ -- Function: call-next-method &rest REPLACEMENT-ARGS
+
+     While running insided a CLOS method, calling this function will
+     call the method associated with the parent of the class of the
+     currently running method with the same parameters.
+
+     Optional arguments REPLACEMENT-ARGS can be used to replace the
+     arguments the next method would be called with.  Useful if a child
+     class wishes to add additional behaviours through the modification
+     of the parameters.
+
+     *Note Default Superclass:: for example code.
+
+
+In this implementation, not all features of CLOS exist.
+
+  1. There is currently no :AROUND tag.
+  2. CLOS allows multiple sets of type-cast arguments, where eieio only
+     allows the first argument to be cast.
+
+
+
+File: eieio.info, Node: Predicates, Next: Association Lists, Prev: Writing Methods, Up: Top
+
+Predicates and Utilities
+************************
+
+Now that we know how to create classes, access fields, and define
+methods, it might be useful to verify that everything is doing ok.  To
+help with this a plethora of predicates have been created.
+
+ -- Function: class-v CLASS
+     Return a vector with all the class's important parts in it.  This
+     vector is not a copy.  Changing this vector changes the class.
+
+ -- Function: class-p CLASS
+     Return `t' if CLASS is a class type.
+
+ -- Function: object-p OBJ
+     Return `t' if OBJ is an object.
+
+ -- Function: slot-exists-p OBJ SLOT
+     Return Non-`nil' if OBJ contains SLOT in its class.
+
+ -- Function: slot-boundp OBJ SLOT
+     Return Non-`nil' if OBJ's SLOT is bound.  A slot is unbound if it
+     has no :initform, and was never set.
+
+ -- Function: class-name CLASS
+     Return a string of the form #<class myclassname> which should look
+     similar to other lisp objects like buffers and processes.  Printing
+     a class results only in a symbol.
+
+ -- Function: class-constructor CLASS
+     Return a symbol used as a constructor for CLASS.  This way you can
+     make an object of a passed in class without knowing what it is.
+     This is not a part of CLOS.
+
+ -- Function: object-name OBJ
+     Return a string of the form #<object-class myobjname> for OBJ.
+     This should look like lisp symbols from other parts of emacs such
+     as buffers and processes, and is shorter and cleaner than printing
+     the object's vector.  It is more useful to use `object-print' to
+     get and object's print form, as this allows the object to add extra
+     display information into the symbol.
+
+ -- Function: object-class OBJ
+     Returns the class symbol from OBJ.
+
+ -- Function: class-of OBJ
+     CLOS symbol which does the same thing as `object-class'
+
+ -- Function: object-class-fast OBJ
+     Same as `object-class' except this is a macro, and no type-checking
+     is performed.
+
+ -- Function: object-class-name OBJ
+     Returns the symbol of OBJ's class.
+
+ -- Function: class-parent CLASS
+     Returns the direct parent class of CLASS.  Returns `nil' if it is a
+     superclass.
+
+ -- Function: class-parent-fast CLASS
+     Just like `class-parent' except it is a macro and no type checking
+     is performed.
+
+ -- Function: same-class-p OBJ CLASS
+     Returns `t' if OBJ's class is the same as CLASS.
+
+ -- Function: same-class-fast-p OBJ CLASS
+     Same as `same-class-p' except this is a macro and no type checking
+     is performed.
+
+ -- Function: obj-of-class-p OBJ CLASS
+     Returns `t' if OBJ inherits anything from CLASS.  This is different
+     from `same-class-p' because it checks for inheritance.
+
+ -- Function: child-of-class-p CHILD CLASS
+     Returns `t' if CHILD is a subclass of CLASS.
+
+ -- Function: generic-p METHOD-SYMBOL
+     Returns `t' if `method-symbol' is a generic function, as opposed to
+     a regular emacs list function.
+
+It is also important to note, that for every created class, a predicate
+is created for it.  Thus in our example, the function `data-object-p' is
+created, and return `t' if passed an object of the appropriate type.
+
+ -- Function: eieio-build-class-alist &optional BASE-CLASS
+     Returns an alist of all currently defined classes.  This alist is
+     suitable for completion lists used by interactive functions to
+     select a class.  The optional argument BASE-CLASS allows the
+     programmer to select only a subset of classes to choose from should
+     it prove necessary.
+
+
+
+File: eieio.info, Node: Association Lists, Next: Introspection, Prev: Predicates, Up: Top
+
+Association Lists
+*****************
+
+Lisp offers the concept of association lists, with primitives such as
+`assoc' used to access them.  Eieio provides a few such functions to
+help with using lists of objects easily.
+
+ -- Function: object-assoc KEY FIELD LIST
+     Returns the first object in LIST for which KEY is in FIELD.
+
+ -- Function: object-assoc-list FIELD LIST
+     Return an association list generated by extracting FIELD from all
+     objects in LIST.  For each element of LIST the `car' is the value
+     of FIELD, and the `cdr' is the object it was extracted from.  This
+     is useful for generating completion tables.
+
+
+
+File: eieio.info, Node: Introspection, Next: Signals, Prev: Association Lists, Up: Top
+
+Introspection
+*************
+
+Introspection permits a programmer to peek at the contents of a class
+without any previous knowledge of that class.  While EIEIO implements
+objects on top of vectors, and thus everything is technically visible,
+some functions have been provided.  None of these functions are a part
+of CLOS.
+
+ -- Function: obj-fields OBJ
+     Return the list of public slots for OBJ.
+
+ -- Function: class-slot-initarg CLASS SLOT
+     For the given CLASS return the :initarg associated with SLOT.  Not
+     all slots have initargs, so the return value can be nil.
+
+
+
+File: eieio.info, Node: Signals, Next: Browsing, Prev: Introspection, Up: Top
+
+Signals
+*******
+
+There are new signal types that can be caught when using eieio.
+
+ -- Signal: invalid-slot-name OBJ-OR-CLASS FIELD
+     This signal is called when an attempt to reference a slot in an
+     OBJ-OR-CLASS is made, and the FIELD is not defined for it.
+
+ -- Signal: no-method-definition METHOD ARGUMENTS
+     This signal is called when METHOD is called, with ARGUMENTS and
+     nothing is resolved.  This occurs when METHOD has been defined, but
+     the arguments make it impossible for eieio to determine which
+     method body to run.
+
+
+
+File: eieio.info, Node: Browsing, Next: Class Values, Prev: Signals, Up: Top
+
+Browsing class trees
+********************
+
+To browse all the currently loaded classes in emacs, simply run the
+EIEIO browser.  `M-x eieio-browse'.  This browses all the way from the
+default super-duper class eieio-default-superclass, and lists all
+children in an indented tree structure.
+
+To browse only from a specific class, pass it in as an alternate
+parameter.
+
+Here is a sample tree from our current example:
+
+     eieio-default-superclass
+       +--data-object
+            +--data-object-symbol
+
+Note that we start with eieio-default-superclass.  *Note Default
+Superclass::.
+
+Note: new classes are consed into the inheritance lists, so the tree
+comes out upside-down.
+
+It is also possible to use the function `eieio-class-tree' in the
+`tree.el' package.  This will create an interactive tree.  Clicking on
+nodes will allow expansion/contraction of branches, or editing of a
+class.  *Note Class Values::.
+
+
+
+File: eieio.info, Node: Class Values, Next: Customizing, Prev: Browsing, Up: Top
+
+Class Values
+************
+
+Details about any class or object can be retrieved using the function
+`eieio-describe-class' function.  Interactivly, type in the name of a
+class.  In a program, pass it a string with the name of a class, a class
+symbol, or an object.  The resulting buffer will display all field names
+and their default values.  For objects, and additional column
+representing current value of that field is also displayed.
+
+The display is broken into two sections.  Private parts and public
+parts.  Faces are used when available.  If the function
+`eieio-class-tree' is used (from tree.el) then choosing the edit
+function on a node calls this function.  This function is also useful
+when used with edebug while attempting to determine what is wrong with
+method.
+
+
+
+File: eieio.info, Node: Customizing, Next: Documentation, Prev: Class Values, Up: Top
+
+Customizing Objects
+*******************
+
+In Emacs 20 a useful customization utility became available called
+`custom'.  EIEIO supports custom through two new widget types.  If a
+variable is declaired as type `'object', then full editing of slots via
+the widgets is made possible.  This should be used carefully, however,
+because objects modified are cloned, so if there are other references to
+these objects, they will no longer be linked together.
+
+If you want in place editing of objects, use the following methods:
+
+ -- Function: eieio-customize-object OBJECT
+     Create a custom buffer and insert a widget for editing OBJECT.  At
+     the end, an `Apply' and `Reset' button are available.  This will
+     edit the object "in place" so references to it are also changed.
+     There is no effort to prevent multiple edits of a singular object,
+     so care must be taken by the user of this function.
+
+ -- Function: eieio-custom-widget-insert OBJECT FLAGS
+     This method inserts an edit object into the current buffer in
+     place.  It's sole code is `(widget-create 'object-edit :value
+     object)' and is provided as a locale for adding tracking, or
+     specializing the widget insert procedure for any object.
+
+To define a slot with an object in it, use the `object' tag.  This
+widget type will be automatically converted to `object-edit' if you do
+in place editing of you object.
+
+If you want to have additional actions taken when a user clicks on the
+`Apply' button, then overload the method `eieio-done-customizing'.  This
+method does nothing by default, but that may change in the future.  This
+would be the best way to make your objects persistent when using
+in-place editing.
+
+
+
+File: eieio.info, Node: Documentation, Next: Demo Programs, Prev: Customizing, Up: Top
+
+Documentation
+*************
+
+It is possible to automatically create documentation for your classes in
+texinfo format by using the tools in the file `eieio-doc.el'
+
+ -- Command: eieiodoc-class CLASS INDEXSTRING &optional SKIPLIST
+
+     This will start at the current point, and created an indented menu
+     of all the child classes of, and including CLASS, but skipping any
+     classes that might be in SKIPLIST It will then create nodes for all
+     these classes, subsection headings, and indexes.
+
+     Each class will be indexed using the texinfo labeled index
+     INDEXSTRING which is a two letter description.  *Note (texinfo) New
+     Indices::.
+
+     To use this command, the texinfo macro
+
+          @defindex @var { indexstring }
+
+     where INDEXSTRING is replaced with the two letter code.
+
+     Next, an inheritance tree will be created listing all parents of
+     that section's class.
+
+     Then,all the slots will be expanded in tables, and described using
+     the documentation strings from the code.  Default values will also
+     be displayed.  Only those slots with `:initarg' specified will be
+     expanded, others will be hidden.  If a slot is inherited from a
+     parent, that slot will also be skipped unless the default value is
+     different.  If there is a change, then the documentation part of
+     the slot will be replace with an @xref back to the parent.
+
+     Only classes loaded into emacs' memory can be documented.
+
+
+
+
+File: eieio.info, Node: Demo Programs, Next: Function Index, Prev: Documentation, Up: Top
+
+Demo Programs
+*************
+
+There are many sample programs I have written for eieio which could
+become useful componants of other applications, or are good stand alone
+programs providing some useful functionality.  The file, and
+functionality of these appear below:
+
+`tree'
+     Maintains and displays a tree structure in a buffer.  Nodes in the
+     tree can be clicked on for editing, node expansion, and simple
+     information.  Includes a sample program for showing directory
+     trees, and to draw trees of the eieio class structures.
+`call-tree'
+     Parses a non-byte-compiled function, and generates a call tree from
+     it, and all sub-non-byte-compiled functions.  Provides protection
+     from recursive functions.
+`chart'
+     Draw bar charts from data.  Examples include displaying sizes of
+     emacs values, file distribution, and rmail distributions.
+`dbif'
+     Database interface object for emacs.  So far, on psql (PostgreSQL)
+     is supported with `psql.el'
+
+
+
+File: eieio.info, Node: Function Index, Prev: Demo Programs, Up: Top
+
+Function Index
+**************
+
+
+* Menu:
+
+* eieiodoc-class:               Documentation.          10.
+* eieio-custom-widget-insert:   Customizing.            23.
+* eieio-customize-object:       Customizing.            16.
+* no-method-definition:         Signals.                13.
+* invalid-slot-name:            Signals.                9.
+* class-slot-initarg:           Introspection.          16.
+* obj-fields:                   Introspection.          13.
+* object-assoc-list:            Association Lists.      14.
+* object-assoc:                 Association Lists.      11.
+* eieio-build-class-alist:      Predicates.             89.
+* generic-p:                    Predicates.             81.
+* child-of-class-p:             Predicates.             78.
+* obj-of-class-p:               Predicates.             74.
+* same-class-fast-p:            Predicates.             70.
+* same-class-p:                 Predicates.             67.
+* class-parent-fast:            Predicates.             63.
+* class-parent:                 Predicates.             59.
+* object-class-name:            Predicates.             56.
+* object-class-fast:            Predicates.             52.
+* class-of:                     Predicates.             49.
+* object-class:                 Predicates.             46.
+* object-name:                  Predicates.             38.
+* class-constructor:            Predicates.             33.
+* class-name:                   Predicates.             28.
+* slot-boundp:                  Predicates.             24.
+* slot-exists-p:                Predicates.             21.
+* object-p:                     Predicates.             18.
+* class-p:                      Predicates.             15.
+* class-v:                      Predicates.             11.
+* call-next-method:             Writing Methods.        66.
+* defmethod:                    Writing Methods.        34.
+* defgeneric:                   Writing Methods.        16.
+* slot-unbound:                 Accessing Fields.       78.
+* slot-missing:                 Accessing Fields.       68.
+* with-slots:                   Accessing Fields.       57.
+* slot-makeunbound:             Accessing Fields.       46.
+* slot-value:                   Accessing Fields.       43.
+* oref-default:                 Accessing Fields.       37.
+* oref:                         Accessing Fields.       33.
+* oset-default:                 Accessing Fields.       17.
+* oset:                         Accessing Fields.       12.
+* classname:                    Making New Objects.     13.
+* object-write:                 Default Superclass.     61.
+* object-print:                 Default Superclass.     42.
+* clone:                        Default Superclass.     36.
+* shared-initialize:            Default Superclass.     33.
+* initialize-instance:          Default Superclass.     28.
+* defclass:                     Building Classes.       10.
+
+
+
+Tag table:
+Node: Top233
+Node: Introduction1742
+Node: CLOS compatibility4794
+Node: Building Classes7770
+Node: Default Superclass11998
+Node: Making New Objects14801
+Node: Accessing Fields16178
+Node: Writing Methods19663
+Node: Predicates23201
+Node: Association Lists26789
+Node: Introspection27516
+Node: Signals28183
+Node: Browsing28815
+Node: Class Values29807
+Node: Customizing30666
+Node: Documentation32449
+Node: Demo Programs33999
+Node: Function Index35077
+
+End tag table

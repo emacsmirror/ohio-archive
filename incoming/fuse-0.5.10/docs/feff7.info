@@ -1,0 +1,100 @@
+This is Info file feff7.info, produced by Makeinfo-1.63 from the input
+file /tmp/sgml2info723tmp2.
+
+   \input texinfo
+
+
+Indirect:
+feff7.info-1: 119
+feff7.info-2: 49959
+
+Tag Table:
+(Indirect)
+Node: Top119
+Node: Synopsis - PLEASE READ THIS ENTIRE SECTION1054
+Node: Conceptual description3785
+Node: Scattering potential and phase shift code POTPH4280
+Node: Path enumeration PATHS6279
+Node: Scattering amplitude and other XAFS parameter calculation GENFMT7656
+Node: XAFS spectrum calculation FF2CHI8332
+Node: Calculation Strategy9079
+Node: Program and file structure11601
+Node: Table 3-113104
+Node: Input file and FEFF commands18015
+Node: File format18863
+Node: Complete list of feff-inp keywords19825
+Node: Basic data types20875
+Node: `ATOMS'21141
+Node: `CONTROL'21989
+Node: `DEBYE'22463
+Node: `EDGE'23169
+Node: `HOLE'23575
+Node: `POTENTIALS'24851
+Node: `PRINT'26675
+Node: `SIG2'28088
+Node: `TITLE'28418
+Node: Useful Options28779
+Node: `CORRECTIONS'29194
+Node: `CRITERIA'30178
+Node: `CUSTOMCRITERIA'32548
+Node: `ELLIPTICITY'33160
+Node: `END'33951
+Node: `NEMAX'34305
+Node: `NLEG'34971
+Node: `NOGEOM'35308
+Node: `NSTAR'35899
+Node: `PCRITERIA'36146
+Node: `POLARIZATION'39094
+Node: `RMAX'39789
+Node: `RMULTIPLIER'40287
+Node: `SS'40656
+Node: `XANES'41488
+Node: Sometimes useful options for expert users42223
+Node: `AFOLP'42575
+Node: `FOLP'43011
+Node: `EXCHANGE'43448
+Node: `ION'45557
+Node: `OVERLAP'46476
+Node: `RGRID'48065
+Node: `RPHASES'48854
+Node: `SIG3'49439
+Node: Obscure Options49729
+Node: `IORDER'49959
+Node: `JUMPRM'50917
+Node: `MBCONV'51295
+Node: `NOHOLE'51593
+Node: Run Control Options52111
+Node: Paths-dat52899
+Node: list-dat53844
+Node: Output files54512
+Node: phase-bin54933
+Node: paths-dat55157
+Node: crit-dat55582
+Node: geom-dat55776
+Node: chi-dat57083
+Node: feff-bin57357
+Node: feffNNNN-dat57773
+Node: Diagnostic files from POTPH58282
+Node: xsect-bin rkk-bin and xmu-dat files58778
+Node: Variables in output files and in calculation of XAFS59437
+Node: Appendix A- Copyright Information Restrictions and License60811
+Node: Restrictions and License Information61197
+Node: ADDENDUM: Government Copyrights (DO NOT DELETE)62059
+Node: Appendix B- Installation Instructions63864
+Node: UNIX machines64671
+Node: PC users66863
+Node: MAC users67956
+Node: NeXT users68222
+Node: Appendix C- References68769
+Node: Appendix D- Sample input files70843
+Node: SF6 Molecule71154
+Node: Cu fcc metal 4 shells71774
+Node: YBCO High-Tc superconductor74471
+Node: Appendix E- Code Variables Dimensions and Descriptions76800
+Node: Appendix F-  Changes from previous versions78015
+Node: Changes from FEFF 678361
+Node: Changes from FEFF 5-0480046
+Node: Appendix G- Trouble-shooting FEFF problems81794
+Node: FEFF Bug and Error Report83540
+
+End Tag Table

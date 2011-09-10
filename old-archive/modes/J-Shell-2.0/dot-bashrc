@@ -1,0 +1,92 @@
+# $Id: dot-bashrc,v 2.0 1994/02/26 20:40:24 jimt Exp $
+
+## This file contains a sample script showing how to set up ksh to
+## work properly with j-shell.  Before examining this script, please
+## read the comments in the file dot-tcsh; the comments in that script
+## describe steps common to the scripts for all shells.
+
+# Comments delimited by a single # are specific to bash.
+
+if [ "$TERM" = "emacs" ]
+then
+	stty nl -echo		# Keeps ^M from echoing
+
+	## Step A.
+	emacscd=`builtin echo -e "\033EmAcScd"`
+	emacshost=`builtin echo -e "\033EmAcShost"`
+	emacsenv=`builtin echo -e "\033EmAcSenv"`
+
+	## Step B.
+	alias cwdcmd="echo $emacscd \$PWD"
+	alias hostcmd="echo $emacshost `hostname`"
+	if [ $REORIENT_ENV ]
+	then
+		alias reorient="hostcmd ; cwdcmd ; reenv" ;
+	else
+		alias reorient="hostcmd ; cwdcmd" ;
+	fi
+fi
+
+# For some reason, in bash, the above aliases don't take unless
+# they're in a different if-construct than the following aliases.
+# Perhaps some bash expert can explain this to me.
+
+if [ "$TERM" = "emacs" ]
+then
+	reenv()
+	{
+	  for f in [ `env` ]
+	  do
+	    echo $emacsenv $f
+	  done
+	}
+	
+	# Step C.
+	cd() { builtin cd $* ; cwdcmd }
+	pushd() { builtin pushd $* ; cwdcmd }
+	popd() { builtin popd $* ; cwdcmd }
+#	export () { builtin export $* ; echo $emacsenv $* }
+
+	# Step C-2.
+	if [ $SYNC_ENV ]
+	then
+		export ()
+		{
+		  builtin export $*
+		  while [ -n "$*" ]
+		  do
+		    echo $emacsenv $1
+		    shift
+		  done  
+		}
+	fi
+
+	# Step D.
+	fake_rlogin() { rlogin $*; reorient ; }
+	alias rlogin='fake_rlogin '
+
+	fake_sh() { sh $*; reorient ; }
+	alias sh=fake_sh
+
+	fake_ksh() { ksh $*; reorient ; }
+	alias ksh=fake_ksh
+
+	fake_csh() { csh $*; reorient ; }
+	alias csh=fake_csh
+
+	fake_tcsh() { tcsh $*; reorient ; }
+	alias tcsh=fake_tcsh
+
+	fake_zsh() { zsh $*; reorient ; }
+	alias zsh=fake_zsh
+
+	fake_bash() { bash $*; reorient ; }
+	alias bash=fake_bash
+
+	fake_tcl() { tcl $*; reorient ; }
+	alias tcl=fake_tcl
+
+	# Step E.
+	export PWD=`pwd`		# Why is this necessary?
+	reorient
+fi

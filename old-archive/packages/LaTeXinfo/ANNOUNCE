@@ -1,0 +1,89 @@
+From utkcs2!emory!sol.ctr.columbia.edu!zaphod.mps.ohio-state.edu!usc!cs.utexas.edu!uunet!philmtl!telly!lethe!torsqnt!news-server.csri.toronto.edu!helios.physics.utoronto.ca!ists!mike Mon Jun  4 13:02:41 EDT 1990
+Article 2894 of gnu.emacs:
+Xref: utkcs2 comp.emacs:4355 comp.text:4487 gnu.emacs:2894
+Path: utkcs2!emory!sol.ctr.columbia.edu!zaphod.mps.ohio-state.edu!usc!cs.utexas.edu!uunet!philmtl!telly!lethe!torsqnt!news-server.csri.toronto.edu!helios.physics.utoronto.ca!ists!mike
+>From: mike@ists.ists.ca (Mike Clarkson)
+Newsgroups: comp.emacs,comp.text,gnu.emacs
+Subject: LaTeXinfo - 1 of 10
+Message-ID: <8776@ists.ists.ca>
+Date: 3 Jun 90 01:13:25 GMT
+Followup-To: comp.emacs
+Organization: Institute for Space and Terrestrial Science
+Lines: 74
+
+This is version 1.2 of the LaTeXinfo documentation, and is for Version 18
+of GNU Emacs.
+
+Documentation for GNU utilities and libraries is usually written in a
+format called "TeXinfo".  This document describes an enhancement
+of this format which can be used with LaTeX instead of TeX.
+
+LaTeXinfo offers a number of advantages over TeXinfo:
+
+     
+  1. The point size or layout style of a document can be changed easily using
+     as can the `documentstyle' (article, report, book, twoside, ...).
+     
+  2. LaTeX has better error checking than TeX files, especially in
+     begin/end environments.  In addition, the LaTeX error messages are more
+     informative.  This makes it considerably easier to make extensions and
+     enhancements (read hacks).
+     
+  3. LaTeX delimits its arguments with braces, so it's easier to tell where
+     a LaTeXinfo command starts, and where it ends.
+     
+  4. Any LaTeX commands not understood by the on-line manual generator
+     (`latexinfo.el') are simply ignored.  This means that you are free to add
+     a considerable number of LaTeX commands to make you manual look pretty,
+     as long as you don't care that there will be no action taken by the 
+     Info formatting program.
+     
+  5. It is easy to add your own extensions to the on-line manual generator
+     by making GNU Emacs handlers for your LaTeX extensions.  This is
+     the Emacs counterpart to the `documentstyle' options.  LaTeXinfo looks
+     in a specified directory for GNU Elisp code that corresponds to each
+     style file.  This makes it easy to modularize you style files.
+     
+  6. LaTeX has many advantages over TeX, such as being able to
+     incorporate the BibTeX bibliography formatting program, and is much more
+     widely used than either Scribe or plain TeX.
+     
+
+To install:
+
+0)	Unshar all files, including this one!
+1)	edit the file .login to set the LATEXINFO environment variable to 
+	point to this directory.
+2)	edit your .cshrc to include a command to source this .login file
+	each time you log in.
+3)	source this .login file now so that you can proceed.
+4)	edit the file manual/Makefile to set 
+	the name of your DVI to PS filter, and
+	the name of your GNU Emacs.
+5)	type make to make the manual and compile the .el files
+6)	move a copy of the files manual/latexinfo.info* to the info
+	directory of the GNU Emacs distribution, and edit the dir
+	file in that directory to include lines like
+
+* LaTeXinfo: (latexinfo.info).   With one source file, make either a printed 
+                        manual using LaTeX or an Info file.
+
+7)	include a copy of the .emacs file in your ~/.emacs.
+8)	print a copy of the manual/latexinfo.dvi file and enjoy.
+
+
+Please report any errors to mike@ists.ists.ca
+
+Mike Clarkson
+#! /bin/sh
+mkdir manual
+
+
+
+-- 
+Mike Clarkson					mike@ists.ists.ca
+Institute for Space and Terrestrial Science	uunet!attcan!ists!mike
+York University, North York, Ontario,		FORTRAN - just say no. 
+CANADA M3J 1P3					+1 (416) 736-5611
+
+

@@ -1,0 +1,71 @@
+To: unix-emacs@bbn.com
+Date: 7 Feb 89 23:50:36 GMT
+From: Robert Lupton <pasteur!agate!helios.ee.lbl.gov!nosc!humu!uhccux!lupton@ames.arc.nasa.gov>
+Subject: Dbx mode
+
+I have had a little trouble getting dbx mode to run (The problem being
+that the process was named tex-prog, and dbx-stop-at didn't realise.
+I'll put the patch at the end). I had various other problems with it
+not quite working -- is there a version later than the one that came
+with emacs 18.51.3?
+
+(I tried to reach the author at "umerin@flab.fujitsu.junet", but to no avail)
+
+			Robert Lupton (lupton@uhccux.uhcc.hawaii.edu)
+
+
+*** dbx.el	Thu Feb 11 21:14:30 1988
+--- /uh3h/ifa/lupton/lisp/dbx.el	Sat Feb  4 11:41:23 1989
+***************
+*** 24,29
+  (defvar dbx-trace-flag nil
+    "Dbx trace switch.")
+  
+  (defvar dbx-break-point
+    "stopped in .* at line \\([0-9]*\\) in file \"\\([^\"]*\\)\""
+    "Regexp of pattern that dbx writes at break point.")
+
+--- 24,32 -----
+  (defvar dbx-trace-flag nil
+    "Dbx trace switch.")
+  
++ (defvar dbx-process nil
++   "Dbx process name.")
++ 
+  (defvar dbx-break-point
+    "stopped in .* at line \\([0-9]*\\) in file \"\\([^\"]*\\)\""
+    "Regexp of pattern that dbx writes at break point.")
+***************
+*** 93,99
+    (let ((file (file-name-nondirectory path)))
+      (switch-to-buffer (concat "*dbx-" file "*"))
+      (setq default-directory (file-name-directory path))
+!     (switch-to-buffer (make-shell (concat "dbx-" file) "dbx" nil file)))
+    (set-process-filter (get-buffer-process (current-buffer)) 'dbx-filter)
+    (inferior-dbx-mode))
+  
+
+--- 96,103 -----
+    (let ((file (file-name-nondirectory path)))
+      (switch-to-buffer (concat "*dbx-" file "*"))
+      (setq default-directory (file-name-directory path))
+!     (switch-to-buffer
+!      (make-shell (setq dbx-process (concat "dbx-" file)) "dbx" nil file)))
+    (set-process-filter (get-buffer-process (current-buffer)) 'dbx-filter)
+    (inferior-dbx-mode))
+  
+***************
+*** 157,161
+  	(line (save-restriction
+  		(widen)
+  		(1+ (count-lines 1 (point))))))
+!     (send-string "dbx"
+  		 (concat "stop at \"" file-name "\":" line "\n"))))
+
+--- 161,165 -----
+  	(line (save-restriction
+  		(widen)
+  		(1+ (count-lines 1 (point))))))
+!     (send-string dbx-process
+  		 (concat "stop at \"" file-name "\":" line "\n"))))
+

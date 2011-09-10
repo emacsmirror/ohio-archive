@@ -1,0 +1,74 @@
+This is pcl-cvs.info, produced by Makeinfo version 3.12f from
+pcl-cvs.texi.
+
+START-INFO-DIR-ENTRY
+* Pcl-cvs:(pcl-cvs).	Emacs front-end to CVS
+END-INFO-DIR-ENTRY
+
+   Copyright (C) 1991-2000  Free Software Foundation, Inc.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the section entitled "GNU General Public License" is included
+exactly as in the original, and provided that the entire resulting
+derived work is distributed under the terms of a permission notice
+identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that the section entitled "GNU General Public License"
+and this permission notice may be included in translations approved by
+the Free Software Foundation instead of in the original English.
+
+
+Indirect:
+pcl-cvs.info-1: 1099
+pcl-cvs.info-2: 49375
+
+Tag Table:
+(Indirect)
+Node: Top1099
+Node: Installation3810
+Node: Pcl-cvs installation4812
+Node: On-line manual installation6590
+Node: Typeset manual installation7607
+Node: XEmacs installation8370
+Node: About pcl-cvs10628
+Node: Contributors11026
+Node: Archives13541
+Node: Getting started14855
+Node: Buffer contents17613
+Node: File status18747
+Node: Selected files22297
+Node: Commands23480
+Node: Setting flags24934
+Node: Entering pcl-cvs26844
+Node: Updating the directory28896
+Node: Movement commands29539
+Node: Marking files30130
+Node: Committing changes31173
+Node: Editing files33585
+Node: Getting info about files34472
+Node: Adding and removing files34957
+Node: Undoing changes36300
+Node: Removing handled entries36765
+Node: Ignoring files37614
+Node: Viewing differences38149
+Node: Invoking Ediff39615
+Node: Updating files40466
+Node: Tagging files40798
+Node: Miscellaneous commands41344
+Node: Customization42177
+Node: XEmacs Customization48419
+Node: Future enhancements49375
+Node: Bugs51518
+Node: Copying52850
+Node: Function and Variable Index72033
+Node: Concept Index76877
+Node: Key Index83598
+
+End Tag Table

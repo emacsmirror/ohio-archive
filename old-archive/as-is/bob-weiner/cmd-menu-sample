@@ -1,0 +1,352 @@
+From apple!bloom-beacon!tut.cis.ohio-state.edu!ukma!uflorida!novavax!weiner@bbn.com Fri May 19 14:34:31 1989
+To: unix-emacs@bbn.com
+Date: 28 Apr 89 06:09:32 GMT
+From: Bob Weiner <apple!bloom-beacon!tut.cis.ohio-state.edu!ukma!uflorida!novavax!weiner@bbn.com>
+Sender: arpa-unix-emacs-request@bbn.com
+Subject: Sample cmd-menus file, see info-README to follow
+Organization: Nova University, Fort Lauderdale, FL
+Source-Info:  From (or Sender) name not authenticated.
+
+Info file ../info-local/cmd-menus, produced by Bob Weiner  -*- Emacs-Lisp -*-
+
+THIS IS A SAMPLE FILE MEANT ONLY TO GIVE YOU IDEAS.  MANY OF THE COMMANDS
+WILL NOT WORK ON YOUR SYSTEM.  ALL OF THE ^_ and ^L characters have been
+converted to two characters for reliable transmission.
+
+This file provides a menu interface for executing many useful operating system
+commands on an Apollo display node or terminal.  A number of commands will
+not work when using a terminal.
+
+All main functions called in this file may be found in ../lisp-local/cmd-menus.el
+^_
+File: cmd-menus,  Node: Top,  Prev: (DIR),  Up: (DIR)
+
+  Menus That Execute Useful Operating System Commands
+  Bob Weiner, Motorola Inc., 03/21/89, Last Mod: 04/28/89
+
+* Menu: How to get around on your Apollo without really trying.
+===========================================================================
+
+* DM Cmds::
+* Environment Setup::
+* Help::
+* Mail::
+* Printing::
+* Start Shells::
+* System Status::
+* Utilities::
+^L
+execute: (require 'cmd-menus)
+^_^L
+Node: DM Cmds,  Up: Top
+
+* Menu:
+---------------------------------------------------------------------------
+* Invert Color Screen:		!Toggle Color.
+* Invert Mono Screen:		!Toggle Mono.
+* Load Large Font:		!Large Font.
+* Load Small Font:		!Small Font.
+^_
+Node: Toggle Color
+***************************************************************************
+^L
+execute: (cmd-menus-dm-command "mono")
+^_
+Node: Toggle Mono
+^L
+execute: (cmd-menus-dm-command "inv")
+^_
+Node: Large Font
+^L
+execute: (cmd-menus-dm-command "fl f16.b")
+^_
+Node: Small Font
+^L
+execute: (cmd-menus-dm-command "fl f5x9")
+***************************************************************************
+^_^L
+Node: Environment Setup,  Up: Top
+
+* Menu:
+---------------------------------------------------------------------------
+* Setup User Environment:       !Setup User.
+* Check User Environment Setup: !Check User Setup.
+* Setup Non-Server Node Envir:  !Setup Node.
+^_
+Node: Setup User
+***************************************************************************
+^L
+execute: (cmd-menus-setup-user)
+^_
+Node: Check User Setup
+^L
+execute: (cmd-menus-check-user-setup)
+^_
+Node: Setup Node
+^L
+execute: (cmd-menus-setup-node)
+***************************************************************************
+^_^L
+Node: Help,  Up: Top
+
+* Menu:
+---------------------------------------------------------------------------
+* !Function Key Help::
+^_
+Node: Function Key Help
+***************************************************************************
+^L
+execute: (cmd-menus-dm-command
+	   "cmdf ~/user_data/dm_key_mappings/fkeys_help.cmdf")
+***************************************************************************
+^_^L
+Node: Mail,  Up: Top
+
+* Menu: 
+---------------------------------------------------------------------------
+* !Read Mail::
+* !Send Mail::
+^_
+Node: Read Mail
+***************************************************************************
+^L
+execute: (cmd-menus-read-mail)
+^_
+Node: Send Mail
+^L
+execute: (cmd-menus-mail)
+***************************************************************************
+^_^L
+Node: Printing,  Up: Top
+
+* Menu:
+---------------------------------------------------------------------------
+* Cancel Print Job:             !Lpr-cancel.
+* List Available Printers:      !Pr-list.
+* List Entries in Print Queue:  !Lpq.
+* List Printer Manager Sites:   !Prmgr-list.
+* Print Buffer:                 !Lpr-buffer.
+* Print Files:                  !Lpr-file.
+^_
+Node: Lpr-cancel
+***************************************************************************
+^L
+execute: (cmd-menus-lpr-cancel)
+^_
+Node: Pr-list
+^L
+execute: (cmd-menus-shell-command "prf -list_printers")
+^_
+Node: Lpq
+^L
+execute: (cmd-menus-shell-command
+	   "prf -read;echo '';ls -l $SERVER_PRINT/sys/print/spooler")
+^_
+Node: Prmgr-list
+^L
+execute: (cmd-menus-shell-command "prf -list_sites")
+^_
+Node: Lpr-buffer
+^L
+execute: (cmd-menus-lpr-buffer)
+^_
+Node: Lpr-file
+^L
+execute: (cmd-menus-lpr-file)
+***************************************************************************
+^_^L
+Node: Start Shells,  Up: Top
+
+* Menu:
+---------------------------------------------------------------------------
+* !C Shell::
+* !Korn Shell::
+* !Bourne Shell::
+* !Aegis Shell::
+^_
+Node: C Shell
+***************************************************************************
+^L
+execute: (cmd-menus-dm-command "cp /bin/csh;wc -a")
+^_
+Node: Korn Shell
+^L
+execute: (cmd-menus-dm-command "cp /bin/ksh;wc -a")
+^_
+Node: Bourne Shell
+^L
+execute: (cmd-menus-dm-command "cp /bin/sh;wc -a")
+^_
+Node: Aegis Shell
+^L
+execute: (cmd-menus-dm-command "cp com/sh;wc -a")
+***************************************************************************
+^_^L
+Node: System Status,  Up: Top
+
+* Menu:
+---------------------------------------------------------------------------
+* !Dir Size In Kilobytes::
+* !Dir Listing By Modification Time::
+* !Disk Usage For All Nodes::
+* !Disk Usage For Group's Nodes::
+* !Disk Usage For This Node::
+* !Give Data On User::
+* !List All Processes For User::
+* !List Current Users::
+* !List Nodes On Ring::
+* !My Account ID::
+* !Time And Date::
+^_
+Node: Dir Size In Kilobytes
+***************************************************************************
+^L
+execute: (cmd-menus-dir-size)
+^_
+Node: Dir Listing By Modification Time
+^L
+execute: (cmd-menus-shell-command "ls -lt")
+^_
+Node: Disk Usage For All Nodes
+^L
+execute: (cmd-menus-shell-command "df //*")
+^_
+Node: Disk Usage For Group's Nodes
+^L
+execute: (cmd-menus-shell-command "df //ar_*")
+^_
+Node: Disk Usage For This Node
+^L
+execute: (cmd-menus-shell-command "df")
+^_
+Node: Give Data On User
+^L
+execute: (cmd-menus-user-data)
+^_
+Node: List All Processes For User
+^L
+execute: (cmd-menus-user-processes)
+^_
+Node: List Current Users
+^L
+execute: (cmd-menus-shell-command "who")
+^_
+Node: List Nodes On Ring
+^L
+execute: (cmd-menus-shell-command "lcnode")
+^_
+Node: My Account ID
+^L
+execute: (cmd-menus-shell-command "lusr -me")
+^_
+Node: Time And Date
+^L
+execute: (cmd-menus-shell-command "date")
+***************************************************************************
+^_^L
+Node: Utilities,  Up: Top
+
+* Menu:
+---------------------------------------------------------------------------
+* Apollo Online Manuals:		!Delphi.
+* Apollo Demos::
+* !Calculator::
+* !Interleaf::
+* !Spreadsheet::
+^_
+Node: Delphi,  Up: Utilities
+***************************************************************************
+^L
+execute: (cmd-menus-dm-command "cp -n Delphi /sys/delphi/com/delphi;wc -a")
+^_^L
+Node: Apollo Demos,  Up: Utilities
+
+* Menu:   ONLY RUN ONE OF THESE PROGRAMS AT A TIME
+---------------------------------------------------------------------------
+* Battle Zone Documentation:           !Bzone-doc.
+* Battle Zone Game:                    !Bzone.
+     This may not be available.
+* Demo Rapid Polygon Fill:             !Kali.
+* Display 16 Color Images:             !Images_240.
+* Draw Pulsating Circles and Squares:  !Smooth.
+* Melt Screen:                         !Melt.
+     Be prepared before choosing this.
+* Psychodelic Patterns:                !Pretty.
+* Push Screen Off Display:             !Push.
+     Be prepared before choosing this.
+* Rapidly Draw Spirograph Patterns:    !Petal.
+* Star Wars Documentation:             !Stwar-doc.
+* Star Wars Game:                      !Stwar.
+     Caution: fairly addictive.
+     This may not be available.
+^_
+Node: Bzone-doc
+***************************************************************************
+***************************************************************************
+^L
+execute: (cmd-menus-apollo-game-doc "bzone")
+^_
+Node: Bzone
+^L
+execute: (cmd-menus-apollo-game "bzone")
+^_
+Node: Kali
+^L
+execute: (cmd-menus-apollo-demo "kali")
+^_
+Node: Images_240
+^L
+execute: (cmd-menus-apollo-demo "images_240")
+^_
+Node: Smooth
+^L
+execute: (cmd-menus-apollo-demo "smooth")
+^_
+Node: Melt
+^L
+execute: (cmd-menus-apollo-demo "melt" "(1260,1010)dr;(1270,1020)")
+^_
+Node: Pretty
+^L
+execute: (cmd-menus-apollo-demo "pretty")
+^_
+Node: Push
+^L
+execute: (cmd-menus-apollo-demo "push" "(1260,1010)dr;(1270,1020)")
+^_
+Node: Petal
+^L
+execute: (cmd-menus-apollo-demo "petal")
+^_
+Node: Stwar-doc
+^L
+execute: (cmd-menus-apollo-game-doc "stwar")
+^_
+Node: Stwar
+^L
+execute: (cmd-menus-apollo-game "stwar")
+***************************************************************************
+***************************************************************************
+^_^L
+Node: Calculator,  Up: Utilities
+^L
+execute: (cmd-menus-dm-command
+	   "cp -n Calc /usr/local/bin/calc;wc -a")
+^_
+Node: Interleaf,  Up: Utilities
+^L
+execute: (cmd-menus-dm-command
+	   "(000,000)dr;(1279,991) cp -n Interleaf /interleaf/tps/user/tps -w;wc -a")
+^_
+Node: Spreadsheet,  Up: Utilities
+^L
+execute: (cmd-menus-dm-command
+	   "(000,000)dr;(1279,991) cp -n Spreadsheet /usr/local/bin/sc; wc -a")
+***************************************************************************
+
+
+-- 
+Bob Weiner, Motorola, Inc.,   USENET:  ...!gatech!uflorida!novavax!weiner
+(407) 738-2087
+
+

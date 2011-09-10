@@ -1,0 +1,35 @@
+== core files ==
+
+lookup.el           - メイン
+lookup-vars.el      - 変数の宣言
+lookup-utils.el     - ユーティリティ関数
+lookup-types.el     - データ構造
+lookup-vse.el       - 検索ルーチン
+
+== mode files ==
+
+lookup-entry.el     - Entry mode
+lookup-content.el   - Content mode
+lookup-select.el    - Select mode
+
+== optional files ==
+
+lookup-package.el   - パッケージ管理
+lookup-compile.el   - バイトコンパイル用
+
+== agent files ==
+
+ndic.el             - フリー辞書から検索
+ndeb.el             - eblook インターフェース
+ndtp.el             - NDTP クライアント
+ndict.el            - DICT クライアント
+ndnmz.el            - Namazu インターフェース
+ndspell.el          - スペルチェック/検索
+ndcookie.el         - cookie ファイルから検索
+ndmisc.el           - 雑用エージェント
+
+== other files ==
+
+evi*.el             - Emacs のバージョン隔差を吸収
+sdicf.el            - SDIC 形式辞書のアクセス用ライブラリ
+stem-english.el     - 英単語の語尾を取り除くライブラリ

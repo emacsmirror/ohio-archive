@@ -1,0 +1,91 @@
+			    <Installation>
+			    Kazu Yamamoto
+			     Oct 20, 1999
+
+Emacs 19.28, 19.34 and 20.3 or later, Mule version 2.3 based on Emacs
+19.28 or 19.34, and XEmacs 20.4 or later are supposed to be officially
+supported. Mew may support beta versions of Emacs but Mew conforms the
+spec of official release when available.
+
+Support for Emacs 18, Mule 1 and XEmacs 19 and 20.3 is OBSOLETE,
+sorry.
+
+(0) Mew requires Perl 5.004_04 (note that 5.004 is buggy) or later and
+IM. Install them in order before installing Mew. They can be found in
+the followings:
+
+	http://www.perl.com/CPAN/src/5.0/
+	ftp://ftp.Mew.org/pub/Mew/
+
+(1) Edit "Makefile" as you like.
+
+(2) Type 'make'.
+
+(3) Type 'make install'.
+
+(4) Mew's info is formatted by Emacs 20.4. So, the info could not be
+visible with other Emacsen like XEmacs. In this case, type 'make info'
+to format the info.
+
+(4.1) If you want to format the Japanese info, type 'make jinfo'.
+
+(5) Type 'make install-info'. If you have the "install-info" command,
+the the following line will be automatically added to the "dir" file.
+Otherwise, add it by yourself.
+
+---
+* Mew: (mew.info).      Messaging in the Emacs World
+---
+
+(5.1) If you want the Japanese info, type 'make install-jinfo'. If you
+have the "install-info" command, the the following line will be
+automatically added to the "dir" file.  Otherwise, add it by yourself.
+
+---
+* Mew-J: (mew.jis.info).  Messaging in the Emacs World
+---
+
+(6) Copy the contents in the "etc" directory to anywhere, say
+"/usr/local/lib/xemacs-20.4/etc/mew". 'make install-etc' would help.
+
+(7) Add the following to "~/.emacs" or your site environment file.
+
+	(autoload 'mew "mew" nil t)
+	(autoload 'mew-send "mew" nil t)
+	(setq mew-mail-domain-list '("your mail domain"))
+	(setq mew-icon-directory "/usr/local/lib/xemacs-20.4/etc/mew")
+
+Note that you need to set mew-icon-directory the directory in the
+stage (6).
+
+Optionally, add the following. This links Mew to other packages. For
+example, Mew is used when you write reports on Emacs's bugs.
+
+	(autoload 'mew-user-agent-compose "mew" nil t)
+	(if (boundp 'mail-user-agent)
+	    (setq mail-user-agent 'mew-user-agent))
+	(if (fboundp 'define-mail-user-agent)
+	    (define-mail-user-agent
+	      'mew-user-agent
+	      'mew-user-agent-compose
+	      'mew-draft-send-letter
+	      'mew-draft-kill
+	      'mew-send-hook))
+
+(8) Please check "mew.dot.emacs". Cut parts or the entire of the file
+then add to "~/.emacs".
+
+(9) On XEmacs, click the "Mail" tool button to start Mew. You should
+copy "mew.dot.emacs" into your "~/.emacs".  If cute cats are displayed
+and no error occurs, you succeeded. On text Emacs, type 'M-x mew' to
+execute Mew. In this case, the old demo will start.
+
+(10) For more information, see "00readme" contained sub-directories.
+
+If you are Japanese, please give a look at "patches/00readme.jis".
+
+Useful information may be found from the following web page:
+
+	http://www.Mew.org/
+
+--End of file

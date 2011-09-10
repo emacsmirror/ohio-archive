@@ -1,0 +1,165 @@
+1999-12-04  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio-speedbar.el (eieio-speedbar-child-description): New
+	default method.
+	(eieio-speedbar-child-make-tag-lines): New default method
+
+	* eieio-custom.el (eieio-done-customizing): Moved to fix compile
+	warning.
+
+	* eieio-speedbar.el (eieio-speedbar-create): Quote in
+	function-name while building the hook.	
+	(eieio-speedbar-expand): Pass depth to method for child tag lines.
+
+1999-12-01  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio-opt.el (eieio-class-speedbar): Changed all `eieio-speedbar-'
+	fns in this file to `eieio-class-speedbar-' to differentiate from
+	the eieio-speedbar superclass.
+
+1999-11-30  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio.el (defclass-engine): When building the test function for
+	new classes, make sure it is an object before calling the
+	`same-class-p' primitive.  Also add new primitive `-child-p'
+	to test of an object inherits anything from a class
+
+1999-11-24  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio.el (eieio-validate-class-slot-value): Fixed indexing code
+	which had copy-paste errors.
+	(call-next-method): Only call the first form found.
+
+1999-11-23  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio-speedbar.el: New file.
+
+1999-11-19  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* chart.el (chart): Added initargs.
+
+	* eieio.el (no-applicable-method): Renamed from no-method-definition.
+
+1999-11-18  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio.el (next-method-p): New function.
+	(call-next-method): Retutn value of last called method.
+	Call `no-next-method' on failure to find a next method,
+	(no-next-method): New method on the superclass.
+	("no-next-method"): new error symbol for `signal' command.
+	(eieio-generic-call): Call `no-method-definition' if there
+	is no method definition and arg1 is an object.
+	(no-method-definition): New method.
+
+1999-11-15  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio.el (defclass-engine): When using MI, keep parent list in
+	same order as specified in the code.
+	(child-of-class-p): Fix to work with MI.
+	(slot-boundp): Fix doc string.
+	(eieiomt-next): Now returns a list of possible parent classes.
+	(eieiomt-sym-optimize): Handle changes to eieiomt-next w/o
+	implementing MI calling conventions.
+	(call-next-method): Accepts list from eieiomt-next, and calls
+	all possible next methods.
+
+1999-09-09  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio.texi: Proofread, and added several functions & signals.
+	
+	* eieio-opt.el (eieio-describe-class): Completely revamped to use
+	the documentation (pre-built), and new generic apropoing functions.
+	(eieio-read-class): New function
+	(eieio-all-generic-functions): New functions
+	(eieio-method-documentation): New function
+	(eieio-describe-slots, eieio-thing-to-string): Deleted
+
+1999-09-08  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio-doc.el (eieiodoc-one-attribute): Do not add a default if
+	it is unbound.
+
+	* eieio.el (set-slot-value): New alias.
+	(eieio-rebuild-doc-string): Do not add a default if it is unbound.
+
+1999-09-07  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio.el (obj-of-class-p): Update doc string.
+	(child-of-class-p): Update doc.  Return t, instead of class.
+	(eieio-unbound): New variable.
+	(defclass-engine): Unitialized slots get a value of 'unbound.
+	(eieio-perform-slot-validation): Always pass unbound slots.
+	(eieio-barf-if-slot-unbound): Call `slot-unbound' if unbound.
+	(oref-engine, oref-default-engine): Call `eieio-barf-if-slot-unbound'
+	("unbound-slot"): New error signal.
+	(slot-unbound): New method on standard-class.
+	(slot-boundp): Actually check for an unbound slot.
+	(slot-makeunbound): New CLOS function.
+
+1999-09-06  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio.texi (Building Classes): Talk about class-options.
+	(Default Superclass): Fixed typo.
+
+	* eieio.el (defclass): Use backquote.
+	Take options and documentation in old doc-string position.
+	(defclass-engine): Add support for class-options.
+	(eieio-skip-typecheck): New option
+	(eieio-perform-slot-validation-for-default, eieio-validate-slot-value,
+	(eieio-validate-class-slot-value): Use skip option.
+
+1999-09-05  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio.el (boolean-p, find-class): New functions
+
+	* eieio-doc.el (eieiodoc-one-node, eieiodoc-one-attribute):
+	Show types in the doc.
+
+	* eieio.el (eieio-validate-slot-value): Converted the list of
+	types into a vector to make this faster.
+	(eieio-perform-slot-validation-for-default): New fn.
+	(eieio-add-new-field): Do type checking on all default values.
+	Prevent changing of TYPE when overriding parent values.
+	(eieio-rebuild-doc-string): Add type to output.
+
+1999-09-04  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio-doc.el (eieiodoc-one-node): Fixed up to handle new
+	internal class structure.  Doc class allocated fields.
+	(eieiodoc-one-attribute):  Private is a slot attribute.
+
+	* eieio-opt.el (eieio-describe-class): Fixed up to handle new
+	internal class structure.
+	(eieio-describe-slots): Same.
+
+	* eieio.el Removed several old defconsts, (all with PRIVATE in
+	them) and added several new ones (class-protection, and all with
+	`allocation' in them).
+	(defclass-engine): Updated to handle multiple parents.  Removed
+	all ref to private parts.  Extract class init from parent to
+	function, and loop over it.  Reverse end results of public
+	attributes.  Store private status in a list.  Store class
+	allocated vector information.
+	(eieio-add-new-field, eieio-copy-parents-into-subclass):New functions.
+	(oref-engine, oref-default-engine, oset-engine, oset-default-engine):
+	Handle class allocated field referencing.
+	(class-parents, class-parents-fast): New functions.
+	(class-parent, class-parent-fast): Update to call plural version.
+	(child-of-class-p): Update to handle multiple parents.
+	(eieio-class-field-name-index): New function.
+	(eieio-rebuild-doc-string): Removed private field docing.  Added
+	private as a property of regular slots.  Doc class allocated slots.
+
+1999-07-03  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio.el (eieio-rebuild-generic-doc-string): Fixed for XEmacs to 
+	use `compiled-function-arglist' instead of aref.
+
+1999-06-19  Eric M. Ludlam  <zappo@ultranet.com>
+
+	* eieio.el: (object-assoc-list-safe) New function
+
+1999-03-18  Dave Love <d.love@dl.ac.uk>
+
+	* eieio.texi (Demo Programs): Function index support w/ new makeinfo.
+

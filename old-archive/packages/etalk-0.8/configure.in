@@ -1,0 +1,27 @@
+dnl Process this file with autoconf to produce a configure script
+AC_INIT(etalk.h)
+PROGS="etalk"
+AC_SUBST(PROGS)
+dnl Features to build in.
+AC_ENABLE(TALKDTEST, AC_DEFINE(TALKDTEST))
+AC_ENABLE(OTALK_ONLY, AC_DEFINE(OTALK_ONLY))
+dnl Standard programs and things
+AC_PROG_CC
+AC_PROG_INSTALL
+dnl Hey, this works
+AC_CHECKING(for a sense of humor)
+dnl Header files I need to know about.
+AC_STDC_HEADERS
+AC_HAVE_HEADERS(stdio.h stdlib.h string.h memory.h sys/types.h time.h)
+AC_HAVE_HEADERS(select.h sys/time.h unistd.h)
+dnl Some funcs to know about.
+AC_HAVE_FUNCS(strtok)
+dnl Longs need to be 4 bytes, or we need to use ints for net msgs
+AC_SIZEOF_TYPE(long)
+dnl other things
+AC_PID_T
+AC_CONST
+dnl I can't help this, but yell anyways.
+AC_WARN(Lisp directory is /usr/local/lib/emacs/site-lisp for install)
+dnl end
+AC_OUTPUT(Makefile)

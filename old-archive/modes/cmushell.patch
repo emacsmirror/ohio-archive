@@ -1,0 +1,136 @@
+From utkcs2!emory!swrinde!cs.utexas.edu!tut.cis.ohio-state.edu!snorkelwacker!paperboy!meissner Fri Jun 15 13:55:22 EDT 1990
+Article 2967 of gnu.emacs:
+Xref: utkcs2 comp.emacs:4441 gnu.emacs:2967
+Path: utkcs2!emory!swrinde!cs.utexas.edu!tut.cis.ohio-state.edu!snorkelwacker!paperboy!meissner
+>From: meissner@osf.org (Michael Meissner)
+Newsgroups: comp.emacs,gnu.emacs
+Subject: Re: Release two of CMU process modes  (background.el)
+Message-ID: <MEISSNER.90Jun13181708@curley.osf.org>
+Date: 13 Jun 90 22:17:08 GMT
+References: <9601@pt.cs.cmu.edu> <JV.90Jun13143702@squirrel.mh.nl>
+Sender: news@OSF.ORG
+Organization: Open Software Foundation
+Lines: 119
+In-reply-to: jv@mh.nl's message of 13 Jun 90 20:37:02 GMT
+
+In the same vein of comint/cmushell hacks, I've been experimenting
+with setting my own personal process filters, and munging the
+environment.  The following patch adds hooks to allow this to happen,
+and it also deletes the first definition for comint-update-env (2 were
+shipped):
+
+*** comint.el.~1~	Tue Jun 12 14:03:18 1990
+--- comint.el	Wed Jun 13 10:10:45 1990
+***************
+*** 88,93 ****
+--- 88,95 ----
+  
+  ;;; comint-mode-hook is the comint mode hook. Basically for your keybindings.
+  ;;; comint-load-hook is run after loading in this package.
++ ;;; comint-exec-hook is run after the process is started.
++ ;;; comint-env-hook is run just before the process is started to change env.
+  
+  
+  ;;; Buffer Local Variables:
+***************
+*** 154,159 ****
+--- 156,168 ----
+  (defvar comint-mode-hook '()
+    "Called upon entry into comint-mode")
+  
++ (defvar comint-exec-hook '()
++   "Called when the comint process is started")
++ 
++ (defvar comint-env-hook '()
++   "Called just before the comint process is started to change the environment,
++ which is in the local variable process-environment")
++ 
+  (defvar comint-mode-map nil)
+  
+  (defun comint-mode ()
+***************
+*** 281,287 ****
+    "Fires up a process in buffer for comint modes.
+  Blasts any old process running in the buffer. Doesn't set the buffer mode.
+  You can use this to cheaply run a series of processes in the same comint
+! buffer."
+    (save-excursion
+      (set-buffer buffer)
+      (let ((proc (get-buffer-process buffer)))	; Blast any old process.
+--- 290,302 ----
+    "Fires up a process in buffer for comint modes.
+  Blasts any old process running in the buffer. Doesn't set the buffer mode.
+  You can use this to cheaply run a series of processes in the same comint
+! buffer.
+! 
+! Upon entry, comint-exec-hook is run just after creating the process (to
+! allow the establishment of a process filter), and comint-env-hook is run
+! just before creating the process, to allow munging the environment passed
+! to the child process."
+! 
+    (save-excursion
+      (set-buffer buffer)
+      (let ((proc (get-buffer-process buffer)))	; Blast any old process.
+***************
+*** 293,301 ****
+  				       (screen-width))
+  			       "TERM=emacs"
+  			       "EMACS=t")))
+! 	   (proc (apply 'start-process name buffer command switches)))
+        (make-variable-buffer-local 'comint-ptyp)
+        (setq comint-ptyp process-connection-type) ; T if pty, NIL if pipe.
+        ;; Jump to the end, and set the process mark.
+        (goto-char (point-max))
+        (set-marker (process-mark proc) (point)))
+--- 308,320 ----
+  				       (screen-width))
+  			       "TERM=emacs"
+  			       "EMACS=t")))
+! 	   proc)
+! 
+!       (run-hooks 'comint-env-hook)
+!       (setq proc (apply 'start-process name buffer command switches))
+        (make-variable-buffer-local 'comint-ptyp)
+        (setq comint-ptyp process-connection-type) ; T if pty, NIL if pipe.
++       (run-hooks 'comint-exec-hook)
+        ;; Jump to the end, and set the process mark.
+        (goto-char (point-max))
+        (set-marker (process-mark proc) (point)))
+***************
+*** 316,343 ****
+  
+  ;; This is just (append new old-env) that compresses out shadowed entries.
+  ;; It's also pretty ugly, mostly due to elisp's horrible iteration structures.
+- (defun comint-update-env (old-env new)
+-   (let ((ans (reverse new))
+- 	(vars (mapcar (function (lambda (vv)
+- 			(and (string-match "^[^=]*=" vv)
+- 			     (substring vv 0 (match-end 0)))))
+- 		      new)))
+-     (while old-env
+-       (let* ((vv (car old-env)) ; vv is var=value
+- 	     (var (and (string-match "^[^=]*=" vv)
+- 		       (substring vv 0 (match-end 0)))))
+- 	(setq old-env (cdr old-env))
+- 	(catch 'already
+- 	  (if var
+- 	      (let ((vars vars))
+- 		(while vars
+- 		  (let ((nvar (car vars)))
+- 		    (setq vars (cdr vars))
+- 		    (if (and nvar (string= var nvar)) (throw 'already nil))))))
+- 	  (setq vars (cons var vars))
+- 	  (setq ans (cons vv ans)))))
+-     (nreverse ans)))
+- 
+  (defun comint-update-env (old-env new)
+    (let ((ans (reverse new))
+  	(vars (mapcar (function (lambda (vv)
+--- 335,340 ----
+--
+Michael Meissner	email: meissner@osf.org		phone: 617-621-8861
+Open Software Foundation, 11 Cambridge Center, Cambridge, MA
+
+Catproof is an oxymoron, Childproof is nearly so
+
+

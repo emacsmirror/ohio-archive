@@ -1,0 +1,21 @@
+1) Run `./configure' in the same directory as this file.
+
+2) Check Makefile in the same directory as this file to make sure it
+   says what you want.
+
+3) Run `make install' in the same directory as this file.
+
+4) If you don't install ZenIRC in the system directories you need to add
+   an entry to your "load-path", preferably in your ~/.emacs file;
+
+   (setq load-path (cons 
+                    (expand-file-name "/full/path/to/zenirc/directory") 
+                    load-path))
+
+5) Read src/zenirc-example.el for instructions on how to set up ZenIRC
+   for daily abuse.
+
+To try it out--run `emacs', M-x load-library zenirc, M-x zenirc, Waste Time.
+If this doesn't work, e-mail your problems to `zenirc-bug@splode.com'.
+
+Per Persson <pp@sno.pp.se> 1996-04-26.

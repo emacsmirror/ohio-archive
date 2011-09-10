@@ -1,0 +1,63 @@
+1999-12-14  Keisuke Nishida  <kxn30@po.cwru.edu>
+
+	* Makefile.am (MAINTAINERCLEANFILES): Remove generated files.
+
+1999-12-01  Satoru Takabayashi  <satoru-t@is.aist-nara.ac.jp>
+
+	* Makefile.am: Apply KOREEDA's patch [lookup-ja 1115]
+	(DVIS): For making *.dvi
+	(clean-generic): For purging temporary files.
+
+1999-11-30  Satoru Takabayashi  <satoru-t@is.aist-nara.ac.jp>
+
+	* Makefile.am (info_TEXINFOS): Commented out
+	for not to use makeinfo to generate *.info. [lookup-ja 1028]
+	(INFOS): New variable for defining generated info files.
+	(install-data-local): New command for installing info files.
+	(TEXIS): New variable for storing *.texi file names.
+	(EXTRA_DIST): Include $(TEXIS) $(INFOS)
+	(SUB_INFOS): New variable for defining *.info-[0-9] files.
+
+1999-10-22 Kazuhiro Ito <m1877334@msic.med.osaka-cu.ac.jp>
+
+	* lookup.texi: remove documents for old version.
+
+1999-07-30 Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* lookup.texi: Fix typos and Clean garbages.
+
+1999-07-27 Masatoshi Tsuchiya <tsuchiya@pine.kuee.kyoto-u.ac.jp>
+
+	* lookup.texi: Add documents of dictionary options `:hiragana',
+ 	`:expander', and `:expand-filter'.
+
+1999-07-27 Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* lookup.texi: remove explanation for ndnmz agent.
+	* lookup.texi: add explanation for ndsrd agent.
+	
+1999-07-02 Kazuhiro Ito <m1877334@msic.med.osaka-cu.ac.jp>
+
+	* lookup.texi: remove explanation for dictionary option `:filters'
+	
+1999-02-06  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-guide.texi: New file.
+
+1999-01-12  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* README: New file.
+
+1998-10-20  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* texinfo.tex, texinfo-js.tex: New file with Japanized patch.
+	(Thanks to Uichi Katsuta!)
+
+1998-06-13  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9 released.
+
+1998-03-05  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* Version 0.8 released.
+

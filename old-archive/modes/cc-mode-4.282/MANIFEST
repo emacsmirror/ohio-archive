@@ -1,0 +1,38 @@
+MANIFEST for tar distribution of cc-mode.el 4.282
+Barry A. Warsaw <cc-mode-help@merlin.cnri.reston.va.us>
+1996/02/21 23:07:55
+
+You should have received the following files in the distribution tar
+file for cc-mode 4.282:
+
+    ANNOUNCEMENT: Release announcement as it appeared on various
+    forums.
+
+    MANIFEST: This file.
+
+    cc-mode.el: Version 4.282 of the mode.
+
+    cc-mode.texi: The CC-MODE Texinfo manual.
+
+    cc-compat.el: Helps ease the transition from c-mode.el to cc-mode
+    style indentation control.  This is provided for your convenience
+    only, and is completely unguaranteed and unsupported.
+
+    cc-mode-18.el: Emacs 18 compatibility file.  This is provided for
+    your convenience only, and is completely unguaranteed and
+    unsupported.  Emacs 18 support will be completely dropped in
+    cc-mode version 5.
+
+    cc-guess.el: Experiments in style guessing.  This is provided for
+    your convenience only, and is completely unguaranteed and
+    unsupported.
+
+    cc-lobotomy.el: Performance vs. accuracy trade-offs.
+
+    README: Quick intro into how to get cc-mode up and running.
+
+    ChangeLog: Extremely verbose history of changes.
+
+Note that the DUMPING file from previous distributions is obsoleted by
+the fact that the latest XEmacs and Emacs 19 both come pre-configured
+to use cc-mode.

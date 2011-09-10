@@ -1,0 +1,39 @@
+/* XPM */
+/*
+ * Copyright (C) 1997 Yuuichi Teranishi <teranisi@isl.ntt.co.jp> 
+ * Copyright (C) 1997 Kazuhiko Yamamoto <kazu@is.aist-nara.ac.jp>
+ */
+static char * mew_pgp_sigenc_xpm[] = {
+"28 28 4 1",
+" 	s backgroundToolBarColor	c None",
+".	c black",
+"X	c white",
+"o	c Gray60",
+"                            ",
+" ...............            ",
+" .XXXXXXXXXXXXX.            ",
+" .X...X...X...X.            ",
+" .X.X.X.X.X.X.X.            ",
+" .X...X...X...X.            ",
+" .X.XXXXX.X.XXX.            ",
+" .X.XXX...X.XXX.            ",
+" .XXXXXXXXXXXX..   XXXXX    ",
+" ...............  Xooooo    ",
+"            .X.  Xo....Xo.  ",
+"           .XX.  Xo.   Xo.  ",
+"  .........XXX.  Xo.   Xo.  ",
+"  XXXXXXX.XX X. XXXXXXXXXX. ",
+"  XXXXXX.XX. .  X  oooooo.. ",
+"  XXXXX.XX. X.  X  oooooo.. ",
+"  XXXXX.X. X.X  X  oooooo.. ",
+"  XXXXX.. X.o   X  oooooo.. ",
+"  XXXXX.....ooooX  oooooo.. ",
+"  XXXX.    .ooo X  oooooo.. ",
+"  XXX.XXXXX.    ........... ",
+"                            ",
+" ... .          ....        ",
+".       ..   .  .    ..   ..",
+" ..  . .  . ... ...  . . .  ",
+"   . .  ...  .  .    . . .  ",
+"...  .    .     .... . .  ..",
+"       ...                  "};

@@ -1,0 +1,20 @@
+
+ebnf2ps.tar.gz contains the following files:
+
+   ebnf-bnf.el	EBNF parser
+   ebnf-iso.el	ISO EBNF parser
+   ebnf-otz.el	EBNF optimizer
+   ebnf-yac.el	Yacc/Bison parser
+   ebnf2ps.el	main file
+   ebnf2ps.new	News
+
+The file iso-14977.pdf contains the ISO EBNF specification, this file is apart
+from this package and it can be downloaded from:
+http://www.cpqd.com.br/~vinicius/emacs/iso-14977.pdf.gz
+
+
+Happy hacking
+
+
+Vinicius
+http://www.cpqd.com.br/~vinicius/emacs/Emacs.html

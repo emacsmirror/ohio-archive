@@ -1,0 +1,57 @@
+From bug-gnu-emacs-request@prep.ai.mit.edu Thu Mar 30 13:14:59 1989
+Received: by life.ai.mit.edu; Thu, 30 Mar 89 12:07:57 EST
+Return-Path: <mcvax!moncam!paul@uunet.uu.net>
+Received: from prep.ai.mit.edu by life.ai.mit.edu; Thu, 30 Mar 89 12:06:37 EST
+Received: from uunet.UU.NET by prep.ai.mit.edu; Thu, 30 Mar 89 11:42:21 EST
+Received: from mcvax.UUCP by uunet.UU.NET (5.61/1.14) with UUCP 
+	id AA07627; Thu, 30 Mar 89 12:06:07 -0500
+Received: by mcvax.cwi.nl via EUnet; Thu, 30 Mar 89 18:45:50 +0200 (MET)
+Received: from acorn by kestrel.Ukc.AC.UK   with UUCP  id aa18577;
+          30 Mar 89 17:10 BST
+Received: from marvin by acorn.co.uk (5.51/Am13)
+	id AA27114; Thu, 30 Mar 89 16:36:09 BST
+Received: by marvin.moncam.uucp (4.0/SMI-3.2)
+	id AA24626; Thu, 30 Mar 89 16:00:22 BST
+Date: Thu, 30 Mar 89 16:00:22 BST
+From: Paul Hudson <mcvax!moncam!paul@uunet.uu.net>
+Message-Id: <8903301500.AA24626@marvin.moncam.uucp>
+To: bug-gnu-emacs@prep.ai.mit.edu
+Subject: autoinsert files should cleart modification flag.
+Status: RO
+
+
+I use the autoinsert package. but find it irritating when I misspell an existing
+file, and so get a new file with the auto-inserted contents, that the file is marked modified
+and so I have to confirm the buffer deletion. The fix is of course trivial, and so here it is.
+
+Paul Hudson 
+
+Snail mail: Monotype ADG	Email:	...!ukc!acorn!moncam!paul
+	    Science Park,		paul@moncam.co.uk
+	    Milton Road,	"Sun Microsysytems:
+	    Cambridge,		 The Company is Arrogant (TM)"
+	    CB4 4FQ
+
+
+*** /usr/local/emacs/lisp/autoinsert.el	Tue Feb 28 09:12:53 1989
+--- /home/paul/emacs/autoinsert.el	Thu Mar 30 15:53:01 1989
+***************
+*** 81,87 ****
+      (if insert-file
+          (let ((file (concat auto-insert-directory insert-file)))
+            (if (file-readable-p file)
+!               (insert-file-contents file)
+              (message "Auto-insert: file %s not found" file)
+  	    (sleep-for 1))))))
+  
+--- 81,89 ----
+      (if insert-file
+          (let ((file (concat auto-insert-directory insert-file)))
+            (if (file-readable-p file)
+! 	      (progn
+! 		(insert-file-contents file)
+! 		(not-modified))
+              (message "Auto-insert: file %s not found" file)
+  	    (sleep-for 1))))))
+  
+

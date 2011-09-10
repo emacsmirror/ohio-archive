@@ -1,0 +1,266 @@
+;;;File:  widgets.gwm -- various widgets for decorations
+
+;;Author: Brian L. Kahn
+;;Not for sale or resale, distribution unlimited
+
+
+(load "cursor-names.gwm")
+(: widget.bar-cursor
+   (cursor-make XC_fleur))
+(: widget.menu-cursor
+   (cursor-make XC_crosshair))
+(: widget.scroll-cursor
+   (cursor-make XC_sb_v_double_arrow))
+(: widget.scroll-up-cursor
+   (cursor-make XC_sb_up_arrow))
+(: widget.scroll-down-cursor
+   (cursor-make XC_sb_down_arrow))
+(: widget.scroll-index-cursor
+   (cursor-make XC_sb_right_arrow))
+(: widget.weave 
+   (pixmap-make "/usr/include/X11/bitmaps/cross_weave"))
+(: widget.gray
+   (pixmap-make "/usr/include/X11/bitmaps/gray"))
+(: widget.lt-gray
+   (pixmap-make "/usr/include/X11/bitmaps/light_gray"))
+(: widget.black
+   (pixmap-make "/usr/include/X11/bitmaps/black"))
+(: widget.font  (font-make "widget"))
+(: widget.Bfont (font-make "widgetBold"))
+
+;(: widget.font  (font-make "*clean-medium*--10*c-60*"))
+;(: widget.Bfont (font-make "*clean-bold*--10*c-60*"))
+
+
+;PROGRAMMING
+;===========
+
+(de apply (func arg)
+    (eval (+ (list func) arg)))
+
+(de apply1 (func arg)
+    (eval (list (eval func) arg)))
+
+
+
+(defun widget:message message
+  ;; put "who what when why"  into property for this widget
+  (with (output (+ "(" ;who
+		   (or (# 'name message) (# 'name wob-property) "widget")
+		   " " ;what
+		   (itoa (current-event-code))
+		   " " ;when
+		   (itoa (current-event-modifier))
+		   " " ;why
+		   (or (# 'message message) (# 0 message) "no-message")
+		   ")"
+		   ))
+	(set-x-property (or (# 'widget message) (# 'widget wob-property))
+			output)
+	))
+
+
+(: widget:scrollbar-fsm
+   (fsm-make
+    (: inactive 
+       (state-make
+	(on (buttonpress 1 any)
+	    (wob-cursor widget.scroll-up-cursor)
+	    active)
+	(on (buttonpress 2 any)
+	    (wob-cursor widget.scroll-index-cursor)
+	    active)
+	(on (buttonpress 3 any)
+	    (wob-cursor widget.scroll-down-cursor)
+	    active)
+	))
+    (: active
+       (state-make
+	(on (buttonrelease any any)
+	    (progn
+	      (wob-cursor widget.scroll-cursor)
+	      (widget:message
+	       (itoa (/ (* 100 (current-event-relative-y))
+			(height wob)))))
+	    inactive)
+	))
+    ))
+
+(: widget:scrollbar-make
+   (with (fsm widget:scrollbar-fsm
+	  borderwidth 1
+	  tile widget.weave
+	  cursor widget.scroll-cursor
+	  property (list 'widget "scrollbar" 'name "leftside")
+	  bar-min-width 14)
+	 (bar-make ())))
+
+(: widget:Dmenu-fsm
+   (fsm-make
+    (: menu-off
+       (state-make
+	(on enter-window
+	    (wob-tile (# 'on-pix wob-property)))
+	(on leave-window
+	    (wob-tile (# 'off-pix wob-property)))
+	(on (buttonpress menu-button any)
+	    (progn
+	      (wob-tile (# 'off-pix wob-property))
+	      (if wob-menu
+		  (pop-menu))
+	      ))
+	(on (buttonpress any any)
+	    (wob-invert) 
+	    menu-on)
+	))
+    (: menu-on
+       (state-make
+	(on (buttonrelease any any)
+	    (progn 
+	      (wob-invert)
+	      (eval (# 'action wob-property)))
+	    menu-off)
+	(on leave-window
+	    (progn
+	      (wob-invert)
+	      (wob-tile (# 'off-pix wob-property)))
+	    menu-off)
+	))
+    ))
+    
+(: widget:Dmenubar-fsm
+   (fsm-make
+    (state-make
+     (on (user-event 'focus-in)
+	 (wob-tile widget.gray))
+     (on (user-event 'focus-out)
+	 (wob-tile widget.lt-gray))
+     standard-title-behavior)))
+
+(defun widget:Dmenubar-make (menulist)
+  (with (fsm widget:Dmenubar-fsm
+	 tile widget.gray 
+	 plug-separator 8
+	 borderwidth 0
+	 cursor widget.bar-cursor
+	 bar-min-width 2
+	 bar-max-width 24)
+	(apply 'bar-make menulist)
+  ))
+
+
+
+(defun widget:Dmenu-make (args)
+  ;; Make a plug that drops a menu.  
+  ;; ARGS is '(name (item ... item))
+  ;; item is ("label" action)
+  ;; action is "(elisp-function args)" or (wool-function args)
+  (with (name (# 0 args)
+      	 widget "Dmenu"
+	 item-list (# 1 args)
+	 action (widget:action (# 1 (# 0 item-list)))
+	 menu (widget:menu-make item-list)
+	 fsm widget:Dmenu-fsm
+	 borderwidth 1
+	 cursor widget.menu-cursor
+	 property (list 'widget widget
+			'name name 
+			'action action
+			'off-pix (label-make name widget.font)
+			'on-pix (label-make name widget.Bfont))
+	 )
+	(plug-make (# 'off-pix property))))
+
+
+(defun widget:menu-make (item-list)
+  (menu-make-from-list
+   (mapfor item item-list
+	   (list 'item-make 
+		 (# 0 item) 
+		 (widget:action (# 1 item)))
+	   )))
+
+
+; action is "(elisp-function args)" or (wool-function args)
+(defun widget:action (action)
+  (cond ((eq 'string (type action))
+	 (list 'widget:message ''message action))
+	((eq 'list (type action))
+	 action)
+	(t (progn (? "Invalid widget:action - ")
+		  (? action)))
+	))
+
+
+
+
+(: widget:Pmenu-fsm 
+  (fsm-make 
+    (setq initial (state-make
+	(on enter-window-not-from-grab		; init menu colors
+	  (: invert-color (bitwise-xor pop-item.foreground
+	      pop-item.background))
+	  realized			; then go in normal mode
+	  )
+	(on (buttonrelease any any)	; ButRel before menu appeared 
+	  (progn			; then call default action
+	    (with (calling-wob wob-parent Menu wob)
+	      (setq std-popups.action
+		(# 'action wob-property))
+	      (wob wob-parent)
+	      (send-user-event 'depop Menu t)
+	      (wob calling-wob)
+	      (eval std-popups.action))
+	  )
+	  waiting-for-enter-window	; must trap the actual menu map
+	)
+	(on (user-event 'depop) (unpop-menu) initial)      
+    ))
+    (setq realized (state-make
+	(on (buttonrelease any any)	; ButRel outside of menu
+	    (progn
+	      (with (quit (# 'quit wob-property))
+		    (if quit (eval quit)))
+	      (unpop-menu)
+	      )
+	    initial)
+	(on (user-event 'depop) (unpop-menu) initial)      
+    ))
+    (setq waiting-for-enter-window (state-make
+	(on enter-window-not-from-grab () initial)
+    ))
+))
+
+
+(defun widget:Pmenu-make spec
+  ;; Make a pop-up menu that returns index of selection
+  (with (fsm widget:Pmenu-fsm
+	 item-list (# 0 spec) 
+	 property (list 'widget "Pmenu"
+			'name "Pmenu"
+			'quit '(widget:message 'message "nil" 'widget 'Pmenu)
+			'action '(widget:message 'message 0 'widget 'Pmenu)
+			)
+	 index -1 ; starts at 0, pre-incremented
+	 )
+	(eval 
+	 (+ '(menu-make)
+	    (mapfor item item-list
+		    (list 'item-make 
+			  item
+			  (list 'widget:message
+				''message (itoa (: index (+ index 1)))
+				''widget "Pmenu")
+			  ))))
+	))
+
+
+
+
+;; for convenience in defining Dmenus
+(defunq Dmenu: (Dmenu.name arglist)
+  ;; assign DMENU.NAME equal to the Dmenu created using ARGLIST.
+  (set Dmenu.name (eval (list 'widget:Dmenu-make arglist))))
+
+
+

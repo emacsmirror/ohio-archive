@@ -1,0 +1,183 @@
+$Header: /home/abel/cvs/src/misc/emacs/erc/erc.txt,v 1.4 1998/06/06 19:30:45 abel Exp $
+
+
+
+		ERC - yet another Emacs IRC client
+		==================================
+
+			   version 1.0
+
+
+		      Alexander L. Belikoff
+			 (abel on IRC)
+			 abel@bfr.co.il
+
+
+
+I. Introduction
+
+ERC is an IRC (Internet Relay Chat) client program for Emacs. There
+are a number of Emacs IRC clients available on the Internet (Kiwi,
+irc.el. irchat, zenirc and probably others). However, I chose to write
+my own one. The primary reason was that none of those clients
+met all my requirements. Some of them were just too old to run in new
+Emacsen, whilst the others were quite inflexible. One of the most
+important problems was the absence of any color support. Since IRC is
+supposed to conduct a lot of different information, helping user to
+distinguish between various kinds of it is vital. Different
+colorization of different types of information is the best way (so
+far) to express it to a user. Therefore the Emacs IRC clients just
+couldn't compete with the most popular ones (like BitchX, Zircon etc)
+Thus, color support was a principal requirement to a new client.
+
+Besides it, I tried to be realistic. I didn't try to mimic the
+behavior of some well-known client. My point was that 90% of all IRC
+users need about 40% of the IRC protocol commands in their everyday
+IRChatting. Therefore, I didn't rush to implement some facilities like
+DCC file transfer. Nevertheless, those may be implemented in the
+future.
+
+For a successfull product evolution, it is vital to have a feedback. I
+would appreciate if you send me a letter describing your experience
+with ERC and your views on it's future development and the bugs you
+have noticed (or you think you have noticed ;)
+
+
+II. Starting ERC.
+
+The ERC program per se is contained in a single file: erc.el. You have
+to load it in your Emacs.
+
+Next, you run ERC using one of the following functions:
+
+- erc - runs ERC with default/explicit arguments (non-interactive)
+- erc-select - allows user to select interactively all parameters and
+run ERC
+
+ERC supports different appearance for different types of information
+it displays. The appearance is customized with 'faces' (see the Emacs
+Manual). The following faces are provided:
+
+- erc-default-face     - users' messages
+- eric-direct-msg-face - messages and notices sent directly to you
+- erc-input-face       - your commands
+- erc-bold-face        - bold text
+- erc-inverse-face     - inverse text
+- erc-underline-face   - underlined text
+- erc-prompt-face      - prompt
+- erc-notice-face      - server and protocol (non-user) messages
+- erc-action-face      - CTCP messages
+- erc-error-face       - errors
+- erc-pal-face         - messages from people on your pal's list
+
+These faces have some defaults which may not be good enough for you. I
+personally would suggest the following piece of code in your .emacs:
+
+-----------------------------------------------------------------------
+(require 'erc)
+
+;; set ERC faces
+(set-face-foreground 'erc-error-face "White")
+... etc for other faces ...
+
+;; other ERC-related setup
+(setq erc-pals '("nick1" "nick2"))
+-----------------------------------------------------------------------
+
+Then, you may use `erc-select' to start ERC and it will work for you.
+
+In any case, I strongly suggest looking at the section 'tunable
+parameters' at the top of the program.
+
+
+III. Using ERC
+
+In ERC, everything happens in a single emacs buffer, which is unique
+for each IRC session. Whenever you press 'Enter', ERC tries to parse a
+command in a current line. If it doesn't the line as a command, it
+sends it as a text to a _current default target_.
+
+I tried to follow the logic of a "standard" irc-ii client as much as
+it was possible. However there are some differences. The most
+important one is JOIN/PART commands' logic.
+
+In irc-ii whenever you issue JOIN, you leave your current channel
+(with an implicit PART command). By default, you current target is the
+channel you are currently on. In ERC, however, whenever you do JOIN,
+you DON'T leave your current channel. However you current target
+changes to the channel you've just joined. If you leave this channel,
+your current target will become the previous channel you joined. The
+only exception is the QUERY command. If you've issued QUERY <target>,
+then until you cancel it with an empty QUERY command, your current
+target will be the target of your query.
+
+Another issue are the highlighting commands. In irc-ii those are C-b,
+C-v etc. Since all of them have a well defined behavior in Emacs, I
+didn't dare to change it. If you want to enter one of those
+characters, 'quote' it qith C-q. For example to start bold text, press
+C-q C-b etc.
+
+As for the commands, I am just too lazy to list all supported
+ones. Many commands from the IRC II standard are supported. In any
+case, just try a command, and if you get an error, then you are out of
+luck and it's up to you to send me a letter and to request this
+particular command.
+
+For obvious reasons the SET command is not supported. Most of the
+variables supported by the SET commands are specific to a standalone
+client (for example window operations). If you thing I am wrong,
+please share your ideas with me.
+
+Scripts are supported in somewhat restrictive way. The client does
+attempt to figure out the script to use: it checks through a list of
+possible files until it finds an existing one to read. The list is
+defined by a variable `erc-startup-file-list' and is something like:
+(".ercrc.el" ".ercrc" "~/.ercrc.el" "~/.ercrc" "~/.ircrc"). One
+feature specific to ERC is the way it treats the script file. If the
+file name ends with '.el' it is considered to be an Emacs Lisp file
+and is loaded by elisp. Otherwise, it is considered to be a regular
+IRC script and is read line by line as if a user typed each line
+directly.
+
+Note however, that at this stage scripting feature is of no value,
+since only regular RFC commands are supported.
+
+Another issue novel to ERC is the 'pal list'. Some channels are pretty
+crowded and all people talk pretty fast, so you get a lot of
+information. Sometimes you want to pay attention to messages from some
+particular users (your friends for example). On such crowded channels,
+you may easily miss your friends' messages in a flood of
+junk^H^H^H^H^H information especially if you switch to other tasks
+(work for example ;). ERC allows you to create a list of people, whose
+messages you wouldn't like to miss, and it will highlight all messages
+from those people. The list of such people (pal list) is held by
+`erc-pals' variable. You may either explicitly set it before running
+ERC:
+
+(setq erc-pals '("bozo" "foobar" "abel"))
+
+... or you may do it interactively during your ERC session, using
+erc-add-pal and erc-delete-pal functions.
+
+The variable `erc-pals-highlight-type' defines the way such messages
+are highlit.
+
+
+IV. Reporting bugs.
+
+If you've noticed what you think is an ERC bug, and you want to report
+it to me, please try to gather as much data as possible. The following
+techinques may be of help:
+
+- try to develop a scenario which exposes a buggy behavior
+
+- set the `erc-log-p' variable to 't', run ERC, and collect the debug
+  log (file ERC.debug)
+
+- set 'debug-on-error' to 't', run ERC, and get an error backtrace if
+  you can.
+
+And don't forget to tell me the client version ;) (erc-version function)
+
+
+end of $Source: /home/abel/cvs/src/misc/emacs/erc/erc.txt,v $

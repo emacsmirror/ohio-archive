@@ -1,0 +1,95 @@
+From apple!bloom-beacon!tut.cis.ohio-state.edu!ukma!uflorida!novavax!weiner@bbn.com Fri May 19 14:34:47 1989
+To: unix-emacs@bbn.com
+Date: 28 Apr 89 06:07:51 GMT
+From: Bob Weiner <apple!bloom-beacon!tut.cis.ohio-state.edu!ukma!uflorida!novavax!weiner@bbn.com>
+Sender: arpa-unix-emacs-request@bbn.com
+Subject: Sample support routines for ../info-local/cmd-menus to follow
+Organization: Nova University, Fort Lauderdale, FL
+Source-Info:  From (or Sender) name not authenticated.
+
+;;!emacs
+;;
+;; SUMMARY:      Sample support routines for ../info-local/cmd-menus
+;; USAGE:        Called by  ../info-local/cmd-menus
+;;
+;; AUTHOR:       Bob Weiner, Applied Research, Motorola, Inc.
+;; ORIG-DATE:    03/23/89
+;; LAST-MOD:     04/26/89
+;; DESCRIPTION:  
+;;
+;;   Sample and support functions for Info command reference (menus)
+;;   extensions.  See info-README for more information.
+;;
+;;   This library allows cmd-menus code referenced in Info files to be byte
+;;   compiled for efficiency.
+;;
+;; DESCRIP-END.
+;;
+;; Copyright (C) 1989 Bob Weiner and Free Software Foundation, Inc.
+;; Available for use and distribution under the same terms as GNU Emacs.
+;;
+;; This file is not part of GNU Emacs.
+;;
+
+(defun cmd-menus-dm-command (dm-cmd)
+  "Execute Apollo DM command, DM-CMD, if using an Apollo display."
+  (if (term-machine-type-p "apollo")
+      (execute-dm-command dm-cmd)
+    (message "This command requires an Apollo display.")))
+
+(defun cmd-menus-shell-command (shell-cmd &optional internal-cmd kill-prev)
+  "Execute shell command, SHELL-CMD, the '*shell*' buffer.
+Optional non-nil second argument INTERNAL-CMD means do not display the shell
+command line executed and do not return to *info* buffer, otherwise point ends
+up in *info* buffer after this command.  Optional non-nil third argument
+KILL-PREV means kill last output to '*shell*' buffer before executing
+SHELL-CMD."
+  (if (not (get-buffer "*shell*"))
+      (save-excursion (shell)))
+  (or (equal (buffer-name (current-buffer)) "*shell*")
+      (pop-to-buffer "*shell*"))
+  (end-of-buffer)
+  (and kill-prev (kill-output-from-shell))
+  (insert shell-cmd)
+  (shell-send-input)
+  (show-output-from-shell)
+  (or internal-cmd
+      (progn
+	(scroll-down 1)
+	;; Move back to '*info*' buffer when done
+	(pop-to-buffer "*info*"))))
+
+(defun cmd-menus-manual-entry (topic)
+  "Display unix manual entry for TOPIC in a separate window.
+See 'manual-entry' function description for the format of TOPIC."
+  (manual-entry topic)
+  (message "Use {C-x o} to switch to *Manual Entry* buffer."))
+
+(defun cmd-menus-read-mail ()
+  "Split current window and execute 'rmail'."
+  (split-window-vertically)
+  (rmail))
+
+(defun cmd-menus-mail ()
+  "Split current window and execute 'mail'."
+  (split-window-vertically)
+  (mail))
+
+(defun cmd-menus-dir-size ()
+  "Display directory size in kilobytes."
+  (cmd-menus-shell-command
+    (concat "du -s " (expand-file-name
+		       (read-file-name "Pathname: " nil nil t)))))
+
+(defun cmd-menus-user-data ()
+  "'Finger' a user."
+  (cmd-menus-shell-command (concat "finger " (read-string "Username: "))))
+
+(provide 'cmd-menus)
+
+
+-- 
+Bob Weiner, Motorola, Inc.,   USENET:  ...!gatech!uflorida!novavax!weiner
+(407) 738-2087
+
+

@@ -1,0 +1,26 @@
+
+    If you're a new TPU-edt user, skip this notice.
+
+    If you're upgrading from TPU-edt version 3.0 or lower, read on...
+    
+    Some of the file names in the TPU-edt package have been changed.  The
+    name changes were necessary for TPU-edt to be included in the standard
+    EMACS distribution.  Starting with EMACS version 19.19 you'll no longer
+    need to pick up TPU-edt from the elisp archives.
+    
+    The file name changes are as follows:
+    
+        tpu-edt-doc.el      -->  tpu-doc.el
+        tpu-edt-extras.el   -->  tpu-extras.el
+        tpu-edt-history.el  -->  tpu-recall.el
+        tpu-edt-mapper.el   -->  tpu-mapper.el
+    
+    Fortunately, the base TPU-edt file, tpu-edt.el, did not undergo a name
+    change, so if you're not using the extended features in "-extras" and
+    "-recall" no changes are necessary.  If you are using the extended
+    features, you can probably handle making the necessary changes to your
+    .emacs file.
+
+    Sorry for the inconvenience...
+
+    Rob Riepel 8/93

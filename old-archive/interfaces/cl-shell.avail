@@ -1,0 +1,53 @@
+From ark1!uakari.primate.wisc.edu!samsung!uunet!snorkelwacker!mit-eddie!media-lab!eero Mon May 14 23:38:01 EDT 1990
+Article 1653 of gnu.emacs:
+Path: ark1!uakari.primate.wisc.edu!samsung!uunet!snorkelwacker!mit-eddie!media-lab!eero
+>From: eero@media-lab.MEDIA.MIT.EDU (Eero Simoncelli)
+Newsgroups: gnu.emacs
+Subject: cl-shell-mode (A shell for Common Lisp sub-processes)
+Message-ID: <2398@media-lab.MEDIA.MIT.EDU>
+Date: 12 May 90 18:12:35 GMT
+Reply-To: eero@media-lab.media.mit.edu.UUCP (Eero Simoncelli)
+Distribution: usa
+Organization: MIT Media Lab, Cambridge MA
+Lines: 38
+
+I have written some Emacs Lisp code extensions for running Common Lisp
+(CL) as a subprocess in an Emacs buffer.  The source code is fairly
+compact (only 4 files), well-commented, and easily extensible, and
+requires no special code to be loaded into your Common Lisp world.
+Features include direct (ie. not through a temp file) evaluation and
+in-package compilation of forms from lisp-mode buffers with optional
+echo into the *lisp* buffer, type-ahead with multi-line editing and a
+history mechanism for the *lisp* buffer, and pop-up help facilities
+for the CL functions documentation, macroexpand and describe.  I
+provide a general mechanism for CL to send commands to Emacs, to
+display strings in the minibuffer or pop-up help buffers, to insert
+strings at the point, or to call any Emacs Lisp function.  There is an
+additional file of extensions for Lucid Common Lisp which provide
+pop-up arglists and source file editing, including a sort of buffer
+menu to let the user choose from multiple definitions.  There are also
+extensions to do source files correctly (ie, let the user choose which
+method to edit) for FLAVORS or CLOS (PCL).
+
+This code was designed to be compatible with any implementation of
+Common Lisp -- the extensions for Lucid, FLAVORS, and PCL are only
+loaded (automatically, at run time) if these features are present in
+your CL environment.  The source code is available, subject to the
+usual Emacs disclaimers, as a compressed tar file via anonymous ftp:
+
+whitechapel.media.mit.edu : /pub/Emacs-cl-shell.tar.Z
+
+A README file explains how to use the code.  I also include some
+useful code from TMC which does completion on text you are typing.
+Let me know if you grab a copy so I can notify you of future
+releases/bug fixes.
+
+Eero Simoncelli
+Vision Science Group
+MIT Media Laboratory, E15-385
+Cambridge, MA  02139
+
+Phone:  (617) 253-3891
+E-mail: eero@media-lab.media.mit.edu
+
+

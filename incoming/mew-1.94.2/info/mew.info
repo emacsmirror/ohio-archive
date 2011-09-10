@@ -1,0 +1,110 @@
+Info file: mew.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `mew.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+
+
+INFO-DIR-SECTION Message User Agent
+START-INFO-DIR-ENTRY
+* Mew: (mew.info).           Messaging in the Emacs World.
+END-INFO-DIR-ENTRY
+
+
+
+
+
+
+Indirect:
+mew.info-1: 288
+mew.info-2: 51291
+mew.info-3: 103327
+
+Tag table:
+(Indirect)
+Node: Top288
+Node: Overview1908
+Node: Start5044
+Node: Viewing7520
+Node: singlepart8486
+Node: multipart10168
+Node: pgp-viewing13606
+Node: folder18287
+Node: sum-write20461
+Node: features21819
+Node: sorting23316
+Node: illegal25090
+Node: Composing26529
+Node: header28124
+Node: cheader31358
+Node: addrbook33835
+Node: send38502
+Node: cite41378
+Node: mime-comp44645
+Node: charset-guess51291
+Node: reply53946
+Node: forward56012
+Node: pgp-shortcut56888
+Node: mark-b-comp62728
+Node: pgp-key65395
+Node: Marks66246
+Node: delete mark67215
+Node: refile mark68887
+Node: multi mark69505
+Node: review mark70380
+Node: unmark71245
+Node: mark level71648
+Node: Refile72631
+Node: by-folder73787
+Node: by-alist75339
+Node: by-thread77283
+Node: by-from-folder78136
+Node: by-from79473
+Node: by-newsgroups81048
+Node: by-default81437
+Node: guess-rule81813
+Node: auto-refile83576
+Node: Pick85791
+Node: condition86727
+Node: virtual87798
+Node: Quit88745
+Node: Customize89289
+Node: level-one89737
+Node: level-two91937
+Node: level-three93476
+Node: hooks94707
+Node: config96655
+Node: XEmacs99808
+Node: Convention100838
+Node: MIME103327
+Node: mime-ct104070
+Node: mime-cte105570
+Node: mime-multi107412
+Node: mime-header109582
+Node: Kanji110981
+Node: rfc822112182
+Node: mime-comes113897
+Node: canonical117459
+Node: Policy118538
+Node: History119459
+Node: mh-e119909
+Node: birth121452
+Node: pgp123036
+Node: im124235
+Node: netnews125126
+Node: Future125518
+Node: Avail127155
+Node: ftp127451
+Node: ml127769
+Node: Ack128143
+Node: Copyright130189
+Node: Author132140
+Node: Terminology134157
+Node: Bib135502
+Node: Variable Index138112
+
+End tag table

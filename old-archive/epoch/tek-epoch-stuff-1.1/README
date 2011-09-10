@@ -1,0 +1,135 @@
+		Documentation for tek-epoch-stuff1.1.0
+		======================================
+
+This release is a bundle of emacs-lisp packages for epoch,
+mainly related to highlighting. A couple of packages may be of
+interest to non-epoch users, namely the manual browser and the
+syntax-decode stuff. Read on for details.
+
+Note: much of this code is based on code originally written by others.
+Though I won't mention them here, their names are preserved in the
+source files and I'd like to thank them for their efforts.
+
+For instructions on how to install & use the packages in this release,
+see the file INSTALL. The remainder of this file is documentation on
+the packages themselves.
+
+
+In Brief
+========
+
+Here is a list of the packages included, and a brief overview of their
+features:
+
+* Enhanced manual browser: runs in background; supports multiple man
+buffers; man buffers are in a special mode with local key & mouse
+bindings; sections of man page are highlighted under epoch. I know
+there are a lot of manual browsers out there, but I think this one is
+pretty neat - check it out and tell me what you think.
+
+* Comment highlighting in source code buffers: comment structure is
+determined from the current syntax table; highlighting updated on
+find-file and save-buffer. Several other people have released comment
+highlighting packages, but this is the most complete & elegant
+solution I've seen. Because the comment structure is determined in a
+generic manner it will work with any editing mode that has a valid
+syntax table. I've tried to optimise it too, and it's reasonably quick.
+
+* Interface to Dave Gillespies info browser (included): provides epoch
+mouse bindings and highlighting. Once again, this is the most complete
+implementation I've seen, and is reasonably quick (although
+suggestions for improving the speed of any of these packages are very
+welcome).
+
+* Header highlighting in news articles displayed under GNUS.
+Highlights "From:" and "Subject:" fields in news articles.
+
+* Header highlighting in mail messages displayed under VM. Highlights
+"From:" and "Subject:" fields in mail messages.
+
+* Header highlighting in mail messages displayed under the mh-e
+mailreader. Highlights "From:" and "Subject:" fields in mail messages.
+
+* Customisation of motion highlighting style. Allows you to change the
+style used to highlight mouse drag regions by setting X resources.
+
+* The highlighting styles used in all of the above packages are
+initialised by a package which looks up the X resource database to
+find the appropriate option settings. All of the packages have
+sensible defaults though, so you can get started without settting up
+any X resources at all: on a color display different colors are used
+for highlighting; on a monochrome display an italic or bold font, the
+same height and width as the minibuffer font, is used for
+highlighting.  See the file tek-style-utils.el for details of how to
+customise your highlighting styles.
+
+
+Changes from 1.0.0
+==================
+
+* Merged in support for the epoch 4.0 button handling (i.e. use of
+styles directly instead of via attributes). A variable is used to
+select between the two behaviours - see INSTALL for details.
+
+* Added highlighting under mh-e. Thanks to Mike Burgett
+<burgett@adobe.com> for this.
+
+
+Manifest
+========
+
+COPYING
+INSTALL
+LCD-entry
+README
+epoch-running.el
+get-font.patch
+maclib-toolbox.el
+mh-e.el
+mh-e.patch
+syntax-decode.el
+tek-gnus-hilite-setup.el
+tek-gnus-hilite.el
+tek-info-buttons.el
+tek-info-setup.el
+tek-info.el
+tek-man-setup.el
+tek-man.el
+tek-mh-e-hilite-setup.el
+tek-mh-e-hilite.el
+tek-motion-setup.el
+tek-src-hilite-setup.el
+tek-src-hilite.el
+tek-style-utils.el
+tek-vm-hilite-setup.el
+tek-vm-hilite.el
+
+
+Other Details
+=============
+
+The source code highlighting package uses a package I wrote called
+syntax-decode, which extracts the comment structure for the current
+major mode from the current syntax table. This package could easily be
+modified to extract other data from the syntax table as well, so let
+me know if you have a use for it.
+
+This package also stores the data thus extracted in an alist, to avoid
+decoding the same syntax table more than once. This makes it a little
+faster in modes which it's seen before.
+
+
+Bugs
+====
+
+There are probably a few, so feel free to send me (Ken Wood) a bug
+report at kwood@austek.oz.au . I will try and look at it, but I won't
+promise anything.
+
+In particular, the manual browser could probably do with a bit more
+work. Several people have sent me suggestions, but I haven't had a
+chance to include them yet. Feel free to improve upon it if you choose
+- please send me a copy of your mods in this case.
+
+
+			   === The End ===

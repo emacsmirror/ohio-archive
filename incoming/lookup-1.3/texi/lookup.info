@@ -1,0 +1,165 @@
+Info file: lookup.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `lookup.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+INFO-DIR-SECTION The Emacs editor and associated tools
+START-INFO-DIR-ENTRY
+* Lookup: (lookup).             Lookup, a Search Interface.
+END-INFO-DIR-ENTRY
+
+
+This file documents Lookup, a search interface.
+
+Copyright (C) 1997,1998,1999 Keisuke Nishida
+
+Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the
+entire resulting derived work is distributed under the terms of a
+permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation
+approved by the Free Software Foundation.
+
+
+
+
+
+Indirect:
+lookup.info-1: 1070
+lookup.info-2: 50244
+lookup.info-3: 100342
+
+Tag table:
+(Indirect)
+Node: Top1070
+Node: Introduction6816
+Node: Features7529
+Node: Environment8658
+Node: Copying9425
+Node: Quick Tour10118
+Node: Quick Prepare10542
+Node: Quick Setup11325
+Node: Quick Example12738
+Node: Quick Startup13877
+Node: Quick Search15997
+Node: Quick View17623
+Node: Getting Started19004
+Node: Setup Dictionary19605
+Node: Setup Agent19807
+Node: Setup Basis20129
+Node: Setup Option21360
+Node: Setup Restriction23929
+Node: Setup Package24847
+Node: Setup Command26096
+Node: Setup Others26325
+Node: Setup Coding26594
+Node: Setup Gaiji26780
+Node: Setup Query Expansion27638
+Node: Stemming28032
+Node: Spell Checking29214
+Node: Kanji-Kana Expansion30070
+Node: Universal Query Expansion30669
+Node: Setup Example31539
+Node: Initialization32011
+Node: ~/.emacs33081
+Node: ~/.lookup33821
+Node: site-start.el34446
+Node: Setup Variables35172
+Node: Setup Functions36481
+Node: How To Lookup37192
+Node: Startup Commands37554
+Node: Search String38426
+Node: Search Commands38750
+Node: Default Method41926
+Node: Search Methods42956
+Node: See Result45065
+Node: See Entries45497
+Node: See Contents46080
+Node: Make Reference46704
+Node: Cite Contents47202
+Node: Specify Dictionary48720
+Node: Customization50244
+Node: Customize General50713
+Node: Customize Variables51086
+Node: Customize Face52117
+Node: Customize Option53322
+Node: Agent Options53588
+Node: Dictionary Options54570
+Node: Customize Contents56207
+Node: Reference Pattern56500
+Node: Gaiji Table57999
+Node: Format Contents58849
+Node: Supplement Package60046
+Node: Customize Example60632
+Node: Dictionary Types60763
+Node: Setup SDIC61167
+Node: Setup dictd62198
+Node: Setup cookie63704
+Node: Setup CD-ROM64550
+Node: Setup NDTP64731
+Node: Setup DICT65926
+Node: Search Agents67726
+Node: ndic68323
+Node: ndic prepare68785
+Node: ndic setup69190
+Node: ndic dictionary69487
+Node: ndic customize69779
+Node: ndeb70015
+Node: ndeb prepare70401
+Node: ndeb setup71639
+Node: ndeb dictionary72305
+Node: ndeb customize72591
+Node: ndtp72855
+Node: ndtp prepare73282
+Node: ndtp setup73986
+Node: ndtp dictionary74559
+Node: ndict74761
+Node: ndict prepare75205
+Node: ndict setup75642
+Node: ndict dictionary76791
+Node: ndsrd77157
+Node: ndsrd prepare77508
+Node: ndsrd setup77763
+Node: ndsrd dictionary78008
+Node: ndsrd customize78161
+Node: ndkks78349
+Node: ndkks prepare78725
+Node: ndkks setup79144
+Node: ndkks dictionary79368
+Node: ndkks customize79649
+Node: ndspell80093
+Node: ndspell prepare80510
+Node: ndspell setup80810
+Node: ndspell dictionary81050
+Node: ndspell customize81536
+Node: ndcookie82127
+Node: ndcookie prepare82429
+Node: ndcookie setup82639
+Node: ndcookie dictionary82998
+Node: Mode Details83215
+Node: Select Mode83520
+Node: Select Mode Details83836
+Node: Select Mode Commands84458
+Node: Entry Mode85621
+Node: Entry Mode Details85900
+Node: Entry Mode Commands86705
+Node: Content Mode89033
+Node: Content Mode Details89290
+Node: Content Mode Commands89748
+Node: How To Get90852
+Node: Troubleshooting91300
+Node: Glossary91520
+Node: Concept Index93366
+Node: Command Index95639
+Node: Variable Index100342
+
+End tag table

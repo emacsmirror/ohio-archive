@@ -1,0 +1,906 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% This is a latex file for a quick reference guide to FUSE, the
+%% Feff/UWXAFS System for Emacs.  A complete manual for FUSE is
+%% available as a texinfo file.  This file is an important complement
+%% to the manual as it lists every key sequence and every user
+%% configurable variable.  The manual does not contain complete lists
+%% of either of these.
+%%
+%% This uses the following latex packages: fancybox, supertabular,
+%% amsmath, and amssymb
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\documentclass[twocolumn]{article}
+
+\usepackage{fancybox}
+\usepackage{supertabular}
+\usepackage{amsmath,amssymb}
+
+
+\setlength{\parindent}{0truecm}
+\setlength{\hoffset}{0.5truecm}
+\setlength{\voffset}{0truecm}
+\setlength{\topmargin}{-2truecm}
+\setlength{\marginparsep}{0truecm}
+\setlength{\marginparwidth}{0truecm}
+\setlength{\textheight}{23truecm}
+\setlength{\textwidth}{17truecm}
+\setlength{\oddsidemargin}{-1.2truecm}
+\setlength{\evensidemargin}{1.2truecm}
+\setlength{\columnsep}{1.3truecm}
+
+\newenvironment{Boxedminipage}%
+{\begin{Sbox}\begin{minipage}}%
+  {\end{minipage}\end{Sbox}\Ovalbox{\TheSbox}}
+
+\newenvironment{tightitem}
+{\begin{list}{$\bullet$~}{\setlength{\itemsep}{0ex}}}
+{\end{list}}
+
+\def\version{{\textsf{0.5.10}}}
+\def\revised{{5 June, 1998}}
+\def\FUSE{{\textsf{FUSE}}}
+\def\neatline#1{{\vrule height3pt depth-2pt width #1}}
+\def\file#1{{\texttt{`#1'}}}
+\def\TB{{$\star$}}
+%% key ``font'' taken from texinfo.tex, modified slightly for latex
+%% \setfont\smallrm\rmshape{8}{1000}
+%% \font\smallsy=cmsy9
+%% \def\key#1{{\smallrm\textfont2=\smallsy \leavevmode\hbox%{%
+\def\key#1{{\textrm \leavevmode\hbox{%
+  \raise0.4pt\hbox{$\langle$}\kern-.08em\vtop{%
+    \vbox{\hrule\kern-0.4pt
+     \hbox{\raise0.4pt\hbox{\vphantom{$\langle$}}#1}}%
+    \kern-0.4pt\hrule}%
+  \kern-.06em\raise0.4pt\hbox{$\rangle$}}}}
+
+\def\currentlist{{input}}
+
+\def\FUSEks{{
+    \begin{minipage}[h]{\linewidth}
+      \begin{center}
+        \vspace{0.01\textheight}
+        \begin{Boxedminipage}[h]{0.6\linewidth}
+          \begin{center}
+            {\large {\FUSE} key sequences}
+          \end{center}
+        \end{Boxedminipage}
+        \vspace{0.01\textheight}
+      \end{center}
+    \end{minipage}
+    }}
+
+%%% End of front matter
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Start first column
+
+\begin{document}
+\small
+
+\thispagestyle{empty}
+
+\begin{center}
+  \begin{Boxedminipage}{0.8\linewidth}
+    \begin{center}
+      \vspace{0.01\textheight}
+      {\Large Quick Reference for}\\
+      \vspace{0.007\textheight}
+      {\LARGE {\FUSE}~{\version}}
+      \vspace{0.01\textheight}
+    \end{center}
+  \end{Boxedminipage}
+\end{center}
+
+\vspace{1truecm}
+
+
+These pages give a brief description of the commands and user
+variables available in {\FUSE}.  {\FUSE} is organized into a major
+mode, \textsc{input}, and a minor mode for each \textsc{feff} or
+\textsc{uwxafs} program.  The descriptions here are organized
+similarly.  Most of these commands are bound to key sequences as shown
+here and are also bound to pull-down menu entries.  They are presented
+here in nearly the same order that they are found in the pull down
+menus.  The sub-categories in the table below are mostly the same as
+the sub-menus in the \textsc{input} and program minor mode menus.
+Several of the most commonly used commands are also bound to the
+XEmacs toolbar.  These commands are indicated by {\TB}.
+
+\begin{center}
+  \begin{tabular}[h]{cl}
+    \multicolumn{2}{c}{\textbf{Symbol guide to key sequences table}}\\
+    &\\
+    \texttt{C-}        & Hold \key{ctrl} while hitting the next key \\
+    \texttt{S-}        & Hold \key{shift} while hitting the next key \\
+    \texttt{M-}        & Hit \key{esc} then hit the next key \\
+    \texttt{Mouse-}$n$ & Hit the $n$-th mouse button \\
+    {\TB}              & Also bound to the XEmacs toolbar \\
+ \end{tabular}
+\end{center}
+
+
+Several commands make use of a \emph{region} of text.  A region is
+defined as the text in between the \emph{point} and the \emph{mark}.
+The point is the location of the screen cursor.  The mark can be set
+using \texttt{M-x set-mark-command} which is bound to
+\texttt{C-\key{space}} and \texttt{C-@}.  A region may also be painted
+using \texttt{mouse-1}.
+
+\vspace{1truecm}
+
+{\FUSE} comes with support for the programs \textsc{normal},
+\textsc{fluo}, \textsc{diffkk}, and \textsc{phit}, although this
+support is not documented in these pages.  See the manual for adding
+support to {\FUSE} for other programs and input files.
+
+\vspace{1truecm}
+
+The latest version of {\FUSE} can be found at\hfill\\
+\centerline{\texttt{http://feff.phys.washington.edu/$\sim$ravel/fuse/}}
+
+\vfill
+{\FUSE} and these pages {\copyright} 1998 Bruce Ravel\hfill\\
+\texttt{<ravel@phys.washington.edu>}\hfill\\
+Revised \revised, printed \today\hfill\\
+
+{\footnotesize
+Permission is granted to make and distribute copies of this quick
+reference provided the copyright notice and this permission are
+preserved on all copies.}
+\vfil
+
+%%% End of first column
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Start key sequence table
+
+\tablefirsthead{\multicolumn{3}{c}{\FUSEks} \\ }
+\tablehead{\multicolumn{3}{l}{{\FUSE} key sequences} \\ \hline}
+\tabletail{\hline\multicolumn{3}{c}{~}\\
+  \hline \multicolumn{3}{|r|}{\textsl{continued...}}\\\hline}
+\tablelasttail{\hline}
+
+\begin{center}
+  \begin{supertabular}{|*{1}cll|}
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}
+    {\neatline{0.2\linewidth}~
+      {\large \textsc{input} major mode}~\neatline{0.2\linewidth}} \\
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{1}{c}{~}&
+    \multicolumn{1}{c}{\textrm{key}}&
+    \multicolumn{1}{l}{\textrm{\quad description}}\\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Editing shortcuts}} \\
+          &\texttt{C-c C-s a}   & swap true and false at point \\
+          &\texttt{C-c C-s c}   & comment/uncomment current line \\
+          &\texttt{C-c C-s s}   & swap set and guess on current line \\
+          &\texttt{C-c C-d i}   & insert a filename at point \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Clean up}} \\
+          &\texttt{C-c C-c l}   & tidy up current line \\
+          &\texttt{C-c C-c r}   & tidy up region      \\
+          &\texttt{C-c C-c f}   & tidy up entire file \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Keyword functions}}  \\
+          &\texttt{M-\key{tab}} & complete partial keyword  \\
+          &\texttt{M-?}         & describe keyword at point \\
+          &\texttt{M-\key{ret}} & verify keyword at point   \\
+    {\TB} &\texttt{C-c C-b k}   & describe all keywords     \\
+          &\texttt{C-c ;}       & comment out region        \\
+          &\texttt{C-u C-c ;}   & uncomment region          \\
+          &\texttt{M-n}         & next hotspot in template  \\
+          &\texttt{M-p}         & previous hotspot in template \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Visit files}} \\
+    {\TB} &\texttt{C-c C-f l}   & look at log file \\
+          &\texttt{C-c C-f d}   & look at data file at point \\
+          &\texttt{C-c C-f a}   & look at master file \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Set Variables}} \\
+          &\texttt{C-c C-d d}   & set path to data files \\
+          &\texttt{C-c C-d f}   & set path to \textsc{feff} files \\
+          &\texttt{C-c C-d o}   & set path to output files \\
+          &\texttt{C-c C-d a}   & set data, \textsc{feff}, and output paths \\
+          &\texttt{C-c C-d k}   & set $k$-weight \\
+          &\texttt{C-c C-d e}   & set E$_0$ shift \\
+          &\texttt{C-c C-d m}   & set master file \\
+          &\texttt{C-c C-d v}   & set program version \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Run programs}} \\
+          &\texttt{C-c C-r a}  & run any program on any input file \\
+    {\TB} &\texttt{C-c C-r r}  & run current program on current file \\
+          &\texttt{C-c C-r k}  & kill running program \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Gnuplot}} \\
+          &\texttt{C-c C-p s}  & toggle between X11 and PostScript \\
+          &\texttt{C-c C-f g}  & look at \textsc{gnuplot} process buffer \\
+          &\texttt{C-c C-f k}  & kill gnuplot process and buffer \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Miscellaneous}} \\
+          &\texttt{C-c C-b t}  & toggle fuse-doc mode \\
+          &\texttt{C-c C-b b}  & submit {\FUSE} bug report \\
+          &\texttt{C-c C-b p}  & submit program bug report \\
+          &\texttt{C-c C-b a}  & reset variables from Local Variable list\\
+          &\texttt{C-c C-b c}  & customize {\FUSE} \\
+    {\TB} &\texttt{C-c C-b d}  & look at program documentation \\
+          &\texttt{C-c C-b f}  & look at {\FUSE} document \\
+          &\texttt{C-c C-b l}  & save run-log to a file \\
+          &\texttt{C-c C-b o}  & look at previous run-log \\
+          &\texttt{C-c C-b s}  & switch minor modes \\
+          &\texttt{C-c C-b m}  & display start-up messages \\
+          &\texttt{C-c C-b v}  & show version {\FUSE} version number \\
+          &\texttt{S-Mouse-3}  & jump to file at point \\
+          &\texttt{M-C-`}      & return from jumped-to file \\
+          &\texttt{C-S-l}      & refresh colorization (hilit19) \\
+          &\texttt{\key{ret}}  & new line and indent \\
+                                %
+    \hline
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}
+%%      \tablehead{\multicolumn{3}{l}{{\textsc{input} keywords}} \\ \hline}}%
+    {\neatline{0.2\linewidth}~
+      {\large \textsc{atoms} minor mode}~\neatline{0.2\linewidth}}
+    \renewcommand{\currentlist}{atoms}\\
+    \multicolumn{1}{c}{~}&
+    \multicolumn{1}{c}{\textrm{key}}&
+    \multicolumn{1}{l}{\textrm{\quad description}}\\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    {\TB} & \texttt{C-c C-t t}  & write input file template  \\
+    {\TB} & \texttt{C-c C-r r}  & run \textsc{atoms} \\
+          & \texttt{C-c C-r k}  & kill \textsc{atoms} run \\
+    {\TB} & \texttt{C-c C-f l}  & look at \file{feff.inp} \\
+          & \texttt{C-c C-f p}  & look at \file{p1.inp} \\
+          & \texttt{C-c C-f u}  & look at \file{unit.dat} \\
+          & \texttt{C-c C-f g}  & look at \file{geom.dat} \\
+    {\TB} & \texttt{C-c C-b k}  & describe \textsc{atoms} keywords  \\
+    {\TB} & \texttt{C-c C-e b}  & evaluate all math expressions in buffer  \\
+    {\TB} & \texttt{C-c C-e l}  & evaluate math expression on current line \\
+                                %
+    \hline
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}
+%    \renewcommand{\tablehead}{\multicolumn{3}{l}{{\textsc{atoms}
+%          keywords}} \\ \hline}
+    {\neatline{0.2\linewidth}~
+      {\large \textsc{feff} minor mode}~\neatline{0.2\linewidth}}
+    \renewcommand{\currentlist}{atoms}\\
+    \multicolumn{1}{c}{~}&
+    \multicolumn{1}{c}{\textrm{key}}&
+    \multicolumn{1}{l}{\textrm{\quad description}}\\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    {\TB} & \texttt{C-c C-t t}  & write input file template  \\
+    {\TB} & \texttt{C-c C-b k}  & describe \textsc{feff} keywords  \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Running}} \\
+    {\TB} & \texttt{C-c C-r r}  & run \textsc{feff} \\
+          & \texttt{C-c C-r k}  & kill \textsc{feff} run \\
+          & \texttt{C-c C-s d}  & toggle value of \texttt{CONTROL} flag \\
+          & \texttt{S-Mouse-3}  & toggle value of \texttt{CONTROL} flag \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Plotting}} \\
+    {\TB} & \texttt{C-c C-p c}  & plot $\chi(k)$ \\
+    {\TB} & \texttt{C-c C-p x}  & plot $\mu(E)$ and $\mu_0(E)$ \\
+          & \texttt{C-c C-p s}  & toggle between X11 and PostScript \\
+          & \texttt{C-c C-d k}  & set $k$-weight \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Output files}} \\
+    {\TB} & \texttt{C-c C-f l} & look at output from \textsc{intrp}  \\
+          & \texttt{C-c C-f f} & look at \file{files.dat} \\
+          & \texttt{C-c C-f m} & look at \file{misc.dat} \\
+          & \texttt{C-c C-f p} & look at \file{paths.dat} \\
+          & \texttt{C-c C-f s} & look at \file{list.dat} \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Functions for FEFF8}} \\
+          & \texttt{C-c 8}     & enable \textsc{feff8} features \\
+          & \texttt{C-c C-e w} & write \file{convergence.dat} \\
+    {\TB} & \texttt{C-c C-e c} & look at \file{convergence.dat} \\
+          & \texttt{C-c C-e p} & plot \file{convergence.dat} \\
+    {\TB} & \texttt{C-c C-e d} & plot $\rho(E)$ \\
+    {\TB} & \texttt{C-c C-e x} & plot $\mu(E)$ \\
+          & \texttt{C-c C-d e} & set E$_0$ shift \\
+    \hline
+%
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}
+    {\neatline{0.2\linewidth}~
+      {\large \textsc{autobk} minor mode}~\neatline{0.2\linewidth}}
+    \renewcommand{\currentlist}{atoms}\\
+    \multicolumn{1}{c}{~}&
+    \multicolumn{1}{c}{\textrm{key}}&
+    \multicolumn{1}{l}{\textrm{\quad description}}\\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    {\TB} & \texttt{C-c C-t t}  & write input file template  \\
+    {\TB} & \texttt{C-c C-f l}  & look at log file  \\
+          & \texttt{C-c C-o n}  & move to next stanza \\
+          & \texttt{C-c C-o p}  & move to previous stanza \\
+          & \texttt{C-c C-o m}  & mark stanza \\
+          & \texttt{C-c C-o k}  & kill stanza \\
+          & \texttt{C-c C-s p}  & snag similar from previous stanza \\
+          & \texttt{C-c C-s n}  & snag similar from next stanza \\
+          & \texttt{C-c C-s e}  & insert E$_0$ value from log file \\
+    {\TB} & \texttt{C-c C-b k}  & describe \textsc{autobk} keywords  \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Running}} \\
+    {\TB} & \texttt{C-c C-r r}  & run \textsc{autobk} \\
+          & \texttt{C-c C-r s}  & run \textsc{autobk} on current stanza \\
+          & \texttt{C-c C-r k}  & kill \textsc{autobk} run \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Plotting}} \\
+    {\TB} & \texttt{C-c C-p b}  & plot $\mu$ and $\mu_0$, this stanza \\
+    {\TB} & \texttt{C-c C-p k}  & plot $\chi(k)$, this stanza \\
+          & \texttt{C-c C-p t}  & plot $\chi(k)$, data and feff \\
+    {\TB} & \texttt{C-c C-p a}  & plot all $\chi(k)$ in file \\
+          & \texttt{C-c C-p s}  & toggle between X11 and PostScript \\
+          & \texttt{C-c C-d k}  & set $k$-weight \\
+    \hline
+%
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}
+    {\neatline{0.2\linewidth}~
+      {\large \textsc{feffit} minor mode}~\neatline{0.2\linewidth}} \\
+    \multicolumn{1}{c}{~}&
+    \multicolumn{1}{c}{\textrm{key}}&
+    \multicolumn{1}{l}{\textrm{\quad description}}\\
+    \hline
+                                %
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Templates}} \\
+          & \texttt{C-c C-t f} & make \file{feffit.inp} from \file{files.dat} \\
+          & \texttt{C-c C-t g} & make global header template \\
+          & \texttt{C-c C-t l} & make local header template \\
+          & \texttt{C-c C-t t} & make path paragraph template \\
+          & \texttt{C-c C-t z} & make zeroth path template \\
+          & \texttt{C-c C-t b} & make background function template \\
+          & \texttt{C-c C-t s} & toggle values in background template \\
+    {\TB} & \texttt{C-c C-b k} & describe \textsc{feffit} keywords  \\
+                                %
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Input and output files}} \\
+    {\TB} & \texttt{C-c C-f l} & look at log file \\
+    {\TB} & \texttt{C-c C-f r} & look at prm file \\
+          & \texttt{C-c C-f a} & look at master file \\
+          & \texttt{C-c C-f i} & display output from \textsc{intrp} \\
+          & \texttt{C-c C-f f} & look at \file{files.dat} \\
+          & \texttt{C-c C-f m} & look at \file{misc.dat} \\
+          & \texttt{C-c C-f p} & look at \file{paths.dat} \\
+          & \texttt{C-c C-f s} & look at \file{list.dat} \\
+          & \texttt{C-c C-f t} & make a \file{TAGS} file \\
+                                    %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Motion}} \\
+          & \texttt{C-c C-o b} & move backward by a paragraph \\
+          & \texttt{C-c C-o f} & move forward by a paragraph \\
+          & \texttt{C-c C-o k} & kill the current paragraph \\
+          & \texttt{C-c C-o m} & mark the current paragraph \\
+          & \texttt{M-.}       & find tag \\
+          & \texttt{C-x 4 .}   & find tag other window \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Editing Shortcuts}} \\
+          & \texttt{C-c C-s b} & insert best fits for all guesses \\
+          & \texttt{C-c C-s g} & insert best fit for guess under point \\
+          & \texttt{C-c C-s m} & insert McMaster $\sigma^2$ from \file{feff.inp} \\
+          & \texttt{C-c C-s n} & snag similar from next paragraph \\
+          & \texttt{C-c C-s p} & snag similar from previous paragraph \\
+          & \texttt{C-c C-c p} & clean up a path paragraph \\
+          & \texttt{C-c C-c s} & clean up a data set \\
+                                %
+    \hline
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Paragraph manipulations}} \\
+                 & \texttt{C-c C-v i} & reset path index \\
+                 & \texttt{C-c C-v r} & renumber current path paragraph \\
+                 & \texttt{C-c C-v s} & renumber all paragraphs in data set \\
+    \multicolumn{2}{|r}{\texttt{C-u C-c C-v s}}
+                                      & renumber all paragraphs from point \\
+                 & \texttt{C-c C-v a} & add parameters to all paragraphs \\
+    \multicolumn{2}{|r}{\texttt{C-u C-c C-v a}}
+                                      & add parameters from point \\
+                 & \texttt{C-c C-v d} & delete parameters from all paragraphs \\
+    \multicolumn{2}{|r}{\texttt{C-u C-c C-v d}}
+                                      & delete parameters from point \\
+                 & \texttt{C-c C-v c} & comment parameters in all paragraphs \\
+    \multicolumn{2}{|r}{\texttt{C-u C-c C-v c}}
+                                      & comment parameters  from point \\
+     ~~~         & \texttt{C-c C-v u} & uncomment params in all paragraphs \\
+    \multicolumn{2}{|r}{\texttt{C-u C-c C-v u}}
+                                      & uncomment params  from point \\
+    \hline
+                                    %
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Running}} \\
+    {\TB} & \texttt{C-c C-r r}  & run \textsc{feffit} \\
+          & \texttt{C-c C-r k}  & kill \textsc{feffit} run \\
+    \hline
+                                %
+    &&\\[-1.4ex]
+    \multicolumn{3}{|c|}{\textbf{Plotting}} \\
+    {\TB} & \texttt{C-c C-p k} & plot data and fit in k \\
+    {\TB} & \texttt{C-c C-p r} & plot data and fit in R \\
+    {\TB} & \texttt{C-c C-p q} & plot data and fit in q \\
+%          & \texttt{C-c C-p K} & plot path under point and data in k \\
+%          & \texttt{C-c C-p R} & plot path under point and data in R \\
+%          & \texttt{C-c C-p Q} & plot path under point and data in q \\
+          & \texttt{C-c C-p m} & mark or unmark paragraph under point \\
+          & \texttt{S-mouse-2} & mark or unmark paragraph under mouse \\
+          & \texttt{C-c C-p a} & mark all paragraphs \\
+          & \texttt{C-c C-p c} & unmark all paragraph \\
+          & \texttt{C-c C-p s} & set plot column for R or q \\
+          & \texttt{C-c C-p s} & toggle between X11 and PostScript \\
+          & \texttt{C-c C-d k} & set $k$-weight \\
+    \hline
+                                %
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}{~}\\
+    \multicolumn{3}{c}
+    {\neatline{0.2\linewidth}~
+      {\large \textsc{gnuplot} major mode}~\neatline{0.2\linewidth}} \\
+    \multicolumn{1}{c}{~}&
+    \multicolumn{1}{c}{\textrm{key}}&
+    \multicolumn{1}{l}{\textrm{\quad description}}\\
+    \hline
+    {\TB} & \texttt{C-c C-l} & send line to gnuplot \\
+          & \texttt{C-c C-v} & send line and move forward 1 line\\
+    {\TB} & \texttt{C-c C-r} & send region to gnuplot \\
+    {\TB} & \texttt{C-c C-b} & send buffer to gnuplot \\
+          & \texttt{C-c C-f} & send file to gnuplot \\
+          & \texttt{C-c C-i} & insert filename at point \\
+          & \texttt{M-}\key{tab} & complete keyword at point \\
+          & \texttt{M-}\key{ret} & complete keyword at point \\
+          & \texttt{C-c C-c} & set command arguments with GUI \\
+    {\TB} & \texttt{C-c C-e} & look at gnuplot process buffer \\
+          & \texttt{C-c C-k} & kill gnuplot process and buffer \\
+    {\TB} & \texttt{C-c C-n} & next script in history list \\
+    {\TB} & \texttt{C-c C-p} & previous script in history list \\
+          & \texttt{C-c C-h} & get help from gnuplot document \\
+  \end{supertabular}
+\end{center}
+
+%%% End of key sequence table
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Start other packages section
+
+\vspace{1.0truecm}
+
+\begin{center}
+  \begin{Boxedminipage}{0.8\linewidth}
+    \begin{center}
+      {\large Using other packages with {\FUSE}}
+    \end{center}
+  \end{Boxedminipage}
+\end{center}
+\begin{description}
+\item[fuse-doc mode] \hfill\\ This is a minor mode for providing
+  on-the-fly descriptions of keywords.  When turned on and the point
+  is over a keyword, the description of that keyword will be displayed
+  in the echo area.  \texttt{C-c C-b t} toggles fuse-doc mode on and
+  off.
+\item[Math expressions in atoms mode] \hfill\\ {\FUSE} uses the
+  \textsc{calc} package to evaluate math expressions for atom
+  coordinates.  Variables can be set in lines beginning with
+  \texttt{!-} and coordinates can be given as math expressions in
+  lines beginning with \texttt{!+}.
+\item[Batch processing using dired] \hfill\\ Input files can be marked
+  in a dired buffer.  \texttt{C-c r} then loops through the marked
+  files and runs the program appropriate to each file.
+\item[Using Imenu and Speedbar with input files] \hfill\\ {\FUSE}
+  supplies regular expressions appropriate for use with these
+  packages.
+\end{description}
+
+
+\vfill \pagebreak
+
+%%% End of other packages section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% Start variables section
+
+\vspace{1truecm}
+
+\begin{center}
+  \begin{Boxedminipage}{0.95\linewidth}
+    \begin{center}
+      {\large User configurable variables in {\FUSE}}
+    \end{center}
+  \end{Boxedminipage}
+\end{center}
+
+\def\longmark{{$\blacklozenge$}}
+
+There are many variables that the user can set to customize the
+appearance and behavior of {\FUSE}.  These can be set in the
+\file{.emacs} or \file{.fuse} file or by using the customize package
+in recent versions of Emacs and XEmacs.  The default values of the
+variables are given in brackets in the list below.  A {\longmark}
+means that the default value is too long or too ungainly to print
+here.  In emacs lisp, \texttt{nil} is the boolean false value.  Any
+value other that \texttt{nil} is considered non-nil.  \texttt{t} is
+the boolean true.
+
+\def\variable#1#2#3{{
+      \begin{flushright}
+    \begin{minipage}[h]{0.97\linewidth}
+      \vspace{-0.15truecm}
+      \textbf{#1}\hfill[\texttt{#2}]
+      \begin{flushright}
+        \begin{minipage}[h]{0.93\linewidth}
+          \vspace{-0.2truecm}
+          #3
+        \end{minipage}
+      \end{flushright}
+    \end{minipage}
+      \end{flushright}
+    }}
+
+\def\vsep#1{{
+    \vspace{0.3truecm}
+    \begin{center}\textbf{\large #1}\end{center}
+    \vspace{0.15truecm}  }}
+
+\vspace{0.5truecm}
+
+%%%-----------------------------------------------------------------
+
+\variable{fuse-base-directory}{\longmark}{Installation location
+  of the {\FUSE} source tree.  This is determined at the time of
+  installation.}
+
+\variable{input-bin-location}{\longmark}{Location of the
+  executable scripts and programs that come with {\FUSE}.  Typically
+  this is relative to \texttt{fuse-base-directory}.}
+
+\variable{input-document-location}{\longmark}{Location of the
+  documentation that comes with {\FUSE}.  Typically this is relative
+  to \texttt{fuse-base-directory}.}
+
+\variable{input-program-document-location}{\longmark}{Location
+  of the program documentation used by {\FUSE}.  Typically this is
+  relative to \texttt{fuse-base-directory}.}
+
+\variable{input-glyph-location}{\longmark}{Location of the
+  pixmaps and bitmaps used in the toolbar in XEmacs.  Typically this
+  is relative to \texttt{fuse-base-directory}.}
+
+\variable{input-comment-delimiter}{\longmark} {This is a long
+  line of equals and plus signs used as decoration separating portions
+  of a \file{feffit.inp} file.}
+
+\variable{input-stanza-delimiter}{\longmark} {This is a long line of
+  dashes used to separate stanzas.}
+
+\variable{input-upcase-keywords-flag}{nil} {Non-nil means to always
+  write keywords in upper case.  In \textsc{feff} minor mode, this is
+  automatically set to true.}
+
+\variable{fuse-inhibit-startup-message}{nil}{Non-nil cause {\FUSE} to
+  skip its normal sequence of start-up messages.}
+
+\variable{input-beep-flag}{t} {Non-nil causes {\FUSE} to make noise
+  when it finishes something time consuming.}
+
+%%%-----------------------------------------------------------------
+\vsep{Variables controlling the interface between {\FUSE} and other
+  packages}
+
+\variable{fuse-use-toolbar}{'left}{Location of toolbar in XEmacs}
+
+\variable{input-comment-list}{\longmark} {Description of comment
+  string used by the `comment-out-region' function.  This will print a
+  single \% followed by a space.}
+
+\variable{input-mode-variable-comment}{!!\&\&~} {Comment string used
+  to denote elements of the Local Variables list.}
+
+\variable{input-prohibit-autoconfig-flag}{nil} {Non-nil prohibits
+  {\FUSE} from automatically writing a Local Variables list}
+
+\variable{input-emulation}{nil}{Non-nil means to have {\FUSE}
+  automatically invoke emulation software for another editor.  Valid
+  values are \texttt{vi}, \texttt{crisp}, or \texttt{edt}}
+
+\variable{input-document-type}{info}{Default form of presentation of
+  documentation.  The other options are \texttt{html} and
+  \texttt{text}.  Documentation is displayed in an info, w3, or
+  read-only text buffer, as appropriate.}
+
+\variable{input-time-stamp-flag}{t}{Non-nil means to automatically
+  apply a time stamp to every input file.}
+
+\variable{input-time-stamp-begin}{\longmark}{Character string
+  which begins a time stamp.}
+
+\variable{input-time-stamp-line-limit}{-8}{Distance from end of file
+  within which the time stamp must be found.}
+
+\variable{fuse-doc-idle-delay}{0.5}{Number of seconds fuse-doc pauses
+  before displaying keyword descriptions.}
+
+\variable{fuse-doc-identifier-string}{*}{Character appended to
+  \texttt{Input} in the modeline to indicate that fuse-doc is
+  enabled.}
+
+
+%%%-----------------------------------------------------------------
+\vsep{Variables controlling input and output files}
+
+\variable{input-init-file}{$\sim$/.fuse} {Name of the initialization
+  file read when {\FUSE} first starts.}
+
+\variable{input-run-log-interactive}{fuse-run.log} {Default name of
+  file when run-log is saved interactively.}
+
+\variable{input-run-log}{$\sim$/.fuse-run.log} {Name of automatic
+  run-log file}
+
+\variable{input-run-log-max-lines}{1000} {Maximum length of run-log
+  file.}
+
+\variable{input-stanza-name}{fuse-stanza.inp} {Name of input file used
+  for single stanza run.}
+
+%%%-----------------------------------------------------------------
+\vsep{Variables controlling the appearance of frames}
+
+\variable{input-use-frames}{'own} {Values of 'own or 'share cause
+  {\FUSE} to open new windows to display documentation, gnuplot
+  scripts, or the run-log.  If this is 'share then the run-log and
+  gnuplot scripts share a frame, otherwise each gets its own.  This is
+  set to nil if a non-windowing environment is used.}
+
+\variable{input-always-raise-flag}{t}{Non-nil means to always
+  deiconify and raise a frame when a gnuplot script is written or when
+  a program is executed.}
+
+\variable{input-doc-frame-plist}{\longmark}{Description of the
+  documentation frame in XEmacs}
+
+\variable{input-doc-frame-parameters}{\longmark}{Description of
+  the documentation frame in Emacs}
+
+\variable{input-run-frame-plist}{\longmark}{Description of the
+  run-log frame in XEmacs}
+
+\variable{input-run-frame-parameters}{\longmark}{Description of
+  the run-log frame in Emacs}
+
+\variable{input-gnuplot-frame-plist}{\longmark}{Description of
+  the gnuplot frame in XEmacs}
+
+\variable{input-gnuplot-frame-parameters}{\longmark}{Description
+  of the gnuplot frame in Emacs}
+
+
+%%%-----------------------------------------------------------------
+\vsep{Variables controlling indentation and separation}
+
+\variable{input-stanza-indent}{0}{Amount of indentation for lines in a
+  stanza.}
+
+\variable{input-path-paragraph-indent}{0}{ Amount of indentation for
+  lines in a path paragraph.}
+
+\variable{input-path-paragraph-separate}{-1}{Amount of separation
+between columns in a path paragraph.}
+
+\variable{input-set-guess-indent}{0}{Amount of indentation for lines
+  in a set or guess line.}
+
+\variable{input-set-guess-separate}{-1}{Amount of separation
+  between columns in a set or guess line.}
+
+\variable{input-list-indent}{2}{Amount of indentation for lines in a
+  list entry.}
+
+\variable{input-list-separate}{-1}{Amount of separation
+  between columns in a list. }
+
+\variable{input-feff-indent}{1}{Amount of additional indentation for
+  lines in a \file{feff.inp} file.}
+
+\variable{input-potentials-indent}{7}{Amount of indentation for lines in a
+  \texttt{POTENTIALS} list in a \file{feff.inp} file.}
+
+\variable{input-potentials-separate}{3}{Amount of separation between
+  columns in a \texttt{POTENTIALS} list in a \file{feff.inp} file.}
+
+\variable{input-atoms-separate}{3}{Amount of separation between
+  columns in an \texttt{ATOMS} list in a \file{feff.inp} file.}
+
+\variable{input-comment-indent}{0}{Amount of indentation for comment
+  lines.}
+
+
+%%%-----------------------------------------------------------------
+\vsep{Variables used with gnuplot}
+
+\variable{gnuplot-script-buffer-name}{fuse.gp}{Name of buffer
+  containing \textsc{gnuplot} script.}
+
+\variable{input-gnuplot-r-column}{4}{Default plot column for plotting
+  $\tilde{\chi}(R)$.}
+
+\variable{input-gnuplot-q-column}{2}{Default plot column for plotting
+  $\Tilde{\Tilde{\chi}}(k)$.}
+
+\variable{input-gnuplot-data-style}{lines}{Default line type for
+  plots.}
+
+\variable{input-gnuplot-default-terminal}{x11}{Default terminal type
+  for plots.  The other option is \texttt{postscript}.}
+
+\variable{input-gnuplot-default-ps-file}{fuse.ps}{Default file name
+  for PostScript output.}
+
+\variable{input-gnuplot-ezero-flag}{nil}{Non-nil means to draw a
+  vertical line at E$_0$ in \textsc{autobk} $\mu(E)$ plots.}
+
+\variable{fuse-gnuplot-history-length}{10}{Length of script history
+  list in the \textsc{gnuplot} buffer.}
+
+\variable{input-plot-flag}{t}{Non-nil means to always send a newly
+  written script to \textsc{gnuplot}.  a value of nil may be useful on
+  a graphics incapable terminal.}
+
+\variable{gnuplot-program}{gnuplot}{Name of the \textsc{gnuplot}
+  program.}
+
+\variable{gnuplot-echo-program}{t}{Non-nil means to echo every command
+  from a script into a buffer displaying the output of the running
+  \textsc{gnuplot} process.  This is useful for trouble shooting.}
+
+
+%%%-----------------------------------------------------------------
+\vsep{Variables used by particular minor modes}
+
+\variable{input-best-fit-set-flag}{nil}
+{Non-nil says to swap \texttt{guess} for \texttt{set} when using
+\texttt{feffit-insert-best-fit} (\texttt{C-c C-s b})}
+
+\variable{input-intrp-buffer-name}{intrp.dat}{Name of buffer to write
+  results from a run of \textsc{intrp}.  Used by \textsc{feff} and
+  \textsc{feffit} modes.}
+
+\variable{input-intrp-args}{\quad}{Command line arguments passed to
+  \textsc{intrp}. }
+
+\variable{input-mcmaster-sigma}{sigmm}{Name for the McMaster
+  $\sigma^2$ variable used by \texttt{Feffit-insert-mcmaster}
+  (\texttt{C-c C-s m})}
+
+\variable{Feff-8-convergence-filename}{convergence.dat}{Default name
+  of file containing convergence data from a \textsc{feff8} run.}
+
+\variable{Atoms-evaluation-comment-string}{!+}{String denoting a
+  line with math expressions describing atom coordinates.  This is
+  used in \textsc{atoms} mode.}
+
+\variable{Atoms-definition-comment-string}{!-}{String denoting a line
+  variable definitions for math expressions.  This is used in
+  \textsc{atoms} mode.}
+
+%%%-----------------------------------------------------------------
+
+\vspace{1truecm}
+
+\begin{center}
+  \begin{Boxedminipage}{0.75\linewidth}
+    \begin{center}
+      {\large Hook Variables in {\FUSE}}
+    \end{center}
+  \end{Boxedminipage}
+\end{center}
+
+A \emph{hook} is a variable where you can store a function or
+functions to be called on a particular occasion.$^\ast$ {\FUSE}
+provides several such variables.  See the file \file{HOOKS} which
+comes with the {\FUSE} distribution for example of their use.  Always
+use \hbox{\texttt{(add-hook )}} to set a hook variable.  Using
+\hbox{\texttt{(setq )}} to do so can have unexpected and undesirable
+consequences. \\\hfill \hfill {\scriptsize $^\ast$ As defined in the
+  emacs lisp reference manual.}
+
+\vspace{0.5truecm}
+
+
+\def\hookv#1#2{{
+    \begin{flushright}
+      \begin{minipage}[h]{0.97\linewidth}
+        \vspace{-0.15truecm}
+        \textbf{#1}\hfill
+        \begin{flushright}
+          \begin{minipage}[h]{0.93\linewidth}
+            \vspace{-0.2truecm}
+             is run when #2
+          \end{minipage}
+        \end{flushright}
+      \end{minipage}
+    \end{flushright}
+    }}
+
+\hookv{input-load-hook}{\file{input.el} is loaded.}
+
+\hookv{input-mode-hook}{\textsc{input} mode starts in a buffer.}
+
+\hookv{input-before-run-hook}{a program in invoked.}
+
+\hookv{input-after-run-hook}{a program execution completes.}
+
+\hookv{\textsl{program}-load-hook}{ \file{fuse-\textsl{program}.el} is
+  loaded.  There is one of these hooks for each program minor mode.}
+
+\hookv{\textsl{program}-mode-hook}{\textsl{program}
+  minor mode starts in a buffer.  There is one of these hooks for each
+  program minor mode.}
+
+\hookv{fuse-doc-load-hook}{\file{fuse-doc.el} is loaded.}
+
+\hookv{fuse-doc-mode-hook}{fuse-doc minor mode is begun
+  in a buffer.}
+
+\hookv{gnuplot-load-hook}{\file{gnuplot.el} is loaded.}
+
+\hookv{gnuplot-mode-hook}{\textsc{gnuplot} major mode is
+  begun in a buffer.}
+
+\hookv{gnuplot-after-plot-buffer-hook}{a full script is sent
+  to \textsc{gnuplot}.}
+
+%%% End of variables section
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: t
+%%% End:

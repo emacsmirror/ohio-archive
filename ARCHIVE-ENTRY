@@ -1,0 +1,66 @@
+Emacs Lisp Archive Entry Format v1.1
+
+Time-stamp: <2000-09-24 01:53:25 walters>
+
+Note that this format is very similar to the format recommended by the
+Emacs Lisp coding standards (see the Emacs Lisp manual).  Please read
+that document.
+
+Here is an example of an acceptable archive entry:
+
+;; Emacs Lisp Archive Entry
+;; Filename: hello.el
+;; Version: 1.1
+;; Keywords: hello, greeting
+;; Author: Jane Schmoe <jane@example.com>
+;; Maintainer: Jane Schmoe <jane@example.com>
+;; Created: 28 Jun 1999
+;; Description: cause a greeting message to appear on the user's screen
+;; URL: http://www.example.com/~jane/emacs.html
+;; Compatibility: Emacs19, Emacs20, XEmacs21
+
+Note that your ELAE doesn't have to have all of these entries.  In
+particular, only the following entries are required:
+
+Filename or Package
+Version
+Author
+
+Here is an exhaustive list of the currently recognized entries:
+
+Filename - the filename of a single .el file entry
+Package - For multi-file entries, this is the name of the full package
+          (e.g. calc, auctex, pcl-cvs).  Note that the "Package" entry
+	  should have the same name as the tar file of your entry.
+Version - the current version
+Keywords - a comma-separated list of keywords
+Author - original author's name and email address.  For multiple
+         authors, write this as:
+
+          ;; Author: Jane Schmoe <jane@foo.com>
+	  ;;         Bob Frob <frob@bob.com>
+          ;;         Jack Smith <jack@smith.com>
+	  
+Maintainer - the current maintainer.  If there are multiple
+                maintainers, format this as for multiple authors.
+Created - creation date
+Description - one line description
+URL - canonical URL where one can find the latest version of this file
+Compatibility - Emacsen this file is compatible with.  Use
+                Emacs[version] to refer to GNU Emacs.  Use
+                XEmacs[version] to refer to XEmacs.
+Incompatibility - Emacsen this file is specifically NOT compatible with
+Last-Updated - the time this was last updated
+
+Other information, like longer descriptions, should not be part of the
+ELAE, but placed in another portion of the file.
+
+Send comments to the Emacs Lisp Archive maintainers:
+archive@cis.ohio-state.edu
+
+Colin Walters <walters@cis.ohio-state.edu>
+
+Local Variables:
+mode:text
+End:
+

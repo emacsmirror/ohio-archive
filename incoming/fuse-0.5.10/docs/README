@@ -1,0 +1,34 @@
+
+	 Documentation that comes with the FUSE distribution.
+
+This directory contains the following documents:
+
+  document                 formats
+-----------------------------------------------------------------------
+FUSE user's guide:	texi, info, dvi, postscript, html, plain text
+FUSE tutorial:		texi, info, dvi, postscript, html, plain text
+FUSE quick reference:	latex, dvi, ps
+
+gnuplot-mode help card: latex, dvi, ps
+
+Atoms document:		info, html, plain text
+Feff document:		info, html, plain text
+Phit document:		info, html, plain text
+Normal document:	info, html, plain text
+
+
+
+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--+--
+
+Notes.
+
+Several of these documents can be recreated from their source files.
+The FUSE user's guide and tutorial were prepared from the Texinfo
+(version 3.12) source and so require the texinfo.tex file from the
+3.12 distribution.  The FUSE and gnuplot-mode reference cards were
+prepared from the latex source and require the supertabular, fancybox,
+amsmath, and amssymb packages.
+
+
+The various gif, jpg, and eps files as well as several .txt files are
+the figure files used in the various forms of the tutorial.

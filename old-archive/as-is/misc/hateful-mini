@@ -1,0 +1,68 @@
+;To: unix-emacs@bbn.com
+;Date: 6 Feb 89 18:30:33 GMT
+;From: Silver <aramis.rutgers.edu!athos.rutgers.edu!gaynor@rutgers.edu>
+;Subject: yes-or-no-p vs y-or-n-p, yes/no vs y/n
+;
+;I suppose the proper solution to the yes-or-no-p vs y-or-n-p in the C source
+;would be to look up the symbol's function value in the symbol-table.  This
+;should probably be done for most calls that interact directly with the user in
+;the minibuffer.  But the y/n/yes/no is far and above the most common, and most
+;obnoxious.  Hey, I just had an idea.  I'm not sure whether it's clever or
+;stupid, but it works for virtually all typical usage.
+
+;; Handle the soft-coded calls...
+(fset 'yes-or-no-p (symbol-function 'y-or-n-p))
+
+(define-key minibuffer-local-map "y" 'hateful-minibuffer-yes)
+(define-key minibuffer-local-map "n" 'hateful-minibuffer-no)
+
+(defun hateful-minibuffer-yes ()
+  (interactive)
+  (if (hateful-recent-keys)
+    (progn (insert "yes")
+	   (exit-minibuffer))
+    (call-interactively 'self-insert-command)))
+
+(defun hateful-minibuffer-no ()
+  (interactive)
+  (if (hateful-recent-keys)
+    (progn (insert "no")
+	   (exit-minibuffer))
+    (call-interactively 'self-insert-command)))
+
+;(defun hateful-recent-keys ()
+;  (string-match (mapconcat 'identity hateful-recent-keys-list "\\|")
+;		(substring (recent-keys) (- 100 hateful-recent-keystrokes))))
+
+(defvar hateful-recent-keys-list '("\C-x\C-c")
+"In minibuffer-local-map, switch the action of `y'/`n' from self-insert-command
+to insert \"yes\"/\"no\" and exit, if the last hateful-recent-keystrokes of
+(recent-keys) contains any of these strings.  In practice, the elements should
+be the bindings of commands that hard-call yes-or-no-p.")
+
+(defvar hateful-recent-keystrokes 10
+"Number of recent keys in which to search for elements of
+hateful-recent-keys-list, because (recent-keys) is so very accurate.")
+
+;Regards, [Ag] gaynor@rutgers.edu
+
+;To: unix-emacs@bbn.com
+;Date: 7 Feb 89 04:52:35 GMT
+;From: Silver <aramis.rutgers.edu!porthos.rutgers.edu!gaynor@RUTGERS.EDU>
+;Subject: Re: yes-or-no-p vs y-or-n-p, yes/no vs y/n
+;
+;
+;
+;As it is, if you haven't typed 100 characters at the emacs in question, you
+;can't have completely filled up (recent-keys), which grows in length until it
+;reaches 100 characters (some days you learn the neatest little thangs).  Ok,
+;this information is reflected in the version of hateful-recent-keys below.  The
+;old version died when less than the length of (recent-keys) was less than
+;hateful-recent-keystrokes.
+;
+;Regards, [Ag] gaynor@whoops.rutgers.edu
+;_______________________________________________________________________________
+(defun hateful-recent-keys ()
+  (let ((keys (recent-keys)))
+    (if (> hateful-recent-keystrokes (length keys))
+      (setq keys

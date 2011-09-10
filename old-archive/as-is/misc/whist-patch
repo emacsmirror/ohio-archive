@@ -1,0 +1,88 @@
+From mcvax!inria!bdblues!gh@uunet.uu.net Tue Jun 20 10:40:22 1989
+To: unix-emacs@BBN.COM
+Date: 25 May 89 14:11:20 GMT
+From: gilbert harrus <mcvax!inria!bdblues!gh@uunet.uu.net>
+Sender: arpa-unix-emacs-request@BBN.COM
+Subject: bug fix for whist
+Organization: GIP ALTAIR,c/o INRIA, Rocquencourt, FRANCE
+Source-Info:  From (or Sender) name not authenticated.
+
+Please apply this patch on whist.el to fix a minor bug:
+when calling whist, the help message "Enter text. <some key> when done."
+should be displayed (it was not!).
+
+If you look closely to the `!' lines of this patch, you will see that only
+the first one (containing "Enter text..") and last one (containing the three
+right parentheses) are really different. Nice bug.
+
+
+I hate lisp. gh.
+
+Gilbert Harrus
+Gip-Altair/INRIA                                       gh@bdblues.altair.fr
+Domaine de Voluceau                              ...!mcvax!inria!bdblues!gh
+BP105 Rocquencourt
+78153 Le Chesnay Cedex                        phone: +33 (1) 39 63 54 63
+France
+
+<--------------------- cut here --------------------arghh.... too late
+*** whist.el.orig	Wed May 24 15:34:51 1989
+--- whist.el	Tue May 23 14:24:08 1989
+***************
+*** 207,229 ****
+  	(setq keep-going t)
+  	(while keep-going
+  	  (message "%s" (substitute-command-keys
+! 			 "Enter text. \\[exit-recursive-edit] when done.")
+! 		   (recursive-edit)    ; enter the message in the whist buffer
+! 		   (setq action (ml-substring (get-arg
+! 					       (concat "Action? (a[bort], e[dit], u[pdate]):")
+! 					       "update") 0 1))
+! 		   (cond
+! 		    ((string-equal action "e")
+! 		     ); continue edition
+! 		    ((string-equal action "a")
+! 		     (kill-buffer "*whist*")
+! 		     (error-message "Aborted")) ; abort
+! 		    ((string-equal action "u")
+! 		     (setq keep-going nil)) ; update
+! 		    (t
+! 		     (message "%s" "Don't you read ? ")
+! 		     (sit-for 2 t)) ; Yes, don't you read ?
+! 		    )))
+  
+  	; updating
+  	(beginning-of-buffer)
+--- 207,229 ----
+  	(setq keep-going t)
+  	(while keep-going
+  	  (message "%s" (substitute-command-keys
+! 			 "Enter text. \\[exit-recursive-edit] when done."))
+! 	  (recursive-edit)    ; enter the message in the whist buffer
+! 	  (setq action (ml-substring (get-arg
+! 				      (concat "Action? (a[bort], e[dit], u[pdate]):")
+! 				      "update") 0 1))
+! 	  (cond
+! 	   ((string-equal action "e")
+! 	    ); continue edition
+! 	   ((string-equal action "a")
+! 	    (kill-buffer "*whist*")
+! 	    (error-message "Aborted")) ; abort
+! 	   ((string-equal action "u")
+! 	    (setq keep-going nil)) ; update
+! 	   (t
+! 	    (message "%s" "Don't you read ? ")
+! 	    (sit-for 2 t)) ; Yes, don't you read ?
+! 	   ))
+  
+  	; updating
+  	(beginning-of-buffer)
+
+Gilbert Harrus
+Gip-Altair/INRIA                                       gh@bdblues.altair.fr
+Domaine de Voluceau                              ...!mcvax!inria!bdblues!gh
+BP105 Rocquencourt
+78153 Le Chesnay Cedex                        phone: +33 (1) 39 63 54 63
+France
+
+

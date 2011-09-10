@@ -1,0 +1,49 @@
+ZenIRC BUGS list -- Last updated 1996-04-25
+
+* The server parsing code does strange things when it gets lots of
+  action at the same time.
+
+  Noah Friedman's comments to this 'bug'; 
+
+  No, it's probably because the process filter isn't reentrant, and it
+  wasn't intended to be. (It uses a global vector to reduce memory
+  consumption). I've never observed that behavior, and I don't know
+  how it can happen---the only time the server parser can be called
+  recursively is if you are in the debugger or you send back a
+  response through a process that has a pty.  But that's only
+  significant it is gets run from a server hook, since only those get
+  called from within the process filter.
+
+  You could fix that at the expense of considerably greater consing.
+
+* ISON is limited to 512 characters, make sure ZenIRC groks that.
+
+* ZenIRC doesn't parse the following numerics at all, some of them aren't
+  used by either 2.8 nor 2.9. Some other ugly servers use other numerics
+  for other stuff as well.
+
+	416 ERR_TOOMANYMATCHES, "%s %s :Output too long (try locally)",
+	434 ERR_SERVICENAMEINUSE, (char *)NULL,
+	435 ERR_SERVICECONFUSED, (char *)NULL,
+	438 ERR_QUOTAEXCEEDED, "%s :Quota exceeded, try again later.",
+	466 ERR_YOUWILLBEBANNED, (char *)NULL,
+	476 ERR_BADCHANMASK, "%s :Bad Channel Mask",
+	484 ERR_RESTRICTED, ":Your connection is restricted!",
+	492 ERR_NOSERVICEHOST, (char *)NULL,
+	304 RPL_TEXT, (char *)NULL,
+	316 RPL_WHOISCHANOP, (char *)NULL,
+	361 RPL_KILLDONE, (char *)NULL,
+	362 RPL_CLOSING, "%s :Closed. Status = %d",
+	363 RPL_CLOSEEND, "%d: Connections Closed",
+	373 RPL_INFOSTART, ":Server INFO",
+	383 RPL_YOURESERVICE, (char *)NULL,
+	384 RPL_MYPORTIS, "%d :Port to local server is\r\n",
+	385 RPL_NOTOPERANYMORE, (char *)NULL,
+	207 RPL_TRACESERVICE, "Service %d %s",
+	231 RPL_SERVICEINFO, (char *)NULL,
+	232 RPL_ENDOFSERVICES, (char *)NULL,
+	233 RPL_SERVICE, (char *)NULL,
+	234 RPL_SERVLIST, "%s %s %s %d %d :%s",
+	235 RPL_SERVLISTEND, "%s %d :End of service listing",
+	245 RPL_STATSSLINE, "%c %s * %s %d %d", 
+	246 RPL_STATSPING, "%s %d %d %d %d",

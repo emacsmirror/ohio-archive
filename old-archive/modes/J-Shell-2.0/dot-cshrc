@@ -1,0 +1,129 @@
+# $Id: dot-cshrc,v 2.0 1994/02/26 20:40:24 jimt Exp $
+
+## This file contains a sample script showing how to set up tcsh to
+## work properly with j-shell.  This script is for tcsh, but the steps
+## and notes delimited by ## apply to all shells; please read through
+## the comments in this file before referring to the sample script for
+## your shell.
+
+# Comments delimited by a single # are specific to csh/tcsh.
+
+## Define this variable to be 1 if you want to attempt to keep J-
+## Shell's environment in sync with the shell's; the shell will send
+## messages to J-Shell each time you set an environment variable, and
+## J-Shell will be able to complete the variables and their contents
+## accurately.  If you choose to leave SYNC_ENV set to 0, you can
+## manually synchronize J-Shell to your shell's environment with the
+## "reenv" command.
+
+if (! $?SYNC_ENV) set SYNC_ENV=0
+if (! $?REORIENT_ENV) set REORIENT_ENV=0
+
+## If we're running inside of Emacs, set up the shell to talk to
+## J-Shell.  Note that we assume that we're also using J-Shell.  We
+## *could* test for the JSHELL environment variable, but such
+## variables are not passed to remote shells started via rlogin, so a
+## remote shell would not get set up to talk to J-Shell.
+
+if ("$TERM" == "emacs") then
+	stty nl -echo		# Keeps ^M from echoing
+
+	## Step A: Define variables containing the J-Shell message
+	## intro; these messages should correspond to those defined in
+	## the j-shell variables jsh-message-intro-pattern,
+	## jsh-chdir-message-pattern, and jsh-rlogin-message-pattern.
+	## If need to change the message patterns, don't forget to
+	## change this shell script also.
+
+	# Tcsh's built-in echo command doesn't understand the \nnn
+	# notation for characters such as ESCape.  Fortunately, there
+	# are several other ways to get an escape character into a
+	# variable; the most portable is to use awk.  If none of the
+	# techniques shown here work for your system, you'll need to
+	# use the cwdcmd program supplied with J-Shell.
+	set emacscd=`awk 'BEGIN { printf("%cEmAcScd", 27) ; exit}'`
+	set emacshost=`awk 'BEGIN { printf("%cEmAcShost", 27) ; exit}'`
+	set emacsenv=`awk 'BEGIN { printf("%cEmAcSenv", 27) ; exit}'`
+
+	# Another technique is to use tr (thanks to Juergen Nickelsen
+	# <nickel@desaster.cs.tu-berlin.de> for suggesting this one):
+#	set emacscd=`echo @EmAcScd | tr @ '\033'`
+#	set emacshost=`echo @EmAcShost | tr @ '\033'`
+
+	# In SunOS 4.1.n, you can also use /usr/5bin/echo to echo an
+	# escape character:
+#	set SYSV_ECHO=/usr/5bin/echo
+#	set emacscd=`$SYSV_ECHO "\033EmAcScd"`
+#	set emacshost=`$SYSV_ECHO "\033EmAcShost"`
+
+	## Step B: define some aliases to tell J-Shell what working
+	## directory we're in and what host we're on.  Cwdcmd tells
+	## J-Shell about the working directory, hostcmd tells it about
+	## the host, and reorient tells it about both.
+	alias cwdcmd 'echo $emacscd $cwd' #See note below
+	alias hostcmd echo $emacshost `hostname`
+	alias reenv 'foreach f(`env`)\
+			     echo $emacsenv $f\
+		     end'
+
+	if ($REORIENT_ENV) then
+		alias reorient "hostcmd ; cwdcmd ; reenv"
+	else
+		alias reorient "hostcmd ; cwdcmd"
+	endif
+
+	## NOTE: Because of the way J-Shell looks for the cwd message,
+	##       the cwdcmd alias doesn't always work with some
+	##       shells, when the current working directory is very
+	##       long (> 128 characters for SunOS 4.1.1's csh, for
+	##       example).  If you find that long directories are
+	##       confusing J-Shell, consider using the cwdcmd program
+	##       distributed with J-Shell instead of a shell alias;
+	##       see the file cwdcmd.c.  To use cwdcmd: compile
+	##       cwdcmd, place it somewhere in your PATH, and delete
+	##       the above cwdcmd alias (or function, for shells such
+	##       as ksh).
+
+	## Step C: define some aliases to call cwdcmd any time the
+	## shell's working directory changes.  These aliases should
+	## appear before any other aliases which call cd, chdir, or
+	## popd, so that those aliases will tell J-Shell about the
+	## change in working directory.
+
+	# In tcsh, the cwdcmd alias is automatically executed every
+	# time the working directory changes; in plain csh, though, we
+	# have to alias each of the built-in commands that change
+	# working directory.
+	if (! $?tcsh) then
+		alias cd "cd \!* ; cwdcmd"
+		alias pushd "pushd \!* ; cwdcmd"
+		alias popd "popd ; cwdcmd"
+	endif
+
+	## Step C-2: define an alias for the setenv command so we can
+	## keep J-Shell in sync with changes in our environment.
+	if ($SYNC_ENV) then
+		alias setenv "setenv \!* ; echo $emacsenv \!*"
+	endif
+
+	## Step D: Alias the commands that can change host and/or
+	## working directory, so that they reorient J-Shell upon
+	## exiting.  These aliases are necessary because other shells
+	## can change the working directory; upon leaving another
+	## shell, there is an implicit change in directory (the parent
+	## shell's cwd), which we need to tell J-Shell about.
+
+	alias rlogin "rlogin \!* ; reorient" 
+	alias sh "sh \!* ; reorient"
+	alias ksh "ksh \!* ; reorient"
+	alias csh "csh \!* ; reorient"
+	alias tcsh "tcsh \!* ; reorient"
+	alias zsh "zsh \!* ; reorient"
+	alias bash "bash \!* ; reorient"
+	alias tcl "tcl \!* ; reorient"
+
+	## Step E: reorient this shell--necessary for sub-shells that
+	## start up in a different directory from their parent (an
+	## rlogin, for example).
+	reorient
+endif

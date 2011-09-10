@@ -1,0 +1,19 @@
+********************************* MISC *********************************
+         Code: \BibTeX-tag
+................................................................Required
+................................................................Optional
+       Author: \author
+        Title: \title
+ Howpublished: \howpublished
+        Month: \month
+         Year: \year
+         Note: \note
+          Key: \key
+     Crossref: \crossref
+.................................................................Ignored
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+********************************* MISC *********************************

@@ -1,0 +1,184 @@
+Emacs 19.34 ベースの Mule 2.3 に付いてくる canna.el を
+minor-mode-map-alist を使うようにするパッチです。これを当てると、Draft 
+モードのヘッダで、「かんな」を使って日本語を入力できます。
+
+Emacs 19.28 ベースの Mule 2.3 には当てる必要はありません。
+
+ライブラリ・ディレクトリで直接当てる場合は、
+	patch < canna.el-19.34.patch
+として、canna.elc を削除する必要があります。
+
+インストールからやり直す場合は、lisp ディレクトリの下で
+	patch < canna.el-19.34.patch
+としてください。
+
+山本和彦
+
+*** canna.el.orig	Thu Jul  2 02:37:23 1998
+--- canna.el	Fri Jul  3 13:35:17 1998
+***************
+*** 156,161 ****
+--- 156,162 ----
+  (defvar canna:*fence-mode* nil)
+  ;(make-variable-buffer-local 'canna:*fence-mode*)
+  ;(setq-default canna:*fence-mode* nil)
++ (defvar canna:*select-mode* nil)
+  
+  ;;;
+  ;;; global variables
+***************
+*** 167,177 ****
+  (defvar canna:*spos-undo-text* (make-marker))
+  (defvar canna:*epos-undo-text* (make-marker))
+  (defvar canna:*undo-text-yomi* nil)
+- (defvar canna:*local-map-backup*  nil)
+  (defvar canna:*last-kouho* 0)
+  (defvar canna:*initialized* nil)
+  (defvar canna:*previous-window* nil)
+- (defvar canna:*minibuffer-local-map-backup* nil)
+  (defvar canna:*cursor-was-in-minibuffer* nil)
+  (defvar canna:*menu-buffer* " *menu*")
+  (defvar canna:*saved-minibuffer*)
+--- 168,176 ----
+***************
+*** 234,239 ****
+--- 233,243 ----
+  (define-key canna-mode-map [kanji]   [? ])
+  (define-key canna-mode-map [?\C- ]   [?\C-@])
+  
++ (or (assq 'canna:*fence-mode* minor-mode-map-alist)
++     (setq minor-mode-map-alist
++           (cons (cons 'canna:*fence-mode* canna-mode-map)
++ 		minor-mode-map-alist)))
++ 
+  ;; ミニバッファに何かを表示している時のローカルマップ
+  (defvar canna-minibuffer-mode-map (make-sparse-keymap))
+  
+***************
+*** 257,262 ****
+--- 261,271 ----
+  (define-key canna-minibuffer-mode-map [kanji]   [? ])
+  (define-key canna-minibuffer-mode-map [?\C- ]   [?\C-@])
+  
++ (or (assq 'canna:*select-mode* minor-mode-map-alist)
++     (setq minor-mode-map-alist
++           (cons (cons 'canna:*select-mode* canna-minibuffer-mode-map)
++ 		minor-mode-map-alist)))
++ 
+  ;;;
+  ;;; グローバル関数の書き替え
+  ;;;
+***************
+*** 515,521 ****
+  	 (select-window (minibuffer-window))
+  	 (set-window-buffer (minibuffer-window)
+  			    (get-buffer-create canna:*menu-buffer*))
+! 	 (use-local-map canna-minibuffer-mode-map) ))
+    )
+  
+  (defun canna:minibuffer-input (str len revpos revlen nfixed)
+--- 524,530 ----
+  	 (select-window (minibuffer-window))
+  	 (set-window-buffer (minibuffer-window)
+  			    (get-buffer-create canna:*menu-buffer*))
+! 	 (setq canna:*select-mode* t)))
+    )
+  
+  (defun canna:minibuffer-input (str len revpos revlen nfixed)
+***************
+*** 543,557 ****
+  	(setq canna:*saved-redirection* (frame-focus (selected-frame)))
+  	(redirect-frame-focus (selected-frame) 
+  			      (window-frame (minibuffer-window)))
+- 
+- 	;; ミニバッファのキーマップを保存しておく。
+- 	(setq canna:*minibuffer-local-map-backup* (current-local-map))
+  	))
+    (select-window (minibuffer-window))
+    (set-window-buffer (minibuffer-window)
+  		     (get-buffer-create canna:*menu-buffer*))
+  
+!   (use-local-map canna-minibuffer-mode-map)
+  
+  ;  (canna:yomi-attr-off (point-min) (point-max) )
+  ;  (canna:henkan-attr-off (point-min) (point-max) )
+--- 552,563 ----
+  	(setq canna:*saved-redirection* (frame-focus (selected-frame)))
+  	(redirect-frame-focus (selected-frame) 
+  			      (window-frame (minibuffer-window)))
+  	))
+    (select-window (minibuffer-window))
+    (set-window-buffer (minibuffer-window)
+  		     (get-buffer-create canna:*menu-buffer*))
+  
+!   (setq canna:*select-mode* t)
+  
+  ;  (canna:yomi-attr-off (point-min) (point-max) )
+  ;  (canna:henkan-attr-off (point-min) (point-max) )
+***************
+*** 578,584 ****
+    (if (or (zerop len) canna-empty-info)
+        (progn
+  	(setq canna:*cursor-was-in-minibuffer* nil)
+! 	(use-local-map canna:*minibuffer-local-map-backup*)
+  
+  	;; ミニバッファウィンドウのバッファを元に戻す。
+  	(set-window-buffer (minibuffer-window) canna:*saved-minibuffer*)
+--- 584,590 ----
+    (if (or (zerop len) canna-empty-info)
+        (progn
+  	(setq canna:*cursor-was-in-minibuffer* nil)
+! 	(setq canna:*select-mode* nil)
+  
+  	;; ミニバッファウィンドウのバッファを元に戻す。
+  	(set-window-buffer (minibuffer-window) canna:*saved-minibuffer*)
+***************
+*** 602,608 ****
+    "Use input character as a key of complex translation input such as\n\
+  kana-to-kanji translation, even if you are in the minibuffer."
+    (interactive "p")
+!   (use-local-map canna:*minibuffer-local-map-backup*)
+    (set-window-buffer (minibuffer-window) canna:*saved-minibuffer*)
+    (select-window canna:*previous-window*)
+    (canna:functional-insert-command2 last-command-char arg) )
+--- 608,614 ----
+    "Use input character as a key of complex translation input such as\n\
+  kana-to-kanji translation, even if you are in the minibuffer."
+    (interactive "p")
+!   (setq canna:*select-mode* nil)
+    (set-window-buffer (minibuffer-window) canna:*saved-minibuffer*)
+    (select-window canna:*previous-window*)
+    (canna:functional-insert-command2 last-command-char arg) )
+***************
+*** 731,741 ****
+  				 canna:*saved-mode-string*
+  			       new-mode)))
+  			0)))
+-   (setq canna:*local-map-backup*  (current-local-map))
+    (setq canna:*fence-mode* t)
+    (if (boundp 'disable-undo)
+!       (setq disable-undo canna:*fence-mode*))
+!   (use-local-map canna-mode-map) )
+  
+  (defun canna:enter-canna-mode-and-functional-insert ()
+    (canna:enter-canna-mode)
+--- 737,745 ----
+  				 canna:*saved-mode-string*
+  			       new-mode)))
+  			0)))
+    (setq canna:*fence-mode* t)
+    (if (boundp 'disable-undo)
+!       (setq disable-undo canna:*fence-mode*)))
+  
+  (defun canna:enter-canna-mode-and-functional-insert ()
+    (canna:enter-canna-mode)
+***************
+*** 744,750 ****
+  
+  (defun canna:quit-canna-mode ()
+    (cond (canna:*fence-mode*
+- 	 (use-local-map canna:*local-map-backup*)
+  	 (setq canna:*fence-mode* nil)
+  	 (if canna:*exit-japanese-mode*
+  	     (progn
+--- 748,753 ----

@@ -1,0 +1,70 @@
+To: unix-emacs@bbn.com
+Date: 1 Nov 88 11:32:34 GMT
+From: Lars Pensj| <mcvax!enea!kth!draken!chalmers!myab!lars@uunet.uu.net>
+Subject: A function to change TAGS table using completion.
+
+#--------CUT---------CUT---------CUT---------CUT--------#
+#########################################################
+#                                                       #
+# This is a shell archive file.  To extract files:      #
+#                                                       #
+#    1)	Make a directory for the files.                 #
+#    2) Write a file, such as "file.shar", containing   #
+#       this archive file into the directory.           #
+#    3) Type "sh file.shar".  Do not use csh.           #
+#                                                       #
+#########################################################
+#
+#
+echo Extracting change-tag.el:
+sed 's/^Z//' >change-tag.el <<\STUNKYFLUFF
+Z;
+Z; A user friendly way of changing tag table using completion.
+Z; Choose a TAGS table from already existing buffers.
+Z;
+Z
+Z
+Z(defun filter (fun list)
+Z  "Give list of elements where FUN applied on element in LIST is non-nil."
+Z  (if (null list) nil
+Z    (let ((head (car list))
+Z	  (tail (cdr list)))
+Z      (if (apply fun head nil)
+Z	  (cons head (filter fun tail))
+Z	(filter fun tail))
+Z      )
+Z    )
+Z   )
+Z	  
+Z
+Z(defun change-tag-table ()
+Z  "Visit one of previously used tags tables."
+Z  (interactive)
+Z  (visit-tags-table
+Z   (let ((file
+Z	  (completing-read
+Z	   "TAGS table to use: "
+Z	   (vconcat
+Z	    (mapcar 'intern
+Z		    (filter '(lambda (arg) (and (not (null arg))
+Z						(string-match "TAGS" arg)))
+Z			    (mapcar 'buffer-file-name (buffer-list)))))
+Z	   '(lambda (arg) (string-match "TAGS" (symbol-name arg)))
+Z	   )
+Z	  ))
+Z     (if (string-equal file "")
+Z	 (message tags-file-name)
+Z       (message file))
+Z     )))
+STUNKYFLUFF
+set `wc change-tag.el`
+if test 38 != $1
+then
+echo change-tag.el: Checksum error. Is: $1, should be: 38.
+fi
+echo All done
+exit 0
+-- 
+    Lars Pensj|
+    lars@myab.se
+

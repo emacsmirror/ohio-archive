@@ -1,0 +1,357 @@
+<HTML>
+<HEAD>
+<TITLE>Atoms: Space Groups</TITLE>
+</HEAD>
+<BODY>
+<A HREF="atoms-2.html">Previous</A>
+<A HREF="atoms-4.html">Next</A>
+<A HREF="atoms.html#toc3">Table of Contents</A>
+<HR>
+<H2><A NAME="s3">3. Space Groups</A></H2>
+
+
+<H2><A NAME="ss3.1">3.1 Notation Conventions</A></H2>
+
+
+
+<P>The two most commonly used standards for the designation of three
+dimensional space groups are the Hermann-Maguin and Schoenflies
+conventions.  <SF>atoms</SF> recognizes both conventions.  Each of the
+230 space groups as designated in each convention is listed in
+appendix A. </P>
+<P>The Hermann-Maguin system uses four symbols to uniquely specify the
+group properties of each of the 230 space groups.  The first symbol is
+a single letter (<CODE>P, I, R, F, A, B</CODE> or <CODE>C</CODE>) which refers to the
+Bravais lattice type. The remaining three letters refer to the point
+group of the crystal.</P>
+<P>Some modifications to the notation convention are made for use with a
+keyboard.  Spaces must separate each of the four symbols.  Subscripted
+numbers are printed next to the number being modified (e.g. 6_3 is
+printed as <CODE>63</CODE>).  A bar above a number is entered with a minus sign. </P>
+<P>Occasionally there are variations in how space groups are
+referenced. For example, the hausmannite structure of Mn3 O4 is placed
+in space group <CODE>I 41/A M D</CODE> by the conventions laid out in
+<I>The International Tables</I>.  In <I>Crystal Structures, v. 3</I>,
+Wyckoff denotes this space group as <CODE>I 4/A M D</CODE>.  This sort of
+incongruity is unfortunate. The list of Hermann-Maguin space group
+designations as recognized by <SF>atoms</SF> is included in appendix A.
+If you cannot resolve the incongruity using this list, try using the
+Schoenflies notation.</P>
+<P>The Schoenflies conventions are also recognized by <SF>atoms</SF>.  In the
+literature there is less variation in the application of these
+conventions.  The Schoenflies convention is, in fact, less precise
+than the Hermann-Maguin in that the complete symmetry characteristics
+of the crystal are not encoded in the space group designation.
+Adaptations to the keyboard have been made here as well.  Subscripts
+are denoted with an underscore (_) and superscripts are denoted
+with a caret (&circ;).  Spaces are not allowed in the keyboard
+designation.  A couple of examples: <CODE>d_4&circ;8</CODE>, and
+<CODE>O_5.</CODE> The underscore does not need to precede to
+superscript.  <CODE>C_2&circ;V9</CODE> can also be written
+<CODE>C&circ;V9_2</CODE>.  Each of the 230 space groups as designated
+by the Schoenflies notation is listed in Appendix A in the same order
+as the listing of the Hermann-Maguin notation.  The two conventions
+are equally supported in the code.</P>
+
+
+
+
+<H2><A NAME="ss3.2">3.2 Unique Crystallographic Positions</A></H2>
+
+
+
+<P>The atom or basis list in <CODE>atoms.inp</CODE> is a list of the
+unique crystallographic sites in the unit cell.  A unique site is one
+(and only one) of a group of equivalent positions.  The equivalent
+positions are related to one another by the symmetry properties of the
+crystal.  <SF>atoms</SF> determines the symmetry properties of the
+crystal from the name of the space group and applies those symmetry
+operations to each unique site to generate all of the equivalent
+positions. </P>
+<P>If you include more than one of a group of equivalent positions in the
+atom or basis list, then a few odd things will happen.  A series of
+run-time messages will be printed to the screen telling you that atom
+positions were found that were coincident in space.  This is because
+each of the equivalent positions generated the same set of points in
+the unit cell.  <SF>atoms</SF> removes these redundancies from the
+atom list.  The atom list and the potentials list written to
+<CODE>feff.inp</CODE> will be correct and <SF>feff</SF> can be run
+correctly using this output.  However, the site tags and the indexing
+of the atoms will certainly make no sense.  Also the density of the
+crystal will be calculated incorrectly, thus the absorption
+calculation (section 4.1) and the self-absorption correction (section
+4.3) will be calculated incorrectly as well.  The McMaster correction
+(section 4.2) is unaffected. </P>
+
+
+
+
+<H2><A NAME="ss3.3">3.3 Specially Recognized Lattice Types</A></H2>
+
+
+
+<P>For some common crystal types it is convenient to have a shorthand way
+of designating the space group.  For instance, one might remember that
+copper is an fcc crystal, but not that it is in space group <CODE>F M 3
+M</CODE> (or <CODE>O_H&circ;5</CODE>).  In this spirit, <SF>atoms</SF> will
+recognize the following words for common crystal types.  These words
+may be used as the value of the keyword space and <SF>atoms</SF> will
+supply the correct space group.  Note that several of the common
+crystal types are in the same space groups.  For copper it will still
+be necessary to specify that an atom lies at (0,0,0), but it isn't
+necessary to remember that the space group is <CODE>F M 3 M</CODE>.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+___________________________________________________________________
+  cubic                  |   cubic                |  P M 3 M       
+  body-centered cubic    |   bcc                  |  I M 3 M       
+  face-centered cubic    |   fcc                  |  F M 3 M    
+  halite                 |   salt or nacl         |  F M 3 M    
+  zincblende             |   zincblende or zns    |  F -4 3 M  
+  cesium chloride        |   cscl                 |  P M 3 M    
+  perovskite             |   perovskite           |  P M 3 M    
+  diamond                |   diamond              |  F D 3 M    
+  hexagonal close pack   |   hex or hcp           |  P 63/M M C
+  graphite               |   graphite             |  P 63 M C    
+--------------------------------------------------------------------
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+<P>When <CODE>space</CODE> is set to hex or graphite, <CODE>gamma</CODE> is automatically
+set to 120.</P>
+
+
+
+<H2><A NAME="ss3.4">3.4 Bravais Lattice Conventions</A></H2>
+
+
+
+<P><SF>atoms</SF> assumes certain conventions for each of the Bravais
+lattice types.  Listed here are the labeling conventions for the axes
+and angles in each Bravais lattice. </P>
+<P>
+<UL>
+<LI> <B>Triclinic</B>: 
+All axes and angles must be specified.
+</LI>
+<LI> <B>Monoclinic</B>:
+<CODE>B</CODE> is the perpendicular axis, thus <CODE>beta</CODE> is the angle not
+equal to 90.
+</LI>
+<LI> <B>Orthorhombic</B>:
+<CODE>A</CODE>, <CODE>B</CODE>, and <CODE>C</CODE> must all be specified. 
+</LI>
+<LI> <B>Tetragonal</B>:
+The <CODE>C</CODE> axis is the unique axis in a tetragonal cell.  The <CODE>A</CODE>
+and <CODE>B</CODE> axes are equivalent.  Specify <CODE>A</CODE> and <CODE>C</CODE> in
+<CODE>atoms.inp</CODE>.
+</LI>
+<LI> <B>Trigonal</B>:
+If the cell is rhombohedral then the three axes are equivalent as are
+the three angles.  Specify <CODE>A</CODE> and <CODE>alpha</CODE>.  If the cell has
+hexagonal axes, specify <CODE>A</CODE> and <CODE>C</CODE>.  <CODE>gamma</CODE> will be set to
+120 by the program.
+</LI>
+<LI> <B>Hexagonal</B>:
+The equivalent axes are <CODE>A</CODE> and <CODE>B</CODE>.  Specify <CODE>A</CODE> and <CODE>C</CODE>
+in <CODE>atoms.inp</CODE>. <CODE>Gamma</CODE> will be set to 120 by the program.
+</LI>
+<LI> <B>Cubic</B>:
+Specify <CODE>A</CODE> in <CODE>atoms.inp</CODE>.  The other axes will be set equal
+to <CODE>A</CODE> and the angles will all be set to 90.
+</LI>
+</UL>
+</P>
+
+
+
+<H2><A NAME="lowsym"></A> <A NAME="ss3.5">3.5 Low Symmetry Space Groups</A></H2>
+
+
+<P>In three dimensional space there is an ambiguity in choice of right
+handed coordinate systems.  Given a set of mutually orthogonal axes,
+there are six choices for how to label the positive <I>x</I>, <I>y</I>,
+and <I>z</I> directions.  For some specific physical problem, the
+crystallographer might choose a non-standard setting for a crystal.
+The choice of standard setting is described in detail in <I>The
+International Tables</I>.  The Hermann-Maguin symbol describes the
+symmetries of the space group relative to this choice of coordinate
+system.  </P>
+<P>The symbols for triclinic crystals and for crystals of high symmetry
+are insensitive to choice of axes.  Monoclinic and orthorhombic
+notations reflect the choice of axes for those groups that possess a
+unique axis.  Tetragonal crystals may be rotated by 45 degrees about
+the z axis to produce a unit cell of doubled volume and of a different
+Bravais type.  Alternative symbols for those space groups that have
+them are listed in Appendix A.</P>
+<P><SF>atoms</SF> recognizes those non-standard notations for these crystal
+classes that are tabulated in <I>The International Tables</I>.
+<CODE>atoms.inp</CODE> may use any of these alternate notations so long as
+the specified cell dimensions and atomic positions are consistent with
+the choice of notation.  Any notation not tabulated in chapter 6 of
+the 1969 edition of <I>The International Tables</I> will not be
+recognized by <SF>atoms</SF>.</P>
+<P>This resolution of ambiguity in choice of coordinate system is one of
+the main advantages of the Hermann-Maguin notation system over that
+of Shoenflies.  In a situation where a non-standard setting has been
+chosen in the literature, use of the Schoenflies notation will, for
+many space groups, result in unsatisfactory output from <SF>atoms</SF>.
+In these situations, <SF>atoms</SF> requires the use of the
+Hermann-Maguinn notation to resolve the choice of axes.</P>
+<P>Here is an example.  In the literature reference, La2 Cu O4 was given
+in the non-standard <CODE>b m a b</CODE> setting rather than the standard
+<CODE>c m c a</CODE>.  As you can see from the axes and coordinates, these
+settings differ by a 90 degree rotation about the <CODE>A</CODE> axis.  The
+coordination geometry of the output atom list will be the same with
+either of these input files, but the actual coordinates will reflect
+this 90 degree rotation.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+title   La2CuO4 structure at 10K from Radaelli et al.
+title   standard setting
+space   c m c a
+a= 5.3269       b= 13.1640      c= 5.3819   
+rmax= 8.0       core= la
+atom
+  la    0        0.3611   0.0074  
+  Cu    0        0        0     
+  O     0.25    -0.0068  -0.25      o1
+  O     0        0.1835  -0.0332    o2
+--------------------------------------
+
+
+title   La2CuO4 structure at 10K from Radaelli et al.
+title   non standard setting, rotated by 90 degrees about A axis
+space   b m a b
+a= 5.3269       b= 5.3819       c= 13.1640
+rmax= 8.0       core= la
+atom
+  la    0       -0.0074   0.3611 
+  Cu    0        0        0     
+  O     0.25     0.25    -0.0068    o1
+  O     0        0.0332   0.1835    o2
+--------------------------------------
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+
+
+
+
+<H2><A NAME="ss3.6">3.6 Rhombohedral Space Groups</A></H2>
+
+
+<P>There are seven rhombohedral space groups. Crystals in any of these
+space groups that may be represented as either monomolecular
+rhombohedral cells or as trimolecular hexagonal cells.  These two
+representations are entirely equivalent.  The rhombohedral space
+groups are the ones beginning with the letter <CODE>R</CODE> in the
+Hermann-Maguin notation. <SF>atoms</SF> does not care which representation
+you use, but a simple convention must be maintained.  If the
+rhombohedral representation is used then the keyword <CODE>alpha</CODE> must
+be specified in <CODE>atoms.inp</CODE> to designate the angle between the
+rhombohedral axes and the keyword <CODE>a</CODE> must be specified to
+designate the length of the rhombohedral axes.  If the hexagonal
+representation is used, then <CODE>a</CODE> and <CODE>c</CODE> must be specified in
+<CODE>atoms.inp</CODE>.  <CODE>Gamma</CODE> will be set to 120 by the code.  Atomic
+coordinates consistent with the choice of axes must be used.</P>
+
+
+
+
+
+<H2><A NAME="ss3.7">3.7 Multiple Origins and the Shift Keyword</A></H2>
+
+
+
+<P>Some space groups in <I>The International Tables</I> are listed with two
+possible origins.  The difference is only in which symmetry point is
+placed at (0,0,0).  <SF>atoms</SF> always wants the orientation labeled
+``origin-at-centre''.  This orientation places (0,0,0) at a point of
+highest crystallographic symmetry. Wyckoff and other authors have the
+unfortunate habit of not choosing the ``origin-at-centre'' orientation
+when there is a choice.  Again Mn3 O4 is an example.  Wyckoff uses the
+``origin at -4m2'' option, which places one Mn atom at (0,0,0) and
+another at (0,1/4,5/8).  <SF>atoms</SF> wants the ``origin-at-centre''
+orientation which places these atoms at (0,3/4,1/8) and (0,0,1/2).
+Admittedly, this is an arcane and frustrating limitation of the code,
+but it is not possible to conclusively check if the
+``origin-at-centre'' orientation has been chosen.</P>
+<P>Twenty one of the space groups are listed with two origins in <I>The
+International Tables for X-Ray Crystallography</I>.  <SF>atoms</SF> knows
+which groups these are and by how much the two origins are offset, but
+<B>cannot</B> know if you chose the correct one for your crystal.  If
+you use one of these groups, <SF>atoms</SF> will print a run-time message
+warning you of the potential problem and telling you by how much to
+shift the atomic coordinates in <CODE>atoms.inp</CODE> if the incorrect
+orientation was used. This warning will also be printed at the top of
+the <CODE>feff.inp</CODE> file.  If you use the ``origin-at-center''
+orientation, you may ignore this message.</P>
+<P>If you use one of these space groups, it usually isn't hard to know if
+you have used the incorrect orientation.  Some common problems include
+atoms in the atom list that are very close together (less that 1
+angstrom), unphysically large densities (see section 4.1), and
+interatomic distances that do not agree with values published in the
+crystallography literature.  Because it is tedious to edit the atomic
+coordinates in the input file every time this problem is encountered
+and because forcing the user to do arithmetic (any good scientist's
+bugaboo!) invites trouble, there is a useful keyword called <CODE>shift</CODE>.
+For the Mn3 O4 example discussed above, simply insert this line in
+<CODE>atoms.inp</CODE> if you have supplied coordinates referenced to
+the incorrect origin:
+<BLOCKQUOTE><CODE>
+<PRE>
+              shift = 0.0  0.25  -0.125
+</PRE>
+</CODE></BLOCKQUOTE>
+
+This vector will be added to all of the coordinates in the atom list
+after the input file is read. </P>
+<P>Here is the input file for Mn3 O4 using the shift keyword:  </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+       title  Mn3O4, hausmannite structure, using the shift keyword
+          a   5.75   c  9.42    core Mn2
+       rmax   7.0    Space  i 41/a m d
+       shift  0.0  0.25  -0.125
+       atom
+       ! At.type  x        y       z        tag
+          Mn     0.0      0.0     0.0       Mn1
+          Mn     0.0      0.25    0.625     Mn2
+          O      0.0      0.25    0.375
+       -------------------------------------------------
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+<P>The above input file gives the same output as the following.  Here the
+shift keyword has been removed and the shift vector has been added to
+all of the fractional coordinates.  These two input files give
+equivalent output. </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+       title  Mn3O4, hausmannite structure, no shift keyword
+          a   5.75   c  9.42    core Mn2
+       rmax   7.0    Space  i 41/a m d
+       atom
+       ! At.type  x        y       z        tag
+          Mn     0.0      0.25   -0.125      Mn1
+          Mn     0.0      0.50    0.50       Mn2
+          O      0.0      0.50    0.25
+       -------------------------------------------------
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<HR>
+<A HREF="atoms-2.html">Previous</A>
+<A HREF="atoms-4.html">Next</A>
+<A HREF="atoms.html#toc3">Table of Contents</A>
+</BODY>
+</HTML>

@@ -1,0 +1,32 @@
+Here are some points to consider before final release of the hash
+library (and primes library) with GNU Emacs 20.x:
+
+(1) The Elisp manual says this about the apply function:
+
+	File: elisp,  Node: Calling Functions,  Next: Mapping Functions,  Prev: Defining Functions,  Up: Functions
+
+	Calling Functions
+	=================
+	...
+	 - Function: apply FUNCTION &rest ARGUMENTS
+	     `apply' calls FUNCTION with ARGUMENTS, just like `funcall' but
+	     with one difference: the last of ARGUMENTS is a list of objects,
+	     which are passed to FUNCTION as separate arguments, rather than a
+	     single list.  We say that `apply' "spreads" this list so that each
+	     individual element becomes an argument.
+
+    I don't know how to write a user-defined function that behaves
+    this way with respect to the handling of ARGUMENTS.  Ideally,
+    I would like hash-apply and hash-apply-sorted to work like apply,
+    so that the programmer is not burdened with treating ARG as a
+    list when multiple arguments are needed after the KEY VALUE
+    arguments.
+
+(2) Should the hash.texi and primes.texi files document the fact that
+    floating-point arithmetic is required, so that emacs must thus be
+    version 19 or later?  I still have emacs-18.xx executables on some
+    systems for testing, and the code failed to compile there because
+    the function float, and floating-point constants, are
+    unrecognized.  I don't see any need to fake floating-point with
+    scaled integers: every machine bought today that runs emacs has
+    hardware floating-point.

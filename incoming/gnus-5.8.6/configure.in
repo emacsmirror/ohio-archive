@@ -1,0 +1,6 @@
+AC_INIT(lisp/gnus.el)
+AC_SET_MAKE
+AC_PROG_INSTALL
+AM_PATH_LISPDIR
+AC_PATH_PROG(MAKEINFO, makeinfo, no)
+AC_OUTPUT(Makefile lisp/Makefile texi/Makefile)

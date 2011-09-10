@@ -1,0 +1,917 @@
+This is Info file feff7.info, produced by Makeinfo-1.63 from the input
+file /tmp/sgml2info723tmp2.
+
+   \input texinfo
+
+
+File: feff7.info,  Node: `IORDER',  Next: `JUMPRM',  Up: Obscure Options
+
+`IORDER'
+........
+
+   iord
+
+   Order of the approximation to use in module GENFMT.  We use order 2,
+which is correct to terms of order (1/pR)**2, and corresponds to 6x6
+matrices. However, we do single scattering exactly.  This approximation
+is accurate to within a few percent in every case we have tried (that
+is, higher order doesn't change the result more than a few percent).
+Changing the default values requires some familiarity with the
+Rehr-Albers paper and the structure of  the module GENFMT.  To do so,
+follow the instructions in subroutine SETLAM.  Iord is passed to setlam
+for processing.  You may need to change the code parameter lamtot if
+you want to do higher order calculations.  This is another of the
+arcane cards that we have used for testing.  For details of the
+algorithm used by GENFMT, see the paper by J.J.Rehr and R.C.Albers (see
+Appendix C, references).
+
+
+File: feff7.info,  Node: `JUMPRM',  Next: `MBCONV',  Prev: `IORDER',  Up: Obscure Options
+
+`JUMPRM'
+........
+
+   Removes jumps in all potentials at muffin-tin radii. This should be
+used only for cases when unreasonably big oscillations in smooth atomic
+cross section occur (see XANES card). This card may introduce
+unphysical energy shifts so it should be used with caution.
+
+
+File: feff7.info,  Node: `MBCONV',  Next: `NOHOLE',  Prev: `JUMPRM',  Up: Obscure Options
+
+`MBCONV'
+........
+
+   The convolution with model excitation spectrum will be made. The
+model is based in atomic overlap S0**2 and atomic relaxation energy.
+Can be used to test the energy dependent S0**2.
+
+
+File: feff7.info,  Node: `NOHOLE',  Prev: `MBCONV',  Up: Obscure Options
+
+`NOHOLE'
+........
+
+   What does it mean to do x-ray absorption if no x-ray was absorbed?
+Not much, but the code will do it if you want.  We used this to test the
+final state rule for calculated XAFS, and to compare to some other
+calculations that did not use a core hole.  The code will use the final
+state from the hole card for matrix element calculation - the NOHOLE
+card says to calculate potentials, etc., as if there was no core hole.
+
+
+File: feff7.info,  Node: Run Control Options,  Next: Output files,  Prev: Input file and FEFF commands,  Up: Top
+
+Run Control Options
+*******************
+
+   In addition to the CONTROL card and the FEFF options in feff.inp,
+some parameters in the files read by the various modules can be changed.
+For example, you can create your own paths by editing paths.dat and
+change explicit Debye-Waller factors in the final result by editing
+list.dat.
+
+   Users may edit the some files as a quick and sometimes convenient way
+to prepare a given run.  It is easiest to use an existing file as a
+template - these files are read by a computer program that is fussy
+about what it receives.
+
+   The files that can be used in this way are paths.dat and list.dat.
+
+* Menu:
+
+* Paths-dat::
+* list-dat::
+
+
+File: feff7.info,  Node: Paths-dat,  Next: list-dat,  Up: Run Control Options
+
+Paths-dat
+=========
+
+   You can modify a path, or even invent new ones.  For example, you
+could make a path to determine the effect of a focusing atom on a
+distant scatterer. Whatever index you enter for the path will be used
+in the filename given to the feffnnnn.dat file; i.e., for the choice,
+index = 845,  the exafs parameters will appear in feff0845.dat.
+
+   A handy way to add a single scattering path of length R is to make a
+2-leg path with the central atom at (0, 0, 0) and the scatterer at (R,
+0, 0).
+
+   GENFMT will need the positions, unique potentials, and character tags
+for each atom in the path.  The angles and leg lengths are printed out
+for your information, and you can omit them when creating your own
+paths by hand.  The label lines in the file are required (there is code
+that skips them, and if they're missing, you'll get wrong results).
+
+
+File: feff7.info,  Node: list-dat,  Prev: Paths-dat,  Up: Run Control Options
+
+list-dat
+========
+
+   This is the list of files that ff2chi uses to calculate chi.  It
+includes the paths written by module GENFMT, curved wave importance
+factors, and user-defined Debye-Waller factors.  If you want to set
+Debye-Waller factors for individual paths, you may edit this file to
+set them.  FF2CHI will sum the Debye-Waller factors in this file with
+the correlated Debye model sig2 and the global sig2, if present.  You
+may also delete paths from this file if you want to combine some
+particular set of paths.  (CAUTION: Save the original, or you'll have
+to re-run GENFMT!)
+
+
+File: feff7.info,  Node: Output files,  Next: Appendix A- Copyright Information Restrictions and License,  Prev: Run Control Options,  Up: Top
+
+Output files
+************
+
+* Menu:
+
+* phase-bin::
+* paths-dat::
+* crit-dat::
+* geom-dat::
+* list-dat::
+* chi-dat::
+* feff-bin::
+* feffNNNN-dat::
+* Diagnostic files from POTPH::
+* xsect-bin rkk-bin and xmu-dat files::
+* Variables in output files and in calculation of XAFS::
+
+
+File: feff7.info,  Node: phase-bin,  Next: paths-dat,  Up: Output files
+
+phase-bin
+=========
+
+   This is a binary file with the scattering phase shifts for each
+unique potential.  It is used by GENFMT and the pathfinder.
+
+
+File: feff7.info,  Node: paths-dat,  Next: crit-dat,  Prev: phase-bin,  Up: Output files
+
+paths-dat
+=========
+
+   Written by the pathfinder, this is a description of all the paths
+that fit the criteria used by the pathfinder.  It is used by GENFMT. The
+path descriptions include cartesian coordinates of atoms in the path,
+scattering angles, leg lengths and degeneracy. For details on editing
+this by hand, see section 4.
+
+
+File: feff7.info,  Node: crit-dat,  Next: geom-dat,  Prev: paths-dat,  Up: Output files
+
+crit-dat
+========
+
+   Values of the quantities tested against the various criteria in the
+pathfinder.
+
+
+File: feff7.info,  Node: geom-dat,  Next: list-dat,  Prev: crit-dat,  Up: Output files
+
+geom-dat
+========
+
+   Written by feff for use with the pathfinder, and deleted after use.
+It is an atom list created from the user-input list in feff.inp.  For
+more information, see the NOGEOM card in section 4.
+
+
+File: feff7.info,  Node: list-dat,  Next: chi-dat,  Prev: geom-dat,  Up: Output files
+
+list-dat
+========
+
+   List of files to use to create chi.dat.  Written by GENFMT when the
+xafs parameters are calculated and used by FF2CHI.  This contains the
+curved wave importance ratios, which you may wish to study. For details
+on editing this by hand, see section 5.
+
+   The curved wave importance ratios are the importance of a particular
+path relative to the most important path encountered so far in the
+calculation.  If the first path is the most important in the problem,
+all the importance factors will be expressed as a fraction of that path.
+However, if the third path considered is the most important, and the
+first path is the next most important, path 1 will have a factor of
+100%, path 2 will be a fraction of the first path's importance, path 3
+will have an importance of 100% (since it is now the most important
+path), and subsequent paths will be expressed as a percent of path 3's
+importance.
+
+
+File: feff7.info,  Node: chi-dat,  Next: feff-bin,  Prev: list-dat,  Up: Output files
+
+chi-dat
+=======
+
+   Standard xafs data k, chi(k), |chi(k)| relative to threshold (k=0):
+The header also contains enough information to specify what model was
+used to create this file.
+
+
+File: feff7.info,  Node: feff-bin,  Next: feffNNNN-dat,  Prev: chi-dat,  Up: Output files
+
+feff-bin
+========
+
+   A binary file that contains all the information about the XAFS from
+all of the paths.  This replaces the old feffNNNN.dat files (which you
+can make using the PRINT card).  If you want to use this file with your
+own analysis package, use the code in subroutine feffdt as an example
+of how to read it.
+
+
+File: feff7.info,  Node: feffNNNN-dat,  Next: Diagnostic files from POTPH,  Prev: feff-bin,  Up: Output files
+
+feffNNNN-dat
+============
+
+   You have to use PRINT option to obtain these files.  Effective
+scattering amplitude and phase shift data, with   k referenced to
+threshold for shell nn: k,  phi_c, |feff|, ph(feff), redfac, lambda,
+Re(p)
+
+   If you need these, use PRINT option for ff2chi greater than 3, which
+will read feff.bin and write the feffNNNN.dat files in exactly the form
+you're used to.
+
+
+File: feff7.info,  Node: Diagnostic files from POTPH,  Next: xsect-bin rkk-bin and xmu-dat files,  Prev: feffNNNN-dat,  Up: Output files
+
+Diagnostic files from POTPH
+===========================
+
+`misc.dat'
+     Header file for quick reference.
+
+`phaseNN.dat'
+     Complex phase shifts for each shell.
+
+`phminNN.dat'
+     Real part of phase shifts for l=0,1,2 only.
+
+`potNN.dat'
+     Detailed atomic potentials and densities.
+
+`atomNN.dat'
+     Diagnostic information on Desclaux free atom NN.
+
+
+File: feff7.info,  Node: xsect-bin rkk-bin and xmu-dat files,  Next: Variables in output files and in calculation of XAFS,  Prev: Diagnostic files from POTPH,  Up: Output files
+
+xsect-bin rkk-bin and xmu-dat files
+===================================
+
+   Dipole matrix elements and absolute energies for XANES calculations.
+Note: the file xsect.bin does not contain the fermi-function cutoff at
+the edge, while xmu.dat does. Dipole matrix elements in rkk.bin
+normalized to the total cross-section in xsect.bin.  The file xmu.dat
+contains both XANES and XAFS data mu, mu_0, and chi as functions of
+absolute energy E, relative energy E-e_f and wave number k.
+
+
+File: feff7.info,  Node: Variables in output files and in calculation of XAFS,  Prev: xsect-bin rkk-bin and xmu-dat files,  Up: Output files
+
+Variables in output files and in calculation of XAFS
+====================================================
+
+`k'
+     wave number (ang**-1); `k=sqrt(e-e_f)' where `e' is energy and
+     `e_f' is the fermi level computed from electron gas theory at the
+     avg interstitial charge density
+
+`chi(k)'
+     `s0^2 * redfac sum_shells ( natsh * (|feff| /kR**2) *
+     exp(-2R/lambda) * sin(2kR + ph(feff) + phi_c)) *
+     exp(-2*k**2*sigma**2) )'
+
+`phi_c'
+     ` 2*delta_l_c - l*pi ' (total central atom phase)
+
+`feff'
+     effective curved-wave backscattering amplitude `feff(k)' in xafs
+     formula for each shell
+
+`ph(feff)'
+     phase of `feff(k)' for each shell
+
+`redfac'
+     `exp(-2 imag (delta_c) )', total central atom loss factor
+
+`R'
+     distance to central atom for each shell
+
+`natsh'
+     mean number atoms in each shell
+
+`sigma**2'
+     mean square variation of `R' for each shell
+
+`lambda'
+     mean free path (angstroms) `=-1./imag (p)'
+
+`kf'
+     fermi momentum at avg interstitial charge density
+
+`p=p(r)'
+     local momentum (`p(r)**2=k**2+kf(r)**2+sigma-sigma_f)'
+
+`sigma'
+     self energy at energy `e, sigma_f' at energy `e_f'
+
+`mu'
+     total absorption cross-section
+
+`mu_0'
+     atomic background absorption
+
+
+File: feff7.info,  Node: Appendix A- Copyright Information Restrictions and License,  Next: Appendix B- Installation Instructions,  Prev: Output files,  Up: Top
+
+Appendix A- Copyright Information Restrictions and License
+**********************************************************
+
+* Menu:
+
+* Restrictions and License Information::
+* ADDENDUM: Government Copyrights (DO NOT DELETE)::
+
+
+File: feff7.info,  Node: Restrictions and License Information,  Next: Government Copyrights (DO NOT DELETE):,  Up: Appendix A- Copyright Information Restrictions and License
+
+Restrictions and License Information
+====================================
+
+   Feff is copyrighted software and a license from the University of
+Washington Office of Technology Transfer must be obtained for its use.
+This is necessary to protect the interests of users and the University
+of Washington.  Both academic/non-profit and commercial licenses are
+available - see the addendum to this document for details. New users
+should request the latest version of this code from the authors. The
+license may be obtained by writing to FEFF Project, c/o Diana Jensen,
+Dept. of Physics, FM-15, Univ. of Washington, Seattle, WA 98195. Tel:
+(206) 685-4091, E-mail: jensen@phys.washington.edu
+
+
+File: feff7.info,  Node: ADDENDUM: Government Copyrights (DO NOT DELETE)
+
+ADDENDUM: Government Copyrights (DO NOT DELETE)
+===============================================
+
+   This work was supported in part by DOE Grant DE-FG06-90ER45416. In
+accordance with the DOE FAR rules part 600.33 "Rights in Technical Data
+- Modified Short Form" the following clause applies to FEFF:
+
+   (c)(1)The grantee agrees to and does hereby grant to the U.S.
+Government and to others acting on its behalf:
+
+   (i) A royalty-free, nonexclusive, irrevocable, world-wide license for
+Governmental purposes to reproduce, distribute, display, and perform
+all copyrightable material first produced or composed in the
+performance of this grant by the grantee, its employees or any
+individual or concern specifically employed or assigned to originate
+and prepare such material and to prepare derivative works based thereon,
+
+   (ii) A license as aforesaid under any and all copyrighted or
+copyrightable work not first produced or composed by the grantee in the
+performance of this grant but which is incorporated in the material
+furnished under the grant, provided that such license shall be only to
+the extent the grantee now has, or prior to completion or close-out of
+the grant, may acquire the right to grant such license without becoming
+liable to pay compensation to others solely because of such grant.
+
+   (c)(2) The grantee agrees that it will not knowingly include any
+material copyrighted by others in any written or copyrightable material
+furnished or delivered under this grant without a license as provided
+for in paragraph (c)(1)(ii) of this section, or without the consent of
+the copyright owner, unless it obtains specific written approval of the
+Contracting Officer for the inclusion of such copyright material.
+
+
+File: feff7.info,  Node: Appendix B- Installation Instructions,  Next: Appendix C- References,  Prev: Appendix A- Copyright Information Restrictions and License,  Up: Top
+
+Appendix B- Installation Instructions
+*************************************
+
+   The program FEFF7 is provided as a single source file, which
+contains a main program and all necessary subroutines.  Simply compile
+and link on your system using a Fortran 77 compiler and your usual
+linker.  The executable file produced is all you will need.   The code
+requires about 3 megabytes to run on a VAX.  Since most of this memory
+is data space, we expect it to require about this amount of memory on
+most machines.  PC users, please see section below about DOS machines.
+
+* Menu:
+
+* UNIX machines::
+* PC users::
+* MAC users::
+* NeXT users::
+
+
+File: feff7.info,  Node: UNIX machines,  Next: PC users,  Up: Appendix B- Installation Instructions
+
+UNIX machines
+=============
+
+   We have endeavored to make FEFF portable to most UNIX machines
+without any modification.  If your machine does not reproduce the test
+output files chi.dat and feffNNNN.dat to high accuracy, some changes
+may be needed.  Please report any problems or warning messages to the
+authors, as this will help us achieve full portability.  If changes are
+needed, keep in mind the following points:
+
+   Floating point calculations must be done to precision 64 bits. Thus
+the code uses double precision variables throughout, i.e., real*8 for
+real numbers and complex*16 for complex numbers.  If your machine uses 8
+bytes for single precision floating point numbers (for example, Crays
+and some CDC machines), use the compiler option to ignore double
+precision statements in the code. This option is available (in various
+forms) on all Cray and CDC machines that we have seen.  On the CRAY YMP
+at Ohio State, the compiler option to ignore double precision in the
+source code is
+           cf77 -c -Wf"-dp"
+
+   Code is written in ANSI FORTRAN 77, except that COMPLEX*16 variables
+are required.  Since data type COMPLEX*16 is not part of the ANSI
+standard, minor compiler-dependent modification may be necessary.  We
+have used the VAX extensions to ANSI FORTRAN 77 since they seem to be
+the most portable.  The non-standard statements and intrinsic functions
+used are: COMPLEX*16 variables and arrays; DIMAG(arg) returns a double
+precision imaginary part of arg; DCMPLX(arg) returns a complex*16
+version of arg; DBLE(arg) returns a double precision real part of arg;
+SQRT, EXP, ABS and other generic math functions are assumed to accept
+complex*16 arguments and return double precision or complex*16 results.
+
+   Files are opened with the OPEN statement.  As the ANSI definition
+gives some leeway in how the OPEN statement interacts with the operating
+system, we have chosen file names and conventions that work on UNIX,
+VAX/VMS, IBM PCs (and clones) with MS FORTRAN, CRAY, MAC's and and CDC
+machines.  It may be necessary to modify the open statements on other
+systems.
+
+
+File: feff7.info,  Node: PC users,  Next: MAC users,  Prev: UNIX machines,  Up: Appendix B- Installation Instructions
+
+PC users
+========
+
+   Because of the awkwardness of DOS, many users do not have FORTRAN
+compilers and many of those compilers are difficult to use with large
+codes.  An executable version of FEFF for PCs is available.  It has
+been compiled using Watcom's FORTRAN77 compiler which works with a DOS
+extender (DOS4GW) to use extended memory.  You will need a PC with
+either a 386 and 387 math coprocessor or a 486 with the math
+coprocessor embedded in it (SX does not have this, DX does).  You will
+also need at least 3 Megabytes of RAM available, IN ADDITION TO whatever
+memory is used by DOS and memory-resident utilities.  Please contact us
+if you need the PC executable.  Special installation instructions for
+the PC version are in the READ.ME file on the PC distribution disk.
+
+   If you prefer your own compiler, or are using an operating system
+other than DOS, simply compile the source code using your FORTRAN
+compiler and linker as you would for any other machine.
+
+
+File: feff7.info,  Node: MAC users,  Next: NeXT users,  Prev: PC users,  Up: Appendix B- Installation Instructions
+
+MAC users
+=========
+
+   Diskettes with an executable version of FEFF for Macintosh computers
+are available.  Please contact us if you need a copy.
+
+
+File: feff7.info,  Node: NeXT users,  Prev: MAC users,  Up: Appendix B- Installation Instructions
+
+NeXT users
+==========
+
+        F. Farges compiled FEFF with absoft's f77 for a NeXT.
+        Make sure that the following  options are on:
+        f77 -N53 -f -s -O  feff.f
+     
+        -f makes f77 insensitive to upper and lower cases (triml bwords and  istln)
+        -s makes a code for units larger than 512 K
+        -N53 uses the 68030/68040 processors with 68881/2 math coproc.
+        -O is the standard optimization option for all f77
+
+
+File: feff7.info,  Node: Appendix C- References,  Next: Appendix D- Sample input files,  Prev: Appendix B- Installation Instructions,  Up: Top
+
+Appendix C- References
+**********************
+
+   Please cite at least one of the following articles if FEFF is used
+in published work.
+
+`The main references to FEFF 7 are'
+     A.L. Ankudinov and J.J. Rehr, "Relativistic Spin-dependent X-ray
+     Absorption Theory", UW preprint, 1996.
+
+     S.I. Zabinsky, J.J. Rehr, A. Ankudinov, R.C. Albers and M.J. Eller,
+     "Multiple Scattering Calculations of X-ray Absorption Spectra",
+     Phys. Rev. B. 52, 2995 (1995).
+
+     A. L. Ankoudinov, Ph. D. Thesis, "Relativistic Spin-dependent X-ray
+     Absorption Theory", University of Washington, (1996).  There you
+     can find a review of x-ray absorption theory, a whole chapter of
+     information about FEFF7 for expert users, examples of the code
+     applications, and a full list of the FEFF7 program tree.
+
+`Other references are:'
+`1) Multiple scattering XAFS'
+     J.J. Rehr, S.I. Zabinsky and R.C. Albers, `High-order multiple
+     scattering calculations of x-ray-absorption fine structure',
+     `Phys. Rev. Let. 69', 3397 (1992).
+
+`2) X-ray Absorption Near Edge Structure  (XANES)'
+     J.J. Rehr, `Jpn. J. Appl. Phys. 32', 8 (1993).
+
+`3) FEFF standards'
+     J.J. Rehr, J. Mustre de Leon, S.I. Zabinsky, and R.C. Albers,
+     `Theoretical X-ray Absorption Fine Structure Standards', `J. Am.
+     Chem. Soc. 113', 5135 (1991).
+
+`4) Technical reference #1'
+     J. Mustre de Leon, J.J. Rehr, S.I. Zabinsky, and R.C. Albers, `Ab
+     initio curved-wave x-ray-absorption fine structure', `Phys. Rev.
+     B44', 4146 (1991).
+
+`5) Technical reference #2'
+     J.J. Rehr and R.C. Albers, `Scattering-matrix formulation of
+     curved-wave multiple-scattering theory:  Application to
+     x-ray-absorption fine structure', `Phys. Rev. B41', 8139 (1990).
+
+`6) Technical reference #3'
+     A.L.Ankudinov, S.I.Zabinsky and J.J. Rehr, `Single configuration
+     Dirac-Fock atom code ', submitted to `Comp. Phys. Comm.',  (1996).
+
+
+File: feff7.info,  Node: Appendix D- Sample input files,  Next: Appendix E- Code Variables Dimensions and Descriptions,  Prev: Appendix C- References,  Up: Top
+
+Appendix D- Sample input files
+******************************
+
+* Menu:
+
+* SF6 Molecule::
+* Cu fcc metal 4 shells::
+* YBCO High-Tc superconductor::
+
+
+File: feff7.info,  Node: SF6 Molecule,  Next: Cu fcc metal 4 shells,  Up: Appendix D- Sample input files
+
+SF6 Molecule
+============
+
+     TITLE Molecular SF6
+     
+     POTENTIALS
+     *    ipot    z   tag
+            0    16   S        absorbing atom must be unique pot 0
+            1     9   F
+     
+     ATOMS
+     *  x      y      z     ipot
+        0      0      0       0          S absorber
+        1.56   0      0       1          6 F backscatters
+        0      1.56   0       1
+        0      0      1.56    1
+       -1.56   0      0       1
+        0     -1.56   0       1
+        0      0     -1.56    1
+
+
+File: feff7.info,  Node: Cu fcc metal 4 shells,  Next: YBCO High-Tc superconductor,  Prev: SF6 Molecule,  Up: Appendix D- Sample input files
+
+Cu fcc metal 4 shells
+=====================
+
+     TITLE Cu crystal, 4 shells
+     
+     DEBYE  190  315    Cu at 190K, Debye temp 315K (Ashcroft & Mermin)
+     
+     * Cu is fcc, lattice parameter a=3.61 (Kittel)
+     
+     POTENTIALS
+       0  29  Cu0
+       1  29  Cu
+     
+     ATOMS
+          .0000     .0000     .0000  0    shell    0     .0000
+        -1.8050   -1.8050     .0000  1    shell    1    2.5527
+        -1.8050    1.8050     .0000  1
+         1.8050   -1.8050     .0000  1
+         1.8050    1.8050     .0000  1
+        -1.8050     .0000   -1.8050  1
+        -1.8050     .0000    1.8050  1
+         1.8050     .0000   -1.8050  1
+         1.8050     .0000    1.8050  1
+          .0000   -1.8050   -1.8050  1
+          .0000   -1.8050    1.8050  1
+          .0000    1.8050   -1.8050  1
+          .0000    1.8050    1.8050  1
+        -3.6100     .0000     .0000  1    shell    2    3.6100
+         3.6100     .0000     .0000  1
+          .0000   -3.6100     .0000  1
+          .0000    3.6100     .0000  1
+          .0000     .0000   -3.6100  1
+          .0000     .0000    3.6100  1
+        -3.6100   -1.8050   -1.8050  1    shell    3    4.4213
+        -3.6100   -1.8050    1.8050  1
+        -3.6100    1.8050   -1.8050  1
+        -3.6100    1.8050    1.8050  1
+         3.6100   -1.8050   -1.8050  1
+         3.6100   -1.8050    1.8050  1
+         3.6100    1.8050   -1.8050  1
+         3.6100    1.8050    1.8050  1
+        -1.8050   -3.6100   -1.8050  1
+        -1.8050   -3.6100    1.8050  1
+        -1.8050    3.6100   -1.8050  1
+        -1.8050    3.6100    1.8050  1
+         1.8050   -3.6100   -1.8050  1
+         1.8050   -3.6100    1.8050  1
+         1.8050    3.6100   -1.8050  1
+         1.8050    3.6100    1.8050  1
+        -1.8050   -1.8050   -3.6100  1
+        -1.8050   -1.8050    3.6100  1
+        -1.8050    1.8050   -3.6100  1
+        -1.8050    1.8050    3.6100  1
+         1.8050   -1.8050   -3.6100  1
+         1.8050   -1.8050    3.6100  1
+         1.8050    1.8050   -3.6100  1
+         1.8050    1.8050    3.6100  1
+        -3.6100   -3.6100     .0000  1    shell    4    5.1053
+        -3.6100    3.6100     .0000  1
+         3.6100   -3.6100     .0000  1
+         3.6100    3.6100     .0000  1
+        -3.6100     .0000   -3.6100  1
+        -3.6100     .0000    3.6100  1
+         3.6100     .0000   -3.6100  1
+         3.6100     .0000    3.6100  1
+          .0000   -3.6100   -3.6100  1
+          .0000   -3.6100    3.6100  1
+          .0000    3.6100   -3.6100  1
+          .0000    3.6100    3.6100  1
+
+
+File: feff7.info,  Node: YBCO High-Tc superconductor,  Prev: Cu fcc metal 4 shells,  Up: Appendix D- Sample input files
+
+YBCO High-Tc superconductor
+===========================
+
+     TITLE  YBCO: Y BA2 CU3 O7      Cu2, core hole
+     
+     CONTROL  1  1  1  1
+     PRINT    0  2  0  0
+     
+     RMAX   4.5
+     XANES
+     
+     POTENTIALS
+     *    ipot  z  tag
+           0   29  Cu2
+           1    8  O
+           2   39  Y
+           3   29  Cu1
+           4   56  Ba
+     
+     ATOMS
+      0.0000    0.0000    0.0000    0        CU2  0.0000
+     
+      1.9115    0.0000    0.2453    1        O    1.9272
+     -1.9115    0.0000    0.2453    1        O    1.9272
+      0.0000    1.9430    0.2687    1        O    1.9615
+      0.0000   -1.9430    0.2687    1        O    1.9615
+      0.0000    0.0000   -2.3128    1        O    2.3128
+     
+      1.9115   -1.9430    1.6821    2        Y    3.2029
+     -1.9115    1.9430    1.6821    2        Y    3.2029
+     -1.9115   -1.9430    1.6821    2        Y    3.2029
+      1.9115    1.9430    1.6821    2        Y    3.2029
+      0.0000    0.0000    3.3641    3        CU1  3.3641
+      1.9115   -1.9430   -2.0091    4        BA   3.3861
+     -1.9115    1.9430   -2.0091    4        BA   3.3861
+     -1.9115   -1.9430   -2.0091    4        BA   3.3861
+      1.9115    1.9430   -2.0091    4        BA   3.3861
+      0.0000    1.9430    3.0955    1        O    3.6547
+      0.0000   -1.9430    3.0955    1        O    3.6547
+     -1.9115    0.0000    3.1188    1        O    3.6580
+      1.9115    0.0000    3.1188    1        O    3.6580
+      3.8230    0.0000    0.0000    3        CU1  3.8230
+     -3.8230    0.0000    0.0000    3        CU1  3.8230
+      0.0000    3.8860    0.0000    3        CU1  3.8860
+      0.0000   -3.8860    0.0000    3        CU1  3.8860
+      0.0000    0.0000   -4.1584    3        CU1  4.1584
+     -3.8230   -1.9430    0.2687    1        O    4.2968
+      3.8230    1.9430    0.2687    1        O    4.2968
+      3.8230   -1.9430    0.2687    1        O    4.2968
+     -3.8230    1.9430    0.2687    1        O    4.2968
+      1.9115    3.8860    0.2453    1        O    4.3376
+      1.9115   -3.8860    0.2453    1        O    4.3376
+     -1.9115    3.8860    0.2453    1        O    4.3376
+     -1.9115   -3.8860    0.2453    1        O    4.3376
+
+
+File: feff7.info,  Node: Appendix E- Code Variables Dimensions and Descriptions,  Next: Appendix F-  Changes from previous versions,  Prev: Appendix D- Sample input files,  Up: Top
+
+Appendix E- Code Variables Dimensions and Descriptions
+******************************************************
+
+   The end of line comments were removed from the code because they are
+not standard Fortran.  The array names are a bit cryptic due to the six
+character limit in standard FORTRAN - the comments included here
+explain what the names mean.  If you need to run larger problems than
+the dimension statements in the code allow, simply change the
+dimensions in all the relevant parameter statements and recompile.
+However, dimensions associated with the atom and phase shift codes,
+e.g. the number of r-mesh points and the max number of angular momentum
+levels should NOT be changed.
+
+   If you need to modify the code, please contact the authors.  Our
+development version with all the comments (and subroutines in
+individual files!) is available, although it does use a few features
+that are not standard FORTRAN.  We do not guarantee that any new
+version will be compatible at the code level with any changes you may
+make.
+
+
+File: feff7.info,  Node: Appendix F-  Changes from previous versions,  Next: Appendix G- Trouble-shooting FEFF problems,  Prev: Appendix E- Code Variables Dimensions and Descriptions,  Up: Top
+
+Appendix F-  Changes from previous versions
+*******************************************
+
+* Menu:
+
+* Changes from FEFF 6::
+* Changes from FEFF 5-04::
+
+
+File: feff7.info,  Node: Changes from FEFF 6,  Next: Changes from FEFF 5-04,  Up: Appendix F-  Changes from previous versions
+
+Changes from FEFF 6
+===================
+
+   The most significant change is that LDA atomic code was replaced by
+Dirac-Fock code. FEFF 7 includes both dipole transitions (l---> l +/-
+1).
+
+   The changes have been made for the following cards:
+`PRINT'
+     FEFF 7.00 will write files phminNN.dat, whenever phaseNN.dat is
+     written, which has real part of phase shifts for l=0,1,2. So, they
+     have reduced information of corresponding phaseNN.dat, which is
+     conveniently arranged in columns for plotting.
+
+`XANES'
+     If XANES card is specified, then core hole lifetime is taken into
+     account by convolution with Lorentzian in ff2chi. Otherwise, core
+     hole life time is included into imaginary part of optical
+     potential, as in FEFF 6.10.  Minor differences for chi.dat files
+     calculated by two methods in XANES region are expected. The FEFF7
+     code includes a fully relativistic calculation of atomic cross
+     section.
+
+`EXCHANGE'
+     New self energy models are available: a) broadened plasmon model
+     (ixc \gt 10) and b) partly nonlocal model (ixc=5) which calculates
+     for the photoelectron DF exchange term for core electrons and LDA
+     exchange-correlation for valence electrons.  Core-valence
+     separation can be easily changed in getorb.f.
+
+     New expert user only cards are introduced:
+
+`MBCONV'
+     Makes convolution with model excitation spectrum.
+
+`JUMPRM'
+     Removes jumps in potentials at muffin tin radii.
+
+   Also, we made several adjustments to fix some minor problems
+reported by FEFF users.
+
+
+File: feff7.info,  Node: Changes from FEFF 5-04,  Prev: Changes from FEFF 6,  Up: Appendix F-  Changes from previous versions
+
+Changes from FEFF 5-04
+======================
+
+   We have made some minor changes to the input files and code.  For
+complete descriptions of the new cards and modifications of old ones,
+see section III.  With the exception of POLARIZATION and XANES
+capabilities, and improved path finder and degeneracy checks, FEFF 6 is
+nearly identical to FEFF5.
+
+   Two cards are no longer recognized.  These are:
+   *  KLIMIT  (replaced by NEMAX)
+
+   *  REQUIRE
+
+   *  CSIG Code now always uses complex momentum in Debye-Waller factors
+
+   There are several changes and new options.  These are:
+`CORRECTIONS'
+     Adds real and imaginary part to energy
+
+`CRITERIA'
+     The importance criteria are now formulated differently
+
+`NEMAX'
+     Max number of energy grid points (replaces KLIMIT)
+
+`PCRITERIA'
+     The path finder criteria are now formulated differently
+
+`PRINT'
+     Several new options
+
+`POTENTIALS'
+     Now has optional labels for unique potentials
+
+   XANES spectra, absolute energies and Atomic Background absorption
+can be calculated with the new option
+`XANES'
+     For now, please, do not use chiNNNN.dat or feffNNNN.dat files for
+     EXAFS analysis (such as feffit), when XANES card is used.
+
+   Polarization dependent feff can be calculated with the help of the
+following new cards:
+`POLARIZATION'
+     Specifies polarization vector
+
+`ELLIPTICITY'
+     Ellipticity and direction of the incident beam for the elliptical
+     polarization.
+
+   FEFF 6.10 adds several new cards, uses a slightly finer k grid
+internally, and replaces the feff.dat files with one feff.bin to speed
+execution and reduce disk space.
+
+
+File: feff7.info,  Node: Appendix G- Trouble-shooting FEFF problems,  Prev: Appendix F-  Changes from previous versions,  Up: Top
+
+Appendix G- Trouble-shooting FEFF problems
+******************************************
+
+   FEFF 7 has been extensively tested but occasionally new bugs show up.
+In an effort to maintain trouble-free codes we take all bug reports
+seriously.  Often we receive reports by users of older versions of FEFF
+of bugs that are fixed in the latest releases. Other code failures can
+often be traced to input file errors, sometimes quite subtle.
+
+   An example would be:
+   * Non-physical widely spaced distributions of atoms. Symptoms of
+     this common problem are very large muffin-tin radii (see the
+     header of any .dat file) and possibly a failure of the phase-shift
+     program to converge.  This gives error message "hard test fails in
+     fovrg".
+
+   *  An error in assigning potential indices; the first atom with a
+     given potential index must have the geometry representative of this
+     potential type. This is sometimes fixed by using a somewhat larger
+     cluster; in fact it is usually desirable to have a larger cluster
+     for potential construction than that used in the XAFS calculation
+     due to errors in the potentials at surfaces.  Unless the atom
+     distribution is physically possible, you can expect the code to
+     have problems.
+
+   *  Hash collision in pathfinder. This is rare, but can be corrected
+     simply by changing distances in the fourth decimal place.
+
+   *  For the M4 and higher edges you may receive the error message
+     like: "Lambda array overfilled". The calculations should be
+     repeated with IORDER -70202   card.
+
+* Menu:
+
+* FEFF Bug and Error Report::
+
+
+File: feff7.info,  Node: FEFF Bug and Error Report,  Up: Appendix G- Trouble-shooting FEFF problems
+
+FEFF Bug and Error Report
+=========================
+
+   If, after you have verified that your input file is not the problem,
+the problem persists, please contact us at the e-mail addresses listed
+in Sec. 1.  To address your problem, we need the following information:
+
+  1.  Brief description of problem.
+
+  2.  Code, Version number, type of computer and compiler (e.g., FEFF5
+     version 5.03, IBM PC, F77)
+
+  3.  Unedited input file causing problem  `feff.inp'
+
+  4.  Sample output (e.g. `chi.dat') or log file illustrating problem.
+
+  5.  Send e-mail to one of the authors (i.e. ` alex' or `
+     jjr@phys.washington.edu').
+
+

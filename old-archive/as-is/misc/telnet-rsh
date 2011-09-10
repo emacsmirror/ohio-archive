@@ -1,0 +1,175 @@
+Date: 11 Jan 89 21:31:20 GMT
+From: ubvax!ardent!mac@AMES.ARC.NASA.GOV  (Michael McNamara)
+Subject: Enhancement to telnet.el; plus rsh mode.
+To: info-gnu-emacs@prep.ai.mit.edu
+
+The following diff enhances telnet mode in two ways:
+ 1. The cursor only follows newley inserted text if it
+    is at the end of the buffer.  Otherwise, it stays
+    where it is.  (Now it acts like shell-mode).
+ 2. ^M and ^G are never inserted into the buffer. Previously
+    they were inserted, and then substituted with white space.
+
+Further, there is now a rsh command, which uses rsh as the 
+"transport layer" to the remote machine.
+
+Note that because of 2., one can run rsh/telnet/rlogin from an
+existing *-rsh* or *-telnet* buffer and also not see ^M's in the
+buffer.  Shell mode could use this enhancement.
+----Feed this file to patch:
+*** orig/emacs/lisp/telnet.el	Wed Jan 11 12:07:56 1989
+--- new/emacs/lisp/telnet.el	Wed Jan 11 12:12:13 1989
+***************
+*** 20,25 ****
+--- 20,37 ----
+  
+  ;; Author William F. Schelter
+  
++ ;; Some enhancements by Michael McNamara (mac@ardent.com)
++ ;;  -- ^M (optionally ^G) are not inserted, instead of
++ ;;     the ugly insert/replace with space.
++ ;;  -- rsh support is added, which consists of just second entry 
++ ;;     point
++ ;;  -- cursor will follow newly inserted text only if the cursor
++ ;;     is currently at end of buffer.  Otherwise the text is inserted
++ ;;     at bottom, and cursor remains where it was.
++ ;;  -- telnets/rsh/rlogins performed from a rsh or telnet window
++ ;;     also benefit from the filtering of ^M (&optionally ^G), as well
++ ;;     as no cursor jumping.
++ ;;
+  ;;to do fix software types for lispm:
+  ;;to eval current expression.  Also to try to send escape keys correctly.
+  ;;essentially we'll want the rubout-handler off.
+***************
+*** 96,108 ****
+  		 (t (setq telnet-count (1+ telnet-count)))))))
+  
+  (defun telnet-filter (proc string)
+    (save-excursion
+      (set-buffer (process-buffer proc))
+      (goto-char (point-max))
+!     (let ((now (point)))
+!       (insert string)
+!       (subst-char-in-region now (point) ?\^m ?\ )
+!       (and telnet-replace-c-g (subst-char-in-region now (point) ?\^g telnet-replace-c-g)))
+      (if (process-mark proc)
+  	(set-marker (process-mark proc) (point)))
+      (if (and (integer-or-marker-p last-input-start)
+--- 108,120 ----
+  		 (t (setq telnet-count (1+ telnet-count)))))))
+  
+  (defun telnet-filter (proc string)
++   (let (jump)
+      (save-excursion
+        (set-buffer (process-buffer proc))
++       (setq jump (point))
+        (goto-char (point-max))
+!       (setq jump (- (point) jump))
+!       (insert-no-nl string)
+        (if (process-mark proc)
+  	  (set-marker (process-mark proc) (point)))
+        (if (and (integer-or-marker-p last-input-start)
+***************
+*** 109,117 ****
+  	     (marker-position last-input-start)
+  	     telnet-remote-echoes)
+  	(delete-region last-input-start last-input-end)))
+!   (if (eq (process-buffer proc)
+! 	  (current-buffer))
+        (goto-char (point-max))))
+  
+  (defun delete-char-or-send-eof (arg killp)
+    "At end of buffer, send eof to subshell.  Otherwise delete character."
+--- 121,131 ----
+  	       (marker-position last-input-start)
+  	       telnet-remote-echoes)
+  	  (delete-region last-input-start last-input-end)))
+!     ;; Track insert point only if cursor is at the bottom
+!     (if (and (eq (process-buffer proc) (current-buffer))
+! 	     (= jump 0))
+  	(goto-char (point-max))))
++   )
+  
+  (defun delete-char-or-send-eof (arg killp)
+    "At end of buffer, send eof to subshell.  Otherwise delete character."
+***************
+*** 164,169 ****
+--- 178,196 ----
+      (telnet-mode)
+      (setq telnet-count -16)))
+  
++ (defun rsh (arg)
++   "Open a network login connection to host named HOST (a string).
++ Communication with HOST is recorded in a buffer *HOST-rsh*.
++ Normally input is edited in Emacs and sent a line at a time."
++   (interactive "sOpen rsh connection to host: ")
++   (require 'shell)
++   (let ((name (concat arg "-rsh" )))
++     (switch-to-buffer 
++      (make-shell name "rsh" nil arg))
++     (set-process-filter (get-process name) 'telnet-initial-filter)
++     (telnet-mode)
++     (setq telnet-count -16)))
++ 
+  (defun read-password ()
+    (let ((answ "") tem)
+      (while (not(or  (= (setq tem (read-char)) ?\^m)
+***************
+*** 172,178 ****
+      answ))
+  
+  (defun telnet-mode ()
+!   "This mode is for use during telnet from a buffer to another
+  host. It has most of the same commands as shell mode.
+  There is a variable `telnet-interrupt-string' which is the character
+  sent to try to stop execution of a job on the remote host.
+--- 199,205 ----
+      answ))
+  
+  (defun telnet-mode ()
+!   "This mode is for use during telnet (or rsh) from a buffer to another
+  host. It has most of the same commands as shell mode.
+  There is a variable `telnet-interrupt-string' which is the character
+  sent to try to stop execution of a job on the remote host.
+***************
+*** 188,194 ****
+  \\{telnet-mode-map}
+  
+  Bugs:
+! --Replace 
+  --For Unix interacts poorly with tcsh although csh,sh,ksh are ok."
+    (interactive)
+    (kill-all-local-variables)
+--- 215,221 ----
+  \\{telnet-mode-map}
+  
+  Bugs:
+! --Replace 
+  --For Unix interacts poorly with tcsh although csh,sh,ksh are ok."
+    (interactive)
+    (kill-all-local-variables)
+***************
+*** 213,217 ****
+--- 240,259 ----
+    (make-local-variable 'telnet-replace-c-g)
+    (setq telnet-replace-c-g nil))
+  
++ (defun insert-no-nl (string)
++   "Insert string, except for ^M's (and perhaps ^G).
++    I'd really rather have (insert-under-mask (string mask)),
++    but that is a separate matter."
++   (let (currl len )
++     (setq curr 0)
++     (setq len (length string))
++     (while (< curr len)
++       (let (it)
++ 	(setq it (aref string curr))
++ 	(if (and (/= it ?\^m)
++ 		 (or (not telnet-replace-c-g )
++ 		     (/= it ?\^g)))
++ 	    (insert-char it 1)))
++       (setq curr (1+ curr)))))
+  
+  
+mac @ ardent.com
+

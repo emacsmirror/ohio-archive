@@ -1,0 +1,95 @@
+-*- outline -*-
+
+* DOCUMENTATION
+
+* New Features
+
+** marking
+*** marking directories should jump to just after the dir.
+*** allow (un)marking directories at a time with the mouse.
+*** marking with the mouse should not move point.
+
+** liveness indicator
+
+** indicate in docstring if the cmd understands the `b' prefix(es).
+
+** call smerge-mode when opening CONFLICT files.
+
+** after-parse-hook (to eliminate *.elc from Emacs' CVS repository :-)
+
+** have vc-checkin delegate to cvs-mode-commit when applicable
+
+** higher-level CVS operations
+
+*** cvs-mode-rename
+*** cvs-mode-branch
+
+** module-level commands
+
+*** add support for parsing 'modules' file ("cvs co -c")
+
+*** cvs-mode-rcs2log
+*** cvs-rdiff
+*** cvs-release
+*** cvs-import
+*** C-u M-x cvs-checkout should ask for a cvsroot
+
+*** cvs-mode-handle-new-vendor-version
+	- checks out module, or alternately does update join
+	- does "cvs -n tag LAST_VENDOR" to find old files into *cvs*
+
+*** cvs-export
+	(with completion on tag names and hooks to
+	help generate full releases)
+
+** allow cvs-cmd-do to either clear the marks or not.
+
+** allow more concurrency: if the output buffer is busy, pick a new one.
+
+** configurable layout/format of *cvs*.
+
+** display stickiness information.  And current CVS/Tag as well.
+
+** cvs-log-mode should know how to extract version info
+	cvs-log-current-tag is a nop right now :-(
+
+** write 'cvs-mode-admin' to do arbitrary 'cvs admin' commands
+
+** cvs-mode-incorporate
+	It would merge in the status from one ``*cvs*'' buffer into another.
+	This would be used to populate such a buffer that had been created with
+	a `cvs {update,status,checkout} -l'.
+
+** cvs-mode-(i)diff-other-{file,buffer,cvs-buffer}
+
+** offer the choice to kill the process when the user kills the cvs buffer.
+	right now, it's killed without further ado.
+
+** make `cvs-mode-ignore' allow manually entering a pattern.
+	to which dir should it apply ?
+
+** cvs-mode-ignore should try to remove duplicate entries.
+
+* Old misfeatures
+
+** cvs-mode-<foo> commands tend to require saving too many buffers
+	they should only require saving the files concerned by the command
+
+* Secondary issues
+
+** maybe poll/check CVS/Entries files to react to external `cvs' commands ?
+
+** some kind of `cvs annotate' support ?
+	but vc-annotate can be used instead.
+
+* probably not worth the trouble
+
+** dynamic `g' mapping
+	Make 'g', and perhaps other commands, use either cvs-update or
+	cvs-examine depending on the read-only status of the cvs buffer, for
+	instance.
+
+** add message-levels so that we can hide some levels of messages
+
+
+#ident @(#)v2_9_9:TODO,v 1.35 2000/03/05 21:39:30 monnier Exp

@@ -1,0 +1,165 @@
+;;; snail.forms -- Forms mode control file for the address database.
+;;;
+;;; Copyright (C) 1995 Ralph Schleicher
+;;;
+;;; This program is free software; you can redistribute it and/or
+;;; modify it under the terms of the GNU General Public License as
+;;; published by the Free Software Foundation; either version 2 of
+;;; the License, or (at your option) any later version.
+;;;
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with this program; if not, write to the Free Software
+;;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;;;
+;;; This file is not part of GNU Emacs.
+;;;
+;;; Author: Ralph Schleicher <rs@purple.IN-Ulm.DE>
+;;; Maintainer: see the `Author' field
+;;; Keywords: local comm
+;;; Comments: This is a quick hack just for your convenience.  I do
+;;; not like Forms mode very much but it comes with GNU Emacs so that
+;;; it should be available on all systems.
+;;; Time-stamp: "Thu Dec 28 11:23:29 MET 1995 rs@purple.IN-Ulm.DE"
+;;; Code:
+
+
+(setq forms-rw-face 'default
+      forms-ro-face 'bold)
+
+(setq forms-file (expand-file-name "~/snail")
+      forms-field-sep "\f"
+      forms-multi-line "\v"
+      forms-number-of-fields (forms-enumerate
+			      '(snail-forms-label
+				snail-forms-organization
+				snail-forms-department
+				snail-forms-occupation
+				snail-forms-address
+				snail-forms-title
+				snail-forms-first-name
+				snail-forms-family-name
+				snail-forms-street
+				snail-forms-zip-code
+				snail-forms-location
+				snail-forms-country
+				snail-forms-phone
+				snail-forms-fax
+				snail-forms-e-mail
+				snail-forms-birthday
+				snail-forms-comment))
+      forms-format-list (list "              " snail-forms-label "\n"
+			      "----------------------------------------------------------------\n"
+			      "Organization: " snail-forms-organization "\n"
+			      "Department:   " snail-forms-department "\n"
+			      "\n"
+			      "Address:      " snail-forms-first-name " " snail-forms-family-name "\n"
+			      "              " snail-forms-street "\n"
+			      "              " snail-forms-zip-code " " snail-forms-location "\n"
+			      "              " snail-forms-country "\n"
+			      "\n"
+			      "Phone:        " snail-forms-phone "\n"
+			      "Fax:          " snail-forms-fax "\n"
+			      "E-Mail:       " snail-forms-e-mail "\n"
+			      "----------------------------------------------------------------\n"
+			      "Comment:\n" snail-forms-comment))
+
+(setq forms-read-file-filter 'snail-forms-read-file-filter
+      forms-write-file-filter 'snail-forms-write-file-filter)
+
+(defun snail-forms-read-file-filter ()
+  (let (label
+	organization department occupation
+	address title first-name family-name
+	street zip-code location country
+	phone fax e-mail birthday comment
+	rec-start rec-end case-fold-search)
+    (goto-char (point-max))
+    (or (= (preceding-char) ?\n)
+	(insert ?\n))
+    (goto-char (point-min))
+    (search-forward "\f\n")
+    (delete-region (point-min) (point))
+    (while (not (eobp))
+      (setq rec-start (point)
+	    rec-end (progn
+		      (and (search-forward "\f\n" nil 0)
+			   (delete-backward-char 2))
+		      (point)))
+      (save-excursion
+	(save-restriction
+	  (narrow-to-region rec-start rec-end)
+	  (goto-char (point-min))
+	  (while (not (eobp))
+	    (cond ((snail-forms-set-from-field 'label "Label"))
+		  ((snail-forms-set-from-field 'organization "Organization" t))
+		  ((snail-forms-set-from-field 'department "Department" t))
+		  ((snail-forms-set-from-field 'occupation "Occupation"))
+		  ((snail-forms-set-from-field 'address "Address"))
+		  ((snail-forms-set-from-field 'title "Title"))
+		  ((snail-forms-set-from-field 'first-name "First-Name"))
+		  ((snail-forms-set-from-field 'family-name "Family-Name"))
+		  ((snail-forms-set-from-field 'street "Street"))
+		  ((snail-forms-set-from-field 'zip-code "Zip-Code"))
+		  ((snail-forms-set-from-field 'location "Location"))
+		  ((snail-forms-set-from-field 'country "Country"))
+		  ((snail-forms-set-from-field 'phone "Phone"))
+		  ((snail-forms-set-from-field 'fax "Fax"))
+		  ((snail-forms-set-from-field 'e-mail "E-Mail"))
+		  ((snail-forms-set-from-field 'birthday "Birthday"))
+		  ((snail-forms-set-from-field 'comment "Comment" t))
+		  (t
+		   (error "forms: Parse error"))))))
+      (delete-region rec-start rec-end)
+      (insert (mapconcat 'identity
+			 (list label
+			       organization department occupation
+			       address title first-name family-name
+			       street zip-code location country
+			       phone fax e-mail birthday comment) "\f")
+	      "\n"))))
+
+(defun snail-forms-set-from-field (symbol tag &optional multi-line)
+  (if (looking-at (concat tag ":[ \t]*"))
+      (let* ((start (match-end 0))
+	     (line (progn
+		     (search-forward "\n")
+		     (buffer-substring start (1- (point)))))
+	     (result (list line)))
+	(while (and multi-line (looking-at "\t"))
+	  (setq start (match-end 0)
+		line (progn
+		       (search-forward "\n")
+		       (buffer-substring start (1- (point))))
+		result (cons line result)))
+	(set symbol (mapconcat 'identity (nreverse result) "\v")))))
+
+(defun snail-forms-write-file-filter ()
+  (goto-char (point-min))
+  (while (not (eobp))
+    (insert "\f\n" "Label: ")
+    (mapcar '(lambda (tag)
+	       (search-forward "\f")
+	       (delete-backward-char 1)
+	       (or (looking-at "[\f\n]")
+		   (insert ?\n tag)))
+	    (list "Organization: " "Department: " "Occupation: "
+		  "Address: " "Title: " "First-Name: " "Family-Name: "
+		  "Street: " "Zip-Code: " "Location: " "Country: "
+		  "Phone: " "Fax: " "E-Mail: " "Birthday: " "Comment: "))
+    (search-forward "\n"))
+  (goto-char (point-min))
+  (while (search-forward "\v" nil t)
+    (replace-match "\n\t")))
+
+
+;;; local variables:
+;;; mode: emacs-lisp
+;;; truncate-lines: t
+;;; end:
+
+;;; snail.forms ends here

@@ -1,0 +1,15 @@
+
+Python version 1.0, VM version Intel x86 on 21 JAN 01 02:11:44 pm.
+Compiling: /usr/src/cvs/elispdb/defpackage.lisp 20 JAN 01 07:35:57 pm
+
+
+Warning: ELISPDB used to use the following packages:
+  (#<The ELISPDB package, 194/390 internal, 9/9 external>)
+
+
+Compilation unit finished.
+  1 warning
+
+
+src:cvs/elispdb/defpackage.x86f written.
+Compilation finished in 0:00:00.

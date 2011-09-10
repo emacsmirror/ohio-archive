@@ -1,0 +1,708 @@
+@node Mail with Gnus, , Key bindings, Top
+@comment  node-name,  next,  previous,  up
+@chapter Mail with Gnus
+
+Quite a few people wish to read mail with Gnus but stumble across a few
+issues which make this a bit difficult.  This comes from the fact that
+Gnus is really a newsreader, and thus it treats mail in a newsreaderly
+fashion.  It is not desirable to change this, because it is a wonderful
+thing and this is what distinguishes Gnus from other mail readers.  In
+this little tutorial, I'll try to explain what ``newsreaderly fashion''
+means and how exactly Gnus treats mail.
+
+Specific pieces of behavior can always be changed, but if you desire to
+make Gnus behave like a conventional mail reader, think again.  It will
+be an uphill battle.  Maybe a different mail reader is for you?  But
+also, read on.  Maybe you'll find the right behavior in the description
+below.
+
+@c ------------------------------------------------------------ 
+@section Gnus Terminology
+@c ------------------------------------------------------------ 
+
+First, let's talk about a few terms which I'm going to use which might
+be unfamiliar to you.
+
+@table @dfn
+@item Posting, Article, Message, Mail
+These are all related terms.  A news message might also be called a
+posting or an article, whereas a mail message is known as a mail.  Since
+Gnus treats both news and mail, the distinction isn't as clear.  In the
+following, I'll use the term ``message'' for the generic case and ``news
+message'' and ``mail message'' for the specific cases.  But sometimes, I
+might use ``posting'' or ``article'', too, both synonymous with
+``message''.
+
+@item Backend
+Gnus can read messages from various sources.  On the one hand, there is
+news, and on the other hand, there is mail.  News can be read from a
+news server (an NNTP server), or from a so-called spool directory.  Mail
+can be read in various formats.
+
+Generally speaking, a backend describes the way Gnus accesses a set of
+messages.  For a news server, this is the Network News Transfer
+Protocol, NNTP, and thus there is a backend ``nntp''.  For mail stored
+in the same format that the MH message handling system used, there is
+the backend ``nnmh''.  And so on.  See below for a list of backends.
+
+@item Server
+Whereas a backend describes the mechanism used by Gnus to access the
+messages, a server is a specific instance of that mechanism.  You might
+create a specific server for accessing the host @file{news.frob.org}
+using NNTP, say.  Or you might create a server for accessing the
+MH-style directory @file{~/OldMail}.
+
+If you are a programmer, think of a backend as the class and of a server
+as an object (instance) of that class.  If you are a cook, think of a
+backend as an apple pie recipe (say), and think of a server as an actual
+apple pie.  (Yummy!)  If you live in a huge city, think of a backend as
+a bus (or tram, or underground) line (the Circle Line comes to mind),
+and think of a server as a specific bus (or tram train, or underground
+train).  The one at 8:15 last Monday morning, for example.  If you drive
+a car, think of a backend as the model and make and of a server as a
+specific car.
+
+Obviously, there can be two servers using the same backend.  (Two
+instances of the same class, two apple pies baked according to the same
+recipe, two busses going the same route, two cars of the same model.)
+
+@item (Select) method
+Just another term for server.
+
+@item Native server
+This is the primary server, so to speak.  Most people let their news
+server be the native server, hence:
+@lisp
+(setq gnus-select-method '(nntp "news.frob.org"))
+@end lisp
+Groups from the native server are also known as native groups.
+
+@item Secondary select methods
+This is a list of other servers which one also wishes to use.  Many
+people are only going to have two servers, one native (for news) and one
+secondary (for mail).  Thus:
+@lisp
+(setq gnus-secondary-select-methods '((nnml "")))
+@end lisp
+Note that there is one more pair of parentheses in order to be able to
+mention more than one seconary select method.
+
+Groups from a secondary server are also known as secondary groups.
+
+In order to be able to distinguish native groups from secondary groups,
+each server is identified with a (unique) name and that name is used as
+a prefix for the secondary groups.  Thus, you might have a group
+@file{gnu.emacs.help} (which is native) and another group
+@file{nnml:mail.misc} (which is secondary).  A plus character is used if
+the name of a server is not the empty string.  For example, given the
+following in your @file{.gnus} file
+@lisp
+(setq gnus-secondary-select-methods
+      '((nnml "work" (nnml-directory "~/Mail.work/"))
+        (nnml "play" (nnml-directory "~/Mail.play/"))))
+@end lisp
+you might have the groups @file{nnml+work:boss} and
+@file{nnml+play:so}@footnote{``SO'' standing for ``significant other'',
+i.e.@ girlfriend or boyfriend}.
+
+@item Group
+Well, if you've read news before, you know about different news groups.
+One of my favorites is @file{gnu.emacs.gnus}, and I wish I would read
+@file{alt.fan.pratchett}.  Since Gnus treats mail in a newsreaderly
+fashion, it is obvious that it uses groups rather than ``folders'' like
+other mail readers do.  So with Gnus there are news groups and mail
+groups, where mail groups are known as mail folders to other programs.
+
+Each group belongs to a certain server, and each server uses a certain
+backend.
+
+@item Expiry
+News servers offer news groups which contain news postings.  New news
+postings come in, so the news postings accumulate, and pretty soon the
+new hard disk is full.  This is not good news at all.
+
+Thus, a news server does what is known as @dfn{expiry}: it deletes old
+messages.  Of course, on a news server, expiry happens with no regard of
+whether people have already seen the message in question; instead, the
+news server admin chooses expiry times based on available disk space and
+maybe on the normal amount of traffic in a news group.
+
+But mail messages should be under the users' control, so there better be
+no server which deletes messages regardless of users having seen them!
+Instead, Gnus adopts a scheme where users say which messages may be
+deleted, and Gnus takes care of deleting them after a while.  (They are
+not deleted immediately in case you made a mistake, or in case you wish
+to refer back to an old article.)
+
+@item Article marks
+Gnus distinguishes between a number of article marks, which indicate
+whether they have been looked at, or are considered important, or the
+like.  Marks are represented by a character.
+
+If that character is a space, it looks as if the message isn't marked at
+all.  These messages are called @dfn{unmarked}, the mark character used
+is a space, and marking a message with space is considered to be the
+same as removing all marks---after all, such messages are unmarked.  You
+can type @kbd{M-u} to remove all marks and make an article unmarked.
+
+Articles that are considered important or where you wish to indicate
+that you have to deal with them later can be @dfn{ticked}.  The mark
+character used for ticked messages is the exclamation mark, and you can
+use @kbd{u} or @kbd{!} to tick messages.  Ticked messages are always
+shown when you enter a group.
+
+There is the @dfn{dormant} mark which is similar to the ticked mark but
+does not imply importance or urgency; thus, dormant messages aren't
+shown by default.  The mark character used is the question mark, and you
+can mark messages as dormant using the @kbd{?} key.
+
+So far, each kind of mark was associated with one character (as was the
+absence of any mark).  But articles which you have read are a bit
+different, since lots of different characters are used here.  The
+important thing to realize is that these messages are treated in the
+same way by Gnus; the different characters are only used as an
+information for the user.
+
+Articles which are marked as read because you have actually read them
+(the normal case, one would think) are marked with the `R' character.
+(Type @kbd{@key{SPC}} or @kbd{g} to read a message, or click on it using
+the middle mouse button, @kbd{@key{mouse-2}}.)  You can also mark a
+message as read without actually reading it, this is indicated with the
+`r' character and can be achieved with @kbd{d} or @kbd{M r}.
+
+After exiting a group and then entering it again (some time later), the
+messages that had been marked as read before appear with the `O'
+character.
+
+To reiterate: the difference between `r', `R' and `O' is only an
+information for the user.
+
+@end table
+
+
+
+@c ------------------------------------------------------------
+@section Choosing a mail backend
+@c ------------------------------------------------------------
+
+The Gnus manual lists quite a few backends.  Of these, the news backends
+pose no problem: you use the @code{nntp} backend if you access a news
+server and the @code{nnspool} backend if you have a local news spool
+directory.  (Leafnode users should use @code{nntp} so that the leafnode
+program can see what you are doing and choose the groups to download
+accordingly.)  But the mail backends are more difficult.  There are many
+of them, and it is not obvious which is the best choice.  In quite a few
+cases, this is because there is no single best choice; or maybe what's
+the best choice depends on the group or changes over time.
+
+Below, I'll give a list of mail backends.  While I say something about
+how messages are stored, I'll try to emphasize what that means for you
+as a user.
+
+Let's try to structure the discussion a bit.  We have servers, which
+contain groups, which in turn contain messages.  How could we store this
+on disk?  After some thought, you'll quickly come up with the following
+alternatives:  You could store all messages from a server in one file.
+The second alternative is to store all messages from one group in one
+file, different groups are stored in different files.  A third
+alternative is to store each message in one file; in this case, one
+could use a directory per group.  A very interesting fourth alternative
+is not to store the messages at all but instead to use the Oracle of
+Delphi (say) to predict what the messages will be; this saves a lot of
+disk space.  I won't talk about the fourth alternative in the following.
+
+
+@subsection Backends with one file per server
+
+Many people use just two servers, the native server for news and a
+secondary server for mail.  Thus, this alternative would mean that you
+store all your mail in one file.  Since Emacs has no fancy mechanisms to
+access parts of files, this means that Gnus loads that file into main
+memory at startup, and all your mails are kept in main memory all the
+time.  (Of course, copies are written to disk every now and then, for
+safekeeping!)
+
+I think you can pretty much figure out the consequences on your own,
+now:
+@itemize @bullet
+@item
+Handling large amounts of mail will be a problem.  (Emacs has a maximum
+file size of 128 MB.)
+
+@item
+Some operations on mails will be fast, since they are in-memory
+operations.  (Saving everything to disk will be slow, though.)
+
+@item
+Some operations on mails will be slow, since they have to search through
+the whole file.
+
+@item
+It is convenient to have all mail stored in one file: you can easily
+transfer it to another computer using FTP, say, or store it on a floppy
+or Zip disk or a tape.
+
+@end itemize
+
+Conclusion: If you don't have a lot of mail to deal with and like the
+convenience of storing it all in one file, one of these backends might
+be for you.  However, since Gnus really shines when dealing with lots of
+mails, most Gnus users can be expected to deal with quite a large volume
+of mail.  Thus, I don't think many Gnus users choose one of these
+backends.
+
+@table @code
+@item nnmbox
+This backend uses the well-known ``mbox'' format for storing mails.  In
+this format, a message begins with the five characters @code{From_} (the
+last character is a space) at the beginning of a line, and ends with an
+empty line.
+
+@item nnbabyl
+This backend uses the lesser known ``babyl'' format for storing mails.
+This uses delimiters for the beginning and the end of a message which
+are less likely to occur in a message.
+
+@quotation
+CCC Are they guaranteed to never occur?
+@end quotation
+
+One advantage of a babyl file over an mbox file is that it is possible
+to insert information about a message in the babyl file, without having
+to change the message itself.  In an mbox file, the only place to put
+such information is the message header, which is part of the message.
+Thus, adding information about a message to an mbox file means that one
+has to change the message.
+
+I think Gnus doesn't make use of this advantage, though.  Gnus stores
+information about messages in an extra file, @file{~/.newsrc.eld}.
+
+@end table
+
+@quotation
+CCC Can somebody provide me with some more arguments in favor of one of
+the formats?
+
+CCC Is it possible to just use an existing babyl file for Gnus, by
+creating a new nnmbox server and pointing it at the file?  What about
+mbox?
+@end quotation
+
+
+@subsection Backends with one file per group
+
+Storing all messages in a group in one file provides a nice middle
+ground between the one file per server type of backend and the one file
+per message type of backend.  Using lots of little files wastes disk
+space; since this approach uses a moderate number of files, less disk
+space is wasted.
+
+@quotation
+CCC Which operations are fast using this kind of backend?  Which are
+slow? 
+@end quotation
+
+@table @code
+@item nnfolder
+This backend uses the same file format as @code{nnmbox}, but uses the
+one file per group approach.
+
+@end table
+
+There is no ``nnbabylfolder'' backend which uses babyl format.
+
+
+@subsection Backends with one file per message
+
+If the number of messages grows so large that even the size of a single
+group exceeds the limit which can be handled by the file-per-group
+backends, you need to think about using one of the backends mentioned
+here.
+
+This category also includes @code{nnml}, the backend which is fastest if
+you have lots of messages.
+
+@table @code
+@item nnmh
+This backend uses the same file format (and directory structure) as MH,
+i.e.@ a group is a directory, and each message is stored in a file, and
+the file names are numbers.
+
+Since @code{nnml} is so similar to @code{nnmh} but a lot faster, only
+unusual situations could warrant using this backend.  You may want to
+use @code{nnmh} if you wish to use Gnus in parallel to your old MH based
+reader.
+
+Normally, you should not let two programs write the same Gnus directory
+(not even two instances of Gnus!), but if you really must, you may wish
+to use @code{nnmh}, since there the probability of things breaking is
+smaller than with the other backends.
+
+@item nnml
+This backend is like @code{nnmh} but also includes an extra file
+@file{.overview} in each directory (group) which contains some headers
+from each message.  Thus, where @code{nnmh} needs to open every file in
+a group to examine its headers, @code{nnml} (normally) needs to only
+read the @file{.overview} file, which is a lot faster.
+@end table
+
+
+@subsection Other mail backends
+
+There is one other mail backend, for keeping messages on an IMAP server.
+
+@table @code
+@item nnimap
+This backend transforms Gnus into an IMAP client.  The general idea of
+IMAP is to store and manipulate the mails on a server (similar to NNTP
+for news).
+
+@code{nnimap} only works with the current development version of Gnus,
+though.  See @url{http://www.extundo.com/nnimap/} for @code{nnimap} and
+see @url{http://www.gnus.org/} for Gnus.  Don't forget to subscribe to
+both the Gnus and the nnimap mailing lists since you are using alpha
+grade software which can be exptected to have bugs.  Be prepared to
+submit meaningful bug reports if you encounter bugs.
+
+Rumor has it that @code{nnimap} will be integrated with the next version
+of Gnus (version 5.8, presumably), when that comes out.
+
+@end table
+
+
+@subsection Summary
+
+If you must talk to an IMAP server, the choice is clear.  But if you
+keep mails on your local disk, the choice isn't as clear-cut.  I think
+that @code{nnml} is generally the best choice unless you have real great
+disk space trouble.  Then, you should be thinking about @code{nnfolder}.
+
+I'm not sure if there is a situation where @code{nnmbox} or
+@code{nnbabyl} is desirable.
+
+@quotation
+CCC Tell me about it if you know more!
+@end quotation
+
+
+@c ------------------------------------------------------------
+@section Auto-expire versus total-expire
+@c ------------------------------------------------------------
+
+Every now and then, people ask about auto-expire and total-expire.
+Since both of these features are means to the same end, and since they
+are similar and dissimilar at the same time, great confusion can result
+in the unsuspecting new Gnus user.  I'll try to explain how each works
+and which one to use.  However, be prepared that there will be no clear
+recommendation: both work well, so for many situations both are
+appropriate.  So it is more a matter of taste which one to choose.  And
+I can't help you with that!
+
+
+@subsection What is expiry?
+
+Gnus treats mail in a newsreaderly fashion, so it is useful to examine
+the situation for news.  Your news server periodically contacts other
+news servers and exchanges messages with the other server.  The two news
+servers exchange lists of messages, and messages present in one server
+but not in the other are sent to the other server.  This works in both
+directions.  Many connections between news servers exist, and this is
+the way how postings travel from you into the world: when you post a
+message, your news server stores it and offers it to the other servers
+in the message list exchanging phase.  Since the other servers aren't
+going to have the posting you just wrote, it gets transferred and
+finally can be seen all over the world.
+
+You can quickly see that new messages will be arriving at your news
+server, which stores them on disk.  So something has got to happen else
+the disk will fill up real fast.  That ``something'' is expiry: the
+oldest messages are deleted to make room for the new ones.  Normally, a
+news server can be configured on a per-group basis which messages should
+be deleted.  In some groups, messages might be deleted which are older
+than a day, in other groups, messages might be kept for a month.
+
+This means if you go on vacation then come back later to read news, you
+are likely to miss some postings if the expiration time for the groups
+you read is shorter than the time you were on vacation.
+
+How does that apply to mail?
+
+Well, mail should stay more under the control of the user than news is.
+When you come back from a vacation, you expect to see all messages
+arrived during that time, not only the recent ones!
+
+Because of this, Gnus offers you the @kbd{E} key.  This marks a message
+as expirable.  No mail is ever deleted from disk, unless it is
+expirable.  Every once in a while (by default, whenever you quit a group
+by hitting @kbd{q} in the Summary buffer), the expiry process is run,
+which goes through all expirable messages (of a group) and expires it if
+old enough.  By default, messages older than seven days are ``old
+enough''.  Seven days, that is, since it was marked as expirable.
+
+@quotation
+CCC Last sentence correct?
+@end quotation
+
+``But when I read a message, exit the group, then enter it again, the
+message is gone!''
+
+Right.  By default, Gnus hides messages which have already been read.
+If you are the keyboard type, you can hit @kbd{C-u @key{RET}} or
+@kbd{C-u @key{SPC}} to enter the group or @kbd{C-u M-g} when in the
+group to look at the read messages.  If you are the mousey type, you may
+wish to use the ``See old articles'' entry in the ``Group'' menu.
+
+@quotation
+CCC How does one code menu entries in TeXinfo?
+@end quotation
+
+
+@subsection Why auto-expire and total-expire?
+
+When reading mail, by default Gnus marks as read each message that you
+read.  If you want to mark it as expirable, you have to hit @kbd{E}.
+Many people are subscribed to mailing lists and they configure Gnus to
+put mails from a mailing list into their own group.  Most messages in
+such groups should be expirable, once read.  But hitting @kbd{E} all the
+gets old real quick.  Hence, auto-expire and total-expire were invented.
+
+
+@subsection Auto-expire vs.@ total-expire
+
+Auto-expire and total-expire both aim at the same goal: articles which
+are read should normally be expired, only if one does something special
+should these articles be saved on disk.  But what happens when a message
+is being read by you, the user?  Well, the message is marked as read
+(with the `R' mark).  So, what can be done to make these messages
+expire?  Well, two approaches come to mind: one idea is to change the
+mark that is attached to messages that you read, and the other idea is
+to make the `R' articles expirable.  These are @emph{exactly} the things
+that are done in Gnus: auto-expire means to change the mark that is
+attached to a message that is being read, and total-expire means to
+change the meaning of the `R' mark to mean expirable.
+
+A more precise description of auto-expire might be the following: If an
+article is unmarked and then selected for reading,@footnote{Using
+@kbd{g}, or @kbd{@key{mouse-2}}, or by moving to it with @kbd{n} or
+@kbd{p}, or by one of the many other methods provided by Gnus.} it is
+marked with `E', as if the user had hit @kbd{E}.
+
+It is important to realize that auto-expire has @emph{no other}
+consequences.  Selecting a message for reading which wasn't unmarked
+doesn't do anything special, and hitting @kbd{d} on a message also
+doesn't do anything special.  (It therefore marks the message as read,
+not as expirable!)
+
+Now, forget about auto-expire, empty your mind and prepare to learn
+about total-expire.  Like I said, total-expire changes what it means for
+an article to be marked as read.
+
+A more precise description of total-expire might be the following: When
+the expire process is run (for example, when you leave a group with
+@kbd{q}), all messages marked as read are considered to be expirable, as
+if they had been marked with `E'.  Recall that there are several ways to
+mark a message as read: by reading it, by hitting @kbd{d} on it, and in
+a few other ways which I haven't mentioned so far.  Recall that, in
+addition to the messages marked with `R', also those marked with `r' or
+`O' are considered to be marked as read.
+
+Can auto-expire and total-expire be used together?  Well, in principle
+they can, but that doesn't make sense.  Just using total-expire alone
+achieves the same effect.
+
+So, how do auto-expire and total-expire compare?  Well, for once thing,
+hitting @kbd{d} on a message means it is expirable if total-expire is
+on (since it is marked as read and all messages marked as read are
+considered expirable when total-expire is on), but it is not expirable
+if auto-expire is on (since it is marked as read and only articles
+marked expirable (`E') are considered to be expirable).  If you want to
+mark a message as expirable when total-expire is off, use @kbd{E}.
+
+One way of comparing auto-expire and total-expire is to compare the
+message marks that are available, and what they mean.  Since auto-expire
+does not change the meaning of marks, its behavior is the same as in the
+default case.  It's only important whether total-expire is on or off.
+Thus, there are only two cases: the default case and the total-expire
+case.
+
+@subsubsection Article marks with and without total-expire
+
+The following are the default article marks and behavior:
+
+@table @dfn
+@item unmarked
+All new messages are unmarked.  This means you haven't seen them.  They
+are always shown and won't be deleted.
+
+@item read
+Messages marked as read are not shown by default but kept on disk till
+hell freezes over.  You can show them with @kbd{C-u M-g} from the
+summary buffer, or with @kbd{C-u @key{SPC}} or with the `Group' menu
+item `See old articles' from the group buffer.
+
+Depending on the setting of @var{gnus-fetch-old-headers}, a message
+marked as read might be shown if there is a followup or reply to it.
+
+@item dormant
+Dormant messages aren't shown by default but kept on disk till hell
+freezes over.  You can show them with @kbd{/ D} from the summary buffer.
+If there is a reply or followup to a dormant message, the dormant
+message is also shown.
+
+@item ticked
+Ticked messages are always shown and kept on disk till hell freezes
+over.
+
+@item expirable
+Expirable messages will be deleted in due time.  They are not shown by
+default, but you can make them appear with @kbd{C-u M-g} and so on,
+similar to the read ones.
+
+@end table
+
+Please note that the behavior for ticked messages is similar to the
+unread ones, and that the behavior of dormant messages is similar to the
+read ones.  Especially the second fact will become important when we
+look at
+
+The behavior of the article marks with total-expire:
+
+@table @dfn
+@item unmarked
+Same as in the default case.
+
+@item expirable
+Same as in the default case.
+
+@item read
+Same as expirable.
+
+@item dormant
+Same as in the default case.
+
+@item ticked
+Same as in the default case.
+
+@end table
+
+As you can see, only the behavior of the read messages is different, and
+you can use the dormant mark if you want to achieve behavior similar to
+the behavior of read messages in the default case.
+
+
+@subsubsection Speed issues
+
+Total-expire may be slow when expiry happens.  Why is that?  Well, Gnus
+keeps an explicit list of all expirable messages (the ones marked `E'
+without taking total-expire into account), as well as a list of dormant
+messages, and a list of ticked messages.  Normally, when expiration time
+comes, Gnus goes through all articles in the expire list and looks if
+they are old enough to be expired.
+
+However, for read messages the situation is different.  Here, Gnus just
+keeps a list of ranges of article numbers to be able to distinguish read
+messages from unmarked ones.  The assumption is that a message is to be
+considered marked as read if it falls in one of the ranges and isn't
+mentioned in any of the expirable, dormant or ticked lists.
+
+When total-expire is turned on, Gnus needs to go through all messages in
+the read range in order to look if it's in one of the lists.  If the
+message is not in the ticked or dormant list, it is expirable and thus
+Gnus looks to see if it is old enough.
+
+Obviously, going through all the articles in the read ranges takes more
+time than going through just the list of expirable articles.
+
+Something can be done about the speed issue, though.  Normally, the
+expiry process is started whenever you leave a group.  I suggest that
+you disable this and instead run expiry just once per day, for example
+while you are going for lunch.  This means that expiry still takes a
+long time, but you don't see it and thus it doesn't bother you.
+
+Here's how to do that: You disable the expire-on-group-exit thing with
+the following line in your @file{~/.gnus} file:
+@lisp
+(remove-hook 'gnus-summary-prepare-exit-hook
+             'gnus-summary-expire-articles)
+@end lisp
+And before you leave for lunch, you hit @kbd{C-M-x}, or @kbd{M-x
+gnus-group-expire-all-groups @key{RET}}.
+
+
+@subsubsection Functionality
+
+Adaptive scoring doesn't work with auto-expire.  (But normal scoring
+still works fine.)  Adaptive scoring works fine with total-expire.
+
+
+@subsubsection A summary
+
+Well, it is difficult to sum up the whole discussion.  I used to use
+total-expire but have switched to auto-expire a long time ago.  I liked
+the fact that I could use one more kind of article mark.  I also liked
+the fact that marking a message as read works the same in auto-expirable
+groups and in normal mail groups: you hit @kbd{E}.  (With total-expire,
+you normally hit @kbd{d} but must remember to use @kbd{E} for those
+groups where total-expire is off.)  And I liked that auto-expire is
+faster.
+
+On the other hand, adaptive scoring is surely a very useful feature (I'm
+just beginning to use it), so many people might prefer total-expire.
+
+And on a third hand, maybe the key binding issue isn't so important
+after all.  You see, in mail groups the @kbd{d} key means `keep this
+message for archival purposes', whereas in many other modes (dired, CCC
+others?) it stands for `delete'.  I propose to make it mean delete in
+mail groups, too, with the following line in
+@file{~/.gnus}:@footnote{See the chapter on key bindings; maybe you need
+a `require' statement.}
+@lisp
+(define-key gnus-summary-mode-map "d" 'gnus-summary-mark-as-expirable)
+@end lisp
+Marking messages as expirable (rather than read) in news groups does no
+harm, nor does it harm to do so in total-expirable mail groups.  The old
+`keep this message' semantics can still be had by marking a message as
+dormant or by using @kbd{M r} (in non-total-expirable groups only).
+
+
+@c ------------------------------------------------------------ 
+@section Migrating old mail
+@c ------------------------------------------------------------ 
+
+Probably, you've been reading mail in pre-Gnus times, right?  And surely
+you wish to carry this over to Gnus.  Well, I haven't found a real good
+way to do it, but I can offer a few suggestions for doing it at least
+semi-automatically.
+
+One way of getting at your old mail is to type @kbd{G f}, and to then
+enter the name of your old mail file.  This provides read-only access to
+your mails.  For some people, this might be sufficient.  (With @kbd{G
+f}, you have created an @code{nndoc} group.)
+
+Some people might want to have their mails available in their normal
+mail groups hierarchy.  That's simple, just create an @code{nndoc} group
+for your mail file, then mark all messages in it with @kbd{M P a}, then
+copy all of them over to a normal mail group, with @kbd{B c}.
+
+This is good for people who wish to keep their old arrangement of
+folders, and who have a one-to-one correspondence between old mail files
+and new Gnus groups.  But some people might wish to split up their mails
+differently.  For them, it might be useful to set up
+@var{nnmail-split-methods} correctly and to use @kbd{B r} instead of
+@kbd{B c}.  This goes through all process-marked messages and subjects
+them to the same splitting process that newly arriving messages go
+through.  (Whee!  What a run-on sentence!)
+
+
+@section TODO
+
+@table @bullet
+@item
+Say something about the cache.  Though this belongs in the news reading
+tips, right?  Hm.
+@end table
+
+
+@c Local Variables:
+@c TeX-master: "tutorials.texi"
+@c End:

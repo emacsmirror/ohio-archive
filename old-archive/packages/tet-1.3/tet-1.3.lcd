@@ -1,0 +1,14 @@
+;; LCD Archive Entry:
+;; tet-1.3|Tom Herman|mail11325@pop.net|
+;; Sample .emacs file with function key/ keypad bindings and template for Linux.|
+;; 21-March-97|Version 1.3| ~/packages/tet-1.3.tar.gz|
+
+To Zip:
+tar cvf tet-1.3.tar tet-1.3
+gzip tet-1.3.tar
+
+To Unzip:
+tar zxvf tet-1.3.tar.gz
+         OR
+gzip -d tet-1.3.tar.gz
+tar xvf tet-1.3.tar

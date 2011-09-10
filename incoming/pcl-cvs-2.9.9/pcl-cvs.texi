@@ -1,0 +1,2239 @@
+\input texinfo  @c -*-texinfo-*-
+
+@c "@(#)v2_9_9:pcl-cvs.texi,v 1.12 2000/03/03 20:58:10 monnier Exp"
+
+@c Documentation for the GNU Emacs CVS mode.
+@c Copyright (C) 1991-2000  Free Software Foundation, Inc.
+
+@c This file is part of the pcl-cvs distribution.
+
+@c Pcl-cvs is free software; you can redistribute it and/or modify
+@c it under the terms of the GNU General Public License as published by
+@c the Free Software Foundation; either version 2 of the License,
+@c or (at your option) any later version.
+
+@c Pcl-cvs is distributed in the hope that it will be useful,
+@c but WITHOUT ANY WARRANTY; without even the implied warranty of
+@c MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+@c GNU General Public License for more details.
+
+@c You should have received a copy of the GNU General Public License
+@c along with pcl-cvs; see the file COPYING.  If not, write to
+@c the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+@setfilename pcl-cvs.info
+@settitle Pcl-cvs - The Emacs Front-End to CVS
+@direntry
+* Pcl-cvs:(pcl-cvs).	Emacs front-end to CVS
+@end direntry
+@setchapternewpage on
+     
+@ifinfo
+Copyright @copyright{} 1991-2000  Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+@ignore
+Permission is granted to process this file through Tex and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+@end ignore
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+section entitled ``GNU General Public License'' is included exactly as
+in the original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the section entitled ``GNU General Public License'' and
+this permission notice may be included in translations approved by the
+Free Software Foundation instead of in the original English.
+@end ifinfo
+
+@synindex vr fn     
+@c The titlepage section does not appear in the Info file.
+@titlepage
+@sp 4
+@c The title is printed in a large font.
+@center @titlefont{User's Guide}
+@sp
+@center @titlefont{to}
+@sp
+@center @titlefont{pcl-cvs - the Emacs Front-End to CVS}
+@sp 2
+@center release 2.9
+@c -release-
+@sp 3
+@center Per Cederqvist
+@c -date-
+
+@c  The following two commands start the copyright page
+@c  for the printed manual.  This will not appear in the Info file.
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1991-2000  Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+section entitled ``GNU General Public License'' is included exactly as
+in the original, and provided that the entire resulting derived work is
+distributed under the terms of a permission notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the section entitled ``GNU General Public License'' and
+this permission notice may be included in translations approved by the
+Free Software Foundation instead of in the original English.
+@end titlepage
+
+@c ================================================================
+@c                   The real text starts here
+@c ================================================================
+
+@node    Top, Installation, (dir), (dir)
+@c node-name, next,          previous, up
+
+
+@ifinfo
+This info manual describes pcl-cvs which is a GNU Emacs front-end to
+CVS.  It works with CVS version 1.9 and newer.  This manual is updated
+to release 2.5 of pcl-cvs.
+@end ifinfo
+@c -release-
+
+@menu
+* Installation::                How to install pcl-cvs on your system.
+* About pcl-cvs::               Authors and ftp sites.
+
+* Getting started::             An introduction with a walk-through example.
+* Buffer contents::             An explanation of the buffer contents.
+* Commands::                    All commands, grouped by type.
+
+* Customization::               How you can tailor pcl-cvs to suit your needs.
+* XEmacs Customization::        Additional tailoring under XEmacs.
+* Future enhancements::         Future enhancements of pcl-cvs.
+* Bugs::                        Bugs (known and unknown).
+* Copying::                     GNU General Public License
+* Function and Variable Index::  List of functions and variables.
+* Concept Index::               List of concepts.
+* Key Index::                   List of keystrokes.
+
+ --- The Detailed Node Listing ---
+
+Installation
+
+* Pcl-cvs installation::        How to install pcl-cvs on your system.
+* On-line manual installation::  How to install the on-line manual.
+* Typeset manual installation::  How to create typeset documentation 
+                                 about pcl-cvs.
+
+About pcl-cvs
+
+* Contributors::                Contributors to pcl-cvs.
+* Archives::                    Where can I get a copy of Pcl-Cvs?
+
+Buffer contents
+
+* File status::                 The meaning of the second field.
+* Selected files::              How selection works.
+
+Commands
+
+* Setting flags::               Setting flags for CVS commands
+* Updating the directory::      Commands to update the local directory
+* Movement commands::           How to move up and down in the buffer
+* Marking files::               How to mark files that other commands
+                                will later operate on.
+* Committing changes::          Checking in your modifications to the
+                                CVS repository. 
+* Editing files::               Loading files into Emacs.
+* Getting info about files::    Display the log and status of files.
+* Adding and removing files::   Adding and removing files
+* Undoing changes::             Undoing changes
+* Removing handled entries::    Uninteresting lines can easily be removed.
+* Ignoring files::              Telling CVS to ignore generated files.
+* Viewing differences::         Commands to @samp{diff} different versions.
+* Invoking Ediff::              Running @samp{ediff} from @samp{*cvs*} buffer.
+* Miscellaneous commands::      Miscellaneous commands
+@end menu
+
+@node   Installation, About pcl-cvs, Top, Top
+@c  node-name,    next,   previous,       up
+@chapter Installation
+@cindex Installation
+
+This section describes the installation of pcl-cvs, the GNU Emacs CVS
+front-end.  You should install not only the elisp files themselves, but
+also the on-line documentation so that your users will know how to use
+it.  You can create typeset documentation from the file
+@file{pcl-cvs.texi} as well as an on-line info file.  The following
+steps are also described in the file @file{INSTALL} in the source
+directory.
+
+If you are running XEmacs 21.0 or later, pcl-cvs is available in
+pre-compiled package form.  Please skip ahead to @ref{XEmacs installation}.
+
+@menu
+* Pcl-cvs installation::         How to install pcl-cvs on your system.
+* On-line manual installation::  How to install the on-line manual.
+* Typeset manual installation::  How to create typeset documentation 
+                                 for pcl-cvs.
+* XEmacs installation::          How to install pcl-cvs for XEmacs.
+@end menu
+
+
+@node     Pcl-cvs installation, On-line manual installation, Installation, Installation
+@c  node-name,  next,  previous,  up
+@section Installation of the pcl-cvs program
+@cindex Installation of elisp files
+
+@enumerate
+@item
+Edit the file @file{Makefile} to reflect the situation at your site.
+The only things you have to change is the definition of @code{lispdir}
+and @code{infodir}.  The elisp files will be copied to @code{lispdir},
+and the info file to @code{infodir}.
+
+@item
+This release of pcl-cvs requires parts of the Elib library,
+version 1.0 or later.  Elib is available via anonymous ftp from
+prep.ai.mit.edu in @file{pub/gnu/elib-1.0.tar.gz}, and from a lot of
+other sites that mirror prep.  Get Elib, and install it, before
+proceeding.
+
+@item
+Type @samp{make install} in the source directory.  This will
+byte-compile all @file{.el} files and copy both the @file{.el} and the
+@file{.elc} into the directory you specified in step 1.
+It will also copy the info files (and add a corresponding entry to the
+info-dir file if install-info can be found).
+
+If you don't want to install the @file{.el} files but only the
+@file{.elc} files (the byte-compiled files), you can type `@samp{make
+install_elc}' instead of `@samp{make install}'.
+
+If you only want to create the compiled elisp files, but don't want to
+install them, you can type @samp{make elcfiles} instead.  This is what
+happens if you only type @samp{make} without parameters.
+
+@item
+Edit the file @file{site-start.el} in your emacs lisp directory (usually
+@file{/usr/local/share/emacs/site-lisp} or something similar) and enter the
+contents of the file @file{pcl-cvs-startup.el} into it.  It contains a
+couple of @code{auto-load}s that facilitates the use of pcl-cvs.
+Alternatively, you can just use `@samp{make install_startup}'.
+
+@end enumerate
+
+
+@node On-line manual installation, Typeset manual installation, Pcl-cvs installation, Installation
+@c  node-name,  next,  previous,  up
+
+@section Installation of the on-line manual.
+@cindex Manual installation (on-line)
+@cindex Installation of on-line manual
+@cindex Generating the on-line manual
+@cindex On-line manual (how to generate)
+@cindex Info-file (how to generate)
+
+@enumerate
+@item
+Create the info file @file{pcl-cvs} from @file{pcl-cvs.texi} by
+typing @samp{make info}.  If you don't have the program @samp{makeinfo}
+you can get it by anonymous ftp from e.g. @samp{ftp.gnu.ai.mit.edu} as
+@file{pub/gnu/texinfo-2.14.tar.Z} (there might be a newer version there
+when you read this), or you could use the pre-formatted info file
+@file{pcl-cvs.info} that is included in the distribution (type
+@samp{cp pcl-cvs.info pcl-cvs}).@refill
+
+@item
+Move the info file @file{pcl-cvs} to your standard info directory.
+This might be called something like @file{/usr/local/info}.@refill
+
+@item
+Edit the file @file{dir} in the info directory and enter one line to
+contain a pointer to the info file @file{pcl-cvs}.  The line can, for
+instance, look like this:@refill
+
+@example
+* Pcl-cvs: (pcl-cvs).       An Emacs front-end to CVS.
+@end example
+@end enumerate
+
+
+@node Typeset manual installation, XEmacs installation, On-line manual installation, Installation
+@c  node-name,  next,  previous,  up
+
+@section How to make typeset documentation from pcl-cvs.texi
+@cindex Manual installation (typeset)
+@cindex Installation of typeset manual
+@cindex Printing a manual
+@cindex TeX - generating a typeset manual
+@cindex Generating a typeset manual
+
+If you have @TeX{} installed at your site, you can make a typeset manual
+from @file{pcl-cvs.texi}.
+
+@enumerate
+@item
+Run @TeX{} by typing `@samp{make pcl-cvs.dvi}'.  You will not get the
+indices unless you have the @code{texindex} program.
+
+@item
+Convert the resulting device independent file @file{pcl-cvs.dvi} to a
+form which your printer can output and print it.  If you have a
+postscript printer there is a program, @code{dvi2ps}, which does.  There
+is also a program which comes together with @TeX{}, @code{dvips}, which
+you can use.
+
+@end enumerate
+
+
+@node XEmacs installation, , Typeset manual installation, Installation
+@c  node-name,  next,  previous,  up
+
+@section Installing pcl-cvs for XEmacs.
+@cindex XEmacs installation
+
+If you are running XEmacs 21.0 or later, pcl-cvs is available in
+pre-compiled package form.  Please refer to the XEmacs manual for
+instructions regarding package selection and installation.  Currently,
+the pcl-cvs package also requires you to have installed the xemacs-base,
+elib, and dired packages. 
+
+Once you have installed these packages (manually or using the
+interactive installer), you should check the values of a couple pcl-cvs
+variables and override the default values in the @samp{site-start.el}
+file if necessary.  These variables are:
+
+@table @samp
+
+@item cvs-program
+This is the name or full path of the @samp{cvs} executable to be used by
+pcl-cvs.  If @samp{cvs} will be automatically found on the user's PATH,
+there is no need to change this.  Otherwise, you should set this
+variable to the full path to your @samp{cvs} program via 
+
+@example
+(setq cvs-program "/FULL/PATH/TO/cvs")
+@end example
+
+in the @samp{site-start.el} file.
+
+@item cvs-diff-program
+This is the name or full path of the @samp{diff} executable to be used by
+pcl-cvs.  If @samp{diff} will be automatically found on the user's PATH,
+there is no need to change this.  Otherwise, you should set this
+variable to the full path to your @samp{diff} program via 
+
+@example
+(setq cvs-diff-program "/FULL/PATH/TO/diff")
+@end example
+
+Note that there are some nasty bugs in the context diff variants of some
+vendor versions, such as the one in SunOS-4.
+
+@item cvs-bakprefix
+This should be set to the prefix that CVS prepends to files when
+@samp{rcsmerge}ing.  It is normally set to @code{".#"}.
+
+@end table
+
+Finally, if you have @TeX{}, @code{texinfo}, and @code{dvips} installed
+at your site, you can make a typeset manual from @file{pcl-cvs.texi}:
+
+@enumerate
+@item 
+Run @TeX{} by typing `@samp{texi2dvi pcl-cvs.texi}'.  
+The file @file{pcl-cvs.texi} can be found in your XEmacs package
+hierarchy in the directory @file{man/pcl-cvs}.  
+You will not get the indices unless you have the @code{texindex} program.
+
+@item
+Convert the resulting device independent file @file{pcl-cvs.dvi} to a
+form which your printer can print.  If you have a postscript printer you
+can use the program @code{dvips}. 
+
+@end enumerate
+
+
+@node     About pcl-cvs, Getting started, Installation, Top
+@c  node-name,     next, previous, up
+
+@chapter About pcl-cvs
+@cindex About pcl-cvs
+
+Pcl-cvs is a front-end to CVS versions 1.9 and later.  It integrates the
+most frequently used CVS commands into an emacs interface.
+
+@menu
+* Contributors::                Contributors to pcl-cvs.
+* Archives::                    Where can I get a copy of Pcl-Cvs?
+@end menu
+
+@node     Contributors, Archives, About pcl-cvs, About pcl-cvs
+@c  node-name,  next,  previous,  up
+
+@section Contributors to pcl-cvs
+@cindex Contributors
+@cindex Authors
+
+Contributions to the package are welcome.  I have limited time to work
+on this project, but I will gladly add any code that you contribute to
+me to this package (@pxref{Bugs}).
+
+The following persons have made contributions to pcl-cvs.
+
+@itemize @bullet
+@item
+Brian Berliner wrote CVS, together with some other contributors.
+Without his work on CVS this package would be useless@dots{}
+
+@item
+Per Cederqvist wrote most of the otherwise unattributed functions in
+pcl-cvs as well as all documentation.
+
+@item
+Inge Wallin (@samp{inge@@lysator.liu.se}) wrote the skeleton to
+@file{pcl-cvs.texi}, and gave useful comments on it.  He also wrote
+the files @file{elib-node.el} and @file{compile-all.el}.  The file
+@file{cookie.el} was inspired by Inge.@refill
+
+@item
+Linus Tolke (@samp{linus@@lysator.liu.se}) contributed useful comments
+on both the functionality and the documentation.@refill
+
+@item
+Jamie Zawinski (@samp{jwz@@jwz.com}) contributed
+@file{pcl-cvs-lucid.el}, which was later renamed to
+@file{pcl-cvs-xemacs.el}.@refill
+
+@item
+Leif Lonnblad contributed RCVS support.  (Since superceded by the new
+remote CVS support.)
+
+@item
+Jim Blandy (@samp{jimb@@cyclic.com}) contributed hooks to automatically
+guess CVS log entries from ChangeLog contents; and initial support of
+the new Cygnus / Cyclic remote CVS; as well as various sundry bug fixes
+and cleanups.
+
+@item
+Jim Kingdon (@samp{kingdon@@cyclic.com}) contributed lots of fixes to
+the build and install procedure.
+
+@item
+Greg A. Woods (@samp{woods@@weird.com}) contributed code to implement
+the use of per-file diff buffers; and vendor join diffs with emerge and
+ediff; as well as various and sundry bug fixes and cleanups.
+
+@item
+Greg Klanderman (@samp{greg.klanderman@@alum.mit.edu}) implemented
+toggling of marked files; setting of CVS command flags via prefix
+arguments; updated the XEmacs support; updated the manual; and fixed
+numerous bugs.
+
+@item
+Stefan Monnier (@samp{monnier@@cs.yale.edu}) added various other
+features and introduced even more new bugs.
+
+@item
+Masatake YAMATO (@samp{masata-y@@is.aist-nara.ac.jp}) graciously
+contributed the cvstree code to display a tree of tags and that later
+was superseded by the new cvs-status-mode.
+
+@end itemize
+
+Apart from these, a lot of people have send us suggestions, ideas,
+requests, bug reports and encouragement.  Thanks a lot!  Without you
+there would be no new releases of pcl-cvs.
+
+
+@node     Archives,  , Contributors, About pcl-cvs
+@c  node-name,  next,  previous,  up
+
+@section Where can I get pcl-cvs?
+@cindex Sites
+@cindex Archives
+@cindex Ftp-sites
+@cindex Getting pcl-cvs
+@cindex Email archives
+
+As of January 1996, the original author of pcl-cvs, Per Cederqvist, is
+no longer maintaining pcl-cvs and responsibility has been passed to the
+PCL-CVS Trust, see @xref{Bugs}.
+
+As of this writing, there are several versions of pcl-cvs available on
+the net.  First, there is the old pcl-cvs version 1.05 distributed with
+CVS and in widespread use.  Next, there is version 2.0b2, distributed by
+the new primary maintainer, Greg Woods.  It is available via anonymous
+ftp from @code{ftp.weird.com} in the directory @code{/pub/local}.
+Then there is an XEmacs version based on 2.0b2 available with XEmacs
+21.0 in packaged form (see @code{ftp.xemacs.org} in the directory
+@code{/pub/xemacs/packages}).  Finally, there is the 2.0.xx version
+from Stefan Monnier available from
+@code{ftp://rum.cs.yale.edu/pub/monnier/pcl-cvs}.
+Plans for merging these last three into a
+unified release are moving forward.  See also
+@code{http://www.cyclic.com} and in particular
+@code{http://www.cyclic.com/cvs/soft-pcl.html} for possibly more current
+information.
+
+New releases will be announced to appropriate newsgroups.  If you send
+your email address to us at @code{pcl-cvs@@cyclic.com} we will attempt to
+notify you of new releases.
+
+
+@node Getting started, Buffer contents, About pcl-cvs, Top
+@c  node-name,  next,  previous,  up
+
+@chapter Getting started
+@cindex Introduction
+@cindex Example run
+
+This document assumes that you know what CVS is, and that you at least
+know the fundamental concepts of CVS.  If that is not the case you
+should read the man page for CVS.
+
+Pcl-cvs is only useful once you have checked out a module.  So before
+you invoke it you must have a copy of a module somewhere in the file
+system.
+
+You can invoke pcl-cvs by typing @kbd{M-x cvs-examine RET}.  If your emacs
+responds with @samp{[No match]} your system administrator has not
+installed pcl-cvs properly.  Try @kbd{M-x load-library RET pcl-cvs RET}.
+If that also fails, talk to your system administrator.  If it succeeds you might put
+this line in your @file{.emacs} file so that you don't have to type the
+@samp{load-library} command every time you wish to use pcl-cvs:
+
+@example
+(autoload 'cvs-examine "pcl-cvs" nil t)
+@end example
+
+The function @code{cvs-examine} will ask for a directory.  The command
+@samp{cvs -n update} will be run in that directory.  (It should contain
+files that have been checked out from a CVS archive.)  The output from
+@code{cvs} will be parsed and presented in a table in a buffer called
+@samp{*cvs*}.  It might look something like this:
+
+@example
+PCL-CVS release XXRELEASEXX.
+@c -release-
+
+CVSROOT directory: /usr/CVSroot
+Working directory: /users/ceder/FOO/test
+
+
+In directory .:
+           Updated                bar
+           Updated                file.txt
+           Modified   ci          namechange
+           Updated                newer
+
+In directory sub:
+           Modified   ci          ChangeLog
+
+--------------------- End ---------------------
+@end example
+
+In this example, your repository is in @file{/usr/CVSroot} and CVS has
+been run in the directory @file{/users/ceder/FOO/test}.  The three files
+(@file{bar}, @file{file.txt} and 
+@file{newer}) that are marked with @samp{Updated} have been copied from
+the CVS repository to @file{/users/ceder/FOO/test/} since someone else
+has checked in newer versions of them.  Two files (@file{namechange}
+and @file{sub/ChangeLog}) have been modified locally, and need to be
+checked in.
+
+You can move the cursor up and down in the buffer with @kbd{C-n} and
+@kbd{C-p} or @kbd{n} and @kbd{p}.  If you press @kbd{c} on one of the
+@samp{Modified} files that file will be checked in to the CVS
+repository. @xref{Committing changes}.  You can press @kbd{x} to get rid
+of the "uninteresting" files that have only been @samp{Updated} (and
+don't require any further action from you).@refill
+
+You can also easily get a @samp{diff} between your modified file and the
+base version that you started from, and you can get the output from
+@samp{cvs log} and @samp{cvs status} on the listed files simply by
+pressing a key (@pxref{Getting info about files}).
+
+
+@node Buffer contents, Commands, Getting started, Top
+@c  node-name,  next,  previous,  up
+
+@chapter Buffer contents
+@cindex Buffer contents
+
+The display contains six columns, some of which are optional.  They
+contain, from left to right:
+
+@itemize @bullet
+
+@item 
+Optionally, the head revision of the file.  This is the latest version
+found in the repository.  It might also contain (instead of the head
+revision) a sub status.
+
+@item
+An asterisk when the file is @dfn{marked} (@pxref{Selected
+files}).@refill
+
+@item
+The status of the file.  @xref{File status}, for more
+information.@refill
+
+@item
+An optional marker indicating that some action needs to be taken on
+the file.  This may be @samp{com}, indicating that the file needs to be
+checked in, @samp{upd}, indicating that the file needs to be updated
+from the repository, or @samp{udo} if the changes should probably be undone.
+
+@item
+Optionally, the base revision of the file.  This is the version
+which the copy in your working directory is based upon.
+
+@item
+The file name.
+
+@end itemize
+
+@menu
+* File status::                 The meaning of the second field.
+* Selected files::              How selection works.
+@end menu
+
+
+@node File status, Selected files, Buffer contents, Buffer contents
+@c  node-name,  next,  previous,  up
+
+@section File status
+@cindex File status
+@cindex Updated (file status)
+@cindex Patched (file status)
+@cindex Modified (file status)
+@cindex Merged (file status)
+@cindex Conflict (file status)
+@cindex Added (file status)
+@cindex Removed (file status)
+@cindex Unknown (file status)
+@cindex Removed by you, changed in repository (file status)
+@ignore
+@cindex Removed from repository (file status)
+@cindex Removed from repository, changed by you (file status)
+@cindex Removed by you, changed in repository (file status)
+@cindex Move away @var{file} - it is in the way (file status)
+@cindex This repository is missing!@dots{} (file status)
+@end ignore
+
+The @samp{file status} field can have the following values:
+
+@table @samp
+
+@item Modified
+The file is modified in  your  working  directory, and there was no
+modification to the same file in the repository.  This status can have
+the following sub status:
+
+@table @samp
+
+@item Merged
+The file is modified in your working directory, and there were
+modifications in the repository as well as in your copy, but they were
+merged successfully, without conflict, in your working directory.@refill
+
+@end table
+
+@item Conflict
+A conflict was detected while trying to merge your changes to @var{file}
+with changes from the source repository.  @var{file} (the copy in your
+working directory) is now the output of the @samp{rcsmerge} command on
+the two versions; an unmodified copy of your file is also in your
+working directory, with the name @file{.#@var{file}.@var{version}},
+where @var{version} is the RCS revision that your modified file started
+from.  @xref{Viewing differences}, for more details.@refill
+
+@item Added
+The file has been added by you, but it still needs to be checked in to
+the repository.@refill
+
+@item Removed
+The file has been removed by you, but it needs to be checked in to the
+repository.  You can resurrect it by typing @kbd{a} (@pxref{Adding and
+removing files}).@refill
+
+@item Unknown
+A file that was detected in your directory, but that neither appears in
+the repository, nor is present on the list of files that CVS should
+ignore.@refill
+
+@item Removed by you, changed in repository
+You have removed a file, and before you committed the removal someone
+committed a change to that file.  You can use @kbd{a} to resurrect the
+file (@pxref{Adding and removing files}).@refill
+
+@item Up-to-date
+The file is up to date with respect to the version in the repository.
+This status can have a sub status of:
+
+@table @samp
+
+@item Commited
+The file was just committed by yourself.@refill
+
+@item Added
+The file has been added by you (and has been checked into the repository).
+@refill
+
+@item Updated
+The file was brought up to date with respect to the repository.  This is
+done for any file that exists in the repository but not in your source,
+and for files that you haven't changed but are not the most recent
+versions available in the repository.@refill
+
+@item Patched
+The file was brought up to date with respect to a remote repository by
+way of fetching and applying a patch to the file in your source.  This
+is done for any file that exists in a remote repository and in your
+source; of which you haven't changed locally but is not the most recent
+version available in the remote repository.@refill
+
+@end table
+
+@item Need-update
+Either a newer version than the one in your source is available in the
+repository and you have not modified your checked out version, or the
+file exists in the repository but not in your source.  Use
+@samp{cvs-mode-update} bound to @kbd{O} to update the file.@refill 
+
+@item Need-merge
+You have modified the checked out version of the file, and a newer
+version is available in the repository.  A merge will take place when
+you run a @samp{cvs update}.
+
+@item Need-remove
+The file has been removed from your working directory but not yet
+@samp{cvs remove}d.
+
+@item Unresolved-conflict
+There was an unresolved conflict when merging changes from the
+repository into the file.
+
+@end table
+
+@ignore
+There are also a few special cases, that rarely occur, which have longer
+strings in the fields:
+
+@table @samp
+@item Removed from repository
+The file has been removed from your directory since someone has removed
+it from the repository.  (It is still present in the Attic directory, so
+no permanent loss has occurred).  This, unlike the other entries in this
+section, is not an error condition.@refill
+
+@item Removed from repository, changed by you
+You have modified a file that someone has removed from the repository.
+You can correct this situation by removing the file manually (see
+@pxref{Adding and removing files}).@refill
+
+@item Removed by you, changed in repository
+You have removed a file, and before you committed the removal someone
+committed a change to that file.  You could use @kbd{a} to resurrect the
+file (@pxref{Adding and removing files}).@refill
+
+@item Move away @var{file} - it is in the way
+For some reason CVS does not like the file @var{file}.  Rename or remove
+it.@refill
+
+@item This repository is missing! Remove this dir manually.
+It is impossible to remove a directory in the CVS repository in a clean
+way.  Someone has tried to remove one, and CVS has become confused.  Remove
+your copy of the directory.@refill
+@end table
+@end ignore
+
+@node Selected files,  , File status, Buffer contents
+@c  node-name,  next,  previous,  up
+
+@section Selected files
+@cindex Selected files
+@cindex Marked files
+@cindex File selection
+@cindex Active files
+
+Many of the commands work on the current set of @dfn{selected} files.
+
+@itemize @bullet
+@item
+If marks are not being ignored, and there are any files that are marked,
+they constitute the set of selected files.@refill
+@item
+Otherwise, if the cursor points to a file, that file is the selected
+file.@refill
+@item
+Otherwise, if the cursor points to a directory, all the files in that
+directory that appear in the buffer are the selected files.
+@end itemize
+
+By default, marks are always in effect.  You may change this, however,
+by setting either of the variables @code{cvs-diff-ignore-marks} or
+@code{cvs-default-ignore-marks}, which define whether marks are in effect
+by default for the diff commands and for the rest of the @samp{*cvs*}
+buffer commands, respectively.  Both are @code{nil} by default.
+
+In addition, you may use the command @samp{cvs-mode-toggle-marks}
+normally bound to @key{T} to toggle the use of marks for the following
+command.
+
+This scheme might seem a little complicated, but once one get used to
+it, it is quite powerful.
+
+For commands to mark and unmark files, see @xref{Marking files}.
+
+@node Commands, Customization, Buffer contents, Top
+@c  node-name,  next,  previous,  up
+
+@chapter Commands
+
+@iftex
+This chapter describes all the commands that you can use in pcl-cvs.
+@end iftex
+@ifinfo
+The nodes in this menu contains explanations about all the commands that
+you can use in pcl-cvs.  They are grouped together by type.
+@end ifinfo
+
+@menu
+* Setting flags::               Setting flags for CVS commands
+* Entering pcl-cvs::            Commands to invoke pcl-cvs
+* Updating the directory::      Commands to update the local directory
+* Movement commands::           How to move up and down in the buffer
+* Marking files::               How to mark files that other commands
+                                will later operate on.
+* Committing changes::          Checking in your modifications to the
+                                CVS repository. 
+* Editing files::               Loading files into Emacs.
+* Getting info about files::    Display the log and status of files.
+* Adding and removing files::   Adding and removing files
+* Undoing changes::             Undoing changes
+* Removing handled entries::    Uninteresting lines can easily be removed.
+* Ignoring files::              Telling CVS to ignore generated files.
+* Viewing differences::         Commands to @samp{diff} different versions.
+* Invoking Ediff::              Running @samp{ediff} from @samp{*cvs*} buffer.
+* Updating files::              Updating files that Need-update.
+* Tagging files::               Tagging files.
+* Miscellaneous commands::      Miscellaneous commands.
+@end menu
+
+
+@node Setting flags, Entering pcl-cvs, Commands, Commands
+@c  node-name,  next,  previous,  up
+
+@section Setting flags for CVS commands
+
+This section describes the convention used by nearly all pcl-cvs
+commands for setting optional flags sent to CVS.  A single @kbd{C-u}
+prefix argument is used to cause the command to prompt for flags to be
+used for the current invocation of the command only.  Two @kbd{C-u} prefix
+arguments are used to prompt for flags which will be set permanently, for the
+current invocation and all that follow, until the flags are changed, or
+unless temporary flags are set which override them.
+
+Perhaps an example or two is in order.  Say you are about to add a
+binary file to the repository, and want to specify the flags @samp{-kb}
+to @samp{cvs add}.  You can type @kbd{C-u a -kb RET}, enter the
+description, and the file will be added.  Subsequent adds will use the
+previously prevailing flags, found in @samp{cvs-add-flags}.
+
+As a second example, say you are about to perform a diff and want to see
+the result in unified diff format, i.e. you'd like to pass the flag
+@samp{-u} to both @samp{cvs diff} and @samp{diff}.  You'd also like all
+subsequent diffs to use this flag.  You can type @kbd{C-u C-u = -u RET}
+and the diff will be performed, and @samp{cvs-diff-flags} will be set to 
+@code{("-u")}.  You can of course override this flag for a single diff
+by using a single @kbd{C-u} prefix argument.
+
+Additionally to this, some commands can take special prefix arguments.
+These work as follows: when called with a @kbd{C-u} prefix, the user is
+prompted for a new value of the special prefix and the special prefix is
+activated for the next command.  When called without the @kbd{C-u}
+prefix, the special prefix is re-activated (with the same value as last
+time) for the next command.  The special prefixes are:
+
+@table @kbd
+
+@item b
+Provide the next command with a branch (can be any version
+specifier) to work on.@refill
+
+@end table
+
+@node Entering pcl-cvs, Updating the directory, Setting flags, Commands
+@c  node-name,  next,  previous,  up
+
+@section Entering pcl-cvs
+@findex cvs-update
+@findex cvs-examine
+@findex cvs-status
+@findex cvs-checkout
+@findex cvs-mode-delete-lock
+@cindex Getting the *cvs* buffer
+
+Most commands in pcl-cvs require that you have a @samp{*cvs*}
+buffer.  The commands that you use to get one are listed below.
+For each, a @samp{cvs} process will be run, the output will be parsed by 
+pcl-cvs, and the result will be printed in the @samp{*cvs*} buffer (see
+@pxref{Buffer contents} for a description of the contents).@refill
+
+@table @kbd
+
+@item M-x cvs-update
+Run a @samp{cvs update} command.  You will be asked for the directory 
+in which the @samp{cvs update} will be run.@refill
+
+@item M-x cvs-examine
+Run a @samp{cvs -n update} command.  This is identical to the previous
+command, except that it will only check what needs to be done but will
+not change anything.  You will be asked for the directory in
+which the @samp{cvs -n update} will be run.@refill
+
+@item M-x cvs-status
+Run a @samp{cvs status} command.  You will be asked for the directory 
+in which the @samp{cvs status} will be run.@refill
+
+@item M-x cvs-checkout
+Run a @samp{cvs checkout} command.  You will be asked for the directory 
+in which the @samp{cvs update} will be run and the module to be checked
+out.@refill
+
+@end table
+
+CVS uses lock files in the repository to ensure the integrity of the
+data files in the repository.  They might be left behind i.e. if a
+workstation crashes in the middle of a CVS operation.  CVS outputs a
+message when it is waiting for a lock file to go away.  Pcl-cvs will
+show the same message in the *cvs* buffer, together with instructions
+for deleting the lock files.  You should normally not have to delete
+them manually --- just wait a little while and the problem should fix
+itself.  But if the lock files do not disappear you can delete them
+with @kbd{M-x cvs-mode-delete-lock RET}.@refill
+
+By default, the commands above will descend recursively into
+subdirectories.  You can avoid that behavior by including @samp{-l} in
+the flags for the command.  These flags can be set by giving a prefix
+argument to the command (e.g., by typing
+@kbd{C-u M-x cvs-update RET -l RET}).
+@refill
+
+
+@node Updating the directory, Movement commands, Entering pcl-cvs, Commands
+@c  node-name,  next,  previous,  up
+
+@section Updating the @samp{*cvs*} buffer
+@findex cvs-update
+@findex cvs-examine
+@findex cvs-status
+
+
+The following commands can be used from within the @samp{*cvs*} buffer
+to update the display:
+
+@table @kbd
+
+@item M-u
+This will run @samp{cvs update} and prompt for a new directory to
+update.  This runs the command @samp{cvs-update}.@refill
+
+@item M-e
+This will run @samp{cvs -n update} and prompt for a new directory to
+examine.  This runs the command @samp{cvs-examine}.@refill
+
+@item M-s
+This will run @samp{cvs status} and prompt for a new directory to
+status.  This runs the command @samp{cvs-status}.@refill
+
+@end table
+
+
+@node Movement commands, Marking files, Updating the directory, Commands
+@c  node-name,  next,  previous,  up
+
+@section Movement Commands
+@cindex Movement Commands
+@findex cookie-next-cookie
+@findex cookie-previous-cookie
+@kindex SPC - Move down one file
+@kindex C-n - Move down one file
+@kindex n - Move down one file
+@kindex C-p - Move up one file
+@kindex p - Move up one file
+
+You can use most normal Emacs commands to move forward and backward in
+the buffer.  Some keys are rebound to functions that take advantage of
+the fact that the buffer is a pcl-cvs buffer:
+
+
+@table @kbd
+@item SPC
+@itemx C-n
+@itemx n
+These keys move the cursor one file forward, towards the end of the
+buffer (@code{cookie-next-cookie}).
+
+@item C-p
+@itemx p
+These keys move one file backward, towards the beginning of the buffer
+(@code{cookie-previous-cookie}).
+@end table
+
+
+@node Marking files, Committing changes, Movement commands, Commands
+@c  node-name,  next,  previous,  up
+
+@section Marking files
+@cindex Selecting files (commands to mark files)
+@cindex Marking files
+@kindex m - marking a file
+@kindex M - marking all files
+@kindex u - unmark a file
+@kindex ESC DEL - unmark all files
+@kindex DEL - unmark previous file
+@kindex % - mark files matching regexp
+@kindex T - toggle marks
+@findex cvs-mode-mark
+@findex cvs-mode-unmark
+@findex cvs-mode-mark-all-files
+@findex cvs-mode-unmark-all-files
+@findex cvs-mode-unmark-up
+@findex cvs-mode-mark-matching-files
+@findex cvs-mode-toggle-marks
+
+Pcl-cvs works on a set of @dfn{selected files} (@pxref{Selected files}).
+You can mark and unmark files with these commands:
+
+@table @kbd
+@item m
+This marks the file that the cursor is positioned on.  If the cursor is
+positioned on a directory all files in that directory will be marked.
+(@code{cvs-mode-mark}).
+
+@item u
+Unmark the file that the cursor is positioned on. If the cursor is on a
+directory, all files in that directory will be unmarked.
+(@code{cvs-mode-unmark}).@refill
+
+@item M
+Mark @emph{all} files in the buffer (@code{cvs-mode-mark-all-files}).
+
+@item @key{ESC} @key{DEL}
+Unmark @emph{all} files (@code{cvs-mode-unmark-all-files}).
+
+@item @key{DEL}
+Unmark the file on the previous line, and move point to that line
+(@code{cvs-mode-unmark-up}).
+
+@item @key{%}
+Mark all files matching a regular expression
+(@code{cvs-mode-mark-matching-files}).
+
+@item @key{T}
+Toggle use of marks for the next command (@code{cvs-mode-toggle-marks}).
+@end table
+
+
+@node Committing changes, Editing files, Marking files, Commands
+@c  node-name,  next,  previous,  up
+
+@section Committing changes
+@cindex Committing changes
+@cindex Ci
+@findex cvs-mode-commit
+@findex cvs-mode-changelog-commit
+@kindex c - commit files
+@kindex C - commit files with ChangeLog message
+@vindex cvs-erase-input-buffer (variable)
+@vindex cvs-auto-revert-after-commit (variable)
+@cindex Commit buffer
+@cindex Edit buffer
+@cindex Erasing commit message
+@cindex Reverting buffers after commit
+
+@table @kbd
+
+@item c
+All files that have a "need to be checked in"-marker (@pxref{Buffer
+contents}) can be checked in with the @kbd{c} command.  It checks in all
+selected files (@pxref{Selected files}) (except those who lack the
+"com"-marker - they are ignored).  Pressing @kbd{c} causes
+@code{cvs-mode-commit} to be run.@refill
+
+When you press @kbd{c} you will get a buffer called
+@samp{*cvs-commit-message*}.  Enter the log message for the file(s) in
+it.  When you are ready you should press @kbd{C-c C-c} to actually
+commit the files (using @code{cvs-edit-done}).
+
+Normally the @samp{*cvs-commit-message*} buffer will retain the log
+message from the previous commit, but if the variable
+@code{cvs-erase-input-buffer} is set to a non-@code{nil} value the
+buffer will be erased.  Point and mark will always be located around the
+entire buffer so that you can easily erase it with @kbd{C-w}
+(@samp{kill-region}).@refill
+
+If you are editing the files in your emacs an automatic
+@samp{revert-buffer} will be performed.  (If the file contains
+@samp{$@asis{Id}$} keywords @samp{cvs commit} will write a new file with
+the new values substituted.  The auto-revert makes sure that you get
+them into your buffer).  The revert will not occur if you have modified
+your buffer, or if @samp{cvs-auto-revert} is set to
+@samp{nil}.@refill
+
+@item C
+This is just like @samp{cvs-mode-commit}, except that it tries to
+provide appropriate default log messages by looking at the
+@samp{ChangeLog}s handling the files to be checked in.  The idea is to write your 
+ChangeLog entries first, and then use this command to commit your
+changes.  Pressing @kbd{C} causes @code{cvs-mode-changelog-commit} to be
+run.@refill
+
+To select default log text, pcl-cvs:
+@itemize @minus
+@item
+finds the ChangeLogs for the files to be checked in;
+@item
+verifies that the top entry in the ChangeLog is on the current date and
+by the current user; if not, no default text is provided;
+@item
+searchs the ChangeLog entry for paragraphs containing the names of the
+files being checked in; and finally
+@item
+uses those paragraphs as the default log text in the
+@samp{*cvs-commit-message*} buffer.
+@end itemize
+
+You can then commit the @samp{ChangeLog} file once per day without any
+log message.@refill
+
+@end table
+
+
+@node Editing files, Getting info about files, Committing changes, Commands
+@c  node-name,  next,  previous,  up
+
+@section Editing files
+@cindex Editing files
+@cindex Finding files
+@cindex Loading files
+@cindex Dired
+@cindex Invoking dired
+@findex cvs-mode-find-file
+@findex cvs-mode-find-file-other-window
+@findex cvs-mode-add-change-log-entry-other-window
+@kindex f - find file or directory
+@kindex o - find file in other window
+@kindex A - add ChangeLog entry
+
+There are currently three commands that can be used to find a file (that
+is, load it into a buffer and start editing it there).  These commands
+work on the line that the cursor is situated at.  They always ignore any marked
+files.
+
+@table @kbd
+@item f
+Find the file that the cursor points to.  Run @samp{dired}
+@ifinfo
+(@pxref{Dired,,,Emacs})
+@end ifinfo
+if the cursor points to a directory (@code{cvs-mode-find-file}).@refill
+
+@item o
+Like @kbd{f}, but use another window
+(@code{cvs-mode-find-file-other-window}).@refill
+
+@item A
+Invoke @samp{add-change-log-entry-other-window} to edit a
+@samp{ChangeLog} file.  The @samp{ChangeLog} will be found in the
+directory or a parent of the directory of the file the cursor points to.
+(@code{cvs-mode-add-change-log-entry-other-window}).@refill
+@end table
+
+
+@node Getting info about files, Adding and removing files, Editing files, Commands
+@c  node-name,  next,  previous,  up
+
+@section Getting info about files
+@cindex Status (cvs command)
+@cindex Log (RCS/cvs command)
+@cindex Getting status
+@kindex l - run @samp{cvs log}
+@kindex s - run @samp{cvs status}
+@findex cvs-mode-log
+@findex cvs-mode-status
+
+Both of the following commands can be customized.
+@xref{Customization}.@refill
+
+@table @kbd
+@item l
+Run @samp{cvs log} on all selected files, and show the result in a
+temporary buffer (@code{cvs-mode-log}).
+
+@item s
+Run @samp{cvs status} on all selected files, and show the result in a
+temporary buffer (@code{cvs-mode-status}).
+@end table
+
+
+@node Adding and removing files, Undoing changes, Getting info about files, Commands
+@c  node-name,  next,  previous,  up
+
+@section Adding and removing files
+@cindex Adding files
+@cindex Removing files
+@cindex Resurrecting files
+@cindex Deleting files
+@cindex Putting files under CVS control
+@kindex a - add a file
+@kindex r - remove a file
+@findex cvs-mode-add
+@findex cvs-mode-remove-file
+
+The following commands are available to make it easy to add and remove
+files from the CVS repository.
+
+@table @kbd
+@item a
+Add all selected files.  This command can be used on @samp{Unknown}
+files (@pxref{File status}).  The status of the file will change to
+@samp{Added}, and you will have to use @kbd{c} (@samp{cvs-mode-commit},
+@pxref{Committing changes}) to really add the file to the
+repository.@refill
+
+This command can also be used on @samp{Removed} files (before you commit
+them) to resurrect them.
+
+Selected files that are neither @samp{Unknown} nor @samp{Removed} will
+be ignored by this command.
+
+The command that is run is @code{cvs-mode-add}.
+
+@item r
+This command removes the selected files (after prompting for
+confirmation).  The files are @samp{rm}ed from your directory and
+(unless the status was @samp{Unknown}; @pxref{File status}) they will
+also be @samp{cvs remove}d.  If the files were @samp{Unknown} they will
+disappear from the buffer.  Otherwise their status will change to
+@samp{Removed}, and you must use @kbd{c} (@samp{cvs-mode-commit},
+@pxref{Committing changes}) to commit the removal.@refill
+
+The command that is run is @code{cvs-mode-remove-file}.
+@end table
+
+
+@node Undoing changes, Removing handled entries, Adding and removing files, Commands
+@c  node-name,  next,  previous,  up
+
+@section Undoing changes
+@cindex Undo changes
+@cindex Flush changes
+@kindex U - undo changes
+@findex cvs-mode-undo-local-changes
+
+@table @kbd
+@item U
+If you have modified a file, and for some reason decide that you don't
+want to keep the changes, you can undo them with this command.  It works
+by removing your working copy of the file and then getting the latest
+version from the repository (@code{cvs-mode-undo-local-changes}.
+@end table
+
+
+@node Removing handled entries, Ignoring files, Undoing changes, Commands
+@c  node-name,  next,  previous,  up
+
+@section Removing handled entries
+@cindex Expunging uninteresting entries
+@cindex Uninteresting entries, getting rid of them
+@cindex Getting rid of uninteresting lines
+@cindex Removing uninteresting (processed) lines
+@cindex Handled lines, removing them
+@kindex x - remove processed entries
+@kindex C-k - remove selected entries
+@findex cvs-mode-remove-handled
+@findex cvs-mode-acknowledge
+@findex cvs-mode-ignore
+
+@table @kbd
+@item x
+This command allows you to remove all entries that you have processed.
+More specifically, the lines for @samp{Up-to-date} files (@pxref{File
+status} are removed from the buffer.  If a directory becomes empty the heading
+for that directory is also removed.  This makes it easier to get an
+overview of what needs to be done.
+
+The command is called @code{cvs-mode-remove-handled}.  If
+@samp{cvs-auto-remove-handled} is set to non-@code{nil} this will
+automatically be performed after every commit.@refill
+
+@item C-k
+This command can be used for lines that @samp{cvs-mode-remove-handled} would
+not delete, but that you want to delete (@code{cvs-mode-acknowledge}).
+@end table
+
+
+@node Ignoring files, Viewing differences, Removing handled entries, Commands
+@c  node-name,  next,  previous,  up
+
+@section Ignoring files
+@kindex i - ignoring files
+@findex cvs-mode-ignore
+
+@table @kbd
+@item i
+Arrange so that CVS will ignore the selected files.  The file names are
+added to the @file{.cvsignore} file in the corresponding directory.  If
+the @file{.cvsignore} doesn't exist it will be created.
+
+The @file{.cvsignore} file should normally be added to the repository,
+but you could ignore it also if you like it better that way.
+
+This runs @code{cvs-mode-ignore}.
+@end table
+
+@node Viewing differences, Invoking Ediff, Ignoring files, Commands
+@c  node-name,  next,  previous,  up
+
+@section Viewing differences
+@cindex Diff
+@cindex Ediff
+@cindex Invoking ediff
+@cindex Conflicts, how to resolve them
+@cindex Viewing differences
+@kindex d= - run @samp{cvs diff}
+@kindex = - run @samp{cvs diff}
+@kindex dh - diff against head of repository
+@kindex dv - diff against vendor branch
+@findex cvs-mode-diff
+@findex cvs-mode-diff-backup
+@findex cvs-mode-diff-head
+@findex cvs-mode-diff-vendor
+@vindex cvs-diff-ignore-marks (variable)
+
+@table @kbd
+@item =
+@itemx d =
+Display a @samp{cvs diff} between the selected files and the RCS version
+that they are based on. (@code{cvs-mode-diff}).@refill
+
+@item d b
+If CVS finds a conflict while merging two versions of a file (during a
+@samp{cvs update}, @pxref{Updating the directory}) it will save the
+original file in a file called @file{.#@var{FILE}.@var{VERSION}} where
+@var{FILE} is the name of the file, and @var{VERSION} is the RCS version
+number that your file was based on.@refill
+
+With the @kbd{b} command you can run a @samp{diff} on the files
+@file{.#@var{FILE}.@var{VERSION}} and @file{@var{FILE}}.  This command
+only works on files that have status @samp{Conflict} or @samp{Merged}.
+(@code{cvs-mode-diff-backup}).@refill
+
+@item d h
+Display a @samp{cvs diff} between the selected files and the head
+revision in the repository. (@code{cvs-mode-diff-head}).@refill
+
+@item d v
+Display a @samp{cvs diff} between the selected files and the head
+revision of the vendor branch in the repository.
+(@code{cvs-mode-diff-vendor}).@refill
+
+@end table
+
+For all of the diffing commands, if @samp{cvs-diff-ignore-marks} is
+set to a non-@code{nil} value or if the command @kbd{T}
+(@samp{cvs-mode-toggle-marks}) is given immediately preceding the
+command, any marked files will not be considered to be selected.
+
+Also, you can get a context- or unified diff by setting
+@samp{cvs-diff-flags}.  @xref{Customization}, and also
+@ref{Setting flags}.
+
+
+@node Invoking Ediff, Updating files, Viewing differences, Commands
+@c  node-name,  next,  previous,  up
+
+@section Running ediff
+@cindex Ediff
+@cindex Invoking ediff
+@cindex Viewing differences
+@cindex Conflicts, resolving
+@cindex Resolving conflicts
+@kindex e - invoke @samp{ediff}
+@findex cvs-mode-idiff
+@findex cvs-mode-imerge
+
+@table @kbd
+@item e
+This command uses ediff (or emerge depending on
+@samp{cvs-idiff-imerge-handlers}) to allow you to view diffs.
+If a prefix argument is give, pcl-cvs will prompt for a revision against
+which the diff should be made, else the default will be to use the BASE
+revision.
+
+@item E
+This command use ediff (or emerge, see above) to allow you to do an
+interactive 3-way merge.
+
+@strong{Note:}  When the file status is @samp{Merged} or @samp{Conflict},
+CVS has already performed a merge.  The resulting file is not used in
+any way if you use this command.  If you use the @kbd{q} command inside
+@samp{ediff} (to successfully terminate a merge) the file that CVS
+created will be overwritten.@refill
+
+@end table
+
+@node Updating files, Tagging files, Invoking Ediff, Commands
+@c  node-name,  next,  previous,  up
+
+@section Updating files
+@findex cvs-mode-update
+@cindex Updating files
+@kindex O - update files
+
+@table @kbd
+@item O
+Update all selected files with status @samp{Need-update} by running
+@samp{cvs update} on them.  This command is only meaningful after
+@code{M-x cvs-status} has been run. (@code{cvs-mode-update}).
+@end table
+
+
+@node Tagging files, Miscellaneous commands, Updating files, Commands
+@c  node-name,  next,  previous,  up
+
+@section Tagging files
+@findex cvs-mode-tag
+@findex cvs-mode-untag
+@findex cvs-rtag
+@cindex Tagging files
+@kindex M-t - repository tag files
+@kindex t - tag files
+
+@table @kbd
+@item t
+Tag all selected files by running @samp{cvs tag} on
+them. (@code{cvs-mode-tag}).  It's usually preferable to tag directories
+at a time.  Rather than selecting all files (which too often doesn't
+select all files but only the few that are displayed), clear the
+selection with @kbd{M-DEL} (@code{cvs-mode-unmark-all-files}), position
+the cursor on the directory you want to tag and hit @kbd{t}.
+
+@c  @item M-t
+@c  Tag all selected files by running @samp{cvs rtag} on
+@c  them. (@code{cvs-mode-rtag}).
+
+@end table
+
+
+@node Miscellaneous commands,  , Tagging files, Commands
+@c  node-name,  next,  previous,  up
+
+@section Miscellaneous commands
+@findex cvs-mode-byte-compile-files
+@cindex Recompiling elisp files
+@cindex Byte compilation
+@findex cvs-mode-delete-lock
+@cindex Getting rid of lock files
+@cindex Lock files
+@kindex q - quit pcl-cvs
+@findex cvs-mode-quit
+@cindex Quitting
+@kindex h - help
+@kindex ? - help
+@findex cvs-help
+@cindex Help
+
+@table @kbd
+@item M-x cvs-mode-byte-compile-files
+Byte compile all selected files that end in .el.
+
+@item M-x cvs-mode-delete-lock
+This command deletes the lock files that
+the *cvs* buffer informs you about.  You should normally never have to
+use this command since CVS tries very carefully to always remove the
+lock files itself.
+
+You can only use this command when a message in the *cvs* buffer tells
+you so.  You should wait a while before using this command in case
+someone else is running a cvs command.
+
+@item ?
+@itemx h
+Show a summary of common command key bindings in the echo
+area. (@code{cvs-help}).
+
+@item q
+Quit pcl-cvs, killing the *cvs* buffer. (@code{cvs-mode-quit}).
+
+@end table
+
+
+@node Customization, XEmacs Customization, Commands, Top
+@c  node-name,  next,  previous,  up
+
+@chapter Customization
+@vindex cvs-erase-input-buffer (variable)
+@vindex cvs-diff-flags (variable)
+@vindex cvs-diff-ignore-marks (variable)
+@vindex cvs-default-ignore-marks (variable)
+@vindex cvs-log-flags (variable)
+@vindex cvs-status-flags (variable)
+@vindex cvs-update-optional-flags (variable)
+@vindex cvs-status-cmd-flags (variable)
+@vindex cvs-checkout-cmd-flags (variable)
+@vindex cvs-tag-flags (variable)
+@vindex cvs-rtag-flags (variable)
+@vindex cvs-add-flags (variable)
+@vindex cvs-commit-flags (variable)
+@vindex cvs-remove-flags (variable)
+@vindex cvs-undo-flags (variable)
+@vindex cvs-update-flags (variable)
+@vindex cvs-changelog-full-paragraphs (variable)
+@vindex cvs-auto-remove-handled (variable)
+@vindex cvs-auto-remove-handled-directories (variable)
+@vindex cvs-update-prog-output-skip-regexp (variable)
+@vindex cvs-cvsroot (variable)
+@vindex cvs-auto-revert (variable)
+@vindex cvs-commit-buffer-require-final-newline (variable)
+@vindex cvs-sort-ignore-file (variable)
+@cindex Customization
+@cindex Variables, list of all
+@cindex Erasing the input buffer
+@cindex Context diff, how to get
+@cindex Unidiff, how to get
+@cindex Automatically remove handled files
+@cindex -u option in modules file
+@cindex Modules file (-u option)
+@cindex Update program (-u option in modules file)
+@cindex Reverting buffers after commit
+@cindex Require final newline
+@cindex Automatically inserting newline
+@cindex Commit message, inserting newline
+@cindex Sorting the .cvsignore file
+@cindex .cvsignore file, sorting
+@cindex Automatically sorting .cvsignore
+
+If you have an idea about any customization that would be handy but
+isn't present in this list, please tell me!
+For info on how to reach me, see @xref{Bugs}.@refill
+
+@table @samp
+@item cvs-erase-input-buffer
+If set to anything other than @code{nil} the edit buffer will be erased
+before you write the log message (@pxref{Committing changes}).
+
+@item cvs-diff-flags
+A list of strings to pass as arguments to the @samp{cvs diff} and
+@samp{diff} programs.  This is used by @samp{cvs-mode-diff-cvs} and
+@samp{cvs-mode-diff-backup} (key @kbd{b}, @pxref{Viewing differences}).  If
+you prefer the Unidiff format you could add this line to your
+@file{.emacs} file:@refill
+
+@example
+(setq cvs-diff-flags '("-u"))
+@end example
+
+@item cvs-default-ignore-marks
+If this variable is non-@code{nil} the non-diffing commands will not
+consider marked files to be selected by default.  The
+command @samp{cvs-mode-toggle-marks} bound to @kbd{T} can be used to 
+toggle the use of marks for the following command.
+
+@item cvs-diff-ignore-marks
+If this variable is non-@code{nil} the diffing commands will not
+consider marked files to be selected by default.  The
+command @samp{cvs-mode-toggle-marks} bound to @kbd{T} can be used to 
+toggle the use of marks for the following command.
+
+@item cvs-log-flags
+List of strings to send to @samp{cvs log}.  Used by @samp{cvs-mode-log}
+(key @kbd{l}, @pxref{Getting info about files}).
+
+@item cvs-status-flags
+List of strings to send to @samp{cvs status}.  Used by @samp{cvs-mode-status}
+(key @kbd{s}, @pxref{Getting info about files}).
+
+@item cvs-auto-remove-handled
+If this variable is set to any non-@code{nil} value
+@samp{cvs-mode-remove-handled} will be called every time you check in
+files, after the check-in is ready.  @xref{Removing handled
+entries}.@refill
+
+@item cvs-auto-remove-handled-directories
+If this variable is set to any non-@code{nil} value, directories that do
+not contain any files to be checked in will not be listed in the
+@samp{*cvs*} buffer.@refill
+
+@item cvs-auto-revert
+If this variable is set to any non-@samp{nil} value any buffers you have
+that visit a file that is committed will be automatically reverted.
+This variable defaults to @samp{t}. @xref{Committing changes}.@refill
+
+@item cvs-update-prog-output-skip-regexp
+The @samp{-u} flag in the @file{modules} file can be used to run a command
+whenever a @samp{cvs update} is performed (see cvs(5)).  This regexp
+is used to search for the last line in that output.  It is normally set
+to @samp{"$"}.  That setting is only correct if the command outputs
+nothing.  Note that pcl-cvs will get very confused if the command
+outputs @emph{anything} to @samp{stderr}.
+
+@item cvs-cvsroot
+This variable can be set to override @samp{CVSROOT}.  It should be a
+string. If it is set then every time a cvs command is run it will be
+called as @samp{cvs -d @var{cvs-cvsroot}@dots{}}  This can be useful if
+your site has several repositories.
+
+@item cvs-commit-buffer-require-final-newline
+When you enter a log message in the @samp{*cvs-commit-message*} buffer
+pcl-cvs will normally automatically insert a trailing newline, unless
+there already is one.  This behavior can be controlled via
+@samp{cvs-commit-buffer-require-final-newline}.  If it is @samp{t} (the
+default behavior), a newline will always be appended.  If it is
+@samp{nil}, newlines will never be appended.  Any other value causes
+pcl-cvs to ask the user whenever there is no trailing newline in the
+commit message buffer.
+
+@item cvs-changelog-full-paragraphs
+If this variable is non-@code{nil}, include full ChangeLog paragraphs in
+the CVS log created by @samp{cvs-mode-changelog-commit}. 
+This may be set in the local variables section of a ChangeLog, to
+indicate the policy for that ChangeLog.
+
+A ChangeLog paragraph is a bunch of log text containing no blank lines;
+a paragraph usually describes a set of changes with a single purpose,
+but perhaps spanning several functions in several files.  Changes in
+different paragraphs are unrelated.
+
+You could argue that the CVS log entry for a file should contain the
+full ChangeLog paragraph mentioning the change to the file, even though
+it may mention other files, because that gives you the full context you
+need to understand the change.  This is the behavior you get when this
+variable is set to t, the default.
+
+On the other hand, you could argue that the CVS log entry for a change
+should contain only the text for the changes which occurred in that
+file, because the CVS log is per-file.  This is the behavior you get
+when this variable is set to nil.
+
+@item cvs-sort-ignore-file
+If this variable is set to any non-@samp{nil} value the
+@file{.cvsignore} will always be sorted whenever you use
+@samp{cvs-mode-ignore} to add a file to it.  This option is on by
+default.
+
+@item cvs-update-cmd-flags
+List of strings to send to @samp{cvs update}.  Used by
+@samp{cvs-update} and @samp{cvs-examine}.
+
+@item cvs-status-cmd-flags
+List of strings to send to @samp{cvs status}.  Used by
+@samp{cvs-status}.
+
+@item cvs-checkout-cmd-flags
+List of strings to send to @samp{cvs checkout}.  Used by
+@samp{cvs-checkout}.
+
+@item cvs-add-flags
+List of strings to send to @samp{cvs add}.  Used by
+@samp{cvs-mode-add}, normally bound to @kbd{a}.
+
+@item cvs-commit-flags
+List of strings to send to @samp{cvs commit}.  Used by
+the commands @samp{cvs-mode-commit} and
+@samp{cvs-mode-changelog-commit}, normally 
+bound to @kbd{c} and @kbd{C}, respectively.
+
+@item cvs-remove-flags
+List of strings to send to @samp{cvs remove}.  Used by
+@samp{cvs-mode-remove-file}, normally bound to @kbd{r}.
+
+@item cvs-undo-flags
+List of strings to send to @samp{cvs update} after removing a locally
+modified file.  Used by @samp{cvs-mode-undo-local-changes}, normally
+bound to @kbd{U}. 
+
+@item cvs-update-flags
+List of strings to send to @samp{cvs update}.  Used by
+@samp{cvs-mode-update}, normally bound to @kbd{O} and used to update a
+file after using @samp{cvs-status}.
+
+@item cvs-tag-flags
+List of strings to send to @samp{cvs tag}.  Used by
+@samp{cvs-mode-tag}, normally bound to @kbd{t}.
+
+@item cvs-rtag-flags
+List of strings to send to @samp{cvs rtag}.  Used by
+@samp{cvs-mode-rtag}, normally bound to @kbd{M-t}.
+
+@end table
+
+
+@node XEmacs Customization, Future enhancements, Customization, Top
+@c  node-name,  next,  previous,  up
+
+@chapter XEmacs Customization
+@vindex cvs-header-face (face)
+@vindex cvs-filename-face (face)
+@vindex cvs-unknown-face (face)
+@vindex cvs-handled-face (face)
+@vindex cvs-need-action-face (face)
+@vindex cvs-marked-face (face)
+
+The emacs lisp file @file{pcl-cvs-xemacs.el} included with pcl-cvs adds
+a few extra features for XEmacs, including menus, mouse bindings, and
+fontification the the @samp{*cvs*} buffer.  The faces defined for
+fontification are listed below:
+
+@table @samp
+
+@item cvs-header-face
+This face is used to highlight directory changes.
+
+@item cvs-filename-face
+This face is used to highlight file names.
+
+@item cvs-unknown-face
+This face is used to highlight the status of files which are UNKNOWN.
+
+@item cvs-handled-face
+This face is used to highlight the status of files which are handled and 
+need no further action.
+
+@item cvs-need-action-face
+This face is used to highlight the status of files which still need action.
+
+@item cvs-marked-face
+This face is used to highlight the marked file indicator (@samp{*}).
+
+@end table
+
+
+@node     Future enhancements, Bugs, XEmacs Customization, Top
+@c  node-name,  next,  previous,  up
+
+@chapter Future enhancements
+@cindex Enhancements
+
+Pcl-cvs is still under development and needs a number of enhancements to
+be called complete.  Below is my current wish-list for future releases
+of pcl-cvs.  Please, let me know which of these features you want most.
+They are listed below in approximately the order that I currently think
+I will implement them in.
+
+@itemize @bullet
+
+@item
+Log mode.  When this mode is finished you will be able to move around
+(using @kbd{n} and @kbd{p}) between the revisions of a file, mark two of
+them, and run a diff between them.  You will be able to hide branches
+(similar to the way you can hide sub-paragraphs in outline-mode) and do
+merges between revisions.  Other ideas about this are welcome.
+
+@ignore
+@item
+Increased robustness.  For instance, you can not currently press
+@kbd{C-g} when you are entering the description of a file that you are
+adding without confusing pcl-cvs.
+@end ignore
+
+@item
+Dired support.  I have an experimental @file{dired-cvs.el} that works
+together with CVS 1.2.  Unfortunately I wrote it on top of a
+non-standard @file{dired.el}, so it must be rewritten.@refill
+
+@item
+Pcl-cvs is not at all clever about what it should do when @samp{cvs
+update} runs a program (due to the @samp{-u} option in the
+@file{modules} file --- see @samp{cvs(5)}).  The current release uses a
+regexp to search for the end.  At the very least that regexp should be
+configured for different modules.  Tell me if you have any idea about
+what is the right thing to do.  In a perfect world the program should
+also be allowed to print to @samp{stderr} without causing pcl-cvs to
+crash.
+@end itemize
+
+
+If you miss something in this wish-list, let me know!  I don't promise
+that I will write it, but I will at least try to coordinate the efforts
+of making a good Emacs front end to CVS.
+For information about how to reach me, see @xref{Bugs}.@refill
+
+So far, I have written most of pcl-cvs in my all-to-rare spare time. If
+you want pcl-cvs to be developed faster you can write a contract with
+Signum Support to do the extension.  You can reach Signum Support by
+email to @samp{info@@signum.se} or via mail to Signum Support AB, Box
+2044, S-580 02 Linkoping, Sweden. Phone: +46 (0) 13 - 21 46 00. Fax: +46
+(0) 13 - 21 47 00.
+
+@node   Bugs, Copying, Future enhancements, Top
+@c  node-name,  next,  previous,  up
+
+@chapter Bugs (known and unknown)
+@cindex Reporting bugs and ideas
+@cindex Bugs, how to report them
+@cindex Author, how to reach
+@cindex Email to the author
+@cindex Known bugs
+@cindex Bugs, known
+@cindex FAQ
+@cindex Problems, list of common
+
+If you find a bug or misfeature, don't hesitate to tell us!  Send email
+to @samp{pcl-cvs@@cyclic.com}.  We prefer discussing one thing at a
+time.  If you find several unrelated bugs, please report them
+separately.  That way our bug-tracking software will work better.  If
+you report several problems in a single email we might miss one or two
+of them.  If you are running pcl-cvs under XEmacs, you should also send
+a copy of bug reports to @samp{xemacs-beta@@xemacs.org}.
+
+If you have ideas for improvements, or if you have written some
+extensions to this package, we would like to hear from you.  We hope that
+you find this package useful!
+
+Below is a partial list of currently known problems with pcl-cvs version
+2.0.
+
+@table @asis
+@item Unexpected output from CVS
+Unexpected output from CVS may confuse pcl-cvs.  It will create
+warning messages in the *cvs* buffer alerting you to any parse errors.
+If you get these messages, please send a bug report to the email
+addresses listed above.  Include the contents of the *cvs* buffer, the
+output of the CVS process (which should be found in the *cvs-tmp* emacs
+buffer), and the versions of emacs, pcl-cvs and CVS you are using.
+
+@end table
+
+
+@node Copying, Function and Variable Index, Bugs, Top
+@c node-name, next, previous, up
+@unnumbered GNU GENERAL PUBLIC LICENSE
+@center Version 2, June 1991
+
+@display
+Copyright @copyright{} 1989, 1991 Free Software Foundation, Inc.
+675 Mass Ave, Cambridge, MA 02139, USA
+
+Everyone is permitted to copy and distribute verbatim copies
+of this license document, but changing it is not allowed.
+@end display
+
+@unnumberedsec Preamble
+
+  The licenses for most software are designed to take away your
+freedom to share and change it.  By contrast, the GNU General Public
+License is intended to guarantee your freedom to share and change free
+software---to make sure the software is free for all its users.  This
+General Public License applies to most of the Free Software
+Foundation's software and to any other program whose authors commit to
+using it.  (Some other Free Software Foundation software is covered by
+the GNU Library General Public License instead.)  You can apply it to
+your programs, too.
+
+  When we speak of free software, we are referring to freedom, not
+price.  Our General Public Licenses are designed to make sure that you
+have the freedom to distribute copies of free software (and charge for
+this service if you wish), that you receive source code or can get it
+if you want it, that you can change the software or use pieces of it
+in new free programs; and that you know you can do these things.
+
+  To protect your rights, we need to make restrictions that forbid
+anyone to deny you these rights or to ask you to surrender the rights.
+These restrictions translate to certain responsibilities for you if you
+distribute copies of the software, or if you modify it.
+
+  For example, if you distribute copies of such a program, whether
+gratis or for a fee, you must give the recipients all the rights that
+you have.  You must make sure that they, too, receive or can get the
+source code.  And you must show them these terms so they know their
+rights.
+
+  We protect your rights with two steps: (1) copyright the software, and
+(2) offer you this license which gives you legal permission to copy,
+distribute and/or modify the software.
+
+  Also, for each author's protection and ours, we want to make certain
+that everyone understands that there is no warranty for this free
+software.  If the software is modified by someone else and passed on, we
+want its recipients to know that what they have is not the original, so
+that any problems introduced by others will not reflect on the original
+authors' reputations.
+
+  Finally, any free program is threatened constantly by software
+patents.  We wish to avoid the danger that redistributors of a free
+program will individually obtain patent licenses, in effect making the
+program proprietary.  To prevent this, we have made it clear that any
+patent must be licensed for everyone's free use or not licensed at all.
+
+  The precise terms and conditions for copying, distribution and
+modification follow.
+
+@iftex
+@unnumberedsec TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+@end iftex
+@ifinfo
+@center TERMS AND CONDITIONS FOR COPYING, DISTRIBUTION AND MODIFICATION
+@end ifinfo
+
+@enumerate
+@item
+This License applies to any program or other work which contains
+a notice placed by the copyright holder saying it may be distributed
+under the terms of this General Public License.  The ``Program'', below,
+refers to any such program or work, and a ``work based on the Program''
+means either the Program or any derivative work under copyright law:
+that is to say, a work containing the Program or a portion of it,
+either verbatim or with modifications and/or translated into another
+language.  (Hereinafter, translation is included without limitation in
+the term ``modification''.)  Each licensee is addressed as ``you''.
+
+Activities other than copying, distribution and modification are not
+covered by this License; they are outside its scope.  The act of
+running the Program is not restricted, and the output from the Program
+is covered only if its contents constitute a work based on the
+Program (independent of having been made by running the Program).
+Whether that is true depends on what the Program does.
+
+@item
+You may copy and distribute verbatim copies of the Program's
+source code as you receive it, in any medium, provided that you
+conspicuously and appropriately publish on each copy an appropriate
+copyright notice and disclaimer of warranty; keep intact all the
+notices that refer to this License and to the absence of any warranty;
+and give any other recipients of the Program a copy of this License
+along with the Program.
+
+You may charge a fee for the physical act of transferring a copy, and
+you may at your option offer warranty protection in exchange for a fee.
+
+@item
+You may modify your copy or copies of the Program or any portion
+of it, thus forming a work based on the Program, and copy and
+distribute such modifications or work under the terms of Section 1
+above, provided that you also meet all of these conditions:
+
+@enumerate a
+@item
+You must cause the modified files to carry prominent notices
+stating that you changed the files and the date of any change.
+
+@item
+You must cause any work that you distribute or publish, that in
+whole or in part contains or is derived from the Program or any
+part thereof, to be licensed as a whole at no charge to all third
+parties under the terms of this License.
+
+@item
+If the modified program normally reads commands interactively
+when run, you must cause it, when started running for such
+interactive use in the most ordinary way, to print or display an
+announcement including an appropriate copyright notice and a
+notice that there is no warranty (or else, saying that you provide
+a warranty) and that users may redistribute the program under
+these conditions, and telling the user how to view a copy of this
+License.  (Exception: if the Program itself is interactive but
+does not normally print such an announcement, your work based on
+the Program is not required to print an announcement.)
+@end enumerate
+
+These requirements apply to the modified work as a whole.  If
+identifiable sections of that work are not derived from the Program,
+and can be reasonably considered independent and separate works in
+themselves, then this License, and its terms, do not apply to those
+sections when you distribute them as separate works.  But when you
+distribute the same sections as part of a whole which is a work based
+on the Program, the distribution of the whole must be on the terms of
+this License, whose permissions for other licensees extend to the
+entire whole, and thus to each and every part regardless of who wrote it.
+
+Thus, it is not the intent of this section to claim rights or contest
+your rights to work written entirely by you; rather, the intent is to
+exercise the right to control the distribution of derivative or
+collective works based on the Program.
+
+In addition, mere aggregation of another work not based on the Program
+with the Program (or with a work based on the Program) on a volume of
+a storage or distribution medium does not bring the other work under
+the scope of this License.
+
+@item
+You may copy and distribute the Program (or a work based on it,
+under Section 2) in object code or executable form under the terms of
+Sections 1 and 2 above provided that you also do one of the following:
+
+@enumerate a
+@item
+Accompany it with the complete corresponding machine-readable
+source code, which must be distributed under the terms of Sections
+1 and 2 above on a medium customarily used for software interchange; or,
+
+@item
+Accompany it with a written offer, valid for at least three
+years, to give any third party, for a charge no more than your
+cost of physically performing source distribution, a complete
+machine-readable copy of the corresponding source code, to be
+distributed under the terms of Sections 1 and 2 above on a medium
+customarily used for software interchange; or,
+
+@item
+Accompany it with the information you received as to the offer
+to distribute corresponding source code.  (This alternative is
+allowed only for noncommercial distribution and only if you
+received the program in object code or executable form with such
+an offer, in accord with Subsection b above.)
+@end enumerate
+
+The source code for a work means the preferred form of the work for
+making modifications to it.  For an executable work, complete source
+code means all the source code for all modules it contains, plus any
+associated interface definition files, plus the scripts used to
+control compilation and installation of the executable.  However, as a
+special exception, the source code distributed need not include
+anything that is normally distributed (in either source or binary
+form) with the major components (compiler, kernel, and so on) of the
+operating system on which the executable runs, unless that component
+itself accompanies the executable.
+
+If distribution of executable or object code is made by offering
+access to copy from a designated place, then offering equivalent
+access to copy the source code from the same place counts as
+distribution of the source code, even though third parties are not
+compelled to copy the source along with the object code.
+
+@item
+You may not copy, modify, sublicense, or distribute the Program
+except as expressly provided under this License.  Any attempt
+otherwise to copy, modify, sublicense or distribute the Program is
+void, and will automatically terminate your rights under this License.
+However, parties who have received copies, or rights, from you under
+this License will not have their licenses terminated so long as such
+parties remain in full compliance.
+
+@item
+You are not required to accept this License, since you have not
+signed it.  However, nothing else grants you permission to modify or
+distribute the Program or its derivative works.  These actions are
+prohibited by law if you do not accept this License.  Therefore, by
+modifying or distributing the Program (or any work based on the
+Program), you indicate your acceptance of this License to do so, and
+all its terms and conditions for copying, distributing or modifying
+the Program or works based on it.
+
+@item
+Each time you redistribute the Program (or any work based on the
+Program), the recipient automatically receives a license from the
+original licensor to copy, distribute or modify the Program subject to
+these terms and conditions.  You may not impose any further
+restrictions on the recipients' exercise of the rights granted herein.
+You are not responsible for enforcing compliance by third parties to
+this License.
+
+@item
+If, as a consequence of a court judgment or allegation of patent
+infringement or for any other reason (not limited to patent issues),
+conditions are imposed on you (whether by court order, agreement or
+otherwise) that contradict the conditions of this License, they do not
+excuse you from the conditions of this License.  If you cannot
+distribute so as to satisfy simultaneously your obligations under this
+License and any other pertinent obligations, then as a consequence you
+may not distribute the Program at all.  For example, if a patent
+license would not permit royalty-free redistribution of the Program by
+all those who receive copies directly or indirectly through you, then
+the only way you could satisfy both it and this License would be to
+refrain entirely from distribution of the Program.
+
+If any portion of this section is held invalid or unenforceable under
+any particular circumstance, the balance of the section is intended to
+apply and the section as a whole is intended to apply in other
+circumstances.
+
+It is not the purpose of this section to induce you to infringe any
+patents or other property right claims or to contest validity of any
+such claims; this section has the sole purpose of protecting the
+integrity of the free software distribution system, which is
+implemented by public license practices.  Many people have made
+generous contributions to the wide range of software distributed
+through that system in reliance on consistent application of that
+system; it is up to the author/donor to decide if he or she is willing
+to distribute software through any other system and a licensee cannot
+impose that choice.
+
+This section is intended to make thoroughly clear what is believed to
+be a consequence of the rest of this License.
+
+@item
+If the distribution and/or use of the Program is restricted in
+certain countries either by patents or by copyrighted interfaces, the
+original copyright holder who places the Program under this License
+may add an explicit geographical distribution limitation excluding
+those countries, so that distribution is permitted only in or among
+countries not thus excluded.  In such case, this License incorporates
+the limitation as if written in the body of this License.
+
+@item
+The Free Software Foundation may publish revised and/or new versions
+of the General Public License from time to time.  Such new versions will
+be similar in spirit to the present version, but may differ in detail to
+address new problems or concerns.
+
+Each version is given a distinguishing version number.  If the Program
+specifies a version number of this License which applies to it and ``any
+later version'', you have the option of following the terms and conditions
+either of that version or of any later version published by the Free
+Software Foundation.  If the Program does not specify a version number of
+this License, you may choose any version ever published by the Free Software
+Foundation.
+
+@item
+If you wish to incorporate parts of the Program into other free
+programs whose distribution conditions are different, write to the author
+to ask for permission.  For software which is copyrighted by the Free
+Software Foundation, write to the Free Software Foundation; we sometimes
+make exceptions for this.  Our decision will be guided by the two goals
+of preserving the free status of all derivatives of our free software and
+of promoting the sharing and reuse of software generally.
+
+@iftex
+@heading NO WARRANTY
+@end iftex
+@ifinfo
+@center NO WARRANTY
+@end ifinfo
+
+@item
+BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW.  EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE PROGRAM ``AS IS'' WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED
+OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.  THE ENTIRE RISK AS
+TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU.  SHOULD THE
+PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING,
+REPAIR OR CORRECTION.
+
+@item
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES,
+INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING
+OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED
+TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY
+YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER
+PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGES.
+@end enumerate
+
+@iftex
+@heading END OF TERMS AND CONDITIONS
+@end iftex
+@ifinfo
+@center END OF TERMS AND CONDITIONS
+@end ifinfo
+
+@page
+@unnumberedsec Appendix: How to Apply These Terms to Your New Programs
+
+  If you develop a new program, and you want it to be of the greatest
+possible use to the public, the best way to achieve this is to make it
+free software which everyone can redistribute and change under these terms.
+
+  To do so, attach the following notices to the program.  It is safest
+to attach them to the start of each source file to most effectively
+convey the exclusion of warranty; and each file should have at least
+the ``copyright'' line and a pointer to where the full notice is found.
+
+@smallexample
+@var{one line to give the program's name and a brief idea of what it does.}
+Copyright (C) @var{yyyy}  @var{name of author}
+
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 2 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+@end smallexample
+
+Also add information on how to contact you by electronic and paper mail.
+
+If the program is interactive, make it output a short notice like this
+when it starts in an interactive mode:
+
+@smallexample
+Gnomovision version 69, Copyright (C) 19@var{yy} @var{name of author}
+Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.
+This is free software, and you are welcome to redistribute it
+under certain conditions; type `show c' for details.
+@end smallexample
+
+The hypothetical commands @samp{show w} and @samp{show c} should show
+the appropriate parts of the General Public License.  Of course, the
+commands you use may be called something other than @samp{show w} and
+@samp{show c}; they could even be mouse-clicks or menu items---whatever
+suits your program.
+
+You should also get your employer (if you work as a programmer) or your
+school, if any, to sign a ``copyright disclaimer'' for the program, if
+necessary.  Here is a sample; alter the names:
+
+@example
+Yoyodyne, Inc., hereby disclaims all copyright interest in the program
+`Gnomovision' (which makes passes at compilers) written by James Hacker.
+
+@var{signature of Ty Coon}, 1 April 1989
+Ty Coon, President of Vice
+@end example
+
+This General Public License does not permit incorporating your program into
+proprietary programs.  If your program is a subroutine library, you may
+consider it more useful to permit linking proprietary applications with the
+library.  If this is what you want to do, use the GNU Library General
+Public License instead of this License.
+
+
+@node Function and Variable Index, Concept Index, Copying, Top
+@c    node-name,          next,       previous,  up
+@unnumbered Function and Variable Index
+
+@printindex fn
+
+@node     Concept Index, Key Index, Function and Variable Index, Top
+@c      node-name, next,        previous,  up
+@unnumbered Concept Index
+
+@printindex cp
+
+@node     Key Index,  , Concept Index, Top
+@c      node-name, next,        previous,  up
+@unnumbered Key Index
+
+@printindex ky
+
+@setchapternewpage odd
+@summarycontents
+@contents
+@bye

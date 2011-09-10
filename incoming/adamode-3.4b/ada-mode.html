@@ -1,0 +1,1276 @@
+<HTML>
+<HEAD>
+<!-- Created by texi2html 1.56k from ada-mode.texi on July, 1  1999 -->
+
+<TITLE>Ada Mode</TITLE>
+</HEAD>
+<BODY  LANG="EN" BGCOLOR="#FFFFFF">
+<H1>Ada Mode</H1>
+<H4>An Emacs major mode for programming Ada 95 with GNAT</H4>
+<H4>July 1998 for Ada Mode Version 3.0</H4>
+<P>
+<P><HR><P>
+<H1>Table of Contents</H1>
+<UL>
+<LI><A NAME="TOC1" HREF="ada-mode.html#SEC1">Overview</A>
+</LI><UL>
+<LI><A NAME="TOC2" HREF="ada-mode.html#SEC2">General features:</A>
+</LI><LI><A NAME="TOC3" HREF="ada-mode.html#SEC3">Ada mode features that help understanding code:</A>
+</LI><LI><A NAME="TOC4" HREF="ada-mode.html#SEC4">Emacs support for writing Ada code:</A>
+</LI></UL>
+<LI><A NAME="TOC5" HREF="ada-mode.html#SEC5">Installation</A>
+</LI><UL>
+<LI><A NAME="TOC6" HREF="ada-mode.html#SEC6">Required files</A>
+</LI><LI><A NAME="TOC7" HREF="ada-mode.html#SEC7">Customization</A>
+</LI></UL>
+<LI><A NAME="TOC8" HREF="ada-mode.html#SEC8">Project files</A>
+</LI><UL>
+<LI><A NAME="TOC9" HREF="ada-mode.html#SEC9">General overview</A>
+</LI><LI><A NAME="TOC10" HREF="ada-mode.html#SEC10">Project file variables</A>
+</LI><LI><A NAME="TOC11" HREF="ada-mode.html#SEC11">Detailed algorithm</A>
+</LI></UL>
+<LI><A NAME="TOC12" HREF="ada-mode.html#SEC12">Syntax highlighting</A>
+</LI><LI><A NAME="TOC13" HREF="ada-mode.html#SEC13">Moving Through Ada Code</A>
+</LI><LI><A NAME="TOC14" HREF="ada-mode.html#SEC14">Identifier completion</A>
+</LI><UL>
+<LI><A NAME="TOC15" HREF="ada-mode.html#SEC15">Overview</A>
+</LI><LI><A NAME="TOC16" HREF="ada-mode.html#SEC16">Summary of commands</A>
+</LI></UL>
+<LI><A NAME="TOC17" HREF="ada-mode.html#SEC17">Index Menu of Subprograms</A>
+</LI><LI><A NAME="TOC18" HREF="ada-mode.html#SEC18">Automatic Smart Indentation</A>
+</LI><LI><A NAME="TOC19" HREF="ada-mode.html#SEC19">Formatting Parameter Lists</A>
+</LI><LI><A NAME="TOC20" HREF="ada-mode.html#SEC20">Automatic Casing</A>
+</LI><LI><A NAME="TOC21" HREF="ada-mode.html#SEC21">Statement Templates</A>
+</LI><LI><A NAME="TOC22" HREF="ada-mode.html#SEC22">Comment Handling</A>
+</LI><LI><A NAME="TOC23" HREF="ada-mode.html#SEC23">Compiling Executing Debugging</A>
+</LI><LI><A NAME="TOC24" HREF="ada-mode.html#SEC24">Using non-standard file names</A>
+</LI><LI><A NAME="TOC25" HREF="ada-mode.html#SEC25">Working Remotely</A>
+</LI><UL>
+<LI><A NAME="TOC26" HREF="ada-mode.html#SEC26">Remote editing</A>
+</LI><LI><A NAME="TOC27" HREF="ada-mode.html#SEC27">Remote compiling</A>
+</LI><LI><A NAME="TOC28" HREF="ada-mode.html#SEC28">Remote running and debugging</A>
+</LI></UL>
+</UL>
+<P><HR><P>
+
+
+<H1><A NAME="SEC1">Overview</A></H1>
+
+<P>
+The Emacs mode for programming in Ada 95 with GNAT helps the user in
+understanding existing code and facilitates writing new code.  It
+furthermore provides some utility functions for easier integration of
+standard Emacs features when programming in Ada.
+
+
+
+
+<H4><A NAME="SEC2">General features:</A></H4>
+
+
+<UL>
+<LI>full Integrated Development Environment :
+
+
+<UL>
+<LI>support of 'project files' for the configuration (directories,
+
+compilation options,...)
+<LI>compiling and stepping through error messages.
+
+<LI>running and debugging your applications within Emacs.
+
+</UL>
+
+<LI>easy to use for beginners by pull-down menus,
+
+<LI>user configurable by many user-option variables.
+
+</UL>
+
+
+
+<H4><A NAME="SEC3">Ada mode features that help understanding code:</A></H4>
+
+
+<UL>
+<LI>functions for easy and quick stepping through Ada code,
+
+<LI>getting cross reference information for identifiers (e.g. find the
+
+defining place by a keystroke),
+<LI>displaying an index menu of types and subprograms and move point to
+
+the chosen one,
+<LI>automatic color highlighting of the various entities in Ada code.
+
+</UL>
+
+
+
+<H4><A NAME="SEC4">Emacs support for writing Ada code:</A></H4>
+
+
+<UL>
+<LI>switching between spec and body files with eventually
+
+auto-generation of body files,
+<LI>automatic formating of subprograms parameter lists.
+
+<LI>automatic smart indentation according to Ada syntax,
+
+<LI>automatic completion of identifiers,
+
+<LI>automatic casing of identifiers, keywords, and attributes,
+
+<LI>insertion of statement templates,
+
+<LI>filling comment paragraphs like filling normal text,
+
+</UL>
+
+
+
+<H1><A NAME="SEC5">Installation</A></H1>
+
+<P>
+If you  got the Ada mode as  a separate distribution, you  should have a
+look at the  <TT>`README'</TT> file.  It explains the  basic steps necessary
+for a good installation of the emacs Ada mode.
+
+
+<P>
+Installing the  Ada mode  is basically  just a matter  of copying  a few
+files into  the Emacs  library directories. Every  time you open  a file
+with  a  file  extension  of  <TT>`.ads'</TT>  or  <TT>`.adb'</TT>,  Emacs  will
+automatically load and activate the Ada mode.
+
+
+<P>
+See the  section See section <A HREF="ada-mode.html#SEC24">Using non-standard file names</A> if your  files do
+not use these extensions and if you want Emacs to automatically start the
+Ada mode every time you edit an Ada file.
+
+
+<P>
+See also the Emacs documentation for general usage variables that you might
+want to set.
+
+
+
+
+<H4><A NAME="SEC6">Required files</A></H4>
+
+<P>
+This Ada  mode works best  with Emacs 20.3  or higher (the  easy editing
+features for the  project files won't work with  any older version), but
+most of the commands should work  with older versions too. Please try to
+install  the  most  recent  version  of  Emacs  on  your  system  before
+installing the Ada mode.
+
+
+<P>
+Although part of the Ada mode is compiler independent, the most advanced
+features are specific to the Gnat compiler <A HREF="http://www.gnat.com">http://www.gnat.com</A>.
+
+
+<P>
+The following files are provided with the Ada mode distribution:
+
+
+
+<UL>
+
+<LI><TT>`ada-mode.el'</TT>: The main file for the Ada mode.
+
+This  is the  only file  which does  not require  Gnat. It  contains the
+functions  for  indentation,  formatting  of parameter  lists,  stepping
+through  code, comment  handling and  automatic casing.   Emacs versions
+20.2 and higher already contain Ada mode version 2.27, which is an older
+version of this file  and should be replaced. Loading <TT>`ada-mode.el'</TT>
+from the current distribution supersedes the standard installation.
+
+<LI><TT>`ada-stmt.el'</TT>: Contains the statement templates feature.
+
+<LI><TT>`ada-xref.el'</TT>: This file provides the main support for Gnat.
+
+This  is  where  the   functions  for  cross-references,  completion  of
+identifiers,  support   for  project  files  and   compilation  of  your
+application are defined.
+
+<LI><TT>`ada-prj.el'</TT>: The functions to use for easy-edition of the
+
+project files.  This file is the only one which really requires Emacs at
+least 20.2. It uses the new widget features from Emacs.
+
+</UL>
+
+
+
+<H4><A NAME="SEC7">Customization</A></H4>
+
+<P>
+The ada-mode is  fully customizable. Everything, from the  file names to
+the automatic  indentation and  the automatic casing  can be  adapted to
+your own needs.
+
+
+<P>
+There  are   two  different  kinds   of  variables  that   control  this
+customization, both are easy to modify.
+
+
+<P>
+The first set of variables are standard Emacs variables. Of course, some
+are defined  only for the Ada  mode, whereas others have  a more general
+meaning  in   Emacs.  Please  see  the  Emacs   documentation  for  more
+information on the latest. In this documentation, we will detail all the
+variables that are specific to the Ada mode, and a few others. The names
+will be given, as in <CODE>ada-case-identifier</CODE>.
+
+
+<P>
+Emacs provides an easy way to modify them, through a special mode called
+customization.    To    access    this    mode,    select    the    menu
+<KBD>Ada-&#62;Customize</KBD>.  This will open a new buffer with some fields that
+you can edit.  For instance, you will get something like:
+
+<PRE>
+Put below the compiler switches.
+comp_opt= _____________________________________
+</PRE>
+
+<P>
+The first  line gives a brief  description of the  variable.  The second
+line is  the name of  the variable  and the field  where you can  give a
+value for this variable. Simply type what you want in the field.
+
+
+<P>
+When you are  finished modifying the variables, you  can simply click on
+the <B>Save for future sessions</B> button  at the top of the buffer (click
+with  the  middle mouse  button).  This will  save  the  values in  your
+<TT>`.emacs'</TT> file, so that next time you start Emacs they will have the
+same values.
+
+
+<P>
+Some users might prefer to modify the variables directly in their
+configuration file, <TT>`.emacs'</TT>. This file is coded in Emacs lisp, and
+the syntax to set a variable is the following:
+
+<PRE>
+(setq variable-name value)
+</PRE>
+
+<P>
+The second set of variables for customization are set through the use of
+project files. These variables are  specific to a given project, whereas
+the  first   set  was  more   general.  For  more   information,  please
+See section <A HREF="ada-mode.html#SEC8">Project files</A>.
+
+
+
+
+<H1><A NAME="SEC8">Project files</A></H1>
+
+
+
+<H4><A NAME="SEC9">General overview</A></H4>
+
+<P>
+Emacs provides a full Integrated Development Environment for GNAT and
+Ada programmers. That is to say, editing, compiling, executing and
+debugging can be performed within Emacs in a convenient and natural way.
+
+
+<P>
+To take full advantage of this features, it is possible to create a file
+in  the main  directory of  your application,  with a  '.adp' extension.
+This  file contain  all needed  information  dealing with  the way  your
+application is  organized between directories, the  commands to compile,
+run and debug it etc. Creating this file is not mandatory and convenient
+defaults are  automatically provided for simple setups.  It only becomes
+necessary when those above mentioned defaults need customizing.
+
+
+<P>
+A simple way to edit this file is provided for Emacs 20.2 or newer, with
+the  following functions,  that  you  can access  also  through the  Ada
+menu. It  is also possible  to edit the  project file as a  regular text
+file.
+
+
+<P>
+Once  in the  buffer for  editing the  project file,  you can  save your
+modification using  the '[OK]'  button at the  bottom of the  buffer, or
+simply   use  the  usual   <KBD>C-x  C-s</KBD>   binding.   To   cancel  your
+modifications, simply kill the buffer  or click on the '[CANCEL]' button
+at the button.
+
+
+<P>
+Each buffer using Ada mode will be associated with one project file when
+there  is one  available,  so  that Emacs  can  easily navigate  through
+related source files for instance.
+
+
+<DL COMPACT>
+
+<DT><KBD>C-c u   ada-customize   menu: Ada-&#62;Project-&#62;New/Edit</KBD>
+<DD>
+Create or edit the project file for the current buffer.
+<DT><KBD>C-c c   ada-change-prj</KBD>
+<DD>
+Change the project file associated with the current Ada buffer.
+<DT><KBD>C-c d</KBD>
+<DD>
+Change the  default project  file for the  current directory.  Every new
+file opened  from this  directory will be  associated with that  file by
+default.
+<DT><KBD>ada-set-default-project-file  menu: Ada-&#62;Project-&#62;Set Default</KBD>
+<DD>
+Set the default  project file to use for *any*  Ada file opened anywhere
+on your system. This sets this file only for the current Emacs session.
+</DL>
+
+
+
+<H4><A NAME="SEC10">Project file variables</A></H4>
+
+<P>
+The following variables can be defined in a project file.  They all have
+a default value, so that small  projects do not need to create a project
+file.
+
+
+<P>
+Some  variables below  can be  referenced  in other  variables, using  a
+shell-like  notation.   For instance,  if  the variable  <CODE>comp_cmd</CODE>
+contains a sequence like <CODE>${comp_opt}</CODE>, the value of that variable
+will be substituted.
+
+
+<P>
+Here is the list of variables:
+
+
+<DL COMPACT>
+
+<DT><CODE>src_dir          [default: "./"]</CODE>
+<DD>
+This is  a list of directories where  the Ada mode will  look for source
+files. These directories are used mainly  in two cases, both as a switch
+for the compiler and for the cross-references.
+
+<DT><CODE>obj_dir             [default: "./"]</CODE>
+<DD>
+This  is a  list of  directories where  to look  for object  and library
+files.  The library files are the  .ali files generated by Gnat and that
+contain cross-reference informations.
+
+<DT><CODE>comp_opt            [default: ""]</CODE>
+<DD>
+Creates a  variable which can be  referred to subsequently  by using the
+<CODE>${comp_opt}</CODE> notation.   This is  intended to store  the default
+switches given to `gnatmake' and `gcc'.
+
+<DT><CODE>bind_opt=SWITCHES   [default: ""]</CODE>
+<DD>
+Creates a  variable which can be  referred to subsequently  by using the
+<CODE>${bind_opt}</CODE> notation.   This is  intended to store  the default
+switches given to `gnatbind'.
+
+<DT><CODE>link_opt=SWITCHES   [default: ""]</CODE>
+<DD>
+Creates a  variable which can be  referred to subsequently  by using the
+<CODE>${link_opt}</CODE> notation.   This is  intended to store  the default
+switches given to `gnatlink'.
+
+<DT><CODE>main=EXECUTABLE     [default: ""]</CODE>
+<DD>
+Specifies the name of the  executable for the application. This variable
+can be referred to in  the following lines by using the <CODE>${main}</CODE>
+notation.
+
+<DT><CODE>cross_prefix=PREFIX [default: ""]</CODE>
+<DD>
+This variable  should be set if  you are working  in a cross-compilation
+environment. This is the prefix used in front of the gnatmake commands.
+
+<DT><CODE>remote_machine=MACHINE [default: ""]</CODE>
+<DD>
+This  is  the  name of  the  machine  to  log  into before  issuing  the
+compilation command. If this variable  is empty, the command will be run
+on the local  machine. This will not work on  Windows NT machines, since
+the Ada  mode will simply precede  the compilation command  with a 'rsh'
+command, unknown on Windows.
+
+<DT><CODE>comp_cmd=COMMAND    [default: "${cross_prefix}gcc -c -I${src_dir} -g -gnatq"]</CODE>
+<DD>
+Specifies the command used to compile a single file in the application.
+The name of the file will be added at the end of this command.
+
+<DT><CODE>make_cmd=COMMAND    [default: "${cross_prefix}gnatmake ${main} -aI${src_dir} -aO${obj_dir} -g -gnatq -cargs ${comp_opt} -bargs ${bind_opt} -largs ${link_opt}"]'</CODE>
+<DD>
+Specifies the command used to recompile the whole application.
+
+<DT><CODE>run_cmd=COMMAND     [default: "${main}"]</CODE>
+<DD>
+Specifies the command used to run the application.
+
+<DT><CODE>debug_cmd=COMMAND   [default: "${cross_prefix}gdb ${main}"]</CODE>
+<DD>
+Specifies the command used to debug the application
+
+</DL>
+
+
+
+<H4><A NAME="SEC11">Detailed algorithm</A></H4>
+
+<P>
+This section gives more details on the project file setup and is only of
+interest for advanced users.
+
+
+<P>
+Usually, an Ada file is part  of a larger application, whose sources and
+objects can be spread over multiple directories. The first time emacs is
+asked to compile, run or debug an application, or when a cross reference
+function is  used (goto declaration  for instance), the  following steps
+are taken:
+
+
+
+<UL>
+<LI>find the appropriate project file, open and parse it.
+
+All  the fields  read  in the  project  file are  then  stored by  emacs
+locally.  Finding the project file requires a few steps:
+
+
+<UL>
+<LI>if the variable <CODE>ada-prj-default-project-file</CODE> is set,
+
+use the project file specified in this variable.
+<LI>if one project file from the same directory
+
+was already in use in this emacs session, use this one.
+<LI>if there is a project file whose name is the same as the source file
+
+ except for the suffix, use this one.
+<LI>if  there's only one project file in the source directory, use
+
+that one.
+<LI>if there are more than one project file in the source directory,
+
+ask the user.
+<LI>if there are no project files in the source directory use standard
+
+default values.
+</UL>
+
+The first project file that is selected in a given directory becomes the
+default project file for this directory and is used implicitly for other
+sources unless specified otherwise by the user.
+
+<LI>look for the corresponding .ali file in the <CODE>obj_dir</CODE> defined
+
+in the project  file.  If this file can not be  found, emacs proposes to
+compile the source using the <CODE>comp_cmd</CODE> defined in the project file
+in order to create the ali file.
+
+<LI>when cross referencing is requested, the .ali  file is parsed to
+
+determine  the  file and  line  of  the  identifier definition.   It  is
+possible for  the .ali file to be  older than the source  file, in which
+case it will be recompiled if the variable <CODE>ada-xref-create-ali</CODE> is
+set, otherwise the  reference is searched in the  obsolete ali file with
+possible inaccurate results.
+
+<LI>look  for   the file containing the declaration using the source
+
+path <CODE>src_dir</CODE> defined in the  project file.  Put the cursor at the
+correct position and display this new cursor.
+</UL>
+
+
+
+<H1><A NAME="SEC12">Syntax highlighting</A></H1>
+
+<P>
+The Ada mode is made to help you understand the structure of your source
+files. Some  people like having  colors or different fonts  depending on
+the  context: commands  should be  displayed differently  than keywords,
+which should also be different from strings, ...
+
+
+<P>
+Emacs is able to display in a different way the following syntactic
+entities:
+
+
+
+<UL>
+<LI>keywords
+
+<LI>commands
+
+<LI>strings
+
+<LI>gnatprep statements (preprocessor)
+
+<LI>types (under certain conditions)
+
+<LI>other words
+
+</UL>
+
+<P>
+This  is not  the default  behavior for  Emacs. You  have  to explicitly
+activate it. This requires that you add a new line in your <TT>`.emacs'</TT>
+file (if this file does not exist, just create it).
+
+
+
+<PRE>
+  (global-font-lock-mode t)
+</PRE>
+
+<P>
+But  the default colors  might not  be the  ones you  like. Fortunately,
+there  is  a  very  easy  way  to change  them.  Just  select  the  menu
+<KBD>Help-&#62;Customize-&#62;Specific  Face...</KBD>  and  press <KBD>Return</KBD>.  This
+will display a buffer will all the "faces" (the colors) that Emacs knows
+about. You can change any of them.
+
+
+
+
+<H1><A NAME="SEC13">Moving Through Ada Code</A></H1>
+
+<P>
+There are several  easy to use commands to stroll  through Ada code. All
+these functions are available through the Ada menu, and you can also use
+the following key bindings or the command names:
+
+
+<DL COMPACT>
+
+<DT><KBD>M-C-e    ada-next-procedure</KBD>
+<DD>
+Move to the next function/procedure/task, which ever comes next.
+<DT><KBD>M-C-a    ada-previous-procedure</KBD>
+<DD>
+Move to previous function/procedure/task.
+<DT><KBD>ada-next-package</KBD>
+<DD>
+Move to next package.
+<DT><KBD>ada-prev-package</KBD>
+<DD>
+Move to previous package.
+<DT><KBD>C-c C-a  ada-move-to-start</KBD>
+<DD>
+Move  to matching start  of <CODE>end</CODE>.   If point  is at  the end  of a
+subprogram, this command jumps  to the corresponding <CODE>begin</CODE> if the
+user option  <CODE>ada-move-to-declaration</CODE> is <CODE>nil</CODE>  (default), it
+jumps to the subprogram declaration otherwise.
+<DT><KBD>C-c C-e  ada-move-to-end</KBD>
+<DD>
+Move point to end of current block.
+<DT><KBD>C-c o    ff-find-other-file</KBD>
+<DD>
+Switch between corresponding spec and body  file.  If the cursor is on a
+subprogram, switch between declaration and body.
+<DT><KBD>C-c c-d</KBD>
+<DD>
+Move  from   any  reference  to  its  declaration   and  switch  between
+declaration  and body  (for  procedures, tasks,  private and  incomplete
+types).
+<DT><KBD>C-c C-r  ada-find-references</KBD>
+<DD>
+runs the  <TT>`gnatfind'</TT> command  to search for  all references  to the
+entity pointed  by the cursor. Use  'next-error' function, or  C-x `, to
+visit each reference (as for compilation errors).
+</DL>
+
+<P>
+These  functions use  the  information in  the  output of  the Gnat  Ada
+compiler.   However,   if  your   application  was  compiled   with  the
+<CODE>-gnatx</CODE>  switch, these  functions will  not work,  since  no extra
+information  is generated by  GNAT. See  GNAT documentation  for further
+information.
+
+
+<P>
+Emacs will  try to  run    Gnat for  you whenever the    cross-reference
+informations  are     older   than your   source   file   (provided  the
+<CODE>ada-xref-create-ali</CODE> variable is  non nil).  Gnat  then produces a
+file with the same name  as the current  Ada file but with the extension
+changed to <CODE>.ali</CODE>. This files are normally used  by the binder, but
+they will also contain additional cross-referencing information.
+
+
+
+
+<H1><A NAME="SEC14">Identifier completion</A></H1>
+
+
+
+<H4><A NAME="SEC15">Overview</A></H4>
+
+<P>
+Emacs and  the Ada mode provide  two general ways for  the completion of
+identifiers. This is  an easy way to type faster: you  just have to type
+the first few  letters of an identifiers, and then  loop through all the
+possible completions.
+
+
+<P>
+The  first method  is general  for  Emacs. It  will work  both with  Ada
+buffers, but also in C buffers,  Java buffers, ...  The idea is to parse
+all the opened buffers for possible completions.
+
+
+<P>
+For instance,  if the following words  are present in any  of the opened
+files: my_identifier, my_subprogam, then you will have this scenario:
+
+<PRE>
+You type:  my<KBD>M-/</KBD>
+Emacs will display:  my_identifier
+If you press <KBD>M-/</KBD> once again, Emacs will replace my_identifier with
+my_subprogram.
+Pressing <KBD>M-/</KBD> once more will bring you back to my_identifier.
+</PRE>
+
+<P>
+This is a very  fast way to do completion, and the  casing of words will
+also be respected.
+
+
+<P>
+The second  method is specific to Ada  buffer, and even to  users of the
+Gnat compiler. Emacs will search the cross-information found in the .ali
+files generated by Gnat for possible completions.
+
+
+<P>
+The  main advantage  is  that  this completion  is  more accurate:  only
+existing identifier  will be  suggested, you don't  need to have  a file
+opened that already contains this identifiers,...
+
+
+<P>
+On the other  hand, this completion is a little  bit slower and requires
+that you  have compiled your file  at least once since  you created that
+identifier.
+
+
+
+
+<H4><A NAME="SEC16">Summary of commands</A></H4>
+
+<DL COMPACT>
+
+<DT><KBD>C-TAB  ada-complete-identifier</KBD>
+<DD>
+complete accurately current identifier using information in .ali file
+<DT><KBD>M-/</KBD>
+<DD>
+complete identifier using buffer information (not ada specific)
+</DL>
+
+
+
+<H1><A NAME="SEC17">Index Menu of Subprograms</A></H1>
+
+<P>
+You  can   display  a  choice  menu   with  all  procedure/function/task
+declarations in the file and choose an item by mouse click to get to its
+declaration.  This function is  accessible through  the 'Ada'  menu when
+editing a Ada file, or simply through the following key binding :
+
+
+<DL COMPACT>
+
+<DT><KBD>C-S-mouse-3</KBD>
+<DD>
+display index menu
+</DL>
+
+
+
+<H1><A NAME="SEC18">Automatic Smart Indentation</A></H1>
+
+<P>
+The Ada mode  comes with a full set of  rules for automatic indentation.
+You can of course configure the  indentation as you want, by setting the
+value of a few variables.
+
+
+<P>
+As  always,  the  preferred  way  to  modify variables  is  to  use  the
+<CODE>Ada-&#62;Customize</CODE> menu  (don't forget  to save your  changes!). This
+will also show you some example of code where this variable is used, and
+hopefully make things clearer.
+
+
+<P>
+The relevant variables are the following:
+
+
+<DL COMPACT>
+
+<DT><CODE>ada-broken-indent           (default value: 2)</CODE>
+<DD>
+Number of columns to indent the continuation of a broken line
+
+<DT><CODE>ada-indent                  (default value: 3)</CODE>
+<DD>
+Width of the default indentation
+
+<DT><CODE>ada-indent-record-rel-type  (default value: 3)</CODE>
+<DD>
+Indentation for 'record' relative to 'type' or 'use'
+
+<DT><CODE>ada-label-indent            (default value: -4)</CODE>
+<DD>
+Number of columns to indent a label
+
+<DT><CODE>ada-stmt-end-indent         (default value: 0)</CODE>
+<DD>
+Number of columns to indent a statement 'end' keyword on a separate line
+
+<DT><CODE>ada-when-indent             (default value: 3)</CODE>
+<DD>
+Indentation for 'when' relative to 'exception' or 'case'
+
+<DT><CODE>ada-indent-is-separate      (default value: t)</CODE>
+<DD>
+Non-nil means indent 'is separate' or 'is abstract' if on a single line
+
+<DT><CODE>ada-indent-to-open-paren    (default value: t)</CODE>
+<DD>
+Non-nil means indent according to the innermost open parenthesis
+
+<DT><CODE>ada-indent-after-return     (default  value: t)</CODE>
+<DD>
+Non-nil  means that  the current  line will  also be  re-indented before
+inserting a newline, when you press <KBD>Return</KBD>.
+
+</DL>
+
+<P>
+Most of the  time, the indentation will be automatic,  i.e when you will
+press <KBD>Return</KBD>,  the cursor will move  to the correct  column on the
+next line.
+
+
+<P>
+However, you might want or  need sometimes to re-indent the current line
+or a set of  lines. For this, you can simply go  to that line, or select
+the lines,  and then press <KBD>TAB</KBD>. This  will automatically re-indent
+the lines.
+
+
+<DL COMPACT>
+
+<DT><KBD>TAB</KBD>
+<DD>
+indent the current line or the current region.
+<DT><KBD>M-C-\</KBD>
+<DD>
+indent lines in the current selected block.
+</DL>
+
+
+
+<H1><A NAME="SEC19">Formatting Parameter Lists</A></H1>
+
+<P>
+To help you correctly align fields in a subprogram parameter list, Emacs
+provides  one function  that will  do  most of  the work  for you.  This
+function  will align  the  declarations on  the  colon (':')  separating
+argument names  and argument types, plus  align the 'in',  'out' and 'in
+out' keywords if required.
+
+
+<DL COMPACT>
+
+<DT><KBD>C-c C-f  ada-format-paramlist</KBD>
+<DD>
+Format the parameter list.
+</DL>
+
+
+
+<H1><A NAME="SEC20">Automatic Casing</A></H1>
+
+<P>
+Casing  of   identifiers,  attributes  and   keywords  is  automatically
+performed while  typing when  the variable <CODE>ada-auto-case</CODE>  is set.
+Every  time   you  press  a   word  separator,  the  previous   word  is
+automatically cased.
+
+
+<P>
+You  can  customize  the  automatic  casing  differently  for  keywords,
+attributes and  identifiers. The  relevant variables are  the following:
+<CODE>ada-case-keyword</CODE>,          <CODE>ada-case-attribute</CODE>          and
+<CODE>ada-case-identifier</CODE>.
+
+
+<P>
+All these variables can have one of the following values:
+
+
+<DL COMPACT>
+
+<DT><KBD>downcase-word</KBD>
+<DD>
+The  previous word  will simply  be in  all lower  cases.   For instance
+<CODE>My_vARIable</CODE> is converted to <CODE>my_variable</CODE>.
+
+<DT><KBD>upcase-word</KBD>
+<DD>
+The previous word will be  fully converted to upper cases.  For instance
+<CODE>My_vARIable</CODE> is converted to <CODE>MY_VARIABLE</CODE>.
+
+<DT><KBD>ada-capitalize-word</KBD>
+<DD>
+All letters, except the first one of the word and every letter after the
+'_'  character are  lower cased.  Other  letters are  upper cased.   For
+instance <CODE>My_vARIable</CODE> is converted to <CODE>My_Variable</CODE>.
+
+<DT><KBD>ada-loose-case-word</KBD>
+<DD>
+No letters is  modified in the previous word, except  the ones after the
+'_' character that are  upper cased.  For instance <CODE>My_vARIable</CODE> is
+converted to <CODE>My_VARIable</CODE>.
+</DL>
+
+<P>
+These  functions, although they  will work  in most  cases, will  not be
+accurate sometimes. The  Ada mode allows you to  define some exceptions,
+that will always be cased the same way.
+
+
+<P>
+The idea  is to  create a dictionary  of exceptions,  and store it  in a
+file. This file should contain  one identifier per line, with the casing
+you   want   to   force.   The   default   name   for   this   file   is
+<TT>`~/.emacs_case_exceptions'</TT>.  You can  of course  change  this name,
+through the variable <CODE>ada-case-exception-file</CODE>.
+
+
+<P>
+When  working on  project involving  multiple programmers,  we recommend
+that every  member of  the team  sets this variable  to the  same value,
+which  should  point  to  a  system-wide  file that  each  of  them  can
+write.  That  way,  you  will  ensure  that  the  casing  is  consistent
+throughout your application(s).
+
+
+<P>
+There are two ways to add new items to this file: you can simply edit it
+as you  would edit any  text file, and  add or suppress entries  in this
+file.  Remember that  you should  put one  entity per  line.  The other,
+easier way, is to position the cursor  over the word you want to add, in
+an Ada buffer.  This word should have the casing  you want.  Then simply
+select  the  menu <KBD>Ada-&#62;Edit-&#62;Create  Case  Exception</KBD>,  or the  key
+<KBD>C-c C-y</KBD>. The word will  automatically be added to the current list
+of exceptions and to the file.
+
+
+<P>
+Automatic casing can be performed on port or whole buffer using:
+<DL COMPACT>
+
+<DT><KBD>C-c C-b</KBD>
+<DD>
+Adjust case in the whole buffer.
+<DT><KBD>C-c C-y</KBD>
+<DD>
+Create a new entry in the exception dictionary, with the word under
+the cursor
+<DT><KBD>C-c C-t</KBD>
+<DD>
+Rereads the exception dictionary from the file
+<CODE>ada-case-exception-file</CODE>.
+</DL>
+
+
+
+<H1><A NAME="SEC21">Statement Templates</A></H1>
+
+<P>
+NOTE:  This features  are  not available  on  VMS for  Emacs 19.28.  The
+functions used here do not exist on Emacs 19.28.
+
+
+<P>
+Templates exist  for most  Ada statements. They  can be inserted  in the
+buffer using the following commands:
+
+
+<DL COMPACT>
+
+<DT><KBD>C-c t b</KBD>
+<DD>
+exception Block
+<DT><KBD>C-c t c</KBD>
+<DD>
+case.
+<DT><KBD>C-c t d</KBD>
+<DD>
+declare Block.
+<DT><KBD>C-c t e</KBD>
+<DD>
+else.
+<DT><KBD>C-c t f</KBD>
+<DD>
+for Loop.
+<DT><KBD>C-c t h</KBD>
+<DD>
+Header.
+<DT><KBD>C-c t i</KBD>
+<DD>
+if.
+<DT><KBD>C-c t k</KBD>
+<DD>
+package Body.
+<DT><KBD>C-c t l</KBD>
+<DD>
+loop.
+<DT><KBD>C-c t t</KBD>
+<DD>
+task Body.
+<DT><KBD>C-c t w</KBD>
+<DD>
+while Loop.
+<DT><KBD>C-c t u</KBD>
+<DD>
+use.
+<DT><KBD>C-c t x</KBD>
+<DD>
+exit.
+<DT><KBD>C-c t C-a</KBD>
+<DD>
+array.
+<DT><KBD>C-c t C-e</KBD>
+<DD>
+elsif.
+<DT><KBD>C-c t C-f</KBD>
+<DD>
+function Spec.
+<DT><KBD>C-c t C-k</KBD>
+<DD>
+package Spec.
+<DT><KBD>C-c t C-p</KBD>
+<DD>
+procedure Spec.
+<DT><KBD>C-c t C-r</KBD>
+<DD>
+record.
+<DT><KBD>C-c t C-s</KBD>
+<DD>
+subtype.
+<DT><KBD>C-c t C-t</KBD>
+<DD>
+task Spec.
+<DT><KBD>C-c t C-u</KBD>
+<DD>
+with.
+<DT><KBD>C-c t C-v</KBD>
+<DD>
+private.
+<DT><KBD>C-c t C-w</KBD>
+<DD>
+when.
+<DT><KBD>C-c t C-x</KBD>
+<DD>
+exception.
+<DT><KBD>C-c t C-y</KBD>
+<DD>
+type.
+</DL>
+
+
+
+<H1><A NAME="SEC22">Comment Handling</A></H1>
+
+<P>
+By default, comment lines get indented like Ada code. There are a few
+additional functions to handle comments:
+
+
+<DL COMPACT>
+
+<DT><KBD>M-;</KBD>
+<DD>
+Start a comment in default column.
+<DT><KBD>M-j</KBD>
+<DD>
+Continue comment on next line.
+<DT><KBD>C-c ;   comment-region</KBD>
+<DD>
+Comment the selected region (add -- at the beginning of lines).
+<DT><KBD>C-c :</KBD>
+<DD>
+Uncomment the selected region
+<DT><KBD>M-q</KBD>
+<DD>
+autofill the current comment.
+</DL>
+
+
+
+<H1><A NAME="SEC23">Compiling Executing Debugging</A></H1>
+
+<P>
+Ada mode  provides a much complete environment  for compiling, debugging
+and running an application within Emacs.
+
+
+<P>
+All the  commands used  by Emacs to  manipulate your application  can be
+customized in  the project file.  Some default values are  provided, but
+these will  likely not  be good  enough for a  big or  even medium-sized
+project.  See the section on the  project file for an explanation on how
+to set up the commands to use.
+
+
+<P>
+One   of   the  variables   you   can   set   in  your   project   file,
+<CODE>cross_prefix</CODE>, indicates whether you are using a cross-compilation
+environment, and if  yes for which target. The  default command used for
+compilation  will add  this <CODE>cross_prefix</CODE>  in front  of  the name:
+<CODE>gcc</CODE>  will become  <CODE>cross_prefix</CODE>-<CODE>gcc</CODE>, <CODE>gnatmake</CODE>
+will become <CODE>cross_prefix</CODE>-<CODE>gnatmake</CODE>, ...
+
+
+<P>
+This  will also modify  the way  your application  is run  and debugged,
+although this is not implemented at the moment.
+
+
+<P>
+Here are the commands for building and using an Ada application
+
+
+
+<UL>
+
+<LI>Compiling the current source
+
+This command is issued when  issuing the <CODE>compile</CODE> command from the
+Ada  menu. It  compiles  unconditionally the  current  source using  the
+<CODE>comp_cmd</CODE> variable of the project file. Compilation options can be
+customized with the variable <CODE>comp_opt</CODE> of the project file.
+
+Emacs  will  display  a new  buffer  that  contains  the result  of  the
+compilation.  Each line associated with an error will become active: you
+can simply click on it with the  middle button of the mouse, or move the
+cursor  on  it and  press  <KBD>Return</KBD>.  Emacs  will then  display  the
+relevant source file and put the cursor on the line and column the error
+was found at.
+
+You can also simply press the <KBD>C-x `</KBD> key and Emacs will jump to the
+first error. If you press that key again, it will move you to the second
+error, and so on.
+
+Some error messages might also include references to some files. These
+references are also clickable in the same way.
+
+<LI>(Re)building the whole application
+
+This command is issued when you select the <CODE>build</CODE> command from the
+Ada menu.   It compiles  all obsolete units  of the  current application
+using  the <CODE>make_cmd</CODE>  variable  of the  project file.  Compilation
+options  can be  customized  with the  variable  <CODE>comp_opt</CODE> of  the
+project  file, binder  options with  <CODE>bind_opt</CODE> and  linker options
+with <CODE>link_opt</CODE>. The main unit  of the application may be specified
+with <CODE>main</CODE>.
+
+The compilation buffer is also active in the same way it was for the above
+command.
+
+<LI>Running the application
+
+This command is  issued when you select the  <CODE>run</CODE> command from the
+Ada   menu.   It   executes  the   current  application   in   an  emacs
+buffer. Arguments can be  passed through before executing. The execution
+buffer allows for interactive input/output.
+
+This   command   is   not   yet   available   in   a   cross-compilation
+toolchain. Emacs  would first need to  log on the  target before running
+the application. This will be implemented in a future release of Gnat.
+
+<LI>Debugging the application
+
+This command is issued when you select the <CODE>debug</CODE> command from the
+Ada menu.  It runs the current application under the control of the GNAT
+debugger in emacs windows.
+
+This command is not yet available in a cross-compilation toolchain.
+
+</UL>
+
+
+
+<H1><A NAME="SEC24">Using non-standard file names</A></H1>
+
+<P>
+By default, Emacs is configured to  use the GNAT style file names, where
+file names are the package names,  and the extension for spec and bodies
+are respectively .ads and .adb.
+
+
+<P>
+If you  want to  use other  types of file  names, you  need to  set some
+variables in your .emacs.
+
+
+<P>
+For  instance, if your  files are  called &#60;unit&#62;_s.ada  and &#60;unit&#62;_b.ada
+respectively for spec and bodies, you  need to add the following to your
+<TT>`.emacs'</TT> :
+
+
+
+<PRE>
+(add-hook 'Ada mode-hook
+          '(lambda ()
+             (setq ada-spec-suffix "_s.ada")
+             (setq ada-body-suffix "_b.ada")))
+</PRE>
+
+<P>
+If the  basic filename is  not the unit  name, then things are  a little
+more   complicated.   You   then    need   to   rewrite   the   function
+ada-make-filename-from-adaname  (see   the  file  Ada   mode.el  for  an
+example).
+
+
+
+
+<H1><A NAME="SEC25">Working Remotely</A></H1>
+
+<P>
+When  you work  on project  that  involve a  lot of  programmers, it  is
+generally the case that you will edit the files on your own machine, but
+you want to compile, run and debug your application in another buffer.
+
+
+<P>
+Fortunately, here too Emacs provides a very convenient way to do this.
+
+
+
+
+<H4><A NAME="SEC26">Remote editing</A></H4>
+
+<P>
+First of  all, the files do  not need to  be on your machine.  Emacs can
+edit any  remote file,  by doing transparent  FTP sessions  between your
+machine and the remote machine that stores your files. This is a special
+Emacs mode, called <CODE>ange-ftp</CODE>. To use it, you just have to use a
+slightly different syntax when you open a file.
+
+
+
+<PRE>
+For instance, if you want to  open the file /work/foo.adb on the machine
+aleph.gnu.org, where you log in as qwe, you would simply do this:
+
+<KBD>C-x C-f</KBD> /qwe@aleph.gnu.org:/work/foo.adb <KBD>Return</KBD>
+
+i.e put your name, the name of the machine and the name of the file.
+</PRE>
+
+<P>
+The first time, Emacs will ask  you for a password that it will remember
+until you  close the current Emacs.  Even if the ftp  session times out,
+you won't need to reenter your password.
+
+
+<P>
+Every time you save the file, Emacs will upload it to the remote machine
+transparently. No file is modified on the local machine.
+
+
+
+
+<H4><A NAME="SEC27">Remote compiling</A></H4>
+
+<P>
+If the  machine you  want to  compile on is  not the  one your  Emacs is
+running  on,  you can  set  the  variable  <CODE>remote_machine</CODE> in  the
+project file for your application.
+
+
+<P>
+This  will force  Emacs  to issue  a  rsh command  for the  compilation,
+instead of  running it on  the local machine. Unfortunately,  this won't
+work on Windows workstations, since this protocol is not supported.
+
+
+
+<PRE>
+If  your   <CODE>remote_machine</CODE>  is  aleph.gnu.org   and  the  standard
+compilation command is <CODE>cd /work/ &#38;&#38; gnatmake foo</CODE>, then Emacs will
+actually  issue  the  command  <CODE>rsh  aleph.gnu.org  'cd  /work/  &#38;&#38;
+gnatmake foo'</CODE>.
+</PRE>
+
+<P>
+The advantage of using the  <CODE>remote_machine</CODE> variable is that it is
+easier to change  that machine without having to  modify the compilation
+command.
+
+
+<P>
+Note that if you need to set up some environment variables before the
+compilation, you need to insert a call to the appropriate initialization
+script in the compilation command, for instance:
+
+
+
+<PRE>
+build_cmd= initialization_script ; cd /work/ &#38;&#38; gnatmake foo
+</PRE>
+
+
+
+<H4><A NAME="SEC28">Remote running and debugging</A></H4>
+
+<P>
+This feature is not completely implemented yet.
+
+
+<P>
+However, most of the time, you will be able to run your application
+remotely simply by replacing it with a 'rsh' call on Unix.
+
+
+
+<PRE>
+For instance, if your command was '${main}', you could replace it with
+'rsh aleph.gnu.org ${main}'.
+</PRE>
+
+<P>
+However, this would not fully work for instance on vxworks, where rsh
+is not supported.
+
+
+<P><HR><P>
+This document was generated on July, 1  1999 using
+<A HREF="http://wwwinfo.cern.ch/dis/texi2html/">texi2html</A>&nbsp;1.56k.
+<ADDRESS>
+<P></P><font size=-1><I>Emmanuel Briot &#160; July, 1  1999</I> </font>
+</ADDRESS>
+</BODY>
+</HTML>

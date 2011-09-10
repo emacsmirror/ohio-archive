@@ -1,0 +1,23 @@
+console-buffer REL1 - ben@piglet.cr.usgs.gov
+
+This package makes an emacs buffer that contains a record of console
+output. This can be handy for system administrators and the merely
+curious.
+
+It has been tested under Ultrix and DG/UX. It probably works under
+other UNIXen. If you can make it work under something it doesn't
+currently work on, please send me your changes, and I will
+integrate them in the next release.
+
+Since this code was developed on US Govt. equipment, it is in the
+public domain, the authors hold no copyright on the code. If this
+code makes your computer blow up, or causes damage in any other
+way, it's not our fault; the program has no warranty.
+
+The canonical place to get this program is 
+brrcrftp.cr.usgs.gov:/pub/ben/console-buffer.tar.gz . Anonymous ftp or
+fsp port 21 is supported.
+
+--Ben Mesander
+ben@piglet.cr.usgs.gov
+

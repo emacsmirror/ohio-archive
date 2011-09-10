@@ -1,0 +1,84 @@
+*** lisp/mh-e.el	Thu Sep  1 11:21:53 1988
+--- lisp.local/mh-e.el	Fri Sep 22 11:16:58 1989
+***************
+*** 1819,1822 ****
+--- 1819,1824 ----
+  
+  
++ ;; mod 22-Sep-1989 mdb:: mdb@ESD.3Com.COM, {3comvax,auspex,sun}!bridge2!mdb
++ ;; modified to conditionally use mhl instead of always using it.
+  (defun mh-insert-letter (prefix-provided folder msg)
+    "Insert a message from any folder into the current letter.
+***************
+*** 1835,1844 ****
+    (save-restriction
+      (narrow-to-region (point) (point))
+!     (let ((start (point-min)))
+        (if (equal msg "") (setq msg (format "%d" mh-sent-from-msg)))
+!       (mh-exec-lib-cmd-output "mhl" "-nobell" "-noclear"
+! 			      (mh-expand-file-name msg
+! 						   (mh-expand-file-name
+! 						    folder)))
+        (when (not prefix-provided)
+  	    (mh-clean-msg-header start mh-invisible-headers mh-visible-headers)
+--- 1837,1849 ----
+    (save-restriction
+      (narrow-to-region (point) (point))
+!     (let ((start (point-min))
+! 	  (msg-filename (mh-expand-file-name msg (mh-expand-file-name folder))))
+        (if (equal msg "") (setq msg (format "%d" mh-sent-from-msg)))
+!       (if mhl-formfile
+! 	  (if (stringp mhl-formfile)
+! 	      (mh-exec-lib-cmd-output
+! 	       "mhl" "-nobell" "-noclear" "-form" mhl-formfile msg-filename)
+! 	    (mh-exec-lib-cmd-output "mhl" "-nobell" "-noclear" msg-filename))
+! 	(insert-file-contents msg-filename t))
+        (when (not prefix-provided)
+  	    (mh-clean-msg-header start mh-invisible-headers mh-visible-headers)
+***************
+*** 1883,1892 ****
+        (error "There is no current message.")))
+  
+  (defun mh-insert-prefix-string (ins-string)
+    ;; Preface each line in the current buffer with STRING.
+!   (goto-char (point-min))
+!   (while (not (eobp))
+!     (insert ins-string)
+!     (forward-line 1)))
+  
+  
+--- 1888,1921 ----
+        (error "There is no current message.")))
+  
++ ;; mod 7-Sep-1989 mdb: mdb@ESD.3Com.COM, {3comvax,auspex,sun}!bridge2!mdb
++ ;; generalized, hookified citations
+  (defun mh-insert-prefix-string (ins-string)
+    ;; Preface each line in the current buffer with STRING.
+!   (setq mh-ins-string ins-string)
+!   (save-excursion
+!     (set-mark (point-max))
+!     (goto-char (point-min))
+! ;;  (while (not (eobp))
+! ;;    (insert ins-string)
+! ;;    (forward-line 1)))
+!     (run-hooks 'mh-yank-hooks)))
+! 
+! ;; added 7-Sep-1988 mdb: mdb@ESD.3Com.COM, {3comvax,auspex,sun}!bridge2!mdb
+! ;; generalized, hookified citations
+! (defvar mh-ins-string nil
+!   "A temporary set by mh-insert-prefix prior to running mh-yank-hooks .")
+! 
+! ;; added 7-Sep-1988 mdb: mdb@ESD.3Com.COM, {3comvax,auspex,sun}!bridge2!mdb
+! ;; generalized, hookified citations
+! (defvar mh-yank-hooks
+!   '(lambda ()
+!      (save-excursion
+!        (goto-char (point))
+!        (or (bolp) (forward-line 1))
+!        (while (< (point) (mark))
+! 	 (insert mh-ins-string)
+! 	 (forward-line 1))))
+!   "Hook to run citation function. Expects POINT and MARK to be set to
+! the region to cite.")
+  
+  

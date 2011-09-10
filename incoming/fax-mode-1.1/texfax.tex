@@ -1,0 +1,66 @@
+% texfax.tex -- TeX macros for typesetting facsimile messages.
+%
+% Copyright (C) 1995 Ralph Schleicher
+%
+% This program is free software; you can redistribute it and/or
+% modify it under the terms of the GNU General Public License as
+% published by the Free Software Foundation; either version 2 of
+% the License, or (at your option) any later version.
+%
+% This program is distributed in the hope that it will be useful,
+% but WITHOUT ANY WARRANTY; without even the implied warranty of
+% MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+% GNU General Public License for more details.
+%
+% You should have received a copy of the GNU General Public License
+% along with this program; if not, write to the Free Software
+% Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+\input epsf
+
+\catcode`\@=11
+
+% Page layout.
+%
+\twelvepoint
+
+\let\FAXface\tt
+
+\def\makeheadline{}
+\def\makefootline{}
+
+\hoffset -1in \advance\hoffset 60pt
+\voffset -1in \advance\voffset 60pt
+
+\hsize 40pc
+\vsize 52\normalbaselineskip
+
+\overfullrule\z@
+\frenchspacing
+\raggedbottom
+
+\clubpenalty 4000
+\widowpenalty\@M
+
+% Macros.
+%
+\def\FAXbeginbox{\setbox\z@\hbox\bgroup\strut}
+\def\FAXputbox{\egroup\box\z@}
+
+\def\FAXverbatim{\begingroup\parindent\z@\parskip\z@
+  \everypar{\FAXbeginbox}\def\par{\leavevmode\FAXputbox\endgraf}%
+  \def\do##1{\catcode`##1=12}\dospecials\catcode`\\=0 \chardef\\=`\\
+  \obeylines\obeyspaces\FAXface\FAXverb@tim}
+{\obeylines\gdef\FAXverb@tim#1^^M{\FAXbeginbox}}
+\def\FAXendverbatim{\endgroup\ignorespaces}
+{\obeyspaces\gdef {\ }}
+
+\catcode`\@=12
+
+% Latin-1 character encoding.
+%
+\input latin1-cork
+
+
+% texfax.tex ends here

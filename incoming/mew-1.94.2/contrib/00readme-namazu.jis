@@ -1,0 +1,371 @@
+;; $Id: 00readme-namazu.jis,v 1.5.2.1 2000/02/17 11:32:22 kazu Exp $
+;;
+;; この file は contrib/mew-nmz.el の readme です。
+;;
+;;                                "Hideyuki SHIRAI" <shirai@rdmg.mgcs.mei.co.jp>
+;;
+
+0. はじめに
+ mew-nmz.el は Mew からの検索を Namazu を用いて高速化するための emacs lisp です。
+
+ Mew の扱う MH 形式の folder と Namazu の INDEX を "一対一" に生成し、folder 単位
+ でINDEX を指定することによって、高速な検索と木目細やかな制御を両立しています。
+
+
+1. 準備
+1.1. 要求する Version
+ 以下に示す version のソフトウェア群が必要です。
+
+・Mew    => 1.94.2 以降かな？
+・IM     => IM118 以降かな？
+・Namazu => 動作確認は 1.3.0.6 以降で行ないました。
+          Namazu に関しては http://openlab.ring.gr.jp/namazu/ を参照して下さい。
+
+1.2. 設定
+ 1.1. に示したソフトウェアが単体で動作したら 'mew-nmz.el' をインストールします。お
+ 好みで byte-compile しましょう。
+
+ その後、~/.emacs に
+ (eval-after-load "mew" '(require 'mew-nmz))
+ を書き、各種変数を設定した後、再立ち上げしましょう。
+
+
+2. 変数
+ 以下の変数をお使いの環境、趣味に合わせて下さい。なお、変数名の右(下)に示すのは
+ default 値です。
+
+● mew-nmz-namazu-version (自動設定)
+ 
+ 使用する Namazu の version を設定します。
+ 1.3.x or 1.4.x なら 'v1, 1.9.x 以降なら 'v2 が自動的に設定されます。
+
+● mew-nmz-index-path "~/Namazu"
+   mew-nmz-index-mail "Mail"
+   mew-nmz-index-news "News"
+
+ Namazu の INDEX を作成する directory を指定します。default 設定なら、例えば、
+
+  "+inbox" => "~/Namazu/Mail/inbox"
+  "+ml/mew-dist" => "~/Namazu/Mail/ml/mew-dist"
+  "=fj.editor.emacs" => "~/Namazu/News/fj.editor.emacs"
+
+ に INDEX を作成します。
+
+● mew-nmz-use-fast-pick t
+
+ 't' にすると mew-nmz-search(), mew-nmz-virtual() において、可能な限り emacs
+ lisp で summary を作成します。'nil' にすると、いつも imls を用いて summary を作成
+ します。
+
+● mew-nmz-use-backslash (自動設定)
+
+ Win32 な人は 't' にして下さい。なお、OS/2 は動作確認が取れていないのですが、
+ 't' で動くかもしれません。
+
+● mew-nmz-prog "namazu"
+
+ Namazu のプログラム名を指定します。
+
+● mew-nmz-db-max 64
+   mew-nmz-query-max-length 256
+
+ Namazu 動作時の環境を指定します。それぞれ、namazu.h の 'DB_MAX' と
+ 'QUERY_MAX_LENGTH' と同じ値を指定します。ただし、'Namazu 1.3.0.6 以前' をお使
+ いの方は、mew-nmz-db-max に (- DB_MAX 2) の値を指定して下さい。
+
+● mew-nmz-prog-mknmz "mknmz"
+   mew-nmz-prog-mknmz-args '("-q")
+   mew-nmz-prog-mknmz-include "~/Namazu/mknmz-inc.pl"
+
+ index を作成するプログラム名と引数を指定します。mew-nmz-prog-mknmz-args には、
+ '-U', '-h' 以外の引数を指定します。mew-nmz-prog-mknmz-include で示されるファイル
+ は mknmz 時にインクルードされます。このファイルには
+
+## Namazu 1.3.x なら
+$SEARCH_FIELD = "message-id|subject|from|date|url|newsgroups|to|cc|in-reply-to|references";
+
+## Namazu 1.4.x なら
+$conf::SEARCH_FIELD = "message-id|subject|from|date|url|newsgroups|to|cc|in-reply-to|references";
+
+## Namazu 1.9.x 以降なら
+$conf::SEARCH_FIELD = "uri|subject|from|date|summary|size|message-id|newsgroups|to|cc|in-reply-to|references";
+
+ の様に書いておくと、Namazu で使用できるフィールド検索項目を増やすことが出来ます。
+
+● mew-nmz-prog-gcnmz "gcnmz"
+   mew-nmz-use-gcnmz-folders (list mew-inbox-folder)
+
+ mew-nmz-mknmz-all-folders() 実行時に gcnmz するプログラム名と対象 folder を指定
+します。
+
+ mew-nmz-prog-gcnmz => nil なら gcnmz しません。
+ mew-nmz-use-gcnmz-folders => t なら すべての folder で gcnmz します。
+
+● mew-nmz-mknmz-skip-folders
+         (list mew-draft-folder mew-trash-folder mew-queue-folder mew-attach-folder
+               "+schedule" "=draft")
+
+ mknmz しない(INDEX を作らない) folder を指定します。また、"+ml/mew" としていする
+ と、"^+ml/mew.*" に合致する folder でも INDEX を作成しません。
+
+● mew-nmz-mknmz-skip-news t
+
+ local news folder の INDEX を作らないとき 't' にします。
+
+● mew-nmz-mknmz-use-mode-line t
+   mew-nmz-line-id '("Mew(nmz): %7b")
+
+ INDEX を作成中の folder の summary buffer の mode line をちょっとだけ変えます。
+
+● mew-nmz-pick-default-field nil
+   mew-nmz-pick-field-list
+            '("+subject:" "+from:" "+to:" "+newsgroups:" "+date:"
+	      "+message-id:" "+cc:" "+in-reply-to:" "+references:")
+   mew-nmz-pick-gather-field-list
+            (list (list mew-from: 'address "+from:" "+to:" "+cc:")
+		  (list mew-to: 'address "+from:" "+to:" "+cc:")
+		  (list mew-cc: 'address "+from:" "+to:" "+cc:")
+		  (list mew-message-id: 'msgid "+message-id:" "+in-reply-to:" "+references:")
+		  (list mew-in-reply-to: 'msgid "+message-id:" "+in-reply-to:" "+references:")
+		  (list mew-references: 'msgid "+message-id:" "+in-reply-to:" "+references:"))
+
+ Namazu の検索パターンを入力するときの各種設定です。
+ mew-nmz-pick-field-list に設定されたものが補完として使用できます。
+
+ また、mew-nmz-pick-gather-field-list を設定すると、現在表示している Message から
+ 情報を集めて補完候補として使用します。mew-nmz-pick-gather-field-list => nil とす
+ るとこの機能を抑制します。各 cell の
+ 
+  第1cell => 情報を収集する Header の指定。
+  第2cell => Header 内容の加工。'address と 'msgid が使用できます。
+  第3cell以降 => 補完出力するときにつける prefix。
+
+をお好みで指定します。
+
+● mew-nmz-mark-unindexed mew-mark-review
+
+ mew-nmz-mark-unindexed() するときに使用する mark の種類を指定します。
+
+● mew-nmz-use-namazu-el (locate-library "namazu")
+   mew-nmz-namazu-full-window t
+
+ Mew から namazu-mode を使用するときに設定します。Namazu に contrib されている
+ namazu.el が load-path 上にあれば、自動的に使用できるようになります。
+
+
+3. ユーザインターフェース関数
+ mew-nmz.el の使い方です。関数名の右側は標準の key bind になります。
+
+3.1. INDEX の作成、支援関数
+
+● mew-nmz-mknmz() "zm"
+
+ 指定した folder に対して Namazu INDEX を作成します。"C-u" 付きで実行すると、現在
+ の INDEX を消去してから Namazu INDEX を作成します。
+
+● mew-nmz-mknmz-all-folders() "key bind なし"
+
+ すべての folder に対して、Namazu INDEX を作成します。初めて INDEX を作成するとき
+ は長時間必要となり、その間 Emacs が使えなくなるので注意して下さい。"C-u" 付きで実
+ 行すると、folder 情報を update してから INDEX を作成します。このコマンドを使うよ
+ り 'immknmz' を使った方が幸せです。
+
+● mew-nmz-mark-unindexed() "zu"
+
+ 現在の folder で INDEX が作成されていない Message を mark 付けします。
+
+● mew-nmz-gather-indexed-folder() "key bind なし"
+
+ INDEX が作成されている folder を収集し、'mew-nmz-indexed-folders' に保存します。
+ 通常は自動的に INDEX が生成されている folder を収集するので、ユーザが実行する必要
+ はありません。
+ 
+
+3.2. 検索、表示関数
+
+● mew-nmz-search() "z/"
+
+ 指定した folder を Namazu を用いて検索し、summary buffer を再構築します。このとき、'
+ mew-nmz-use-fast-pick => t' なら emacs lisp を用いて summary buffer を再構築しま
+ す。'mew-nmz-use-fast-pick => nil' 及び "C-u" 付きで起動すると、imls を用いて
+ summary buffer を再構築します。また、Mew に mew-summary-search コマンドがないとき
+ は、この関数は動作しません。
+
+● mew-nmz-search-mark() "z?"
+
+ 指定した folder を Namazu を用いて検索し、mark 付けします。"C-u" 付きで起動すると、
+ region 内の Message を検索対象とします。
+
+● mew-nmz-virtual() "zV"
+
+ 指定した複数の folder を Namazu を用いて検索し、virtual folder を作成します。フォ
+ ルダの指定を '*' で終了すると、'*' の前までに合致するすべての folder を検索対象と
+ します。例えば、以下の様になります。
+
+ '*' => すべての local folder を検索する。
+ '+*' => すべての mail folder を検索する。
+ '+ml/mew-*' => '+ml/mew-dist', '+ml/mew-win32', '+ml/mew-dist/old' 等を検索する。
+
+● mew-nmz-namazu() "zN"
+
+ mew-nmz-virtual と同様の指定を行うと、検索結果を "namazu mode" で表示します。この
+ 検索方法は Namazu に同梱されている "namazu.el" をインストールしないと使用できませ
+ ん。すでに "*namazu* buffer" が存在すると、"zN" は、その buffer を表示します。検
+ 索をやり直したいときは、"C-u" 付きで mew-nmz-namazu() を起動します。
+
+ このとき、検索対象 folder として、mew-nmz-db-max よりたくさんの folder を指定する
+ と、mew-nmz-db-max 個以上の folder は無視されますが、namazu.el 側で対応して、
+ db-max 以上も検索出来るようになる予定です。
+
+ "namazu mode" で "m" を押すと、Mew を呼出して対応する Message を表示します。"M"
+ を押すと "namazu mode" を呼び出した folder に戻ります。その他の設定やキーバインド
+ などは "namazu.el" の設定に依存します。
+
+● mew-nmz-search-parent() "z^", "zp", "zn"
+
+ 表示している Message の *親* message を検索し、表示します。("z^", "zp")
+ 表示している Message の *子* message を検索します。("C-uz^", "zn")
+
+ *親* message を検索するときは、その message の "In-Reply-To:" か "References:" に
+ 示される Message ID を "Message-ID:" に持つ message を検索します。
+
+ *子* message を検索するときは、その message の Message-ID を "In-Reply-To:" か
+ "References:" に持つ message を検索します。
+ 
+● mew-nmz-search-msgid-at-point() "zp"
+   mew-nmz-search-msgid-region() "zr"
+
+ 上記の関数は mew-messeage-mode で有効です。それぞれ、指定した Message ID の
+ message を検索して、表示します。
+ また、どんな buffer 上でも M-x mew-nmz-search-msgid-at-point とすると、動作します。
+
+
+3.2. virtual mode のおまけ
+
+● mew-virtual-original-message() "zj"
+
+ virtual folder において、表示している Message の実体の folder、number を表示しま
+ す。"C-u" 付きで起動すると、実体のある場所に jump します。
+
+
+4. IM Script (Namazu 関連)
+4.1. ~/.im/Config
+ もし、Namazu 1.9.x 以降(これを Ver.2 と呼ぶ)をお使いのときは、~/.im/Config に
+
+NamazuV2=on
+
+ と書いて下さい。Perl により Version 自動判定は失敗しました。^^;;;
+
+4.2. imls --namazu --grep='pattern' --src=NamazuIndex,NamazuIndex... msgs
+ という形式で、imls を起動すると、Virtual folder 形式で該当する message を出力しま
+ す。
+
+4.3. immknmz 
+ mew-nmz 形式の Index を作成します。option として、
+
+ --verbose=<on|off> (-v)(off) With verbose messages.
+ --gcnmz=<on|off> (-g)(off)   Use gcnmz after mknmz (Garbage Collection for Namazu index).
+ --help=<on|off> (-h)(on)     Show this message.
+
+があります。
+
+
+5. INDEX の作成支援
+ いつ INDEX を作成するか、更新するか、とても悩ましいところなので、それらをサポート
+ する関数です。~/.emacs に書いておくと *ある程度* 自動で INDEX を作成しますが、
+ system に多大な負荷をかけるものもありますので、お好みに合わせてお使い下さい。
+
+;; inc した後に勝手に mknmz する。message のある無しは、おもいっきり環境依存な
+;; 判定方法。
+(add-hook 'mew-summary-inc-sentinel-hook
+	  '(lambda ()
+	     (if (functionp 'current-message)
+		 (let ((msg (current-message)))
+		   (if (string-match "^No" msg)
+		       ()
+		     (mew-nmz-mknmz (mew-inbox-folder))))
+	       (mew-nmz-mknmz (mew-inbox-folder)))))
+
+;; pack した後に勝手に mknmz する。INDEX の remove 付き
+(defadvice mew-summary-pack (after mknmz-pack-folders activate)
+  (mew-nmz-mknmz (mew-summary-folder-name) t))
+
+;; sort した後に勝手に mknmz する。INDEX の remove 付き
+(defadvice mew-summary-sort (after mknmz-sort-folders activate)
+  (mew-nmz-mknmz (mew-summary-folder-name) t))
+
+;;;; mew-summary-exec の後に mknmz して、index を最新に保つ。
+;;;; 多大な負荷を system にかける。
+(defvar mew-nmz-refile-folders nil)
+(make-local-variable 'mew-nmz-refile-folders)
+
+;; summary-exe する前に情報を収集する。
+(defadvice mew-summary-exec-region (before get-refile-folders activate)
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+      (goto-char (point-min))
+      (let (msgs)
+	(setq mew-nmz-refile-folders nil)
+	(setq msgs (mew-summary-mark-collect
+		    mew-mark-refile (point-min) (point-max)))
+	(if (or msgs
+		(mew-summary-mark-collect
+		 mew-mark-delete (point-min) (point-max)))
+	    (setq mew-nmz-refile-folders (list (mew-summary-folder-name))))
+	(if msgs
+	    (mapcar '(lambda (msg)
+		       (mapcar '(lambda (fld)
+				  (setq mew-nmz-refile-folders
+					(cons fld mew-nmz-refile-folders)))
+			       (cdr (assoc msg mew-summary-buffer-refile))))
+		    msgs))))))
+
+;; summary-exe した後に勝手に mknmz する。
+(add-hook 'mew-summary-exec-hook
+	  '(lambda ()
+	     (let ((flds mew-nmz-refile-folders))
+	       (setq mew-nmz-refile-folders nil)
+	       (if (null flds)
+		   ()
+		 (while (car flds)
+		   (mew-nmz-mknmz (car flds))
+		   (sit-for 1)
+		   (setq flds (delete (car flds) flds)))))))
+
+
+6. その他
+6.1. INDEX の大きさ、作成時間など
+ 手元のマシン(SS-20/M-152, SUNOS 5.4)では、このようになっています。
+
+(length mew-folder-alist) => 119
+
+% du -ks ~/Mail/
+302757  /home/shirai/Mail
+
+% du -ks ~/Namazu/Mail/
+158939  /home/shirai/Namazu/Mail
+
+ INDEX が何もない状態で M-x mew-nmz-mknmz-all-folders すると約8時間、Update 目的
+で M-x mew-nmz-mknmz-all-folders すると10〜20分かかります。
+
+
+6.2. 謝辞
+ Takeshi ITOH <titou@bits.co.jp> さんが
+
+伊藤さん> (2)フォルダ毎にDBを作る
+伊藤さん>   - 各フォルダに DB を作る。
+伊藤さん>   - namazu は複数 DB に対応しているのでフォルダ指定の検索も簡単。
+伊藤さん>   - DBの一覧は C-u Z のときに作る?
+伊藤さん>   - DBの更新が面倒になる?
+
+とおっしゃっていただけなかったら、mew-nmz.el はおかしなものになっていたでしょう。
+また、imls の変更はほとんど伊藤さんのものの見よう見まねで作りました。感謝、感謝です。
+
+ バグレポートを下さったり、改善要望を下さった方々もありがとうございます。
+当然、Mew や Namazu をお作りになられているすべての方々にも感謝です。(__)
+
+;; Local Variables:
+;; fill-column: 82
+;; mode: auto-fill
+;; End:

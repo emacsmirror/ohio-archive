@@ -1,0 +1,1215 @@
+2000-03-05  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-reread-cvsrc): Use cvs-partition rather than remove-if.
+	(cvs-run-process): Eliminate use of multiple-value-bind.
+	(cvs-mode-marked, cvs-mode-undo): Use cvs-partition.
+	(cvs-do-removal): Use cvs-every.
+
+	* pcl-cvs-util.el (cvs-every, cvs-union, cvs-partition): New functions.
+	(cvs-map): Use cvs-every.
+
+	* pcl-cvs-parse.el (cvs-parsed-fileinfo): Eliminate multiple-value-bind.
+	(cvs-parse-table): Add `subtype' in the list of local vars.
+
+	* pcl-cvs-info.el (cvs-msg-face): New face for CVS messages.
+	(cvs-fileinfo-pp): Replace multiple-value-bind with let.
+
+	* cvs-status.el (cvs-tree-tags-insert): Use cvs-every and replace
+	  multiple-value-bind with equivalent let+cons+car+cdr construct.
+
+	* cvs-edit.el (cvs-edit-use-vc-log): Remove.
+	(cvs-insert-changelog-entries): Use cvs-union.
+
+	* Makefile (install_info): Fix call to install-info.
+
+2000-03-03  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-from-vc): New dynamically bound var.
+	(cvs-mouse-find-file): Removed.
+	(cvs-menu): Removed useless code.
+	(cvs-temp-buffer): Handle the case where `display-buffer' changes the
+	  currently selected buffer.
+	(cvs-make-cvs-buffer): Be more aggressive about expanding dirs.
+	(cvs-parse-process): Don't auto-revert when called via VC.
+	(defun-cvs-mode): Added edebug spec.
+	(cvs-addto-collection): New function.
+	(cvs-merge-collection): Use cvs-fileinfo<.
+	(cvs-cleanup-collection): Simplify.
+	(cvs-(examine|update|status)): Don't pass ".".
+	(cvs-update-filter): Jump to end of buffer when a lock is waiting, so that
+	  the user gets a chance to see the message even if the buffer is too big.
+	(cvs-mode): Use define-derived-mode rather than cvs-define-major-mode.
+	(cvs-mode-commit-setup): New function, replaces cvs-mode-changelog-commit.
+	(cvs-mode-commit): Completely rewritten.
+	(cvs-commit-minor-wrap): Moved from cvs-edit.el.
+	(cvs-commit-filelist): New function to be passed to cvs-edit.
+	(cvs-mode-insert): Fix the read-file-name call. Use cvs-addto-collection.
+	(cvs-mode-run): Properly handle the post-cmd cleanup in the case when
+	  FIS is an empty list.
+	(cvs-mode-find-file(-other-window)): Properly handle the case when called
+	  via a mouse event.
+	(cvs-vc-command-advice): Moved the code outside of vc-do-command's
+	  defadvice so it can be used for vc-simple-command as well.  Use
+	  cvs-parse-known-commands to decide whether to parse or not.
+	(vc-simple-command, vc-do-command): Advise using cvs-vc-command-advice.
+	(cvs-mark-buffer-changed): New function.
+	(after-save-hook): Add cvs-mark-buffer-changed.
+
+	* pcl-cvs-util.el (cvs-pop-to-buffer-same-frame): Gracefully handle the
+	  case where splitting fails.
+
+	* pcl-cvs-info.el (cvs-(filename|dirname)-map): Use cvs-mode-find-file
+	  instead of the old cvs-mouse-find-file.
+	(cvs-check-fileinfo): Be much less strict about type/subtype.
+	(cvs-fileinfo<): Renamed from cvs-fileinfos-compare.
+
+	* pcl-cvs-defs.el (cvs-erase-input-buffer): Removed.
+	(cvs-buffer-name-alist): Change the default for "message".
+	(cvs-menu): Simplified: remove mark&unmark and hide.
+	(cvs-inhibit-copyright-message): Removed.
+
+	* pcl-cvs-parse.el (cvs-parse-known-commands): Add `ci' (used by VC).
+	(cvs-parse-buffer): Allow the parse function to return a list of fileinfos.
+	(cvs-or): Add an edebug spec.
+	(cvs-parse-run-table): Set MESSAGE's subtype to ERROR.
+	(cvs-parse-table): Add support for `J ' in case it ever gets into an
+	  official CVS release.  Make `C ' always return CONFLICT.  Replace
+	  the mode-conflict's messages by (CONFLICT. SUBTYPE).  Set
+	  cvs-execute-single-dir if it proves necessary.  Drop duplicate
+	  cvs-match for `already contains diffs'.
+	(cvs-parse-merge): If dont-change-disc, use NEED-MERGE.
+	  And if `already contains diffs' use (UP-TO-DATE . MERGED).
+	(cvs-parse-status): Try to make it work for filenames with spaces.
+
+	* cvs-status.el (cvs-status-vl-to-str): New function.
+	(cvs-tag->string cvs-tree-tags-insert): Use it.
+
+	* cvs-edit.el (cvs-edit-keep-buffer, cvs-edit-setup-invert)
+	(cvs-edit-hook): New vars.
+	(cvs-edit-callback, cvs-edit-listfun): New buffer-local vars.
+	(cvs-edit): New function.  New entry-point.
+	(cvs-edit-mode): Trimmed down since most of it is now in `cvs-edit'.
+	(cvs-edit-hide-buf): Check existence before trying to hide the buffer.
+	(cvs-edit-done): Use cvs-edit-keep-buffer and cvs-edit-callback.
+	(cvs-edit-files): Use cvs-edit-listfun.
+	(cvs-edit-minor-wrap): Moved to pcl-cvs.el.
+	(cvs-edit-insert-cvs-template): New function for cvs-edit-hook.
+	(cvs-edit-add-to-changelog): New function for cvs-edit-done-hook.
+	  Wrapper around `vc-comment-to-change-log'.
+
+1999-09-05  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* released 2.9.7.
+
+	* pcl-cvs.el (cvs-retrieve-revision, cvs-revert-if-needed): use
+	  toggle-read-only instead of setting buffer-read-only itself.
+	(cvs-find-modif): bug fix for sloppy coding.
+
+	* pcl-cvs-util.el (cvs-bury-buffer): slight bug fix for dedicated windows.
+	(cvs-prefix): make the max into a variable and use negative numbers for
+	  setting a value.
+
+	* pcl-cvs-info.el:  added `update' to MISSING's actions.
+
+	* makefile.pkg:  moved pcl-cvs-compat to cvs-compat (and reorganized).
+
+	* cvs-status.el, pcl-cvs-defs.el, pcl-cvs-info.el, pcl-cvs-parse.el,
+	  pcl-cvs-util.el: pass through checkdoc.
+
+	* cvs-edit.el (cvs-edit-use-vc-log):  removed the -flag.
+
+1999-08-31  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-parse.el (cvs-parse-commit): mark removed files as
+	  `up-to-date . removed' rather than `dead'.
+
+1999-08-29  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-reread-cvsrc): new function.
+	(cvs-mode!): allow FUN to select another window.
+	(cvs-make-cvs-buffer, cvs-cmd-do, cvs-(examine|update|status)):
+	  allow two *cvs* buffers on the same directory.
+	(cvs-cleanup-collection): keep the first DIRCHANGE.
+	(cvs-help, cvs-mode-diff-help): patch from Greg Woods.
+	(cvs-mode-insert): don't `cvs status' for directories.
+	(cvs-mode-imerge): temporarily bind auto-mode-alist to nil to avoid
+	  loading nroff-mode when finding backup files.
+	(cvs-mode-undo): use `add' for `removed' files.
+	(cvs-mode-undo): call `revert-to-rev' if there's a prefix-arg.
+	(cvs-mode-revert-to-rev): new function.
+	(cvs-do-removal): don't kill the entries if `all' is set (for undo).
+	(cvs-dired-action, cvs-dired-use-hook, dired-noselect, vc-do-command,
+	  uniquify-buffer-file-name): moved from pcl-cvs-hooks.el.
+
+	* makefile.pkg: new file included from Makefile.
+	Holds all the pcl-cvs specific information.
+
+	* cvs-log.el: new mode for`cvs log' output.
+
+	* pcl-cvs-util.el (cvs-bury-buffer): new function.
+	(let-and): removed.
+	(cvs-*); prepend with "cvs-".
+	(cvs-file-to-string): `with-temp-buffer'.
+	(cvs-flags-set): new function.  For cvs-reread-cvsrc.
+
+	* pcl-cvs-compat.el: merged with sml-mode's.
+
+	* cvs-edit.el (cvs-edit-use-vc-log-flag): add "-flag" to the name.
+	(cvs-edit-done, cvs-edit-mode, cvs-edit-initial-files):
+	  check if the list of files has changed.
+	(cvs-edit-done): bury the window more carefully.
+
+1999-08-19  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* diff-mode.el (toggle-read-only): use the clever trick of making an
+	  buffer-local-almost-minor-mode buffer-read-only to automatically turn
+	  on the read-only keymap.
+	(diff-inhibit-after-change): just use inhibit-read-only instead.
+	(diff-fixup-modifs): use zero-padding to minimize size changes.
+
+1999-08-18  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* diff-mode.el: made into a full blown major mode with bells and whistles.
+
+	* pcl-cvs-hooks.el (vc-backend-diff): moved to diff-mode.el.
+
+	* cvs-status.el, pcl-cvs.el: use inhibit-read-only.
+
+1999-08-09  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-mode-kill-buffers,cvs-temp-buffers): new user function.
+	(cvs-append-to-ignore): try toggle read-only for CVSREAD=on.
+
+	* pcl-cvs-parse.el (cvs-parse-table): trust the path for `U <file>'.
+
+	* pcl-cvs-hooks.el (disable): misunderstanding.  VC hooking should work
+	  again now.
+
+	* pcl-cvs-compat.el (easy-mmode-define-minor-mode): not in XEmacs.
+
+	* cvs-status.el (cvs-status-minor-wrap): `mark-active' not in XEmacs.
+
+	* Makefile (install_startup): brain fart with `sed'.
+
+1999-07-14  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-<foo>-cmd-flags): dropped.
+	(cvs-temp-buffer): clean up the behavior.  Merge cvs-make-temp-buffer's
+	  functionality into it.  Move the `process-running' test in here.  It
+	  used to be done too late (at a stage where harm had already been done to
+	  the buffer).
+	(cvs-cmd-do): use cvs-mode-run rather than calling directly cvs-run-process.
+	(cvs-process): dropped the variable and use get-buffer-process instead.
+	(cvs-sentinel): enable undo when cvs finishes.
+	(cvs-mode-line-process): oops, make local!
+	(cvs-mode-marked): weaken cvs-force-command by not allowing to apply to it
+	  MESSAGE.  To avoid the user applying things to non-entries like HEADER
+	  and such (tended to lead to strange behavior).
+	(cvs-do-commit): stripped down to its core.
+	(cvs-mode-run): now also works with empty FIS.
+
+	* pcl-cvs-util.el (cvs-pop-to-buffer-same-frame): new fun.
+	(cvs-get-buffer-create): new fun.
+
+	* pcl-cvs-info.el (cvs-applicable-p): nothing's applicable to MESSAGE.
+
+	* pcl-cvs-defs.el (cvs-auto-remove-handled): added 'delayed and 'status.
+	(cvs-invert-ignore-marks): put `tag' in there.
+
+	* cvs-status.el (cvs-tree-print): pass the column explicitly as an
+	  argument rather than implicitly as the cursor position so as to avoid
+	  adding spurious spaces on the last line.
+	(cvs-status-font-lock-keywords): fix for it to work properly with an
+	  improved font-lock that works across multiple lines.
+
+	* cvs-edit.el (cvs-edit): new custom group.
+	(cvs-edit-show-files): new command bound to C-c C-f.
+	(cvs-edit-confirm): new var.
+	(cvs-edit-require-final-newline): renamed from cvs-commit-buffer-r-f-n
+	(cvs-edit-done): moved the require-final-newline thing from cvs-do-commit
+	  and added the confirmation-code (and call to cvs-edit-show-files).
+
+1999-07-09  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* release: 2.9.6
+
+	* pcl-cvs.el (cvs-mode-motion-highlight-line):  dropped.
+	(cvs-mode!): spiced up to allow influencing behavior depending on the
+	  buffer from which commands are executed.
+	(cvs-secondary-branch-prefix): new prefix, bound to `B' and only active if
+	  the primary branch prefix is.  It shares the defaults except for the
+	  main one.
+	(cvs-buffer):  finally made buffer-local.
+	(defun-cvs-mode): improved to support various translation strategies.
+	  Now (almost) all cvs-mode-<foo> functions are defined with it.
+	(cvs-get-marked): reworked.  It now returns fileinfos instead of tins and
+	  can now handle marked directories, although this is not used just now.
+	  It also adds a hook to specify externally the files to operate on.
+	(cvs-mode-files): support routine used by cvs-edit to know what files are
+	  about to be committed.
+	(cvs-mode-commit): trimmed.
+	(cvs-do-commit):  earlier called `cvs-edit-done'.
+	(cvs-mode-idiff): doesn't ignore the REV argument anymore.
+	(cvs-mode-idiff-other): new, bound to `d2'.  Incomplete.
+
+	* pcl-cvs-defs.el: various rebindings/movements/simplifcations.
+	(menubar):  simplified.  It migth not work as well on older XEmacsen.
+
+	* cvs-status.el (cvs-status-mode-map): inherit directly from cvs-mode-map
+	(cvs-status-minor-wrap): to pass the right parameters to cvs-mode commands
+	  when exec'd from cvs-status-mode.
+
+	* cvs-edit.el: new file, extracted from pcl-cvs.el.
+	(cvs-edit-mode):  back to major-mode, derived from text-mode but
+	  inheriting most vc-log-mode commands if requested.
+	(cvs-edit-insert-changelog): now a separate function bound to C-c C-a and
+	  that you can put in your cvs-edit-mode-hook.
+	(cvs-edit-done-hook): might prove useful.
+
+1999-07-08  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-*-flags): moved from pcl-cvs-defs.el.  Not a simple var
+	  any longer since it uses the cvs-flags stuff to allow multiple defaults.
+	(cvs-minor-mode): all cvs-temp-buffers are now in cvs-minor-mode where all
+	  cvs-mode commands are available under the C-x c prefix.
+	(cvs-temp-buffer): try to work around the scroll-other-window problem.
+	(cvs-merge-collection): do the sort there.  NO difference, but
+	  conceptually better since `merge' only works after a `sort'.
+	(cvs-get-module): attempt at guessing the current module.
+	(cvs-checkout): now gets a suggested module and understands the `b' prefix.
+	(cvs-mode-commit): no `insert-text' argument any more.
+	(cvs-mode-add): don't use `cvs-update-flags' since it may contain
+	  undesirable flags.
+	(cvs-idiff-version): also turned into a `cvs-flags'.
+	(cvs-mode-update): use "-j" instead of "-r" for the `b' prefix.
+	(cvs-mode-examine): now understands the `b' prefix (uses it with "-j").
+	(cvs-do-removal): should now work properly with directories.
+	(cvs-mode-remove): relies on `cvs rm -f' rather than on `cvs-do-removal'
+	  for the deletion of files.  Needed for the directory case.
+	(cvs-edit-mode): a permanent-local minor-mode rather than a major-mode.
+	(cvs-edit-insert-changelog): new.  To replace cvs-mode-changelog-commit.
+	(cvs-changelog-ours-p): cleanup.
+
+	* pcl-cvs-util.el (custom-create-map): accepts list of bindings in `car'.
+	(cvs-flags-query): reworked.  Can now understand several defaults,
+	  selected via numeric prefixes.
+	(cvs-prefix): `persist' was erroneously shared among all buffers.
+
+	* pcl-cvs-defs.el (cvs-shared-(start|flags)): new vars to go along with
+	  the new cvs-flags management.
+	(cvs-commit-prompt-buffer): disappeared, moved to cvs-buffer-name-alist.
+	(cvs-buffer): made permanent-local.
+	(cvs-mode-map): better simulate `suppress-keymap' by binding numeric keys.
+	  dropped `dd' = cvs-mode-diff.
+	(cvs-minor-mode-map): new.  The binding was moved from `C-x v' to `C-x c'.
+
+1999-07-06  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-cmd-do): use `pop-to-buffer' again, but with
+	  pop-up-windows set to nil.
+	(cvs-temp-buffer): erase the buffer before calling the new mode.
+	(cvs-mode): use define-major-mode.  And don't set goal-column any more.
+	(cvs-mode-find-file): jump to the active area if the file is locally
+	  modified and if `cvs-find-file-and-jump' is set.
+
+	* pcl-cvs-util.el (define-major-mode): brand new.
+
+	* diff-mode.el (diff-mode): use define-major-mode.
+
+	* cvs-status.el (cvs-status-mode-map): added motion and tree commands.
+	(cvs-status-mode): use define-major-mode and setup font-locking.
+	(trees/tags): lots of tweaking to make it more flexible and be able to
+	  switch between tree representations.
+
+	* pcl-cvs.el (cvs-force-command,cvs-ignore-marks-modif): now cvs-prefixes.
+	(cvs-mode-commit): bug with cvs-mode-marked.
+
+	* pcl-cvs-util.el (cvs-prefix): reworked to allow several defaults and
+	  persistent settings.
+
+1999-07-05  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-parse.el (cvs-parse-known-commands): new var.
+
+	* pcl-cvs-defs.el (cvs-execute-single-dir): either T or a list of commands.
+
+	* pcl-cvs.el (cvs-temp-buffer): renamed from cvs-use-temp-buffer.
+	  it returns the temp buffer instead of selecting it.
+	(cvs-update-header): drop the useless `inline' argument.
+	(defun-cvs-mode): new macro for all the interactive functions.
+	(cvs-mode-insert): use `defun-cvs-mode' and the new cvs-mode-run command.
+	(cvs-mode!): call the function parameter in the right environment instead
+	  of simply selecting the buffer.
+	(cvs-mode-add): use the new cvs-mode-run command.
+	(cvs-mode-marked,cvs-mode-run): split the functionality of cvs-mode-do
+	  into those two functions.
+	(cvs-mode-do):   `single-dir' is now determined by `cmd' and
+	  `cvs-execute-single-dir' rather than being passed as an argument.
+	  `precmd' has disappeared:  if you need it, use cvs-mode-run.
+	  `postproc' has disappeared (it wasn't used).
+	  `parse' is now determined automatically from cvs-parse-known-commands.
+	(cvs-filter-applicable): removed, folded into cvs-mode-marked.
+
+1999-07-02  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-get-tags): keep kind as a string.
+	(cvs-mode-do): use cvs-buffer-name-alist's `after-mode' spec.
+
+1999-07-01  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-tags-list,cvs-get-tags): split out the tags-extraction
+	  functionality in order to reuse it in cvstree.el.
+
+	* pcl-cvs-parse.el (cvs-parse-status): typo in regexp.
+
+	* cvstree.el (cvstree,cvstree-mode): moved the buffer rewriting to
+	  cvstree-mode and made it work on multiple `cvs status' output.
+
+	* pcl-cvs-info.el (cvs-compare-fileinfos): fix dir sorting
+	  from <pmai@acm.org> (Pierre R. Mai).
+
+1999-06-30  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* cvstree.el: don't bother with `-no-properties'.
+	(cvstree-dstr-insert): isn't that just "insert" ?
+	(cvstree-call-status): move all cache-consistency in here.
+
+1999-06-29  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-parse.el (SEQ): renamed `and'.
+	(MSG): renamed `cvs-parse-msg'.
+	(REGEXP): renamed `cvs-match'.
+	(ALT): renamed `cvs-or'.
+
+	* pcl-cvs-compat.el (string): eliminated the dependency altogether.
+
+	* pcl-cvs.el (cvs-mode-tree): from cvstree minus `pos' argument.
+	(cvs-use-temp-buffer): make the buffer read-only.
+
+	* cvstree.el: new file.  slight cleanup since it doesn't need to work
+	  outside pcl-cvs any more.  More specifically, remove dependence on
+	  elib/string.el (use pcl-cvs-compat instead).
+	(assoc): don't use that ugly library any more.
+	(cvs-mode-tree): moved to pcl-cvs.el
+	(cvstree): mark it autoload.
+	(require 'pcl-cvs): removed since cvs-checkout is autoloaded instead.
+	(cvstree-cache-create): sorry, couldn't resist.
+	(buffer-substring-no-properties): Assume it's available.
+	(cvstree-dstr-2byte-ready): simplified.
+
+1999-06-23  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-retrieve-revision): use after-find-file.
+	(cvs-mode-imerge): set the proper mode for backup-buf.
+	(ALL): renamed cvs-cookie-handle cvs-cookies !!!!
+	(cvs-mode-do): oops!  brain fart with the postproc handling.
+	(cvs-update-filter): added a few bugs and removed others.
+	(cvs-mode-mark): always work on the current line (works better this
+	  way from C-x v in the commit buffer).
+	(cvs-mode!): also selects the window.
+	(cvs-revert-if-needed): don't preserve modes after all:  it screws up VC.
+
+1999-06-22  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-startup.el: fixed to fulfill autoload.el assumptions.
+
+	* pcl-cvs-info.el (cvs-applicable-p): now accepts types as well.
+
+	* pcl-cvs.el (cvs-revert-if-needed): don't call normal-mode in order to
+	  minimize the changes.
+	(cvs-mode-do): get `ignore-contents' automatically from cvs-states.
+	(cvs-mode-do): eliminate `:killold t', replaced by `:parse 'kill'.
+
+1999-06-19  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-startup.el: update the autoloads automatically.
+
+	* pcl-cvs.el (cvs-update-header): only remove the log-message, not more.
+	(cvs-help): don't autoload it.
+	(cvs-retrieve-revision): run find-file-hooks additionally to normal-mode
+
+1999-06-19  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* release: 2.9.5
+
+	* pcl-cvs-parse.el (cvs-parse-buffer): set case-fold-search to nil.
+	  that should be the right thing, but it might break things.
+
+	* pcl-cvs-defs.el (cvs-edit-mode-map): bound C-xv to cvs-mode-map.
+	(cvs-force-dir-tag): new var.
+
+	* pcl-cvs.el (cvs-edit-mode): made it derive from text-mode.
+
+1999-06-18  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-cleanup-collection): made the arguments non-optional
+	(cvs-cmd-do): only use pop-to-buffer if pop-up-frames are used.
+	(cvs-mode-idiff): use the `b' prefix if provided.
+	(cvs-retrieve-revision): call `normal-mode'.
+	(cvs-mode): fancier mode-line.
+	(cvs-ignore-marks-p): cvs-foo-ignore-marks has been reworked.
+	(cvs-mode-force-command): a new command bound to M-f.
+
+1999-06-02  Greg Klanderman  <greg@klanderman.net>
+
+	* pcl-cvs.el (cvs-query-directory): fix xemacs bug;
+	last-command-char may be nil, and /= doesn't handle that.  
+	also, characters are not integers under xemacs.
+
+	* pcl-cvs-defs.el (cvs-auto-remove-directories): allow the value 'empty.
+	* pcl-cvs.el (cvs-cleanup-collection): handle it.
+
+	* diff-mode.el: actually defvar all the faces to avoid "no face
+	`diff-added-face'" errors under xemacs.
+
+1999-06-18  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-parse.el, pcl-cvs-info.el: renamed NEED_REMOVE into MISSING.
+	(cvs-parse-table): got rid of MOD-CONFLICT
+
+	* pcl-cvs.el (cvs-make-cvs-buffer): replaced the collection footer by a
+	  cookie labelled FOOTER.  Fixes the `backspace over last mark' problem.
+	(cvs-update-header): new fun that updates the header/footer.
+	(cvs-cmd-do): kill the entries between run and parse rather than before run
+	(cvs-mode-insert): now calls `status' to initialize the new entry.
+	(cvs-do-removal): don't hide `rm' errors.
+
+1999-06-17  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-info.el: dropped `action'.
+	(cvs-*-map): use defmap.
+
+	* pcl-cvs-defs.el (cvs-buffer-name-alist): use special buffers for more
+	  commands than just `diff'.
+
+	* diff-mode.el: use kill-all-local-variables.
+
+	* pcl-cvs.el (cvs-mode-find-file): now understand the branch prefix and
+	  fetches the corresponding revision if requested.
+	(cvs-mode-undo-local-changes): changed to `cvs-mode-undo'
+	(cvs-mode-kill-process): new fun, bound to C-c C-c.
+
+1999-06-12  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-revert-if-needed): ignore errors and don't change the
+	  read-only setting.
+
+1999-05-26  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-run-process): close the process' stdin to avoid hangs.
+
+	* pcl-cvs-defs.el (cvs-lock-file-regexp): fixed.
+
+1999-05-15  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-info.el (cvs-states): allow `update' in more cases.
+
+	* pcl-cvs.el (cvs-mode-imerge): fall back to vc-resolve-conflict.
+
+1999-04-22  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-util.el (cvs-query-read): use read-string rather than
+	  completing-read if no completions are available.
+
+1999-03-26  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-cmd-do,cvs-run-process): moved `save-some-buffers' to
+	  avoid calling it twice.
+	(cvs-mode-rtag): renamed to cvs-rtag and commented out.
+	(cvs-mode-untag): new.
+	(cvs-add-branch-prefix): use "-rTAG" instead of "-r TAG".
+	(cvs-mode-log): use branch-prefix.
+
+	* Makefile (install): don't install the .el files by default.
+
+1999-03-18  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-info.el (cvs-action-face): change it to lightblue for dark-bg.
+
+1999-03-16  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-parse.el: adapt the regexps to work with NT's `cvs.exe'.
+
+	* pcl-cvs-info.el (cvs-make-keymap): always use set-keymap-parent.
+	(faces): moved from pcl-cvs-defs
+
+	* pcl-cvs-compat.el (split-string): moved from pcl-cvs-util.
+	(set-keymap-parent): new.
+	(defgroup): new.
+
+	* pcl-cvs.el (cvs-mode-revert-buffer): Oops, needs to be interactive.
+	(cvs-mode-tag): fixed the tag querying.
+	(cvs-query-directory): Yuck! query only if called via M-x or from a non
+	  pcl-cvs buffer.
+	(cvs-enabledp): moved from pcl-cvs-defs
+
+1999-03-15  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-info.el (cvs-fileinfo->backup-file): check that the returned
+	  file is readable.  Return `nil' if no file is found.
+
+	* pcl-cvs.el (cvs-mode-diff-backup): bugfix. the `fis' before filtering
+	  was used instead of the one after filtering.
+	  (cvs-backup-diffable-p): use cvs-fileinfo->backup-file instead.
+	  (branch-prefix): to make it easier to work on a branch.
+
+	* pcl-cvs-util.el (cvs-kill-buffer-visiting): unused.
+	(filter): use remove-if-not instead.
+	(cvs-query-flags): turned into a function.
+	(cvs-{get,set}-prefix): mostly designed for branch prefix.
+
+	* Makefile (install_info): no more (ignored) error when `dir' absent.
+
+1999-03-13  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-parse.el (cvs-parse-ignored-messages): new var.
+	(cvs-run-parse-table): ignore user-specified messages.
+
+	* pcl-cvs-info.el (cvs-states): added `tag' to all of them.
+
+	* pcl-cvs.el (cvs-query-directory): revert to `always query'.
+
+1998-12-20  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-defs.el (cvs-mode-map): added `g' to refresh the buffer.
+
+	* pcl-cvs-info.el (cvs-states): merge the diff-<foo> into diff.
+
+	* pcl-cvs.el (cvs-run-process): re-added the TEMP subtype.
+	(cvs-mode-do): ugly fix to make cvs-diff-ignore-marks work again.
+
+	* pcl-cvs-hooks.el: made dired-hook conditional on cvs-dired-use-hook.
+
+1998-12-19  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-parse.el (cvs-parse-table): caught the case of adding on a branch
+
+	* pcl-cvs-defs.el (cvs-diff-flags): removed -kk from the default
+
+1998-12-16  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-defs.el (cvs-diff-flags): added -kk to the default
+	(cvs-edit-mode-hook): new variable.
+
+	* <file>.el: added rcsid-<file>
+
+	* pcl-cvs-parse.el (cvs-parse-table): added entry for `rebuilding database'
+
+	* pcl-cvs.el (cvs-run-process): fix a bug when single-dir=t and fis=nil.
+	(rcsid-pcl-cvs): added.
+	(cvs-make-cvs-buffer): don't recreate the buffer if it's just a refresh.
+	(cvs-edit-mode): call cvs-edit-mode-hook
+
+1998-12-15  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-parse.el (cvs-parse-table): catch the error message when the
+	  cvs-execute-single-dir detection failed and add a little note.
+
+	* pcl-cvs-info.el: don't use set-keymap-parentS, but instead fix the typo.
+
+	* pcl-cvs-defs.el (faces): de-boldified.
+
+	* pcl-cvs.el (cvs-mode-quit): fixed.
+
+1998-12-14  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-info.el (cvs-make-keymap): XEmacs fix (uses set-keymap-parentS).
+
+1998-12-13  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-sentinel,cvs-parse-process): finally fix the cursor
+	  movement problem. Phew !
+	  (cvs-mode-do): added an `killold' option to mark fis as dead.
+	  (cvs-mode-examine,cvs-mode-update): use `killold'.
+
+1998-12-12  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* RELEASE: 2.9
+
+	* pcl-cvs-util.el (cvs-query-flags): fix the default type.
+
+	* pcl-cvs-hooks.el (vc-do-command): first cut at calling back pcl-cvs from
+	  vc.  Encouraging.
+
+	* Makefile: merged with Makefile.dist and renamed pclcvsdir to elcdir.
+
+	* pcl-cvs.el (cvs-mode-add-change-log-entry-other-window): fix a nasty bug
+	  due to interactions between dynamic scoping and buffer-local variables.
+	(cvs-use-temp-buffer): set the default-directory.
+	(cvs-mode-mark): Oops! the logic was reversed.
+	(cvs-changelog-entries): workaround file-change-log memoization feature
+	  which prevented correct behavior when several Changelog files were
+	  involved in the same commit.
+
+1998-12-11  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* RELEASE: 2.5
+
+	* pcl-cvs-defs.el: new file, extracting the defvars from pcl-cvs.el
+
+	* pcl-cvs-info.el (cvs-add-face): hard-code 'highlight and replace the
+	  mouse-face arg by a keymap argument to be locally used.
+	(cvs-{filename,dirname,status,default-action}-map): new maps.
+	(cvs-fileinfo-pp): use the new maps on the subfields of entries.
+
+	* pcl-cvs.el (cvs-mode-add): add postprocessing in order to examine
+	  directories after having added them.
+	(cvs-mode-add): also change those UNKNOWN dir entries to DEAD in the
+	  postprocessing so they will disappear (replaced by the output of the
+	  examine).
+	(cvs-mode): setup the revert-buffer-function variable.
+	(cvs-relative-path): replaced by the builtin `file-relative-name'.
+	(cvs-mode-insert): new command to add arbitrary files. Bound to "I".
+
+1998-12-10  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-util.el (cvs-query-flags): don't add ` flags' to the
+	  prompt anymore.  And use a `type' to figure out how to map the user
+	  string to/from the requested argument type.
+	(strings->string): oops: empty strings were not quoted.
+
+	* pcl-cvs.el (cvs-mode-i{merge,diff}): thoroughly reworked.
+	(cvs-mode-set-flags): added "cvs" in the set of settable flags.
+	(cvs-add-default-message): to avoid prompting in cvs-mode-add.
+	(cvs-mode-add): only prompt if necessary or requested.
+	(cvs-mode-do): add a `postproc' arg (and local var).
+
+	* pcl-cvs-info.el (cvs-states): rename `emerge' into `merge'.
+	(cvs-fileinfo): added `merge' to hold the revisions of the ancestor and head
+	(cvs-fileinfo-update): try to propagate `merge' info.
+
+1998-12-07  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-util.el (string-to-strings): use split-string if available.
+	(string-to-strings): handle double quotes for quoting.
+
+	* pcl-cvs-hooks.el (cvs-dired-action): fixed a little typo.
+
+1998-12-06  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* RELEASE: 2.0.90
+
+	* pcl-cvs.texi: somewhat updated the manual.
+
+	* pcl-cvs.el (cvs-cmd-do): add an argument to prevent poping-to-buffer
+	  for use by the dired-advice.
+	(cvs-reuse-cvs-buffer): expanded.
+	(a bit everywhere): custom-ized.
+
+1998-12-05  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-make-temp-buffer): set cvs-temp-buffer directly in
+	  cvs-make-temp-buffer and don't reset it in cvs-run-process (which is
+	  bogus when cvs-run-process is called on a non-*cvs-tmp* buffer, such as
+	  *cvs-diff*).
+	(cvs-retrieve-revision): mark the temp buffer as unmodified.
+	(a bit everywhere): use `expand-file-name' instead of `concat'.
+	(cvs-mode-delete-lock): pointlessly rewritten.
+	(cvs-mode-add-change-log-entry-other-window): imported the rewritten code
+	  from XEmacs' version.
+
+1998-12-02  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-mode-commit): call cvs-edit-mode before setting local
+	  variables (since it kills all local vars).
+
+1998-11-29  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-mode-map): sanitize cvs-mode-set-flags from C-c to C-c f
+
+1998-11-23  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-info.el (cvs-states): disallow commit on directories.
+
+	* pcl-cvs-parse.el (cvs-parse-table): ignore patched->updated msgs
+
+	* pcl-cvs.el (cvs-edit-mode): call kill-all-local-variables
+	(cvs-mode): trimmed down the doc string (better empty than outdated)
+
+1998-11-11  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-retrieve-revision): use -q to avoid an ugly header.
+
+1998-10-29  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-parse.el (cvs-parsed-fileinfo): add an option to trust the
+	  path info to be relative to the root (and make the directory parameter
+	  optional).
+
+1998-10-25  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-run-process): renamed run-cvs-process.
+	(cvs-mode-remove-handled): also remove MESSAGEs.
+	(cvs-revert-if-needed): wasn't working.
+	(cvs-execute-single-file-list): take fileinfos instead of tins.
+	(cvs-mode-diff-backup): filter based on presence of backup file.
+	(cvs-update-filter): make the lock messages temporary.
+	(cvs-mode-do): added a `cvsargs' optional argument for `examine'.
+	(cvs-mode-examine): new.
+	(cvs-mode-do): added `show' to choose whether to show *cvs-tmp*.
+	(cvs-mode-map): move ediff and emarge from `e' and `E' to `de' and `dE'
+	  and made `e' be `cvs-mode-examine'.  Removed bindings to \C-n and \C-p
+	  since they are mostly useless and can be annoying.  Replaced the \C-c
+	  keymap with the cvs-mode-set-flags function.  Moved all the module-level
+	  commands to \M-something: cvs-update is \M-u, cvs-status is \M-s,
+	  cvs-examine is \M-e, ... Removed cvs-mode-{admin,release,rdiff}
+	  since they are inexistant anyway.  Removed also the `v' binding since
+	  it's available under `dv' anyway.  Also bound cvs-mode-unod to `undo'.
+	(cvs-mode-emerge): avoid temp files.
+	(cvs-mode-ediff): use the same code as cvs-mode-emerge.  Don't use the
+	  special purpose ediff-cvs code since it's now broken.
+
+	* pcl-cvs-parse.el (cvs-status-parse-table): handle "Needs Patch" status.
+
+	* pcl-cvs-info.el (cvs-fileinfo-pp): add faces to the output.
+	(cvs-states): merged CONFLICT and UNRES-CONFLICT.
+
+	* pcl-cvs-decor.el (cvs-menu): disable commands based on `type'.
+	(cvs-action-face): new face.
+	The font-lock stuff has been removed.
+
+1998-10-24  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-merge-collection): extracted from cvs-cleanup-collection
+	  because it has to be done in a separate phase.
+	  (cvs-changelog-entries): use find-change-log.
+
+	* pcl-cvs-info.el (cvs-states): `find-file' has been dropped.
+	  `safe-rm' and `removed' have been added.
+
+	* pcl-cvs-parse.el: added cvs-current-subdir to track the `pwd' of the cvs
+	  process (used in conjunction with single-dir).
+
+1998-10-23  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-startup.el: require pcl-cvs-hooks right away (so that the dired
+	  hook can take effect before pcl-cvs is loaded).
+
+	* pcl-cvs-hooks.el (uniquify-buffer-file-name): avoid using pcl-cvs funs.
+	(dired-internal-noselect): hook into dired.
+
+	* pcl-cvs-parse.el (cvs-parse-table): DIRCHANGE filename is now "."
+
+	* pcl-cvs-legacy.el: removed cvs-execute-single-dir since it's now handled
+	  by run-cvs-process.
+
+	* pcl-cvs-util.el (file-to-string): return nil if the file doesn't exist
+
+	* pcl-cvs.el (cvs-parse-process): added call to cvs-revert-if-needed.
+	(run-cvs-process): don't erase temp buffer (do it in cvs-mode-do).
+	(cvs-dir-member-p): works with subdirectories.
+	(cvs-cleanup-collection): a cleanup of the cleanup code.
+	(run-cvs-process): offer a single-dir option.
+
+1998-10-22  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvsrc): read the cvsrc file and use it for initial flag vals.
+	(cvs-mode-commit): use substitute-command-keys
+	(cvs-mode-do): call postcmd from the temp buffer
+	(cvs-dont-change-disc): removed (turned into a mere argument).
+	(cvs-mode-revert-updated-buffers): replaced by a cvs-auto-revert setting
+	(cvs-auto-revert): replaces cvs-auto-revert-after-commit
+
+1998-10-21  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-info.el (fileinfo):
+	  removed handled and added subtype
+	  added type DEAD
+	  added MESSAGE's TEMP subtype
+	  moved UPDATED and PATCHED to subype of UP-TO-DATE
+	  moved MERGED to subtype of MODIFIED
+	
+1998-10-20  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-mode-do): use run-cvs-process.
+	deal correctly with killed temp-buffers.
+	(cvs-dir-empty-p): fix it to recognize subdirectories.
+
+1998-10-19  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-parse.el (cvs-update-parse-table): merge PATCHED and UPDATED
+
+	* pcl-cvs-info.el: created by extracting the fileinfo stuff.
+
+	* pcl-cvs.el (cvs-make-cvs-buffer): reuse a cvs buffer on a parent dir
+	(cvs-mode-commit): now only creates the commit buffer.
+	(cvs-edit-done): gets the flags, the list of files and filters them.
+	(cvs-mode-do): do the tin-invalidate+autoremove-handled stuff. No harm.
+	(cvs-after-commit-function): use find-buffer-visiting.
+
+1998-10-18  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs.el (cvs-use-temp-buffer): added cvs-buffer to the temp-buf
+
+	* pcl-cvs.el (cvs-parse-process): reverse the entries for in-order messages
+	(cvs-mode-do): revert to the cvs-buffer before calling postcmd.
+	(cvs-states): `updated' can be removed but doesn't need diff-head.
+	(cvs-mode-remove-file): added the 'remove filter flag.
+
+	* pcl-cvs-parse.el (cvs-status-parse-table): new output from cvs-1.10
+
+	* pcl-cvs-startup.el: load pcl-cvs-hooks
+
+	* pcl-cvs-hooks.el: small file to hook pcl-cvs into other packages like VC
+	  and uniquify.  It's not required by anything.
+
+	* pcl-cvs.el: can now have multiple *cvs* buffers.
+	(cvs-mode-commit): set the cvs-buffer local var in the commit buffer.
+	(cvs-reuse-cvs-buffer): new setting.
+	(cvs-cmd-type): removed.
+
+	* pcl-cvs-parse.el (cvs-update-parse-table): handle `file was lost'
+	(cvs-parse-table): merges the two (status and update) parse tables.
+	  cvs' output is sufficiently unambiguous for it to work fine.
+	(cvs-parse-buffer, cvs-parse-process): I had forgotten to move those two
+	  to pcl-cvs-parse.el.
+
+	* pcl-cvs.el (cvs-version): extracted from `cvs -v' and used to choose
+	  between cvs-execute-single-dir and cvs-execute-multi-dir.
+	(cvs-dont-change-disc): welcome back.
+	(cvs-cmd-type): it's now useless.
+
+	* pcl-cvs-legacy.el (cvs-old-ediff-interface,cvs-execute-single-dir-list):
+	taken out of pcl-cvs.el since it's already big enough.  pcl-cvs.el
+	references this file via autoloading the functions.
+
+1998-10-17  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* pcl-cvs-util.el: added two "standard" interactive query functions.
+
+	* pcl-cvs.el (cvs-update-optional-flags): renamed to cvs-update-cmd-flags.
+	(cvs-update-file-flags): renamed to cvs-update-flags
+	(cvs-make-list): moved to pcl-cvs-util and renamed string-to-strings.
+	(cvs-mode-set-<foo>-flag): replaced by a single cvs-mode-set-flags.
+	(cvs-cmd-type): replaces cvs-display-type and now distinguishes between
+	  CHECKOUT and UPDATE.
+	(cvs-last<foo>-flags): dropped since redo has been dropped.
+	(cvs-with-args): replaced by cvs-query-flags.
+	(cvs-mode-diff-cvs): renamed to cvs-mode-diff.
+	(cvs-states): split the description out to cvs-states-description.
+
+	* pcl-cvs.el (<foo>-other-window): eliminated by the use of pop-to-buffer
+	  instead of switch-to-buffer.
+	(cvs-states): tremendously simplified the format.
+	(cvs-{update,status,examine}): from a cvs-mode buffer, reuse the current
+	  working directory, unless the prefix arg is given.
+	(cvs-mode-redo): dropped: why bother now that the other commands don't
+	  require any additional argument ?
+
+	* pcl-cvs.el (cvs-display-type): added EXAMINE.
+	(cvs-dont-change-disc): removed.
+	(cvs-check-fileinfo): vaguely improved, and used when displaying.
+	(cvs-fileinfo-pp): unifies the previous cvs-update-pp and cvs-status-pp.
+	(run-cvs-process): doesn't use cvs-shell anymore.
+
+	* pcl-cvs-parse.el (cvs-update-state-table): distinguish between a `U'
+	  during update (UPDATED) from a `U' during examine (NEED-UPDATE).
+
+	* diff-mode.el: Feable attempt at hooking diff-mode into VC
+
+1998-10-16  Stefan Monnier  <monnier@cs.yale.edu>
+
+	* diff-mode.el: a new major mode with an empty keymap but some
+	  font-locking for unified context diffs.
+
+	* pcl-cvs-util.el: new file, mostly empty, for non pcl-cvs-specific
+	  functions.  If no other than `file-to-string' shows up, the file will of
+	  course disappear.
+
+	* pcl-cvs-decor.el: new name for pcl-cvs-xemacs.el since it should now
+	  also work on Emacs.
+
+	* pcl-cvs.el (cvs-execute-list): added support for multi-dir execution.
+	(cvs-fileinfo): it's now a CL struct.  Also the `dir' part should now
+	  always be a relative directory (with trailing slash unless its the empty
+	  string).
+	(cvs-get-cvsroot): replaces cvs-set-display-cvsroot with a slightly
+	  different set of priorities.  It also takes care not to switch buffer.
+	(cvs-diff-buffer-name): replaces and generalizes cvs-diff-unique-buffers.
+
+	* pcl-cvs-parse.el: new file containing a thoroughly reshaped parser.
+		Notable differences:
+		- the parse tables are now proper functions
+		- stderr and stdout are merged
+		- REGEXP has a built-in binding mechanism
+		- *match-list*, *current-file* and *root-dir* have disappeared,
+		  *current-dir* is now relative and slash-terminated
+		- it's all way much cleaner (to me anyway)
+
+1998-10-12  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el (cvs-mode-debug-fileinfo): new function.
+	(cvs-update-stderr-parse-table): fix REGEXP for ignored conflict
+	warnings (real info is on stdout).
+	(cvs-update-stderr-parse-table): fix other REGEXPs that don't end in `$'
+	(cvs-update-stdout-parse-table): ditto.
+	(cvs-update-stdout-parse-table): fix parsing of merge info.
+
+	* pcl-cvs.texi: more cleanup.
+
+	* Makefile (VERSION): 1.34.
+
+1998-10-09  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el (cvs-status-stdout-parse-table): fix bug accessing
+	the *match-list* for unknown files.
+	(cvs-mode-quit): new cvs-mode command.
+	(cvs-mode-map): bind it to `q' instead of bury-buffer.
+	(cvs-shell-c-flag): new variable.
+	(run-cvs-process): use it.
+	(cvs-shell-c-flag): remove, use shell-command-switch instead.
+	(cvs-update-stdout-parse-table): fix parsing bug: COLLECT evals
+	only a single form, it is not an implicit progn.
+
+	* pcl-cvs.texi: more cleanup.
+
+1998-10-08  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.texi: update documentation.
+
+	* pcl-cvs.el (cvs-mode-tag): use cvs-with-flags.
+	(cvs-mode-rtag): ditto.
+	(cvs-mode-diff-cvs): ditto.
+	(cvs-mode-diff-backup): ditto.
+	(cvs-mode-diff-head): ditto.
+	(cvs-mode-diff-vendor): ditto.
+	(cvs-mode-remove-file): ditto.
+	(cvs-mode-undo-local-changes): ditto.
+	(cvs-update-file-flags): new.
+	(cvs-mode-update): use cvs-with-flags.
+	(cvs-mode-commit, cvs-mode-changelog-commit): ditto, set
+	cvs-commit-flags-to-use from cvs-commit-flags.
+	(cvs-edit-done): use cvs-commit-flags-to-use.
+	(cvs-local): remove variable.
+	(cvs-last-update-flags): new.
+	(cvs-last-status-flags): new.
+	(cvs-mode-redo): use cvs-with-flags.
+	(cvs-status-cmd-flags): new
+	(cvs-checkout-cmd-flags): new
+	(cvs-examine): use cvs-with-flags.
+	(cvs-examine-other-window): use cvs-with-flags.
+	(cvs-update): use cvs-with-flags.
+	(cvs-update-other-window): use cvs-with-flags.
+	(cvs-do-update): remove LOCAL argument.
+	(cvs-checkout): use cvs-with-flags.
+	(cvs-checkout-other-window): use cvs-with-flags.
+	(cvs-do-checkout): use cvs-checkout-cmd-flags.
+	(cvs-status): use cvs-with-flags.
+	(cvs-status-other-window): use cvs-with-flags.
+	(cvs-do-status): remove LOCAL argument, use cvs-status-cmd-flags.
+	(cvs-mode-map): swap bindings for cvs-mode-emerge and
+	cvs-mode-ediff, placing cvs-mode-ediff on 'e' as that is the
+	preferred interface, and was what previous versions had.
+
+1998-10-07  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el (cvs-with-flags): new macro - handle flag setting.
+	(cvs-with-flags-1): helper function.
+	(cvs-add-flags): new variable
+	(cvs-commit-flags): new.
+	(cvs-remove-flags): new.
+	(cvs-undo-flags): new.
+	(cvs-*-flags-history): new history variables.
+	(cvs-mode-add): use cvs-with-flags.
+	(cvs-mode-status): ditto.
+	(cvs-mode-log): ditto.
+
+	* Makefile (VERSION): bump to 1.32
+
+1998-10-05  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el (cvs-update-stdout-parse-table): merge in ignoring of 
+	"already contains the differences between" message from XEmacs
+	1.03.
+	More XEmacs parser merging originally from Oscar Figueiredo:
+	(cvs-update-stdout-parse-table): Parse merge information.
+	(cvs-update-stderr-parse-table): Accept standalone conflict
+	warnings as the additional information is on stdout in recent CVS
+	versions.
+
+1998-10-04  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el (cvs-changelog-ours-p): use add-log-full-name,
+	user-full-name, and (user-full-name), and add-log-mailing-address, 
+	user-mail-address, and (user-mail-address), in that order, and
+	protected by the appropriate boundp and fboundp checks.
+	(cvs-mode-emerge): bind default-directory to the fileinfo's
+	directory.  merged in from XEmacs 1.03.
+	(cvs-sentinel): message when process completes.  merged in from
+	XEmacs 1.03.
+
+1998-10-01  Greg Klanderman  <greg@alphatech.com>
+
+	* Makefile (VERSION): set back to 1.30, no 2.xx versions allowed
+	in XEmacs 21.0.
+
+	* pcl-cvs.el (cvs-add-how): bugfix, change call to
+	cvs-add-file-update-buffer to cvs-add-file-how.
+
+1998-09-30  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs-xemacs.el: Add a submenu under "Tools".
+	Clean up the mode menu.
+	Provide 'pcl-cvs-xemacs.
+
+1998-09-28  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el (cvs-update-stdout-parse-table): handle patched files 
+	like updated files, ie, mark them handled.
+
+1998-09-27  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el (cvs-changelog-name): bugfix for previous change;
+	don't pass nil to expand-file-name when change-log-default-name is 
+	nil.
+
+	* pcl-cvs-xemacs.el (pcl-cvs-font-lock-keywords): add some new
+	faces: cvs-unknown-face, cvs-handled-face, cvs-need-action-face,
+	cvs-marked-face.  remove cvs-status-face.
+
+	* pcl-cvs.el (cvs-mode-undo-local-changes): Don't update cvs
+	fileinfo state until we know we're not going to signal an error on
+	an unhandled case.
+
+	* pcl-cvs.el (cvs-add-file-update-buffer): update docs, see below.
+	(cvs-add-do-update): new function - just update the buffer and tins
+	(cvs-add-buffer-how): new function - has just the part of
+	cvs-add-file-update-buffer that wants to be done prior to actually 
+	running cvs - eg figure out what to do with each file.
+	(cvs-add-how): new function - separate files to be added into new
+	files and resurrected files.
+	(cvs-mode-add): Use the above to avoid modifying the buffer before 
+	the add is actually performed.  This way we don't get confused if
+	the user quits out of the add while entering the description.
+
+1998-09-17  Karl M. Hegbloom  <karlheg@bittersweet.inetarena.com>
+
+	* pcl-cvs.el (cvs-set-display-cvsroot): Properly set; if there's a
+ 	CVS/Root file, then plain 'cvs update' will use that.  Otherwise,
+ 	our `cvs-cvsroot' variable is right, || $CVSROOT.
+	(run-cvs-process): Clean up process and file if *cvs* buffer is
+ 	killed using a couple of kill buffer hooks.
+	(cvs-do-update): Moved `cvs-set-display-cvsroot' and setq
+	`cvs-working-directory' into #'run-cvs-process
+	(cvs-do-status): ditto
+
+1998-09-10  Karl M. Hegbloom  <karlheg@bittersweet.inetarena.com>
+
+	* pcl-cvs.el (cvs-changelog-name): Use `change-log-default-name'
+	so it becomes possible to use "ChangeLog.local" files to avoid CVS 
+	merge clashes in the canonical shared ChangeLog files.
+
+1998-09-24  Greg Klanderman  <greg@alphatech.com>
+
+	* Makefile: update to newer XEmacs package protocol (Steve Baur)
+
+1998-09-11  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el (cvs-mode-redo): bugfix: pass cvs-dont-change-disc 
+	to cvs-do-update.
+
+	* pcl-cvs-xemacs.el (pcl-cvs-font-lock-keywords): require space
+	between fields on each line.
+
+1998-09-07  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs-xemacs.el: first pass at fontification for 2.0b2.
+
+	* pcl-cvs.el (cvs-status-stdout-parse-table): comment (debug) call
+
+1998-09-07  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el (cvs-do-removal): bugfix in file error catching from
+	Karl Hegbloom.
+
+	* pcl-cvs.el
+	(cvs-get-marked): fix mark toggling.
+	(cvs-mode-commit): 
+	(cvs-mode-add): 
+	(cvs-mode-diff-cvs): 
+	(cvs-mode-diff-backup): 
+	(cvs-mode-diff-head): 
+	(cvs-mode-diff-vendor): 
+	(cvs-mode-status): 
+	(cvs-mode-log): 
+	(cvs-mode-update): 
+	(cvs-mode-ignore): 
+	(cvs-mode-undo-local-changes): 
+	(cvs-mode-acknowledge): 
+	(cvs-mode-remove-file): 
+	(cvs-mode-tag): 
+	(cvs-mode-rtag): 
+	(cvs-mode-byte-compile-files): 
+	(cvs-mode-changelog-commit): pass the right ignore-marks value 
+	to cvs-get-marked.  Diff commands no longer take "ignore-marks"
+	argument; use cvs-mode-toggle-marks (bound to T) to toggle using
+	marks.
+
+1998-09-04  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el (run-cvs-process): buffer formatting improvement.
+	show CVSROOT directory and working directory in header.
+	(cvs-update-pp): 
+	(cvs-status-pp): report dirchanges relative to working dir.
+	(run-cvs-process): cleanup leading and trailing space around args
+
+1998-09-04  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el
+	(cvs-find-program): nuke this bogosity.
+	(run-cvs-process): don't require cvs-program to contain the
+	absolute path; let it be found on the PATH if that's what the user 
+	wants.
+
+1998-09-04  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el
+	(cvs-auto-remove-handled-directories): reintroduce this variable.
+	(cvs-parse-process): use it.
+	(cvs-add-sub): remove unused param cvs-buf.
+	(cvs-mode-add): fix call to cvs-add-sub, nuke unused "buf".
+	(cvs-dir-empty-p): correct args in docstring.
+	(cvs-mode-commit): remove unused binding of cvs-buf
+	(cvs-old-ediff-interface): ditto.
+	(cvs-mode-emerge): ditto.
+	(cvs-mode-changelog-commit): ditto.
+	(cvs-execute-list): remove unused binding of arg-str
+	(cvs-do-removal): missing quote on (apply 'signal err).
+
+1998-09-04  Greg Klanderman  <greg@alphatech.com>
+
+	* pcl-cvs.el
+ 	(run-cvs-process): use (force-mode-line-update).
+	(XEmacs support): don't autoload pcl-cvs-fontify; it already has
+	an autoload cookie.
+
+	* Makefile: cleanup -- don't put debug .el's in the binkit.
+
+1998-08-25  Karl M. Hegbloom  <karlheg@bittersweet.inetarena.com>
+
+	* pcl-cvs.texi: Add direntry
+
+	* Makefile (REQUIRES): elib dired
+
+	* pcl-cvs.el: Roll in changes taken from diffs I pulled down from
+ 	the cvs.xemacs.org cvsweb server, and add autoload cookies
+ 	throughout.  Changed "Lucid" to "XEmacs".
+	(cvs-find-program) Use PATH
+	(cvs-default-ignore-marks) New variable, from old patch.
+	(cvs-assert-applicable) Fix typo in arglist
+	(cvs-examine*, cvs-update*, ...) bind `use-dialog-box' nil
+	(cvs-mode) display keybind for `cvs-mode-mark-matching-files' and
+ 	`cvs-mode-toggle-marks'.
+	(cvs-mode-map) keybind the above
+	(cvs-mode-mark-matching-files, cvs-mode-toggle-marks),
+	(cvs-ignore-marks-p) Copied in from old patch
+	(cvs-do-removal) Use `condition-case' around file deletion in case
+ 	the file has already been burned.
+	(cvs-get-marked): Use `cvs-default-ignore-marks' and
+ 	`cvs-ignore-marks-p'.  This could be simplified.
+
+	* Makefile: adjust ELCS
+
+	* cookie.el, dll-debug.el, dll.el, elib-node.el: Removed the elib
+ 	library stuff, since it now resides in its own package.
+

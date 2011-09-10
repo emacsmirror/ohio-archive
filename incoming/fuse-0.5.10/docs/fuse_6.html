@@ -1,0 +1,79 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse.texi on 24 August 1998 -->
+
+<TITLE>FUSE User's Guide - Future work</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="fuse_1.html">first</A>, <A HREF="fuse_5.html">previous</A>, <A HREF="fuse_7.html">next</A>, <A HREF="fuse_7.html">last</A> section, <A HREF="fuse_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC24" HREF="fuse_toc.html#TOC24">Future work</A></H1>
+
+<P>
+I do things in @fuse{} as I need them for my own work.  That puts a
+severe limit on how much gets done.  If I ever develop a user base, some
+of the ideas that I have that I can live without would perhaps get done.
+I find Emacs to be a really wonderful application interface and I have
+not really used all of its potential or implemented all of my ideas.
+Any of these things may happen some day.  If I ever get some kind of
+real user base, that would be incentive for finishing off this list and
+even tackling some new problems.
+
+</P>
+
+<DL COMPACT>
+
+<DT><STRONG>File parsing</STRONG>
+<DD>
+Do a simple syntax checking of the entire buffer -- make sure that
+values match the expectation of a keyword, that named files exist, that
+keywords are not dangling, and the like.  This already works for
+individual keywords, but I would like @fuse{} to check entire files.  A
+display of problems and a facility for jumping to the location of the
+problem, <EM>a la</EM> compilation-mode, would be great.
+
+<DT><STRONG>Execution parsing</STRONG>
+<DD>
+The run-time output of all the programs is displayed in a run-time
+buffer.  This output could be parsed in the event of an unsuccessful run
+much in the manner of the standard compilation utility which allows you
+jump to the problem line in the source code at a keystroke.  The
+inconsistent screen messages of FEFF and the UWXAFS programs
+make this difficult, although ATOMS will offer a uniform style of
+screen messages starting with version 2.50.
+
+<DT><STRONG>Better UWXAFS binary integration</STRONG>
+<DD>
+A dired-like mode for interacting with uwxafs binary files (or even a
+packed ASCII representation of the many-records-one-file concept) would
+be quite slick.  This is way down on my priority list because (1) I
+rarely use the UWXAFS format and (2) I would rather see it go away (or
+be replaced by something better, packed ASCII, zip, other?).
+
+<DT><STRONG>More plotting options</STRONG>
+<DD>
+Gnuplot is really rather primitive, but it is clean and easy to interact
+with.  Another freely available and fairly common plotting option is
+XMGR.  It really would not be too hard to make an XMgr interface in a
+similar vein to the current gnuplot interface.  XMgr has the advantages
+of, among other things, a cursor and focusing.  Others possibilities
+are PGPLOT integration and ...?
+
+<DT><STRONG>NTEmacs integration</STRONG>
+<DD>
+It'd be pretty cool if FUSE worked on NT.  I can't imagine it would take
+<EM>that</EM> much work.
+
+<DT><STRONG>and ...</STRONG>
+<DD>
+I'm open to suggestions!
+
+</DL>
+
+<P><HR><P>
+Go to the <A HREF="fuse_1.html">first</A>, <A HREF="fuse_5.html">previous</A>, <A HREF="fuse_7.html">next</A>, <A HREF="fuse_7.html">last</A> section, <A HREF="fuse_toc.html">table of contents</A>.
+</BODY>
+</HTML>

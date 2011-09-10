@@ -1,0 +1,86 @@
+System Requirements
+===================
+
+Mailcrypt is designed for use with FSF Emacs 19.29 (and higher) or
+XEmacs 19.13 (and higher).  Mailcrypt absolutely requires at least FSF
+Emacs 19.28 or XEmacs 19.12.  With some effort, earlier versions might
+be made to work, but this is not supported.
+
+Basic Installation
+==================
+
+The simplest way to build and install Mailcrypt is:
+
+  1. `cd' to the Mailcrypt source directory and type `./configure' to
+     configure Mailcrypt for your system.
+
+  2. Type `make' to build the byte-compiled Lisp files.
+
+  3. Type `make install' to install the Mailcrypt Lisp files and Info
+     manual.
+
+Load Path
+=========
+
+If you use VM, RMAIL, MH-E, or GNUS and the respective package is not
+in your default load-path, Mailcrypt may fail to byte compile
+correctly.  (Emacs does not load your `.emacs' file when run in batch
+mode.)  If this applies to you, edit Mailcrypt's `load-path.hack' file
+to add the appropriate directory to the load-path during byte
+compilation.
+
+Installation Names
+==================
+
+By default, `make install' will install the package's files in
+`/usr/local/info' and `/usr/local/share/emacs/site-lisp'.  You can
+specify an installation prefix other than `/usr/local' by giving
+`configure' the option `--prefix=PATH'.
+
+If your installed copy of Emacs 19 is named something other than
+`emacs' or `xemacs', you will need to tell `make' where to find it so
+that it can correctly byte-compile the Mailcrypt sources.
+
+For example, to use XEmacs you might do:
+
+	./configure
+	make EMACS=xemacs
+	make install
+
+Also, the `--prefix=PATH' option to `configure' may not be general
+enough to set the paths you want.  If not, you can pass variables to
+the `make' command to control the installation.
+
+For example, to put the Lisp files in `$HOME/elisp' and the Info file
+in `$HOME/info', you would type:
+
+	./configure
+	make
+	make lispdir=$HOME/elisp infodir=$HOME/info install
+
+FSF Emacs 19.28
+===============
+
+Mailcrypt's installation procedure assumes the directory structure
+used by FSF Emacs 19.29 (e.g., `/usr/local/share/emacs/site-lisp').
+If you are using 19.28, you will need to use an installation command
+like the following:
+
+	make datadir=/usr/local/lib install
+
+This is the *only* special action you need to install Mailcrypt for
+FSF Emacs 19.28.
+
+XEmacs 19.12
+============
+
+Mailcrypt requires the `easymenu' package, which is bundled with FSF
+Emacs 19.28 (and higher) and with XEmacs 19.13 (and higher).  If you
+are using XEmacs 19.12, you will need to obtain a copy of this package
+and install it somewhere in your load-path.  The easiest way is to go
+to
+
+	ftp://archive.cis.ohio-state.edu/pub/gnu/emacs/elisp-archive/
+
+and obtain the latest version of `auc-menu.el'.  Install it in your
+load path under the name `easymenu.el'.  (Don't ask.)

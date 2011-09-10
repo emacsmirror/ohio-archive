@@ -1,0 +1,179 @@
+@c -*-texinfo-*-
+@c
+@c $Id$
+@c
+
+@c The next line is for the back-search to see what node this one
+@c resides in.
+
+@c @node Project,
+@c @chapter Project Listing
+
+@c This command is a convenience to help rebuild this file.  Use C-x C-e
+@c on the expression below to rebuild the entire widget index (but only
+@c after loading in the dialog tool.)
+
+@c (eieiodoc-class ede-project "pj")
+
+@menu
+* ede-project ::
+*  ede-proj-project ::
+*  project-am-makefile ::
+@end menu
+
+
+@node ede-project, ede-proj-project,  , Project
+@comment  node-name,  next,  previous,  up
+@section ede-project
+@pjindex ede-project
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item ede-project
+@table @asis
+@item Children:
+@w{@xref{ede-proj-project}}, @w{@xref{project-am-makefile}}
+@end table
+
+@end table
+@end table
+
+  Top level EDE project specification.
+All specific project types must derive from this project.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :name
+Default Value: @code{"Untitled"}
+
+The name used when generating distribution files.
+@refill
+
+@item :version
+Default Value: @code{"1.0"}
+
+The version number used when distributing files.
+@refill
+
+@item :file
+Default Value: @code{nil}
+
+File name where this project is stored.
+@refill
+
+@item :targets
+Default Value: @code{nil}
+
+List of top level targets in this project.
+@refill
+
+@item :configurations
+Default Value: @code{("debug" "release")}
+
+List of available configuration types.
+Individual target/project types can form associations between a configuration,
+and target specific elements such as build variables.
+@refill
+
+@item :configuration-default
+Default Value: @code{"debug"}
+
+The default configuration.
+@refill
+
+@item :local-variables
+Default Value: @code{nil}
+
+Project local variables
+@refill
+
+@end table
+
+@end table
+
+@node ede-proj-project, project-am-makefile, ede-project, Project
+@comment  node-name,  next,  previous,  up
+@section ede-proj-project
+@pjindex ede-proj-project
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-project}}
+@table @code
+@item ede-proj-project
+No children
+@end table
+
+@end table
+@end table
+
+  The EDE-PROJ project definition class.
+
+@table @asis
+@item Public Slots:
+
+@table @code
+@item :makefile-type
+Default Value: @code{(quote Makefile)}
+
+The type of Makefile to generate.
+Can be one of @code{'Makefile}, 'Makefile.in, or 'Makefile.am.
+If this value is NOT @code{'Makefile}, then that overrides the @code{:makefile} slot
+in targets.
+@refill
+
+@item :variables
+Default Value: @code{nil}
+
+Variables to set in this Makefile.
+@refill
+
+@item :configuration-variables
+Default Value: @code{("debug" (("DEBUG" . "1")))}
+
+Makefile variables to use in different configurations.
+These variables are used in the makefile when a configuration becomes active.
+@refill
+
+@item :inference-rules
+Default Value: @code{nil}
+
+Inference rules to add to the makefile.
+@refill
+
+@item :automatic-dependencies
+Default Value: @code{t}
+
+Non-nil@code{Non-} to do implement automatic dependencies in the Makefile.
+@refill
+
+@end table
+
+@end table
+
+@node project-am-makefile,  , ede-proj-project, Project
+@comment  node-name,  next,  previous,  up
+@section project-am-makefile
+@pjindex project-am-makefile
+
+@table @asis
+@item Inheritance Tree:
+@table @code
+@item @w{@xref{ede-project}}
+@table @code
+@item project-am-makefile
+No children
+@end table
+
+@end table
+@end table
+
+  Encode one makefile.
+
+@table @asis
+@end table
+

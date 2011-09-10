@@ -1,0 +1,5 @@
+#! /bin/sh
+
+	emacs -l `pwd`/dun-main -f dungeon-start
+
+

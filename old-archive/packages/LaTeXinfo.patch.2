@@ -1,0 +1,1490 @@
+From utkcs2!emory!sol.ctr.columbia.edu!cica!iuvax!rutgers!news-server.csri.toronto.edu!helios.physics.utoronto.ca!ists!mike Mon Jun 25 07:39:26 EDT 1990
+Article 3046 of gnu.emacs:
+Xref: utkcs2 comp.emacs:4483 comp.text.tex:1052 gnu.emacs:3046
+Path: utkcs2!emory!sol.ctr.columbia.edu!cica!iuvax!rutgers!news-server.csri.toronto.edu!helios.physics.utoronto.ca!ists!mike
+>From: mike@ists.ists.ca (Mike Clarkson)
+Newsgroups: comp.emacs,comp.text.tex,gnu.emacs
+Subject: LaTeXinfo - Patch to ver. 1.3 - 2 of 2
+Message-ID: <9615@ists.ists.ca>
+Date: 22 Jun 90 23:37:49 GMT
+Followup-To: comp.emacs
+Organization: Institute for Space and Terrestrial Science
+Lines: 1476
+
+-- 
+Mike Clarkson					mike@ists.ists.ca
+Institute for Space and Terrestrial Science	uunet!attcan!ists!mike
+York University, North York, Ontario,		FORTRAN - just say no. 
+CANADA M3J 1P3					+1 (416) 736-5611
+
+#! /bin/sh
+# This is a shell archive.  Remove anything before this line, then unpack
+# it by saving it into a file and typing "sh file".  To overwrite existing
+# files, type "sh file -c".  You can also feed this as standard input via
+# unshar, or by typing "sh <file", e.g..  If this archive is complete, you
+# will see the following message at the end:
+#		"End of shell archive."
+# Contents:  patch.1b
+# Wrapped by mike@sam on Fri Jun 22 13:22:20 1990
+PATH=/bin:/usr/bin:/usr/ucb ; export PATH
+if test -f 'patch.1b' -a "${1}" != "-c" ; then 
+  echo shar: Will not clobber existing file \"'patch.1b'\"
+else
+echo shar: Extracting \"'patch.1b'\" \(45689 characters\)
+sed "s/^X//" >'patch.1b' <<'END_OF_FILE'
+Xdiff -cr /tmp/old/tabular.sty ./tabular.sty
+X*** /tmp/old/tabular.sty	Thu Jun 21 21:13:49 1990
+X--- ./tabular.sty	Thu Jun 21 21:11:49 1990
+X***************
+X*** 0 ****
+X--- 1 ----
+X+ \def\dosomespecials{\do\$\do\#\do\%\do\~\do\^}
+Xdiff -cr /tmp/old/tolatexinfo.el ./tolatexinfo.el
+X*** /tmp/old/tolatexinfo.el	Tue Jun 19 12:48:26 1990
+X--- ./tolatexinfo.el	Thu Jun 21 21:11:56 1990
+X***************
+X*** 1,7 ****
+X--- 1,35 ----
+X+ 
+X  (defun tex-to-latexinfo ()
+X    (interactive)
+X    (let ((case-fold-search nil)
+X  	(alist latex-alist))
+X+     ;; Input the @input files
+X+     (if (yes-or-no-p
+X+ 	 "Would you like to do the @input files now, to do it all at once?")
+X+ 
+X+ 	(while (re-search-forward "^@input" nil t)
+X+ 	  (save-excursion
+X+ 	    (skip-chars-forward " 	{")
+X+ 	    (let ((file-name
+X+ 		   (buffer-substring 
+X+ 		    (point)
+X+ 		    (progn
+X+ 		      (skip-chars-forward "^ 	\n")
+X+ 		      (point)))))
+X+ 	      (setq file-name
+X+ 		    (expand-file-name
+X+ 		     (if (file-readable-p (expand-file-name file-name))
+X+ 			 file-name
+X+ 		       (concat file-name ".texinfo"))))
+X+ 	      (beginning-of-line 1)
+X+ 	      (if (file-readable-p file-name)
+X+ 		  (progn
+X+ 		    (delete-region (point) (progn (forward-line 1) (point)))
+X+ 		    (message "Inserting file %s..." file-name) (sit-for 1)
+X+ 		    (insert-file file-name)
+X+ 		    (message "Inserting file %s...done" file-name))
+X+ 		(error "I can't find the file %s" file-name))
+X+ 	      ))))
+X      ;; Fix the header for LaTeX
+X      (goto-char (point-min))
+X      (if (re-search-forward "^\\\\input texinfo\\(.*\\)" nil t)
+X***************
+X*** 35,43 ****
+X        (delete-matching-lines (car alist))
+X        (setq alist (cdr alist)))
+X      (if (re-search-forward "^@appendix"  nil t nil)
+X! 			   (progn
+X! 			     (beginning-of-line 1)
+X! 			     (insert "\\apendix\n")))
+X      (setq alist latex-alist)
+X      (while alist
+X        (goto-char (point-min))
+X--- 63,71 ----
+X        (delete-matching-lines (car alist))
+X        (setq alist (cdr alist)))
+X      (if (re-search-forward "^@appendix"  nil t nil)
+X! 	(progn
+X! 	  (beginning-of-line 1)
+X! 	  (insert "\\apendix\n")))
+X      (setq alist latex-alist)
+X      (while alist
+X        (goto-char (point-min))
+X***************
+X*** 50,55 ****
+X--- 78,85 ----
+X    '(
+X      ;; begin end environments
+X      ("^@defcv" . "\\\\begin{defcv}")
+X+     ("^@defcmd" . "\\\\begin{defcmd}")
+X+     ("^@defconst" . "\\\\begin{defconst}")
+X      ("^@deffn" . "\\\\begin{deffn}")
+X      ("^@defivar" . "\\\\begin{defivar}")
+X      ("^@defmac" . "\\\\begin{defmac}")
+X***************
+X*** 111,116 ****
+X--- 141,152 ----
+X  
+X      ;; commands with arguments on the rest of the line
+X      ("^@end[ 	]+\\(.+\\)" . "\\\\end{\\1}")
+X+     ;; The elisp manual has some @ifinfo 2**24 - 1@end ifinfo
+X+     ;; and @tex $2^{24}-1$@end tex with the @end on the smae line
+X+     ("@end[ 	]+ifinfo" . "\\\\end{ifinfo}")
+X+     ("@end[ 	]+tex" . "\\\\end{tex}")
+X+     ("@end[ 	]+iftex" . "\\\\end{iftex}")
+X+     ("@end[ 	]+defvar" . "\\\\end{defvar}")
+X      ("^@printindex[ 	]+\\(.+\\)" . "\\\\printindex{\\1}")
+X  
+X      ;; Sections and chanpters are done LaTeX style
+X***************
+X*** 161,167 ****
+X      ("@emph{" . "\\\\emph{")
+X  
+X      ("@defn{" . "\\\\defn{")
+X!     ("@dfn{" . "\\\\dfn{")
+X      ("@ctrl{" . "\\\\ctrl{")
+X      ("@var{" . "\\\\var{")
+X      ("@cite{" . "\\\\cite{")
+X--- 197,203 ----
+X      ("@emph{" . "\\\\emph{")
+X  
+X      ("@defn{" . "\\\\defn{")
+X!     ("@dfn[ \t]*{" . "\\\\dfn{")
+X      ("@ctrl{" . "\\\\ctrl{")
+X      ("@var{" . "\\\\var{")
+X      ("@cite{" . "\\\\cite{")
+X***************
+X*** 177,184 ****
+X      ("@noindent" . "\\\\noindent")
+X      ("@comment" . "\\\\comment")
+X      ("@bullet" . "\\\\bullet")
+X!     ("@c[ 	]" . "\\\\c ")
+X      ("@arrow" . "\\\\arrow")
+X      
+X      ("@page" . "\\\\clearpage")
+X      ("^@bye" . "\\\\end{document}")
+X--- 213,226 ----
+X      ("@noindent" . "\\\\noindent")
+X      ("@comment" . "\\\\comment")
+X      ("@bullet" . "\\\\bullet")
+X!     ("@smallbook" . "\\\\smallbook")
+X! 
+X!     ("@c[ 	]-*-texinfo-*-" . "\\\\c -*-latexinfo-*-")
+X!     ("@c[ 	]*" . "\\\\c ")
+X!     
+X      ("@arrow" . "\\\\arrow")
+X+     ("@Arrow" . "\\\\arrow")
+X+     ("@equiv" . "\\\\equiv")
+X      
+X      ("@page" . "\\\\clearpage")
+X      ("^@bye" . "\\\\end{document}")
+X***************
+X*** 185,190 ****
+X--- 227,233 ----
+X      ("@vskip[ 	]" . "\\\\vskip ")
+X      ("@TeX" . "\\\\TeX")
+X      ("@exdent" . "\\\\exdent")
+X+     ("@copyright{}" . "\\\\copyright\\\\ ")
+X      ("@copyright" . "\\\\copyright")
+X      ("@minus" . "\\\\minus")
+X      ("@dots" . "\\\\dots")
+X***************
+X*** 200,208 ****
+X        '(
+X  	;; This is in the chapter command.
+X  	"@setchapternewpage[ 	]"
+X- 	;; these conflict with LaTeX commands.
+X- 	"^@group"
+X- 	"^@end[ 	]group"
+X  	;; Haven't made a \summarycontents yet.
+X  	"@summarycontents"
+X  	;; replaced by \tableofcontents at the beginning.
+X--- 243,248 ----
+Xdiff -cr /tmp/old/manual/Makefile ./manual/Makefile
+X*** /tmp/old/manual/Makefile	Tue Jun 19 12:48:06 1990
+X--- ./manual/Makefile	Thu Jun 21 21:11:41 1990
+X***************
+X*** 7,14 ****
+X  # The name of your GNU Emacs
+X  EMACS=Xemacs
+X  
+X! SPLITS = $(MANUAL).tex-aa $(MANUAL).tex-ab $(MANUAL).tex-ac \
+X! 		$(MANUAL).tex-ad $(MANUAL).tex-ae
+X  
+X  all:	$(MANUAL).dvi $(MANUAL).info
+X  
+X--- 7,14 ----
+X  # The name of your GNU Emacs
+X  EMACS=Xemacs
+X  
+X! SPLITS = $(MANUAL)-aa $(MANUAL)-ab $(MANUAL)-ac \
+X! 		$(MANUAL)-ad $(MANUAL)-ae
+X  
+X  all:	$(MANUAL).dvi $(MANUAL).info
+X  
+X***************
+X*** 15,28 ****
+X  texindex:	texindex.c
+X  	cc -O -o texindex texindex.c
+X  
+X! $(MANUAL).dvi:	texindex $(MANUAL).bbl $(MANUAL).tex
+X  	latex $(MANUAL)
+X- 
+X- $(MANUAL).bbl:	$(MANUAL).aux $(MANUAL).bib
+X- 	-bibtex $(MANUAL)
+X- 
+X- $(MANUAL).aux:	$(MANUAL).tex
+X- 	latex $(MANUAL)
+X  	if [ -s $(MANUAL).cp ] ; then \
+X  		texindex $(MANUAL).cp ;\
+X  		fi
+X--- 15,22 ----
+X  texindex:	texindex.c
+X  	cc -O -o texindex texindex.c
+X  
+X! $(MANUAL).dvi:	texindex $(MANUAL).tex $(MANUAL).bbl
+X  	latex $(MANUAL)
+X  	if [ -s $(MANUAL).cp ] ; then \
+X  		texindex $(MANUAL).cp ;\
+X  		fi
+X***************
+X*** 42,66 ****
+X  		texindex $(MANUAL).tp ;\
+X  		fi
+X  	latex $(MANUAL)
+X  
+X  $(MANUAL).ps:	$(MANUAL).dvi
+X  	$(DVIPS) $(MANUAL)
+X  
+X  $(MANUAL).info:	$(MANUAL).tex $(LATEXINFO)/latexinfo.el
+X  	rm -f make.el
+X! 	sed -e "s/MANUAL/$(MANUAL)/" makeinfofile.el > make.el
+X  	$(EMACS) -batch -q -l make.el
+X  
+X! $(MANUAL).tex::	$(SPLITS)
+X! 	cat $(SPLITS) >  $(MANUAL).tex
+X  
+X  
+X  shar::
+X! 	split $(MANUAL).tex $(MANUAL).tex-
+X  
+X  clean:	
+X! 	rm -f $(MANUAL).log $(MANUAL).blg make.el *~
+X  
+X  veryclean:
+X! 	rm -f $(MANUAL).ps $(MANUAL).dvi $(MANUAL).tex-??
+X  
+X--- 36,67 ----
+X  		texindex $(MANUAL).tp ;\
+X  		fi
+X  	latex $(MANUAL)
+X+ #	Once more because including the indexes may change the toc
+X+ 	latex $(MANUAL)
+X  
+X+ $(MANUAL).bbl:	$(MANUAL).bib
+X+ 	latex $(MANUAL)
+X+ 	-bibtex $(MANUAL)
+X+ 	latex $(MANUAL)
+X+ 
+X  $(MANUAL).ps:	$(MANUAL).dvi
+X  	$(DVIPS) $(MANUAL)
+X  
+X  $(MANUAL).info:	$(MANUAL).tex $(LATEXINFO)/latexinfo.el
+X  	rm -f make.el
+X! 	sed -e "s/MANUAL/$(MANUAL)/" makeinfo.el > make.el
+X  	$(EMACS) -batch -q -l make.el
+X  
+X! # $(MANUAL).tex::	$(SPLITS)
+X! # 	cat $(SPLITS) >  $(MANUAL).tex
+X  
+X  
+X  shar::
+X! 	split $(MANUAL).tex $(MANUAL)-
+X  
+X  clean:	
+X! 	rm -f $(MANUAL).log $(MANUAL).blg make.el *~ #~
+X  
+X  veryclean:
+X! 	rm -f $(MANUAL).ps $(MANUAL).dvi
+X  
+Xdiff -cr /tmp/old/manual/README ./manual/README
+X*** /tmp/old/manual/README	Tue Jun 19 12:48:07 1990
+X--- ./manual/README	Thu Jun 21 21:11:42 1990
+X***************
+X*** 1,15 ****
+X! \section{Added Goodies}
+X  
+X! With the \LaTeX info distribution are some added goodies that may help
+X! you use the program.
+X  
+X! \subsection{LaTeXinfo Goodies}
+X  
+X! You will find some added \LaTeX info styles such as \code{head}, 
+X! \code{macsyma}, \code{scheme}, and \code{praxis}.  These
+X  
+X! \subsection{Emacs Goodies}
+X  
+X! You will find 
+X! \subsection{ Goodies}
+X! There
+X--- 1,36 ----
+X! Added Goodies
+X! -------------
+X  
+X! With the LaTeXinfo distribution are some added goodies that may help you
+X! use the program.  You will find some added LaTeXinfo styles such as
+X! head, macsyma, scheme, and praxis.  These are examples of how to write
+X! your own LaTeXinfo styles with their associated GNU Emacs code.  They are
+X! undocumented at the present time, but may serve to illustrate how you can
+X! extend this program.  See `Extending LaTeXinfo' in the LaTeXinfo manual
+X! for more information.
+X  
+X! LaTeX Goodies
+X! .............
+X  
+X! There is a file called sample.tex which gives a sample layout for a typical
+X! manual written in LaTeXinfo.
+X  
+X! The LaTeX style smallverb.sty sets the example and verbatim environments
+X! in \small size \tt type.  This means that you can almost get a full 80
+X! characters on the page of an 11pt document.
+X  
+X! Emacs Goodies
+X! .............
+X! 
+X! You will find a file called nodify.el which will insert the \node
+X! constructs into a latexinfo buffer that contains only \chapter, \section
+X! ... commands.  It will also create menus at the chapter and section level.
+X! This is a hack! but it sure beats doing it by hand.
+X! 
+X! Write the manual and leave out the \node commands.  When you get near to
+X! being finished, so that you are not adding or moving sections of the manual,
+X! load the file nodify.el and invoke M-x nodify-file.   This program assumes
+X! that the node names will be the  same as the  chapter and section headings.
+X! These headings must be unique and must not contain any commas.
+X! 
+X! 
+Xdiff -cr /tmp/old/manual/latexinfo.bbl ./manual/latexinfo.bbl
+X*** /tmp/old/manual/latexinfo.bbl	Thu Jun 21 21:13:49 1990
+X--- ./manual/latexinfo.bbl	Thu Jun 21 21:11:42 1990
+X***************
+X*** 0 ****
+X--- 1,26 ----
+X+ \begin{thebibliography}{Lam85}
+X+ 
+X+ \bibitem[DS88]{BisonReferenceManual}
+X+ Charles Donnelly and Richard Stallman.
+X+ \newblock {\em The Bison Reference Manual}.
+X+ \newblock The Free Software Foundation, 675 Massachusetts Ave., Cambridge MA,
+X+   02139, 1988.
+X+ 
+X+ \bibitem[Lam85]{Lamport}
+X+ Leslie Lamport.
+X+ \newblock {\em LaTeX: A Document Preparation System}.
+X+ \newblock Addison-Wesley, 1985.
+X+ 
+X+ \bibitem[Sta86]{GNUEmacsManual}
+X+ Richard Stallman.
+X+ \newblock {\em The GNU Emacs Manual}.
+X+ \newblock The Free Software Foundation, 675 Massachusetts Ave., Cambridge MA,
+X+   02139, 1986.
+X+ 
+X+ \bibitem[Sta88]{GDBManual}
+X+ Richard Stallman.
+X+ \newblock {\em The GDB Manual}.
+X+ \newblock The Free Software Foundation, 675 Massachusetts Ave., Cambridge MA,
+X+   02139, 1988.
+X+ 
+X+ \end{thebibliography}
+Xdiff -cr /tmp/old/manual/latexinfo.tex ./manual/latexinfo.tex
+X*** /tmp/old/manual/latexinfo.tex	Tue Jun 19 13:05:39 1990
+X--- ./manual/latexinfo.tex	Thu Jun 21 21:12:42 1990
+X***************
+X*** 1,4 ****
+X! \documentstyle[12pt,twoside,latexinfo,format,smallverb]{report} \c -*-latexinfo-*-
+X  \pagestyle{empty}
+X  
+X  \begin{document}
+X--- 1,4 ----
+X! \documentstyle[12pt,latexinfo,format,smallverb,tabular]{book}
+X  \pagestyle{empty}
+X  
+X  \begin{document}
+X***************
+X*** 27,39 ****
+X  \maketitle
+X  
+X  \clearpage
+X! \vspace{0pt plus 1filll}
+X  Copyright \copyright{} 1988 Free Software Foundation, Inc.
+X  
+X- \sp{2}
+X  This is version \latexinfoversion\ of the \LaTeX info documentation, and is
+X  for Version 18 of GNU Emacs.
+X- \sp{2}
+X  
+X  Permission is granted to make and distribute verbatim copies of
+X  this manual provided the copyright notice and this permission notice
+X--- 27,37 ----
+X  \maketitle
+X  
+X  \clearpage
+X! \vspace*{0pt plus 1filll}
+X  Copyright \copyright{} 1988 Free Software Foundation, Inc.
+X  
+X  This is version \latexinfoversion\ of the \LaTeX info documentation, and is
+X  for Version 18 of GNU Emacs.
+X  
+X  Permission is granted to make and distribute verbatim copies of
+X  this manual provided the copyright notice and this permission notice
+X***************
+X*** 49,57 ****
+X  except that this permission notice may be stated in a translation approved
+X  by the Foundation.
+X  
+X  \clearpage
+X  \pagestyle{headings}
+X- 
+X  \pagenumbering{roman}
+X  \tableofcontents
+X  
+X--- 47,55 ----
+X  except that this permission notice may be stated in a translation approved
+X  by the Foundation.
+X  
+X+ 
+X  \clearpage
+X  \pagestyle{headings}
+X  \pagenumbering{roman}
+X  \tableofcontents
+X  
+X***************
+X*** 100,107 ****
+X  * Formatting Paragraphs::
+X  * Marking Text Within a Paragraph::
+X  * Input and Include Files::
+X- * Function Index::
+X- * Variable and Data Type Index::
+X  * Conditionals::
+X  * Printing Hardcopy::
+X  * Creating an On-line Info File::
+X--- 98,103 ----
+X***************
+X*** 115,121 ****
+X  \end{menu}
+X  
+X  \node Licensing Information, Overview of LaTeXinfo, Top, Top
+X! \chapter*{Licensing Information}
+X  \cindex{Licensing Information}
+X  
+X  The programs currently being distributed that relate to \LaTeX info
+X--- 111,117 ----
+X  \end{menu}
+X  
+X  \node Licensing Information, Overview of LaTeXinfo, Top, Top
+X! \unnumbered{Licensing Information}
+X  \cindex{Licensing Information}
+X  
+X  The programs currently being distributed that relate to \LaTeX info
+X***************
+X*** 383,389 ****
+X  
+X  All ASCII printing characters except \samp{\back }, \samp{\{} and
+X  \samp{\}} can appear in body text in a \LaTeX info file and stand for
+X! themselves.  This means that the characters \code{# $ % ^ & _ |} all
+X  print as normal characters.  \samp{\back } is the escape character which
+X  introduces commands.  \samp{\{} and \samp{\}} should be used only to
+X  surround arguments to certain commands.  \samp{\{} and \samp{\}}
+X--- 379,385 ----
+X  
+X  All ASCII printing characters except \samp{\back }, \samp{\{} and
+X  \samp{\}} can appear in body text in a \LaTeX info file and stand for
+X! themselves.  This means that the characters \code{# $ % ^ \& _ |} all
+X  print as normal characters.  \samp{\back } is the escape character which
+X  introduces commands.  \samp{\{} and \samp{\}} should be used only to
+X  surround arguments to certain commands.  \samp{\{} and \samp{\}}
+X***************
+X*** 421,427 ****
+X  begin with lines that looks like
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,twoside,latexinfo]{report}
+X  \pagestyle{headings}
+X  
+X  \begin{document}
+X--- 417,423 ----
+X  begin with lines that looks like
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,latexinfo]{book}
+X  \pagestyle{headings}
+X  
+X  \begin{document}
+X***************
+X*** 430,441 ****
+X  \end{verbatim}
+X  
+X  \noindent
+X! The \samp{\back documentstyle[12pt,twoside,latexinfo]} line tells
+X  \LaTeX\ to use the \file{latexinfo.sty} style file.  The \code{\back
+X  pagestyle\{headings\}} command is the \LaTeX\ command to put the chapter
+X  and section headings and page numbers at the top of each page.  The
+X  \code{\back begin\{document\}} command starts the document, and makes
+X! the characters \code{# $ % ^ & _ |} all begin to print as normal
+X  characters.  This line must be followed (sooner or later) by the
+X  \samp{\back setfilename\{\var{info-file-name}\}}. It is is needed to
+X  provide a name for the Info file to output to.\refill
+X--- 426,437 ----
+X  \end{verbatim}
+X  
+X  \noindent
+X! The \samp{\back documentstyle[12pt,latexinfo]} line tells
+X  \LaTeX\ to use the \file{latexinfo.sty} style file.  The \code{\back
+X  pagestyle\{headings\}} command is the \LaTeX\ command to put the chapter
+X  and section headings and page numbers at the top of each page.  The
+X  \code{\back begin\{document\}} command starts the document, and makes
+X! the characters \code{# $ % ^ \& _ |} all begin to print as normal
+X  characters.  This line must be followed (sooner or later) by the
+X  \samp{\back setfilename\{\var{info-file-name}\}}. It is is needed to
+X  provide a name for the Info file to output to.\refill
+X***************
+X*** 455,468 ****
+X  material is standard boilerplate; when you write a manual, you just put in
+X  the name of your own manual in this section.\refill
+X  
+X! All the commands that tell \LaTeX\ how to typeset the printed manual and
+X! tell \code{latexinfo-format-buffer} how to create an Info file are preceded
+X  by \samp{\back }; thus, \code{\back node} indicates a node and 
+X! \code{\back chapter} indicates the start of a chapter.
+X  
+X  \begin{verbatim}
+X! \documentstyle[11pt,twoside,latexinfo]{report}
+X! \pagestyle{empty}
+X  
+X  \begin{document}
+X  
+X--- 451,464 ----
+X  material is standard boilerplate; when you write a manual, you just put in
+X  the name of your own manual in this section.\refill
+X  
+X! All the commands that tell \LaTeX\ how to typeset the printed manual and tell\*
+X! \code{latexinfo-format-buffer} how to create an Info file are preceded
+X  by \samp{\back }; thus, \code{\back node} indicates a node and 
+X! \code{\back chapter} indicates the start of a chapter.\refill
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,latexinfo]{book}
+X! \pagestyle{headings}
+X  
+X  \begin{document}
+X  
+X***************
+X*** 487,503 ****
+X  Permission is granted to copy and distribute modified versions of this
+X  manual under the following five pages of conditions...
+X  
+X! \c End the Copyleft page and Turn on the headings to each page.
+X  \clearpage
+X- \pagestyle{headings}
+X  
+X- \c Use roman numerals for the page numbers and Insert the Table of Contents.
+X- \pagenumbering{roman}
+X  \tableofcontents
+X  
+X! \c End the Table of Contents and start numbering from 1 with Arabic numbers
+X  \clearpage
+X- \pagenumbering{arabic}
+X  
+X  \c Anything before the \setfilename will not appear in the Info file.
+X  \setfilename{themanual.info}
+X--- 483,496 ----
+X  Permission is granted to copy and distribute modified versions of this
+X  manual under the following five pages of conditions...
+X  
+X! \c End the Copyleft page and don't use headings on this page.
+X! \pagestyle{empty}
+X  \clearpage
+X  
+X  \tableofcontents
+X  
+X! \c End the Table of Contents
+X  \clearpage
+X  
+X  \c Anything before the \setfilename will not appear in the Info file.
+X  \setfilename{themanual.info}
+X***************
+X*** 535,541 ****
+X  like this into an Info file; and \LaTeX\ typesets it for a printed manual.
+X  
+X   \node Concept Index, Top, First Chapter, Top
+X!  \chapter*{Concept Index}
+X  
+X  \twocolumn
+X  \printindex{cp}
+X--- 528,534 ----
+X  like this into an Info file; and \LaTeX\ typesets it for a printed manual.
+X  
+X   \node Concept Index, Top, First Chapter, Top
+X!  \unnumbered{Concept Index}
+X  
+X  \twocolumn
+X  \printindex{cp}
+X***************
+X*** 641,647 ****
+X  with a line that looks like this:
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,twoside,latexinfo]{report}
+X  \end{verbatim}
+X  
+X  When the file is processed by \LaTeX, it loads the macros listed as
+X--- 634,640 ----
+X  with a line that looks like this:
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,latexinfo]{book}
+X  \end{verbatim}
+X  
+X  When the file is processed by \LaTeX, it loads the macros listed as
+X***************
+X*** 650,660 ****
+X  then input the file \file{latexinfo.sty}
+X  \pxref{LaTeX Input Initialization}.  
+X  
+X! \code{12pt} and \code{twoside} are other \LaTeX\ options that also
+X! include style files.  Unlike \TeX info, these style files may have an
+X! Emacs counterpart, so that you can extend \LaTeX info by writing your
+X! own styles.
+X! \xref{Extending LaTeXinfo}, for more information on writing your own styles.
+X  
+X  \node Titlepage, Copyright Pages, The First Line of a LaTeXinfo File, The LaTeXinfo File Header
+X  \subsection{Titlepage}
+X--- 643,653 ----
+X  then input the file \file{latexinfo.sty}
+X  \pxref{LaTeX Input Initialization}.  
+X  
+X! You can also include other options that may also include style files. 
+X! Unlike \TeX info, these style files may have an Emacs counterpart, so
+X! that you can extend \LaTeX info by writing your own styles. 
+X! \xref{Extending LaTeXinfo}, for more information on writing your own
+X! styles. 
+X  
+X  \node Titlepage, Copyright Pages, The First Line of a LaTeXinfo File, The LaTeXinfo File Header
+X  \subsection{Titlepage}
+X***************
+X*** 688,717 ****
+X  \cindex{Printed permissions}
+X  \cindex{Permissions, printed}
+X  \findex{pagestyle}
+X  
+X! By international treaty, the copyright notice for a book should either
+X! be on the title page or on the back of the title page.  Other locations
+X! in a book are not official and do not provide copyright protection.  The
+X! copyright notice should include the year followed by the name of the
+X! person or organization who has the copyright.  When the copyright notice
+X! is on the back of the title page, the page is not numbered.  Therefore,
+X! this is usually done while a \code{\back pagestyle\{empty\}} is in
+X! effect. See the \LaTeX\ Manual for more details on the \code{pagestyle}
+X! command (\cite{Lamport}).\refill
+X  
+X  \findex{filll}
+X  \findex{vspace}
+X  To cause a page break, the \code{\back clearpage} command is used.  In
+X  the sample, the \code{\back clearpage} that ends the titlepage is
+X  followed by the somewhat mysterious line that reads: 
+X! \samp{\back vspace\{0pt plus 1filll\}}.  This is a line that uses
+X  \LaTeX commands to push the copyright notice and the other text 
+X! on the copyright page towards the bottom of the page.  
+X! The \code{\back vspace} command means to put in white space.  
+X! The \samp{0pt plus 1filll}
+X! means to put in zero points of mandatory white space, and as much
+X! optional white space as needed.  Note the use of three \samp{l}s in the
+X! word \samp{filll}; this is the correct use in \LaTeX.\refill
+X  
+X  \findex{copyright}
+X  The \code{\back copyright} command generates a \samp{c} inside a circle.
+X--- 681,711 ----
+X  \cindex{Printed permissions}
+X  \cindex{Permissions, printed}
+X  \findex{pagestyle}
+X+ \findex{thispagestyle}
+X  
+X! By international treaty, the copyright notice for a book should either be
+X! on the title page or on the back of the title page.  Other locations in a
+X! book are not official and do not provide copyright protection.  The
+X! copyright notice should include the year followed by the name of the person
+X! or organization who has the copyright.  When the copyright notice is on the
+X! back of the title page, the page is not numbered.  Therefore, this is
+X! usually done by putting a \code{\back thispagestyle\{empty\}} before you
+X! clear this page . See the \LaTeX\ Manual for more details on the
+X! \code{pagestyle} command (\cite{Lamport}).\refill
+X  
+X  \findex{filll}
+X  \findex{vspace}
+X+ \findex{vspace*}
+X  To cause a page break, the \code{\back clearpage} command is used.  In
+X  the sample, the \code{\back clearpage} that ends the titlepage is
+X  followed by the somewhat mysterious line that reads: 
+X! \samp{\back vspace*\{0pt plus 1filll\}}.  This is a line that uses
+X  \LaTeX commands to push the copyright notice and the other text 
+X! on the copyright page towards the bottom of the page.  The \code{\back
+X! vspace*} command means to put in white space.  The \samp{0pt plus 1filll}
+X! means to put in zero points of mandatory white space, and as much optional
+X! white space as needed.  Note the use of three \samp{l}s in the word
+X! \samp{filll}; this is the correct use in \LaTeX.\refill
+X  
+X  \findex{copyright}
+X  The \code{\back copyright} command generates a \samp{c} inside a circle.
+X***************
+X*** 894,900 ****
+X  about and who would be interested in reading it.  In general, the preface
+X  would follow the licensing and distribution information, although sometimes
+X  people put it earlier in the document.  Usually, a preface is put in an
+X! \code{\back chapter*} section.
+X  
+X  \node Ending a LaTeXinfo File, Making a Bibliography, Licensing and Distribution Information, Top
+X  \chapter{Ending a LaTeXinfo File}
+X--- 888,894 ----
+X  about and who would be interested in reading it.  In general, the preface
+X  would follow the licensing and distribution information, although sometimes
+X  people put it earlier in the document.  Usually, a preface is put in an
+X! \code{\back unnumbered} section.
+X  
+X  \node Ending a LaTeXinfo File, Making a Bibliography, Licensing and Distribution Information, Top
+X  \chapter{Ending a LaTeXinfo File}
+X***************
+X*** 913,919 ****
+X  
+X  \twocolumn
+X   \node Concept Index,     , Previous Node, Top
+X!  \chapter*{Concept Index}
+X  \cindex{Concept Index}
+X  
+X  \printindex{cp}
+X--- 907,913 ----
+X  
+X  \twocolumn
+X   \node Concept Index,     , Previous Node, Top
+X!  \unnumbered{Concept Index}
+X  \cindex{Concept Index}
+X  
+X  \printindex{cp}
+X***************
+X*** 1066,1072 ****
+X  you would use
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,twoside,latexinfo]{report}
+X  
+X  \begin{document}
+X  \newindex{cp}
+X--- 1060,1066 ----
+X  you would use
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,latexinfo]{book}
+X  
+X  \begin{document}
+X  \newindex{cp}
+X***************
+X*** 1224,1245 ****
+X  
+X  \code{\back printindex} does not generate a chapter heading for the index.
+X  Consequently, you should precede the command with a suitable section or
+X! chapter command (usually \code{\back chapter*}) to supply the chapter heading
+X! and put the index into the table of contents.  And before that, you will
+X! probably put a \code{\back node} command.  Also, if you want the index
+X! to be set in two-column mode, then you should precede the index with 
+X! the \LaTeX\ \code{\back twocolumn} command.  For example,\refill
+X  
+X  \begin{verbatim}
+X  \twocolumn
+X   \node Command Index, Concept Index, The Last Section, Top
+X!  \chapter*{Command Index}
+X  \cindex{Command Index}
+X  
+X  \printindex{fn}
+X  
+X   \node Concept Index,Top,   Command Index, Top
+X!  \chapter*{Concept Index}
+X  \cindex{Concept Index}
+X  
+X  \printindex{cp}
+X--- 1218,1239 ----
+X  
+X  \code{\back printindex} does not generate a chapter heading for the index.
+X  Consequently, you should precede the command with a suitable section or
+X! chapter command to supply the chapter heading and put the index into the
+X! table of contents.  And before that, you will probably put a \code{\back
+X! node} command.  Also, if you want the index to be set in two-column mode,
+X! then you should precede the index with the \LaTeX\ \code{\back twocolumn}
+X! command.  For example,\refill
+X  
+X  \begin{verbatim}
+X  \twocolumn
+X   \node Command Index, Concept Index, The Last Section, Top
+X!  \unnumbederd{Command Index}
+X  \cindex{Command Index}
+X  
+X  \printindex{fn}
+X  
+X   \node Concept Index,Top,   Command Index, Top
+X!  \unnumbered{Concept Index}
+X  \cindex{Concept Index}
+X  
+X  \printindex{cp}
+X***************
+X*** 1386,1395 ****
+X  \section{Chapter}
+X  \cindex{Chapter}
+X  \findex{chapter}
+X  \findex{chapter*}
+X  
+X  \code{\back chapter} identifies a chapter in the document.  It is
+X! followed by a single argument which is the rest of the line, as in
+X  
+X  \begin{verbatim}
+X   \chapter{Node and Chapter Structuring}
+X--- 1380,1390 ----
+X  \section{Chapter}
+X  \cindex{Chapter}
+X  \findex{chapter}
+X+ \findex{unnumbered}
+X  \findex{chapter*}
+X  
+X  \code{\back chapter} identifies a chapter in the document.  It is
+X! followed by a single argument, as in
+X  
+X  \begin{verbatim}
+X   \chapter{Node and Chapter Structuring}
+X***************
+X*** 1405,1413 ****
+X  *****************
+X  \end{example}
+X  
+X! To start a chapter without it being numbered, use the \code{\back chapter*}
+X! command.
+X  
+X  \node Appendix, Section, Chapter, Node and Chapter Structuring
+X  \section{Appendix}
+X  \cindex{Appendix}
+X--- 1400,1415 ----
+X  *****************
+X  \end{example}
+X  
+X! \noindent
+X! To start a chapter without it being numbered, use the \code{\back
+X! unnumbered} command.  To start a chapter without it being numbered
+X! or appearing in the table of contents, use the
+X! \code{\back chapter*} command.
+X  
+X+ In the printed manual, the chapters will begin on a new page.  If you want
+X+ the chapters to appear on the odd--sided pages, use the \code{book}
+X+ documentstyle.
+X+ 
+X  \node Appendix, Section, Chapter, Node and Chapter Structuring
+X  \section{Appendix}
+X  \cindex{Appendix}
+X***************
+X*** 1422,1427 ****
+X--- 1424,1430 ----
+X  \section{Section}
+X  \cindex{Section}
+X  \findex{section}
+X+ \findex{unnumberedsec}
+X  \findex{section*}
+X  
+X  \code{\back section} is like \code{\back chapter} except that in 
+X***************
+X*** 1435,1441 ****
+X  =================
+X  \end{example}
+X  
+X! To start a section without it being numbered, use the \code{\back section*}
+X  command.
+X  
+X  \node Subsection, Subsubsection, Section, Node and Chapter Structuring
+X--- 1438,1446 ----
+X  =================
+X  \end{example}
+X  
+X! To start a section without it being numbered, use the \code{\back
+X! unnumberedsec} command.  To start a section without it being numbered or
+X! appearing in the table of contents, use the \code{\back section*}
+X  command.
+X  
+X  \node Subsection, Subsubsection, Section, Node and Chapter Structuring
+X***************
+X*** 1442,1447 ****
+X--- 1447,1454 ----
+X  \section{Subsection}
+X  \cindex{Subsection}
+X  \findex{subsection}
+X+ \findex{unnumberedsubsec}
+X+ \findex{subsection*}
+X  
+X  Subsections are to sections as sections are to chapters. (\xref{Section}.)
+X  They are underlined with \samp{-}.  For example,\refill
+X***************
+X*** 1451,1457 ****
+X  --------------------
+X  \end{example}
+X  
+X! To start a subsection without it being numbered, use the 
+X  \code{\back subsection*} command.\refill
+X  
+X  \node Subsubsection, Node, Subsection, Node and Chapter Structuring
+X--- 1458,1466 ----
+X  --------------------
+X  \end{example}
+X  
+X! To start a subsection without it being numbered, use the \code{\back 
+X! unnumberedsubsec} command.  To start a subsection without it being numbered
+X! or appearing in the table of contents, use the
+X  \code{\back subsection*} command.\refill
+X  
+X  \node Subsubsection, Node, Subsection, Node and Chapter Structuring
+X***************
+X*** 1458,1463 ****
+X--- 1467,1473 ----
+X  \section{Subsubsection}
+X  \cindex{Subsubsection}
+X  \findex{subsubsection}
+X+ \findex{unnumberedsubsubsec}
+X  \findex{subsubsection*}
+X  
+X  Subsubsections are to subsections as subsections are to sections.
+X***************
+X*** 1469,1475 ****
+X  .......................
+X  \end{example}
+X  
+X! To start a subsubsection without it being numbered, use the 
+X  \code{\back subsubsection*} command.\refill
+X  
+X  \node Node, Menu Environment, Subsubsection, Node and Chapter Structuring
+X--- 1479,1487 ----
+X  .......................
+X  \end{example}
+X  
+X! To start a subsubsection without it being numbered, use the \code{\back 
+X! unnumberedsubsubsec} command.  To start a subsubsection without it being
+X! numbered or appearing in the table of contents, use the
+X  \code{\back subsubsection*} command.\refill
+X  
+X  \node Node, Menu Environment, Subsubsection, Node and Chapter Structuring
+X***************
+X*** 2531,2539 ****
+X  \cindex{Clearpage}
+X  \cindex{Page breaks}
+X  \findex{clearpage}
+X  
+X! A line containing \code{\back page} starts a new page in a printed manual.  The
+X! line has no effect on Info files since they are not paginated.
+X  
+X  \node Same Environment, Marking Text Within a Paragraph, Clearpage, Breaks Blank Lines and Groups
+X  \subsection{Same Environment}
+X--- 2543,2555 ----
+X  \cindex{Clearpage}
+X  \cindex{Page breaks}
+X  \findex{clearpage}
+X+ \findex{newpage}
+X+ \findex{cleardoublepage}
+X  
+X! A line containing \code{\back page} starts a new page in a printed manual.
+X! The line has no effect on Info files since they are not paginated.  The
+X! \LaTeX\ commands \code{newpage} and \code{cleardoublepage} are also
+X! supported.
+X  
+X  \node Same Environment, Marking Text Within a Paragraph, Clearpage, Breaks Blank Lines and Groups
+X  \subsection{Same Environment}
+X***************
+X*** 3262,3268 ****
+X  
+X  \clearpage
+X  \begin{verbatim}
+X! \documentstyle[11pt,twoside,latexinfo]{report}
+X  \pagestyle{headings}
+X  \begin{document}
+X  \bibliographystyle{alpha}
+X--- 3278,3284 ----
+X  
+X  \clearpage
+X  \begin{verbatim}
+X! \documentstyle[12pt,latexinfo]{book}
+X  \pagestyle{headings}
+X  \begin{document}
+X  \bibliographystyle{alpha}
+X***************
+X*** 3292,3301 ****
+X  \end{tex}
+X  
+X  \twocolumn
+X!  \chapter*{Function Index}
+X   \printindex{fn}
+X  
+X!  \chapter*{Variable and Data Type Index}
+X   \printindex{vr}
+X  
+X  \end{document}
+X--- 3308,3317 ----
+X  \end{tex}
+X  
+X  \twocolumn
+X!  \unnumbered{Function Index}
+X   \printindex{fn}
+X  
+X!  \unnumbered{Variable and Data Type Index}
+X   \printindex{vr}
+X  
+X  \end{document}
+X***************
+X*** 3370,3376 ****
+X  \code{\back end\{iftex\}}, you can embed ordinary \LaTeX\ commands.  Info
+X  will ignore these commands since they are only in that part of the file
+X  that is seen by \LaTeX.  Note that you still have the characters \code{#
+X! $ % ^ & _ |} all printing as normal characters.  You can enter \LaTeX\
+X  completely, by delineating a region with the \code{\back begin\{tex\}}
+X  and \code{\back end\{tex\}} commands.  For example,\refill
+X  
+X--- 3386,3392 ----
+X  \code{\back end\{iftex\}}, you can embed ordinary \LaTeX\ commands.  Info
+X  will ignore these commands since they are only in that part of the file
+X  that is seen by \LaTeX.  Note that you still have the characters \code{#
+X! $ % ^ \& _ |} all printing as normal characters.  You can enter \LaTeX\
+X  completely, by delineating a region with the \code{\back begin\{tex\}}
+X  and \code{\back end\{tex\}} commands.  For example,\refill
+X  
+X***************
+X*** 3517,3523 ****
+X  that looks like
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,twoside,latexinfo]{report} \c -*-latexinfo-*-
+X  \end{verbatim}
+X  
+X  \noindent
+X--- 3533,3539 ----
+X  that looks like
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,latexinfo]{book} \c -*-latexinfo-*-
+X  \end{verbatim}
+X  
+X  \noindent
+X***************
+X*** 3783,3789 ****
+X  Your \LaTeX info file would begin with
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,twoside,latexinfo,macsyma]{report}
+X  \end{verbatim}
+X  
+X  But what about the Info file?  As it stands, the command \code{\back f}
+X--- 3799,3805 ----
+X  Your \LaTeX info file would begin with
+X  
+X  \begin{verbatim}
+X! \documentstyle[12pt,latexinfo,macsyma]{book}
+X  \end{verbatim}
+X  
+X  But what about the Info file?  As it stands, the command \code{\back f}
+X***************
+X*** 4718,4727 ****
+X  \settitle               replaced by \title
+X  \table                  replaced by \begin{description}
+X  \titlepage              replaced by \maketitle
+X- \unnumbered             replaced by \chapter*
+X- \unnumberedsec          replaced by \section*
+X- \unnumberedsubsec       replaced by \subsection*
+X- \unnumberedsubsubsec    replaced by \subsubsection*
+X  \end{verbatim}
+X  
+X  The following commands have been added and are supported by the Info
+X--- 4734,4739 ----
+X***************
+X*** 4734,4742 ****
+X--- 4746,4757 ----
+X  \label
+X  \markboth
+X  \pagestyle
+X+ \thispagestyle
+X  \pagenumbering
+X  \protect
+X+ \tie
+X  \vspace
+X+ \vspace*
+X  \end{verbatim}
+X  
+X  The following commands have been changed to their \LaTeX\ definitions:
+X***************
+X*** 4753,4801 ****
+X  \end{verbatim}
+X  
+X  
+X! \node Differences from LaTeX, Converting TeXinfo Files into LaTeXinfo Files, Differences from TeXinfo, LateXinfo and TeXinfo
+X  \section{Differences from LaTeX}
+X  \cindex{Differences from LaTeX}
+X  
+X! There is no support for any kind of math modes, pictures, tables, figures,
+X! If you want to use them in a \LaTeX info document, then use the following
+X! idiom to have them appear in the \LaTeX\ file, but not in the Info file.
+X  
+X  \begin{verbatim}
+X  \begin{tex}
+X- \begin{figure}
+X  ...
+X- \end{figure}
+X  \end{tex}
+X  \end{verbatim}
+X  
+X  This ensures that this part will be ignored by the Info processor, and
+X  that all special characters will be processed according to the normal
+X  \LaTeX\ definitions.
+X  
+X! \node Converting TeXinfo Files into LaTeXinfo Files, Command Index, Differences from LaTeX, LateXinfo and TeXinfo
+X  \section{Converting TeXinfo Files into LaTeXinfo Files}
+X  \cindex{Converting TeXinfo Files into LaTeXinfo Files}
+X  
+X! With the \LaTeX info distribution is a file called
+X! \file{tex-to-latexinfo.el}, which helps convert a \TeX info file
+X! to a \LaTeX info file.  Although it is not a perfectly automatic
+X! conversion, it will convert most of a file  to \LaTeX info.  The 
+X! only command not known to be supported in \code{@itemx}.
+X  
+X- To convert a \TeX info File into an \LaTeX Info file, just visit a \TeX info
+X- file in GNU Emacs and invoke
+X- 
+X  \begin{example}
+X  \kbd{Meta-x tex-to-latexinfo}
+X  \end{example}
+X  
+X  \noindent
+X! to convert it to a \LaTeX Info file.  Then search through the buffer to
+X! see if there are any command that were not converted.  These start with
+X! the symbol \samp{@}.
+X  
+X  
+X  \begin{tex}
+X  \bibliography{latexinfo}
+X  \end{tex}
+X--- 4768,4938 ----
+X  \end{verbatim}
+X  
+X  
+X! \node Differences from LaTeX, Tabular Environment, Differences from TeXinfo, LateXinfo and TeXinfo
+X  \section{Differences from LaTeX}
+X  \cindex{Differences from LaTeX}
+X  
+X! If you want to use \LaTeX\ commands for which there is no support of any
+X! kind, you can wrap them in a \code{tex} environment:
+X  
+X  \begin{verbatim}
+X  \begin{tex}
+X  ...
+X  \end{tex}
+X  \end{verbatim}
+X  
+X+ \noindent
+X  This ensures that this part will be ignored by the Info processor, and
+X  that all special characters will be processed according to the normal
+X  \LaTeX\ definitions.
+X  
+X! \findex{figure}
+X! Tables and Figures are only weakly supported by \LaTeX info.  Anything
+X! within a \code{figure} environment is completely ignored in the Info file:
+X! \code{\back begin\{figure\}} is equivalent to \code{\back begin\{tex\}}
+X! 
+X! \findex{table}
+X! \findex{caption}
+X! \code{\back begin\{table\}} is supported by \LaTeX info, as is the
+X! \code{caption} command.  The lines containing the \code{\back
+X! begin\{table\}} and \code{\back end\{table\}} are deleted from the Info
+X! file.  The \code{caption} command causes its argument to be centered on a
+X! line, preceded by the word Table and the table number.  \code{caption}s are
+X! assumed to be within tables because figures are not supported.
+X! 
+X! \node Tabular Environment, Converting TeXinfo Files into LaTeXinfo Files, Differences from LaTeX, LateXinfo and TeXinfo
+X! \subsection{Tabular Environment}
+X! \findex{tabular}
+X! \cindex{Tabular environment}
+X! 
+X! The \code{tabular} environment is weakly supported by the optional tabular
+X! style.  This style makes the ampersand character revert to its \LaTeX\ special
+X! meaning of a separator in tables.  To insert a \code{\&}, type 
+X! \code{\back \&}.  To use this style, the \LaTeX info file \strong{must}
+X! begin with lines that looks like
+X! 
+X! \begin{verbatim}
+X! \documentstyle[12pt,latexinfo,tabular]{book}
+X! \end{verbatim}
+X! 
+X! In the \code{tabular} environment, you must line the columns up the way you
+X! want them to appear in the Info file, and you must use \key{\&} as a
+X! separator.  In the Info file, the separator will become a \key{SPC} thus
+X! preserving the alignment.  The trailing \code{\back \back } will be
+X! stripped; these \emph{must} occur at the end of the line.
+X! 
+X! \findex{hline} 
+X! The \code{hline} command is supported by the Info program.  It will insert
+X! a line of hyphens all the way to the current \code{fill-column}.  Neither
+X! the \code{cline} or \code{multicolum} commands are supported. For example:
+X! 
+X! \begin{verbatim}
+X! \begin{table}[hbtp]
+X! \caption{The First Table's Caption}
+X! \begin{tabular}{||l|l|l|l||}
+X! \hline
+X! Column A        & Column B      & Column C      & Column D      \\
+X! \hline
+X! A 1             & B 1           & C 1           & D 1           \\
+X! A 2             & B 2           & C 2           & D 2           \\
+X! A 3             & B 3           & C 3           & D 3           \\
+X! \hline
+X! \end{tabular}
+X! \end{table}
+X! \end{verbatim}
+X! 
+X! \noindent
+X! produces in the Info file
+X! \begin{verbatim}
+X!                   Table 1 : The First Table's Caption
+X! ------------------------------------------------------------------------
+X! Column A          Column B        Column C        Column D      
+X! ------------------------------------------------------------------------
+X! A 1               B 1             C 1             D 1           
+X! A 2               B 2             C 2             D 2           
+X! A 3               B 3             C 3             D 3           
+X! ------------------------------------------------------------------------
+X! \end{verbatim}
+X! 
+X! \begin{iftex}
+X! \noindent
+X! and in the \LaTeX\ file
+X! 
+X! \begin{table}[hbtp]
+X! \caption{The First Table's Caption}
+X! \begin{tabular}{||l|l|l|l||}
+X! \hline
+X! Column A	& Column B	& Column C	& Column D	\\
+X! \hline
+X! A 1		& B 1		& C 1		& D 1		\\
+X! A 2		& B 2		& C 2		& D 2		\\
+X! A 3		& B 3		& C 3		& D 3		\\
+X! \hline
+X! \end{tabular}
+X! \end{table}
+X! \end{iftex}
+X! 
+X! With the \code{tabular} environment, the math environments
+X! \code{displaymath}, \code{equation}, \code{eqnarray} and
+X! \code{array} will be completely ignored in the Info file, but will
+X! have their \LaTeX\ definitions in the printed manual.
+X! 
+X! 
+X! \node Converting TeXinfo Files into LaTeXinfo Files, Command Index, Tabular Environment, LateXinfo and TeXinfo
+X  \section{Converting TeXinfo Files into LaTeXinfo Files}
+X  \cindex{Converting TeXinfo Files into LaTeXinfo Files}
+X  
+X! With the \LaTeX info distribution is a file called \file{tolatexinfo.el},
+X! which helps convert a \TeX info file to a \LaTeX info file.  Although it is
+X! not a perfectly automatic conversion, it will convert most of a file to
+X! \LaTeX info.  To convert a \TeX info File into an \LaTeX Info file, just
+X! visit a \TeX info file in GNU Emacs and invoke
+X  
+X  \begin{example}
+X  \kbd{Meta-x tex-to-latexinfo}
+X  \end{example}
+X  
+X+ \noindent to convert it to a \LaTeX Info file.  Then search through the
+X+ buffer to see if there are any command that were not converted.  These
+X+ start with the symbol \samp{@}.  You will have to fix up the titlepage to
+X+ use \code{\back \{author\}} and \code{\back \{title\}} etc, and should move
+X+ the \code{setfilename} command down to somewhere after the title and
+X+ copyright pages.  You will also have to fix up any places where you have
+X+ embedded \TeX\ code such as
+X+ 
+X+ \begin{verbatim}
+X+ @tex
+X+ \overfullrule=0pt
+X+ @end tex
+X+ \end{verbatim}
+X+ 
+X  \noindent
+X! which will be converted into
+X  
+X+ \begin{verbatim}
+X+ @tex
+X+ \back overfullrule=0pt
+X+ @end tex
+X+ \end{verbatim}
+X  
+X+ You will be asked
+X+ 
+X+ \code{Would you like to do the @input files now, to do it all at once?}
+X+ 
+X+ \noindent
+X+ If you say \code{yes}, all the \code{@input} files will be included, so
+X+ you can doo all of the subfiles at the same time.  You will also be asked
+X+ 
+X+ \code{Would you like all occurences of `@@' replaced by `@'?}
+X+ 
+X+ This is normally the case, but if you say no, you will be asked
+X+ 
+X+ \code{Would you like all occurences of `@@' replaced by `\back \back '?}
+X+ 
+X+ \noindent
+X+ You must choose one of these two options.
+X+ 
+X+ 
+X  \begin{tex}
+X  \bibliography{latexinfo}
+X  \end{tex}
+X***************
+X*** 4802,4810 ****
+X  
+X  \twocolumn
+X  \node Command Index, Concept Index, Converting TeXinfo Files into LaTeXinfo Files, Top
+X! \chapter*{Command Index}
+X  \cindex{Command Index}
+X- \cindex{Command Index}
+X  
+X  (When used in a \LaTeX info file, commands are preceded by an
+X  \samp{\back }.)\refill
+X--- 4939,4946 ----
+X  
+X  \twocolumn
+X  \node Command Index, Concept Index, Converting TeXinfo Files into LaTeXinfo Files, Top
+X! \unnumbered{Command Index}
+X  \cindex{Command Index}
+X  
+X  (When used in a \LaTeX info file, commands are preceded by an
+X  \samp{\back }.)\refill
+X***************
+X*** 4812,4820 ****
+X  \printindex{fn}
+X  
+X  \onecolumn
+X! \node Concept Index, Top, Command Index, Top
+X! \chapter*{Concept Index}
+X! \cindex{Concept Index}
+X  \cindex{Concept Index}
+X  
+X  \printindex{cp}
+X--- 4948,4955 ----
+X  \printindex{fn}
+X  
+X  \onecolumn
+X! \node Concept Index, , Command Index, Top
+X! \unnumbered{Concept Index}
+X  \cindex{Concept Index}
+X  
+X  \printindex{cp}
+Xdiff -cr /tmp/old/manual/makeinfo.el ./manual/makeinfo.el
+X*** /tmp/old/manual/makeinfo.el	Tue Jun 19 12:48:09 1990
+X--- ./manual/makeinfo.el	Thu Jun 21 21:11:43 1990
+X***************
+X*** 12,22 ****
+X  
+X  (compile-if-necessary "latexinfo.el")
+X  (load-file "$LATEXINFO/latexinfo.elc")
+X! (mapcar 'compile-if-necessary '("latexinfo-mode.el"
+X  				"get-node.el"
+X  				"macsyma-fmt.el"
+X  				"head-fmt.el"
+X  				"scheme-fmt.el"
+X  				"nodify.el"))
+X  
+X  (find-file "MANUAL.tex")
+X--- 12,23 ----
+X  
+X  (compile-if-necessary "latexinfo.el")
+X  (load-file "$LATEXINFO/latexinfo.elc")
+X! (mapcar 'compile-if-necessary '("latexinfomd.el"
+X  				"get-node.el"
+X  				"macsyma-fmt.el"
+X  				"head-fmt.el"
+X  				"scheme-fmt.el"
+X+ 				"tabular-fmt.el"
+X  				"nodify.el"))
+X  
+X  (find-file "MANUAL.tex")
+Xdiff -cr /tmp/old/manual/sample.tex ./manual/sample.tex
+X*** /tmp/old/manual/sample.tex	Tue Jun 19 12:48:10 1990
+X--- ./manual/sample.tex	Thu Jun 21 21:11:44 1990
+X***************
+X*** 1,4 ****
+X! \documentstyle[11pt,twoside,latexinfo]{report}
+X  \pagestyle{empty}
+X  
+X  \begin{document}
+X--- 1,4 ----
+X! \documentstyle[11pt,twoside,latexinfo]{book}
+X  \pagestyle{empty}
+X  
+X  \begin{document}
+X***************
+X*** 18,24 ****
+X  
+X  \c The following commands start the copyright page for the printed manual.
+X  \clearpage
+X! \vpace{0pt plus 1filll}
+X  Copyright \copyright\{\} year copyright-owner
+X  
+X  Permission is granted to copy and distribute modified versions of this
+X--- 18,24 ----
+X  
+X  \c The following commands start the copyright page for the printed manual.
+X  \clearpage
+X! \vspace*{0pt plus 1filll}
+X  Copyright \copyright\{\} year copyright-owner
+X  
+X  Permission is granted to copy and distribute modified versions of this
+X***************
+X*** 46,51 ****
+X--- 46,56 ----
+X  Put another 5 page copyleft here for the Info file.
+X  \end{ifinfo}
+X  
+X+ \begin{ignore}
+X+ Copyright \copyright \var{year} \var{copyright-owner}
+X+ Put another 5 page copyleft here in case anyone looks at this file.
+X+ \end{ignore}
+X+ 
+X  \c The Top node contains the master menu for the Info file.
+X  \c This appears only in the Info file, not the printed manual.
+X  
+X***************
+X*** 56,62 ****
+X                       only chapter in this sample.
+X  \end{menu}
+X  
+X! \node First Chapter, Concept Index, Top,Top
+X  \chapter{First Chapter}
+X  \cindex{Reference to First Chapter}
+X  
+X--- 61,67 ----
+X                       only chapter in this sample.
+X  \end{menu}
+X  
+X! \node First Chapter, Concept Index, Top, Top
+X  \chapter{First Chapter}
+X  \cindex{Reference to First Chapter}
+X  
+X***************
+X*** 76,82 ****
+X  
+X  \twocolumn
+X  \node Concept Index, Top, First Chapter, Top
+X! \chapter*{Concept Index}
+X  
+X  \printindex{cp}
+X  
+X--- 81,87 ----
+X  
+X  \twocolumn
+X  \node Concept Index, Top, First Chapter, Top
+X! \unnumbered{Concept Index}
+X  
+X  \printindex{cp}
+X  
+X
+END_OF_FILE
+if test 45689 -ne `wc -c <'patch.1b'`; then
+    echo shar: \"'patch.1b'\" unpacked with wrong size!
+fi
+# end of 'patch.1b'
+fi
+echo shar: End of shell archive.
+exit 0

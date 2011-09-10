@@ -1,0 +1,55 @@
+下記のような報告がありましたので、これも wnn-egg.el に当てる必要がある
+ようです。(確認していません。)
+
+山本和彦
+
+	Subject: [Mew-dist 07868] mew patch to wnn-egg.el
+	From: Tomoaki NISHIYAMA <tomoaki@biol.s.u-tokyo.ac.jp>
+	To: mew-dist@mew.org
+	Cc: tomoaki@biol.s.u-tokyo.ac.jp
+	Date: Tue, 2 Mar 1999 22:59:05 +0900
+	Reply-To: mew-dist@mew.org
+	X-Mailer: Mew version 1.94b8 on Emacs 19.34 / Mule 2.3 (SUETSUMUHANA)
+
+	Mewのためにwnn-egg.elにpatchを当てているときに、
+	変換中に漢字登録をすることができなくなっていたことの修正です。
+	対象は、Mule2.3@emacs19.34を考えています。
+
+*** wnn-egg.el~	Tue Mar  2 22:45:01 1999
+--- wnn-egg.el	Tue Mar  2 22:52:27 1999
+***************
+*** 1749,1755 ****
+  
+  (defun toroku-henkan-mode ()
+    (interactive)
+!   (let*((kanji 	 
+  	 (read-current-its-string (egg:msg-get 'kanji)
+  			       (delete-space 
+  				(buffer-substring (point) egg:*region-end* ))))
+--- 1749,1756 ----
+  
+  (defun toroku-henkan-mode ()
+    (interactive)
+!   (let*((egg:henkan-mode-in-use nil)
+! 	(kanji 	 
+  	 (read-current-its-string (egg:msg-get 'kanji)
+  			       (delete-space 
+  				(buffer-substring (point) egg:*region-end* ))))
+***************
+*** 1762,1768 ****
+  		   (setq str (concat str (car (wnn-server-bunsetu-yomi i)) ))
+  		   (setq i (1+ i)))
+  		 str))))
+!     (egg:toroku-word yomi kanji nil)))
+  
+  ;;;
+  ;;; 辞書編集系 DicEd
+--- 1763,1770 ----
+  		   (setq str (concat str (car (wnn-server-bunsetu-yomi i)) ))
+  		   (setq i (1+ i)))
+  		 str))))
+!     (egg:toroku-word yomi kanji nil)
+!     (setq egg:henkan-mode-in-use t)))
+  
+  ;;;
+  ;;; 辞書編集系 DicEd

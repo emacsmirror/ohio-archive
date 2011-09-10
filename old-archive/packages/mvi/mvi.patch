@@ -1,0 +1,1461 @@
+*** buffer.c.or	Mon Feb 13 10:33:36 1989
+--- buffer.c	Mon Feb 13 10:33:36 1989
+***************
+*** 1096,1101 ****
+--- 1096,1102 ----
+    buffer_defaults.selective_display = Qnil;
+    buffer_defaults.selective_display_ellipses = Qt;
+    buffer_defaults.abbrev_table = Qnil;
++   buffer_defaults.folded_display = Qnil;
+  
+    XFASTINT (buffer_defaults.tab_width) = 8;
+    buffer_defaults.truncate_lines = Qnil;
+***************
+*** 1136,1141 ****
+--- 1137,1143 ----
+    XFASTINT (buffer_local_flags.fill_column) = 0x400;
+    XFASTINT (buffer_local_flags.left_margin) = 0x800;
+    XFASTINT (buffer_local_flags.abbrev_table) = 0x1000;
++   XFASTINT (buffer_local_flags.folded_display) = 0x2000;
+  
+    Vbuffer_alist = Qnil;
+    bf_cur = 0;
+***************
+*** 1351,1356 ****
+--- 1353,1362 ----
+    DEFVAR_PER_BUFFER ("overwrite-mode", &bf_cur->overwrite_mode,
+      "Non-nil if self-insertion should replace existing text.\n\
+  Automatically becomes local when set in any fashion.");
++ 
++   DEFVAR_PER_BUFFER ("folded-display", &bf_cur->folded_display,
++     "t enables folding of display:\n\
++ all text following ^M - ^Z, to the end of the line is made invisible.");
+  
+  /*DEFVAR_LISP ("debug-check-symbol", &Vcheck_symbol,
+      "Don't ask.");
+*** buffer.h.or	Mon Feb 13 10:33:36 1989
+--- buffer.h	Mon Feb 13 10:33:36 1989
+***************
+*** 153,158 ****
+--- 153,161 ----
+      Lisp_Object overwrite_mode;
+      /* non-nil means abbrev mode is on.  Expand abbrevs automatically. */
+      Lisp_Object abbrev_mode;
++     /* Non-nil means do folded display;
++        See doc string in syms_of_buffer (buffer.c) for details.  */
++     Lisp_Object folded_display;
+  };
+  
+  extern struct buffer *bf_cur;		/* points to the current buffer */
+*** callint.c.or	Mon Feb 13 10:33:36 1989
+--- callint.c	Mon Feb 13 10:33:36 1989
+***************
+*** 77,82 ****
+--- 77,83 ----
+  s -- Any string.\n\
+  S -- Any symbol.\n\
+  v -- Variable name: symbol that is user-variable-p.\n\
++ V -- Same as p, except a nil as a first member of a prefix list returns 1.\n\
+  x -- Lisp expression read but not evaluated.\n\
+  X -- Lisp expression read and evaluated.\n\
+  In addition, if the first character of the string is '*' then an error is\n\
+***************
+*** 399,404 ****
+--- 400,413 ----
+  				   user-variable-p. */
+  	  args[i] = Fread_variable (build_string (prompt));
+  	  visargs[i] = last_minibuf_string;
++ 	  break;
++ 
++ 	case 'V':		/* Prefix arg converted to number. nil
++ 					in list converted to 1 No I/O. */
++ 	  args[i] = Fprefix_numeric_value (prefix_arg);
++ 	  if(args[i] == Qnil) args[i] = 1;
++ 	  /* visargs[i] = Qnil; */
++ 	  varies[i] = -1;
+  	  break;
+  
+  	case 'x':		/* Lisp expression read but not evaluated */
+*** cmds.c.or	Mon Feb 13 10:33:36 1989
+--- cmds.c	Mon Feb 13 10:33:36 1989
+***************
+*** 144,149 ****
+--- 144,176 ----
+    return Qnil;
+  }
+  
++ DEFUN ("mvi-forward-line", Fmvi_forward_line, Smvi_forward_line,
++   0, 1, "p",
++   "Move point to the beginning of line skipping over white space.\n\
++ With argument ARG not nil or 1, move forward ARG lines first.\n\
++ If scan reaches end of buffer, stop there without error.")
++   (n)
++      Lisp_Object n;
++ {
++   register int pos;
++   register int stop;
++ 
++   if (NULL (n))
++     XFASTINT (n) = 0;
++   else
++     CHECK_NUMBER (n, 0);
++ 
++ Fforward_line (make_number (XINT (n)));
++ 
++   pos = point;
++   stop = NumCharacters + 1;
++   while (pos < stop && CharAt (pos) != '\n' && 
++ 	(CharAt (pos) == ' ' || CharAt(pos) == '\t')) pos++;
++   SetPoint (pos);
++ 
++   return Qnil;
++ }
++ 
+  DEFUN ("delete-char", Fdelete_char, Sdelete_char, 1, 2, "p\nP",
+    "Delete the following ARG characters (previous, with negative arg).\n\
+  Optional second arg KILLFLAG non-nil means kill instead (save in kill ring).\n\
+***************
+*** 318,323 ****
+--- 345,351 ----
+    defsubr (&Sforward_line);
+    defsubr (&Sbeginning_of_line);
+    defsubr (&Send_of_line);
++   defsubr (&Smvi_forward_line);
+  
+    defsubr (&Sdelete_char);
+    defsubr (&Sdelete_backward_char);
+*** editfns.c.or	Mon Feb 13 10:33:36 1989
+--- editfns.c	Mon Feb 13 10:33:36 1989
+***************
+*** 639,644 ****
+--- 639,724 ----
+    return Qnil;
+  }
+  
++ DEFUN ("fold-region", Ffold_region, Sfold_region, 2, 3, 0,
++   "From START to END, fold all new lines each time it occurs.\n\
++ If optional arg NOUNDO is non-nil, don't record this change for undo\n\
++ and don't mark the buffer as really changed.")
++   (start, end, noundo)
++      Lisp_Object start, end, noundo;
++ {
++   register int pos, stop; 
++   register char c;
++ 
++   validate_region (&start, &end);
++ 
++   pos = XINT (start);
++   stop = XINT (end);
++ 
++   modify_region (pos, stop);
++   if (! NULL (noundo))
++     bf_modified--;
++ 
++   while (pos < stop)
++     {
++       c = CharAt (pos);
++       if (c == '\n')
++ 	{
++ 	  if (NULL (noundo))
++ 	    record_change (pos, 1);
++ 	  CharAt (pos) = '\015';
++ 	}
++       else if (c <= '\031' && c >= '\015')
++ 	{
++ 	  if (NULL (noundo))
++ 	    record_change (pos, 1);
++ 	  CharAt (pos) = c + 1;
++ 	}
++       pos++;
++     }
++ 
++   return Qnil;
++ }
++ 
++ DEFUN ("unfold-region", Funfold_region, Sunfold_region, 3, 4, 0,
++   "From START to END, unfold N times each time it occurs.\n\
++ If optional arg NOUNDO is non-nil, don't record this change for undo\n\
++ and don't mark the buffer as really changed.")
++   (start, end, count, noundo)
++      Lisp_Object start, end, count, noundo;
++ {
++   register int pos, stop, n, c_int;
++   char c;
++ 
++   validate_region (&start, &end);
++   CHECK_NUMBER (count, 2);
++ 
++   pos = XINT (start);
++   stop = XINT (end);
++   n = XINT (count);
++ 
++   modify_region (pos, stop);
++   if (! NULL (noundo))
++     bf_modified--;
++ 
++   while (pos < stop)
++     {
++       c = CharAt (pos);
++       if (c <= '\032' && c >= '\015')
++ 	{
++ 	  if (NULL (noundo))
++ 	    record_change (pos, 1);
++ 	  c_int = (int) c - n;
++ 	  c -= n;
++ 	  if(c_int < 015) c = '\n';
++ 	  CharAt (pos) = c;
++ 	}
++       pos++;
++     }
++ 
++   return Qnil;
++ }
++ 
++ 
+  DEFUN ("subst-char-in-region", Fsubst_char_in_region,
+    Ssubst_char_in_region, 4, 5, 0,
+    "From START to END, replace FROMCHAR with TOCHAR each time it occurs.\n\
+***************
+*** 1030,1035 ****
+--- 1110,1117 ----
+  #endif
+  
+    defsubr (&Sinsert_buffer_substring);
++   defsubr (&Sfold_region);
++   defsubr (&Sunfold_region);
+    defsubr (&Ssubst_char_in_region);
+    defsubr (&Sdelete_region);
+    defsubr (&Swiden);
+*** fileio.c.or	Mon Feb 13 10:33:36 1989
+--- fileio.c	Mon Feb 13 10:33:36 1989
+***************
+*** 1798,1804 ****
+       register int len;
+  {
+    char buf[16 * 1024];
+!   register char *p, *end;
+  
+    if (!EQ (bf_cur->selective_display, Qt))
+      return write (fd, addr, len) - len;
+--- 1798,1805 ----
+       register int len;
+  {
+    char buf[16 * 1024];
+!   register char *p, *end, c;
+!   int folded = !NULL (bf_cur->folded_display);
+  
+    if (!EQ (bf_cur->selective_display, Qt))
+      return write (fd, addr, len) - len;
+***************
+*** 1814,1822 ****
+  		return -1;
+  	      p = buf;
+  	    }
+! 	  *p = *addr++;
+! 	  if (*p++ == '\015')
+! 	    p[-1] = '\n';
+  	}
+        if (p != buf)
+  	if (write (fd, buf, p - buf) != p - buf)
+--- 1815,1825 ----
+  		return -1;
+  	      p = buf;
+  	    }
+! 	  c = *addr++;
+! 	  if ((c == '\015') || (c <= '\032' && c >= '\015' && folded))
+! 	    *p++ = '\n';
+! 	  else
+! 	    *p++ = c;
+  	}
+        if (p != buf)
+  	if (write (fd, buf, p - buf) != p - buf)
+*** fns.c.or	Mon Feb 13 10:33:36 1989
+--- fns.c	Mon Feb 13 10:33:36 1989
+***************
+*** 453,458 ****
+--- 453,479 ----
+    return Fcar (Fnthcdr (n, list));
+  }
+  
++ DEFUN ("mvi-nth", Fmvi_nth, Smvi_nth, 2, 2, 0,
++   "Returns the Nth element of LIST.\n\
++ N counts from zero.  If LIST is not that long, nil is returned.\n\
++ If LIST is an integer and N is 0, it is returned, otherwise, nil is returned.")
++   (n, list)
++      Lisp_Object n, list;
++ {
++   register int num;
++   if (XTYPE (list) == Lisp_Int)
++     {
++       CHECK_NUMBER (n, 0);
++       num = XINT (n);
++       if (num == 0)
++ 	return list;
++       else
++ 	return Qnil;
++     }
++   else
++     return Fcar (Fnthcdr (n, list));
++ }
++ 
+  DEFUN ("elt", Felt, Selt, 2, 2, 0,
+    "Returns element of SEQUENCE at index N.")
+    (seq, n)
+***************
+*** 1334,1339 ****
+--- 1355,1361 ----
+    defsubr (&Ssubstring);
+    defsubr (&Snthcdr);
+    defsubr (&Snth);
++   defsubr (&Smvi_nth);
+    defsubr (&Selt);
+    defsubr (&Smemq);
+    defsubr (&Sassq);
+*** indent.c.or	Mon Feb 13 10:33:36 1989
+--- indent.c	Mon Feb 13 10:33:36 1989
+***************
+*** 97,104 ****
+  	}
+        else if (c == '\n')
+  	break;
+!       else if (c == '\r' && EQ (bf_cur->selective_display, Qt))
+! 	break;
+        else if (c == '\t')
+  	{
+  	  if (tab_seen)
+--- 97,106 ----
+  	}
+        else if (c == '\n')
+  	break;
+!       else 
+! 	if ((c == '\r' && EQ (bf_cur->selective_display, Qt)) ||
+! 	    (c <= '\032' && c >= '\015' && EQ (bf_cur->folded_display, Qt))) 
+! 	  break;
+        else if (c == '\t')
+  	{
+  	  if (tab_seen)
+***************
+*** 249,255 ****
+        int c = CharAt (pos);
+        if (c == '\n')
+  	break;
+!       if (c == '\r' && EQ (bf_cur->selective_display, Qt))
+  	break;
+        pos++;
+        col++;
+--- 251,258 ----
+        int c = CharAt (pos);
+        if (c == '\n')
+  	break;
+!       if ((c == '\r' && EQ (bf_cur->selective_display, Qt)) ||
+! 	  (c <= '\032' && c >= '\015' && EQ (bf_cur->folded_display, Qt))) 
+  	break;
+        pos++;
+        col++;
+***************
+*** 311,316 ****
+--- 314,320 ----
+      = XTYPE (bf_cur->selective_display) == Lisp_Int
+        ? XINT (bf_cur->selective_display)
+  	: !NULL (bf_cur->selective_display) ? -1 : 0;
++   int folded = !NULL (bf_cur->folded_display);
+    int prevpos;
+  
+    if (tab_width <= 0 || tab_width > 20) tab_width = 8;
+***************
+*** 355,361 ****
+  	  if (hscroll > 0) cpos++; /* Count the ! on column 0 */
+  	  tab_offset = 0;
+  	}
+!       else if (c == CR && selective < 0)
+  	{
+  	  /* In selective display mode,
+  	     everything from a ^M to the end of the line is invisible */
+--- 359,367 ----
+  	  if (hscroll > 0) cpos++; /* Count the ! on column 0 */
+  	  tab_offset = 0;
+  	}
+!       else 
+! 	if ((c == CR && selective < 0) ||
+! 	    (c <= '\032' && c >= '\015' && folded)) 
+  	{
+  	  /* In selective display mode,
+  	     everything from a ^M to the end of the line is invisible */
+*** lread.c.or	Mon Feb 13 10:33:36 1989
+--- lread.c	Mon Feb 13 10:33:36 1989
+***************
+*** 1077,1083 ****
+    return Qnil;
+  }
+  
+! #define OBARRAY_SIZE 511
+  
+  void
+  init_obarray ()
+--- 1077,1083 ----
+    return Qnil;
+  }
+  
+! #define OBARRAY_SIZE 1031
+  
+  void
+  init_obarray ()
+*** scroll.c.or	Mon Feb 13 10:33:37 1989
+--- scroll.c	Mon Feb 13 10:33:37 1989
+***************
+*** 316,327 ****
+    /* Put new lines' hash codes in hash table.  */
+    for (i = start; i < end; i++)
+      {
+!       if (cost[i] > 20)
+! 	{
+! 	  h = newhash[i] & 0777;
+! 	  lines[h].hash = newhash[i];
+! 	  lines[h].count++;
+! 	}
+      }
+  
+    /* Look up old line hash codes in the hash table.
+--- 316,324 ----
+    /* Put new lines' hash codes in hash table.  */
+    for (i = start; i < end; i++)
+      {
+!       h = newhash[i] & 0777;
+!       lines[h].hash = newhash[i];
+!       lines[h].count++;
+      }
+  
+    /* Look up old line hash codes in the hash table.
+*** syntax.c.or	Mon Feb 13 10:33:37 1989
+--- syntax.c	Mon Feb 13 10:33:37 1989
+***************
+*** 18,24 ****
+--- 18,79 ----
+  file named COPYING.  Among other things, the copyright notice
+  and this notice must be preserved on all copies.  */
+  
++ /* mvi syntax table for use in mvi word commands */
+  
++ char mvi_syntax_table[256]={
++ 'c','c','c','c','c','c','c','c',
++ 'c','s','s','c','c','c','c','c',
++ 'c','c','c','c','c','c','c','c',
++ 'c','c','c','c','c','c','c','c',
++ /* space */
++ 's','p','p','p','p','p','p','p',
++ /* ( */
++ 'p','p','p','p','p','p','p','p',
++ /* 0 */
++ 'w','w','w','w','w','w','w','w',
++ /* 8 */
++ 'w','w','p','p','p','p','p','p',
++ /* @ */
++ 'p','w','w','w','w','w','w','w',
++ /* H */
++ 'w','w','w','w','w','w','w','w',
++ /* P */
++ 'w','w','w','w','w','w','w','w',
++ /* X */
++ 'w','w','w','p','p','p','p','w',
++ /* ` */
++ 'p','w','w','w','w','w','w','w',
++ /* h */
++ 'w','w','w','w','w','w','w','w',
++ /* p */
++ 'w','w','w','w','w','w','w','w',
++ /* x */
++ 'w','w','w','p','p','p','p','c',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b',
++ 'b','b','b','b','b','b','b','b'};
++ 
++ /* mvi syntax table defines for use in mvi word commands */
++ 
++ #define MVI_BIN 'b'
++ #define MVI_CNTRL 'c'
++ #define MVI_SPACE 's'
++ #define MVI_PUNC 'p'
++ #define MVI_WORD 'w'
++ 
+  #include "config.h"
+  #include <ctype.h>
+  #include "lisp.h"
+***************
+*** 444,449 ****
+--- 499,1211 ----
+    return Qt;
+  }
+  
++ /* Return the position across `count' vi style words from `from'.
++    If that many words cannot be found before the end of the buffer, return 0.
++    `count' negative means scan backward and stop at word beginning.  */
++ 
++ mvi_scan_words (from, count, is_command)
++      register int from, count;
++      int is_command;
++ {
++   register int beg = FirstCharacter;
++   register int end = NumCharacters + 1;
++   char start_type;
++ 
++   immediate_quit = 1;
++   QUIT;
++ 
++   if ((is_command && count < 0 && from != beg && CharAt (from - 1) == '\n') ||
++   	(is_command && count > 0 && from != end && CharAt (from) == '\n'))
++ 		is_command = 0;
++ 
++   while (count > 0)
++     {
++       start_type = mvi_syntax_table[CharAt (from)];
++       if (start_type != MVI_SPACE)
++       {
++ 	      while (1)
++ 		{
++ 		  if (from == end)
++ 		    {
++ 		      immediate_quit = 0;
++ 		      return 0;
++ 		    }
++ 		  if (mvi_syntax_table[CharAt (from)] != start_type)
++ 		    break;
++ 		  from++;
++ 		}
++       }
++       while (1)
++ 	{
++ 	  if (from == end) break;
++ 	  if (is_command && count == 1 && CharAt (from) == '\n')
++ 	    break;
++ 	  if (mvi_syntax_table[CharAt (from)] != MVI_SPACE)
++ 	    break;
++ 	  from++;
++ 	}
++       count--;
++     }
++   while (count < 0)
++     {
++       while (1)
++ 	{
++ 	  if (from == beg)
++ 	    {
++ 	      immediate_quit = 0;
++ 	      return 0;
++ 	    }
++ 	  if (is_command && count == -1 && CharAt (from - 1) == '\n')
++ 		goto done;
++ 	  if (mvi_syntax_table[CharAt (from - 1)] != MVI_SPACE)
++ 	    break;
++ 	  from--;
++ 	}
++       start_type = mvi_syntax_table[CharAt (from - 1)];
++       while (1)
++ 	{
++ 	  if (from == beg) break;
++ 	  if (mvi_syntax_table[CharAt (from - 1)] != start_type)
++ 	    break;
++ 	  from--;
++ 	}
++       count++;
++     }
++ 
++ done:
++ 
++   immediate_quit = 0;
++ 
++   return from;
++ }
++ 
++ DEFUN ("mvi-forward-word", Fmvi_forward_word, Smvi_forward_word, 1, 2, "p\nP",
++   "Move point forward ARG vi style words (backward if ARG is negative).\n\
++ Normally returns t.\n\
++ If an edge of the buffer is reached, point is left there\n\
++ and nil is returned.")
++   (count, command)
++      Lisp_Object count, command;
++ {
++   int val;
++   int is_command;
++ 
++   CHECK_NUMBER (count, 0);
++ 
++   if (NULL (command)) 
++ 	is_command = 0;
++   else 
++ 	is_command = XINT (command);
++ 
++   if(is_command == 'c' && (XINT (count)) > 0 
++      && mvi_syntax_table[CharAt (point)] != MVI_SPACE)
++   	{
++ 	  if (!(val = mvi_scan_end (point, XINT (count), is_command)))
++ 	    {
++ 	      SetPoint (XINT (count) > 0 ? NumCharacters + 1 : FirstCharacter);
++ 	      return Qnil;
++ 	    }
++ 	  SetPoint (val);
++ 	  return Qt;
++ 	}
++ else
++ 	{
++ 	  if (!(val = mvi_scan_words (point, XINT (count), is_command)))
++ 	    {
++ 	      SetPoint (XINT (count) > 0 ? NumCharacters + 1 : FirstCharacter);
++ 	      return Qnil;
++ 	    }
++ 	  SetPoint (val);
++ 	  return Qt;
++ 	}
++ }
++ 
++ /* Return the position across `count' vi style WORDS from `from'.
++    If that many words cannot be found before the end of the buffer, return 0.
++    `count' negative means scan backward and stop at word beginning.  */
++ 
++ mvi_scan_Words (from, count, is_command)
++      register int from, count;
++      int is_command;
++ {
++   register int beg = FirstCharacter;
++   register int end = NumCharacters + 1;
++ 
++   immediate_quit = 1;
++   QUIT;
++ 
++   if ((is_command && count < 0 && from != beg && CharAt (from - 1) == '\n') ||
++   	(is_command && count > 0 && from != end && CharAt (from) == '\n'))
++ 		is_command = 0;
++ 
++   while (count > 0)
++     {
++       while (1)
++ 	{
++ 	  if (from == end)
++ 	    {
++ 	      immediate_quit = 0;
++ 	      return 0;
++ 	    }
++ 	  if (mvi_syntax_table[CharAt (from)] == MVI_SPACE)
++ 	    break;
++ 	  from++;
++ 	}
++       while (1)
++ 	{
++ 	  if (from == end) break;
++ 	  if (is_command && count == 1 && CharAt (from) == '\n')
++ 	    break;
++ 	  if (mvi_syntax_table[CharAt (from)] != MVI_SPACE)
++ 	    break;
++ 	  from++;
++ 	}
++       count--;
++     }
++   while (count < 0)
++     {
++       while (1)
++ 	{
++ 	  if (from == beg)
++ 	    {
++ 	      immediate_quit = 0;
++ 	      return 0;
++ 	    }
++ 	  if (is_command && count == -1 && CharAt (from - 1) == '\n')
++ 		goto done;
++ 	  if (mvi_syntax_table[CharAt (from - 1)] != MVI_SPACE)
++ 	    break;
++ 	  from--;
++ 	}
++       while (1)
++ 	{
++ 	  if (from == beg) break;
++ 	  if (mvi_syntax_table[CharAt (from - 1)] == MVI_SPACE)
++ 	    break;
++ 	  from--;
++ 	}
++       count++;
++     }
++ 
++ done:
++ 
++   immediate_quit = 0;
++ 
++   return from;
++ }
++ 
++ DEFUN ("mvi-forward-Word", Fmvi_forward_Word, Smvi_forward_Word, 1, 2, "p\nP",
++   "Move point forward ARG vi style WORDS (backward if ARG is negative).\n\
++ Normally returns t.\n\
++ If an edge of the buffer is reached, point is left there\n\
++ and nil is returned.")
++   (count, command)
++      Lisp_Object count, command;
++ {
++   int val;
++   int is_command;
++ 
++   CHECK_NUMBER (count, 0);
++ 
++   if (NULL (command)) 
++ 	is_command = 0;
++   else 
++ 	is_command = XINT (command);
++ 
++   if(is_command == 'c' && (XINT (count)) > 0
++      && mvi_syntax_table[CharAt (point)] != MVI_SPACE)
++   	{
++ 	  if (!(val = mvi_scan_End (point, XINT (count), is_command)))
++ 	    {
++ 	      SetPoint (XINT (count) > 0 ? NumCharacters + 1 : FirstCharacter);
++ 	      return Qnil;
++ 	    }
++ 	  SetPoint (val);
++ 	  return Qt;
++ 	}
++ else
++ 	{
++ 	  if (!(val = mvi_scan_Words (point, XINT (count), is_command)))
++ 	    {
++ 	      SetPoint (XINT (count) > 0 ? NumCharacters + 1 : FirstCharacter);
++ 	      return Qnil;
++ 	    }
++ 	  SetPoint (val);
++ 	  return Qt;
++ 	}
++ }
++ 
++ /* Return the position to the end of `count' vi style words from `from'.
++    If that many words cannot be found before the end of the buffer, return 0.
++    `count' negative means scan backward and stop at word beginning.  */
++ 
++ mvi_scan_end (from, count, is_command)
++      register int from, count;
++      int is_command;
++ {
++   register int beg = FirstCharacter;
++   register int end = NumCharacters + 1;
++   char start_type;
++ 
++   immediate_quit = 1;
++   QUIT;
++ 
++   if(is_command)
++   {
++ 	  while (count > 0)
++ 	    {
++ 	      while (1)
++ 		{
++ 		  if (from == end)
++ 		    {
++ 		      immediate_quit = 0;
++ 		      return 0;
++ 		    }
++ 		  if (mvi_syntax_table[CharAt (from)] != MVI_SPACE)
++ 		    break;
++ 		  from++;
++ 		}
++ 	      start_type = mvi_syntax_table[CharAt (from)];
++ 	      while (1)
++ 		{
++ 		  if (from == end) break;
++ 		  if (mvi_syntax_table[CharAt (from)] != start_type)
++ 		    break;
++ 		  from++;
++ 		}
++ 	      count--;
++ 	    }
++ 	  while (count < 0)
++ 	    {
++ 	      if (from != beg) 
++ 		start_type = mvi_syntax_table[CharAt (from - 1)];
++ 	      while (1)
++ 		{
++ 		  if (from == beg)
++ 		    {
++ 		      immediate_quit = 0;
++ 		      return 0;
++ 		    }
++ 		  if (mvi_syntax_table[CharAt (from - 1)] != start_type)
++ 		    break;
++ 		  from--;
++ 		}
++ 	      while (1)
++ 		{
++ 		  if (from == beg) break;
++ 		  if (mvi_syntax_table[CharAt (from - 1)] != MVI_SPACE)
++ 		    break;
++ 		  from--;
++ 		}
++ 	      count++;
++ 	    }
++   }
++   else
++   {
++ 	  while (count > 0)
++ 	    {
++ 	      while (1)
++ 		{
++ 		  if (from == end || from == (end - 1))
++ 		    {
++ 		      immediate_quit = 0;
++ 		      return 0;
++ 		    }
++ 		  if (mvi_syntax_table[CharAt (from + 1)] != MVI_SPACE)
++ 		    break;
++ 		  from++;
++ 		}
++ 	      start_type = mvi_syntax_table[CharAt (from + 1)];
++ 	      while (1)
++ 		{
++ 		  if (from == end || from == (end - 1)) break;
++ 		  if (mvi_syntax_table[CharAt (from + 1)] != start_type)
++ 		    break;
++ 		  from++;
++ 		}
++ 	      count--;
++ 	    }
++ 	  while (count < 0)
++ 	    {
++ 	      start_type = mvi_syntax_table[CharAt (from)];
++ 	      while (1)
++ 		{
++ 		  if (from == beg)
++ 		    {
++ 		      immediate_quit = 0;
++ 		      return 0;
++ 		    }
++ 		  if (mvi_syntax_table[CharAt (from)] != start_type)
++ 		    break;
++ 		  from--;
++ 		}
++ 	      while (1)
++ 		{
++ 		  if (from == beg) break;
++ 		  if (mvi_syntax_table[CharAt (from)] != MVI_SPACE)
++ 		    break;
++ 		  from--;
++ 		}
++ 	      count++;
++ 	    }
++   }
++ 
++   immediate_quit = 0;
++ 
++   return from;
++ }
++ 
++ DEFUN ("mvi-forward-end", Fmvi_forward_end, Smvi_forward_end, 1, 2, "p\nP",
++   "Move point forward ARG vi style words (backward if ARG is negative)\n\
++ leaving the point at the end of the word.\n\
++ Normally returns t.\n\
++ If an edge of the buffer is reached, point is left there\n\
++ and nil is returned.")
++   (count, command)
++      Lisp_Object count, command;
++ {
++   int val;
++   int is_command;
++ 
++   CHECK_NUMBER (count, 0);
++ 
++   if (NULL (command)) 
++ 	is_command = 0;
++   else 
++ 	is_command = 1;
++ 
++   if (!(val = mvi_scan_end (point, XINT (count), is_command)))
++     {
++       SetPoint (XINT (count) > 0 ? NumCharacters + 1 : FirstCharacter);
++       return Qnil;
++     }
++   SetPoint (val);
++   return Qt;
++ }
++ 
++ /* Return the position to the END of `count' vi style words from `from'.
++    If that many words cannot be found before the end of the buffer, return 0.
++    `count' negative means scan backward and stop at word beginning.  */
++ 
++ mvi_scan_End (from, count, is_command)
++      register int from, count;
++      int is_command;
++ {
++   register int beg = FirstCharacter;
++   register int end = NumCharacters + 1;
++ 
++   immediate_quit = 1;
++   QUIT;
++ 
++   if(is_command)
++   {
++ 	  while (count > 0)
++ 	    {
++ 	      while (1)
++ 		{
++ 		  if (from == end)
++ 		    {
++ 		      immediate_quit = 0;
++ 		      return 0;
++ 		    }
++ 		  if (mvi_syntax_table[CharAt (from)] != MVI_SPACE)
++ 		    break;
++ 		  from++;
++ 		}
++ 	      while (1)
++ 		{
++ 		  if (from == end) break;
++ 		  if (mvi_syntax_table[CharAt (from)] == MVI_SPACE)
++ 		    break;
++ 		  from++;
++ 		}
++ 	      count--;
++ 	    }
++ 	  while (count < 0)
++ 	    {
++ 	      while (1)
++ 		{
++ 		  if (from == beg)
++ 		    {
++ 		      immediate_quit = 0;
++ 		      return 0;
++ 		    }
++ 		  if (mvi_syntax_table[CharAt (from - 1)] == MVI_SPACE)
++ 		    break;
++ 		  from--;
++ 		}
++ 	      while (1)
++ 		{
++ 		  if (from == beg) break;
++ 		  if (mvi_syntax_table[CharAt (from - 1)] != MVI_SPACE)
++ 		    break;
++ 		  from--;
++ 		}
++ 	      count++;
++ 	    }
++   }
++   else
++   {
++ 	  while (count > 0)
++ 	    {
++ 	      while (1)
++ 		{
++ 		  if (from == end || from == (end - 1))
++ 		    {
++ 		      immediate_quit = 0;
++ 		      return 0;
++ 		    }
++ 		  if (mvi_syntax_table[CharAt (from + 1)] != MVI_SPACE)
++ 		    break;
++ 		  from++;
++ 		}
++ 	      while (1)
++ 		{
++ 		  if (from == end || from == (end - 1)) break;
++ 		  if (mvi_syntax_table[CharAt (from + 1)] == MVI_SPACE)
++ 		    break;
++ 		  from++;
++ 		}
++ 	      count--;
++ 	    }
++ 	  while (count < 0)
++ 	    {
++ 	      while (1)
++ 		{
++ 		  if (from == beg)
++ 		    {
++ 		      immediate_quit = 0;
++ 		      return 0;
++ 		    }
++ 		  if (mvi_syntax_table[CharAt (from)] == MVI_SPACE)
++ 		    break;
++ 		  from--;
++ 		}
++ 	      while (1)
++ 		{
++ 		  if (from == beg) break;
++ 		  if (mvi_syntax_table[CharAt (from)] != MVI_SPACE)
++ 		    break;
++ 		  from--;
++ 		}
++ 	      count++;
++ 	    }
++   }
++ 
++   immediate_quit = 0;
++ 
++   return from;
++ }
++ 
++ DEFUN ("mvi-forward-End", Fmvi_forward_End, Smvi_forward_End, 1, 2, "p\nP",
++   "Move point forward ARG vi style WORDS (backward if ARG is negative\n\
++ leaving the point at the end of the WORD.\n\
++ Normally returns t.\n\
++ If an edge of the buffer is reached, point is left there\n\
++ and nil is returned.")
++   (count, command)
++      Lisp_Object count, command;
++ {
++   int val;
++   int is_command;
++ 
++   CHECK_NUMBER (count, 0);
++ 
++   if (NULL (command)) 
++ 	is_command = 0;
++   else 
++ 	is_command = 1;
++ 
++   if (!(val = mvi_scan_End (point, XINT (count), is_command)))
++     {
++       SetPoint (XINT (count) > 0 ? NumCharacters + 1 : FirstCharacter);
++       return Qnil;
++     }
++   SetPoint (val);
++   return Qt;
++ }
++ 
++ /* Return the position to the END of `count' vi style words from `from'.
++    If that many words cannot be found before the end of the buffer, return 0.
++    `count' negative means scan backward and stop at word beginning.  */
++ 
++ mvi_scan_find (from, count, c, is_command)
++      register int from, count, c;
++      int is_command;
++ {
++   register int beg = FirstCharacter;
++   register int end = NumCharacters + 1;
++   int orig_count;
++ 
++   orig_count = count;
++   immediate_quit = 1;
++   QUIT;
++ 
++   while (count > 0)
++     {
++       while (1)
++ 	{
++ 	  from++;
++ 	  if (from >= end)
++ 	    {
++ 	      immediate_quit = 0;
++ 	      return 0;
++ 	    }
++ 	  if (CharAt (from) == c) break;
++ 	  if (CharAt (from) == '\n') return 0;
++ 	}
++       count--;
++     }
++   while (count < 0)
++     {
++       while (1)
++ 	{
++ 	  if (from == beg)
++ 	    {
++ 	      immediate_quit = 0;
++ 	      return 0;
++ 	    }
++ 	  from--;
++ 	  if (CharAt (from) == c) break;
++ 	  if (CharAt (from) == '\n') return 0;
++ 	}
++       count++;
++     }
++ 
++   if(is_command && orig_count > 0) from++;
++ 
++   immediate_quit = 0;
++ 
++   return from;
++ }
++ 
++ DEFUN ("mvi-find", Fmvi_find, Smvi_find, 2, 3, "p\ncFind char:\nP",
++   "Move point forward to the character, backwards if negative.\n\
++ Normally returns t.\n\
++ If the search fails, error is signalled and the point is left where it is.")
++   (count, c, command)
++      Lisp_Object count, c, command;
++ {
++   int val;
++   int is_command;
++   char *error_message;
++ 
++   CHECK_NUMBER (count, 0);
++ 
++   if (NULL (command)) 
++ 	is_command = 0;
++   else 
++ 	is_command = 1;
++ 
++   if (!(val = mvi_scan_find (point, XINT (count), XINT (c), is_command)))
++     {
++ 
++     	 if(XINT (c))
++ 	{
++ 	      error_message = "Character   not found";
++ 	      error_message[10] = (char) XINT (c);
++ 	      error(error_message); 
++ 	}
++ 	else
++ 	{
++ 	      error("Character ^@ not found");
++ 	}
++     }
++   SetPoint (val);
++   return Qt;
++ }
++ 
++ /* Return the position to the END of `count' vi style words from `from'.
++    If that many words cannot be found before the end of the buffer, return 0.
++    `count' negative means scan backward and stop at word beginning.  */
++ 
++ mvi_scan_to (from, count, c, is_command)
++      register int from, count, c;
++      int is_command;
++ {
++   register int beg = FirstCharacter;
++   register int end = NumCharacters;
++   int orig_count;
++ 
++   orig_count = count;
++   immediate_quit = 1;
++   QUIT;
++ 
++   while (count > 0)
++     {
++       while (1)
++ 	{
++ 	  from++;
++ 	  if (from >= end)
++ 	    {
++ 	      immediate_quit = 0;
++ 	      return 0;
++ 	    }
++ 	  if (CharAt (from + 1) == c) break;
++ 	  if (CharAt (from + 1) == '\n') return 0;
++ 	}
++       count--;
++     }
++   while (count < 0)
++     {
++       while (1)
++ 	{
++ 	  from--;
++ 	  if (from <= beg)
++ 	    {
++ 	      immediate_quit = 0;
++ 	      return 0;
++ 	    }
++ 	  if (CharAt (from - 1) == c) break;
++ 	  if (CharAt (from - 1) == '\n') return 0;
++ 	}
++       count++;
++     }
++ 
++   if(is_command && orig_count > 0) from++;
++ 
++   immediate_quit = 0;
++ 
++   return from;
++ }
++ 
++ DEFUN ("mvi-to", Fmvi_to, Smvi_to, 2, 3, "p\ncFind char:\nP",
++   "Move point forward to the character (backward if ARG is negative).\n\
++ Normally returns t.\n\
++ If the character cannot be found error is signalled and the point is left\n\
++ where it is at.")
++   (count, c, command)
++      Lisp_Object count, c, command;
++ {
++   int val;
++   int is_command;
++   char *error_message;
++ 
++   CHECK_NUMBER (count, 0);
++ 
++   if (NULL (command)) 
++ 	is_command = 0;
++   else 
++ 	is_command = 1;
++ 
++   if (!(val = mvi_scan_to (point, XINT (count), XINT (c), is_command)))
++     {
++ 
++     	 if(XINT (c))
++ 	{
++ 	      error_message = "Character   not found";
++ 	      error_message[10] = (char) XINT (c);
++ 	      error(error_message); 
++ 	}
++ 	else
++ 	{
++ 	      error("Character ^@ not found");
++ 	}
++     }
++   SetPoint (val);
++   return Qt;
++ }
++ 
+  int parse_sexp_ignore_comments;
+  
+  Lisp_Object
+***************
+*** 713,718 ****
+--- 1475,1524 ----
+      pos--, quoted = !quoted;
+    return quoted;
+  }
++ 
++ 
++ DEFUN ("folded-p", Ffolded_p, Sfolded_p, 0, 1, 0,
++   "Return t if position POS is currently in a folded region.\n\
++ Returns nil if that position is not in a fold.\n\
++ POS defaults to point.")
++   (pos)
++      Lisp_Object pos;
++ {
++   register int posint;
++   register int beg = FirstCharacter;
++   
++   if (NULL (pos))
++     posint = point;
++   else
++     {
++       CHECK_NUMBER_COERCE_MARKER (pos, 0);
++       posint = XINT (pos);
++     }
++ 
++   immediate_quit = 1;
++   QUIT;
++ 
++   while (1)
++     {
++       if (posint == beg)
++ 	{
++ 	  immediate_quit = 0;
++ 	  return Qnil;
++ 	}
++       if (CharAt (posint - 1) <= '\032' && CharAt (posint - 1) >= '\015')
++ 	{
++ 	  immediate_quit = 0;
++ 	  return Qt;
++ 	}
++       if (CharAt (posint - 1) == '\n') 
++ 	{
++ 	  immediate_quit = 0;
++ 	  return Qnil;
++ 	}
++       posint--;
++     }
++ }
++ 
+  
+  DEFUN ("scan-lists", Fscan_lists, Sscan_lists, 3, 3, 0,
+    "Scan from character number FROM by COUNT lists.\n\
+***************
+*** 1126,1131 ****
+--- 1932,1944 ----
+    defsubr (&Sdescribe_syntax);
+  
+    defsubr (&Sforward_word);
++   defsubr (&Smvi_forward_word);
++   defsubr (&Smvi_forward_Word);
++   defsubr (&Smvi_forward_end);
++   defsubr (&Smvi_forward_End);
++   defsubr (&Smvi_find);
++   defsubr (&Smvi_to);
++   defsubr (&Sfolded_p);
+  
+    defsubr (&Sscan_lists);
+    defsubr (&Sscan_sexps);
+*** sysdep.c.or	Mon Feb 13 10:33:37 1989
+--- sysdep.c	Mon Feb 13 10:33:37 1989
+***************
+*** 112,117 ****
+--- 112,118 ----
+  
+  #ifdef HAVE_TERMIO
+  #include <termio.h>
++ #undef TIOCGETC
+  #undef TIOCGETP
+  #define TIOCGETP TCGETA
+  #undef TIOCSETN
+***************
+*** 150,156 ****
+  /* Some USG systems with TIOCGWINSZ need this file; some don't have it.
+     We don't know how to distinguish them.
+     If this #include gets an error, just delete it.  */
+! #include <sys/sioctl.h>
+  #endif
+  #endif
+  #endif
+--- 151,158 ----
+  /* Some USG systems with TIOCGWINSZ need this file; some don't have it.
+     We don't know how to distinguish them.
+     If this #include gets an error, just delete it.  */
+! #include <sys/stream.h>
+! #include <sys/ptem.h>
+  #endif
+  #endif
+  #endif
+*** xdisp.c.or	Mon Feb 13 10:33:37 1989
+--- xdisp.c	Mon Feb 13 10:33:37 1989
+***************
+*** 561,566 ****
+--- 561,568 ----
+    int inhibit_hairy_id = 0;
+    int opoint;
+    int tem;
++ int mvi_scroll_step;
++ int mvi_scroll_step_max;
+  
+    if (screen_height == 0) abort (); /* Some bug zeros some core */
+  
+***************
+*** 733,749 ****
+  
+    /* Try to scroll by specified few lines */
+  
+!   if (scroll_step && !clip_changed)
+      {
+        if (point > startp)
+  	{
+  	  pos = *vmotion (bf_s1 + bf_s2 + 1 - XFASTINT (w->window_end_pos),
+! 			  scroll_step, width, hscroll, window);
+  	  if (pos.vpos >= height)
+  	    goto scroll_fail;
+  	}
+  
+!       pos = *vmotion (startp, point < startp ? - scroll_step : scroll_step,
+  		      width, hscroll, window);
+  
+        if (point >= pos.bufpos)
+--- 735,760 ----
+  
+    /* Try to scroll by specified few lines */
+  
+!  if(scroll_step <= 0)
+!    mvi_scroll_step_max = 0;
+! else
+!    mvi_scroll_step_max = height / 2;
+! 
+! mvi_scroll_step = scroll_step;
+! mvi_top:;
+! 
+!   if (mvi_scroll_step && !clip_changed)
+      {
+        if (point > startp)
+  	{
+  	  pos = *vmotion (bf_s1 + bf_s2 + 1 - XFASTINT (w->window_end_pos),
+! 			  mvi_scroll_step, width, hscroll, window);
+  	  if (pos.vpos >= height)
+  	    goto scroll_fail;
+  	}
+  
+!       pos = *vmotion (startp, point < startp ? 
+! 		      - mvi_scroll_step : mvi_scroll_step,
+  		      width, hscroll, window);
+  
+        if (point >= pos.bufpos)
+***************
+*** 751,761 ****
+  	  if (try_window (window, pos.bufpos))
+  	    goto done;
+  	  else
+! 	    cancel_my_columns (w);
+  	}
+      scroll_fail: ;
+      }
+  
+    /* Finally, just choose place to start which centers point */
+  
+  recenter:
+--- 762,775 ----
+  	  if (try_window (window, pos.bufpos))
+  	    goto done;
+  	  else
+! 	      cancel_my_columns (w);
+  	}
+      scroll_fail: ;
+      }
+  
++   mvi_scroll_step++;
++   if(mvi_scroll_step <= mvi_scroll_step_max) goto mvi_top;
++ 
+    /* Finally, just choose place to start which centers point */
+  
+  recenter:
+***************
+*** 1219,1224 ****
+--- 1233,1239 ----
+        ? XINT (bf_cur->selective_display)
+  	: !NULL (bf_cur->selective_display) ? -1 : 0;
+    int selective_e = selective && !NULL (bf_cur->selective_display_ellipses);
++   int folded = !NULL (bf_cur->folded_display);
+  
+    hpos += XFASTINT (w->left);
+    line = get_display_line (vpos, XFASTINT (w->left));
+***************
+*** 1305,1311 ****
+  	  while ((p1 - startp + taboffset + hscroll - (hscroll > 0))
+  		 % tab_width);
+  	}
+!       else if (c == Ctl('M') && selective == -1)
+  	{
+  	  pos = find_next_newline (pos, 1);
+  	  if (CharAt (pos - 1) == '\n')
+--- 1320,1327 ----
+  	  while ((p1 - startp + taboffset + hscroll - (hscroll > 0))
+  		 % tab_width);
+  	}
+!       else if ((c == Ctl('M') && selective == -1)
+! 	       || (c <= Ctl('Z') && c >= Ctl('M') && folded))
+  	{
+  	  pos = find_next_newline (pos, 1);
+  	  if (CharAt (pos - 1) == '\n')
+*** ymakefile.or	Mon Feb 13 10:33:37 1989
+--- ymakefile	Mon Feb 13 10:33:37 1989
+***************
+*** 142,148 ****
+  SHORT= shortnames
+  #endif /* SHORTNAMES */
+  
+! CFLAGS= C_DEBUG_SWITCH -Demacs $(MYCPPFLAG) C_SWITCH_MACHINE C_SWITCH_SYSTEM
+  /* DO NOT use -R.  There is a special hack described in lastfile.c
+     which is used instead.  Some initialized data areas are modified
+     at initial startup, then labeled as part of the text area when
+--- 142,148 ----
+  SHORT= shortnames
+  #endif /* SHORTNAMES */
+  
+! CFLAGS= C_OPTIMIZE_SWITCH -Demacs $(MYCPPFLAG) C_SWITCH_MACHINE C_SWITCH_SYSTEM
+  /* DO NOT use -R.  There is a special hack described in lastfile.c
+     which is used instead.  Some initialized data areas are modified
+     at initial startup, then labeled as part of the text area when
+***************
+*** 251,257 ****
+  	${lispdir}paragraphs.elc ${lispdir}lisp-mode.elc \
+  	${lispdir}text-mode.elc ${lispdir}fill.elc \
+  	${lispdir}c-mode.elc ${lispdir}isearch.elc \
+! 	${lispdir}replace.elc ${lispdir}abbrev.elc \
+  	${lispdir}buff-menu.elc ${lispdir}subr.elc
+  
+  /* just to be sure the sh is used */
+--- 251,257 ----
+  	${lispdir}paragraphs.elc ${lispdir}lisp-mode.elc \
+  	${lispdir}text-mode.elc ${lispdir}fill.elc \
+  	${lispdir}c-mode.elc ${lispdir}isearch.elc \
+! 	${lispdir}replace.elc ${lispdir}abbrev.elc ${lispdir}mvi.elc \
+  	${lispdir}buff-menu.elc ${lispdir}subr.elc
+  
+  /* just to be sure the sh is used */

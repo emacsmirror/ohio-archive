@@ -1,0 +1,180 @@
+* Changes in Emacs 20.4
+
+** ps-print changes
+
+There are some new user variables and subgroups for customizing the
+page layout.
+
+*** Horizontal layout (subgroup)
+
+The horizontal layout is determined by the variables `ps-left-margin',
+`ps-inter-column', and `ps-right-margin'.  All are measured in points.
+
+*** Vertical layout (subgroup)
+
+The vertical layout is determined by the variables `ps-bottom-margin',
+`ps-top-margin', and `ps-header-offset'.  All are measured in points.
+
+*** Headers (subgroup)
+
+If the variable `ps-print-header' is nil, no header is printed.  Then
+`ps-header-offset' is not relevant and `ps-top-margin' represents the
+margin above the text.
+
+If the variable `ps-print-header-frame' is non-nil, a gaudy framing
+box is printed around the header.
+
+The contents of the header are determined by `ps-header-lines',
+`ps-show-n-of-n', `ps-left-header' and `ps-right-header'.
+
+The height of the header is determined by `ps-header-line-pad',
+`ps-header-font-family', `ps-header-title-font-size' and
+`ps-header-font-size'.
+
+To print only one header at the top of each page, set
+`ps-print-only-one-header' to t.
+
+The variable `ps-spool-config' specifies who is responsable for
+setting duplex and page size switches.
+
+If you have a duplex-capable printer (one that prints both sides of
+the paper), set `ps-spool-duplex' to t.
+
+The variable `ps-spool-tumble' specifies how the page images on
+opposite sides of a sheet are oriented with respect to each other.
+
+*** Font managing (subgroup)
+
+The variable `ps-font-family' determines which font family is to be
+used for ordinary text.  Its value must be a key symbol in the alist
+`ps-font-info-database'.  You can add other font families by adding
+elements to this alist.
+
+The variable `ps-font-size' determines the size of the font for
+ordinary text.  It defaults to 8.5 points.
+
+The variable `ps-multibyte-buffer' specifies the ps-print multi-byte
+buffer handling.
+
+The font family and size of text in the header are determined by the
+variables `ps-header-font-family', `ps-header-font-size' and
+`ps-header-title-font-size'.
+
+If variable `ps-auto-font-detect' is non-nil, automatically detect
+bold/italic face attributes.  If nil, we rely solely on the lists
+`ps-bold-faces', `ps-italic-faces', and `ps-underlined-faces'.
+
+*** Color managing (subgroup)
+
+The default foreground and background colors are defined by the
+variables `ps-default-fg' and `ps-default-bg'.  On black-and-white
+printers, colors are displayed in grayscale.
+
+To turn off color output, set `ps-print-color-p' to nil.
+
+*** Faces managing (subgroup)
+
+It is possible to force ps-print to consider specific faces bold,
+italic or underline, no matter what font they are displayed in, by
+setting the variables `ps-bold-faces', `ps-italic-faces' and
+`ps-underlined-faces'.
+
+The variable `ps-build-face-reference' specifies to build the
+reference face lists.
+
+The variable `ps-always-build-face-reference' specifies if it always
+rebuilds the reference face lists.
+
+*** N-up printing (subgroup)
+
+The variable `ps-n-up-printing' specifies the number of pages per
+sheet of paper.  The value specified must be between 1 and 100.  The
+default is 1.
+
+The variable `ps-n-up-margin' specifies the margin in points between
+the sheet border and the n-up printing.  The default is 1 cm (or
+0.3937 inches, or 28.35 points).
+
+If variable `ps-n-up-border-p' is non-nil a border is drawn around
+each page.  The default is t.
+
+The variable `ps-n-up-filling' specifies how page matrix is filled on
+each sheet of paper.
+
+*** Zebra stripes (subgroup)
+
+The variable `ps-zebra-stripes' controls whether to print zebra
+stripes.  Non-nil means yes, nil means no.  The default is nil.
+
+The height, in lines, of each zebra stripe is controlled by the
+variable `ps-zebra-stripe-height', which is 3 by default.
+
+The variable `ps-zebra-gray' controls the zebra stripes gray scale.
+It should be a float number between 0.0 (black color) and 1.0 (white
+color).  The default is 0.95.
+
+*** Background image and/or text (subgroup)
+
+The variable `ps-print-background-image' specifies how to print EPS
+PostScript images on background.
+
+The variable `ps-print-background-text' specifies how to print text on
+background.
+
+*** Printer managing (subgroup)
+
+The variable `ps-printer-name' determines the name of a local printer
+for printing PostScript files.
+
+The variables `ps-lpr-command' and `ps-lpr-switches' determine what
+command is used to send the PostScript images to the printer, and what
+arguments to give the command.
+
+The variable `ps-print-region-function' specifies a function to print
+the region on a PostScript printer.
+
+*** Page settings (subgroup)
+
+The variable `ps-paper-type' determines the size of paper ps-print
+formats for; it should contain one of the symbols: `a4' `a3' `letter'
+`legal' `letter-small' `tabloid' `ledger' `statement' `executive'
+`a4small' `b4' `b5' It defaults to `letter'.  If you need other sizes,
+see the variable `ps-page-dimensions-database'.
+
+The variable `ps-landscape-mode' determines the orientation of the
+printing on the page.  nil, the default, means "portrait" mode,
+non-nil means "landscape" mode.
+
+*** Line number, control characters, columns, PostScript headers
+
+The variable `ps-number-of-columns' must be a positive integer.  It
+determines the number of columns both in landscape and portrait mode.
+It defaults to 1.
+
+It is possible to add PostScript prologue header comments besides that
+ps-print generates by setting the variable `ps-print-prologue-header'.
+
+The variable `ps-print-control-characters' specifies whether you want
+to see a printable form for control and 8-bit characters, that is,
+instead of sending, for example, a ^D (\004) to printer, it is sent
+the string "^D".
+
+The variable `ps-line-number' specifies whether to number each line;
+non-nil means do so.  The default is nil (don't number each line).
+
+If variable `ps-razzle-dazzle' is non-nil, report progress while
+formatting buffer.
+
+The variable `ps-adobe-tag' specifies the header line identifying the
+output as PostScript.  By default, `ps-adobe-tag' contains the
+standard identifier.
+
+If variable `ps-banner-page-when-duplexing' is non-nil, the very first
+page is skipped.  It's like the very first character of buffer (or
+region) is ^L (\014).
+
+
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:

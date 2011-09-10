@@ -1,0 +1,1283 @@
+From ark1!uakari.primate.wisc.edu!zaphod.mps.ohio-state.edu!tut.cis.ohio-state.edu!snark.uu.net!eric Mon Mar  5 09:14:58 1990
+Article 791 of gnu.emacs.bug:
+Path: ark1!uakari.primate.wisc.edu!zaphod.mps.ohio-state.edu!tut.cis.ohio-state.edu!snark.uu.net!eric
+From eric@snark.uu.net
+Newsgroups: gnu.emacs.bug
+Subject: sccs.el
+Message-ID: <9003032350.AA28098@snark.uu.net>
+Date: 4 Mar 90 04:50:05 GMT
+Sender: daemon@tut.cis.ohio-state.edu
+Distribution: gnu
+Organization: GNUs Not Usenet
+Lines: 857
+
+Here's the latest version. Also I wrote up some info nodes for it so
+you can put it in the documentation tree -- I suggest under `Major Modes'.
+I haven't tested this info file as I don't really understand how to integrate
+it into the existing tree.
+
+Here's the info file:
+
+-------------------------------------CUT HERE----------------------------------
+This file documents the SCCS front-end features.  -*-Text-*-
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+File: sccs	Node: Top	Up: (DIR)	Next: SCCS Operations
+
+   If your environment supports SCCS (the Source Code Control System) Emacs
+includes facilities for version control of files direct from the editor. You
+can load the SCCS support facilities by invoking `M-x sccs'; thereafter,
+keystroke bindings are available.
+
+   This library assumes that you are one of a group maintaining a project which
+has a single `current version', but for which you need to maintain a
+modification history so that you can reconcile diffs made by each other against
+old versions.
+
+   The major function assists you in checking in a file to SCCS and registering
+successive sets of changes to it as SCCS deltas. Other entry points allow you
+to retrieve change histories, examine differences between versions, and examine
+the overall SCCS status of the project (which files are registered to SCCS,
+which are currently locked, etc).
+
+   A function is provided to generate diff sets that express all differences
+between a given delta pair. This can be used to automatically generate
+patch sets corresponding to releases. A function for marking out major
+releases is also provided.
+
+   It is not necessary to pre-register the project files into SCCS to use
+these facilities; this will be done automatically when you first invoke the
+major entry point on each file. Thus you only pay minimum disk space overhead
+for using SCCS.
+
+   Finally, note that this major mode adds entries to the global C-c keymap
+when first loaded. Given that the sccs code has to coexist with things like
+c-mode that define their own keymaps, this is at least better than hogging
+each buffer's local one.
+
+* Menu::
+
+* SCCS Operations::     Describes the major `smart' entry points.
+* Difference Reports::  How to compare saved deltas and look at file histories.
+* Status Functions::    Functions for examining SCCS project directories.
+* Release Generation::  Functions for generating releases from delta sets.
+* Variables::           Ways to customize SCCS's behavior through Emacs.
+
+This library was designed and implemented by Eric Raymond (eric@snark.uu.net).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+File: sccs	Node: SCCS Operations	Up: Top		Next: Difference Reports
+
+   The main function that assists with this is SCCS use is `sccs', which tries
+to do the next logical SCCS operation on the file associated with the current
+buffer.
+
+`C-c n, M-x sccs'
+   Perform the next logical operation on the SCCS file corresponding to
+   the current buffer, either an admin(1) or get(1) or delta(1).
+
+   If the file is not already registered with SCCS, this does an admin -i
+followed by a get -e. This checks the file in to SCCS and gets an editable
+copy. The base version will be 1.1 unless you have done a previous
+sccs-delta-release in this directory, in which case the saved version number
+will be used.
+
+   Note that you must have an SCCS subdirectory in the same directory
+as the file being operated on for the check-in to work. 
+
+   If the file is registered and not locked by anyone, sccs does a get -e. This
+gets an editable copy.
+
+   If the file is registered and locked by the calling user, sccs pops up a
+buffer for creation of a log message, then does a delta -n on the file. The
+presumption is that you're done with a set of changes and want to register
+them as a delta. A read-only copy of the changed file is left in place
+afterwards.
+
+   If the file is registered and locked by someone else, an error message is
+returned indicating who has locked it.
+
+   When entering the log entry for a delta, you may use `sccs-insert-last-log'
+to insert the last change log message you composed. You do this with:
+
+`C-c i, C-c C-i, M-x insert-last-log'
+   Insert a copy of the last change message you composed. Useful when entering
+   a change log message.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+File: sccs	Node: Difference Reports	Up: Top		Next: Status Functions
+
+   Sometimes it is useful to compare the current version of a file with
+previous versions, or get reports on changes that have been made to a file
+or group of files. Functions are provided to do this.
+
+`C-c d, M-x sccs-diff'
+   Compare the current version in the buffer with the last checked in
+   revision (delta) of the file, or, if given a prefix argument, with a
+   previous delta.
+
+The comparison will be the output of a diff(1) using the flags specified in
+the variable sccs-diff-default-flags. *Note Cross: SCCS Variables:: You may
+add flags by specifying string arguments to sccs-diff.
+
+`C-c v, M-x sccs-version-diff'
+   Compare two past deltas of the current file. You will be prompted for
+   the SIDs of the versions to compare.
+
+Comparisons will be done with diff(1) as above.
+
+`C-c p, M-x sccs-prs'
+   Run a prs(1) on the SCCS s.* file corresponding to the file in the current
+   buffer. This yields a history of changes to the file.
+
+The results of all of these go to a compilation buffer name *SCCS* which is
+popped to.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+File: sccs	Node: Status Functions		Up: Top		Next: Release Generation
+
+   Some functions exist to allow you to check on which files of a project
+are SCCS-registered or locked. These functions assume that the files for your
+current project or subproject occupy the current directory and all its
+subdirectories.
+
+`C-cC-p, M-x sccs-pending'
+   List all files at or below current directory that are currently locked
+for edit by any user.
+
+`C-c r, M-x sccs-registered'
+   List all files at or below current directory that are SCCS-registered.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+File: sccs	Node: Release Generation	Up: Top		Next: Variables
+
+   The following functions assist in defining releases and generating patch
+sets for them. They are not bound to keystrokes, as they will be used
+relatively infrequently.
+
+`M-x sccs-delta-release'
+   Insert a dummy delta (to mark a major release) in all SCCS-registered files
+   at or below the current directory. The log message for all deltas is simply
+   `Release <sid>' where <sid> is an SID for which you will be prompted. This
+   SID is saved to be used in subsequent check-ins of new files.
+
+   The SID of the new major release level is stored in ./SCCS/emacs-vars.el and
+used as the base SID for all subsequent new admins done from the current
+directory. It is good practice to register all current changes to their
+individual files with their own explanatory log messages before invoking
+sccs-delta-release, so that each real delta will carry real change info.
+
+`M-x sccs-release-diff'
+   Generate a complete report on diffs between given versions for all
+   SCCS files at or below default-directory. You will be prompted for the
+   SIDs of versions to be compared. If the newer SID is omitted or nil, the
+   comparison is done against the most recent version saved.
+
+This report is generated into a buffer in the format of a context diff set
+suitable for use with patch(1).
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+File: sccs	Node: Variables			Up: Top
+
+   You can customize the behavior of the Emacs interface by setting 
+
+sccs-max-log-size
+  Maximum allowable size of an sccs log message.
+
+sccs-default-diff-flags
+  Default the diff in sccsdiff to use the flags given in this list.
+
+sccs-headers-wanted
+  A list of SCCS header keywords inserted into comments when the 
+  sccs-insert-header function is executed. Defaults to insert %W% only.
+
+sccs-insert-static
+  If non-nil, use a static character string when inserting SCCS headers in
+  C mode. This permits what(1) to find SCCS version info in the compiled
+  object file.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-------------------------------------CUT HERE----------------------------------
+
+Here's the revised mode. Changes from the one you've seen already are:
+
+1) Global-keymap bindings for the entry points.
+
+2) The code now maintains a major-version variable associated with each 
+   directory where sccs.el is run; it is used as the base version when
+   checking in new files, and is incremented by sccs-delta-release.
+
+-------------------------------------CUT HERE----------------------------------
+;; sccs.el -- front-end code for using SCCS from GNU Emacs.
+;; 	by Eric S. Raymond (eric@snark.uu.net) v2.0 March 4 1990
+
+;; This file is part of GNU Emacs.
+
+;; GNU Emacs is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY.  No author or distributor
+;; accepts responsibility to anyone for the consequences of using it
+;; or for whether it serves any particular purpose or works at all,
+;; unless he says so in writing.  Refer to the GNU Emacs General Public
+;; License for full details.
+
+;; Everyone is granted permission to copy, modify and redistribute
+;; GNU Emacs, but only under the conditions described in the
+;; GNU Emacs General Public License.   A copy of this license is
+;; supposed to have been given to you along with GNU Emacs so you
+;; can know your rights and responsibilities.  It should be in a
+;; file named COPYING.  Among other things, the copyright notice
+;; and this notice must be preserved on all copies.
+;;;
+;;; You can blame this one on Eric S. Raymond (eric@snark.uu.net).
+;;; It is loosely derived from an rcs mode written by Ed Simpson
+;;; ({decvax, seismo}!mcnc!duke!dukecdu!evs) in years gone by
+;;; and revised at MIT's Project Athena.
+
+;; User options
+
+(defvar sccs-max-log-size 510
+  "*Maximum allowable size (chars) + 1 of an sccs log message.")
+(defvar sccs-default-diff-flags '("-c")
+  "*If non-nil, default the diff in sccsdiff to use these flags.")
+(defvar sccs-headers-wanted '("%W%")
+  "*SCCS header keywords inserted into comments when sccs-insert-header
+is executed")
+(defvar sccs-insert-static t
+  "*Insert a static character string when inserting SCCS headers in C mode.")
+
+;; Vars the user doesn't need to know about.
+
+(defvar sccs-log-entry-mode nil)
+(defvar sccs-current-major-version nil)
+
+;; Some helper functions
+
+(defun sccs-name (file &optional letter)
+  "Return the sccs-file name corresponding to a given file"
+  (format "%sSCCS/%s.%s"
+	  (concat (file-name-directory file))
+	  (or letter "s")
+	  (concat (file-name-nondirectory file))))
+
+(defun sccs-lock-info (file index)
+   "Return the nth token in a file's SCCS-lock information"
+   (let
+       ((pfile (sccs-name file "p")))
+     (and (file-exists-p pfile)
+	  (save-excursion
+	    (find-file pfile)
+	    (auto-save-mode nil)
+	    (replace-string " " "\n")
+	    (goto-char (point-min))
+	    (forward-line index)
+	    (prog1
+		(buffer-substring (point) (progn (end-of-line) (point)))
+	      (set-buffer-modified-p nil)
+	      (kill-buffer (current-buffer)))
+	    )
+	  )
+     )
+   )
+
+(defun sccs-locking-user (file)
+  "Return the name of the person currently holding a lock on FILE, nil if
+there is no such person."
+  (sccs-lock-info file 2)
+  )
+
+(defun sccs-locked-revision (file)
+  "Return the revision number currently locked for FILE, nil if none such."
+  (sccs-lock-info file 1)
+  )
+
+(defmacro error-occurred (&rest body)
+  (list 'condition-case nil (cons 'progn (append body '(nil))) '(error t)))
+
+;; There has *got* to be a better way to do this...
+(defmacro chmod (perms file)
+  (list 'call-process "chmod" nil nil nil perms file))
+
+(defun sccs-save-vars (sid)
+  (save-excursion
+    (find-file "SCCS/emacs-vars.el")
+    (erase-buffer)
+    (insert "(setq sccs-current-major-version \"" sid "\")")
+    (basic-save-buffer)
+    )
+  )
+
+(defun sccs-load-vars ()
+  (if (error-occurred (load-file "SCCS/emacs-vars.el"))
+      (setq sccs-current-major-version "1.1"))
+)
+
+;; The following functions do most of the real work
+
+(defun sccs-get-version (file sid)
+   "For the given FILE, retrieve a copy of the version with given SID in
+a tempfile. Return the tempfile name, or nil if no such version exists."
+  (let (oldversion vbuf)
+    (setq oldversion (sccs-name file (or sid "new")))
+    (setq vbuf (create-file-buffer oldversion))
+    (prog1
+	(if (not (error-occurred
+	     (sccs-do-command vbuf "get" file
+			      (and sid (concat "-r" sid))
+			      "-p" "-s")))
+	    (save-excursion
+	      (set-buffer vbuf)
+	      (write-region (point-min) (point-max) oldversion t 0)
+	      oldversion)
+	  )
+      (kill-buffer vbuf)
+      )
+    )
+  )
+
+(defun sccs-mode-line (file)
+  "Set the mode line for an sccs buffer. FILE is the file being visited to
+put in the modeline."
+  (setq mode-line-process
+	(if (file-exists-p (sccs-name file "p"))
+	    (format " <SCCS: %s>" (sccs-locked-revision file))
+	  ""))
+
+    ; force update of screen
+    (save-excursion (set-buffer (other-buffer)))
+    (sit-for 0)
+    )
+
+(defun sccs-do-command (buffer command file &rest flags)
+"  Execute an sccs command, notifying the user and checking for errors."
+  (message (format "Running %s on %s..." command file))
+  (save-window-excursion
+    (set-buffer (get-buffer-create buffer))
+    (erase-buffer)
+    (while (and flags (not (car flags)))
+      (setq flags (cdr flags)))
+    (let
+      ((default-directory (file-name-directory (or file "./"))))
+      (apply 'call-process command nil t nil
+	     (append flags (and file (list (sccs-name file)))))
+    )
+    (goto-char (point-max))
+    (previous-line 1)
+    (if (looking-at "ERROR")
+	  (error (format "Running %s on %s...failed" command file))
+      (message (format "Running %s on %s...done" command file))
+      )
+    )
+  (if file (sccs-mode-line file))
+  )
+
+(defun sccs-tree-walk (func &rest optargs)
+  "Apply FUNC to each SCCS file under the default directory. If present,
+OPTARGS are also passed."
+  (shell-command (concat
+		  "find " default-directory " -print | grep 'SCCS/s\\.'"))
+  (set-buffer "*Shell Command Output*")
+  (goto-char (point-min))
+  (replace-string "SCCS/s." "")
+  (goto-char (point-min))
+  (if (eobp)
+      (error "No SCCS files under %s" default-directory))
+  (while (not (eobp))
+    (let ((file (buffer-substring (point) (progn (end-of-line) (point)))))
+      (apply func file optargs)
+      )
+    (forward-line 1)
+    )
+  )
+
+(defun sccs-init ()
+  (sccs-load-vars)
+  (define-key (current-global-map) "\C-c?" 'describe-mode)
+  (define-key (current-global-map) "\C-cn" 'sccs)
+  (define-key (current-global-map) "\C-ch" 'sccs-insert-headers)
+  (define-key (current-global-map) "\C-cd" 'sccs-diff)
+  (define-key (current-global-map) "\C-cp" 'sccs-prs)
+  (define-key (current-global-map) "\C-cC-p" 'sccs-pending)
+  (define-key (current-global-map) "\C-cr" 'sccs-registered)
+  )
+
+;; Here's the major entry point
+
+(defun sccs (verbose)
+  "*Tries to do the next logical SCCS operation on the file associated with the
+current buffer. You must have an SCCS subdirectory in the same directory
+as the file being operated on.
+   If the file is not already registered with SCCS, this does an admin -i
+followed by a get -e.
+   If the file is registered and not locked by anyone, this does a get -e.
+   If the file is registered and locked by the calling user, this pops up a
+buffer for creation of a log message, then does a delta -n on the file.
+A read-only copy of the changed file is left in place afterwards.
+   If the file is registered and locked by someone else, an error message is
+returned indicating who has locked it."
+  (interactive "P")
+  (sccs-init)
+  (if (buffer-file-name)
+      (let
+	  (do-update revision owner
+		     (file (buffer-file-name))
+		     (sccs-file (sccs-name (buffer-file-name)))
+		     (sccs-log-buf (get-buffer-create "*SCCS-Log*"))
+		     (err-msg nil))
+
+	;; if there is no SCCS file corresponding, create one
+	(if (not (file-exists-p sccs-file))
+	      (sccs-admin file sccs-current-major-version))
+
+	(cond
+
+	 ;; if there is no lock on the file, assert one and get it
+	 ((not (file-exists-p (sccs-name file "p")))
+	  (progn
+	    (sccs-get file t)
+	    (revert-buffer nil t)
+	    (sccs-mode-line file)
+	    ))
+
+	 ;; a checked-out version exists, but the user may not own the lock
+	 ((not (string-equal
+		(setq owner (sccs-locking-user file)) (user-login-name)))
+	  (error "Sorry, %s has that file checked out", owner))
+
+	 ;; OK, user owns the lock on the file 
+	 (t (progn
+
+	      ;; if so, give luser a chance to save before delta-ing.
+	      (if (and (buffer-modified-p)
+		       (y-or-n-p (format "%s has been modified. Write it out? "
+					 (buffer-name))))
+		  (save-buffer))
+
+	      (setq revision (sccs-locked-revision file))
+
+	      ;; user may want to set nonstandard parameters
+	      (if verbose
+		  (if (y-or-n-p 
+		       (format "Rev: %s  Change revision level? " revision))
+		      (setq revision (read-string "New revision level: "))))
+
+	      ;; OK, let's do the delta
+	      (if
+		  ;; this excursion returns t if the new version was saved OK
+		  (save-window-excursion
+		    (pop-to-buffer (get-buffer-create "*SCCS*"))
+		    (erase-buffer)
+		    (set-buffer-modified-p nil)
+		    (sccs-mode)
+		    (message 
+		     "Enter log message. Type C-c C-c when done, C-c ? for help.")
+		    (prog1
+			(and (not (error-occurred (recursive-edit)))
+			     (not (error-occurred (sccs-delta file revision))))
+		      (setq buffer-file-name nil)
+		      (bury-buffer "*SCCS*")))
+
+		  ;; if the save went OK do some post-checking
+		  (if (buffer-modified-p)
+		      (error
+		       "Delta-ed version of file does not match buffer!")
+		    (progn
+		      ;; sccs-delta already turned off write-privileges on the
+		      ;; file, let's not re-fetch it unless there's something
+		      ;; in it that get would expand
+		      (if (sccs-check-headers)
+			  (sccs-get file nil))
+		      (revert-buffer nil t)
+		      (sccs-mode-line file)
+		      )
+		    ))))))
+    (error "There is no file associated with buffer %s" (buffer-name))))
+
+(defun sccs-insert-last-log ()
+  "*Insert the log message of the last sccs check in at point."
+  (interactive)
+  (insert-buffer sccs-log-buf))
+
+;;; These functions help the sccs entry point
+
+(defun sccs-admin (file sid)
+  "Checks a file into sccs. FILE is the unmodified name of the file. SID
+should be the base-level sid to check it in under."
+  (sccs-do-command "*SCCS*" "admin" file
+		   (concat "-i" file) (concat "-r" sid))
+  (chmod "-w" file)
+)
+
+(defun sccs-get (file writeable)
+  "Retrieve a locked copy of the latest delta of the given file."
+    (sccs-do-command "*SCCS*" "get" file (if writeable "-e")))
+
+(defun sccs-delta (file &optional rev comment)
+   "Delta the file specified by FILE.  REV is a string specifying the
+new revision level (if nil increment the current level). The file is retained
+with write permissions zeroed. COMMENT is a comment string; if omitted, the
+contents of the current buffer up to point becomes the comment for this delta."
+  (if (not comment)
+      (progn
+	(goto-char (point-max))
+	(if (not (bolp)) (newline))
+	(newline)
+	(setq comment (buffer-substring (point-min) (1- (point)))))
+    )
+  (sccs-do-command "*SCCS*" "delta" file "-n"
+	   (if rev (format "-r%s" rev))
+	   (format "-y%s" comment))
+  (chmod "-w" file)
+)
+
+(defun sccs-abort ()
+  "Abort an sccs command."
+  (interactive)
+  (if (y-or-n-p "Abort the delta? ") (error "Delta aborted")))
+
+(defun sccs-exit ()
+  "Leave the recursive edit of an sccs log message."
+  (interactive)
+  (if (< (buffer-size) sccs-max-log-size)
+	 (progn
+	   (copy-to-buffer sccs-log-buf (point-min) (point-max))
+	   (exit-recursive-edit))
+	 (progn
+	   (goto-char sccs-max-log-size)
+	   (error
+	    "Log must be less than %d characters. Point is now at char %d."
+	    sccs-max-log-size sccs-max-log-size)))
+)
+
+;; Additional entry points for examining version histories
+
+(defun sccs-diff (&optional revno &rest flags)
+  "*Compare the current version of the buffer with the last checked in
+revision of the file, or, if given a prefix argument, with another revision."
+  (interactive (if current-prefix-arg 
+		   (list current-prefix-arg
+			 (read-string "Revision to compare against: "))))
+(let (old file)
+  (if
+      (setq old (sccs-get-version (buffer-file-name) revno))
+      (progn
+	(if (and (buffer-modified-p)
+		 (y-or-n-p (format "%s has been modified. Write it out? "
+				   (buffer-name))))
+	    (save-buffer))
+
+	(setq file (buffer-file-name))
+	(pop-to-buffer (get-buffer-create "*SCCS*"))
+	(erase-buffer)
+	(apply 'call-process "diff" nil t nil
+	       (append sccs-default-diff-flags flags (list old) (list file)))
+	(set-buffer-modified-p nil)
+	(goto-char (point-min))
+	(delete-file old)
+	)
+    )
+  )
+)
+
+(defun sccs-prs ()
+  "*List the SCCS log of the current buffer in an emacs window"
+  (interactive)
+  (sccs-do-command "*SCCS*" "prs" buffer-file-name)
+  (pop-to-buffer (get-buffer-create "*SCCS*")))
+
+(defun sccs-version-diff (file rel1 rel2)
+  "*Given a FILE registered under SCCS, report diffs between two stored deltas
+REL1 and REL2 of it."
+  (interactive "sOlder version: \nsNewer version: ")
+  (if (string-equal rel1 "") (setq rel1 nil))
+  (if (string-equal rel2 "") (setq rel2 nil))
+  (pop-to-buffer (get-buffer-create "*SCCS*"))
+  (erase-buffer)
+  (sccs-vdiff file rel1 rel2)
+  (set-buffer-modified-p nil)
+  (goto-char (point-min))
+  )
+
+(defun sccs-vdiff (file rel1 rel2 &optional flags)
+  "Compare two deltas into the current buffer"
+  (let (vers1 vers2)
+    (and
+     (setq vers1 (sccs-get-version file rel1))
+     (setq vers2 (sccs-get-version file rel2))
+;     (prog1
+;	 (save-excursion
+;	   (not (error-occurred
+;		 (call-process "prs" nil t t
+;			       (sccs-name file))))
+;	 )
+;       )
+     (unwind-protect
+	 (apply 'call-process "diff" nil t t
+		(append sccs-default-diff-flags flags (list vers1) (list vers2)))
+       (condition-case () (delete-file vers1) (error nil))
+       (condition-case () (delete-file vers2) (error nil))
+       )
+     )
+    )
+  )
+
+;; SCCS header insertion code
+
+(defun sccs-insert-headers ()
+  "*Insert headers for use with the Source Code Control System
+Headers desired are inserted at the start of the buffer, and are pulled from 
+the variable sccs-headers-wanted"
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (widen)
+      (if (or (not (sccs-check-headers))
+	      (y-or-n-p "SCCS headers already exist.  Insert another set?"))
+	  (progn
+	     (goto-char (point-min))
+	     (run-hooks 'sccs-insert-headers-hook)
+	     (cond ((eq major-mode 'c-mode) (sccs-insert-c-header))
+		   ((eq major-mode 'lisp-mode) (sccs-insert-lisp-header))
+		   ((eq major-mode 'emacs-lisp-mode) (sccs-insert-lisp-header))
+		   ((eq major-mode 'scheme-mode) (sccs-insert-lisp-header))
+		   (t (sccs-insert-generic-header))))))))
+
+(defun sccs-insert-c-header ()
+  (let (st en)
+    (insert "/*\n")
+    (mapcar '(lambda (s)
+	       (insert " *\t" s "\n"))
+	    sccs-headers-wanted)
+    (insert " */\n\n")
+    (if (and sccs-insert-static 
+	     (not (string-match "\\.h$" (buffer-file-name))))
+	(progn
+	  (insert "#ifndef lint\n"
+		  "static char *sccsid")
+;;	  (setq st (point))
+;;	  (insert (file-name-nondirectory (buffer-file-name)))
+;;	  (setq en (point))
+;;	  (subst-char-in-region st en ?. ?_)
+	  (insert " = \"%W%\";\n"
+		  "#endif /* lint */\n\n")))
+    (run-hooks 'sccs-insert-c-header-hook)))
+
+(defun sccs-insert-lisp-header ()
+  (mapcar '(lambda (s) 
+		  (insert ";;;\t" s "\n"))
+	  sccs-headers-wanted)
+  (insert "\n")
+  (run-hooks 'sccs-insert-lisp-header-hook))
+
+(defun sccs-insert-generic-header ()
+  (let* ((comment-start-sccs (or comment-start "#"))
+	 (comment-end-sccs (or comment-end ""))
+	 (dont-insert-nl-p (string-match "\n" comment-end-sccs)))
+    (mapcar '(lambda (s)
+	       (insert comment-start-sccs "\t" s ""
+		       comment-end-sccs (if dont-insert-nl-p "" "\n")))
+	  sccs-headers-wanted)
+  (insert comment-start-sccs comment-end-sccs (if dont-insert-nl-p "" "\n"))))
+
+(defun sccs-check-headers ()
+  "Check if the current file has any SCCS headers in it."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (re-search-forward  "%[MIRLBSDHTEGUYFPQCZWA]%" (point-max) t)))
+
+;; Status-checking functions
+
+(defun sccs-status (prefix legend)
+   "List all files underneath the current directory matching a prefix type"
+   (shell-command
+    (format "find . -print | grep 'SCCS/%s\\.'" prefix))
+   (if
+       (save-excursion
+	 (set-buffer "*Shell Command Output*")
+	 (if (= (point-max) (point-min))
+	     (not (message
+		   "No files are currently %s under %s"
+		   legend default-directory))
+	   (progn
+	     (goto-char (point-min))
+	     (insert
+	      "The following files are currently " legend
+	      " under " default-directory ":\n")
+	     (replace-string (format "SCCS/%s." prefix) "")
+	     )
+	   )
+	 )
+       (pop-to-buffer "*Shell Command Output*")
+       )
+     )
+
+(defun sccs-pending ()
+  "*List all files currently SCCS locked"
+  (interactive)
+  (sccs-status "p" "locked"))
+
+(defun sccs-registered ()
+  "*List all files currently SCCS registered"
+  (interactive)
+  (sccs-status "s" "registered"))
+       
+;; Major functions for release-tracking and generation.
+
+(defun sccs-release-diff (rel1 rel2)
+  "*Generate a complete report on diffs between versions REL1 and REL2 for all
+SCCS files at or below default-directory. If REL2 is omitted or nil, the
+comparison is done against the most recent version."
+  (interactive "sOlder version: \nsNewer version: ")
+  (if (string-equal rel1 "") (setq rel1 nil))
+  (if (string-equal rel2 "") (setq rel2 nil))
+  (shell-command (concat
+		  "find " default-directory " -print | grep 'SCCS/s\\.'"))
+  (set-buffer "*Shell Command Output*")
+  (goto-char (point-min))
+  (replace-string "SCCS/s." "")
+  (goto-char (point-min))
+  (if (eobp)
+      (error "No SCCS files under %s" default-directory))
+  (let
+      ((sccsbuf (get-buffer-create "*SCCS*")))
+    (save-excursion
+      (set-buffer sccsbuf)
+      (erase-buffer)
+      (insert (format "Diffs from %s to %s.\n\n"
+		      (or rel1 "current") (or rel2 "current"))))
+    (while (not (eobp))
+	 (let ((file (buffer-substring (point) (progn (end-of-line) (point)))))
+	   (save-excursion
+	     (set-buffer sccsbuf)
+	     (set-buffer-modified-p nil)
+	     (sccs-vdiff file rel1 rel2)
+	     (if (buffer-modified-p)
+		 (insert "\n"))
+	     )
+	   (forward-line 1)
+	   )
+	 )
+    (kill-buffer "*Shell Command Output*")
+    (pop-to-buffer sccsbuf)
+    (insert "\nEnd of diffs.\n")
+    (goto-char (point-min))
+    (replace-string (format "/SCCS/%s." rel1) "/")
+    (goto-char (point-min))
+    (replace-string (format "/SCCS/%s." rel2) "/new/")
+    (goto-char (point-min))
+    (replace-string "/SCCS/new." "/new/")
+    (goto-char (point-min))
+    (replace-regexp (concat "^*** " default-directory) "*** ")
+    (goto-char (point-min))
+    (replace-regexp (concat "^--- " default-directory) "--- ")
+    (goto-char (point-min))
+    (set-buffer-modified-p nil)
+    )
+  )
+
+(defun sccs-dummy-delta (file sid)
+  "Make a dummy delta to the given FILE with the given SID"
+  (interactive "sFile: \nsRelease ID: ")
+  (if (not (sccs-locked-revision file))
+      (sccs-get file t))
+  ;; Grottiness alert -- to get around SCCS's obsessive second-guessing we
+  ;; have to mung the p-file
+  (save-excursion
+    (let ((pfile (sccs-name file "p")))
+      (chmod "u+w" pfile)
+      (find-file pfile)
+      (auto-save-mode nil)
+      (replace-regexp "^\\([0-9.]+\\) \\([0-9.]+\\)" (concat "\\1 " sid) t)
+      (write-region (point-min) (point-max) pfile t 0)
+      (chmod "u-w" pfile)
+      (set-buffer-modified-p nil)
+      (kill-buffer (current-buffer))
+      )
+    )
+  (sccs-delta file sid (concat "Release " sid))
+  (sccs-get file nil)
+  (sccs-save-vars sid)
+  )
+
+(defun sccs-delta-release (sid)
+  "*Delta everything underneath the current directory to mark it as a release."
+  (interactive "sRelease: ")
+  (sccs-tree-walk 'sccs-dummy-delta sid)
+  (kill-buffer "*SCCS*")
+  )
+
+;; Set up key bindings for SCCS use, e.g. while editing log messages
+
+(defun sccs-mode ()
+  "Major mode for doing an sccs check in.
+Calls the value of text-mode-hook then sccs-mode-hook.
+Like Text Mode but with these additional comands:
+C-c n		perform next logical SCCS operation (`sccs') on current file
+C-c h		insert SCCS headers in current file
+C-c d		show difference between buffer and last saved delta
+C-c p		display change history of current file
+C-c C-p		show all files currently locked by any user at or below .
+C-c r		show all files registered into SCCS at or below .
+C-c ?		show this message
+
+While you are entering a change log message for a delta, the following
+additional bindings will be in effect.
+
+C-c C-c		proceed with check in, ending log message entry
+C-x C-s		same as C-c C-c
+C-c i		insert log message from last check-in
+C-c a		abort this delta check-in
+
+Global user options:
+	sccs-max-log-size	specifies the maximum allowable size
+				of a log message plus one.
+	sccs-default-diff-flags	flags to pass to diff(1) when doing
+				sccs-prs commands, useful if you have
+				a context differ
+	sccs-headers-wanted	which %-keywords to insert when adding
+				SCCS headers with C-c h
+	sccs-insert-static	if non-nil, SCCS keywords inserted in C files
+				get stuffed in a static string area so that
+				what(1) can see them in the compiled object
+				code.
+"
+  (interactive)
+  (set-syntax-table text-mode-syntax-table)
+  (use-local-map sccs-log-entry-mode)
+  (setq local-abbrev-table text-mode-abbrev-table)
+  (setq major-mode 'sccs-mode)
+  (setq mode-name "SCCS")
+  (run-hooks 'text-mode-hook 'sccs-mode-hook)
+)
+
+;; Initialization code, to be done just once at load-time
+(if sccs-log-entry-mode
+    nil
+  (setq sccs-log-entry-mode (make-sparse-keymap))
+  (define-key sccs-log-entry-mode "\C-ci" 'sccs-insert-last-log)
+  (define-key sccs-log-entry-mode "\C-c\C-i" 'sccs-insert-last-log)
+  (define-key sccs-log-entry-mode "\C-ca" 'sccs-abort)
+  (define-key sccs-log-entry-mode "\C-c\C-a" 'sccs-abort)
+  (define-key sccs-log-entry-mode "\C-c\C-c" 'sccs-exit)
+  (define-key sccs-log-entry-mode "\C-x\C-s" 'sccs-exit)
+)
+
+;; sccs.el ends here
+;-------------------------------------CUT HERE----------------------------------
+;
+;Please acknowledge receipt of this code. I have sent the requested assignment
+;of copyright via paper mail.
+;
+;								>>eric>>

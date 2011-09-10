@@ -1,0 +1,26 @@
+Received: from TUT.CIS.OHIO-STATE.EDU by prep.ai.mit.edu; Wed, 29 Mar 89 05:44:33 EST
+Received: by tut.cis.ohio-state.edu (5.59/3.890314)
+	id AA29111; Wed, 29 Mar 89 05:49:12 EST
+Received: from USENET by tut.cis.ohio-state.edu with netnews
+	for info-gnu-emacs@prep.ai.mit.edu (info-gnu-emacs@prep.ai.mit.edu)
+	(contact usenet@tut.cis.ohio-state.edu if you have questions)
+Date: 28 Mar 89 08:22:38 GMT
+From: mcvax!kth!enea!dkuug!iesd!amanda@uunet.uu.net  (Per Abrahamsen)
+Organization: Games Research, University of Aalborg, Denmark
+Subject: Re: outline mode in emacs
+Message-Id: <1555@iesd.dk>
+References: <7708@boulder.Colorado.EDU>
+Sender: info-gnu-emacs-request@prep.ai.mit.edu
+To: info-gnu-emacs@prep.ai.mit.edu
+Status: RO
+
+
+I have a outline-minor-mode which can be used together with most major
+modes,, and it allows our local LaTeX-mode use LaTeX sectioning
+commands as outline levels. The code is not up to normal GNU quality
+and it is not prepared for distribution, but it works for me. If you
+want it, send mail.
+
+--
+Per Abrahamsen,  amanda@iesd.dk, {...}!mcvax!diku!iesd!amanda
+

@@ -1,0 +1,31 @@
+This is GNU Emacs 'multi forms-mode', version 1.4 (patchlevel 0).
+
+This GNU Emacs major mode implements editing a structured file (i.e., a
+file with 'records' and 'fields' in it) using a form.
+It is fully documented in the source file 'forms.el' and in the
+now out of date texinfo file 'forms.ti'.  (forms.ti was written for
+forms-mode version 1.2, and has not been brought up to date.  More of
+it is correct than incorrect, so I (FR) include it with version 1.4.)
+
+This kit contains:
+
+	README		- this file
+	MANIFEST	- list of files (no longer included)
+	forms.ti	- texinfo file for forms-mode 1.2
+	forms.el	- the lisp source
+	demo1		- simple demo using /etc/passwd
+                          one record/buffer at a time
+	test.forms 	- advanced demo
+                          multiple records/buffer at a time
+
+Load the lisp source, and execute
+
+	forms-find-file demo1
+
+to look at your password file in a unconventional (but read-only) way.
+
+find-file test.forms
+
+gives you something with multiple records to clobber,
+with data and multi-line fields.
+

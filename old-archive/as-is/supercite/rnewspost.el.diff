@@ -1,0 +1,26 @@
+*** rnewspost.el.orig	Thu Jun 29 22:38:15 1989
+--- rnewspost.el	Fri Jul 28 18:38:12 1989
+***************
+*** 118,123 ****
+    (mail-yank-original arg)
+    (exchange-point-and-mark)
+!   (insert "In article " news-reply-yank-message-id
+! 	  " " news-reply-yank-from " writes:\n\n"))
+  
+  (defun news-reply-newsgroups ()
+--- 118,132 ----
+    (mail-yank-original arg)
+    (exchange-point-and-mark)
+!   ;; added 14-Jun-1989 baw: warsaw@cme.nist.gov, uunet!cme-durer!warsaw
+!   ;; generalized, hookified citations
+!   (run-hooks 'news-reply-header-hook))
+!  
+! ;; added 14-Jun-1989 baw: warsaw@cme.nist.gov, uunet!cme-durer!warsaw
+! ;; generalized, hookified citations
+! (defvar news-reply-header-hook
+!   '(lambda ()
+! 	 (insert "In article " news-reply-yank-message-id
+! 			 " " news-reply-yank-from " writes:\n\n"))
+!   "Hook for inserting a header at the top of a yanked message.")
+  
+  (defun news-reply-newsgroups ()

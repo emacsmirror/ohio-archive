@@ -1,0 +1,23 @@
+%% This file is part of FUSE, The FEFF/UWXAFS System for Emacs
+%% This file demonstrates the use of definition and evaluation
+%% lines in an atoms input file
+
+title PbTiO3 N&K,10K,a=3.885,c=4.139
+Space  P 4 m m    
+a=3.885   c=4.139	rmax=7   core=ti
+
+!- ti = 0.0377	o1 = 0.1118	o2 = 0.1174
+!- q = 1
+
+atom
+! At.type  x        y       z      tag
+   Pb    0.0     0.0     0.0     
+!+ Ti	 0.5	 0.5	 (0.5 + q*ti)
+!+ O	 0.5	 0.5	 (0.0 + q*o1)	axial
+!+ O	 0.0	 0.5	 (0.5 + q*o2)	planar
+
+
+!!&& Local Variables:
+!!&& input-program-name: "atoms"
+!!&& End:
+%# Input-mode Time-stamp: <98/07/15 13:35:30 bruce>

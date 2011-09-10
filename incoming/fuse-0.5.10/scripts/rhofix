@@ -1,0 +1,9 @@
+#!/bin/sh
+#
+#  display rho_l data from a feff8 run to STDOUT in a format suitable
+#  for gnuplot
+# uses sed
+#
+# This file is part of FUSE, the Feff/UWXAFS System for Emacs
+#
+sed "1,/rho_3/s/^ /# /" $1

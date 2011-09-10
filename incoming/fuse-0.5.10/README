@@ -1,0 +1,77 @@
+						7 April, 1998
+
+----------------------------------------------------------------------
+
+See INSTALL for installation directions.
+
+----------------------------------------------------------------------
+
+The FUSE distribution contains the following:
+
+1.  Makefiles for GNU Emacs and XEmacs.
+
+2.  A bunch of files that end in .el.  These are the main programs in
+    FUSE.
+
+3.  The docs/ directory contains documentation for FUSE as well as for
+    atoms and feff in a variety of formats, including info, html,
+    PostScript and plain text.
+
+4.  The pixmaps/ directory contains all of the icons used in the
+    toolbars in XEmacs.
+
+5.  The scripts/ directory contains several shell and perl scripts
+    used by FUSE.
+
+6.  The fortran/ directory contains lsfile and mrofer (programs useful
+    for handling uwxafs binary files), a copy of normal (for aligning
+    and normalizing mu(E) data), and a copy of phit (a generalized
+    least-squares fitting program).  I have not yet written a
+    Makefile for these.  If you need to compile these -- they are
+    standard fortran 77.  Use g77, f2c and gcc, or any other fortran
+    compiler. 
+
+7.  The emulation/ directory contains some files useful if you want
+    Emacs to emulate vi, edt, or crisp while using FUSE.  This is not
+    really described in the documentation.  Contact Bruce if you need
+    to do this.
+
+8.  The example/ directory contains files that you will need for the
+    tutorial.  It also has an 3 example Atoms input files demonstrating
+    the definition and evaluation line syntax introduced in version
+    0.5.4 of FUSE.
+
+9.  Example .emacs and .fuse files called `dot-emacs' and `dot-fuse'
+
+----------------------------------------------------------------------
+
+
+Some general notes:
+
+1.  FUSE handles uwxafs binary files to some extent.  I am open to
+    suggestions for improvement.
+
+2.  The document is spotty in places, particularly in the discussion
+    of minor mode specific functions, and in some of the newer
+    features, such as the gnuplot history and batch program execution.
+
+3.  The emulation stuff is spottily described.  If you want to use
+    FUSE with vi (or other editor) emulation, contact me.
+
+4.  The FUSE welcome screen is poorly described, but it works and
+    might be handy for you.  Start emacs and do a M-x fuse-mode to
+    check it out.
+
+5.  Work through the tutorial.  It will introduce to many of the
+    features of FUSE. 
+
+6.  Get calc from ftp://prep.ai.mit.edu/pub/gnu/calc-2.02f.tar.gz.
+    It is easy to install.  The definition and evaluation line syntax
+    new to Atoms mode in FUSE 0.5.4 requires calc.
+
+7.  Look at my web page
+	http://feff.phys.washington.edu/~ravel/software.html#elisp
+    It has some tips and other information not covered in the
+    document. 
+
+8.  Do you have nifty ideas for what FUSE could do?  Let me know!

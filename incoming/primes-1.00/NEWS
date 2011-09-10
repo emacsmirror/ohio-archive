@@ -1,0 +1,42 @@
+GNU Emacs primes library NEWS -- history of user-visible changes. 02 March 1999
+Copyright (C) 1999 Free Software Foundation, Inc.
+See the end for copying conditions.
+
+Please report comments, errata, bug reports, et al. to the author:
+
+	Nelson H. F. Beebe
+	Center for Scientific Computing
+	University of Utah
+	Department of Mathematics, 322 INSCC
+	155 S 1400 E RM 233
+	Salt Lake City, UT 84112-0090
+	USA
+	Email: beebe@math.utah.edu, beebe@acm.org, beebe@ieee.org (Internet)
+	WWW URL: http://www.math.utah.edu/~beebe
+	Telephone: +1 801 581 5254
+	FAX: +1 801 585 1640, +1 801 581 4148
+
+* Changes in primes library 1.00
+This is the first release of a new library for GNU Emacs Lisp
+programmers. 
+
+
+----------------------------------------------------------------------
+Copyright information:
+
+Copyright (C) 1999 Free Software Foundation, Inc.
+
+   Permission is granted to anyone to make or distribute verbatim copies
+   of this document as received, in any medium, provided that the
+   copyright notice and this permission notice are preserved,
+   thus giving the recipient permission to redistribute in turn.
+
+   Permission is granted to distribute modified versions
+   of this document, or of portions of it,
+   under the above conditions, provided also that they
+   carry prominent notices stating who last changed them.
+
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:

@@ -1,0 +1,60 @@
+                Answers to Frequently Asked Questions
+	       About the GNU Emacs Lisp Code Directory
+
+                     Last Update: March 12 1993
+
+
+Q. What *is* the Lisp Code Directory?
+
+A. Originally it was simply a list, in tabular form, of various
+packages of GNU Emacs Lisp code that had been posted to one of the
+Emacs-related Internet or USENET mailing lists or newsgroups.  Later
+it became a flat-file database and associated formatting software.
+Today it includes over 800 entries, contains entries for the packages
+in the standard GNU Emacs distribution, and there is an Emacs Lisp package
+available for use with interfacing with it.
+
+Q. Where can I get a copy of the Directory?
+
+A. The latest copy can be ftp'd from archive.cis.ohio-state.edu.  The file
+is pub/gnu/emacs/elisp-archive/LCD-datafile.Z.  (The .Z means it's
+compressed; use `binary' mode in ftp when retrieving it.)
+
+Q. How can I get a copy of a package listed in the Directory?
+
+A. The `archive' field of the LCD entry for the package indicates
+where it's archived.  If this field starts with a `~', as in
+~/lispdir.el.Z, the archive host is archive.cis.ohio-state.edu, and the
+file is under the Emacs Lisp Archives which reside in the directory
+pub/gnu/emacs/elisp-archive (see README.Z for more details).  If the
+`archive' field is empty, the `contact' field indicates where one can
+write by e-mail to obtain the code.  In the case of a package that's
+part of the standard Emacs distribution, you probably already have it
+in your $EMACS/lisp directory.  If you're  unable to find a copy
+through the listed contact, post a query to gnu.emacs, info-gnu-emacs,
+or your favorite Emacs group.
+
+Q. What and where is the LCD interfacing package?
+
+A. It's called `lispdir', and it's in ~/lispdir.el.Z.  (See previous
+answer for details on exactly where that is.)  It currently produces a
+full-directory report in three different formats, two of which are
+tabular.  It also provides a function called lisp-dir-apropos that
+pops up a buffer containing entries that relate to a given topic.
+
+Q. I don't have ftp or uucp access.  Is there a mail archive server?
+
+A. No, there isn't.  Probably the best thing for you to do is contact
+the author directly or try to uses one of the mail/ftp gateway services.
+If that fails, request the items you want via your favorite Emacs mailing
+list or newsgroup.  We would like to set up a mail archive server, but
+have our hands full keeping the archive up-to-date.  We would be very
+interested in hearing from anyone who has experience in that area.
+
+Q. How can I get my package added to the Directory or get typos or
+inaccuracies fixed?
+
+A. Dave Sill (de5@ornl.gov) and Dave Brennan (brennan@gnu.ai.mit.edu)
+maintain the archive and the Directory.  Send typos, inaccuracies,
+and submissions to them at the address elisp-archive@cis.ohio-state.edu.
+See the GUIDELINES file for more information on submissions.

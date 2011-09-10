@@ -1,0 +1,1559 @@
+Info file: mew.info,    -*-Text-*-
+produced by `texinfo-format-buffer'
+from file `mew.texi'
+using `texinfmt.el' version 2.38 of 3 July 1998.
+
+
+
+
+
+
+
+INFO-DIR-SECTION Message User Agent
+START-INFO-DIR-ENTRY
+* Mew: (mew.info).           Messaging in the Emacs World.
+END-INFO-DIR-ENTRY
+
+
+
+
+
+
+File: mew.info, Node: charset-guess, Next: reply, Prev: mime-comp, Up: Composing
+
+Charset guess
+=============
+
+Mew has charset guess mechanisms for both singlepart and multipart.
+
+<Singlepart>
+
+When you type `C-cC-m' on Draft mode, Mew guesses a charset from its
+body. On Bilingual Emacs, US-ASCII is chosen for 7bit charset while
+ISO-8859-1 is selected for 8bit charset. On Mule, a charset is chosen
+based on its internal representation.
+
+<Multipart>
+
+When you attach textfile on attachments region, the string "(guess)" is
+displayed as follows:
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/
+          1  Text/Plain(guess)                                       CoverPage*
+          2  Text/Plain(guess)                                       textfile
+          3                                                          .
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+The difference of charset guess for singlepart and multipart is where
+the data locates. Singlepart is stored in buffer while each file of
+multipart is stored in disk. To guess a charset, Mew thus reads a file
+into buffer and uses the charset guess algorithm of singlepart.
+
+On Bilingual Emacs, Mew reads a file as it is. So, if the file is 7bit,
+US-ASCII is chosen. Otherwise ISO-8859-1 is selected.
+
+On Mule, Mew reads a file according to the local convention(i.e. auto
+conversion). The convention is really site dependent. In Japan,
+ISO-2022-JP, EUC-Japan, and Shift_JIS is neatly guessed and stored in
+buffer as internal representation for Japanese. Mew decides a charset
+from the internal representation. That is, you can safely attach
+ISO-2022-JP, EUC-Japan, and Shift_JIS text files. Functions to decide
+local convention are called set[up]-<language>-environment. For more
+information about local convention, read their descriptions.
+
+If you want to explicitly specify charset for a file, use `C' on
+attachments. A typical example is to attach ISO-8859-1 file in Japanese
+environment. The attachments region becomes as follows:
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/     
+          1  Text/Plain(guess)                                       CoverPage*
+          2  Text/Plain(iso-8859-1)                                  textfile
+          3                                                          .    
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+Note that `C' is not available on Bilingual Emacs.
+
+
+
+File: mew.info, Node: reply, Next: forward, Prev: charset-guess, Up: Composing
+
+Replying to a message and deciding recipients
+=============================================
+
+While you specify addresses of the To: and Cc: field for a new message
+by yourself, addresses are automatically prepared for a reply message.
+
+For a reply message, Mew prepares addresses for the To: and Cc: fields
+according to the following rules:
+
+If From: of the message to be replied is not from me:
+     Reply-To: doesn't exist in the message to be replied
+          Copy From: of the message to be replied to To: (1)
+          Copy To: and Cc: of the message to be replied to Cc: (2)
+     Reply-To: exists in the message to be replied
+          Copy From: and Reply-To: of the message to be replied to To: (3)
+          Copy To: and Cc: of the message to be replied to Cc: (4)
+If From: of a message to be replied is from me:
+     Copy To: of the message to be replied to To: (5)
+     Copy Cc: of the message to be replied to Cc: (6)
+
+If there are multiple entries for a certain address, they are
+uniquefied. Addresses ended with ":;", which stands for anonymous
+recipients, are automatically removed.
+
+Your addresses are automatically removed. To define your multiple
+addresses, please use `mew-mail-address-list'. An example is as follows:
+
+     (setq mew-mail-address-list
+            '("pooh@[a-z]*.aist-nara.ac.jp"
+              "pooh@mew.org"
+              "winnie@iijlab.net"))
+
+You can customize which fields are copied in the case (1)-(6) with the
+following variables:
+
+   (1) `mew-noreplyto-to-list'
+   (2) `mew-noreplyto-cc-list'
+   (3) `mew-replyto-to-list'
+   (4) `mew-replyto-cc-list'
+   (5) `mew-fromme-to-list'
+   (6) `mew-fromme-cc-list'
+
+If you want to reply only to the address specified by Reply-To:,
+configure as follows:
+
+     (setq mew-replyto-to-list '("Reply-To:"))
+     (setq mew-replyto-cc-list nil)
+
+If `a' or `A' is executed with `C-u', From: of the message to be replied
+is copied to To:, and Cc: becomes empty. You can use this to reply the
+sender only.
+
+
+
+File: mew.info, Node: forward, Next: pgp-shortcut, Prev: reply, Up: Composing
+
+Forwarding messages
+===================
+
+To forward messages, type `f' or `F' in Summary mode. Then, Draft mode
+appears and the messages are already attached to the attachments region.
+
+Also, you can prepare the attachments region by yourself, then copy(`c')
+the messages or make links(`l') to the messages.  If the file name of
+the messages is numeric([0-9]+), they are automatically considered as
+messages. `y' is very convenient because it make a link to the message
+displayed in Message mode.
+
+By default, the entire message is forwarded. If you want to remove some
+parts of its header, define `mew-field-delete-for-forwarding'. The
+following is an example to remove "Received:" and "Return-Path:" when
+forwarded.
+
+     (setq mew-field-delete-for-forwarding '("Received:" "Return-Path:"))
+
+
+
+File: mew.info, Node: pgp-shortcut, Next: mark-b-comp, Prev: forward, Up: Composing
+
+Using PGP
+=========
+
+This section describes to sign or encrypt "text only" message with PGP.
+The following commands are explained.
+
+`C-cC-s'
+     Sign the entire draft with PGP. Input your passphrase.
+`C-cC-e'
+     Encrypt the entire draft with PGP.
+`C-cC-b'
+     Sign then encrypt the entire draft with PGP. Input your passphrase.
+`C-cC-r'
+     Encrypt then sign the entire draft with PGP. Input your passphrase.
+
+To encrypt a message, receivers' public keys are used. In the contrary,
+your secret key is used to sign a message. So, you need to input your
+pass-phrase when sign up. Note that if you use the pass-phrase cache and
+if pass-phrases are cached, you do not have to type your
+pass-phrase(*Note pgp-viewing::).
+
+They are shortcut methods of mark based composing described in the next
+subsection.
+
+If you use PGP with Mew, you have to select Email address for your PGP
+userid(e.g. "Kazuhiko Yamamoto <kazu@mew.org>").
+
+Let's use the following example for further explanations.
+
+     To: pooh
+     Subject: Let's PGP/MIME
+     X-Mailer: Mew version 1.94 on XEmacs 20.4
+     ----
+     Mew starts walking with security multipart. Enjoy PGP/MIME!
+
+     --Kazu
+
+To sign with PGP, type `C-cC-s' resulting in the following.
+
+     To: winnie-the-pooh@100acre.woodwest.uk
+     Subject: Let's PGP/MIME
+     X-Mailer: Mew version 1.94 on XEmacs 20.4
+     Mime-Version: 1.0
+     Content-Type: Multipart/Signed;
+             protocol="application/pgp-signature";
+             micalg="pgp-md5";
+             boundary="--Security_Multipart(Sat_Nov_16_03:55:00_1996)--"
+     Content-Transfer-Encoding: 7bit
+
+     ----Security_Multipart(Sat_Nov_16_03:55:00_1996)--
+     Content-Type: Text/Plain; charset=us-ascii
+     Content-Transfer-Encoding: 7bit
+
+     Mew starts walking with security multipart. Enjoy PGP/MIME!
+
+     --Kazu
+
+     ----Security_Multipart(Sat_Nov_16_03:55:00_1996)--
+     Content-Type: Application/Pgp-Signature
+     Content-Transfer-Encoding: 7bit
+
+     -----BEGIN PGP MESSAGE-----
+     Version: 2.6.3i
+
+     iQCVAwUAMoy8ig9kihyeT3RNAQHt7AQAySDg4n8pOp/YuLaAp68Un/YDtWS0FnOC
+     7EqHJd6fyViPBnZq8d+uGikA7kOBTz+8Kcv+hN6I7BrQVJGEzd0Y9yHHhXvZj++1
+     0D09vgWL5G/Zfk/JMnLBt/BZ1ppOhJPT/L5qi2abk+mBVMKxQe071lfFEfvjF1C2
+     8trTXm/bBz4=
+     =TvAG
+     -----END PGP MESSAGE-----
+
+     ----Security_Multipart(Sat_Nov_16_03:55:00_1996)----
+
+Type `C-cC-c' to send it.
+
+To encrypt with PGP, type `C-cC-e'. You get the following message.
+
+     To: winnie-the-pooh@100acre.woodwest.uk
+     Subject: Let's PGP/MIME
+     X-Mailer: Mew version 1.94 on XEmacs 20.4
+     Mime-Version: 1.0
+     Content-Type: Multipart/Encrypted;
+             protocol="application/pgp-encrypted";
+             boundary="--Security_Multipart(Sat_Nov_16_03:57:47_1996)--"
+     Content-Transfer-Encoding: 7bit
+
+     ----Security_Multipart(Sat_Nov_16_03:57:47_1996)--
+     Content-Type: Application/Pgp-Encrypted
+     Content-Transfer-Encoding: 7bit
+
+     Version: 1
+
+     ----Security_Multipart(Sat_Nov_16_03:57:47_1996)--
+     Content-Type: Application/Octet-Stream
+     Content-Transfer-Encoding: 7bit
+
+     -----BEGIN PGP MESSAGE-----
+     Version: 2.6.3i
+
+     hIwDD2SKHJ5PdE0BA/9gUkcQYVfT+3LrUmcgLkNepuOnDfjADHrWiNo10t4ijyf8
+     ODBpUBXoBdTg08eNLAWmRFhiJPmI+mxpF6cYFZXhr7gVpa0Qzp3Gr9nYvngRPKNK
+     qUiQjA/ORR3c1TBawufB19jJ9RdU2f0BidhzOSbzsJh1LTgUZu/7Qyd02LxyEqYA
+     AACbrV867PeoFyFc9MVfqTUR6Zw6kGBAlnVYjqQgBhuuyG79vbAbDJMhFiRpoRPf
+     0MqEewxRonwKOik/PoKnLrwFg77Cb5pxRqMiWPyECJnqtX7r7Wg1c8kqPD0VRjI9
+     GhHPiG/RmNbpbj/5g6zZri1YBCe8qxIS0QKa3YO7HRDcdBFARr22RaFGFtgdBQ6X
+     cZB+qNeEaKXt3AneTWc=
+     =djCr
+     -----END PGP MESSAGE-----
+
+     ----Security_Multipart(Sat_Nov_16_03:57:47_1996)----
+
+Type `C-cC-c' to send it. This message is encrypted with your public key
+in addition to the receivers. So you can decrypt backup
+messages(e.g. Visiting to +Backup with `g').
+
+To sign a draft and then encrypt it, type `C-cC-b'. To encrypt a draft
+and then sign it, type `C-cC-r'. In either case, type `C-cC-c' to send
+the draft.
+
+It is very likely that you forget to sign and/or encrypt a draft even if
+you want to do so. To resolve this, Mew provides automatic PGP mechanism
+for the massage creation function, `C-cC-m'
+
+If you want to protect privacy of all drafts, set
+`mew-protect-privacy-always' to `t' and set
+`mew-protect-privacy-always-type' to one of PGP services.
+
+If you want to protect privacy of drafts replying encrypted messages,
+set `mew-protect-privacy-encrypted' to `t' and set
+`mew-protect-privacy-encrypted-type' to one of PGP services.  This
+configuration is preferred to the configuration for all drafts described
+above in the case of replying encrypted messages.
+
+The following services are available. The strings in brace are symbol of
+each service. The service applied when `C-cC-m' is displayed in the mode
+line.
+
+pgp-signature (PS)
+     Sign
+pgp-encryption (PE)
+     Encrypt
+pgp-signature-encryption (PSPE)
+     Sign then encrypt
+pgp-encryption-signature (PEPS)
+     Encrypt then sign
+
+The following example is to sign all drafts when `C-cC-m'.
+
+     (setq mew-protect-privacy-always t)
+     (setq mew-protect-privacy-always-type 'pgp-signature)
+
+The following example is to encrypt drafts replying encrypted messages
+when `C-cC-m'.
+
+     (setq mew-protect-privacy-encrypted t)
+     (setq mew-protect-privacy-encrypted-type 'pgp-encryption)
+
+In Draft mode, `C-cC-pC-a' toggles `mew-protect-privacy-always' and
+`C-cC-pC-e' toggles `mew-protect-privacy-encrypted'.
+
+You can specify privacy services for the current draft in Draft mode
+beforehand so that you don't forget to apply the privacy services when
+sending. To set privacy services to the current draft evaluated when
+`C-cC-m', type `C-cC-pC-d' then input one of privacy services above.
+
+
+
+File: mew.info, Node: mark-b-comp, Next: pgp-key, Prev: pgp-shortcut, Up: Composing
+
+Mark based composer
+===================
+
+To support PGP/MIME, mark based composing is provided. Remember the
+previous example.
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/
+          1  Text/Plain(guess)                                       CoverPage*
+     B    2  Image/Gif                    MagicPoint logo            mgp.gif
+     Q    3  Application/Postscript       Presentation Material      ohp.ps
+          4                                                          .
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+You can find the `B' mark and the `Q' mark at the beginning of line. Mew
+provides you with a new concept of "encoding". Encoding includes Base64,
+Quoted-Printable, Gzip64(Gzip + Base64), sign with PGP, encrypt with
+PGP.
+
+Currently 6 marks are prepared.
+
+`" "'
+     No encoding. But 8bit text would be encoded.
+`B'
+     Base64
+`Q'
+     Quoted-Printable
+`G'
+     Gzip64(compressed with gzip then encoded with Base64. This is
+     experimental. Don't use this if receivers don't use Mew.)
+`PS'
+     Sign with PGP
+`PE'
+     Encrypt with PGP
+
+Additional key binding for marks in attachments is as follows:
+
+`B'
+     Put the `B' mark to encode with Base64.
+`Q'
+     Put the `Q' mark to encode with Quoted-Printable.
+`G'
+     Put the `G' mark to encode with Gzip64. This is applicable only to
+     Text/Plain and Application/Postscript since compression is not
+     effective other objects. For example, JPEG is already compressed.
+`S'
+     Put the `PS' mark to sign with PGP.
+`E'
+     Put the `PE' mark to encrypt with PGP. Input decryptors' addresses.
+`U'
+     Unmark. The original mark appears.
+
+Consider the following example. The second part will be signed with PGP
+then encrypted with PGP for "kazu". Take it easy! It's description is
+overwritten but saved. The third part will be encoded with Gzip64.
+
+     ----------------------------- attachments -----------------------------
+           Multipart/Mixed                                         1/
+          1  Text/Plain(guess)                                       CoverPage*
+     PSPE 2  Image/Gif                    kazu@mew.org               mgp.gif
+     G    3  Application/Postscript       Presentation Material      ohp.ps
+          4                                                          .
+     --------0-1-2-3-4-5-6-7-8-9--------------------------------------------
+
+After putting marks, type `C-cC-m' to create PGP/MIME and then press
+`C-cC-c' to send it.
+
+
+
+File: mew.info, Node: pgp-key, Next: Marks, Prev: mark-b-comp, Up: Composing
+
+PGP key distribution
+====================
+
+To distribute a PGP public key, please use `p' on attachments in Draft
+mode. It asks whose public key you want to distribute. Just type `RET'
+if it is yours. If you want to distribute another person's, input his
+Email address with completion. The PGP public key will distributed as
+Content-Type: Application/Pgp-keys.
+
+If Mew finds that the part is Application/Pgp-keys, it tries to add the
+PGP public key onto your PGP public keyring. Remember that Mew is
+careless about both TRUST and VALIDITY. It is YOU who set these
+values. Please use "pgp -ke" and "pgp -ks" to change them. If you don't
+know what TRUST and VALIDITY is, you should learn the web of trust
+system provided by PGP BEFORE using PGP to protect your privacy.
+
+
+
+
+File: mew.info, Node: Marks, Next: delete mark, Prev: pgp-key, Up: Top
+
+Funny marks
+***********
+
+Here are described marks in Summary mode. Mark is displayed right side
+of message number as follows:
+
+         1D 07/17 Itojun         v6: items to be no in6_pcbnotify() doesn't
+         2o 07/18 Utashiro       Re: behavior after I'm afraid that mark-ring
+         38 07/19 Nom-sun        refile info.       Sorry for my late respon
+
+There are four marks at present.
+
+`D'
+     The mark to delete.
+`o'
+     The mark to refile, that is, to move a message to another folder.
+`@'
+     The mark to process messages at the same time.
+`*'
+     The mark to review.
+
+They are explained step by step.
+
+* Menu:
+
+* delete mark::                 Delete `D'
+* refile mark::                 Refile `o'
+* multi mark::                  Multiple `@'
+* review mark::                 Review `*'
+* unmark::                      Deleting marks
+* mark level::                  Mark strength
+
+
+
+File: mew.info, Node: delete mark, Next: refile mark, Prev: Marks, Up: Marks
+
+Delete `D'
+==========
+
+If you want to delete a message, type `d' in Summary mode to put the `D'
+mark on it. Take it easy. Since putting the `D' mark causes nothing,
+mistakes are not fatal. By default, typing `x' moves messages marked
+with `D' to the +trash folder.
+
+To delete messages in the +trash folder really, there are two methods by
+default.
+
+  1. Type `D' in Summary mode.
+  2. Put the `D' mark in the +trash folder then type `x'.
+
+So far, the word "by default" was repeated. This means that
+`mew-msg-rm-policy' is set to `'trashonly'. You can set one of the
+following values to `mew-msg-rm-policy'. Each explanation is about
+action when `x' is pressed.
+
+`'totrash'
+     Refile to the +trash folder if not in the +trash folder.  Just
+     umark the 'D' mark if in the +trash folder.
+`'always'
+     Really remove messages marked with 'D' always anyway.
+`'trashonly'
+     Really remove messages marked with 'D' if in the +trash folder.  In
+     other fonders, refile to the +trash folder.
+`'uselist'
+     Really remove messages marked with 'D' if in a folder found in
+     `mew-msg-rm-folder-list'. In other folders, refile to the +trash
+     folder.
+`other values'
+     Considered as 'trashonly.
+
+Customize the action of `x' as you like.
+
+It is convenient if you can change the `*' mark to the `D' mark since
+you can put many the `D' marks at once. To achieve this, use `md'.
+
+The following is a summary regarding with the `D' mark.
+
+`d'
+     Put the `D' mark.
+`x'
+     Process messages marked with `D' according to `mew-msg-rm-policy'.
+`md'
+     Change all `*' mark to the `D' mark.
+
+
+
+File: mew.info, Node: refile mark, Next: multi mark, Prev: delete mark, Up: Marks
+
+Refile `o'
+==========
+
+To refile a message, type `o' and input a folder name, then `o' is
+put. A folder is guessed neatly, so most time what you should to is just
+type `RET'. For more information, refer to *Note Refile::.
+
+If you type `o' on a message marked with `o', the refile folder is
+shown. When typing `x', messages marked with `o' are actually refiled.
+
+A summary about the `o' mark is here.
+
+`o'
+     Put the `o' mark.
+`x'
+     Refile messages marked with `o'
+`mo'
+     Change all `*' marks to the `o' mark to be refiled.
+
+
+
+File: mew.info, Node: multi mark, Next: review mark, Prev: refile mark, Up: Marks
+
+Multiple `@'
+============
+
+To process multiple messages, put the `@' mark. Here is a summary
+concerned with the `@' mark.
+
+`@'
+     Put the `@' mark.
+`F'
+     Prepare a draft to forward multiple messages marked with `@' in
+     MIME format.
+`M-s'
+     Apply unshar on messages marked with `@'.
+`M-t'
+     Apply "uudecode" on messages marked with `@'.
+`M-b'
+     De-capsulate messages embedded in the messages marked with `@'.
+`J'
+     A large message is occasionally fragmented into multiple messages
+     whose Content-Type: is Message/Partial. This command produces the
+     original message from Message/Partial messages marked with `@'.
+
+For `M-s' and `M-t', messages marked with `@' are supposed to be in
+order(numbers can be discrete). If out of order, sorting with `S' would
+help.
+
+
+
+File: mew.info, Node: review mark, Next: unmark, Prev: multi mark, Up: Marks
+
+Review `*'
+==========
+
+Please put the `*' mark onto messages that you want to review later. `?'
+also put the `*' mark onto matched messages(for more information, refer
+to *Note Pick::). Use `N' and `P' to walk around messages marked with
+`*'.
+
+Here is a summary for `*' commands.
+
+`*'
+     Put the `*' mark.
+`N'
+     Jump to the message marked with `*' below and display it.
+`P'
+     Jump to the message marked with `*' above and display it.
+`ma'
+     Put the `*' mark to all unmarked messages.
+`mr'
+     Put the `*' mark to all matching messages with inputed regular
+     expression.
+`md'
+     Change `*' marks to `D' mark.  It is useful to delete messages
+     selected by `?'.
+`mo'
+     Change the `*' marks to the `o' mark.  It is useful to refile
+     messages selected by `?'.
+
+
+
+File: mew.info, Node: unmark, Next: mark level, Prev: review mark, Up: Marks
+
+Deleting marks
+==============
+
+Refiling and deleting is not processed unless you type `x'. So, if you
+press `u' to unmark before you type `x', messages do not disappear
+accidentally.
+
+Here is a summary for unmark commands.
+
+`u'
+     Cancel the mark on this message.
+`U'
+     Cancel all marks according to what you input.
+
+
+
+File: mew.info, Node: mark level, Next: Refile, Prev: unmark, Up: Marks
+
+Mark strength
+=============
+
+Marks are classified into two categories, "strong mark" and "weak mark".
+The same level mark can be overwritten. A strong mark can overwrite a
+weak mark.
+
+When you put a mark, the following action is taken.
+
+Strong marks :: `o' and `D'
+     If marks an unmarked message, display the next message. If
+     overwrites, stay the current line.
+Weak marks :: `*' and `@'
+     Stay the current line always.
+
+Refer to *Note level-one:: to know which direction the cursor moves
+after putting a strong mark.
+
+You can exchange marks as follows:
+
+`m@'
+     `*' -> `@' :: It is useful when you pick messages by `?'  then pass
+     them to "uumerge" with `M-t'.
+`m*'
+     `@' -> `*'
+`ms'
+     `@' <-> `*'
+`md'
+     `*' -> `D' :: It is useful when you put `D' marks to messages
+     picked by `?'.
+`mo'
+     `*' -> `o' :: It is useful when you put `o' marks to messages
+     picked by `?'.
+
+
+
+
+File: mew.info, Node: Refile, Next: by-folder, Prev: mark level, Up: Top
+
+Happy refiling
+**************
+
+When you come to receive hundreds of messages in a day(don't you believe
+it?), refiling messages becomes a very tough job. Mew neatly guesses
+default folders where the message is supposed to be refiled when you
+type `o'. You can see an example below.
+
+     Folder name (+work/mew-dist): +
+
+If the default value in () is proper, just type `RET'. The messages will
+be marked with `o' if its refiling folders are decided.
+
+As you know, the more excellent refiling guess algorithms become, the
+less user's job troublesome. Mew provides you with the following rules.
+
+* Menu:
+
+* by-folder::                   Guess by mailing-list folders
+* by-alist::                    Guess by user defined rules
+* by-thread::                   Guess by thread
+* by-from-folder::              Guess by private folders
+* by-from::                     Guess by From:
+* by-newsgroups::               Guess by Newsgroups:
+* by-default::                  Guess by default rule
+* guess-rule::                  Controlling rules
+* auto-refile::                 Auto refile
+
+
+
+File: mew.info, Node: by-folder, Next: by-alist, Prev: Refile, Up: Refile
+
+Guess by mailing-list folders
+=============================
+
+Many users tend to refile messages destined to a mailing-list to a
+folder whose name is the same as the mailing-list. Mew provides a
+mechanism to guess a mailing-list folder for messages destined to
+mailing-lists.
+
+Suppose that you have a folder named +misc/pooh-lovers. The following
+message is probably to be refiled to this folder.
+
+     To: pooh-lovers@mew.org 
+
+Likewise, Mew searches a matching folder forward with addresses on To:
+and Cc:. There are many people who don't use recursive folders. With
+Mew, however, you would not be smart if you don't use it.
+
+Smart users may wonder that they get a trouble in the following
+situation where private addresses are on To: or Cc:.
+
+     To: piglet@mew.org
+     Cc: pooh-lovers@mew.org
+
+Since pooh is a member of pooh-lovers, he receives this message. But he
+has a folder for his friend, pooh. So, +from/piglet may be chosen.
+
+To avoid this, Mew allows you to specify which folders are to be
+ignored. The default is +from. So, please take a convention to refile
+personal messages under +from.
+
+When Mew guesses a candidate by the folders, it asks you:
+
+     Folder name (+misc/pooh-lovers): +
+
+Just type `RET' if the default is exactly what you want.
+
+If you specify a new folder with `o', the folder is created and added to
+the folder list to be used for guess. Convenient, isn't it?
+
+The function name to provide this feature is
+`mew-refile-guess-by-folder'.
+
+
+
+File: mew.info, Node: by-alist, Next: by-thread, Prev: by-folder, Up: Refile
+
+Guess by user defined rules
+===========================
+
+There are some cases where the refile guess mechanism by folders doesn't
+work as you wish. For example, for both a message whose To: is
+staff@mew.org and another message whose To: is staff@iijlab.net, the
+same folder would be selected with guess by folders(e.g. "+net/staff").
+So, Mew allows you to define your own rules explicitly.
+
+Let's look at an example.
+
+     (setq  mew-refile-guess-alist
+       '(("To:"
+           ("staff@mew.org" . "+net/mew/staff")
+           ("staff@iijlab.net" . "+net/iijlab/staff")
+          )))
+
+This means that if To: contains staff@mew.org +net/mew/staff is selected
+and if To: has staff@iijlab.net +net/iijlab/staff is chosen.
+
+The format of this rule is as follow:
+
+     rule ::= '((<key> <alist>) (<key> <alist>) (<key> <alist>) ...)
+
+The whole is a list of (<key> <alist>). A field name is specified for
+<key>. The format for <alist> is as follows:
+
+     <alist> ::= (<value> . <folder>|<rule>) (<value> . <folder>|<rule>) ...
+
+<value> is a field value for <key>. <folder> means a folder to be chosen
+if matched. Please note that <value> and <folder> is separated with `.'.
+
+There are two special <key>s: `nil' and `t'. `nil' is used to specify
+<value> to be returned when nothing is guessed. `t' is for <value> to be
+returned in addition to guessed values.
+
+If you know regular expression, a more advanced rule can be defined like
+this.
+
+     (setq mew-refile-guess-alist
+       '(("Newsgroups:"
+         ("^nifty\\.\\([^ ]+\\)" . "+Nifty/\\1")
+         (".*"         . "+rec/news"))
+        ("To:"
+         ("\\(inet\\|wide\\)@wnoc-fuk" . "+wide/\\1-wnoc-fuk"))
+        ("From:" 
+         ("uucp@"      . "+adm/uucp")
+         ("ftpsync@"   . "+adm/ftpsync"))
+        (nil . "+unknown")))
+
+The function name to provide this feature is
+`mew-refile-guess-by-alist'.
+
+
+
+File: mew.info, Node: by-thread, Next: by-from-folder, Prev: by-alist, Up: Refile
+
+Guess by thread
+===============
+
+Mew provides a mechanism to guess a folder where the parent message of a
+current message was refiled before.
+
+For example, pooh, piglet, and roo had a chat to go and get honey. So,
+pooh made +project/honey then refiled the message to it. The further
+messages, if they are properly replied, they are supposed to be refiled
+to +project/honey.
+
+Information that which folder was chosen for messages is stored to
+"~/Mail/.mew-refile-msgid-alist". `mew-lisp-max-length' controls the
+amount of this information. The default value is 1000 messages. If you
+want limits it to 2000 messages, put the following to "~/.emacs".
+
+     (setq mew-lisp-max-length 2000)
+
+The function name to provide this feature is
+`mew-refile-guess-by-message-id'.
+
+
+
+File: mew.info, Node: by-from-folder, Next: by-from, Prev: by-thread, Up: Refile
+
+Guess by private folders
+========================
+
+In addition to the mechanism to select a mailing-list folder described
+in *Note by-folder::, Mew provides a mechanism to choose a private
+folder. Since private folders locate under +from, we can say that this
+mechanism select a folder from the folders under +from. Let's see the
+following example:
+
+     To: pooh@mew.org
+     From: piglet@mew.org
+
+pooh received a message from piglet. If pooh uses this mechanism,
++from/piglet will be chosen according to From:. (Folders under +from can
+be recurse. And you can select the entire address for a folder name
+instead of the user part.)
+
+The function to provide this feature is
+`mew-refile-guess-by-from-folder'.
+
+Next, let's consider a care where pooh replied to piglet. Since pooh
+Cc:ed the message to himself, the message was also delivered to him.
+
+     To: piglet@mew.org
+     Cc: pooh@mew.org
+     From: pooh@mew.org
+
+How do you feel if you are pooh? You may want to refile this to
++from/pooh. Also, you may want to move this to +from/piglet. So, it can
+be customized.
+
+If `mew-refile-guess-from-me-is-special' is `t' and if an address in
+From: is yourself, `mew-refile-guess-by-from-folder' select a folder
+under +from according to To: and/or Cc:.
+
+
+
+File: mew.info, Node: by-from, Next: by-newsgroups, Prev: by-from-folder, Up: Refile
+
+Guess by From:
+==============
+
+Mew also provides a mechanism to guess a folder by the place where a
+message that has the same From: field is refiled.
+
+Suppose that piglet has two addresses, piglet@beech.tree.uk and
+p-p-p@mew.org. pooh wants to refile messages from piglet to +from/piglet
+no matter what his From: is. This policy can, of course, be implemented
+if pooh specifies rules explicitly as follows:
+
+     (setq  mew-refile-guess-alist
+       '(("From:"
+           ("piglet@beech.tree.uk" . "+from/piglet")
+           ("p-p-p@mew.org"        . "+from/piglet"))))
+
+But such a work may bother you. So, first refile a message whose From:
+is piglet@beech.tree.uk to +from/piglet. At this time, +from/piglet is
+created. Next, refile a message whose From: is p-p-p@mew.org to
++from/piglet. Here Mews learns that p-p-p@mew.org was refiled to
++from/piglet. After this, when messages whose From: is p-p-p@mew.org are
+refiled, +from/piglet is chosen.
+
+For another example, you can refile messages from machinery to +adm/misc
+without defining an explicit rule.
+
+Information for relationship between From: and folder is stored to
+"~/Mail/.mew-refile-from-alist". `mew-lisp-max-length' controls the
+amount of this information as the same as *Note by-thread::.
+
+The function name to provide this feature is `mew-refile-guess-by-from'.
+
+If the value of `mew-refile-guess-from-me-is-special' is `t',
+`mew-refile-guess-by-from' acts as
+`mew-refile-guess-by-from-folder'(*Note by-from-folder::).
+
+
+
+File: mew.info, Node: by-newsgroups, Next: by-default, Prev: by-from, Up: Refile
+
+Guess by Newsgroups:
+====================
+
+For those who read NetNews received by Email with Mew, Mew provides a
+mechanism to guess a folder by Newsgroups:. It will be also useful when
+Mew integrates NetNews in the future.  The function name to provide this
+feature is `mew-refile-guess-by-newsgroups'.
+
+
+
+File: mew.info, Node: by-default, Next: guess-rule, Prev: by-newsgroups, Up: Refile
+
+Guess by default rule
+=====================
+
+The default rule is extract an address from From: and chooses
+`+from/user@domain'. But if `mew-refile-guess-strip-domainpart' is `t',
+it extracts the user part. So, `+from/user' is chosen.
+
+The function name is `mew-refile-guess-by-default'.
+
+
+
+File: mew.info, Node: guess-rule, Next: auto-refile, Prev: by-default, Up: Refile
+
+Controlling rules
+=================
+
+Mew controls guess rules by two variables, `mew-refile-guess-control'
+and `mew-refile-ctrl-multi'. If you want multiple candidates, set
+`mew-refile-ctrl-multi' `t'. Otherwise, set it `nil'.
+
+By default, `mew-refile-guess-control' is declared as follows(since it
+is a declaration, `defvar' is used):
+
+     (defvar mew-refile-guess-control
+       '(mew-refile-guess-by-alist
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-newsgroups
+         mew-refile-guess-by-folder
+         mew-refile-ctrl-throw
+         mew-refile-ctrl-auto-boundary
+         mew-refile-guess-by-thread
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-from-folder
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-from
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-default))
+
+Mew executes every function defined in `mew-refile-guess-control' in
+order. Each function may guess multiple candidates.
+
+Let's see the following example of `mew-refile-guess-control' action.
+
+`mew-refile-guess-by-alist'
+         guessed +aaa, +bbb.
+`mew-refile-guess-by-folder'
+         guessed +ccc, +ddd.
+`mew-refile-guess-by-default'
+         guessed +eee.
+
+If you want to provide all candidates, +aaa - +eee, set
+`mew-refile-ctrl-multi' `t'. If you want to provide +aaa only, set it
+`nil'.
+
+If you want +aaa - +ddd but don't want left candidates, in other words,
+you want +eee only when no candidate is guessed by functions executed
+before, set `mew-refile-ctrl-multi' `t' and insert
+`mew-refile-ctrl-throw' between `mew-refile-guess-by-folder' and
+`mew-refile-guess-by-default'.
+
+`C-uo' displays the flow of guess rules in Message buffer.
+
+
+
+File: mew.info, Node: auto-refile, Next: Pick, Prev: guess-rule, Up: Refile
+
+Auto refile
+===========
+
+Those who receives many messages everyday is prone to store thousands of
+messages in the +inbox folder. In such a case, they may want to speak
+out like this, "Hey messages, get out of the +inbox folder to
+somewhere". Mew provides a feature to satisfy such laziness. :) `M-o' is
+the spell.
+
+When you execute this function, it marks specific messages with `o'. The
+specific messages mean messages which are not marked with `o' nor `D' if
+`mew-refile-auto-refile-skip-any-mark' is `nil'. If
+`mew-refile-auto-refile-skip-any-mark' is `t', they mean non-marked
+messages. The default value of `mew-refile-auto-refile-skip-any-mark' is
+`nil'.  If executed with `C-u', the targets mean messages marked with
+`*' regardless the value of `mew-refile-auto-refile-skip-any-mark'.
+
+Refile rule is the same described in the previous section. Please note
+that what this function does is just mark messages with `o'. Messages
+are not refiled until you will press `x'.
+
+Mew's refile mechanism is so smart that it would be harmful for this
+function. That is, most users would not understand where messages have
+been refiled if Mew made most use of its guess mechanism. :) For this
+reason, break is provided to limit usage of guess functions. Recall the
+declaration up above.
+
+     (defvar mew-refile-guess-control
+       '(mew-refile-guess-by-alist
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-newsgroups
+         mew-refile-guess-by-folder
+         mew-refile-ctrl-throw
+         mew-refile-ctrl-auto-boundary
+         mew-refile-guess-by-thread
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-from-folder
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-from
+         mew-refile-ctrl-throw
+         mew-refile-guess-by-default))
+
+You can find the `mew-refile-ctrl-auto-boundary' function in
+`mew-refile-guess-control'. Only when auto refile is used, Mew ignores
+guess functions below this function. If guess functions above
+`mew-refile-ctrl-auto-boundary' didn't guess any folder for a message,
+the message is not marked with `o'. Insert
+`mew-refile-ctrl-auto-boundary' before you ruin.
+
+
+
+
+File: mew.info, Node: Pick, Next: condition, Prev: auto-refile, Up: Top
+
+How to select message which you want
+************************************
+
+You may want to pick up messages whose Subject: contains a string
+"party" and whose From: is kazu@mew.org. Mew provides three methods to
+accomplish this.
+
+`?'
+     Pick messages according to a pick pattern which you input, then put
+     the `*' mark onto them.
+`/'
+     Pick messages according to a pick pattern which you input, then
+     list them up.
+`V'
+     Go to Virtual mode which gives a single view to picked messages
+     from multiple folders. Enter a virtual folder name, comma-separated
+     folders, and pick pattern. For more information, please refer to
+     *Note virtual::.
+
+Following sections describes how to input conditions and Virtual mode in
+detail.
+
+* Menu:
+
+* condition::                   How to input conditions
+* virtual::                     Virtual mode
+
+
+
+File: mew.info, Node: condition, Next: virtual, Prev: Pick, Up: Pick
+
+How to input conditions
+=======================
+
+When Mew asks a user to input pick pattern, the following message is
+displayed.
+
+     pick pattern: 
+
+Input pick pattern combining the following keywords:
+
+`field=string'
+     Match if the "field" field contains the "string" string. If you
+     specify "head", "body" or "all" as "field", it means the entire
+     header, the body, and the entire message, respectively.
+`<pattern1> & <pattern2>'
+     Match if <pattern1> AND <pattern2>.
+`<pattern1> | <pattern2>'
+     Match if <pattern1> OR <pattern2>.
+`! <pattern>'
+     Match if not <pattern>.
+`( <pattern> )'
+     Evaluate <pattern> first.
+
+
+Some examples are shown below.
+
+(a) Messages whose From: contains "kazu".
+
+     from=kazu
+
+(b) Messages whose To: contains "mew" OR Cc: contains "mew".
+
+     to=mew | cc=mew
+
+(c) Messages whose To: contains "mew" OR Cc: contains "mew" AND From:
+contains "kazu".
+
+     (to=mew | cc=mew) & from=kazu
+
+Now you can guess how to input more complex patterns.
+
+
+
+File: mew.info, Node: virtual, Next: Quit, Prev: condition, Up: Pick
+
+Virtual mode
+============
+
+Virtual mode gives you a single view for matching messages from multiple
+folders. Press `V' in Summary mode to enter Virtual mode.
+
+First you are asked a name of virtual folder
+
+     Virtual folder name (virtual) : 
+
+Input an appropriate string. If you type just `RET', "++virtual" is
+selected. Then you are asked to input a single or multiple folder name.
+If you want to specify multiple folders, please separate them with ",".
+Of course, you can complete folder names with `TAB'.
+
+     Folder name (+inbox) : +inbox, +mew
+
+Now input conditions.
+
+     pick pattern: 
+
+OK. You get a Virtual mode. In Virtual mode, you can use same commands
+that you can find in Summary mode except refile, delete, pick and etc.
+You should take note that Virtual folder is really virtual and it does
+not exist in file system. If you exit Mew, it then disappears.
+
+
+
+
+File: mew.info, Node: Quit, Next: Customize, Prev: virtual, Up: Top
+
+Give me a break
+***************
+
+Here are how to quit and suspend Mew and how to erase a mode(buffer).
+
+<Summary mode and Virtual mode>
+
+`q'
+     Suspend Mew then switch to another buffer. All buffers of Mew
+     remain, so you can resume with buffer operations.
+`Q'
+     Quit Mew. All buffers of Mew are erased.
+`C-cC-q'
+     Erase the current mode(buffer).
+
+<Draft mode>
+
+`C-cC-q'
+     Erase the draft.
+
+<"*Mew watch*" buffer>
+
+`C-cC-q'
+     Erase the current buffer.
+
+
+
+
+File: mew.info, Node: Customize, Next: level-one, Prev: Quit, Up: Top
+
+Customizing Mew
+***************
+
+Here are explained how to change default setting of Mew and make Mew
+your favorite. Edit "~/.emacs" to do it!
+
+* Menu:
+
+* level-one::                   Beginner course
+* level-two::                   Junior course
+* level-three::                 Senior course
+* hooks::                       Hooks
+* config::                      IM Config
+
+
+
+File: mew.info, Node: level-one, Next: level-two, Prev: Customize, Up: Customize
+
+Beginner course
+===============
+
+Here are described the following variables.
+
+   - mew-draft-mode-hook
+   - mew-from
+   - mew-fcc
+   - mew-cc
+   - mew-dcc
+   - mew-window-use-full
+   - mew-summary-show-direction
+   - mew-summary-mark-direction
+
+Draft mode evaluates `text-mode-hook' and `mew-draft-mode-hook' in
+order. If you don't set `auto-fill-mode' to `text-mode-hook', It would
+be useful to define `mew-draft-mode-hook' as follows:
+
+     (setq mew-draft-mode-hook (function (lambda () (auto-fill-mode 1))))
+
+You may want to use another address than which your Email manager
+defined. An example is the case that a host name appears in your Email
+address since the configuration by your Email manager is imperfect. (In
+this case, ask him to resolve this problem first.) If From: is specified
+on a draft, Mew treats it as it is. You can specify From: with
+completion. If you want to prepare From: in drafts, set `mew-from' as
+follows:
+
+     (setq mew-from "Kazu Yamamoto <Kazu@Mew.org>")
+
+This feature means that you cannot trust From: in all cases. I would
+sincerely ask all Mew users NOT to cheat others with this feature. And
+please note that a bad guy can set himself up as another guy very
+easily. For important messages, use PGP/MIME.
+
+If you want to back up your messages every time when you write them with
+Fcc:, put the following line into ".emacs".
+
+     (setq mew-fcc "+Backup")
+
+Define `mew-cc'(`mew-dcc') to use Cc:(Dcc:).
+
+If you want to use Mew with full Emacs frame, set like this.
+
+     (setq mew-window-use-full t)
+
+`SPC' in Summary mode decide the next action to view a message according
+to `mew-summary-show-direction'. Likewise, you can specify the cursor
+direction after putting a strong mark by
+`mew-summary-mark-direction'. You can select one from the following
+candidates.
+
+`up'
+     Display the message above.
+`down'
+     Display the message below.
+`next'
+     Display the next message in the direction.
+`stop'
+     Do not display the next message.
+
+The default value for both is `next'. If you read messages from the
+bottom, set as follows:
+
+     (setq mew-summary-show-direction 'up)
+
+
+
+File: mew.info, Node: level-two, Next: level-three, Prev: level-one, Up: Customize
+
+Junior course
+=============
+
+Here are described the following variables.
+
+   - mew-use-highlight-cursor-line
+   - mew-use-highlight-mouse-line
+   - mew-use-highlight-mark
+   - mew-use-highlight-header
+   - mew-use-highlight-body
+   - mew-use-highlight-url
+   - mew-use-highlight-x-face
+
+If `mew-use-highlight-cursor-line' is `t', underline is put on the
+cursor line in Summary mode. The default is `t'.
+
+If `mew-use-highlight-mouse-line' is `t' on XEmacs, the mouse line is
+painted in Summary mode. This is very convenient to read messages
+clicking the middle button of the mouse. The default value on XEmacs is
+`t'.
+
+If `mew-use-highlight-mark' is `t' and you are in Summary mode on one of
+folders enumerated in `mew-highlight-mark-folder-list', marked lines are
+painted. The default of `mew-highlight-mark-folder-list' is '("+inbox")
+and that of `mew-use-highlight-mark'is `t'.  If
+`mew-highlight-mark-folder-list' is set to `t', marked lines in all
+folders are painted.
+
+If `mew-use-highlight-header' is `t', a header is painted in both
+Message mode and Draft mode.  The default is `t'.
+
+If `mew-use-highlight-body' is `t', a body is painted in both Message
+mode and Draft mode. The default is `nil'.
+
+If `mew-use-highlight-url' is `t' , strings containing URL are
+emphasized in Message mode. The default is `t'.
+
+If `mew-use-highlight-x-face' is `t' on XEmacs, X-Face: in a header is
+iconified in Message mode. The default value on XEmacs is `t'.
+
+
+
+File: mew.info, Node: level-three, Next: hooks, Prev: level-two, Up: Customize
+
+Senior course
+=============
+
+Here are described the following variables.
+
+   - mew-header-alist
+   - mew-cite-fields
+   - mew-cite-format
+   - mew-cite-prefix
+
+Set header fields that you want to insert every time when you write
+messages to `mew-header-alist' as an associate list. The following is an
+example.
+
+     (setq mew-header-alist
+           '(("X-fingerprint:" . "6B 63 38 88 67 5E 96 8E  CE A4 62 73 3F 11 64 94")
+             ("X-URL:" . "http://www.mew.org/~kazu/")))
+
+To customize citation label, define field to cite in `mew-cite-fields'
+and format in `mew-cite-format'. Define citation symbol to
+`mew-cite-prefix'. The default declaration is as follows:
+
+     (defvar mew-cite-fields '("From:" "Subject:" "Date:"))
+     (defvar mew-cite-format "From: %s\nSubject: %s\nDate: %s\n\n")
+     (defvar mew-cite-prefix "> ")
+
+To add Message-ID: to citation label and to change the prefix with a
+user name, take this way.
+
+     (setq mew-cite-fields '("From:" "Subject:" "Date:" "Message-ID:"))
+     (setq mew-cite-format "From: %s\nSubject: %s\nDate: %s\nMessage-ID: %s\n\n")
+     (setq mew-cite-prefix-function 'mew-cite-prefix-username)
+
+
+
+File: mew.info, Node: hooks, Next: config, Prev: level-three, Up: Customize
+
+Hooks
+=====
+
+Here is a summary of hooks used in Mew.
+
+`mew-env-hook'
+     Evaluated at initialize time before setting environment.
+`mew-init-hook'
+     Evaluated when Mew starts.
+`mew-summary-mode-hook'
+     Evaluated at the entrance of Summary mode.
+`mew-virtual-mode-hook'
+     Evaluated at the entrance of Virtual mode.
+`mew-message-mode-hook'
+     Evaluated at the entrance of Message mode.
+`mew-message-hook'
+     Evaluated every time when messages are displayed in Message mode.
+`mew-addrbook-mode-hook'
+     Evaluated at the entrance of Addrbook mode.
+`mew-draft-mode-hook'
+     Evaluated at the entrance of Draft mode.
+`mew-draft-mode-newdraft-hook'
+     Evaluated in Draft mode only when new draft is prepared.
+`mew-draft-mode-reedit-hook'
+     Evaluated in Draft mode only when an existing draft is used as
+     draft.
+`mew-cite-hook'
+     Evaluated every time when you cite a message. It is usually used
+     for supercite.
+`mew-before-cite-hook'
+     Evaluated before citation.
+`mew-make-message-hook'
+     Evaluated before making a message in Draft mode (i.e. in the
+     begging phase of `C-cC-m').  An example: (add-hook
+     'mew-make-message-hook 'ispell-message)
+`mew-send-hook'
+     Evaluated before sending a message in Draft mode. This hook is
+     meaningless now and is remained for backward-compatibility.
+`mew-real-send-hook'
+     Evaluated before really sending a message in Draft mode.
+`mew-quit-hook'
+     Evaluated at exit of Mew.
+`mew-suspend-hook'
+     Evaluated when suspended.
+`mew-summary-inc-sentinel-hook'
+     Evaluated when "inc" is finished.
+`mew-summary-scan-sentinel-hook'
+     Evaluated when "scan" is finished.
+`mew-summary-exec-hook'
+     Evaluated when `x' in Summary mode is finished.
+`mew-syntax-format-hook'
+     Evaluated when when the function `mew-syntax-format', which creates
+     the multipart format, is called.
+
+
+
+File: mew.info, Node: config, Next: XEmacs, Prev: hooks, Up: Customize
+
+Config
+======
+
+If you specify "case" blocks in your IM "Config" file, you can change
+actions of imget and imput. Suppose that the followings are specified in
+Config.
+
+     Imget.Src=pop/apop:kazu@mail.mew.org
+     User=kazu
+     FromDomain=Mew.org
+     case wide
+     Imget.Src=pop/rpop:robby@mx.wide.ad.jp
+     User=robby
+     FromDomain=wide.ad.jp
+     case iijlab
+     Imget.Src=imap:kazu@mailbox.iijlab.net
+     FromDomain=iijlab.net
+
+By default, imget retrieves kazu's messages from mail.mew.org by APOP.
+And if the From: field doesn't exist in a message to be sent(e.g. when
+mew-from is set to nil), the user name "kazu" and Mew.org is
+concatenated with "@" then imput specifies it in the From: field.
+
+If you specify --config=wide to imget, it retrieves robby's messages
+from mx.wide.ad.jp by RPOP. Also, imput chooses robby@wide.ad.jp for the
+From: field.
+
+In this way, imget and imput selects valid case block according to the 
+--config option. As you see above, with this feature, it is very
+convenient since you can change mailbox and your address.
+
+When Mew boots up, it investigates case statements. If there are one or
+more kinds of case statements, `mew-config-list' is set. The block to be
+read when --config is not specified is represented as "default".  In the
+case up above, '("default" "wide" "iijlab") is set to `mew-config-list'.
+
+If you type `C' in Summary mode, you can complete the value to be
+specified with the --config option for imget, using `mew-config-list' as
+candidates. The default value is "default". If other value is selected,
+say "wide", `i' displays the following message.
+
+     Getting +inbox (wide)...
+
+To specify case block to imput, you can use the Config: field in a
+message to be sent. In Draft mode, you can complete the Config: field
+itself by `TAB' as described in *Note header::. Also, you can complete
+its value by `TAB' using `mew-config-list' as candidates. Moreover, you
+can use circular completion of `mew-config-list' by `C-cTAB'.
+
+However, you may think this is a boring job. You would want Mew to guess
+a value of Config: because Mew can guess refile folders. Of course, Mew
+supports this kind of guess feature. You can specify your guess rule to
+`mew-config-guess-alist'. Its syntax is exactly the same as
+`mew-refile-guess-alist' explained in *Note by-alist::.
+
+Let's look at one example:
+
+     (setq mew-config-guess-alist
+        '(("To:"
+           ("wide.ad.jp" . "wide")
+           ("mew.org" . "mew"))))
+
+In this case, if To: matches wide.ad.jp, "Config: wide" is inserted. If
+it matches mew.org, "Config: mew" is inserted.
+
+There are three changes that you can insert the Config: field with this
+feature.
+
+  1. When a draft is prepared if `mew-config-insert-when-prepared' is
+     `t'.
+  2. When a message is composed by `C-cC-m' if
+     `mew-config-insert-when-composed' is `t'.
+  3. Anytime when you type `C-cC-o'.
+
+This is just for your information. If you want select Config: by
+hostname, put the following line in your ".emacs".
+
+     (setq mew-config-guess-alist
+        (list (cons nil (system-name))))
+
+
+
+
+File: mew.info, Node: XEmacs, Next: Convention, Prev: config, Up: Top
+
+Life with icons
+***************
+
+If you use Mew on XEmacs, you can read and/or write messages with
+icon-based interface. The icon-based interface was designed totally
+equivalent to the original key-based interface.
+
+So, how to use the icon-based interface? I believe that it is intuitive
+enough that no future explanation is necessary. Nonetheless, some basic
+rules are shown below.
+
+To execute a function bounded to each BASIC icon in Summary, Virtual,
+and Draft mode toolbar, click the left button of your mouse.
+
+For multipart messages, multipart icons appears in toolbars. Clicking
+the left button on a multipart icon visualizes the part. When you press
+the multipart icon, a popup menu appears. Thanks to this menu, many
+operations can be applied to the part.
+
+By default, multipart icons are displayed at the right size of the basic
+icons in toolbars. If you like the left size, configure as follows:
+
+     (setq mew-multipart-icon-position 'left)
+
+
+
+
+File: mew.info, Node: Convention, Next: MIME, Prev: XEmacs, Up: Top
+
+Email convention
+****************
+
+When you exchange messages with other people, you should obey minimum
+manner. It gives a bad impression to the people if you violate the
+manner since such messages are hard to read. We always should try to
+write concise yet comprehensive explanations and make an effort to make
+receivers well-understood.
+
+We should take good care of the following items.
+
+Fill To: and Cc: fields precisely
+     To: is for target receivers and Cc: is for those who are received
+     for their information. If his address is not on To:, he might skip
+     to read the message. We should take care not to deliver to wrong
+     people by mistaking the addresses.
+
+The number of addresses To: and Cc: should be small
+     It is discouraged to specify a lot of mail addresses on To: and
+     Cc:. You should create a mailing-list instead.
+
+Write a short and clear summary of body in Subject:
+     There are people who decide to read contents from their
+     Subject:. So, they might skip messages with improper Subject:. We
+     should not write a long subject since it is hard to read.
+
+Carriage return means end of line and null line expresses end of paragraph. One line should be limited to 70 characters or so.
+     It is very hard to read if you write a message on every other line
+     or in a long line without folding. Especially long lines are
+     trouble to cite. Some people write a message with indent but it is
+     meaningless. Text is displayed differently on each machines, so
+     even if the layout is excellent on your machine, it might not be so
+     on other machines.
+
+Cite only necessary sentences
+     You should not bother to remove unnecessary sentences. With Mew,
+     citation must be a piece of cake.
+
+Make your signature simple
+     A long signature is just self-satisfaction.
+
+Do not send prank messages
+     I don't want to warn this kind of stuff. Nonetheless, someone sends
+     Happy or Unhappy messages to others. You should understand that
+     people doubt your character.
+
+Attach data files that the receivers can read
+     It is text only that you can send without any agreement with the
+     receivers. If you want to send data files other than text, you
+     should make an agreement with the receivers. To mailing-list, you
+     should send text only.
+
+
+If you wish to learn manner on the Internet more comprehensively, please
+refer to RFC1855(*Note Bib::).
+
+
+
+

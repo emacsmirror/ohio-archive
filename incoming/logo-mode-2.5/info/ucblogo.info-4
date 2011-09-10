@@ -1,0 +1,631 @@
+This is Info file ucblogo.info, produced by Makeinfo version 1.67 from
+the input file ucble-4.3.0.texi.
+
+
+File: ucblogo.info,  Node: MACROP,  Next: MACROEXPAND,  Prev: dDEFMACRO,  Up: MACROS
+
+macrop
+------
+
+     MACROP name
+     MACRO? name
+
+outputs TRUE if its input is the name of a macro.
+
+
+File: ucblogo.info,  Node: MACROEXPAND,  Prev: MACROP,  Up: MACROS
+
+macroexpand
+-----------
+
+     MACROEXPAND expr				(library procedure)
+
+takes as its input a Logo expression that invokes a macro (that is, one
+that begins with the name of a macro) and outputs the the Logo
+expression into which the macro would translate the input expression.
+
+     .macro localmake :name :value
+     op `[local ,[word "" :name] apply "make [,[:name] ,[:value]]]
+     end
+     
+     ? show macroexpand [localmake "pi 3.14159]
+     [local "pi apply "make [pi 3.14159]]
+
+
+File: ucblogo.info,  Node: ERROR PROCESSING,  Next: SPECIAL VARIABLES,  Prev: MACROS,  Up: Top
+
+Error Processing
+****************
+
+* Menu:
+
+* ERROR CODES::
+
+If an error occurs, Logo takes the following steps.  First, if there is
+an available variable named ERRACT, Logo takes its value as an
+instructionlist and runs the instructions.  The operation ERROR may be
+used within the instructions (once) to examine the error condition.  If
+the instructionlist invokes PAUSE, the error message is printed before
+the pause happens.  Certain errors are "recoverable"; for one of those
+errors, if the instructionlist outputs a value, that value is used in
+place of the expression that caused the error.  (If ERRACT invokes
+PAUSE and the user then invokes CONTINUE with an input, that input
+becomes the output from PAUSE and therefore the output from the ERRACT
+instructionlist.)
+
+It is possible for an ERRACT instructionlist to produce an
+inappropriate value or no value where one is needed.  As a result, the
+same error condition could recur forever because of this mechanism.  To
+avoid that danger, if the same error condition occurs twice in a row
+from an ERRACT instructionlist without user interaction, the message
+"Erract loop" is printed and control returns to toplevel.  "Without
+user interaction" means that if ERRACT invokes PAUSE and the user
+provides an incorrect value, this loop prevention mechanism does not
+take effect and the user gets to try again.
+
+During the running of the ERRACT instructionlist, ERRACT is locally
+unbound, so an error in the ERRACT instructions themselves will not
+cause a loop.  In particular, an error during a pause will not cause a
+pause-within-a-pause unless the user reassigns the value [PAUSE] to
+ERRACT during the pause.  But such an error will not return to
+toplevel; it will remain within the original pause loop.
+
+If there is no available ERRACT value, Logo handles the error by
+generating an internal THROW "ERROR.  (A user program can also generate
+an error condition deliberately by invoking THROW.)  If this throw is
+not caught by a CATCH "ERROR in the user program, it is eventually
+caught either by the toplevel instruction loop or by a pause loop,
+which prints the error message. An invocation of CATCH "ERROR in a user
+program locally unbinds ERRACT, so the effect is that whichever of
+ERRACT and CATCH "ERROR is more local will take precedence.
+
+If a floating point overflow occurs during an arithmetic operation, or a
+two-input mathematical function (like POWER) is invoked with an illegal
+combination of inputs, the `doesn't like' message refers to the second
+operand, but should be taken as meaning the combination.
+
+*Note ERRACT:: ; *Note THROW:: ; *Note ERROR:: ; *Note CATCH:: ; *Note
+PAUSE:: ; *Note CONTINUE::
+
+
+File: ucblogo.info,  Node: ERROR CODES,  Up: ERROR PROCESSING
+
+Error Codes
+===========
+
+Here are the numeric codes that appear as the first member of the list
+output by ERROR when an error is caught, with the corresponding
+messages.  Some messages may have two different codes depending on
+whether or not the error is recoverable (that is, a substitute value
+can be provided through the ERRACT mechanism) in the specific context.
+Some messages are warnings rather than errors; these will not be
+caught.  Errors 0 and 32 are so bad that Logo exits immediately.
+
+
+       0	Fatal internal error (can't be caught)
+       1	Out of memory
+       2	PROC doesn't like DATUM as input (not recoverable)
+       3	PROC didn't output to PROC
+       4	Not enough inputs to PROC
+       5	PROC doesn't like DATUM as input (recoverable)
+       6	Too much inside ()'s
+       7	You don't say what to do with DATUM
+       8	')' not found
+       9	VAR has no value
+      10	Unexpected ')'
+      11	I don't know how to PROC (recoverable)
+      12	Can't find catch tag for THROWTAG
+      13	PROC is already defined
+      14	Stopped
+      15	Already dribbling
+      16	File system error
+      17	Assuming you mean IFELSE, not IF (warning only)
+      18	VAR shadowed by local in procedure call (warning only)
+      19	Throw "Error
+      20	PROC is a primitive
+      21	Can't use TO inside a procedure
+      22	I don't know how to PROC (not recoverable)
+      23	IFTRUE/IFFALSE without TEST
+      24	Unexpected ']'
+      25	Unexpected '}'
+      26	Couldn't initialize graphics
+      27	Macro returned VALUE instead of a list
+      28	You don't say what to do with VALUE
+      29	Can only use STOP or OUTPUT inside a procedure
+      30	APPLY doesn't like BADTHING as input
+      31	END inside multi-line instruction
+      32	Really out of memory (can't be caught)
+
+
+File: ucblogo.info,  Node: SPECIAL VARIABLES,  Next: INDEX,  Prev: ERROR PROCESSING,  Up: Top
+
+Special Variables
+*****************
+
+Logo takes special action if any of the following variable names exists.
+They follow the normal scoping rules, so a procedure can locally set one
+of them to limit the scope of its effect.  Initially, no variables exist
+except CASEIGNOREDP, which is TRUE and buried.
+
+* Menu:
+
+* CASEIGNOREDP::
+* ERRACT::
+* LOADNOISILY::
+* PRINTDEPTHLIMIT::
+* PRINTWIDTHLIMIT::
+* REDEFP::
+* STARTUP::
+
+
+File: ucblogo.info,  Node: CASEIGNOREDP,  Next: ERRACT,  Up: SPECIAL VARIABLES
+
+caseignoredp
+------------
+
+     CASEIGNOREDP
+
+if TRUE, indicates that lower case and upper case letters should be
+considered equal by EQUALP, BEFOREP, MEMBERP, etc.  Logo initially makes
+this variable TRUE, and buries it.
+
+*Note EQUALP:: ; *Note BEFOREP:: ; *Note MEMBERP::
+
+
+File: ucblogo.info,  Node: ERRACT,  Next: LOADNOISILY,  Prev: CASEIGNOREDP,  Up: SPECIAL VARIABLES
+
+erract
+------
+
+     ERRACT
+
+an instructionlist that will be run in the event of an error.  Typically
+has the value [PAUSE] to allow interactive debugging.
+
+*Note PAUSE::
+
+
+File: ucblogo.info,  Node: LOADNOISILY,  Next: PRINTDEPTHLIMIT,  Prev: ERRACT,  Up: SPECIAL VARIABLES
+
+loadnoisily
+-----------
+
+     LOADNOISILY
+
+if TRUE, prints the names of procedures defined when loading from a file
+(including the temporary file made by EDIT).
+
+*Note EDIT::
+
+
+File: ucblogo.info,  Node: PRINTDEPTHLIMIT,  Next: PRINTWIDTHLIMIT,  Prev: LOADNOISILY,  Up: SPECIAL VARIABLES
+
+printdepthlimit
+---------------
+
+     PRINTDEPTHLIMIT
+
+if a nonnegative integer, indicates the maximum depth of sublist
+structure that will be printed by PRINT, etc.
+
+*Note PRINT::
+
+
+File: ucblogo.info,  Node: PRINTWIDTHLIMIT,  Next: REDEFP,  Prev: PRINTDEPTHLIMIT,  Up: SPECIAL VARIABLES
+
+printwidthlimit
+---------------
+
+     PRINTWIDTHLIMIT
+
+if a nonnegative integer, indicates the maximum number of members in any
+one list that will be printed by PRINT, etc.
+
+*Note PRINT::
+
+
+File: ucblogo.info,  Node: REDEFP,  Next: STARTUP,  Prev: PRINTWIDTHLIMIT,  Up: SPECIAL VARIABLES
+
+redefp
+------
+
+     REDEFP
+
+if TRUE, allows primitives to be erased (ERASE) or redefined (COPYDEF).
+
+*Note ERASE:: ; *Note COPYDEF::
+
+
+File: ucblogo.info,  Node: STARTUP,  Prev: REDEFP,  Up: SPECIAL VARIABLES
+
+startup
+-------
+
+     STARTUP
+
+if assigned a list value in a file loaded by LOAD, that value is run as
+an instructionlist after the loading.
+
+*Note LOAD::
+
+
+File: ucblogo.info,  Node: INDEX,  Prev: SPECIAL VARIABLES,  Up: Top
+
+INDEX
+*****
+
+* Menu:
+
+* *:                                     PRODUCT.
+* +:                                     SUM.
+* -:                                     DIFFERENCE.
+* .defmacro:                             dMACRO.
+* .eq:                                   dEQ.
+* .macro:                                dMACRO.
+* .maybeoutput:                          dMAYBEOUTPUT.
+* .setbf:                                dSETBF.
+* .setfirst:                             dSETFIRST.
+* .setitem:                              dSETITEM.
+* /:                                     QUOTIENT.
+* <:                                     LESSP.
+* =:                                     EQUALP.
+* >:                                     GREATERP.
+* `:                                     back-quote.
+* allopen:                               ALLOPEN.
+* and:                                   AND.
+* apply:                                 APPLY.
+* arc:                                   ARC.
+* arctan:                                ARCTAN.
+* array:                                 ARRAY.
+* array?:                                ARRAYP.
+* arrayp:                                ARRAYP.
+* arraytolist:                           ARRAYTOLIST.
+* ascii:                                 ASCII.
+* ashift:                                ASHIFT.
+* back:                                  BACK.
+* background:                            BACKGROUND.
+* backslashed?:                          BACKSLASHEDP.
+* backslashedp:                          BACKSLASHEDP.
+* before?:                               BEFOREP.
+* beforep:                               BEFOREP.
+* bf:                                    BUTFIRST.
+* bfs:                                   BUTFIRSTS.
+* bg:                                    BACKGROUND.
+* bitand:                                BITAND.
+* bitnot:                                BITNOT.
+* bitor:                                 BITOR.
+* bitxor:                                BITXOR.
+* bk:                                    BACK.
+* bl:                                    BUTLAST.
+* buried:                                BURIED.
+* bury:                                  BURY.
+* buryall:                               BURYALL.
+* buryname:                              BURYNAME.
+* butfirst:                              BUTFIRST.
+* butfirsts:                             BUTFIRSTS.
+* butlast:                               BUTLAST.
+* bye:                                   BYE.
+* cascade:                               CASCADE.
+* cascade.2:                             CASCADEd2.
+* case-insensitive:                      TOKENIZATION.
+* caseignoredp:                          CASEIGNOREDP.
+* catch:                                 CATCH.
+* char:                                  CHAR.
+* clean:                                 CLEAN.
+* clearscreen:                           CLEARSCREEN.
+* cleartext:                             CLEARTEXT.
+* close:                                 CLOSE.
+* closeall:                              CLOSEALL.
+* co:                                    CONTINUE.
+* combine:                               COMBINE.
+* comments:                              TOKENIZATION.
+* Computer_Science_Logo_Style:           OVERVIEW.
+* contents:                              CONTENTS.
+* continue:                              CONTINUE.
+* copydef:                               COPYDEF.
+* Copyright:                             OVERVIEW.
+* cos:                                   COS.
+* count:                                 COUNT.
+* crossmap:                              CROSSMAP.
+* cs:                                    CLEARSCREEN.
+* ct:                                    CLEARTEXT.
+* cursor:                                CURSOR.
+* define:                                DEFINE.
+* defined?:                              DEFINEDP.
+* definedp:                              DEFINEDP.
+* delimiters:                            TOKENIZATION.
+* dequeue:                               DEQUEUE.
+* difference:                            DIFFERENCE.
+* do.until:                              DOdUNTIL.
+* do.while:                              DOdWHILE.
+* dribble:                               DRIBBLE.
+* ed:                                    EDIT.
+* edall:                                 EDALL.
+* edit:                                  EDIT.
+* editor:                                EDIT.
+* edn:                                   EDN.
+* edns:                                  EDNS.
+* edpl:                                  EDPL.
+* edpls:                                 EDPLS.
+* edps:                                  EDPS.
+* empty?:                                EMPTYP.
+* emptyp:                                EMPTYP.
+* eof?:                                  EOFP.
+* eofp:                                  EOFP.
+* equal?:                                EQUALP.
+* equalp:                                EQUALP.
+* er:                                    ERASE.
+* erall:                                 ERALL.
+* erase:                                 ERASE.
+* erasefile:                             ERASEFILE.
+* erf:                                   ERASEFILE.
+* ern:                                   ERN.
+* erns:                                  ERNS.
+* erpl:                                  ERPL.
+* erpls:                                 ERPLS.
+* erps:                                  ERPS.
+* erract:                                ERRACT.
+* error:                                 ERROR.
+* errors:                                ERROR CODES.
+* exp:                                   EXP.
+* fd:                                    FORWARD.
+* fence:                                 FENCE.
+* file?:                                 FILEP.
+* filep:                                 FILEP.
+* fill:                                  FILL.
+* filter:                                FILTER.
+* find:                                  FIND.
+* first:                                 FIRST.
+* firsts:                                FIRSTS.
+* for:                                   FOR.
+* foreach:                               FOREACH.
+* form:                                  FORM.
+* forward:                               FORWARD.
+* fput:                                  FPUT.
+* fs:                                    FULLSCREEN.
+* fullscreen:                            FULLSCREEN.
+* fulltext:                              FULLTEXT.
+* gc:                                    GC.
+* gensym:                                GENSYM.
+* goto:                                  GOTO.
+* gprop:                                 GPROP.
+* greater?:                              GREATERP.
+* greaterp:                              GREATERP.
+* heading:                               HEADING.
+* help:                                  HELP.
+* hideturtle:                            HIDETURTLE.
+* home:                                  HOME.
+* ht:                                    HIDETURTLE.
+* if:                                    IF.
+* ifelse:                                IFELSE.
+* iff:                                   IFFALSE.
+* iffalse:                               IFFALSE.
+* ift:                                   IFTRUE.
+* iftrue:                                IFTRUE.
+* ignore:                                IGNORE.
+* int:                                   INT.
+* invoke:                                INVOKE.
+* iseq:                                  ISEQ.
+* item:                                  ITEM.
+* key?:                                  KEYP.
+* keyp:                                  KEYP.
+* label:                                 LABEL.
+* last:                                  LAST.
+* leaving ucblogo:                       ENTERING AND LEAVING LOGO.
+* left:                                  LEFT.
+* less?:                                 LESSP.
+* lessp:                                 LESSP.
+* line-continuation:                     TOKENIZATION.
+* list:                                  LIST.
+* list?:                                 LISTP.
+* listp:                                 LISTP.
+* listtoarray:                           LISTTOARRAY.
+* ln:                                    LN.
+* load:                                  LOAD.
+* loadnoisily:                           LOADNOISILY.
+* local:                                 LOCAL.
+* log10:                                 LOG10.
+* logohelp:                              HELP.
+* lowercase:                             LOWERCASE.
+* lput:                                  LPUT.
+* lshift:                                LSHIFT.
+* lt:                                    LEFT.
+* macro?:                                MACROP.
+* macroexpand:                           MACROEXPAND.
+* macrop:                                MACROP.
+* make:                                  MAKE.
+* map:                                   MAP.
+* map.se:                                MAPdSE.
+* mdarray:                               MDARRAY.
+* mditem:                                MDITEM.
+* mdsetitem:                             MDSETITEM.
+* member:                                MEMBER.
+* member?:                               MEMBERP.
+* memberp:                               MEMBERP.
+* minus:                                 MINUS.
+* modulo:                                MODULO.
+* name:                                  NAME.
+* name?:                                 NAMEP.
+* namelist:                              NAMELIST.
+* namep:                                 NAMEP.
+* names:                                 NAMES.
+* nodes:                                 NODES.
+* nodribble:                             NODRIBBLE.
+* norefresh:                             NOREFRESH.
+* not:                                   NOT.
+* number?:                               NUMBERP.
+* numberp:                               NUMBERP.
+* op:                                    OUTPUT.
+* openappend:                            OPENAPPEND.
+* openread:                              OPENREAD.
+* openupdate:                            OPENUPDATE.
+* openwrite:                             OPENWRITE.
+* or:                                    OR.
+* output:                                OUTPUT.
+* palette:                               PALETTE.
+* parse:                                 PARSE.
+* pause:                                 PAUSE.
+* pc:                                    PENCOLOR.
+* pd:                                    PENDOWN.
+* pe:                                    PENERASE.
+* pen:                                   PEN.
+* pencolor:                              PENCOLOR.
+* pendown:                               PENDOWN.
+* pendown?:                              PENDOWNP.
+* pendownp:                              PENDOWNP.
+* penerase:                              PENERASE.
+* penmode:                               PENMODE.
+* penpaint:                              PENPAINT.
+* penpattern:                            PENSIZE.
+* penreverse:                            PENREVERSE.
+* pensize:                               PENSIZE.
+* penup:                                 PENUP.
+* pick:                                  PICK.
+* plist:                                 PLIST.
+* plists:                                PLISTS.
+* pllist:                                PLLIST.
+* po:                                    PO.
+* poall:                                 POALL.
+* pon:                                   PON.
+* pons:                                  PONS.
+* pop:                                   POP.
+* popl:                                  POPL.
+* popls:                                 POPLS.
+* pops:                                  POPS.
+* pos:                                   POS.
+* pot:                                   POT.
+* pots:                                  POTS.
+* power:                                 POWER.
+* pprop:                                 PPROP.
+* ppt:                                   PENPAINT.
+* pr:                                    PRINT.
+* primitive?:                            PRIMITIVEP.
+* primitivep:                            PRIMITIVEP.
+* print:                                 PRINT.
+* printdepthlimit:                       PRINTDEPTHLIMIT.
+* printwidthlimit:                       PRINTWIDTHLIMIT.
+* procedure?:                            PROCEDUREP.
+* procedurep:                            PROCEDUREP.
+* procedures:                            PROCEDURES.
+* product:                               PRODUCT.
+* pu:                                    PENUP.
+* push:                                  PUSH.
+* px:                                    PENREVERSE.
+* queue:                                 QUEUE.
+* quoted:                                QUOTED.
+* quotient:                              QUOTIENT.
+* radarctan:                             RADARCTAN.
+* radcos:                                RADCOS.
+* radsin:                                RADSIN.
+* random:                                RANDOM.
+* rawascii:                              RAWASCII.
+* rc:                                    READCHAR.
+* rcs:                                   READCHARS.
+* readchar:                              READCHAR.
+* readchars:                             READCHARS.
+* reader:                                READER.
+* readlist:                              READLIST.
+* readpos:                               READPOS.
+* readword:                              READWORD.
+* redefp:                                REDEFP.
+* reduce:                                REDUCE.
+* refresh:                               REFRESH.
+* remainder:                             REMAINDER.
+* remdup:                                REMDUP.
+* remove:                                REMOVE.
+* remprop:                               REMPROP.
+* repcount:                              REPCOUNT.
+* repeat:                                REPEAT.
+* rerandom:                              RERANDOM.
+* reverse:                               REVERSE.
+* right:                                 RIGHT.
+* rl:                                    READLIST.
+* round:                                 ROUND.
+* rseq:                                  RSEQ.
+* rt:                                    RIGHT.
+* run:                                   RUN.
+* runparse:                              RUNPARSE.
+* runparsing:                            TOKENIZATION.
+* runresult:                             RUNRESULT.
+* rw:                                    READWORD.
+* save:                                  SAVE.
+* savel:                                 SAVEL.
+* scrunch:                               SCRUNCH.
+* scrunch.dat:                           SETSCRUNCH.
+* se:                                    SENTENCE.
+* sentence:                              SENTENCE.
+* setbackground:                         SETBACKGROUND.
+* setbg:                                 SETBACKGROUND.
+* setcursor:                             SETCURSOR.
+* seth:                                  SETHEADING.
+* setheading:                            SETHEADING.
+* setitem:                               SETITEM.
+* setmargins:                            SETMARGINS.
+* setpalette:                            SETPALETTE.
+* setpc:                                 SETPENCOLOR.
+* setpen:                                SETPEN.
+* setpencolor:                           SETPENCOLOR.
+* setpenpattern:                         SETPENPATTERN.
+* setpensize:                            SETPENSIZE.
+* setpos:                                SETPOS.
+* setread:                               SETREAD.
+* setreadpos:                            SETREADPOS.
+* setscrunch:                            SETSCRUNCH.
+* settc:                                 SETTEXTCOLOR.
+* settextcolor:                          SETTEXTCOLOR.
+* setwrite:                              SETWRITE.
+* setwritepos:                           SETWRITEPOS.
+* setx:                                  SETX.
+* setxy:                                 SETXY.
+* sety:                                  SETY.
+* shell:                                 SHELL.
+* show:                                  SHOW.
+* shown?:                                SHOWNP.
+* shownp:                                SHOWNP.
+* showturtle:                            SHOWTURTLE.
+* sin:                                   SIN.
+* splitscreen:                           SPLITSCREEN.
+* sqrt:                                  SQRT.
+* ss:                                    SPLITSCREEN.
+* st:                                    SHOWTURTLE.
+* standout:                              STANDOUT.
+* starting ucblogo:                      ENTERING AND LEAVING LOGO.
+* startup:                               STARTUP.
+* step:                                  STEP.
+* stop:                                  STOP.
+* substring?:                            SUBSTRINGP.
+* substringp:                            SUBSTRINGP.
+* sum:                                   SUM.
+* tag:                                   TAG.
+* temp:                                  EDIT.
+* template:                              TEMPLATE-BASED ITERATION.
+* test:                                  TEST.
+* text:                                  TEXT.
+* textscreen:                            TEXTSCREEN.
+* thing:                                 THING.
+* throw:                                 THROW.
+* to:                                    TO.
+* towards:                               TOWARDS.
+* trace:                                 TRACE.
+* transfer:                              TRANSFER.
+* ts:                                    TEXTSCREEN.
+* type:                                  TYPE.
+* unbury:                                UNBURY.
+* unburyall:                             UNBURYALL.
+* unburyname:                            UNBURYNAME.
+* unstep:                                UNSTEP.
+* until:                                 UNTIL.
+* untrace:                               UNTRACE.
+* uppercase:                             UPPERCASE.
+* wait:                                  WAIT.
+* while:                                 WHILE.
+* window:                                WINDOW.
+* word:                                  WORD.
+* wordp:                                 WORDP.
+* wrap:                                  WRAP.
+* writepos:                              WRITEPOS.
+* writer:                                WRITER.
+* xcor:                                  XCOR.
+* ycor:                                  YCOR.
+
+

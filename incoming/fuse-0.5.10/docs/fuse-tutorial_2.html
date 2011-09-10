@@ -1,0 +1,227 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse-tutorial.texi on 28 July 1998 -->
+
+<TITLE>FUSE Tutorial - Running Atoms</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_1.html">previous</A>, <A HREF="fuse-tutorial_3.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC5" HREF="fuse-tutorial_toc.html#TOC5">Running Atoms</A></H1>
+
+
+
+<H2><A NAME="SEC6" HREF="fuse-tutorial_toc.html#TOC6">Starting with ATOMS</A></H2>
+
+<P>
+Ultimately we want to use FEFFIT analyze the fine structure
+@greek{chi,k} from the copper data.  To get ready for that we need to
+run FEFF to generate a set of fitting standards and run AUTOBK
+to isolate @greek{chi,k} from @greek{mu,E}.  But first, we need to run
+ATOMS to generate the appropriate input file for FEFF.
+
+</P>
+<P>
+Our first chore, then, is to edit an ATOMS input file.  It is most
+convenient to run ATOMS in the <TT>`feff'</TT> subdirectory, so begin
+editing this input file by typing
+
+<PRE>
+	&#62; emacs feff/atoms.inp
+</PRE>
+
+<P>
+at the command line.  I am assuming that you are currently in the
+<TT>`Cu/'</TT> directory.  Since it takes some time to start up Emacs and
+since Emacs can hold many files at the same time, @fuse{} is best used
+by firing up Emacs only once and loading successive input files as you
+want to edit them.  We will see how that is done as the tutorial
+progresses.
+
+</P>
+<P>
+<A NAME="IDX10"></A>
+Once Emacs fires up, you will be presented with a blank screen.  You
+should see two important things on the mode line at the bottom of the
+Emacs window.  Near the left side of the mode line it should say
+<CODE>atoms.inp</CODE> to indicate that you are currently editing that file.
+Somewhere to the right of center you should see the words <CODE>Input</CODE>
+and <CODE>Atoms</CODE>.  These indicate that you are in <CODE>Input</CODE> major
+mode and, since you are editing an ATOMS input file, in
+<CODE>Atoms</CODE> minor mode.  At the top of the Emacs window in the menu
+bar, you should see menus labeled <CODE>Input</CODE> and <CODE>Atoms</CODE>.
+Because the file was named <TT>`atoms.inp'</TT>, @fuse{} assumed that the
+file is intended to run ATOMS and so placed the buffer containing
+the file into <CODE>Atoms</CODE> minor mode.  As the tutorial progresses and
+we edit other input files, you will see that the minor mode changes
+appropriately from buffer to buffer.
+
+</P>
+<P>
+<A NAME="IDX11"></A>
+<A NAME="IDX12"></A>
+In Emacs, a <EM>major mode</EM> is a state of the program which is
+customized for a particular editing chore.  A <EM>minor mode</EM> is a
+state which modifies certain features and behaviors of Emacs.  In this
+case the major mode is a state customized for editing input files to
+FEFF and the UWXAFS programs.  Then each program has a minor
+mode associated with it which modifies the behavior of input major mode
+appropriate to the program.  The modes in @fuse{} interacts well with
+most minor modes which offer specific editing features which are offered
+by emacs.
+
+</P>
+
+<P>
+@ifnotinfo
+
+</P>
+<P>
+Now that you have a buffer open in front of you, click <CODE>mouse-1</CODE> on
+the <CODE>Atoms</CODE> menu.  The contents of this menu are shown in
+Figure 2.  If you click any mouse button anywhere else on your screen,
+the menu will disappear without anything selected.  You can use this
+menu to perform the rest of the tasks in this section.
+
+</P>
+<P>
+<STRONG>Figure 2:</STRONG> ATOMS mode pull-down menu
+<P>
+<img src="menu-atoms.jpg" alt="**image file menu-atoms.jpg**">
+<P>
+
+</P>
+
+
+<H2><A NAME="SEC7" HREF="fuse-tutorial_toc.html#TOC7">Making the ATOMS template</A></H2>
+
+<P>
+<A NAME="IDX13"></A>
+<A NAME="IDX14"></A>
+The first thing to do is to make a template for this input file.  This
+is done by typing <KBD>C-c C-t t</KBD>, choosing <CODE>Make template</CODE> from
+the <CODE>Atoms</CODE> menu, or clicking on the top-most icon in the toolbar.
+When you do this, you will be asked a question in the minibuffer.  At
+this point, @fuse{} is asking which crystal class your material belongs
+to.  For copper, the correct answer is <KBD>c</KBD> which is short for
+<EM>cubic</EM>.  Before answering you can hit the <KBD>tab</KBD> key to see a
+list of all possible answers.  This function (and many others in
+@fuse{}) operates with word completion.  Since cubic is the only crystal
+class beginning with <KBD>c</KBD>, it suffices to just enter <KBD>c</KBD> in this
+case.  After this, a template appears in the buffer.  You will notice
+that this template has a space for the <EM>a</EM> lattice constant, but
+not for <EM>b</EM> or <EM>c</EM> or for any of the angles.  Had you chosen a
+crystal class of lower symmetry, appropriate keywords would have been
+placed in the template.
+
+</P>
+<P>
+<A NAME="IDX15"></A>
+<A NAME="IDX16"></A>
+<A NAME="IDX17"></A>
+<A NAME="IDX18"></A>
+Notice that the template has several salmon colored markings.  These are
+immediately before hotspots in the template.  A hotspot is a place in
+the template where you are expected to insert a value.  The markings
+provide a visual cue for where to place the values.  You can move
+between the hotspots in all the standard ways of moving the screen
+cursor, but there are two special shortcut key sequences.  <KBD>M-n</KBD> and
+<KBD>M-p</KBD> jump to the next and previous hotspots.  When you are done
+filling in the keyword values, you can leave the markings as they are,
+or erase them with <KBD>C-c C-t c</KBD>.
+
+</P>
+<P>
+The <EM>a</EM> lattice constant of copper is 3.61 and the space group is
+<CODE>F m 3 m</CODE>, although ATOMS also understands <CODE>fcc</CODE> as a
+shorthand for this space group.  There is a copper atom at the
+coordinates (0,0,0) and a cluster radius of 6.5 Angstroms is
+appropriate.  The central atoms is, obviously, Cu.  Save this file by
+striking <KBD>C-x C-s</KBD>.  The buffer should now look like Figure 3.
+
+</P>
+<P>
+<A NAME="IDX19"></A>
+Notice that when you saved the file, some new lines were written to the
+end of the file.  Thie first line looks like this:
+
+<PRE>
+!!&#38;&#38; Local Variables:
+</PRE>
+
+<P>
+@fuse{} uses the Local Variables list as a way of configuring itself.
+It saves information about the input file in these lines so that the
+next time you edit it, you will be in the same state as the last time.
+One of the most important uses of these lines is to identify the program
+associated with the input file.  For example, you might wish to rename
+this input file <TT>`cu.inp'</TT>.  The next time you edit <TT>`cu.inp'</TT>,
+@fuse{} can read from the Local Variables list that <TT>`cu.inp'</TT> is an
+input file for ATOMS.  Thus you can name your input files anything,
+not just by the name of the program.
+
+</P>
+
+
+
+<H2><A NAME="SEC8" HREF="fuse-tutorial_toc.html#TOC8">Other Features of ATOMS mode</A></H2>
+
+<P>
+<A NAME="IDX20"></A>
+<A NAME="IDX21"></A>
+With the input file complete and saved to disk, it is time to run
+ATOMS.  Do this by hitting <KBD>C-c C-r r</KBD>, by selecting <CODE>Run
+atoms, this file</CODE> in the <CODE>Atoms</CODE> menu, or by clicking on the
+exclamation point icon in the toolbar.  If you are running under
+X-windows, @fuse{} will open a small frame in which to display the
+run-time messages from the program.  When ATOMS is done, @fuse{}
+will beep and you will see a message in the echo area.
+
+</P>
+<P>
+<A NAME="IDX22"></A>
+ATOMS Let's look at a few things before finishing with the
+ATOMS input file.  Type <KBD>C-c C-b k</KBD>, select <CODE>Display atoms
+keywords</CODE> from the <CODE>Atoms</CODE> menu, or click on the question mark icon
+in the toolbar.  The frame will split into two windows, and a list of
+keywords recognized by the ATOMS program will be displayed in the
+bottom window.  When that key sequence is hit in any of the minor modes,
+you will be presented with a list of keywords appropriate to that
+program.  Each minor mode menu has a <CODE>Display keywords</CODE> item and
+each minor mode toolbar has a question mark icon that is bound to this
+function.  Note that the screen cursor in positioned in the keyword
+window.  After examining the list of keywords, type <KBD>C-x 0</KBD> to close
+the keyword window and return to the input file window.  (If you get
+lost among your buffers, remember to use <KBD>C-x b</KBD> or the
+<CODE>Buffers</CODE> menu.)
+
+</P>
+<P>
+<A NAME="IDX23"></A>
+Now hit <KBD>C-c C-b d</KBD> and then hit <KBD>ret</KBD> or click on the book icon
+in the toolbar.  A second frame will open displaying the info
+version of the ATOMS document.  There are online documents for
+several of the programs covered by @fuse{} and for @fuse{} itself.  (The
+notable exceptions are AUTOBK and FEFFIT.)  You can peruse the
+document or hit <KBD>C-x 5 0</KBD> to make the document frame disappear.
+
+</P>
+
+<P>
+Now it is time to run FEFF.
+
+</P>
+<P>
+<STRONG>Figure 3:</STRONG> Completed ATOMS input file
+<P>
+<img src="atoms-inp.jpg" alt="**image file atoms-inp.jpg**">
+
+</P>
+
+<P><HR><P>
+Go to the <A HREF="fuse-tutorial_1.html">first</A>, <A HREF="fuse-tutorial_1.html">previous</A>, <A HREF="fuse-tutorial_3.html">next</A>, <A HREF="fuse-tutorial_8.html">last</A> section, <A HREF="fuse-tutorial_toc.html">table of contents</A>.
+</BODY>
+</HTML>

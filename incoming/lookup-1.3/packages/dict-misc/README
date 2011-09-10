@@ -1,0 +1,10 @@
+This is supplement package for "dict-misc" dictionaries.  It corresponds
+to dict-misc-1.4.
+
+- dict-misc.el  master file for `ndic'
+- jargon.el 	supplement file for "Jargon File"
+- foldoc.el     supplement file for "The Free On-line Dictionary of Computing"
+
+You can get dict-misc at:
+
+  ftp://ftp.dict.org/pub/dict/

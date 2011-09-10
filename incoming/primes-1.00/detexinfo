@@ -1,0 +1,20 @@
+#! /bin/sh
+# Strip TeXinfo markup from the input stream, writing the remainder to
+# stdout, possibly for spell checking, grammar analysis, or
+# doubled-word finding.  Line boundaries are preserved, so that
+# subsequent error messages can be keyed to them.  @node lines are
+# replaced by empty lines, so as to avoid confusing grammar checkers.
+#
+# Usage:
+#	detexinfo [ TeXinfo-file(s) ] > outfile
+#
+# [02-Mar-1999]
+
+awk	'
+/^ *@node/	{ print "" }
+		{
+			gsub("@[a-zA-Z][a-zA-Z]*", "")	# remove command names
+			gsub("@[^a-zA-Z]", "")		# remove accents
+			gsub("[{}]", "")		# remove braces	
+			print
+		}' "$@"

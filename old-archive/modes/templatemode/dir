@@ -1,0 +1,5 @@
+
+* template: (template).
+		Template-mode provides commands for creating and
+		manipulating "templates"---rectangular regions that
+		correspond to grammatical productions.

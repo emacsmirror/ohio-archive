@@ -1,0 +1,73 @@
+IM+ (IM extension kit)の使い方
+
+Version  : 1.0
+Created  : Jan. 11, 1998
+Author   : 浅海智晴 (tasami@ibm.net)
+HomePage : http://www.netpassport.or.jp/~wtasami
+
+
+　IM+はダイアルアップでインタネット接続を行っていてemacs/muleのmewユー
+ザがメールの送信をIMのimputのキューイングモードで行う運用を支援するユー
+ティリティです。
+
+【機能】
+
+1. imput送信キューの状態表示(バッファ、ミニバッファ、モードライン)
+2. imput送信キューにスプールされているメールの送信
+
+【設定方法】
+
+□　最少のセットアップ
+
+(require "im+")
+
+または
+
+(autoload 'im+-show-imput-queue-status "im+" nil t)
+(autoload 'im+-show-imput-queue "im+" nil t)
+(autoload 'im+-xfer "im+" nil t)
+
+　mule起動時にステータスラインにキューの状態を表示するためには前者の方法
+(require)を用います。
+
+□　Mew での設定例
+
+(add-hook 'mew-init-hook
+	  (function
+	   (lambda ()
+	     (define-key mew-summary-mode-map "b" (make-sparse-keymap))
+	     (define-key mew-summary-mode-map "bs" 'im+-show-imput-queue-status)
+	     (define-key mew-summary-mode-map "bq" 'im+-show-imput-queue)
+	     (define-key mew-summary-mode-map "bx" 'im+-xfer))))
+
+【使用方法】
+
+im+-show-imput-queue-status	:　imputの送信キューの状態をミニバッ
+				   ファに表示
+im+-show-imput-queue		:　imputの送信キューの情報を画面に表示
+im+-xfer			:　imputの送信キューのメッセージを送信
+
+　上記の Mew の設定を行うと以下のキーバインドで使用できます。
+
+mew-summary-modeで
+	"bs" : im+-show-imput-queue-status
+	"bq" : im+-show-imput-queue
+	"bx" : im+-xfer
+
+【FYI】
+
+　IMでメールをキューイングするためにはConfigに以下のいずれかの設定をし
+ます。
+
+# メールは必ずキューイングする場合
+JustQueuing=yes
+
+# メールの送信に失敗した時だけキューイングする場合
+Queuing=yes
+
+【その他】
+
+　このプログラムはWindows95上のMeadow-0.50b1(emacs 20.2.1) +
+mew-1.92.4 + im-76の組合わせ上で動作しています。
+　バージョンに依存した機能は使っていないので、多分この他の組合わせでも
+動くと思います。

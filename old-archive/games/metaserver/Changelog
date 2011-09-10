@@ -1,0 +1,129 @@
+Thu Mar  4 18:29:39 1993  William M. Perry  (wmperry@indiana.edu)
+* General bug fixes
+* Support for lucid emacs.  Pull down menus, pop-up menus, dialog
+  boxes.  (Ok, so I was bored)
+
+Tue Mar  2 08:02:21 1993  William M. Perry  (wmperry@indiana.edu)
+* Added automatic bug submission form.
+
+Mon Mar  1 10:45:37 1993  William M. Perry  (wmperry@indiana.edu)
+* New function metaserver-open-stream that is either homegrown for
+  telnet or fset to open-network-stream depending on the value of
+  metaserver-use-telnet.
+* Added variable for whether to use telnet or native open-network
+  stream.  For people who can't resolve host names very well.
+
+Sat Feb 27 17:07:51 1993  William M. Perry  (wmperry@indiana.edu)
+* Added auto-detect of an rsa server.  If you aren't in RSA mode, it
+  will ask if you want to use the rsa client instead of the normal
+  one. 
+* Added error handling to the open-network-stream call.  If the
+  connection to the metaserver is timed out, will automatically try to
+  use the metaserver-save-file.
+
+Thu Feb 25 08:16:08 1993  William M. Perry  (wmperry@indiana.edu)
+* Tweaked makefile
+* Can now call metaserver-restore-from-file instead of
+  metaserver-refresh to start the metaserver.  Suggested by Alec
+  Habig.  (ahabig@riscgs1.lngs.infn.it)
+* Fixed metaserver-restore-from-file so that it would redisplay
+  information correctly.  Thanks to Alec Habig
+  (ahabig@riscgs1.lngs.infn.it) for pointing out it didn't work.
+* Fixed info-grabbing function so it doesn't infinite loop on occasion
+
+Fri Feb 19 11:58:37 1993  William M. Perry  (wmperry@indiana.edu)
+* Fixed makefile so it will create a .emacs file.
+
+Thu Feb 18 12:06:52 1993  William M. Perry  (wmperry@indiana.edu)
+* Release V2.25
+* Added a Makefile - no support for creating .emacs file yet.
+
+Sat Feb  6 15:57:44 1993  William M. Perry  (wmperry@indiana.edu)
+* Added auto-documentation functions.  Takes a list of functions to
+  find in a specified keymap, and a list of variables.  Spits out a
+  buffer containing the keystrokes to get to the functions, along with
+  the functions' doc strings.  Followed by a list of the variables and
+  their doc strings.
+
+Thu Feb  4 10:14:50 1993  William M. Perry  (wmperry@indiana.edu)
+* Fixed yet another stupid bug in the player checking code when it
+  falls back to the metaserver.
+
+Tue Feb  2 08:21:57 1993  William M. Perry  (wmperry@indiana.edu)
+* Fixed metaserver-suspend so that it actually works now.
+* Fixed stupid bug in player checking code.  If falling back, would
+  give you an error.  (Forgot the (substring 0 before a function call.)
+* Added support to save the current metaserver information, in case
+  the metaserver goes down.  This way you can still use the pinging,
+  get information, etc.  Suggested by: Alec Habig
+  (ahabig@riscgs1.lngs.infn.it)
+
+Thu Jan 28 16:48:16 1993  William M. Perry  (wmperry@indiana.edu)
+* Added metaserver-suspend - bury buffer on keypress.
+
+Tue Jan 26 08:41:25 1993  William M. Perry  (wmperry@indiana.edu)
+* Added code to try the metaserver port 3522 if auto-fallback is true
+  and the check players code did not work.
+
+Mon Jan 25 10:49:38 1993  William M. Perry  (wmperry@indiana.edu)
+* Added metaserver-tally-players to show the # of people playing/queued.
+
+Fri Jan 22 17:58:40 1993  William M. Perry  (wmperry@indiana.edu)
+* Fixed weird buffer-selection after info was fetched and before
+  metaserver-mode was entered.
+* Reworked parts of the server information (mostly cosmetic)
+* Release v2.0
+
+Thu Jan 21 07:07:37 1993  William M. Perry  (wmperry@indiana.edu)
+* Added metaserver-rsa-binary, and RSA mode.
+* Reworked lots of functions to use rsa-binary if RSA is active.
+* Changed metaserver-binary-alist to include an rsa-binary.
+
+Tue Jan 19 18:32:27 1993  William M. Perry  (wmperry@indiana.edu)
+
+* Added code to display the server information that is gathered from
+  port 3524 on the metaserver.
+* Added metaserver-auto-fallback variable.  If true, try to use the
+  ck_players program to get a player list when a server is not responding
+  to the port -1 query.
+
+Jan 11 17:40:06 1993  William M. Perry  (wmperry@indiana.edu)
+* Added code to automatically kill the network stream when the
+  trailing lines are received.  (Thanks to peyote@umiacs.UMD.EDU for
+  calling this to my attention and a way to patch it)
+
+Jan 9 09:23:05 1993  William M. Perry  (wmperry@indiana.edu)
+* Added metaserver-binary-alist to allow diff. binaries for diff. servers
+* Had to change run-netrek function to check the alist, use defaults
+  if not found, etc.
+* Revised documentation file, and doc strings in elisp file.
+* Fixed bug in the check players code that would insert the first
+  keystroke after a failed query into a different buffer.
+* Wrote a shell script to help installation to help byte compile/etc the
+  file for people new to emacs.
+
+Jan  1 12:09:05 1993  William M. Perry  (wmperry@indiana.edu)
+* Added metaserver-site-order to allow ascending or descending sort
+  for servers.
+* Can now check player list via the port -1 query.
+
+November 30 23:00:12 1992  William M. Perry  (wmperry@indiana.edu)
+* Changed ping to include min/avg/max round-trip packet time.
+* Changed run-netrek to use either background or spawn its own process.
+
+November  1 10:05:22 1992  William M. Perry  (wmperry@indiana.edu)
+* Complete rewrite.
+* Doesn't kill its buffers anymore when refreshing, process-filters work
+* Doesn't need to re-query the server when listing all servers, now
+  keep 2 lists, one of empty servers, one of open.
+* Updated the filters/sentinels so could now support MS-I output with
+  some regular expression hacking.  
+* No longer timestamps the buffer.
+* Doesn't use background.el package.
+* Fine tuning just about everywhere else.
+* Pinging works, but not round-trip figures yet.  Just packet loss.
+
+September 11 05:35:12 1992  William M. Perry  (wmperry@indiana.edu)
+* No longer needs an external program to connect to the metaserver.
+* First public release
+

@@ -1,0 +1,63 @@
+		    GNU Emacs Lisp Archive README
+
+Last Update: November, 25 1996
+
+General Information
+
+    This archive contains various pieces and packages of Emacs Lisp
+code.  Emacs Lisp is the language used to extend the GNU Emacs editor
+published by the Free Software Foundation.  Although much Emacs Lisp
+code is included in the GNU Emacs distribution, many people have
+written packages to interface with other systems, to better support
+editing the programming language they use, to add new features, or to
+change Emacs' default behavior.  Most of the contents of this archive
+have been written by individuals and distributed publicly over the
+Internet through the info-emacs or info-gnu-emacs mailing lists or the
+comp.emacs, gnu.emacs, gnu.emacs.sources newsgroups.
+
+Before the GNU Emacs Lisp Archive existed, there was the Lisp Code
+Directory, or LCD.  The LCD is a flat-file database of Emacs Lisp
+code.  Unlike the Archive, the Directory *does* include references to
+the Emacs Lisp distributed with GNU Emacs.  An elisp support package
+called lispdir has been provided to interface with the LCD.  With this
+package installed, it's a simple matter to determine if a package is
+available to meet a particular need.
+
+The Lisp Code Directory datafile is in LCD-datafile.Z.  Documentation
+for the Lisp Code Directory is in lispdir.doc.Z.
+
+Archive Format
+
+All of the files in the archive are compressed.
+
+Most files are Emacs Lisp code and their names end in ".el.Z".
+
+For mode information on submitting entries to the archive read the
+file GUIDELINES.Z.
+
+The archives are maintained by Dave Brennan (brennan@gnu.ai.mit.edu).
+Send questions, comments, and submissions to them.
+
+			   NO WARRANTY
+
+  BECAUSE THE GNU EMACS LISP ARCHIVE IS PROVIDED FREE OF CHARGE, WE
+PROVIDE ABSOLUTELY NO WARRANTY, TO THE EXTENT PERMITTED BY APPLICABLE
+STATE LAW.  EXCEPT WHEN OTHERWISE STATED IN WRITING, OHIO STATE
+UNIVERSITY, DAVID E. SILL, DAVID J. BRENNAN, AND/OR OTHER PARTIES
+PROVIDE GNU EMACS LISP ARCHIVE CODE "AS IS" WITHOUT WARRANTY OF ANY
+KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE.  THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE
+CODE IS WITH YOU.  SHOULD GNU EMACS LISP ARCHIVE CODE PROVE DEFECTIVE,
+YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+
+ IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW WILL OHIO STATE
+UNIVERSITY, DAVID E. SILL, DAVID J. BRENNAN, AND/OR ANY OTHER PARTY
+WHO MAY MODIFY AND REDISTRIBUTE GNU EMACS LISP ARCHIVE CODE, BE LIABLE
+TO YOU FOR DAMAGES, INCLUDING ANY LOST PROFITS, LOST MONIES, OR OTHER
+SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR
+INABILITY TO USE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA
+BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY THIRD PARTIES OR A
+FAILURE OF THE CODE TO OPERATE WITH CODE NOT DISTRIBUTED BY THE EMACS
+LISP ARCHIVE) THE CODE, EVEN IF YOU HAVE BEEN ADVISED OF THE
+POSSIBILITY OF SUCH DAMAGES, OR FOR ANY CLAIM BY ANY OTHER PARTY.

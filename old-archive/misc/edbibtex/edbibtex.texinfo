@@ -1,0 +1,439 @@
+\input texinfo @c -*-texinfo-*-
+@c %**start of header
+@setfilename edbibtex.info
+@settitle edbibtex User's Manual
+ 
+@setchapternewpage odd
+@c %**end of header
+ 
+@ifinfo
+This file documents the @code{edbibtex} BibTeX Database system.
+ 
+Copyright (C) 1993 Michael Burschik <burschik@@uni-bonn.de>
+ 
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+ 
+@ignore
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+ 
+@end ignore
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+ 
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end ifinfo
+ 
+@titlepage
+@title edbibtex
+@subtitle The BibTeX Package for EDB
+@subtitle Version 0.22
+@subtitle December 1993
+@author Michael Burschik
+ 
+@page
+@vskip 0pt plus 1filll
+Copyright @copyright{} 1993 Michael Burschik
+ 
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+ 
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+ 
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice may be stated in a translation approved
+by the Foundation.
+@end titlepage
+ 
+@node Top, , , (dir)
+ 
+@code{edbibtex.el} is a package of functions which should prove useful
+for maintaining BibTeX database files using EDB, Michael Ernst's
+marvelous Emacs Database. @code{edbibtex.el} contains functions for
+reading, writing, formatting and validating such files. You should also
+have @file{BibTeX.dba}, an EDB auxiliary file for use with BibTeX style
+bibliography files, and a set of sample formats.
+ 
+I am indebted to Michael Ernst <mernst@@theory.lcs.mit.edu> and Thorsten
+Ohl <ohl@@physics.harvard.edu> for the inspiration their code provided
+and the information they supplied. I would also like to thank Alastair
+Burt <burt@@dfki.uni-kl.de>, James Crotinger <jac@@moonshine.llnl.gov>
+and Martin Maechler <maechler@@stat.math.ethz.ch> for bug reports.
+
+Please send all bug reports, suggestions for improvement, threats and
+praise (if any) to: Michael Burschik <burschik@@uni-bonn.de>.
+ 
+ 
+@menu
+* Copying::		How you can copy and share @code{edbibtex}.
+* Caveats::		Where @code{edbibtex} will fail you.
+* Features::		What @code{edbibtex} should do for you.
+* Installation::	How to install @code{edbibtex}.
+* Customization::	How to pinch and twiddle @code{edbibtex}.
+* Concept Index::	Index of concepts.
+@end menu
+ 
+ 
+ 
+@node Copying, Caveats, Top, Top
+@chapter Copying
+@cindex Copying
+@include gpl.texinfo
+ 
+ 
+ 
+@node Caveats, Features, Copying, Top
+@chapter Caveats
+@cindex Caveats
+@cindex What doesn't work
+ 
+@menu
+* Comments::		The fate of comments and folding information.
+* Strings::		@code{@@string} commands and string concatenation.
+@end menu
+ 
+ 
+ 
+@node Comments, Strings,, Caveats
+@section Comments
+@cindex Comments
+ 
+The BibTeX files I have seen so far all tended to have
+comments and fancy delimiting lines or folding information
+between the entries. I hope the relevant functions will
+skip over this stuff unharmed, but they will discard all
+such additional information. In other words:
+ 
+@example
+Anything which is not recognized as a
+   BibTeX entry will be discarded.
+@end example
+ 
+My official position on comments is that they should be put
+in some ignored BibTeX field, such as @samp{ABSTRACT} or
+@samp{MY-COMMENT}. I might write functions to look for comments
+in other places, but don't count on it. I would like to
+support folding information at some time in the future.
+ 
+ 
+ 
+@node Strings,, Comments, Caveats
+@section Strings
+ 
+BibTeX's @code{@@string} command is supported. If string
+expansion (@pxref{String Expansion}.) is turned off
+abbreviations will be displayed enclosed by @samp{#}
+characters, which should be safe for enough for @TeX{} as
+long as the catcodes have not been changed and your
+abbreviations do not start with digits, which will confuse
+@code{edbibtex}. The abbreviations will not, however, be
+written to the database file that way. If abbreviations are
+entered in database-edit-mode, they must also be enclosed
+this way (@pxref{Defining Abbreviations}, for details and
+examples). @refill
+ 
+ 
+ 
+@node Features, Installation, Caveats, Top
+@chapter Features
+@cindex Features
+ 
+@menu
+* Defining Abbreviations::	BibTeX's @@string command.
+* String Concatenation::	BibTeX's @samp{#} operator.
+* Preambles::			BibTeX's @@preamble command.
+* Validation::			Validating the database entries.
+@end menu
+ 
+ 
+ 
+@node Defining Abbreviations, String Concatenation,, Features
+@section Defining Abbreviations
+@cindex Defining Abbreviations
+@findex BibTeX's @code{@@string} command
+ 
+@code{edbibtex} is able to handle BibTeX's @code{@@string} command.
+String declarations are considered to be a valid entry type and are
+associated with a separate format file. @refill
+ 
+If string expansion (@pxref{String Expansion}.) is turned off
+abbreviations will be displayed enclosed by @samp{#} characters, which
+should be safe for enough for @TeX{} as long as the catcodes have not
+been changed and your abbreviations do not start with digits, which will
+confuse @code{edbibtex}. The abbreviations will not, however, be written
+to the database file that way. If abbreviations are entered in
+database-edit-mode, they must also be enclosed this way. @refill
+ 
+Thus, if your BibTeX database file contains the command
+ 
+@example
+@@string( AMS = "American Mathematical Society" )
+@end example
+ 
+then your database display buffer should look like this:
+ 
+@example
+PUBLISHER:   #AMS#
+@end example
+ 
+Make sure you always tag your abbreviations like that, even if string
+expansion is turned on.
+ 
+If string expansion is turned on, all abbreviations in the database file
+will be expanded on being read from the file. However, you can still
+enter abbreviations in database-edit-mode and these will still be
+validated (@pxref{Validation}.).
+ 
+ 
+ 
+@node String Concatenation, Preambles, Defining Abbreviations, Features
+@section String Concatenation
+@cindex String Concatenation
+@findex BibTeX's concatenation operator
+@findex @samp{#}
+ 
+@code{edbibtex} supports BibTeX's string concatenation
+feature. This means that you can write things like this:
+ 
+@example
+@@string( AMS = "American Mathematical Society" )
+ 
+@@book@{lattices
+ , ...
+ , series = AMS # "Colloquium Publications"
+ , ... @}
+@end example
+ 
+@code{edbibtex} will display this as:
+ 
+@example
+SERIES:   #AMS# Colloquium Publications
+@end example
+ 
+You can use any amount of concatenation.
+ 
+ 
+ 
+@node Preambles, Validation, String Concatenation, Features
+@section Preambles
+@cindex Preambles
+@findex BibTeX's @code{@@preamble} command
+ 
+BibTeX's @@preamble feature, which allows you to define new
+macros for your bibliography, is also supported by
+@code{edbibtex}. @@preamble entries have their own display
+format.
+ 
+ 
+ 
+@node Validation,, Preambles, Features
+@section Validation
+@cindex Validation
+@findex BibTeX-validate-entry
+ 
+All entries are checked both for undefined abbreviations and for
+violations of the BibTeX entry type requirements. This is done
+automatically when the database file is read and whenever a record is
+modified. It can also be done interactively with the function
+@code{BibTeX-validate-entry}, which is bound to `C-c C-v' by default.
+ 
+If you validate a string record, then @code{BibTeX-string-alist} is
+updated. Your new abbreviation is now defined and will be expanded if
+string expansion is turned on. You will no longer be warned about the
+abbreviation being undefined.
+ 
+ 
+ 
+@node Installation, Customization, Features, Top
+@chapter Installation
+@cindex Installation
+
+The BibTeX package for EDB consists of the following files:
+
+@enumerate
+@item
+The main code file: @file{edbibtex.el}
+
+@item
+An EDB auxiliary file: @file{bibtex.dba}
+
+@item 
+Format files: @file{article.fmt}, @file{bibtex.fmt}, @file{book.fmt},
+@file{booklet.fmt}, @file{conference.fmt}, @file{inbook.fmt},
+@file{incollection.fmt}, @file{inproceedings.fmt},
+@file{manual.fmt}, @file{mastersthesis.fmt}, @file{misc.fmt},
+@file{phdthesis.fmt}, @file{preamble.fmt}, @file{proceedings.fmt},
+@file{string.fmt}, @file{techreport.fmt}, @file{unpublished.fmt} @refill
+
+@item
+Documentation: @file{edbibtex.texinfo}, @file{gpl.texinfo}
+
+@item
+Examples: @file{bibtex.bib}, @file{bibtex.dba}, @file{bibtex.fmt}
+@end enumerate
+
+Make a copy of @file{bibtex.dba}, change its name to fit the name of
+your BibTeX database and put it somewhere it will be found by EDB. If,
+for example, your database is called @file{PhD-Thesis.bibliography}, then
+rename the copy of @file{BibTeX.dba} to @file{PhD-Thesis.dba}. @refill
+
+Byte-compile @file{edbibtex.el} and put it somewhere in your load path.
+
+@vindex db-format-file-path
+Put the format files somewhere in EDB's @code{db-format-file-path}. It
+is also a good idea to have a format file with the same base name as
+your database, so that you will not be prompted for a format every time
+you load it. This file should be a generic format file like
+@file{bibtex.fmt}. Copy this format file and call it
+@file{PhD-Thesis.fmt} or whatever. @refill
+
+Reading and writing BibTeX database files is complicated and
+time-consuming. If you are thinking of maintaining database files
+containing more than two or three dozen entries, you should think about
+keeping two versions: workday versions for use with EDB (in EDB's
+internal layout) and Sunday versions for BibTeX to work with (in
+BibTeX's file layout). You can control the on-disk representation of
+your database files with @code{db-toggle-internal-file-layout}.
+ 
+ 
+@node Customization, Concept Index, Installation, Top
+@chapter Customization
+@cindex Customization
+ 
+The file @file{BibTeX.dba} is used to set a number of per-database
+variables that modify the behaviour of @code{edbibtex}. Before you do
+anything else, make sure that you have a copy of @file{bibtex.dba}
+hidden away in some safe place. Make a copy of the file and rename it so
+that it will fit your database file (e.g., @file{PhD-Thesis.dba}) and
+customize that copy only.
+
+A number of constants and variables that should be database independent
+are defined in @code{edbibtex.el} itself.
+ 
+@menu
+* Entry Types::			Valid BibTeX entry types.
+* Fields::			Valid BibTeX field names.
+* Abbreviations::		Pre-defined abbreviations.
+* String Expansion::		Expanding abbreviatons.
+* Multiple Formats::		Using entry type dependent formats.
+@end menu
+ 
+ 
+ 
+@node Entry Types, Fields,, Customization
+@section Entry Types
+@cindex Entry Types
+@vindex BibTeX-entry-type-alist
+ 
+@code{BibTeX-entry-type-alist} is an association list containing all
+valid BibTeX entry types and the format files associated with them.  You
+shouldn't want to change the entry types, but you might want to give
+other names to your format files.
+ 
+Note that the list of valid entry types includes @code{@@string} and
+@code{@@preamble} entries.
+ 
+@code{BibTeX-entry-type-alist} is defined in @code{edbibtex.el}.
+ 
+ 
+ 
+@node Fields, Abbreviations, Entry Types, Customization
+@section Fields
+@cindex Fields
+@vindex BibTeX-field-alist
+ 
+@code{BibTeX-field-alist} is an association list containing all standard
+BibTeX entry fields (BibTeX version 0.99a) and a few additional fields
+that happened to pop up in my own BibTeX database files or Thorsten
+Ohl's example file. You might want to add a few of your own, depending
+on what information you require and what style you are using.
+ 
+At the moment, all external field names (i.e., all field names that will
+be written to the database file) are string-equal to the uppercase
+symbol name of the associated database field. I do not think you should
+change that.
+ 
+@code{BibTeX-field-alist} is defined in @code{edbibtex.el}.
+ 
+ 
+ 
+@node Abbreviations, String Expansion, Fields, Customization
+@section Abbreviations
+@cindex Abbreviations
+@vindex BibTeX-string-alist
+ 
+@code{BibTeX-string-alist} is an association list containing a few
+standard abbreviations and their expansions. You can add whatever you
+like, or set it to @code{nil}.
+ 
+This association list will be updated whenever a string entry is read
+from the database file or a newly added string entry is validated
+(@pxref{Validation}, for details).
+ 
+@code{BibTeX-string-alist} is defined in @code{edbibtex.el}.
+ 
+ 
+ 
+@node String Expansion, Multiple Formats, Abbreviations, Customization
+@section String Expansion
+@cindex String Expansion
+@vindex BibTeX-expand-strings
+ 
+If you set the per-database variable @code{BibTeX-expand-strings} to
+something other than @code{nil}, then all abbreviations defined with BibTeX's
+@code{@@string} feature will be expanded. I'm not sure this is useful
+for anything.
+ 
+ 
+ 
+@node Multiple Formats,, String Expansion, Customization
+@section Multiple Formats
+@cindex Multiple Formats
+@findex db-alternate-format
+@findex BibTeX-set-format
+@vindex BibTeX-multiple-format
+@vindex BibTeX-use-default-format
+ 
+If the per-database variable @code{BibTeX-multiple-format} is set to
+@code{nil}, then only a generic format will be used to display records.  If
+@code{BibTeX-multiple-format} was set from the auxiliary file, then this
+format will be the one defined as @code{GENERIC}; otherwise it will be the
+format of the record on display when the variable was set. In any case,
+however, you can change the format with @code{db-alternate-format}.
+ 
+If @code{BibTeX-multiple-format} is set to anything other than @code{nil},
+@code{db-alternate-format} will have no effect at all; the format of an
+entry will depend on the format file associated with its entry type.
+ 
+If @code{BibTeX-use-default-format} is set to something other than
+@code{nil}, then the format of a newly added entry (i.e., an entry without a
+valid entry type) will be the default format (i.e., the format of the
+entry currently on display). You can change this with
+@code{BibTeX-set-format}. If @code{BibTeX-use-default-format} is set to
+@code{nil}, you will be prompted for an appropriate format.
+ 
+ 
+ 
+@page
+ 
+@node Concept Index,, Customization, Top
+@unnumbered Concept Index
+@printindex cp
+ 
+ 
+@contents
+@bye

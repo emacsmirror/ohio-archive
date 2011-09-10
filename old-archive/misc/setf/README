@@ -1,0 +1,86 @@
+Setf.el is an implementation of ``generalized variable'' operations for
+elisp.  A generalized variable is anything that has a value that can be both
+retrieved and stored into (which obviously includes normal variables!); e.g.,
+the car of a cons-cell can be retrieved with CAR, and stored into with SETCAR.
+
+Setf (the whole package, not the macro) remembers which storage-function
+corresponds to each access function, and allows you to use the name of the
+access-function for both purposes:
+  (setf (car x) y) is the same as (setcar x y), and
+  (setf (get x y) z) is the same as (put x y z).
+
+Because a generalized variable, say (nth (1+ (f1 x)) (f2 y)), may involve
+evaluating forms that have side-effects (here perhaps the functions f1 and
+f2), setf uses a mechanism that allows it to ensure that the sub-forms of the
+GV are only evaluated once, and in the same order in which they occur in the
+source.  So you can write (push 'hello (nth (1+ (f1 x)) (f2 y))) and it will
+only call f1 and f2 once.
+
+Most standard emacs and lisp functions have setf definitions defined here,
+but you can define new ones using defsetf and define-setf-method.
+
+****************
+The following files should have been included:
+
+ setf.el --	A full* implementation of setf & friends for emacs-lisp, as
+     defined in "Common Lisp the Language."  This includes psetf, rotatef,
+     shiftf, both forms of defsetf, define-setf-method, etc.  Also setf
+     definitions for most lisp and emacs functions for which it makes sense.
+ letopt.el --	A let-binding optimizer, which is used by setf to remove
+     unecessary bindings which are generated.  This is functionality which
+     should perhaps be folded in some form into the compiler, but it isn't
+     yet, so here it is.  Two macros, maybe-let and maybe-let* are the
+     essential interface.
+ plist.el --	Getf, remf, and (setf getf) -- functions for anonymous
+     property lists.
+ strhash.el --	A set of trivial wrappers for intern, etc., to provide
+     string-keyed hash-tables that work with setf.
+ gensym.el --	YA gensym.  But setf needs it, and it isn't standard.
+ setf-autoloads.el -- Autoloads for all the external functions in the
+     preceeding files.
+
+It's recommended that these be compiled, since they use macros heavily.
+
+****************
+To use, just make sure all the above files are in directory that's on your
+load-path, and load setf-autoloads (which also should be done before
+compiling them).
+
+The function doc strings (that you can access with ^Hf; try looking at setf,
+for example) are intended to be helpful, but you should see CLtL for real
+documentation.
+
+Setf.el defines setf-methods for all the standard elisp that make sense (and
+that I could think of), both pure lisp functions and editor functions [e.g.,
+(setf (point) (point-min))].
+
+****************
+Setf depends two non-standard elisp packages:
+ * Jamie Zawinski's new byte-compiler, for the eval-and-compile special form
+   (the let-binding optimizer also uses information from this compiler to
+   detect side-effect-free functions).
+ * Rick Sladkey's backquote package, for a non-broken backquote macro.
+
+The following errors will show up while setf.el(c) is loadeding if you are
+missing one of these package:
+ * If you get an error like "Autoloading failed to define function
+   eval-and-compile", then you don't have the new byte-compiler (or it isn't
+   on your standard load-path).
+ * If you get an error like "Symbol's value as variable is void: args", then
+   you don't have the new backquote package (or it isn't on your load-path).
+
+Both of these have been posted to the net, and are worthwhile having even if
+you don't use setf.  You can contact me if you can't find them elsewhere.
+
+****************
+Bug reports should be sent to Miles Bader <miles@cogsci.ed.ac.uk>.
+
+****************
+*Note:
+   Since there are no multiple return values in elisp, only a single
+   store-variable is supported (although the syntax for defsetf is still the
+   same, and get-setf-method still returns a list of store-variables).
+   For the same reason, get-setf-method returns a list of its values instead
+   of multiple values.
+
+   None of the routines take environment arguments.

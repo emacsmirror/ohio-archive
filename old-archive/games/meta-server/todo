@@ -1,0 +1,7 @@
+1. Add code to get player list directly from metaserver if ck_players
+   program is not available.
+
+2. Add checking for RSA servers (check "FLAGS" data field for an 'r')
+   If not found and in RSA mode, ask for confirmation before running
+   the RSA client.  If found and not in RSA mode, ask if they want to
+   use the RSA client instead.

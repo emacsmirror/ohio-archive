@@ -1,0 +1,471 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse.texi on 24 August 1998 -->
+
+<TITLE>FUSE User's Guide - The syntax and appearance of input files</TITLE>
+</HEAD>
+<BODY>
+Go to the <A HREF="fuse_1.html">first</A>, <A HREF="fuse_2.html">previous</A>, <A HREF="fuse_4.html">next</A>, <A HREF="fuse_7.html">last</A> section, <A HREF="fuse_toc.html">table of contents</A>.
+<P><HR><P>
+
+
+<H1><A NAME="SEC6" HREF="fuse_toc.html#TOC6">The syntax and appearance of input files</A></H1>
+
+
+
+<H2><A NAME="SEC7" HREF="fuse_toc.html#TOC7">The syntax of FEFF and the UWXAFS programs</A></H2>
+
+<P>
+Each of FEFF and the UWXAFS programs requires an input file
+as part of its input structure.  This input file is always an ASCII
+text file which contains all of the information required by the
+program at run-time.  This information might include the names and
+locations of any other input files, the names to be assigned to output
+files, and any physical or run-time parameters required by the
+program.
+
+</P>
+<P>
+Although there are some differences in how each program interprets its
+input file, there are several common rules governing the syntactic
+structure of the input files.  The input files are always parsed.
+This means that there is considerable freedom in the order in which
+information is placed in the input file.  Each program reads a line of
+input and searches for specially recognized words called
+<EM>keywords</EM>.  When a recognized keyword is found, the next one or
+more words in the input file are read and interpreted in a context
+appropriate to the keyword.  For example, in AUTOBK the word
+<SAMP>`data'</SAMP> is used to specify the name of the file containing the input
+chi(k) data.  When AUTOBK encounters the word <SAMP>`data'</SAMP> it
+interprets the following word as the name of a computer file.
+<A NAME="IDX5"></A>
+
+</P>
+<P>
+In all of the programs keywords and their values are separated by
+white space.  The formal definition of white space in all of the
+programs is any number of space or tab characters followed by zero or
+one comma or equals sign followed by any number of spaces or
+tabs.<A NAME="DOCF4" HREF="fuse_foot.html#FOOT4">(4)</A>
+Here is an example of how this rule might be implemented:
+
+<PRE>
+	keyword1 = value1	keyword2 = value2
+</PRE>
+
+<P>
+In this example, the equals sign (<SAMP>`='</SAMP>) is used to emphasize the
+relationship between the keyword and its value, and a tab is inserted
+before the second keyword.
+<A NAME="IDX6"></A>
+
+</P>
+<P>
+In most cases there can be any number of keyword/value pairs on a line
+and the keywords can come in any order.  There are a few notable
+exceptions to this rule:
+
+</P>
+
+<OL>
+
+<LI>
+
+In FEFF there can only be one keyword per line and it must
+come at the beginning of the line.  Anything on a line after the
+keyword and its value is ignored by FEFF.
+
+<LI>
+
+In ATOMS the keyword <SAMP>`atoms'</SAMP> (or possibly <SAMP>`basis'</SAMP>)
+must be the last keyword in the file.
+
+<LI>
+
+In ATOMS the 10 characters following the keyword
+<SAMP>`space'</SAMP> are read as the value of that keyword.  This is because
+space group notation contains spaces, but no space group symbol is
+longer than 10 characters.
+
+<LI>
+
+In FEFFIT all path parameters and the words <SAMP>`set'</SAMP>,
+<SAMP>`guess'</SAMP>, and <SAMP>`local'</SAMP> must be the only keywords on their lines
+and must come at the beginning of the line.
+
+<LI>
+
+In FEFFIT there is one keyword that contains white space.
+It is <SAMP>`next data set'</SAMP> and is used to denote the boundary between
+data sets.
+
+</OL>
+
+<P>
+For complete details on the keywords recognized by these programs and
+the syntax of their values, see the documents for each program.
+
+</P>
+<P>
+Each of the programs recognizes certain characters as comment
+characters.  This means that any text on a line following one of these
+characters will be ignored by the program.  In FEFF <SAMP>`*'</SAMP> is the
+comment character.  In ATOMS and AUTOBK any of <SAMP>`*'</SAMP>,
+<SAMP>`#'</SAMP>, <SAMP>`%'</SAMP>, or <SAMP>`!'</SAMP> are comment characters.  In FEFFIT
+all of <SAMP>`*'</SAMP>, <SAMP>`#'</SAMP>, <SAMP>`%'</SAMP>, or <SAMP>`!'</SAMP> are beginning of line
+comment characters, while <SAMP>`#'</SAMP>, <SAMP>`%'</SAMP>, or <SAMP>`!'</SAMP> are comment
+characters in the middle of the line.  The reason for this distinction
+in FEFFIT is that <SAMP>`*'</SAMP> is used in math expressions.
+<A NAME="IDX7"></A>
+
+</P>
+
+
+<H2><A NAME="SEC8" HREF="fuse_toc.html#TOC8">Additional syntax rules imposed by FUSE</A></H2>
+
+<P>
+The syntax rules described above are an integral part of @fuse{} and
+are used to determine the behavior of most of its features.  There is
+a major syntactic rule imposed by @fuse{} for FEFFIT input that
+is not a requirement of the program.  This rule is:
+
+<BLOCKQUOTE>
+<P>
+All path parameters sharing a common path index (i.e. all those
+referring to the same scattering path as calculated by FEFF) must
+be contiguous in the input file.  Such a grouping of path parameters is
+called a <EM>path paragraph</EM>.  The first line in a path paragraph
+<STRONG>must</STRONG> be for the path parameter <SAMP>`path'</SAMP>, which is used to
+identify the name of the FEFF output file containing the
+calculation for that scattering path.  Path paragraphs are separated by
+lines containing only comment and whitespace characters (i.e. space,
+tab, comma, <KBD>=</KBD>, <KBD>*</KBD>, <KBD>#</KBD>, <KBD>%</KBD>, and <KBD>!</KBD>).
+</BLOCKQUOTE>
+
+<P>
+<A NAME="IDX8"></A>
+
+</P>
+<P>
+This definition of the path paragraph is <STRONG>required</STRONG> for several
+of the most powerful editing features in FEFFIT minor mode.  I
+strongly encourage you to observe the syntactic structure of the path
+paragraph.  If you prefer to group together all <SAMP>`path'</SAMP> lines
+separately from all <SAMP>`sigma2'</SAMP> lines, then you will not find
+FEFFIT minor mode to be particularly helpful.  Sorry.
+
+</P>
+
+
+
+<H2><A NAME="SEC9" HREF="fuse_toc.html#TOC9">Syntax colorization</A></H2>
+
+<P>
+Each minor mode has rules for syntax colorization of the text.
+@fuse{} supports both font-lock and hilit19 for syntax colorization.  Keywords
+are cast in one of several colors, with conceptually similar keywords
+sharing colors.  Comments are set in a different color, which is red by
+default.  See the installation instructions for how to enable your Emacs
+session to use @fuse{}'s syntax colorization.
+
+</P>
+<P>
+If you already use either <EM>font-lock</EM> or <EM>hilit19</EM>, then
+@fuse{} will display your input files with syntax colorization.  If you
+would like to start using syntax colorization, the set up is easy.  To
+enable syntax coloring of the text of your input files using font-lock,
+place the following line in your <TT>`.emacs'</TT> file:
+
+<PRE>
+     (global-font-lock-mode t)
+</PRE>
+
+<P>
+To enable syntax coloring of the text of your input files using the
+hilit19 package, place the following lines in your <TT>`.emacs'</TT> file:
+
+<PRE>
+     (cond (window-system
+            (setq hilit-mode-enable-list  '(not text-mode)
+                   hilit-background-mode   'light
+                   hilit-inhibit-hooks     nil
+                   hilit-inhibit-rebinding nil)
+            (require 'hilit19) ))
+</PRE>
+
+<P>
+I find that font-lock offers better performance than
+<TT>`hilit19'</TT>.  Both packages are supported by @fuse{}, although
+hilit19 is no longer supported by its author.
+<A NAME="IDX9"></A>
+<A NAME="IDX10"></A>
+
+</P>
+
+
+
+<H2><A NAME="SEC10" HREF="fuse_toc.html#TOC10">Associating programs with input files</A></H2>
+
+<P>
+Each of the programs requires that the input file have a particular
+name.  For example FEFF requires that its input file be called
+<TT>`feff.inp'</TT>.  You might, however, wish to use file names which are
+mnemonically associated with the contents of the file.  For instance,
+the <TT>`feff.inp'</TT> file used to model data on metallic copper might be
+called <TT>`cu-feff.inp'</TT>.  Because @fuse{} uses minor modes specific to
+each program for editing the input files, it is necessary for @fuse{} to
+determine which for which program each edited input file is intended.
+To determine this, it first looks at the file name, if the filename is
+obviously indicative of a particular program (e.g. <TT>`autobk.inp'</TT> is
+almost certainly intended for use with AUTOBK) then that program is
+used.  If the filename is not obviously indicative, then @fuse{} may
+prompt you for a program name when you edit the file for the first time.
+It is important to answer this question correctly.  Every input file is
+edited in INPUT major mode and in a minor mode appropriate to the
+program.  To enable the full functionality of @fuse{}, the associated
+program must be identified so that the appropriate minor mode can be
+used.
+
+</P>
+
+
+
+<H2><A NAME="SEC11" HREF="fuse_toc.html#TOC11">Automatic configuration</A></H2>
+
+<P>
+<A NAME="IDX11"></A>
+
+</P>
+<P>
+There are several features in @fuse{} that are routinely set in the
+course of editing an input files that are convenient to retain between
+editing sessions.  To do this, @fuse{} writes special comment lines
+to your input files that are read when the file is initially loaded by
+Emacs and used to set variables which appropriately alter the behavior
+of @fuse{}.  The comment lines are generally written to the end of
+the input file and begin with a special string of comment characters.
+They look something like this:
+
+<PRE>
+!!&#38;&#38; Local Variables:
+!!&#38;&#38; input-program-name: "autobk"
+!!&#38;&#38; End:
+</PRE>
+
+<P>
+There are several variables which are set in this manner.  The most
+important is the one that identifies the program for which the input
+file is intended.  In the example above, the comment line identifies
+AUTOBK as the program for the input file.
+
+</P>
+<P>
+There are currently five other pieces of information that are stored
+in these special comment lines.  These are (1) the directory path to
+the location of files from a FEFF run, (2) the directory path to
+input data files, (3) the directory path to out files, (4) the default
+k-weight to use when chi(k) data is plotted, and (5) the name of
+the master file for an include file in a multi-file input file.  In
+the future more automatic configuration possibilities may be added.
+@fuse{} will ignore any other variable values in the list when it
+updates it's own automatically configured variables.
+
+</P>
+<P>
+The automatic configuration lines are updated each time an input file is
+saved to disk.  Each of the variable set by these lines can be altered
+by functions built into @fuse{} during the course of editing.  These are
+found in the <SAMP>`Input'</SAMP> menu and described in the quick reference
+card.  One of the variables in @fuse{},
+<SAMP>`input-prohibit-autoconfig-flag'</SAMP>, can be set to prohibit the
+writing of the auto-configuration lines.  Use this if you object to
+having @fuse{} insert text into your input file.  I recommend, though,
+that you allow it to do so.  It is very convenient to not have to
+re-enter this information every time the file is edited.
+<A NAME="IDX12"></A>
+
+</P>
+
+
+<H2><A NAME="SEC12" HREF="fuse_toc.html#TOC12">Keywords and keyword parsing</A></H2>
+
+<P>
+One of the difficulties of using FEFF and the UWXAFS
+programs is remembering the names of the keywords recognized by the
+various programs and what values each of the keywords takes.
+@fuse{} can help you.  It has knowledge of all keywords used by each
+of the programs hardwired in and offers several functions to let you
+use that knowledge.
+<A NAME="IDX13"></A>
+
+</P>
+<DL COMPACT>
+
+<DT><STRONG>Templates</STRONG>
+<DD>
+Each minor mode offers template functions which insert necessary
+keywords into your input file with blank spaces for you to fill in
+appropriate values.  Using the templates assures that your input file
+will at least run the program to completion without neglecting any
+crucial information.  The templates are described in more details in
+the chapters on the minor modes.
+
+All of the templates in @fuse{} are made using the <SAMP>`tempo'</SAMP> package.
+This means that each place where a value needs to be inserted by the
+user is a <EM>hotspot</EM>.  The hotspots are marked by salmon colored
+rectangles.  Once the hotspots are filled in you can clear the salmon
+colored rectangles with <KBD>C-c C-t c</KBD>.  The functions
+<SAMP>`tempo-forward-mark'</SAMP> and <SAMP>`tempo-backward-mark'</SAMP>, bound in
+@fuse{} to <KBD>M-n</KBD> and <KBD>M-p</KBD>, can be used to move among the
+hotspots.
+<A NAME="IDX14"></A>
+<A NAME="IDX15"></A>
+<A NAME="IDX16"></A>
+<A NAME="IDX17"></A>
+
+<DT><STRONG>Keyword completion</STRONG>
+<DD>
+The function <SAMP>`input-complete-keyword'</SAMP> (normally bound to
+<KBD>M-<KBD>tab</KBD></KBD>) will attempt to complete a partially typed
+keyword.  If the string already typed matches only one possible
+keyword, that keyword will be completed, colored according to syntax,
+and a brief explanation of the keyword will be offered in the echo
+area.  If the typed string does not match any keyword, you will be
+told in the echo area.  If more than one keyword is matched, all
+possible matches will be offered in the echo area.  As an example,
+when editing a FEFFIT input file, if you type <KBD>g</KBD> then
+<KBD>M-<KBD>tab</KBD></KBD>, <SAMP>`guess'</SAMP> will be inserted into your input file
+and you will told in the echo area that <SAMP>`guess'</SAMP> is used to set the
+name and initial value of a fitting parameter.
+<A NAME="IDX18"></A>
+<A NAME="IDX19"></A>
+<A NAME="IDX20"></A>
+
+<DT><STRONG>Argument descriptions</STRONG>
+<DD>
+The function <SAMP>`input-arg-for-this-keyword'</SAMP> (normally bound to
+<KBD>M-?</KBD>) will offer a brief description of the keyword underneath the
+cursor along with a description of the sort of argument it takes.  The
+is written to the echo area.
+<A NAME="IDX21"></A>
+<A NAME="IDX22"></A>
+
+<DT><STRONG>Verification of keyword values</STRONG>
+<DD>
+The function <SAMP>`input-check-this-keyword-arg'</SAMP> (normally bound to
+<KBD>M-<KBD>ret</KBD></KBD>) will perform a simple check of the value of the
+keyword underneath the cursor.  For example, if the keyword is
+supposed to take a numeric value, this function will check to see that
+the value is a number.  If the keyword specifies an input data file,
+it will check to see that the value is the name of a readable file.
+<A NAME="IDX23"></A>
+<A NAME="IDX24"></A>
+<A NAME="IDX25"></A>
+
+<DT><STRONG>Verification of input files</STRONG>
+<DD>
+<EM>This functionality is not yet a part of</EM> @fuse{}, @emph{but in a
+future version a function will exist to verify an entire input file by
+repeatedly using <BR><SAMP>`input-check-this-keyword-arg'</SAMP>.  If any mistakes
+are found, error messages will be written to a second window.  I plan
+to provide a simple way of jumping from messages in the error window
+to the appropriate point in the input file.}
+
+<DT><STRONG>Display of all possible keywords</STRONG>
+<DD>
+The function <SAMP>`input-display-keywords'</SAMP> (normally bound to <KBD>C-c
+C-b k</KBD>) opens a second window and displays all possible keywords for the
+program associated with the input file.  The keywords are tabulated
+along with brief descriptions.
+<A NAME="IDX26"></A>
+<A NAME="IDX27"></A>
+
+</DL>
+
+
+
+<H2><A NAME="SEC13" HREF="fuse_toc.html#TOC13">Indentation and separation</A></H2>
+
+<P>
+In the first section of this chapter I described the rules recognized
+by the programs for separating keywords and values.  As long as at
+least one whitespace character separates words in the input files, the
+programs are quite content.  Merely meeting the minimum requirement,
+however, will make for a messy looking and hard to read input file.
+Because you or some other human will eventually read your input file,
+it is convenient to adopt certain conventions about indenting text and
+about separating textual elements within the input files.
+<A NAME="IDX28"></A>
+<A NAME="IDX29"></A>
+
+</P>
+<P>
+To make input files easier to read thus easier to understand, @fuse{}
+uses several configurable rules for determining proper indentation and
+separation.  The choices @fuse{} makes about indentation and separation
+are context-dependent.  That is, the indentation of, say, a line
+containing a <SAMP>`guess'</SAMP>ed variable in FEFFIT may be different
+from the indentation of a line in an AUTOBK input file.  Variables
+in @fuse{} with names ending in either <SAMP>`indent'</SAMP> or <SAMP>`separate'</SAMP>
+control the amount and type of whitespace used in various situation by
+many @fuse{} functions.
+
+</P>
+<P>
+Each of these variables takes an integer value.  A positive integer
+specific how many <EM>spaces</EM> will be inserted as indentation or
+separation.  A negative number specifies the number of <EM>tabs</EM> to
+insert.  For indentation variables, a value of 0 means that no
+whitespace will be inserted, i.e. the text will be flush against the
+left side of the screen.  For separation variables, a value of 0 will
+default to -1, i.e. a single tab character.  While you are certainly
+free to choose absurdly large numbers, for example -73 for an
+indentation value, I strongly recommend against this.  For one thing,
+an indentation of 73 tabs will be ugly and difficult to read.  For
+another, each of the programs has a hard-wired limit on the length of
+a text line.  For example, ATOMS only reads the first 78
+characters of each line.
+
+</P>
+<P>
+Each minor mode has a <SAMP>`cleaning'</SAMP> function which can be used to
+standardize the appearance of the file.  Each cleaning function will
+alter each line in the file by deleting all existing indentation and
+separation on the line and inserting the appropriate whitespace as
+determined from the user configuration variables.  All of the variables
+have defaults that will make any input file tidy and easy to read.  The
+default values for variables used by the FEFF minor mode are chosen
+to make the file look like one generated by ATOMS.
+<A NAME="IDX30"></A>
+
+</P>
+<P>
+Several other functions, such as those that insert templates, also use
+the indentation and separation variables.
+<A NAME="IDX31"></A>
+
+</P>
+
+
+
+<H2><A NAME="SEC14" HREF="fuse_toc.html#TOC14">Master files and include files</A></H2>
+
+<P>
+FEFFIT, AUTOBK, and PHIT allow the use of include files.
+@fuse{} allows you to specify the relationship between include files and
+their master files by setting an automatic configuration variable.
+Currently this variable is used only by a few functions.  The program
+running function will use the master file as the input file.  Also the
+functions for jumping to log and prm files jump to the files appropriate
+to the master file.  Plotting and paragraph manipulation functions do
+not currently use the master file.
+<A NAME="IDX32"></A>
+<A NAME="IDX33"></A>
+
+</P>
+
+<P><HR><P>
+Go to the <A HREF="fuse_1.html">first</A>, <A HREF="fuse_2.html">previous</A>, <A HREF="fuse_4.html">next</A>, <A HREF="fuse_7.html">last</A> section, <A HREF="fuse_toc.html">table of contents</A>.
+</BODY>
+</HTML>

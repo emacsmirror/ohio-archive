@@ -1,0 +1,386 @@
+;;; snail.el -- paper mail addresses for GNU Emacs.
+;;; @configure_input@
+;;;
+;;; Copyright (C) 1995 Ralph Schleicher
+;;;
+;;; This program is free software; you can redistribute it and/or
+;;; modify it under the terms of the GNU General Public License as
+;;; published by the Free Software Foundation; either version 2 of
+;;; the License, or (at your option) any later version.
+;;;
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with this program; if not, write to the Free Software
+;;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;;;
+;;; This file is not part of GNU Emacs.
+;;;
+;;; Author: Ralph Schleicher <rs@purple.IN-Ulm.DE>
+;;; Maintainer: see the `Author' field
+;;; Keywords: local comm
+;;; Comments: Insert the lines
+;;;
+;;;	(autoload 'snail-read-database-file "snail"
+;;;	  "Parse a snail address database." t)
+;;;
+;;;	(autoload 'snail-define-snail-alias "snail"
+;;;	  "Define a paper mail alias." t)
+;;;
+;;;	(autoload 'snail-address "snail"
+;;;	  "Insert a paper mail address at point." t)
+;;;
+;;; into your `site-start.el' file so that the user can define paper
+;;; mail aliases in `.emacs'.  You should also provide a default value
+;;; for `snail-country-regexp', e.g.,
+;;;
+;;;	(setq snail-country-regexp "\\(Germany\\|Deutschland\\)")
+;;;
+;;; The EDB database requires an additional auxiliary and format file.
+;;; The default location of these files should be set in `default.el'.
+;;; Say, e.g.,
+;;;
+;;;	(autoload 'snail-db-find-file "snail"
+;;;	  "Visit an EDB database file." t)
+;;;
+;;;	(setq snail-db-aux-directory "/usr/local/lib/emacs/site-lisp"
+;;;	      snail-db-format-directory "/usr/local/lib/emacs/site-lisp")
+;;;
+;;; Time-stamp: "Fri Dec 29 13:37:02 MET 1995 rs@purple.IN-Ulm.DE"
+;;; Code:
+
+
+(autoload 'sendmail-synch-aliases "sendmail")
+
+
+(defvar snail-database-file-name "~/snail"
+  "*Name of the default address database file.")
+
+(defvar snail-database-file-modified t
+  "Non-`nil' if the `snail-database-file-name' file have to be read again.")
+
+(defvar snail-database-file-modification-time nil
+  "The modification time of the `snail-database-file-name' file
+when it was last examined.")
+
+(defun snail-synchronize-aliases ()
+  (let ((mod-time (nth 5 (file-attributes snail-database-file-name))))
+    (or (equal snail-database-file-modification-time mod-time)
+	(setq snail-database-file-modification-time mod-time
+	      snail-database-file-modified t))
+    (and (file-exists-p snail-database-file-name)
+	 (eq snail-database-file-modified t)
+	 (progn
+	   (setq snail-database-file-modified nil)
+	   (snail-read-database-file)))))
+
+(defvar snail-define-mail-alias nil
+  "*Automatically define a mail alias if there is an e-mail address
+in the record.")
+
+(defvar snail-define-fax-alias nil
+  "*Automatically define a fax alias if there is a fax phone number
+in the record.")
+
+(defvar snail-read-database-file-function nil
+  "*Function for reading an address database file;
+defaults to `snail-default-read-database-file-function'.
+`snail-read-database-file-function' takes one argument -- the file name
+of the database file to be read.")
+
+(defvar snail-read-database-file-function-record-hooks nil
+  "*List of actions which may be run by `snail-read-database-file-function'
+after a record had been parsed.  The symbols `label', `organization',
+`department', `occupation', `address', `title', `first-name', `family-name',
+`street', `zip-code', `location', `country', `phone', `fax', `e-mail',
+`birthday' and `comment' are bound to the corresponding field values.")
+
+;;;### autoload
+(defun snail-read-database-file (&optional file-name)
+  "Read an address database.
+FILE-NAME defaults to `snail-database-file-name'.  The actual work is done
+by a function saved in the `snail-read-database-file-function' variable."
+  (interactive "fRead file: ")
+  (setq file-name (expand-file-name (or file-name snail-database-file-name)))
+  (let ((orig-buf (current-buffer)))
+    (save-excursion
+      (funcall (or snail-read-database-file-function
+		   'snail-default-read-database-file-function)
+	       file-name))
+    (switch-to-buffer orig-buf)))
+
+(defun snail-default-read-database-file-function (file-name)
+  "Read a snail address database and define snail, e-mail and fax aliases.
+This function honors the `snail-read-database-file-function-record-hooks'
+variable.  The file format of FILE-NAME have to look something like that:
+
+    
+    Label:		A unique label identifying this record
+    Organization:	Name of organization
+    Department:		Name of department
+    Occupation:		A brief job description
+    Address:		Title used in speech, e.g., `Mr.'
+    Title:		Offical title, e.g., `M. Sc.'
+    First-Name:		First name
+    Family-Name:	Family name
+    Street:		Name of street or P.O. box code
+    Zip-Code:		Zip (brit. postal) code
+    Location:		Name of city or town
+    Country:		Name of country
+    Phone:		Phone number
+    Fax:		Fax number
+    E-Mail:		E-mail address
+    Birthday:		Date of birth
+    Comment:		Additional information or notes
+
+All fields are optional and the order doesn't matter.  Spaces and tabs after
+the colon are ignored.	`Organization:', `Department:' and `Comment:' are
+multi-line fields (continuation lines begin with a single tab).	 All records
+are separated by a form feed on a line by itself.  Everything before the
+first record is treated as a file comment and will be ignored."
+  (if snail-define-mail-alias
+      (sendmail-synch-aliases))
+  (if snail-define-fax-alias
+      (fax-synchronize-resources))
+  (let (list label
+	     organization department occupation
+	     address title first-name family-name
+	     street zip-code location country
+	     phone fax e-mail birthday comment
+	     snail-buf rec-start rec-end)
+    (unwind-protect
+	(let ((case-fold-search nil))
+	  (setq snail-buf (generate-new-buffer " snail"))
+	  (buffer-disable-undo snail-buf)
+	  (set-buffer snail-buf)
+	  (insert-file-contents file-name)
+	  (goto-char (point-max))
+	  (or (= (preceding-char) ?\n)
+	      (insert ?\n))
+	  (goto-char (point-min))
+	  (search-forward "\f\n")
+	  (while (not (eobp))
+	    (setq rec-start (point)
+		  rec-end (if (search-forward "\f\n" nil 0)
+			      (- (point) 2)
+			    (point)))
+	    (save-excursion
+	      (save-restriction
+		(narrow-to-region rec-start rec-end)
+		(setq label nil
+		      organization nil department nil occupation nil
+		      address nil title nil first-name nil family-name nil
+		      street nil zip-code nil location nil country nil
+		      phone nil fax nil e-mail nil birthday nil comment nil)
+		(goto-char (point-min))
+		(while (not (eobp))
+		  (cond ((snail-set-from-field 'label "Label"))
+			((snail-set-from-field 'organization "Organization" t))
+			((snail-set-from-field 'department "Department" t))
+			((snail-set-from-field 'occupation "Occupation"))
+			((snail-set-from-field 'address "Address"))
+			((snail-set-from-field 'title "Title"))
+			((snail-set-from-field 'first-name "First-Name"))
+			((snail-set-from-field 'family-name "Family-Name"))
+			((snail-set-from-field 'street "Street"))
+			((snail-set-from-field 'zip-code "Zip-Code"))
+			((snail-set-from-field 'location "Location"))
+			((snail-set-from-field 'country "Country"))
+			((snail-set-from-field 'phone "Phone"))
+			((snail-set-from-field 'fax "Fax"))
+			((snail-set-from-field 'e-mail "E-Mail"))
+			((snail-set-from-field 'birthday "Birthday"))
+			((snail-set-from-field 'comment "Comment" t))
+			(t
+			 (error "%s: Parse error" file-name))))
+		(run-hooks 'snail-read-database-file-function-record-hooks)
+		(if label
+		    (let ((addr (snail-make-address organization department
+						    first-name family-name
+						    street zip-code location
+						    country)))
+		      (if addr
+			  (snail-define-snail-alias label addr))
+		      (if (and snail-define-mail-alias mail)
+			  (define-mail-alias label mail))
+		      (if (and snail-define-fax-alias fax)
+			  (fax-define-fax-alias label fax))))))))
+      (if snail-buf
+	  (kill-buffer snail-buf)))))
+
+(defun snail-set-from-field (symbol tag &optional multi-line)
+  (if (looking-at (concat tag ":[ \t]*"))
+      (let* ((start (match-end 0))
+	     (line (progn
+		     (search-forward "\n")
+		     (buffer-substring start (1- (point)))))
+	     (result (list line)))
+	(while (and multi-line (looking-at "\t"))
+	  (setq start (match-end 0)
+		line (progn
+		       (search-forward "\n")
+		       (buffer-substring start (1- (point))))
+		result (cons line result)))
+	(setq result (mapconcat 'identity (nreverse result) "\n"))
+	(or (equal result "")
+	    (set symbol result)))))
+
+
+(defvar snail-aliases nil
+  "*Alist of snail (AKA paper mail) addresses,
+or `t' if it should be initialized from the `snail-database-file-name' file.
+List members are cons cells of the form
+
+    (LABEL . ADDRESS)
+
+where LABEL is an alias for ADDRESS.")
+
+;;;### autoload
+(defun snail-define-snail-alias (label address)
+  "Define LABEL as a snail alias for ADDRESS."
+  (snail-synchronize-aliases)
+  (let ((known (assoc label snail-aliases)))
+    (if known
+	(setcdr known address)
+      (setq snail-aliases (cons (cons label address) snail-aliases)))))
+
+;;;### autoload
+(defun snail-address (label)
+  "Return the value of the address alias LABEL.
+If called interactively, read LABEL from the mini-buffer and insert the
+address (if any) at point."
+  (interactive
+   (progn
+     (snail-synchronize-aliases)
+     (list (completing-read "Snail address alias: " snail-aliases))))
+  (or (interactive-p)
+      (snail-synchronize-aliases))
+  (let ((value (cdr (assoc label snail-aliases))))
+    (if (and (interactive-p) value)
+	(insert value))
+    value))
+
+(defvar snail-country-regexp nil
+  "*Country fields matching `snail-country-regexp' are allowed to be
+ignored in paper mail addresses.  The country field is usually only
+required for international mail addresses.")
+
+(defun snail-make-address (organization
+			   department
+			   first-name family-name
+			   street
+			   zip-code location
+			   country)
+  "Compose a paper mail address.
+A complete paper mail address looks like
+
+    ORGANIZATION
+    DEPARTMENT
+    FIRST-NAME FAMILY-NAME
+    STREET
+    ZIP-CODE LOCATION
+    COUNTRY
+
+All fields are optional but calls without at least some kind of name and
+location specified are rejected.  The country field is omitted if COUNTRY
+matches `snail-country-regexp'."
+  (if (and (or organization department family-name)
+	   (or street zip-code location))
+      (apply 'concat
+	     (append (if organization
+			 (list organization "\n"))
+		     (if department
+			 (list department "\n"))
+		     (cond ((and first-name family-name)
+			    (list first-name " " family-name "\n"))
+			   (first-name
+			    (list first-name "\n"))
+			   (family-name
+			    (list family-name "\n")))
+		     (if street
+			 (list street "\n"))
+		     (cond ((and zip-code location)
+			    (list zip-code " " location "\n"))
+			   (zip-code
+			    (list zip-code "\n"))
+			   (location
+			    (list location "\n")))
+		     (if (not (or (null country)
+				  (and (stringp snail-country-regexp)
+				       (string-match snail-country-regexp
+						     country))))
+			 (list country "\n"))
+		     '("")))))
+
+
+;;; Example EDB database interface.
+
+(defvar snail-db-aux-directory "@EMACS_LOCALLISPDIR@"
+  "*Directory name where the default auxiliary file can be found.")
+
+(defvar snail-db-format-directory "@EMACS_LOCALLISPDIR@"
+  "*Directory name where the default format file can be found.")
+
+;;;### autoload
+(defun snail-db-find-file (file-name)
+  "Read an EDB database from file FILE-NAME."
+  (interactive "fDatabase file: ")
+  (let ((db-aux-file-path (list snail-db-aux-directory))
+	(db-format-file-path (list snail-db-format-directory)))
+    (db-find-file file-name)))
+
+(defun snail-db-read-database-file (file-name)
+  (let ((db-aux-file-path (list snail-db-aux-directory))
+	(db-format-file-path (list snail-db-format-directory)))
+    (if snail-define-mail-alias
+	(sendmail-synch-aliases))
+    (if snail-define-fax-alias
+	(fax-synchronize-resources))
+    (db-find-file file-name)
+    (maprecords-macro
+     (let* ((label (snail-db-field 'label))
+	    (snail (snail-make-address (snail-db-field 'organization)
+				       (snail-db-field 'department)
+				       (snail-db-field 'first-name)
+				       (snail-db-field 'family-name)
+				       (snail-db-field 'street)
+				       (snail-db-field 'zip-code)
+				       (snail-db-field 'location)
+				       (snail-db-field 'country)))
+	    (mail (snail-db-field 'e-mail))
+	    (fax (snail-db-field 'fax)))
+       (if label
+	   (progn
+	     (if snail
+		 (snail-define-snail-alias label snail))
+	     (if (and snail-define-mail-alias mail)
+		 (define-mail-alias label mail))
+	     (if (and snail-define-fax-alias fax)
+		 (fax-define-fax-alias label fax)))))
+     dbc-database)
+    (bury-buffer)))
+
+(defun snail-db-field (field)
+  (let ((value (record-field maprecords-record field dbc-database)))
+    (if (not (stringp value))
+	value
+      (if (string-match "\\`[ \t\n]+" value)
+	  (setq value (substring value (match-end 0))))
+      (if (string-match "[ \t\n]+\\'" value)
+	  (setq value (substring value 0 (match-beginning 0))))
+      (if (equal value "")
+	  nil
+	value))))
+
+
+(provide 'snail)
+
+
+;;; local variables:
+;;; mode: emacs-lisp
+;;; end:
+
+;;; snail.el ends here

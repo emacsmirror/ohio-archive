@@ -1,0 +1,76 @@
+<HTML>
+<HEAD>
+<TITLE>Feff : Synopsis -- PLEASE READ THIS ENTIRE SECTION</TITLE>
+</HEAD>
+<BODY>
+Previous
+<A HREF="feff7-2.html">Next</A>
+<A HREF="feff7.html#toc1">Table of Contents</A>
+<HR>
+<H2><A NAME="s1">1. Synopsis -- PLEASE READ THIS ENTIRE SECTION</A></H2>
+
+
+
+<P>FEFF7 calculates wave phase shifts, effective scattering amplitudes 
+and single and multiple scattering curved XAFS and XANES spectra, 
+including polarization dependence, for clusters of atoms (Z &lt; 96). </P>
+<P>The calculation is automated and done sequentially in four steps: </P>
+<P>
+<OL>
+<LI> The scattering potentials,  phase shifts, dipole matrix
+elements and absolute energies are calculated 
+(module <B>POTPH</B>, potentials and phases)</LI>
+<LI> The scattering paths for the cluster are enumerated.
+(module <B>PATHS</B>)</LI>
+<LI> The effective scattering amplitudes and other XAFS
+parameters are calculated for each scattering path.
+(module <B>GENFMT</B>, general-path F-matrix calculation)</LI>
+<LI> The XAFS parameters from one or more paths are combined to
+calculate a total XAFS spectrum.  (module <B>FF2CHI</B>, scattering
+amplitude to chi, feff is the effective curved wave 
+scattering amplitude)</LI>
+</OL>
+</P>
+<P>For details on use of the code, examples and suggestions on calculation
+strategies, see sections 2, 3 and 4.  For details about the algorithms
+used see the discussion on the appropriate module in section 2 and,
+for more detail, the published references in Appendix C. </P>
+
+<P>FEFF is written in ANSI FORTRAN 77, with the non-standard extension of
+double precision complex (complex*16) variables. It requires about
+3 megabytes of available memory to run.  See Appendix B for complete
+installation instructions. </P>
+
+<P>FEFF7 is copyright protected software and users must obtain a license
+from the University of Washington Office of Technology Transfer for its
+use.  See Appendix A for complete copyright notice. </P>
+<P>Please cite FEFF if the code or its results are used in published work.
+See Appendix C for a list of appropriate citations. </P>
+
+<P>The main authors of FEFF7 are: 
+<DL>
+<DT><B> A. L. Ankudinov </B><DD><P>University of Washington, 
+<A HREF="mailto:alex@phys.washington.edu">alex@phys.washington.edu</A> - (206) 543-3904</P>
+<DT><B> S. I. Zabinsky </B><DD><P>Microsoft Corporation, 
+<A HREF="mailto:stevez@microsoft.com">stevez@microsoft.com</A> - (206) 936-2768</P>
+<DT><B> J. J. Rehr </B><DD><P>University of Washington,
+<A HREF="mailto:jjr@phys.washington.edu">jjr@phys.washington.edu</A> - (206) 543-8593</P>
+<DT><B> R. C. Albers </B><DD><P>Los Alamos National Laboratory,
+<A HREF="mailto:rca@lanl.gov">rca@lanl.gov</A> - (505) 665-0417</P>
+</DL>
+</P>
+<P>Please contact us concerning any problems with the code; see Appendix G
+for trouble-shooting hints and problem/bug reports. </P>
+<P>Part of the original FEFF3 code was developed in collaboration with J.
+Mustre de Leon and is still part of FEFF5, FEFF6 and FEFF7. Input/output
+of FEFF7 was substantially improved by S. I. Zabinsky. The authors
+thank the users of the experimental versions of these codes and especially
+M. Newville and B. Ravel for comments and suggestions.  </P>
+
+
+<HR>
+Previous
+<A HREF="feff7-2.html">Next</A>
+<A HREF="feff7.html#toc1">Table of Contents</A>
+</BODY>
+</HTML>

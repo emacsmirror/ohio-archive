@@ -1,0 +1,5 @@
+(setf (ext:search-list "src:") (list *server-base*)
+      (ext:default-directory) *server-base*)
+(pushnew (merge-pathnames "systems" *server-base*) mk::*central-registry*)
+(mk:compile-system :elispdb-search :verbose nil)
+(cl::quit)

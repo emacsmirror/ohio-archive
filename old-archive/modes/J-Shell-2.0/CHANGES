@@ -1,0 +1,40 @@
+$Id: CHANGES,v 2.0 1994/02/26 20:40:24 jimt Exp $
+
+Changes for version 2.0
+
+* Added command completion.
+
+* Added environment variable completion, substitution, and tracking.
+
+* Added to the filter function the ability to reconstruct fragmented
+  messages from the shell.
+
+* Fixed a bug that caused J-Shell to stomp on the value of
+  case-fold-search.
+
+* Added jsh-completion-separator so filename completion works in
+  contexts such as "export LOCALDIR=/usr/loc".
+
+* J-Shell now works in all Emacsen.
+
+* Added support of Barry Warsaw's reporter package for reporting bugs.
+
+
+NOTE: To report bugs use the C-c C-b binding.  See file DOC, section BUGS.
+
+
+Changes for version 1.1
+
+* Corrected a bug in jsh-hide-lossage that prevented password detection
+  from working for users of Emacs versions 18.57 and earlier.  For these
+  Emacs versions, J-Shell no longer opens dribble-file nil to close the
+  dribble file; instead, it opens dribble-file /dev/null.
+
+* Changed jsh-start-program to use the env program in (exec-directory)/etc,
+  rather than assuming it is in /bin/env.
+
+* Fixed a bug in the startup script for ksh.
+
+* Moved the contents of README into DOC.
+
+* Corrected some misinformation in DOC and added some caveats.

@@ -1,0 +1,66 @@
+Date: 2 Dec 88 03:50:58 GMT
+From: uhura.cc.rochester.edu!rbr4@cs.rochester.edu (Roland Roberts)
+Subject: Re: SORT.EL:sort-columns change... Unix diff output
+Organization: Univ. of Rochester, Computing Center
+
+Mark D Baushke <mdb@rutgers.edu> sent me a copy of unix diff output
+for the changes I made to sort.el.  He also suggested having the use
+of UN*X sort(1) be conditional --- quite reasonable and obvious in
+hindsight.  So I made the changes.  Since I have access to a unix
+system, I've already tested this both on vms and unix and it works
+fine.  The test is whether or not system-type is vax-vms.  I don't
+know of anyone else who needs this test, so I didn't include it
+
+Also, my apologies for posting twice to those of you on bug-gnu-emacs,
+I didn't realize everything on info-gnu-emacs was sent to you....
+
+*** dist-18.52/lisp/sort.el-dist	Thu Dec  1 21:58:44 1988
+--- dist-18.52/lisp/sort.el	Thu Dec  1 21:58:21 1988
+***************
+*** 321,327 ****
+  A prefix argument means sort into reverse order.
+  
+! Note that sort-columns uses the sort utility program and therefore
+! cannot work on text containing TAB characters.  Use M-x untabify
+! to convert tabs to spaces before sorting."
+    (interactive "P\nr")
+    (save-excursion
+--- 321,327 ----
+  A prefix argument means sort into reverse order.
+  
+! Note that except on vax-vms systems, sort-columns uses the sort utility
+! program and therefore cannot work on text containing TAB characters.  
+! Use M-x untabify to convert tabs to spaces before sorting."
+    (interactive "P\nr")
+    (save-excursion
+***************
+*** 337,344 ****
+        (setq col-start (min col-beg1 col-end1))
+        (setq col-end (max col-beg1 col-end1))
+!       (if (search-backward "\t" beg1 t)
+! 	  (error "sort-columns does not work with tabs.  Use M-x untabify."))
+!       (call-process-region beg1 end1 "sort" t t nil
+! 			   (if reverse "-rt\n" "-t\n")
+!                            (concat "+0." col-start)
+!                            (concat "-0." col-end)))))
+--- 337,351 ----
+        (setq col-start (min col-beg1 col-end1))
+        (setq col-end (max col-beg1 col-end1))
+!       (if (eq system-type 'vax-vms)
+! 	  (save-restriction
+! 	    (narrow-to-region beg1 end1)
+! 	    (goto-char beg1)
+! 	    (sort-subr reverse 'forward-line 'end-of-line
+! 		       (function (lambda () (move-to-column col-start) nil))
+! 		       (function (lambda () (move-to-column col-end) nil))))
+! 	(if (search-backward "\t" beg1 t)
+! 	    (error "sort-columns does not work with tabs.  Use M-x untabify.")
+! 	  (call-process-region beg1 end1 "sort" t t nil
+! 			       (if reverse "-rt\n" "-t\n")
+! 			       (concat "+0." col-start)
+! 			       (concat "-0." col-end)))))))
+-- 
+Roland Roberts                      BITNET: roberts@uornsrl
+  Nuclear Structure Research Lab  INTERNET: rbr4@uhura.cc.rochester.edu
+  271 East River Road                 UUCP: rochester!ur-cc!rbr4
+  Rochester, NY  14267                AT&T: (716) 275-8962

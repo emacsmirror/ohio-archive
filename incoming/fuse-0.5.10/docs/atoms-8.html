@@ -1,0 +1,581 @@
+<HTML>
+<HEAD>
+<TITLE>Atoms: Appendix B -- 40 Example Input Files</TITLE>
+</HEAD>
+<BODY>
+<A HREF="atoms-7.html">Previous</A>
+Next
+<A HREF="atoms.html#toc8">Table of Contents</A>
+<HR>
+<H2><A NAME="s8">8. Appendix B -- 40 Example Input Files</A></H2>
+
+
+
+<P>The next several pages have numerous examples of <CODE>atoms.inp</CODE> files
+that produce the correct output.  In these examples you might find a
+material of interest or its isomorph and you will certainly get clues
+for making <SF>atoms</SF> work the way you want.  By far the most useful
+resource for the crystallographic data needed for these input files is
+the <I>Crystal Structures</I> series by R.W.G. Wyckoff.</P>
+<P>These examples and many others are available on the Internet.  The
+World wide Web URL for a big list of input files is 
+<A HREF="http://krazy.phys.washington.edu/html/atoms.html">http://krazy.phys.washington.edu/html/atoms.html</A>.  The FTP
+address is <CODE>krazy.phys.washington.edu</CODE>.  Log in as anonymous and
+give your e-mail address as a password.  The example input files are
+in the directory <CODE>/pub/Tools/Atoms/</CODE>.  Please feel free to
+contribute new input files that you have used.  Upload them by FTP to
+the directory <CODE>/pub/Incoming/</CODE>.</P>
+
+
+<H2><A NAME="ss8.1">8.1 Pure Elements</A></H2>
+
+
+
+<P>These are examples of <CODE>atoms.inp</CODE> files for several pure
+elements. </P>
+<P>
+<DL>
+<DT><B> The following elements commonly crystallize in the bcc
+structure: </B><DD><P>Li, Na, K, V, Cr, Fe, Rb, Nb, Mo, Cs, Ba, Ta, W, Eu</P>
+<DT><B> The following elements commonly crystallize in the fcc
+structure: </B><DD><P>Al, Ca, Ni, Cu, Sr, Rh, Pd, Ag, Ir, Pt, Au, Pb, Ce, Yb, Th</P>
+<DT><B> The following elements commonly crystallize in the hcp
+structure: </B><DD><P>Be, Mg, Sc, Ti, Co, Zn, Y, Zr, Tc, Ru, Cd, Hf, Re, Os, Tl, Gd,
+Tb, Dy, Ho, Er, Tm, Lu </P>
+<DT><B> The following elements commonly crystallize in the diamond
+structure: </B><DD><P>C, Si, Ge, alpha-Sn</P>
+<DT><B> Included in this section are these examples of disordered pure
+elements: </B><DD><P>Ga, In, S, white-Sn, As</P>
+</DL>
+</P>
+
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+           title Cr  metal  bcc a=2.88
+           space bcc         ! shorthand for I M 3 M
+           rmax=6.0   a=2.88
+           atom
+           !   At.type    x    y    z 
+                Cr       0.0  0.0  0.0
+           --------------------------------------
+
+
+           title Cu  metal  fcc a=3.61
+           space fcc           ! shorthand for F M 3 M
+           rmax=6.0   a=3.61
+           out=feff.inp  ! index=true
+           atom
+           !   At.type    x    y    z
+                Cu       0.0  0.0  0.0
+           --------------------------------------
+
+
+           title Ti  metal  hcp a=2.950  c=4.8646
+           space hcp           ! shorthand for P 63/M M C
+           rmax=6.0   a=2.95   c=4.6846
+           out=feff.inp  ! index=true
+           atom
+           !   At.type    x        y        z  
+                ti       0.33333  0.66667  0.25
+           --------------------------------------
+
+
+           title   alpha-tin  diamond structure
+           a = 6.485  space diamond    ! shorthand for I D 3 M
+           atom
+           !   At.type    x      y      z
+                sn       0.125  0.125  0.125
+           --------------------------------------
+
+
+           title  Gallium, orthorhombic
+           space D_2h^18         ! same as C m c a
+           a=4.5107  b=7.6448   c=4.5167
+           atom
+             Ga   0.0  0.1525  0.0785 
+           --------------------------------------
+
+
+           title Indium, tetragonal
+           space   I 4/m m m
+           % note that case is unimportant
+           a=3.2446 C=4.9367
+           atom
+           !   At.type   x    y    z   tag
+                In      0.0  0.0  0.0  
+           --------------------------------------
+
+
+           title Rhombic Sulfur
+           !  Wyckoff &quot;Crystal Structures&quot; vol.1 pp 33-34
+           !  correct with this origin
+           !  see the spinel input for an example of the SHIFT keyword
+           space   F D D D
+           rmax=10.0   a=10.467  b=12.870  c=24.493
+           core = S3
+           atom
+           ! At.type    x        y       z        tag
+              S       0.8554   0.9526   0.9516    S1
+              S       0.7844   0.0301   0.0763    S2
+              S       0.7069   0.9795   0.0040    S3
+              S       0.7862   0.9073   0.1290    S4
+           --------------------------------------
+
+
+           title  white tin
+           Space  D_4H^19         ! same as  I 41/a m d
+           rmax = 7.00
+           a    = 5.8197    c = 3.175
+           atom
+           ! At.type    x    y      z      
+              Sn       0.0  0.25  -0.125   
+           --------------------------------------
+
+
+           title  rhombohedral arsenic
+           space R -3 m
+           a = 4.123   alpha = 54.16667
+           atom 
+              As   0.226   0.226   0.226
+           --------------------------------------
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+
+<H2><A NAME="ss8.2">8.2 Common Lattice Types</A></H2>
+
+
+
+<P>These are examples of <CODE>atoms.inp</CODE> files for the following
+common lattice types: </P>
+<P>
+<UL>
+<LI>zincblende</LI>
+<LI>sodium chloride</LI>
+<LI>cesium chloride</LI>
+<LI>spinel</LI>
+<LI>perovskite</LI>
+<LI>wurtzite</LI>
+<LI>ilmenite</LI>
+</UL>
+</P>
+
+
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+      title    zinc sulfide (zincblende) structure
+      space zns           ! shorthand for F -4 3 M
+      a 5.4093 rmax  8.0   core = Zn
+      atom
+        Zn   0.0   0.0   0.0   
+        S    0.25  0.25  0.25
+      ----------------------------------------------
+
+      
+      title   FeO, sodium chloride structure
+      space salt         ! shorthand for F M 3 M
+      rmax=6.0   a=3.3108               core=Fe
+      atom
+      !   At.type    x    y    z        cent.
+           Fe       0.0  0.0  0.0       
+           O        0.5  0.5  0.5 
+      ----------------------------------------------
+
+
+      title  CsCl Cesium Chloride structure
+      space = cscl        ! shorthand for P M 3 M
+      a = 4.11   core = Cs   rmax = 8.22
+      atom
+         Cs    0.0    0.0    0.0    
+         Cl    0.5    0.5    0.5
+      ----------------------------------------------
+
+      
+      title   Cubic Spinel Structure, MgAl2O4
+      Space  f d 3 m
+      rmax=7  a=8.0800   !from Wyckoff
+      shift = -0.125 -0.125 -0.125       
+      core = Mg
+      atom
+      ! At.type  x        y       z      cent.
+         Mg     0.0      0.0     0.0     
+         Al     0.625    0.625   0.625
+         O      0.387    0.387   0.387
+      ! u=0.387 in Wyckoff, shift coords 
+      ! by (-1/8,-1/8,-1/8)
+      ----------------------------------------------
+
+      
+      title    cubic EuTiO3, perovskite structure  
+      rmax=7.0     a=3.90      Space  P M 3 M    core = Ti
+      atom
+      ! At.type  x        y       z      cent.
+         Eu     0.0      0.0     0.0
+         Ti     0.5      0.5     0.5    
+         O      0.0      0.5     0.5
+      ----------------------------------------------
+
+
+      title  ZnS hexagonal wurtzite structure
+      space = P 63 m c     ! same as c_6v^4
+      a=3.81  c=6.23       ! gamma set to 120 by ATOM
+      core = S
+      atom
+         Zn    0.33333  0.66666  0.0    
+         S     0.33333  0.66666  0.375
+      ----------------------------------------------
+
+
+      title  alpha-Fe2O3, ilmenite structure
+      Space  C_3I^2         ! same as R -3
+      rmax = 7.00     core  = Fe    a    = 5.538    alpha = 54.6833333
+      atom
+      ! At.type    x        y       z       
+         Fe       .358     .358    .358     
+         Ti       .142     .142    .142
+         O        .555    -.04     .235
+      ----------------------------------------------
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+
+<H2><A NAME="ss8.3">8.3 Binary and Trinary Compounds</A></H2>
+
+
+
+<P>Here are various examples of crystal structures containing two or
+three atomic species.  Included here are: </P>
+<P>
+<UL>
+<LI>Aluminum Oxide</LI>
+<LI>Aluminum Boride</LI>
+<LI>alpha-Iron Oxide</LI>
+<LI>alpha-Lead Oxide</LI>
+<LI>Boron Nitride (graphitic)</LI>
+<LI>Boron Nitride (hexatic)</LI>
+<LI>Calcium Carbide </LI>
+<LI>Fluorite (PrO_2)</LI>
+<LI>Cadmium Chloride</LI>
+<LI>Tenorite (Copper Monoxide)</LI>
+<LI>Cinnebar (HgS)</LI>
+<LI>Potassium Nitrofluorite (K_2NiF_4)</LI>
+<LI>Hausmannite (Mn_3O_4)</LI>
+<LI>Cassiterite (MnO_2)</LI>
+<LI>Cubic Bixbyite (Yttria, Y_2O_3)</LI>
+<LI>Ferroelectric Distorted Perovskite (PbTiO_3)</LI>
+<LI>Antiferroelectric Distorted Perovskite (PbZrO_3)</LI>
+<LI>Platinum Silicide (PtSi)</LI>
+</UL>
+</P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+       title Al2O3 
+       Space  R -3 C      ! same as D_3D^6
+       a=4.7628   c=13.0032   gamma=120    core = Al
+       rmax=7
+       atom
+       ! At.type  x        y       z      cent.
+          Al     0.0      0.0     0.352    
+          O      0.306    0.0     0.25     
+       -------------------------------------------------
+
+
+       title  AlB2, hexagonal aluminum boride structure
+       space P -3 M 1
+       rmax=7.0  a=3.009   c=3.262  gamma=120   core = Al
+       atom
+         Al      0.0     0.0     0.0   
+         B       0.33333 0.66667 0.5
+       -------------------------------------------------
+
+
+       title  alpha-Fe2O3
+       Space  D_3d^6     ! same as R -3 C
+       rmax = 7.00      core  = iron
+       a    = 5.4135    alpha = 55.2833333
+       atom
+       ! At.type    x        y       z       tag
+          Fe       .355     .355    .355     iron
+          O        .550    -.050    .25      oxy
+       -------------------------------------------------
+
+
+       title  alpha Lead Oxide  (PbO2)
+       space p b c n
+       rmax=6.0  a=4.947  b=5.951   c=5.497   core = Pb
+       atom
+         Pb   0.0      0.178    0.25    
+         O    0.276    0.410    0.425
+       -------------------------------------------------
+
+
+       title BN   primary structure
+       space p 63/m m c
+       a 2.504 c 6.661 rmax  8.0    core B
+       atom
+         B   0.333333  0.666667   0.25   
+         N   0.333333  0.666667   0.75
+       -------------------------------------------------
+
+
+       title BN   hexagonal structure
+       space hcp
+       a 2.504  c 10.01   rmax  8.0  core B
+       atom
+         B   0.0  0.0  0.0        
+         N   0.0  0.0  0.333333
+       -------------------------------------------------
+
+
+       title  CaC2, calcium carbide structure
+       rmax=7.0   Space  D_4h^17
+       a=3.87    c=6.37    core Ca
+       atom
+       ! At.type  x         y        z       tag
+           Ca    0.0      0.0       0.0      
+           C     0.0      0.0       0.406
+       -------------------------------------------------
+
+
+       title  PrO2  Fluorite structure 
+       space f m 3 m
+       a=4.9    edge=k   rmax=10   core = Pr
+       atom
+         Pr    0.0    0.0   0.0   
+         O     0.25   0.25  0.25
+       -------------------------------------------------
+
+
+       title   Cadmium Chloride structure (hexagonal)
+       space R -3 M
+       a=3.854   c=17.457    gamma=120
+       rmax=6.0              core = Cd
+       atom
+         Cd   0.0   0.0   0.0   
+         Cl   0.0   0.0   0.25
+       -------------------------------------------------
+
+
+       title monoclinic CuO (tenorite structure)
+       space c 2/c         ! same as C_2h^6
+       a=4.653  b=3.410  c=5.108  beta=99.4833   core = Cu
+       atom
+         Cu    0.25    0.25    0.0    
+         O     0.0     0.584   0.25
+       -------------------------------------------------
+
+
+       title   HgS, cinnebar,  trigonal
+       a=4.146  c=9.497  gamma=120   core = Hg
+       space = P 31 2 1
+       atom
+         Hg   0.720   0.0    0.333333   
+         S    0.485   0.0    0.833333
+       -------------------------------------------------
+
+
+       title  K2 Ni F4 structure
+       space I 4/m m m
+       a=3.8    c=13.2       core =  nick.
+       atom
+       !                              tag
+         K     0.0    0.0    0.36   pot.
+         Ni    0.0    0.0    0.0    nick.
+         O     0.0    0.5    0.0    O1
+         O     0.0    0.0    0.18   O2
+       -------------------------------------------------
+
+
+       title  Mn3O4, hausmannite structure 
+       a  5.75         c  9.42          core Mn2
+       rmax=7.0    Space  i 41/a m d
+       atom
+       ! At.type  x        y       z          tag
+          Mn     0.0      0.75    0.125       Mn1
+          Mn     0.0      0.0     0.5         Mn2
+          O      0.0      0.25    0.375
+       -------------------------------------------------
+
+
+       title  MnO2, cassiterite structure 
+       a  4.396         c  2.871        core Mn
+       rmax=6.0    Space  P 42/M N M
+       atom
+       ! At.type  x        y       z      tag
+          Mn     0.0      0.0     0.0       
+          O       .3       .3     0.0
+       -------------------------------------------------
+
+
+       title   sodium chromate, Na2CrO4
+       space   c m c m
+       a  5.861    b 9.259    c 7.138
+       rmax 7    core  Na2
+       atom
+         Na   0.0   0.20  0.25    Na1
+         Na   0.0   0.50  0.0     Na2
+         Cr   0.0   0.85  0.25    
+         O    0.28  0.45  0.25    O1
+         O    0.0   0.25  0.57    O2
+       -------------------------------------------------
+
+
+       title Y2O3, cubic bixbyite structure 
+       rmax=7.0   Space  I A 3
+       a=10.604  core = Y2
+       atom
+       ! At.type  x         y        z       
+          Y      0.25      0.25     0.25     Y1
+          Y     -0.0314    0.0      0.25     Y2
+          O      0.389     0.150    0.377    
+       -------------------------------------------------
+
+
+
+       title PbTiO3, distorted perovskite
+       Space  P 4 m m    
+       a=3.885   c=4.139  
+       rmax=7    core = Ti
+       atom
+       ! At.type  x        y       z      tag
+          Pb     0.0      0.0     0.0     
+          Ti     0.5      0.5     0.5377  
+          O      0.5      0.5     0.1118  axial
+          O      0.0      0.5     0.6174  planar
+       -------------------------------------------------
+
+
+       title  PbZrO3  distorted perovskite
+       a = 5.88     b = 11.78     c = 8.22    core = Pb1
+       rmax=5.0    Space   p b a m
+       atom
+       ! At.type  x        y       z      Tag
+        Pb      0.7064   0.1266   0.0     Pb1  
+        Pb      0.7064   0.1266   0.5     Pb2  
+        Zr      0.2423   0.125    0.25    
+        O       0.271    0.156    0.0     O1
+        O       0.288    0.096    0.5     O2
+        O       0.032    0.2608   0.283   O3
+        O       0.0      0.5      0.206   O4
+        O       0.0      0.0      0.248   O5
+       -------------------------------------------------
+
+
+       title  Platinum Silicide, PtSi
+       title  P b m n in Wyckoff, just for the sake of confusion
+       a = 5.595     b = 3.603     c = 5.932    core = Pt
+       rmax=5.2    Space   p n m a
+       atom
+       ! At.type  x        y       z      Tag
+        Pt      0.010    0.250   0.195     
+        Si      0.195    0.250   0.590   
+       ----------------------------------------
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+
+<H2><A NAME="ss8.4">8.4 High Temperature Superconductors.</A></H2>
+
+
+
+<P>Here are several examples of <CODE>atoms.inp</CODE> files for various
+High Tc superconductors.  The crystallographic literature on this
+class of materials is quite large and there are significant structural
+differences even between similar materials.  Two recommended resources
+for crystal information are <I>Copper Oxide Superconductors</I>
+by Poole, Datta, and Farach, Wiley-Interscience, New York (1988) and
+<I>Physical Properties of High Temperature Superconductors
+II</I>, ed. by Ginsberg, World Scientific (1990). </P>
+
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+          title YBCO: Y Ba2 Cu3 O7  (1-2-3 structure)
+          space P M M M 
+          rmax=5.2              a 3.823   b 3.886 c 11.681
+          dwarf on   core = Cu1
+          atom
+          ! At.type   x        y       z      tag
+             Y       0.5      0.5     0.5   
+             Ba      0.5      0.5     0.184
+             Cu      0        0       0        Cu1
+             Cu      0        0       0.356    Cu2
+             O       0        0.5     0        O1
+             O       0        0       0.158    O2
+             O       0        0.5     0.379    O3
+             O       0.5      0       0.377    O4
+          --------------------------------------------
+
+          title  Bi2 Sr2 Ca Cu2 O8  (2-2-1-2 structure)
+          space  F m m m
+          a=5.411   b=5.418   c=30.89     core = Cu
+          atom
+             Bi     0.0     0.0     0.20       
+             Sr     0.0     0.5     0.11       
+             Ca     0.0     0.5     0.0   
+             Cu     0.0     0.0     0.05   
+             O      0.25    0.25    0.05  O1
+             O      0.0     0.5     0.20  O2
+             O      0.0     0.0     0.13  O3
+          ----------------------------------------------------
+
+          title Pb2 Y Sr2 Cu3 O8 (2-1-2-3 structure)
+          space   P 4/m m m 
+          a=3.813    c=15.76    core = Cu1
+          atom
+            Pb      0.5     0.5     0.39
+            Sr      0.0     0.0     0.22  
+            Y       0.0     0.0     0.0
+            Cu      0.5     0.5     0.11  Cu1
+            Cu      0.0     0.0     0.5   Cu2
+            O       0.0     0.5     0.10  O1
+            O       0.5     0.5     0.25  O2
+            O       0.0     0.0     0.38  O3
+          ----------------------------------------------------
+
+          title   tetragonal Tl2 Ba2 Cu O6,  (2-2-0-1 structure)
+          space   I 4/m m m 
+          a = 3.866  c = 23.239  rmax = 6.0  core = Cu
+          atom
+               Tl      0.5   0.5   0.20265   
+               Ba      0.0   0.0   0.08301
+               Cu      0.5   0.5   0.0         
+               O       0.0   0.5   0.0         O1
+               O       0.5   0.5   0.1168      O2
+               O       0.5   0.5   0.2889      O3
+          ----------------------------------------------------
+
+          title  Y Ba2 Cu4 O8  (1-2-4 structure)
+          space  C m m m
+          a=3.8415   b=3.8707   c=27.240   core = Cu1
+          atom
+          !   Type     x     y     z       tag
+               Y      0.5   0.5   0.0
+               Ba     0.5   0.5   0.1356
+               Cu     0.0   0.0   0.2127   Cu1
+               Cu     0.0   0.0   0.0614   Cu2
+               O      0.0   0.0   0.1454   O1
+               O      0.5   0.0   0.0524   O2
+               O      0.0   0.5   0.0528   O3
+               O      0.0   0.5   0.2181   O4
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+
+<HR>
+<A HREF="atoms-7.html">Previous</A>
+Next
+<A HREF="atoms.html#toc8">Table of Contents</A>
+</BODY>
+</HTML>

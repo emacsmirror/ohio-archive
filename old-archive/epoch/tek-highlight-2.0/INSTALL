@@ -1,0 +1,96 @@
+ Installation instructions for the tek-highlight group of packages.
+ ====================================================================
+
+You only need to do 4 or 5 things to install these packages:
+
+
+1) Ensure you have all of the required packages installed.
+
+If you want to use the tek-dired-highlight package, you must first
+acquire Dave Gillespie's info package from the elisp archive:
+
+	  GNU Emacs Lisp Code Directory Apropos -- "info-dg"
+"~/" refers to archive.cis.ohio-state.edu:/pub/gnu/emacs/elisp-archive/
+
+info-dg (1.04)	      92-03-04
+     Dave Gillespie, <daveg@synaptics.com>
+     ~/modes/info.el.Z
+     Info reader with many enhancements; replaces standard info.el.
+
+The tek-dired-highlight package is known to work with info-dg version
+1.04.
+
+The tek-vm-highlight package is known to work with VM version 5.32.
+VM can be obtained from your local GNU archive (look for
+"vm-5.32.tar.Z").
+
+The tek-gnus-highlight package is known to work with GNUS version
+3.14.1.  GNUS can be obtained from your local GNU archive (look for
+"gnus-3.14.1.tar.Z").
+
+The tek-mh-e-highlight package is known to work with mh-e version
+3.8 (i.e. the one distributed with Epoch version 4.0) with the
+included patch applied.
+
+
+2) If you are using epoch version 3.2 then apply the patch in
+get-font.patch to your epoch sources and rebuild epoch. This bug has
+been fixed in version 4.0.
+
+
+3) Byte compile each of the .el files and put them somewhere in your
+load path.
+
+
+4) Add the following lines to your .emacs:
+
+
+; Set up an autoload for syntax decoding stuff.
+(autoload 'decode-syntax-table "syntax-decode" "autoloadable function" t)
+
+; Highlight comments in source code
+(require 'tek-src-highlight-setup)
+
+; Customise the mouse drag style
+(require 'tek-motion-highlight-setup)
+
+; Set up for highlighting in dired.
+(require 'tek-dired-highlight-setup)
+
+; Set up for highlighting in info browser
+(require 'tek-info-highlight-setup)
+
+; Set up for highlighting in gnus.
+(require 'tek-gnus-highlight-setup)
+
+; Set up for highlighting in VM.
+(require 'tek-vm-highlight-setup)
+
+; Set up for highlighting under mh-e.
+(require 'tek-mh-e-highlight-setup)
+
+
+Obviously you can load just some of the packages and not others. The
+syntax-decode package is used by tek-src-highlight, so you must include
+the above autoload command if you are highlighting your comments.
+
+It seems unlikely that you would want to use both VM and mh-e, so you
+only need to load the setup for one of these.
+
+
+5) If you want to use highlighting under mh-e you will need to install
+a patched version of mh-e.el in your .../epoch/lisp directory, using
+the patches in mh-e.patch. These are based on the version distributed
+with epoch 4.0.
+
+
+All the .el files will byte compile under emacs as well as under
+epoch. We use make and "emacs -batch -f batch-byte-compile" to release
+byte compiled elisp files across our different machines.
+
+The above packages all do something sensible when loaded under emacs,
+so you don't need to worry about different .emacs'es for emacs and
+epoch.
+
+
+			   === The End ===

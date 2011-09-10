@@ -1,0 +1,232 @@
+From: montnaro@sprite.crd.ge.com (Skip Montanaro)
+Newsgroups: gnu.emacs
+Subject: Displaying recipient in summary and grouping by recipients in VM
+Message-ID: <8908210034.AA01934@sprite.crd.Ge.Com>
+Date: 21 Aug 89 00:34:56 GMT
+Reply-To: <montanaro@sprite.crd.ge.com> (Skip Montanaro)
+Distribution: gnu
+Organization: GNUs Not Usenet
+Lines: 222
+
+I FCC all my mail, and occasionally need to browse that file, either to
+delete unwanted messages, or to resend a message. VM allows the user to
+group by a number of attributes, but not (any of) the receipient(s). Neither
+does it allow you to format the summary line to show the recipient. The
+context diffs against 4.39 at the end of this message do that. The "%t"
+string in vm-summary-format will cause VM to find the primary recipient of
+the message and place it in the summary line, instead of the author. The
+primary recipient is defined as the first address in either the To,
+Apparently-To, or CC fields (searched in that order). You can group by the
+primary recipient as well, by giving "recipient" as field to group by when
+prompted.
+
+I use the changes by executing the small piece of code in ~/.emacs:
+
+    (setq vm-mode-hooks '(hack-vm-summary-format))
+
+    (defun hack-vm-summary-format ()
+      (if (string= (expand-file-name mail-archive-file-name)
+		   buffer-file-name)
+	  (progn
+	    (make-variable-buffer-local 'vm-summary-format)
+	    (setq vm-summary-format "%3n %a %-17.17t %3m %2d %3l/%-5c \"%s\"\n")
+	    (make-variable-buffer-local 'vm-group-by)
+	    (setq vm-group-by "recipient"))
+	(progn
+	  (setq vm-summary-format "%3n %a %-17.17f %3m %2d %3l/%-5c \"%s\"\n")
+	  (setq vm-group-by "author"))))
+
+(Setting vm-group-by doesn't have an immediate effect when displaying
+summaries. I'm still debating whether to add a (vm-group-messages
+vm-group-by) to the end of vm-summarize.)
+
+One note of caution. I made the changes to 4.37, then discovered I didn't
+have the original files anywhere. So I used diff to diff my modified VM 4.37
+with the latest version (4.39), edited the output to remove any 4.37-4.39
+diffs, then used patch to splice in my changes.  I then remade diffs and
+checked them to make sure no 4.37-4.39 changes were undone. I don't think I
+botched it, but one never knows...
+
+*** vm-group.el.orig	Mon Jul 24 10:51:56 1989
+--- vm-group.el	Sun Aug 20 19:07:29 1989
+***************
+*** 57,60 ****
+--- 57,63 ----
+    (string= (vm-full-name-of m1) (vm-full-name-of m2)))
+  
++ (defun vm-group-by-recipient (m1 m2)
++   (string= (vm-to-of m1) (vm-to-of m2)))
++ 
+  (defun vm-group-by-date-sent (m1 m2)
+    (and (string= (vm-monthday-of m1) (vm-monthday-of m2))
+*** vm-summary.el.orig	Mon Jul 24 10:51:57 1989
+--- vm-summary.el	Sun Aug 20 19:07:31 1989
+***************
+*** 160,167 ****
+      (store-match-data nil)
+      (while (string-match
+! "%\\(-\\)?\\([0-9]\\)*\\(\\.\\([0-9]+\\)\\)?\\([acdfFhilmnswyz%]\\)"
+  	    format (match-end 0))
+        (setq conv-spec (aref format (match-beginning 5)))
+!       (if (memq conv-spec '(?a ?c ?d ?f ?F ?h ?i ?l ?m ?n ?s ?w ?y ?z))
+  	  (progn
+  	    (cond ((= conv-spec ?a)
+--- 160,167 ----
+      (store-match-data nil)
+      (while (string-match
+! "%\\(-\\)?\\([0-9]\\)*\\(\\.\\([0-9]+\\)\\)?\\([acdfFhilmnstwyz%]\\)"
+  	    format (match-end 0))
+        (setq conv-spec (aref format (match-beginning 5)))
+!       (if (memq conv-spec '(?a ?c ?d ?f ?F ?h ?i ?l ?m ?n ?s ?t ?w ?y ?z))
+  	  (progn
+  	    (cond ((= conv-spec ?a)
+***************
+*** 198,201 ****
+--- 198,204 ----
+  		   (setq sexp (cons (list 'vm-su-subject
+  					  'vm-su-message) sexp)))
++ 		  ((= conv-spec ?t)
++ 		   (setq sexp (cons (list 'vm-su-to
++ 					  'vm-su-message) sexp)))
+  		  ((= conv-spec ?w)
+  		   (setq sexp (cons (list 'vm-su-weekday
+***************
+*** 388,391 ****
+--- 391,435 ----
+    (or (vm-from-of m)
+        (progn (vm-su-do-author m) (vm-from-of m))))
++ 
++ (defun vm-su-to (m)
++   (or (vm-to-of m)
++       (progn (vm-su-do-recipient m) (vm-to-of m))))
++ 
++ ;; Just pick off the first recipient - useful for browsing outgoing archives
++ ;; (e.g., FCC'd mail).
++ (defun vm-su-do-recipient (message)
++   (let (to pat1 pat2 pat3)
++     (setq to (or (vm-get-header-contents m "To")
++ 		 (vm-get-header-contents m "Apparently-To")
++ 		 (vm-get-header-contents m "CC")))
++     (if (null to)
++ 	(setq to "???")
++       (progn
++ 	;; pick off first address
++ 	(if (string-match "^[ \t]*\\([^\n,]+\\).*" to)
++ 	    (setq to (substring to (match-beginning 1) (match-end 1))))
++ 
++ 	;; pat1, pat2, and pat3 are tried in order. 
++ 	;; junk < address > junk
++ 	(setq pat1 "^.*<\\([^> \t\n]+\\).*")
++ 	;; addr? ( junk ) addr?
++ 	(setq pat2 "^[ \t]*\\([^( \t\n]*\\)[ \t]*([^)]*)[ \t]*\\([^ \t\n]*\\)[ \t]*")
++ 	;; addr?
++ 	(setq pat3 "^[ \t]*\\([^ \t\n]+\\)[ \t\n]*")
++ 	(if (not (string-match pat1 to))
++ 	    (progn
++ 	      (if (not (string-match pat2 to))
++ 		  (progn
++ 		    (if (not (string-match pat3 to))
++ 			(error "Invalid pattern in vm-su-do-recipient")
++ 		      (setq to (substring to (match-beginning 1)
++ 					  (match-end 1)))))
++ 		(if (not (eq (match-beginning 1) (match-end 1)))
++ 		    (setq to (substring to (match-beginning 1)
++ 					(match-end 1)))
++ 		  (setq to (substring to (match-beginning 2)
++ 				      (match-end 2))))))
++ 	  (setq to (substring to (match-beginning 1) (match-end 1))))))
++     (vm-set-to-of m to)))
+  
+  ;; Some yogurt-headed delivery agents don't even provide a From: header.
+*** vm.el.orig	Mon Jul 24 10:51:57 1989
+--- vm.el	Sun Aug 20 19:43:27 1989
+***************
+*** 175,178 ****
+--- 175,179 ----
+     n - message number
+     s - message subject
++    t - the primary recipient (first recipient from To:, Apparently-To:, CC:)
+     w - day of the week message sent
+     y - year message sent
+***************
+*** 229,235 ****
+      Re:'s) to be presented together,
+    \"author\", which causes messages with the same author to be presented
+!     together, and
+    \"date-sent\", which causes message sent on the same day to be
+!     presented together.
+    \"arrival-time\" which appears only for completeness, this is the
+      default behavior and is the same as nil.
+--- 230,238 ----
+      Re:'s) to be presented together,
+    \"author\", which causes messages with the same author to be presented
+!     together,
+!   \"recipient\", which causes message sent to the same primary recipient to
+!     be presented together,
+    \"date-sent\", which causes message sent on the same day to be
+!     presented together, and
+    \"arrival-time\" which appears only for completeness, this is the
+      default behavior and is the same as nil.
+***************
+*** 368,372 ****
+  (defconst vm-header-regexp-format "^%s:[ \t]*\\(.*\\(\n[ \t]+.*\\)*\\)")
+  (defconst vm-supported-groupings-alist
+!   '(("arrival-time") ("subject") ("author") ("date-sent")))
+  (defconst vm-total-count 0)
+  (defconst vm-new-count 0)
+--- 371,375 ----
+  (defconst vm-header-regexp-format "^%s:[ \t]*\\(.*\\(\n[ \t]+.*\\)*\\)")
+  (defconst vm-supported-groupings-alist
+!   '(("arrival-time") ("subject") ("author") ("recipient") ("date-sent")))
+  (defconst vm-total-count 0)
+  (defconst vm-new-count 0)
+***************
+*** 413,417 ****
+  
+  ;; macros and functions dealing with accessing messages struct fields
+! (defun vm-make-message () (make-vector 20 nil))
+  
+  ;; where message begins (From_ line)
+--- 416,420 ----
+  
+  ;; macros and functions dealing with accessing messages struct fields
+! (defun vm-make-message () (make-vector 21 nil))
+  
+  ;; where message begins (From_ line)
+***************
+*** 461,464 ****
+--- 464,468 ----
+  (defmacro vm-su-start-of (message) (list 'aref message 18))
+  (defmacro vm-su-end-of (message) (list 'aref message 19))
++ (defmacro vm-to-of (message) (list 'aref message 20))
+  
+  (defmacro vm-set-start-of (message start) (list 'aset message 0 start))
+***************
+*** 482,485 ****
+--- 486,490 ----
+  (defmacro vm-set-su-start-of (message start) (list 'aset message 18 start))
+  (defmacro vm-set-su-end-of (message end) (list 'aset message 19 end))
++ (defmacro vm-set-to-of (message end) (list 'aset message 20 end))
+  
+  (defun vm-text-end-of (message)
+*** vm.texinfo.orig	Mon Jul 24 10:50:23 1989
+--- vm.texinfo	Sun Aug 20 19:10:32 1989
+***************
+*** 713,716 ****
+--- 713,720 ----
+  @item author
+  Messages with the same author are grouped together.
++ @item recipient
++ Messages to the same primary recipient are grouped together. The primary
++ recipient is the first addressee in the To, Apparently-To, or CC fields
++ (in that order of preference).
+  @item date-sent
+  Messages sent on the same day are grouped together.
+***************
+*** 778,781 ****
+--- 782,786 ----
+     n - message number
+     s - message subject
++    t - primary recipient's address
+     w - day of the week message sent
+     y - year message sent

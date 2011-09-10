@@ -1,0 +1,962 @@
+<HTML>
+<HEAD>
+<TITLE>Feff : Input file and FEFF commands</TITLE>
+</HEAD>
+<BODY>
+<A HREF="feff7-3.html">Previous</A>
+<A HREF="feff7-5.html">Next</A>
+<A HREF="feff7.html#toc4">Table of Contents</A>
+<HR>
+<H2><A NAME="s4">4. Input file and FEFF commands</A></H2>
+
+
+
+<P>The main program FEFF reads one file created directly by the user, the
+file feff.inp.  This section describes feff.inp and the commands that
+tell FEFF what to do.  It may be helpful to look at one or more of the
+sample input files in Appendix D while reading this section.  An auxiliary
+program ATOMS can generate the feff.inp file.  See the ATOMS card and the
+document for ATOMS for additional details.  The input file for FEFF7 is
+identical to FEFF5, except that additional options have been added to
+permit XANES calculations, add polarization dependence and test new self
+energy model.  </P>
+
+
+<H2><A NAME="ss4.1">4.1 File format</A></H2>
+
+<P>feff.inp is a free format line oriented file. Blank lines and lines
+beginning with an asterisk (comment lines) are ignored wherever the
+occur.  End of line comments are also ignored.  Each type of input read
+by the program must contain a card with a &quot;keyword&quot; in 
+CAPITAL LETTERS,
+and in some cases, followed by data cards.  The sequence of keyword
+cards is arbitrary. If any card is omitted, default values are used; an
+exception is the POTENTIALS card, which is required. Numeric values are
+listed in free format, separated by blanks. Tab characters are not
+allowed (due to portability constraints) and may cause confusing error
+messages.  Characters appearing after the expected data on a given line
+are ignored by feff and can be used as end-of-line comments.  All
+distances are in Angstroms and energies in eV. </P>
+
+
+
+<H2><A NAME="ss4.2">4.2 Complete list of feff.inp keywords</A></H2>
+
+<P>The list of feff.inp options fall into four categories, standard
+options frequently and easily used, useful options that are often used,
+special options that are seldom necessary or helpful, and obscure
+options used during development that are included for completeness. </P>
+
+<P>
+<DL>
+<DT><B> The standard data types are </B><DD><P>
+<A HREF="#ato">ATOMS</A>, 
+<A HREF="#con">CONTROL</A>, 
+<A HREF="#deb">DEBYE</A>, 
+<A HREF="#edg">EDGE</A>, 
+<A HREF="#hol">HOLE</A>, 
+<A HREF="#pot">POTENTIALS</A>, 
+<A HREF="#pri">PRINT</A>, 
+<A HREF="#sig">SIG2</A>, 
+<A HREF="#tit">TITLE</A></P>
+
+<DT><B> Useful options include </B><DD><P>
+<A HREF="#cor">CORRECTIONS</A>, 
+<A HREF="#cri">CRITERIA</A>,
+<A HREF="#cus">CUSTOMCRITERIA</A>,
+<A HREF="#ell">ELLIPTICITY</A>,
+<A HREF="#end">END</A>,
+<A HREF="#nem">NEMAX</A>,
+<A HREF="#nle">NLEG</A>,
+<A HREF="#nog">NOGEOM</A>,
+<A HREF="#nst">NSTAR</A>,
+<A HREF="#pcr">PCRITERIA</A>,
+<A HREF="#pol">POLARIZATION</A>,
+<A HREF="#rma">RMAX</A>,
+<A HREF="#rmu">RMULTIPLIER</A>,
+<A HREF="#ss">SS</A>,
+<A HREF="#xan">XANES</A>,</P>
+
+<DT><B> Special data types</B><DD><P>are recommended only for advanced users,
+awkward situations or diagnostic purposes: 
+<A HREF="#afo">AFOLP</A>,
+<A HREF="#fol">FOLP</A>,
+<A HREF="#exc">EXCHANGE</A>,
+<A HREF="#ion">ION</A>,
+<A HREF="#ove">OVERLAP</A>,
+<A HREF="#rgr">RGRID</A>.
+<A HREF="#rph">RPHASES</A>,
+<A HREF="#sg3">SIG3</A>,</P>
+
+<DT><B> And some are so obscure</B><DD>
+<P>that we  considered not mentioning them.
+<A HREF="#ior">IORDER</A>, 
+<A HREF="#jum">JUMPRM</A>, 
+<A HREF="#mbc">MBCONV</A>, 
+<A HREF="#noh">NOHOLE</A>, </P>
+
+</DL>
+</P>
+<P>These data types are listed below, alphabetically within each category.
+Each DATATYPE is followed by a brief explanation and an  example. </P>
+
+<H3>Basic data types</H3>
+
+
+<H3><A NAME="ato"></A> <B>ATOMS</B> </H3>
+
+
+<P>Cartesian coordinates and unique potential indices of each atom (in
+Angstroms) in the cluster are entered following the ATOMS card, one per
+line. Please see the discussion of unique potentials in section 
+<A HREF="#pot">POTENTIALS</A>. 
+An auxilliary code ATOMS written by B. Ravel (U. Washington) is supplied
+with FEFF 7 to generate the ATOMS list from given crystallographic
+data. See the document file to ATOMS for more information.
+<BLOCKQUOTE><CODE>
+<PRE>
+  ATOMS
+  * x      y      z     ipot     SF6 molecule
+    0.0    0.0    0.0     0      S K-shell hole
+
+    3.61   0.00   0.00    1      F 1st shell atoms
+    0.00   3.61   0.00    1
+    0.00   0.00   3.61    1
+   -3.61   0.00   0.00    1
+    0.00  -3.61   0.00    1
+    0.00   0.00  -3.61    1
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<H3><A NAME="con"></A> <B>CONTROL</B> </H3>
+
+<P> potph  paths  genfmt  ff2chi </P>
+<P>The CONTROL card lets you run one or more of the modules separately.
+There is a switch for each module, 0 meaning do not run that module, 1
+meaning do run it. The default is CONTROL 1 1 1 1, run all modules.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+  * run genfmt and ff2chi, do not run potph or paths
+  CONTROL  0 0 1 1    potph  paths  genfmt  ff2chi
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="deb"></A> 
+</P>
+<H3><B>DEBYE</B></H3>
+
+<P> temperature  Debye-temperature </P>
+<P>The Debye card is used to calculate Debye-Waller factors for each path
+using the correlated Debye Model. The model is best suited for
+homogeneous systems, where it is quite accurate.  CAUTION: in
+heterogeneous systems the model only gives approximate values which can
+easily be off by factors of two or more. Temperatures are in K.
+If this card is present, the correlated Debye model Debye-Waller factors
+will be summed with the DW factors from the SIG2 card and from list.dat,
+if any.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+  DEBYE  190 315   Calculate Debye-Waller factors for Cu at 190K
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="edg"></A> 
+</P>
+<H3><B>EDGE</B></H3>
+
+<P> label  S0**2 </P>
+<P>The EDGE card is identical to HOLE card, but you don't have to
+worry about the ihole variable. Simply use the hole label:
+NO = no hole, K = K-shell, L1 = L1, L2 = L2, etc..
+All comments for HOLE card are valid for EDGE card.</P>
+
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+  EDGE  L1   1.0     L1-shell core hole, S02 = 1
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+<P>
+<A NAME="hol"></A> 
+</P>
+<H3><B>HOLE</B></H3>
+
+<P> ihole  S0**2 </P>
+<P>The HOLE card includes the hole-code ihole and the amplitude reduction
+factor S0**2. If an entry for S0**2 is less than 0.1, then the value
+of S0**2 is estimated from atomic overlap integrals. 
+To match experiment, values of s02 are typically between 0.8 and 1.0.
+Defaults if HOLE card is omitted: ihole=1 (K shell), S02=1. Hole-codes
+presently available are as follows (if your favorite is missing, please,
+do not complain to the authors):
+0 = no hole,
+1 = K-shell,
+2 = L1, 3 = L2, 4 = L3, 5 = M1, 6 = M2, 7 = M3, 8 = M4, 9 = M5,
+10 = N1, 11 = N2, 12 = N3, 13 = N4, 14 = N5, 15 = N6, 16 = N7,
+17 = O1, 18 = O2, 19 = O3, 20 = O4, 21 = O5, 22 = O6, 23 = O7,
+24 = P1, 25 = P2, 26 = P3.</P>
+<P>Our code is designed to calculate absorption from completely filled shells.
+You can try to simulate absorption from valence electrons with our code,
+however you may get unreliable results. If you really want that, contact
+the authors.</P>
+<P>If ihole \gt 4 then core-hole lifetime parameter (gamach) is not tabulated
+in FEFF and set equal to 0.1 eV. Use 
+<A HREF="#exc">EXCHANGE</A>
+card to make adjustments ( gamach = 0.1 + 2 * vi0 ). </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+  HOLE  1   1.0     K-shell core hole, S02 = 1
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="pot"></A> 
+</P>
+<H3><B>POTENTIALS</B></H3>
+
+<P>    </P>
+<P>The data following the POTENTIALS card assigns a unique potential index
+to each distinguishable atom. The potential index ipot is the index of
+the potential to be used for the phase shift calculation. </P>
+<P>The keyword POTENTIALS begins a unique potential list.  Each following
+line (until the next keyword card) is a unique potential index, the
+atomic number and optional tag (max 6 characters) for that unique
+potential. The absorbing atom must be unique potential 0.  These unique
+potential indices are simply labels, so the order is not important,
+except that the absorbing atom is ipot 0, and you may not have missing
+indices (ie, if you use ipot 3, you must also have defined unique
+potentials 1 and 2). </P>
+<P>To save time the code calculates the overlapped atom potential for each
+unique potential only once, using as a sample geometry the first atom
+in the atom list with a given unique potential index. Thus it is essential
+that the neighborhood of that sample atom be representative.  Failure
+to do so may cause the code to perform poorly (See Appendix G). </P>
+<P>Because the phase shift calculation is the most time-consuming part of
+FEFF, it may be useful to assume that the potential for a given shell
+of atoms is the same as that of a previously calculated shell. For
+example, in Cu it is a good approximation to determine potentials only
+for the central atom and the  first shell and to use the first shell
+potential (ipot=1) for all higher shells.  Such approximations should
+be checked in each case. 
+<BLOCKQUOTE><CODE>
+<PRE>
+  * molecular SF6
+  POTENTIALS
+  *   potential-index    Z   tag
+            0           16   S         Sulfur K hole, absorbing atom
+            1            9   F
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="pri"></A> 
+</P>
+<H3><B>PRINT</B></H3>
+
+<P> potph  paths  genfmt  ff2chi </P>
+<P>The PRINT card determines how much output is printed from each of the
+four modules.  Default is print level 0 for each module.   See section
+6 for details of contents of these files. </P>
+<P>
+<DL>
+<DT><B> <CODE>potph</CODE> </B><DD><P>0 = phase.bin, rkk.bin, xsect.bin only;
+1 = add misc.dat;
+2 = add pot.dat, phase.dat, phmin.dat;
+5 = add atom.dat </P>
+<DT><B> <CODE>paths</CODE> </B><DD><P>0 = paths.dat only;
+1 = add crit.dat;
+2 = add geom.dat;
+3 = add f(beta) files (plane wave |f(beta)| approximations);
+5 = Write only crit.dat and save geom.dat.  This is very useful
+when exploring importance of paths for large runs.  Does not
+write paths.dat.</P>
+<DT><B> <CODE>genfmt</CODE> </B><DD><P>0 = list.dat, all paths with importance greater than
+or equal to two thirds of the curved wave importance criterion
+written to feff.bin
+1 = keep paths written to feff.bin</P>
+<DT><B> <CODE>ff2chi</CODE> </B><DD><P>0 = chi.dat;
+1 = add sig2.dat with Debye-Waller factors;
+2 = add chiNNNN.dat (chi from each path individually)  This can
+quickly fill up your disk if you're doing a large run.
+3 = add feffNNNN.dat (input files for FEFFIT program), and 
+do not add chiNNNN.dat files.
+4 = add both feffNNNN.dat and chiNNNN.dat files.</P>
+</DL>
+
+<BLOCKQUOTE><CODE>
+<PRE>
+  * add crit.dat and small feffNNNN.dat files to minimum output
+  PRINT  0  1  1  0
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="sig"></A> 
+</P>
+<H3><B>SIG2</B></H3>
+
+<P> SIG2 sig2</P>
+<P>Global Debye-Waller factor to be used for all paths.  This value will be
+summed with the correlated Debye model value (if the DEBYE card is present)
+and any value added to list.dat.  Units are Angstroms**2.</P>
+<P>
+<A NAME="tit"></A> 
+</P>
+<H3><B>TITLE</B></H3>
+
+<P>  title line...  </P>
+<P>Keyword TITLE followed by a title line.  You may have up to 10 of
+these.  Titles may have up to 75 characters, leading blanks in the
+titles will be removed.  </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+TITLE  Andradite  (Novak and Gibbs, Am.Mineral 56,791 1971)
+TITLE  K-shell 300K
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<H3>Useful Options</H3>
+
+<P>
+<A NAME="cor"></A> 
+</P>
+<H3><B>CORRECTIONS</B></H3>
+
+<P>real-energy-shift imaginary-energy-shift</P>
+<P>The real energy shift will shift E0 in the final chi and the imaginary
+energy shift adds broadening to the result. The energy shift is useful
+to correct for the error in FEFF's fermi level, which is typically
+too high by about 3 eV, and the the broadening is typically used to
+correct for instrument broadening, or as a correction to the mean free
+path calculated by FEFF. This affects only the module FF2CHI, which
+combines the results in all of the feff.dat files. It is useful because
+you can simply make these energy corrections and see the results without
+redoing the entire XAFS parameter calculation.  Both energies are in eV.
+(See also the EXCHANGE card.)  </P>
+
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+* Reduce E0 by 3.0 eV and add 1 eV of broadening
+* This will only affect module 4, ff2chi
+CORRECTIONS   3.0   1.0       real shift, imag shift
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="cri"></A> 
+</P>
+<H3><B>CRITERIA</B></H3>
+
+<P> critcw critpw</P>
+<P>Since the number of multiple scattering paths gets large very quickly,
+it is necessary to eliminate as many paths as possible.  Fortunately,
+we have found that most multiple scattering paths have small amplitudes
+and can be neglected.  Various cutoff "criteria" are used in FEFF7 to
+limit the number of paths to consider.  These criteria are based on the
+importance of the path, defined as the integral over the full energy
+range of |chi(k)|*dk. </P>
+<P>critcw is the result of the full curved wave calculation.  A
+calculation of critcw requires a complete spherical wave calculation,
+which takes about 10 seconds on a SUN4.  The default value of critcw is
+4%, meaning that any  path with mean amplitude exceeding 4% of largest
+path will be used in calculation of chi. The criterion critcw is used
+by GENFMT; since the XAFS parameter calculation is already done, the
+savings is not in computer time, but in disk space and ease of
+analysis.  The values of critcw for each path are written in the file
+list.dat written by module GENFMT. </P>
+<P>critpw is a plane-wave approximation to chi.  This is extremely fast to
+calculate, and is used in the pathfinder.  The default value of critpw
+is 2.5, meaning that any path with mean amplitude 2.5% of largest path,
+including degeneracy factors,  (in plane wave approximation) will be
+kept. Any path that does not meet this criterion will not be written to
+paths.dat, and there is no need to calculate the XAFS parameters for
+this path.  The default for critpw is less than that for critcw since
+some paths are more important when the full curved wave calculation is
+done than they appear in the plane wave approximation.  Since the plane
+wave estimate is extremely fast, use this to filter out as many paths
+as you can.  The file crit.dat (written by the module PATHS) tells you
+critpw for each path that passes the criterion. </P>
+<P>The method of calculation of these importance factors has been improved
+for the current release, so don't worry if the values for some paths
+has changed slightly from previous versions. 
+(Default values critcw=4.% critpw=2.5%)  </P>
+
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+CRITERIA  6.0  3.0   critcw 6%, critpw 3%
+
+CRITERIA  0  0       use all paths (cw and pw criteria turned off)
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="cus"></A> 
+</P>
+<H3><B>CUSTOMCRITERIA</B></H3>
+
+<P> zzcrit  zzkmin  zzkmax</P>
+<P>This is exactly like the curved wave criteria and affects only module
+FF2CHI, which assembles the final chi.  You can specify kmin and
+kmax for the range over which the importance factors are considered.
+This is particularly useful for near-edge studies.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+CUSTOMCRITERIA  15.0  0.5  1.5
+use paths with importance at least 15% of the biggest path, using the
+k range from 0.5 to 1.5 invA to calculate the importance factors.
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="ell"></A> 
+</P>
+<H3><B>ELLIPTICITY</B></H3>
+
+<P> ellipticity x y z</P>
+<P>Ellipticity is the ratio of amplitudes of electric field in two orthogonal
+directions for elliptically polarized light.  Only the absolute value of
+the ratio is important for nonmagnetic materials. The present code cannot
+distinguish left and right circular polarization. A zero value of the 
+ellipticity corresponds to linear polarization, and unity to circular
+polarization.  Default value is zero. </P>
+<P>x, y, z are coordinates of any nonzero vector in the direction of incident
+beam. This vector should be approximately normal to the polarization vector.</P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+ELLIPTICITY  1.0  0.0 0.0 -2.0   for circular polarization about z-axis
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="end"></A> 
+</P>
+<H3><B>END</B></H3>
+
+
+<P>The END card marks the end of reading the feff.inp file; all data
+following the END card is ignored. This is optional, but useful when
+making short runs with only part of an input file. 
+<BLOCKQUOTE><CODE>
+<PRE>
+END    ignore any cards in feff.inp that follow this
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="nem"></A> 
+</P>
+<H3><B>NEMAX</B></H3>
+
+<P> nemax </P>
+<P>This limits the number of energy points. NEMAX is normally 49, which
+will get you to k=20 invA.  Smaller values will avoid the high energy
+parts of the calculation and may save you some time.  This parameter is
+used when the scattering phase shifts are calculated, so once you have
+limited the number of energy points, that's what you will get for the
+rest of the calculations you do (based on the phase shifts).  To change
+the number of energy points, re-run the phase shift calculation.  </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+* use only first 40 energy grid points
+NEMAX  40
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="nle"></A> 
+</P>
+<H3><B>NLEG</B></H3>
+
+<P> nleg </P>
+<P>The NLEG card limits the number of scattering paths to nleg. If nleg is
+set to 2, only single scattering paths are found. The default is
+nleg = 8.  </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+NLEG 2      find only single scattering paths (ie, 2 legged paths)
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="nog"></A> 
+</P>
+<H3><B>NOGEOM</B></H3>
+
+
+
+<P>When this card is present, the file geom.dat will not be produced.  Use
+this option when you want to take advantage of the symmetry in a cluster
+to speed the path calculation by using the geom.dat file produced by the
+auxilliary code ATOM rather than letting feff produce geom.dat from the
+atom list in feff.inp. CAUTION: do not use this option with POLARIZATION card,
+since you will have to redo geom.dat yourself for every polarization
+direction and cannot use ATOM to do that.</P>
+
+<P>
+<A NAME="nst"></A> 
+</P>
+<H3><B>NSTAR</B> </H3>
+
+
+<P>When this card is present, GENFMT (module 3) will write the file
+nstar.dat with the effective coordination number n* for each path.</P>
+
+<P>
+<A NAME="pcr"></A> 
+</P>
+<H3><B>PCRITERIA</B></H3>
+
+<P> keep-criterion heap-criterion</P>
+<P>These criteria, like those described in the CRITERIA card, also limit
+the number of paths. However, they are applied in the pathfinder and
+eliminate unimportant paths while the pathfinder is doing its search.
+The pathfinder criteria (pcrit's) do not know the degeneracy of a path
+and are therefore much less reliable than the curved wave and plane
+wave criteria in the CRITERIA card above. These path finder criteria
+(keep and heap) are turned off by default, and we recommend that they
+be used only with very large runs, and then with caution. </P>
+<P>The keep-criterion looks at the amplitude of chi (in the plane wave
+approx) for the current path and compares it to a single scattering
+path of the same effective length.  To set this value, consider the
+maximum degeneracy you expect and divide your plane wave criterion by
+this number.  For example, in fcc Cu, typical degeneracies are 196 for
+paths with large r, and the minimum degeneracy is 6.  So a keep
+criterion of 0.08% is appropriate for a pw criteria of 2.5%. </P>
+<P>The heap-criterion filters paths as the pathfinder puts all paths into
+a heap (a partially ordered data structure), then removes them in order
+of increasing total path length.  Each path that is removed from the
+heap is modified and then considered again as part of the search
+algorithm. The heap filter is used to decide if a path has enough
+amplitude in it to be worth further consideration.  If we can eliminate
+a path at this point, entire trees of derivative paths can be
+neglected, leading to enormous time savings.  This test does not come
+into play until paths with at least 4 legs are being considered, so
+single scattering and triangular (2 and 3 legged) paths will always
+pass this test.  Because only a small part of a path is used for this
+criterion, it is difficult to predict what appropriate values will be.
+To use this (it is only necessary if your heap is filling up, and if
+limiting rmax doesn't help), study the results in crit.dat from runs
+with shorter rmax and experiment with the heap criterion accordingly.
+In the future, we hope to improve this filter. </P>
+<P>Before using these criterion, study the output in the file crit.dat
+(use print option 1 for paths, see PRINT card), which has the values of
+critpw, keep factor and heap factor for all paths which pass the critpw
+filter. </P>
+<P>Default:  If this card is omitted, the keep and heap criteria are set
+to zero, that is, no filtering will be done at this step in the calculation.</P>
+
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+* fcc Cu had degeneracies from 6 to 196, so correct for this by
+* dividing pw-crit of 2.5% by 30 to get 0.08 for keep crit.  Check this
+* empirically by running with pcrits turned off and studying crit.dat.
+* After studying crit.dat, choose 0.5 for heap crit.
+PCRITERIA   0.08  0.5
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="pol"></A> 
+</P>
+<H3><B>POLARIZATION</B></H3>
+
+<P> x y z </P>
+<P>This card specifies the direction of electric field in the incident beam.
+(Main axis of the ellipse in the case of elliptical polarization).
+x, y, z - coordinates of any nonzero vector. Only this card is necessary
+in the case of linear polarization. If the POLARIZATION card is omitted,
+polarization averaged xafs will be calculated. </P>
+<P>Note that polarization reduces the degeneracy of the paths, increasing
+the calculation time. Choosing polarization in the directions of symmetry
+axes will yield faster results.   </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+POLARIZATION  1.0  2.5  0.0
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="rma"></A> 
+</P>
+<H3><B>RMAX</B></H3>
+
+<P> rmax</P>
+<P>The RMAX card determines the maximum effective distance, rmax, of a
+given path.  Note that rmax is one-half of the total path length in
+multiple-scattering paths.  Setting this too large can cause the heap
+in the pathfinder to fill up.  Default is RMAX = 2.2 times the near neighbor
+distance.  </P>
+<P>
+<BLOCKQUOTE><CODE>
+ 
+<PRE>
+RMAX  5.10   only include paths with effective length up to 5.10 Ang
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<P>
+<A NAME="rmu"></A> 
+</P>
+<H3><B>RMULTIPLIER</B></H3>
+
+<P> rmult</P>
+<P>The use of the RMULTIPLIER card multiples all atomic coordinates by a
+constant factor, rmult. This is useful, for example, if unit cell
+coordinates are used. (Default value rmult=1.)  </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+RMULTIPLIER 1.01   (increase distances by 1%)
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<P>
+<A NAME="ss"></A> 
+</P>
+<H3><B>SS</B></H3>
+
+<P> index ipot deg rss </P>
+<P>The SS card is used when the structure of a given shell is unknown. No
+multiple scattering is produced but a single scattering path of
+degeneracy deg is produced. Overlap cards may be used to construct the
+potential for such a path. The parameters are a shell index, which is a
+label used for feffNNNN.dat file name, a unique potential index ipot,
+identifying the unique potential of atom from which to scatter, the
+degeneracy, i.e., the multiplicity  of this single scattering path, and
+the distance to central atom, rss. This could be used to add single
+scattering beyond the limits of a cluster.  </P>
+
+<P>
+<BLOCKQUOTE><CODE>
+ 
+<PRE>
+*  index  ipot   deg  rss
+SS   29     1     48  5.98       parameters for 19th shell of Cu
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<P>
+<A NAME="xan"></A> 
+</P>
+<H3><B>XANES</B></H3>
+
+
+<P>The XANES card is used when a calculation of the near edge structure
+including the atomic background and absolute energies are desired. </P>
+<P>The XANES calculation is limited to the (extended) continuum spectrum
+beyond the Fermi level. Thus bound states are not generally included;
+however, in molecules weakly bound states that are below vacuum but
+above the muffin-tin zero show up as resonances.  The absolute
+energies are based on atomic total energy calculations using the
+Desclaux code; the accuracy of this approximation varies from a few
+eV to a few hundred eV for very large Z.
+No parameters are needed.  Default: XANES not calculated. </P>
+
+
+<H3>Sometimes useful options for expert users</H3>
+
+<P>
+<A NAME="afo"></A> 
+</P>
+<H3><B>AFOLP</B></H3>
+
+
+<P>This automatically overlaps all muffin-tins by about 10-30%
+to reduce the effects of
+potential discontinuities at the muffin-tins.  It is useful in highly 
+inhomogeneous materials.  It works fairly well, but may fail in some 
+cases. See FOLP for non-automatic version. 
+<BLOCKQUOTE><CODE>
+<PRE>
+AFOLP     use automatic maximum overlapping
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<P>
+<A NAME="fol"></A> 
+</P>
+<H3><B>FOLP</B></H3>
+
+<P> ipot folp</P>
+<P>The FOLP card  sets a parameter which determines  by what factor
+muffin-tin radii are overlapped.  We recommend that the AFOLP card 
+be used in cases with severe anisotropy, and FOLP only used for
+diagnostic purposes.  </P>
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+FOLP 1  1.1  (10% overlap of muffin tin of unique potential 1)
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="exc"></A> 
+</P>
+<H3><B>EXCHANGE</B></H3>
+
+<P> ixc vr0 vi0</P>
+
+<P>The EXCHANGE card specifies the energy dependent exchange correlation
+potential to be used.  (See also the 
+<A HREF="#cor">CORRECTIONS</A> card which is similar
+but allows the user to refine values of vr0 and vi0 after a calculation
+is completed.)  The EXCHANGE card contains the index of the xc pot (ixc)
+and the constant imaginary part of the self-energy (vi0). The
+Hedin-Lundqvist self-energy (default) appears to be the best choice for
+all applications we have tested in detail. Partially nonlocal model gave
+better results for Cu metal, but was not tested on other materials. Broadened
+plasmon model removes singular behavior of HL self energy around
+plasmon frequency, and it is being tested too. Optionally one may use the
+Dirac-Hara exchange correlation potential and an appropriate imaginary
+potential vi0. This may be useful to correct FEFF's typical error of
+2 eV (high) in the location of the Fermi level and to add instrumental
+broadening.  The models with ixc greater or equal to 10 are
+still experimental. They need a special file (bphl.dat), which can be obtained
+from the authors. Defaults if EXCHANGE card is omitted: ixc=0
+(Hedin-Lundquist), vr0=0.0 vi0=0.0.  </P>
+<P>
+<DL>
+<DT><B> ixc values </B><DD><P>
+<BLOCKQUOTE><CODE>
+<PRE>
+ ixc=0:  Hedin-Lundqvist + const imag part;
+ ixc=1:  Dirac-Hara + const imag part;
+ ixc=2:  ground state + const imag part;
+ ixc=3:  Dirac-Hara + HL imag part + const imag part;
+ ixc=5:  Partially nonlocal: Dirac-Fock for core +
+         HL for valence electrons + const imag part;
+ ixc=10: Same as ixc=0 with broadened plasmon HL model;
+ ixc=13: Same as ixc=3 with broadened plasmon HL model;
+ ixc=15: Same as ixc=5 with broadened plasmon HL model
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+<DT><B> vi values </B><DD><P>vi0 is (the negative of the) imaginary const shift</P>
+</DL>
+
+<BLOCKQUOTE><CODE>
+<PRE>
+*Hedin-Lundqvist -2eV edge shift and 1eV expt broadening
+EXCHANGE 0 2. 1. 
+
+*Dirac-Hara exchange -3 eV edge shift and 5 eV inner potential
+EXCHANGE 1 3. 5.
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<P>
+<A NAME="ion"></A> 
+</P>
+<H3><B>ION</B></H3>
+
+<P> ipot ionization</P>
+<P>The ION card ionizes all atoms with atom type ipot.  Negative values
+and non-integers are permitted (however, ionicities larger than 2 and less
+than -1 seems to be very unphysical). The ION card is used to ionize all
+atoms of a particular potential index. For example, for diatomics like
+Br2, the fully relaxed configuration has ionization=1 on the scattering
+atom. The ionization card should be used with caution; because of
+charge transfer, the actual degree of ionization is not directly
+related to the chemical valence. The default (non-ionized) scattering
+potentials are often superior to those empirically ionized, and the
+results should be checked both ways. Defaults if ION cards are
+omitted: atoms are not ionized.  </P>
+<P>
+<BLOCKQUOTE><CODE>
+ 
+<PRE>
+ION  1  0.87   ipot, ionization
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+<P>
+<A NAME="ove"></A> 
+</P>
+<H3><B>OVERLAP</B></H3>
+
+<P> iph</P>
+<P>The OVERLAP card contains information needed to construct the
+overlapped atom potentials when atomic coordinates are not known or
+specified. If the atomic positions are listed following the ATOMS
+cards, the OVERLAP cards are probably not needed. The OVERLAP card
+contains the potential index of the atom being overlapped and must be
+followed by cards specifying the potential index, number of atoms of a
+given type to be overlapped and and their distance to the atom being
+overlapped.  This option can be useful in crystals, especially for
+distant shells -- see sample input files for an example. It can also be
+useful for calculating single scattering XAFS in very complex materials
+where very little is known about the structure. </P>
+<P>You should verify that the coordination chemistry built in using the
+OVERLAP cards is realistic; it is important to specify all the close
+neighbors of a typical atom in the shell to be overlapped. The most
+important factor in determining the scattering amplitudes is the atomic
+number of the scatterer, but the coordination chemistry must be
+approximately correct to ensure good scattering potentials. Thus it is
+important to specify as accurately as possible the coordination
+environment of the scatterer.  </P>
+<P>
+<BLOCKQUOTE><CODE>
+ 
+<PRE>
+OVERLAP 4         determine overlap for 3rd shell of Cu
+  0  1 2.55266    ipot, number in shell, distance
+  1  4 2.55266
+  2  7 2.55266
+  2  6 3.61000
+  2 24 4.42133
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>
+<A NAME="rgr"></A> 
+</P>
+<H3><B>RGRID</B></H3>
+
+<P> dpas</P>
+<P>The radial grid used for the potential and phase shift calculation is
+r(i) = exp (-8.8 + (i-1) * dpas), with dpas = 0.05.  This is sufficient
+for almost everything.  There are occasionally convergence problems in
+the background at very high energy (the background curves upward) and
+in calculating phase shifts at high energy for very large atoms.
+If the background at high energies is not monotonic or chi has unphysical
+oscillations, we suggest reducing
+the dpas to .03 or .01. It  will solve these problems at the cost of longer
+computation times (time is proportional to 1/dpas**2).
+We have used this option for testing convergence.</P>
+
+<P>
+<A NAME="rph"></A> 
+</P>
+<H3><B>RPHASES</B></H3>
+
+
+<P>If this card is present, only real phase shifts (instead of the complex
+phase shifts) will be used.  The results of the calculation will not be
+accurate.  This option is intended to allow users to obtain real scattering
+phase shifts for use with other programs, or for diagnostic purposes.
+The phase shifts can be written to output files phaseXX.dat using the
+PRINT card.  If the RPHASES card is present, these will be the real phase
+shifts.</P>
+<P>
+<A NAME="sg3"></A> 
+</P>
+<H3><B>SIG3</B></H3>
+
+<P> alphat</P>
+<P>Adds first and third cumulants based on anharmonic correlated Einstein model for
+single scattering paths.  Alphat is a high temperature expansion coefficient.</P>
+
+
+<H3>Obscure Options</H3>
+
+<P>
+<A NAME="ior"></A> 
+</P>
+<H3><B>IORDER</B></H3>
+
+<P> iord</P>
+<P>Order of the approximation to use in module GENFMT.  We use order 2,
+which is correct to terms of order (1/pR)**2, and corresponds to 6x6
+matrices. However, we do single scattering exactly.  This approximation
+is accurate to within a few percent in every case we have tried (that
+is, higher order doesn't change the result more than a few percent).
+Changing the default values requires some familiarity with the
+Rehr-Albers paper and the structure of  the module GENFMT.  To do so,
+follow the instructions in subroutine SETLAM.  Iord is passed to setlam
+for processing.  You may need to change the code parameter lamtot if
+you want to do higher order calculations.  This is another of the
+arcane cards that we have used for testing.  For details of the
+algorithm used by GENFMT, see the paper by J.J.Rehr and R.C.Albers (see
+Appendix C, references).  </P>
+
+<P>
+<A NAME="jum"></A> 
+</P>
+<H3><B>JUMPRM</B></H3>
+
+
+
+<P>Removes jumps in all potentials at muffin-tin radii. This should be used only
+for cases when unreasonably big oscillations in smooth atomic cross section
+occur (see XANES card). This card may introduce unphysical energy shifts so it
+should be used with caution.</P>
+
+<P>
+<A NAME="mbc"></A> 
+</P>
+<H3><B>MBCONV</B></H3>
+
+
+
+<P>The convolution with model excitation spectrum will be made. The model
+is based in atomic overlap S0**2 and atomic relaxation energy. Can be
+used to test the energy dependent S0**2.</P>
+<P>
+<A NAME="noh"></A> 
+</P>
+<H3><B>NOHOLE</B></H3>
+
+
+
+<P>What does it mean to do x-ray absorption if no x-ray was absorbed?  Not
+much, but the code will do it if you want.  We used this to test the
+final state rule for calculated XAFS, and to compare to some other
+calculations that did not use a core hole.  The code will use the
+final state from the hole card for matrix element calculation -- the
+NOHOLE card says to calculate potentials, etc., as if there was no
+core hole.</P>
+
+
+
+<HR>
+<A HREF="feff7-3.html">Previous</A>
+<A HREF="feff7-5.html">Next</A>
+<A HREF="feff7.html#toc4">Table of Contents</A>
+</BODY>
+</HTML>

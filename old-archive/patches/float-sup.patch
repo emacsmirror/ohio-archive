@@ -1,0 +1,2710 @@
+Path: dg-rtp!rock!mcnc!gatech!usenet.ins.cwru.edu!magnus.acs.ohio-state.edu!cis.ohio-state.edu!ucbvax!bloom-beacon!eru!kth.se!news
+From: bg@bg.nada.kth.se (Bjorn Gronvall)
+Newsgroups: gnu.emacs.sources
+Subject: Floting-point numbers in emacs
+Date: 13 Aug 91 13:12:47 GMT
+Organization: Royal Institute of Technology, Stockholm, Sweden
+
+;; LCD Archive Entry:
+;; float-sup.patch
+;; |Wolfgang Rupprecht, Bjorn Gronvall|wolfgang@mgm.mit.edu, bg@bg.nada.kth.se
+;; |True floating point lisp data type for Emacs 18.57 (source code patch)
+;; |91-08-13||~/patches/float-sup.patch.Z|
+
+
+Yes, I know that programmers don't use flotingpoint
+but some of our users does. Therfore I have updated
+Wolfgang Rupprecht patch to work with emacs-18.57.
+
+To install this patch follow the following steps:
+
+1)
+Run patch (on file included below).
+
+2)
+cp lisp/float-sup.el lisp/float-sup.elc
+This is for bootstrapping, your old emacs
+can't compile this beast (yet).
+
+3)
+byte-recompile-directory lisp (using emacs)
+
+4)
+Add LISP_FLOAT_TYPE to your src/config.h.
+You will also need to increase the value
+of PURESIZE by roughly 5000.
+
+5)
+Run make
+
+6)
+byte-compile lisp/float-sup.el
+
+7)
+Run make again (to complete bootstrap process).
+
+and your hopfully done.
+
+	Cheers
+	Bjvrn
+
+Only in emacs: FLONUM
+*** emacs-18.57/FLONUM	Tue Aug 13 14:06:45 1991
+--- emacs/FLONUM	Tue Aug 13 10:50:22 1991
+***************
+*** 0 ****
+--- 1,263 ----
++ ###############################################################################
++ ##									     ##
++ ##	File:     FLONUMS						     ##
++ ##	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 ##
++ ##	Created:  Tue Oct 27 15:58:53 EST 1987				     ##
++ ##	Contents: Documentation File for GnuEmacs with floats		     ##
++ ##									     ##
++ ##	Copyright (c) 1987 Wolfgang Rupprecht.				     ##
++ ##	All rights reserved.						     ##
++ ##									     ##
++ ##	$Log$								     ##
++ ###############################################################################
++ 
++ INTRO
++ 
++ I have added a true floating point data type (flonum in lisp jargon)
++ to the lisp interpreter of GnuEmacs.  This allows one to do emacs-lisp
++ calculations using floating point numbers as well as integers.  In
++ addition, GnuEmacs now has hooks to call all of the common
++ trigonometric functions from lisp.  One may now, for example, use the
++ *scratch* buffer as a real scientific calculator (programable even!!).
++ It is not that hard to write a super spreadsheet calculator in elisp,
++ using this package.
++ 
++ NEW FEATURES
++ 
++ The basic features features provided are:
++ 
++ *	a lisp float data type, that uses the C type "double" for it's
++ 	basic storage
++ *	upgrading of the built-in math subroutines to allow manipulation
++ 	of floats
++ *	conversion routines to convert to and from floats and ints
++ *	predicates for testing if a number is a float, float-or-int,
++ 	or float-or-int-or-marker
++ *	trig math routines. (sin, cos, tan, exponentials, logs, bessels, etc.)
++ *	upgrading of int-to-string, string-to-int, and the basic printing
++ 	and reading routines to allow float reading/printing.
++ *	changes to garbage-collect to also collect old floats.
++ 
++ The lisp reader will interpret strings of one of the following three
++ forms as a float:
++ 
++ 	 <number>.<number>
++ 	 <number>e<number>
++ 	 <number>.<number>e<number>
++ 
++ The mantissa and the exponent may both have a single + or - sign
++ prefixed.  All other strings are treated as symbols.  This is
++ intentional, and meant to prevent numbers and dotted pairs of 
++ ints from looking too much like one another. 
++ 
++      legal numbers:
++ 	  (0 . 1)  	a doted pair of integers 0 and 1
++ 	  (0.1)		a list of one float with value 1/10
++ 
++ 	  0.0		the floating pt. zero
++ 	  1.0		the floating point one
++ 	  1e0		also floating pt. one
++ 	  0e0		also floating pt. zero
++ 
++          (0. 1)		a list of symbol "0\." and integer 0
++ 	 (0 .1)		a list of integer 0 and symbol "\.1"
++           0.		symbol "0\."
++ 	  .1		symbol "\.1"
++ 
++ The built in math functions promote the type of the calculation from
++ integer to float at the first encounter with a float.
++ 
++ 	(+ 1 2 3 4 5 6.0 7 8 9)
++ 
++ The above expression will be done in integer math for the addition of
++ 1, 2, 3, 4 and 5.  The rest of the calculation is done in floating
++ point math with the result being a float.  This allows an integer 
++ calculation to still return an integer.  To force a floating point
++ calculation, convert the first argument to a float.
++ 
++ Ints can be converted to floats by using the function "float".
++ Floats can be converted to ints by one of several functions, 
++ depending on the type of rounding desired.
++ 
++        round		returns the closest integer
++        ceiling		returns the largest integer that is not larger 
++ 			than the arg (round towards -infinity)
++        floor		returns the smallest integer that is not smaller
++ 			than the arg (round towards +infinity)
++        truncate		returns the integer corresponding to the mantissa
++ 			of the float. (round towards zero)
++ 
++ On most machines that gnuemacs runs on, lisp integers are only 24 bits
++ long.  One must be careful when convering large floats to integers that
++ one doesn't exceed the storage capacity of integers.  Integers (of 24
++ bit size) can only have a range of slightly over +/- 8 million.  The
++ same caution applies when performing mathematical operations on
++ integers.  If you need to work with large numbers, it's safest to use 
++ floats.
++ 
++ The math trig functions sin/cos/tan all take their arguments in
++ radians.  Values can be converted to the desired radix with the
++ functions degrees-to-radians and radians-to-degrees.
++ 
++ Some of the new functions (or functions with new args/return values):
++ 
++ abs acosh asin asinh atan atanh ceiling cos cosh cube-root erf erfc
++ exp expm1 expt fceiling ffloor float floor fround ftruncate
++ garbage-collect int-to-string integer-or-float-or-marker-p
++ integer-or-floatp j0 j1 jn log log-gamma log10 log1p round sin sinh
++ sqrt tan tanh truncate y0 y1 yn
++ 
++ The full documentations for these functions is on-line under C-h f
++ <function-name> and at the end of this document. 
++ 
++ The lisp variable float-output-format controls the printed
++ representation of floats.  The available print formats are:
++ 
++        <number>.<number>	     with a 'd' specifier
++        <number>.<number>e<number>    with an 'e' specifier
++        (or data dependent switching 
++         between the above two)	     with no letter specifier
++ 
++ The field width may be contolled by an optional numeric field
++ preceeding the above format specifier. 
++ 
++ 
++ MAKING FLOAT-EMACS:
++ 
++ To make emacs with flonums (ie. lisp floats) define LISP_FLOAT_TYPE in
++ your conf.h file.  The resultant emacs will be less than 6% larger.
++ This has been tested on a Vax-750 running BSD 4.3.
++ 
++ 	text	data	bss	dec	hex
++ 	369664	180224	0	549888	86400	emacs-18.49
++ 	391168	187392	0	578560	8d400	float-emacs-18.49
++ 
++ PORTING to other machines:
++ 
++ If you aren't running with a BSD/vax style printf, you may no be able
++ to use the optional runtime selectable floating point print-width stuff.
++ (I'll probably fix this soon.)
++ 
++ If you don't have some of the math-lib functions that emacs wants
++ linked in, don't worry.  These are all entirely optional.  Just #ifdef
++ the math routines out, stub them up, or find a copy of the 4.3 BSD
++ routines. (Check the 4.3 BSD math(3) man page for details on copying
++ the math-lib routines.)
++ 
++ Appendix A: floating pt. docstrings
++ 
++ abs
++    Function: Return the absolute value of ARG.
++ acosh
++    Function: Return the inverse hyperbolic cosine of ARG.
++ asin
++    Function: Return the inverse sine of ARG.
++ asinh
++    Function: Return the inverse hyperbolic sine of ARG.
++ atan
++    Function: Return the inverse tangent of ARG.
++ atanh
++    Function: Return the inverse hyperbolic tangent of ARG.
++ ceiling
++    Function: Return the smallest integer no less than ARG. (round toward +inf)
++ cos
++    Function: Return the cosine of ARG.
++ cosh
++    Function: Return the hyperbolic cosine of ARG.
++ cube-root
++    Function: Return the cube root of ARG.
++ erf
++    Function: Return the mathematical error function of ARG.
++ erfc
++    Function: Return the complementary error function of ARG.
++ exp
++    Function: Return the exponential base e of ARG.
++ expm1
++    Function: Return the exp(x)-1 of ARG.
++ expt
++    Function: Return the exponential x ** y.
++ fceiling
++    Function: Return the smallest integral floating pt. number no less than ARG.
++    (round towards +inf)
++ ffloor
++    Function: Return the largest floating pt number no greater than ARG.
++    (round towards -inf)
++ float
++    Function: Return the floating pt. number equal to ARG.
++ floatp
++    Function: T if OBJECT is a floating pt. number.
++ float-output-format
++    Variable: The format descriptor string (or nil) that lisp uses to print out
++    floats.  Nil means use built-in defaults.
++    The descriptor string consists of an optional field-width spec,
++    followed by an optional output-style descriptor.
++    
++    Valid field-widths specs are:
++    The empty string for default precision.
++    0-20 for exponential notation, or 1-20 for decimal point notation.  A 0
++    field spec causes the printing of the decimal point to be supressed.
++    Using an out of bounds specs cause the closest valid spec to be used.
++    
++    Valid ouput-styles may be one of the following:
++    The letter 'e' for exponential notation "<number>.<number>e<number>"
++    The letter 'd' for decimal point notation "<number>.<number>".
++    The empty string, for the defaulted output style.  This may print in
++    either format in a data-dependent manner, choosing whatever produces
++    the shortest string.
++    
++ floor
++    Function: Return the largest integer no greater than ARG. (round towards -inf)
++ fround
++    Function: Return the nearest integral floating pt. number to ARG.
++ ftruncate
++    Function: Truncate a floating point number, returns a float.
++    (Truncates towards zero.) Will fail for floats > max integer.
++ garbage-collect
++    Function: Reclaim storage for Lisp objects no longer needed.
++    Returns info on amount of space in use:
++     ((USED-CONSES . FREE-CONSES) (USED-SYMS . FREE-SYMS)
++      (USED-MARKERS . FREE-MARKERS) (USED-FLOATS . FREE-FLOATS) 
++      USED-STRING-CHARS USED-VECTOR-SLOTS)
++    Garbage collection happens automatically if you cons more than
++    gc-cons-threshold  bytes of Lisp data since previous garbage collection.
++ int-to-string
++    Function: Convert INT to a string by printing it in decimal, with minus sign if negative.
++ integer-or-float-or-marker-p
++    Function: T if OBJECT is a floating pointt, normal number, or marker.
++ integer-or-floatp
++    Function: T if OBJECT is a floating pt. or normal number.
++ j0
++    Function: Return the bessel function j0 of ARG.
++ j1
++    Function: Return the bessel function j1 of ARG.
++ jn
++    Function: Return the bessel function jN of ARG.
++ log
++    Function: Return the natural logarithm of ARG.
++ log-gamma
++    Function: Return the log gamma of ARG.
++ log10
++    Function: Return the logarithm base 10 of ARG.
++ log1p
++    Function: Return the log(1+x) of ARG.
++ round
++    Function: Return the nearest integer to ARG.
++ sin
++    Function: Return the sine of ARG.
++ sinh
++    Function: Return the hyperbolic sine of ARG.
++ sqrt
++    Function: Return the square root of ARG.
++ tan
++    Function: Return the tangent of ARG.
++ tanh
++    Function: Return the hyperbolic tangent of ARG.
++ truncate
++    Function: Truncate a floating point number to an int.
++    (Truncates toward zero.)
++ y0
++    Function: Return the bessel function y0 of ARG.
++ y1
++    Function: Return the bessel function y1 of ARG.
++ yn
++    Function: Return the bessel function yN of ARG.
+
+*** emacs-18.57/lisp/float-sup.el	Tue Aug 13 14:18:46 1991
+--- emacs/lisp/float-sup.el	Tue Aug 13 10:52:38 1991
+***************
+*** 0 ****
+--- 1,81 ----
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++ ;;									     ;;
++ ;;	File:     float-sup.el						     ;;
++ ;;	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 ;;
++ ;;	Created:  Mon Oct 26 09:12:18 EST 1987				     ;;
++ ;;	Contents: Flonum support routines and useful constants.		     ;;
++ ;;		  This file is just the tip of the of the iceberg, as        ;;
++ ;;		  most of the flonum stuff is in the C code.	     	     ;;
++ ;;									     ;;
++ ;;	Copyright (c) 1987 Wolfgang Rupprecht.				     ;;
++ ;;	All rights reserved.						     ;;
++ ;;									     ;;
++ ;;	$Log$								     ;;
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++ 
++ ;; GNU Emacs and this file "float-sup.el", is distributed in the hope
++ ;; that it will be useful, but WITHOUT ANY WARRANTY.  No author or
++ ;; distributor accepts responsibility to anyone for the consequences of
++ ;; using it or for whether it serves any particular purpose or works at
++ ;; all, unless he says so in writing.  Refer to the GNU Emacs General
++ ;; Public License for full details.
++ 
++ ;; Everyone is granted permission to copy, modify and redistribute GNU
++ ;; Emacs and float-sup.el, but only under the conditions described in the
++ ;; GNU Emacs General Public License.  A copy of this license is supposed
++ ;; to have been given to you along with GNU Emacs so you can know your
++ ;; rights and responsibilities.  It should be in a file named COPYING.
++ ;; Among other things, the copyright notice and this notice must be
++ ;; preserved on all copies.
++ 
++ ;; If you like my floating point hack, and would like other custom
++ ;; (non-proprietary) GnuEmacs extensions, let me know. I may be
++ ;; interested in doing it for you on a contract basis. -wsr
++ 
++ ;; Provide a meaningful error message if we are running on
++ ;; bare (non-float) emacs.
++ ;; Can't test for 'floatp since that may be defined by float-imitation
++ ;; packages like float.el in this very directory.
++ 
++ (if (fboundp 'integer-or-floatp)
++     nil
++   (error
++     "Can't load float-sup. You aren't running GnuEmacs with the Lisp_Float data type."))
++ 
++ ;; provide an easy hook to tell if we are running with floats or not.
++ (provide 'lisp-float-type)
++ 
++ ;; define pi and e via math-lib calls. (much less prone to killer typos.)
++ (defconst pi (* 4 (atan 1)) "The value of Pi (3.1415926...)")
++ (defconst e (exp 1) "The value of e (2.7182818...)")
++ 
++ ;; Careful when editing this file ... typos here will be hard to spot.
++ ;; (defconst pi       3.14159265358979323846264338327
++ ;;  "The value of Pi (3.14159265358979323846264338327...)")
++ 
++ (defconst degrees-to-radians (/ pi 180.0)
++   "Degrees to radian conversion constant")
++ (defconst radians-to-degrees (/ 180.0 pi)
++   "Radian to degree conversion constant")
++ 
++ ;; these expand to a single multiply by a float
++ ;; when byte compiled
++ 
++ (defmacro degrees-to-radians (x)
++   "Convert ARG from degrees to radians."
++   (list '* (/ pi 180.0) x))
++ (defmacro radians-to-degrees (x)
++   "Convert ARG from radians to degrees."
++   (list '* (/ 180.0 pi) x))
++ 
++ ;; some readability macros.
++ ;; will eval arg several times,
++ ;; but is that a problem?
++ 
++ (defmacro squared (x)
++   "Return the square of ARG."
++   (list '* x x))
++ (defmacro cubed (x)
++   "Return the cube of ARG."
++   (list '* x x x))
++ 
+diff -rc emacs-18.57/lisp/bytecomp.el emacs/lisp/bytecomp.el
+*** emacs-18.57/lisp/bytecomp.el	Wed Jan  9 22:56:32 1991
+--- emacs/lisp/bytecomp.el	Tue Aug 13 10:52:38 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++ ;;									     ;;
++ ;;	File:     bytecomp.el						     ;;
++ ;;	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 ;;
++ ;;	Created:  Thu Nov  5 15:06:50 EST 1987				     ;;
++ ;;	Contents: Gnu bytecomp file, with changes for lisp floats	     ;;
++ ;;									     ;;
++ ;;	Copyright (c) 1987 Wolfgang Rupprecht.				     ;;
++ ;;	All rights reserved.						     ;;
++ ;;									     ;;
++ ;;	$Log$								     ;;
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Compilation of Lisp code into byte code.
+  ;; Copyright (C) 1985, 1986, 1987 Free Software Foundation, Inc.
+  
+***************
+*** 220,233 ****
+        (set-buffer outbuffer)
+        (emacs-lisp-mode)
+        (erase-buffer)
+!       (while (save-excursion
+! 	       (set-buffer inbuffer)
+! 	       (while (progn (skip-chars-forward " \t\n\^l")
+! 			     (looking-at ";"))
+! 		 (forward-line 1))
+! 	       (not (eobp)))
+! 	(setq sexp (read inbuffer))
+! 	(print (byte-compile-file-form sexp) outbuffer))
+        (set-buffer outbuffer)
+        (goto-char 1)
+        ;; In each defun or autoload, if there is a doc string,
+--- 232,247 ----
+        (set-buffer outbuffer)
+        (emacs-lisp-mode)
+        (erase-buffer)
+! ;; don't let floats get truncated in the process of printing them.
+!       (let ((float-output-format "20e"))
+! 	(while (save-excursion
+! 		 (set-buffer inbuffer)
+! 		 (while (progn (skip-chars-forward " \t\n\^l")
+! 			       (looking-at ";"))
+! 		   (forward-line 1))
+! 		 (not (eobp)))
+! 	  (setq sexp (read inbuffer))
+! 	  (print (byte-compile-file-form sexp) outbuffer)))
+        (set-buffer outbuffer)
+        (goto-char 1)
+        ;; In each defun or autoload, if there is a doc string,
+Only in emacs/lisp: float-sup.el
+diff -rc emacs-18.57/lisp/lisp-mode.el emacs/lisp/lisp-mode.el
+*** emacs-18.57/lisp/lisp-mode.el	Wed Jan  9 23:01:19 1991
+--- emacs/lisp/lisp-mode.el	Tue Aug 13 10:52:55 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++ ;;									     ;;
++ ;;	File:     lisp-mode.el						     ;;
++ ;;	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 ;;
++ ;;	Created:  Thu Nov  5 23:36:37 EST 1987				     ;;
++ ;;	Contents: GNU lisp-mode file, with my changes for float support	     ;;
++ ;;									     ;;
++ ;;	Copyright (c) 1987 Wolfgang Rupprecht.				     ;;
++ ;;	All rights reserved.						     ;;
++ ;;									     ;;
++ ;;	$Log$								     ;;
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Lisp mode, and its idiosyncratic commands.
+  ;; Copyright (C) 1985 Free Software Foundation, Inc.
+  
+***************
+*** 48,54 ****
+        (modify-syntax-entry ?` "'   " emacs-lisp-mode-syntax-table)
+        (modify-syntax-entry ?' "'   " emacs-lisp-mode-syntax-table)
+        (modify-syntax-entry ?, "'   " emacs-lisp-mode-syntax-table)
+!       (modify-syntax-entry ?. "'   " emacs-lisp-mode-syntax-table)
+        (modify-syntax-entry ?# "'   " emacs-lisp-mode-syntax-table)
+        (modify-syntax-entry ?\" "\"    " emacs-lisp-mode-syntax-table)
+        (modify-syntax-entry ?\\ "\\   " emacs-lisp-mode-syntax-table)
+--- 60,72 ----
+        (modify-syntax-entry ?` "'   " emacs-lisp-mode-syntax-table)
+        (modify-syntax-entry ?' "'   " emacs-lisp-mode-syntax-table)
+        (modify-syntax-entry ?, "'   " emacs-lisp-mode-syntax-table)
+! 
+!       ;; This needs to be changed for the float stuff.
+!       ;; I don't want to conditionalize this since it should
+!       ;; work the same way if floats are present or not. -wsr
+!       ;; (modify-syntax-entry ?. "'   " lisp-mode-syntax-table)
+!       (modify-syntax-entry ?. "_   " lisp-mode-syntax-table)
+! 
+        (modify-syntax-entry ?# "'   " emacs-lisp-mode-syntax-table)
+        (modify-syntax-entry ?\" "\"    " emacs-lisp-mode-syntax-table)
+        (modify-syntax-entry ?\\ "\\   " emacs-lisp-mode-syntax-table)
+diff -rc emacs-18.57/lisp/loadup.el emacs/lisp/loadup.el
+*** emacs-18.57/lisp/loadup.el	Wed Jan  9 23:01:30 1991
+--- emacs/lisp/loadup.el	Tue Aug 13 10:53:01 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++ ;;									     ;;
++ ;;	File:     loadup.el						     ;;
++ ;;	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 ;;
++ ;;	Created:  Thu Nov  5 11:44:26 EST 1987				     ;;
++ ;;	Contents: GNU loadup file, with my float code			     ;;
++ ;;									     ;;
++ ;;	Copyright (c) 1987 Wolfgang Rupprecht.				     ;;
++ ;;	All rights reserved.						     ;;
++ ;;									     ;;
++ ;;	$Log$								     ;;
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;Load up standardly loaded Lisp files for Emacs.
+  ;; This is loaded into a bare Emacs to make a dumpable one.
+  ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
+***************
+*** 62,67 ****
+--- 74,84 ----
+      (progn
+        (garbage-collect)
+        (load "vms-patch")))
++ (if (fboundp 'integer-or-floatp)	; preload some constants and 
++     (progn				; floating pt. functions if 
++       (garbage-collect)			; we have float support.
++       (load "float-sup")))
++ 
+  
+  ;If you want additional libraries to be preloaded and their
+  ;doc strings kept in the DOC file rather than in core,
+diff -rc emacs-18.57/lisp/sort.el emacs/lisp/sort.el
+*** emacs-18.57/lisp/sort.el	Wed Jan  9 23:04:27 1991
+--- emacs/lisp/sort.el	Tue Aug 13 11:21:48 1991
+***************
+*** 1,3 ****
+--- 1,16 ----
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++ ;;									     ;;
++ ;;	File:     sort.el						     ;;
++ ;;	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 ;;
++ ;;	Created:  Wed May 18 12:48:23 EDT 1988				     ;;
++ ;;	Contents: Gnu emacs code, with patches to make it work with floats   ;;
++ ;;									     ;;
++ ;;	Copyright (c) 1988 Wolfgang Rupprecht.				     ;;
++ ;;	All rights reserved.						     ;;
++ ;;									     ;;
++ ;;	$Log$								     ;;
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++ 
+  ;; Commands to sort text in an Emacs buffer.
+  ;; Copyright (C) 1986, 1987 Free Software Foundation, Inc.
+  
+***************
+*** 199,204 ****
+--- 212,218 ----
+      (modify-syntax-entry ?\  " " table)
+      (modify-syntax-entry ?\t " " table)
+      (modify-syntax-entry ?\n " " table)
++     (modify-syntax-entry ?\. "_" table)	; for floating pt. numbers. -wsr
+      (setq sort-fields-syntax-table table)))
+  
+  (defun sort-numeric-fields (field beg end)
+***************
+*** 216,222 ****
+  			      (buffer-substring
+  			        (point)
+  				(save-excursion
+! 				  (skip-chars-forward "-0-9")
+  				  (point))))))
+  		 nil))
+  
+--- 230,238 ----
+  			      (buffer-substring
+  			        (point)
+  				(save-excursion
+! 				  ;; This is just wrong! Even without floats...
+! 				  ;; (skip-chars-forward "-0-9")
+! 				  (forward-sexp 1)
+  				  (point))))))
+  		 nil))
+  
+*** emacs-18.57/lisp/startup.el	Wed Jan 16 05:19:04 1991
+--- emacs/lisp/startup.el	Tue Aug 13 10:53:14 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++ ;;									     ;;
++ ;;	File:     startup.el						     ;;
++ ;;	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 ;;
++ ;;	Created:  Thu Nov  5 16:58:42 EST 1987				     ;;
++ ;;	Contents: GNU startup file with floating point support 		     ;;
++ ;;									     ;;
++ ;;	Copyright (c) 1987 Wolfgang Rupprecht.				     ;;
++ ;;	All rights reserved.						     ;;
++ ;;									     ;;
++ ;;	$Log$								     ;;
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Process Emacs shell arguments
+  ;; Copyright (C) 1985, 1986 Free Software Foundation, Inc.
+  
+***************
+*** 166,171 ****
+--- 178,188 ----
+  	     (unwind-protect
+  		 (progn
+  		   (insert (emacs-version)
++ 			   ;; this next sexp can get nuked once FSF
++ 			   ;; owns this code. -wsr
++ 			   (if (featurep 'lisp-float-type)
++ 			       "\nCopyright (C) 1987 Wolfgang Rupprecht."
++ 			     "")
+  			   "
+  Copyright (C) 1990 Free Software Foundation, Inc.\n")
+  		   ;; If keys have their default meanings,
+***************
+*** 190,195 ****
+--- 207,221 ----
+  You may give out copies of Emacs; type \\[describe-copying] to see the conditions.
+  Type \\[describe-distribution] for information on getting the latest version.
+  Type \\[help-with-tutorial] for a tutorial on using Emacs.")))
++ ;;;
++ ;;; And now a message for the lawyer-slimes of this world. -wsr
++ ;;;
++ 		   (if (featurep 'lisp-float-type)
++ 		       (insert "\n
++ This version of emacs contains a floating point data type allowing you
++ do calculations with real numbers, just like a calculator.  This code
++ may not always yield the correct answers under all conditions.
++ 	YOU ARE RESPONSIBLE FOR CHECKING THE ANSWERS!\n"))
+  		   (set-buffer-modified-p nil)
+  		   (sit-for 120))
+  	       (save-excursion
+diff -rc emacs-18.57/lisp/subr.el emacs/lisp/subr.el
+*** emacs-18.57/lisp/subr.el	Wed Jan  9 23:04:45 1991
+--- emacs/lisp/subr.el	Tue Aug 13 10:53:24 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
++ ;;									     ;;
++ ;;	File:     subr.el						     ;;
++ ;;	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 ;;
++ ;;	Created:  Thu Dec 31 14:01:32 EST 1987				     ;;
++ ;;	Contents: The Gnu subr.el file, with my float stuff		     ;;
++ ;;									     ;;
++ ;;	Copyright (c) 1987 Wolfgang Rupprecht.				     ;;
++ ;;	All rights reserved.						     ;;
++ ;;									     ;;
++ ;;	$Log$								     ;;
++ ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; Basic lisp subroutines for Emacs
+  ;; Copyright (C) 1985, 1986, 1990 Free Software Foundation, Inc.
+  
+***************
+*** 150,156 ****
+  (fset 'move-marker 'set-marker)
+  (fset 'eql 'eq)
+  (fset 'not 'null)
+! (fset 'numberp 'integerp)
+  (fset 'rplaca 'setcar)
+  (fset 'rplacd 'setcdr)
+  (fset 'beep 'ding) ;preserve lingual purtity
+--- 162,170 ----
+  (fset 'move-marker 'set-marker)
+  (fset 'eql 'eq)
+  (fset 'not 'null)
+! (if (fboundp 'integer-or-floatp)
+!     (fset 'numberp 'integer-or-floatp)
+!   (fset 'numberp 'integerp))
+  (fset 'rplaca 'setcar)
+  (fset 'rplacd 'setcdr)
+  (fset 'beep 'ding) ;preserve lingual purtity
+diff -rc emacs-18.57/src/alloc.c emacs/src/alloc.c
+*** emacs-18.57/src/alloc.c	Sat Jan  5 01:12:10 1991
+--- emacs/src/alloc.c	Tue Aug 13 10:50:53 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ /******************************************************************************
++ *									      *
++ *	File:     alloc.c						      *
++ *	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 *
++ *	Created:  Mon Nov  2 15:20:48 EST 1987				      *
++ *	Contents: GNU alloc.c with my float code			      *
++ *									      *
++ *	Copyright (c) 1987 Wolfgang Rupprecht.				      *
++ *	All rights reserved.						      *
++ *									      *
++ *	$Log$								      *
++ ******************************************************************************/
+  /* Storage allocation and gc for GNU Emacs Lisp interpreter.
+     Copyright (C) 1985, 1986 Free Software Foundation, Inc.
+  
+***************
+*** 195,200 ****
+--- 207,287 ----
+    cons_free_list = ptr;
+  }
+  
++ #ifdef LISP_FLOAT_TYPE
++ 
++ /* Allocation of float cells, just like conses */
++ /* We store float cells inside of float_blocks, allocating a new
++  float_block with malloc whenever necessary.  Float cells reclaimed by
++  GC are put on a free list to be reallocated before allocating
++  any new float cells from the latest float_block.
++ 
++  Each float_block is just under 1020 bytes long,
++  since malloc really allocates in units of powers of two
++  and uses 4 bytes for its own overhead. */
++ 
++ #define FLOAT_BLOCK_SIZE \
++   ((1020 - sizeof (struct float_block *)) / sizeof (struct Lisp_Float))
++ 
++ struct float_block
++   {
++     struct float_block *next;
++     struct Lisp_Float floats[FLOAT_BLOCK_SIZE];
++   };
++ 
++ struct float_block *float_block;
++ int float_block_index;
++ 
++ struct Lisp_Float *float_free_list;
++ 
++ void
++ init_float ()
++ {
++   float_block = (struct float_block *) malloc (sizeof (struct float_block));
++   float_block->next = 0;
++   bzero (float_block->floats, sizeof float_block->floats);
++   float_block_index = 0;
++   float_free_list = 0;
++ }
++ 
++ /* Explicitly free a float cell.  */
++ free_float (ptr)
++      struct Lisp_Float *ptr;
++ {
++   XFASTINT (ptr->type) = (int) float_free_list;
++   float_free_list = ptr;
++ }
++ 
++ Lisp_Object
++ make_float (float_value)
++      double float_value;
++ {
++   register Lisp_Object val;
++ 
++   if (float_free_list)
++     {
++       XSET (val, Lisp_Float, float_free_list);
++       float_free_list = (struct Lisp_Float *) XFASTINT (float_free_list->type);
++     }
++   else
++     {
++       if (float_block_index == FLOAT_BLOCK_SIZE)
++ 	{
++ 	  register struct float_block *new = (struct float_block *) malloc (sizeof (struct float_block));
++ 	  if (!new) memory_full ();
++ 	  new->next = float_block;
++ 	  float_block = new;
++ 	  float_block_index = 0;
++ 	}
++       XSET (val, Lisp_Float, &float_block->floats[float_block_index++]);
++     }
++   XFLOAT (val)->data = float_value;
++   XFLOAT (val)->type = 0;	/* bug chasing -wsr */
++   consing_since_gc += sizeof (struct Lisp_Float);
++   return val;
++ }
++ #endif LISP_FLOAT_TYPE
++ 
++ 
+  DEFUN ("cons", Fcons, Scons, 2, 2, 0,
+    "Create a new cons, give it CAR and CDR as components, and return it.")
+    (car, cdr)
+***************
+*** 650,656 ****
+--- 737,761 ----
+    return new;
+  }
+  
++ #ifdef LISP_FLOAT_TYPE
+  Lisp_Object
++ pure_float (num)
++      double num;
++ {
++   register Lisp_Object new;
++ 
++   if (pureptr + sizeof (struct Lisp_Float) > PURESIZE)
++     error ("Pure Lisp storage exhausted");
++   XSET (new, Lisp_Float, PUREBEG + pureptr);
++   pureptr += sizeof (struct Lisp_Float);
++   XFLOAT (new)->data = num;
++   XFLOAT (new)->type = 0;	/* bug chasing -wsr */
++   return new;
++ }
++ 
++ #endif LISP_FLOAT_TYPE
++ 
++ Lisp_Object
+  make_pure_vector (len)
+       int len;
+  {
+***************
+*** 695,700 ****
+--- 800,810 ----
+      case Lisp_Cons:
+        return pure_cons (XCONS (obj)->car, XCONS (obj)->cdr);
+  
++ #ifdef LISP_FLOAT_TYPE
++     case Lisp_Float:
++       return pure_float (XFLOAT (obj)->data);
++ #endif LISP_FLOAT_TYPE
++ 
+      case Lisp_String:
+        return make_pure_string (XSTRING (obj)->data, XSTRING (obj)->size);
+  
+***************
+*** 784,794 ****
+--- 894,909 ----
+  
+  int total_conses, total_markers, total_symbols, total_string_size, total_vector_size;
+  int total_free_conses, total_free_markers, total_free_symbols;
++ #ifdef LISP_FLOAT_TYPE
++ int total_free_floats, total_floats;
++ #endif LISP_FLOAT_TYPE
+  
+  static void mark_object (), mark_buffer ();
+  static void clear_marks (), gc_sweep ();
+  static void compact_strings ();
+  
++ #ifndef LISP_FLOAT_TYPE
++ 
+  DEFUN ("garbage-collect", Fgarbage_collect, Sgarbage_collect, 0, 0, "",
+    "Reclaim storage for Lisp objects no longer needed.\n\
+  Returns info on amount of space in use:\n\
+***************
+*** 795,802 ****
+   ((USED-CONSES . FREE-CONSES) (USED-SYMS . FREE-SYMS)\n\
+    (USED-MARKERS . FREE-MARKERS) USED-STRING-CHARS USED-VECTOR-SLOTS)\n\
+  Garbage collection happens automatically if you cons more than\n\
+! gc-cons-threshold  bytes of Lisp data since previous garbage collection.")
+    ()
+  {
+    register struct gcpro *tail;
+    register struct specbinding *bind;
+--- 910,930 ----
+   ((USED-CONSES . FREE-CONSES) (USED-SYMS . FREE-SYMS)\n\
+    (USED-MARKERS . FREE-MARKERS) USED-STRING-CHARS USED-VECTOR-SLOTS)\n\
+  Garbage collection happens automatically if you cons more than\n\
+! gc-cons-threshold  bytes of Lisp data since previous garbage collection."
+!        )
+    ()
++ #else LISP_FLOAT_TYPE
++ 
++ DEFUN ("garbage-collect", Fgarbage_collect, Sgarbage_collect, 0, 0, "",  "Reclaim storage for Lisp objects no longer needed.\n\
++ Returns info on amount of space in use:\n\
++  ((USED-CONSES . FREE-CONSES) (USED-SYMS . FREE-SYMS)\n\
++   (USED-MARKERS . FREE-MARKERS) (USED-FLOATS . FREE-FLOATS) \n\
++   USED-STRING-CHARS USED-VECTOR-SLOTS)\n\
++ Garbage collection happens automatically if you cons more than\n\
++ gc-cons-threshold  bytes of Lisp data since previous garbage collection."
++        )
++   ()
++ #endif LISP_FLOAT_TYPE
+  {
+    register struct gcpro *tail;
+    register struct specbinding *bind;
+***************
+*** 919,927 ****
+--- 1047,1064 ----
+  			      make_number (total_free_symbols)),
+  		       Fcons (Fcons (make_number (total_markers),
+  				     make_number (total_free_markers)),
++ #ifdef LISP_FLOAT_TYPE
++ 			      Fcons (Fcons (make_number (total_floats),
++ 					    make_number (total_free_floats)),
++ 				     Fcons (make_number (total_string_size),
++ 					    Fcons (make_number (total_vector_size),
++ 						   Qnil))))));
++ #else not LISP_FLOAT_TYPE
+  			      Fcons (make_number (total_string_size),
+  				     Fcons (make_number (total_vector_size),
+  					    Qnil)))));
++ #endif LISP_FLOAT_TYPE
++ 
+  }
+  
+  #if 0
+***************
+*** 1113,1118 ****
+--- 1250,1261 ----
+  	goto loop;
+        }
+  
++ #ifdef LISP_FLOAT_TYPE
++  case Lisp_Float:
++       XMARK (XFLOAT (obj)->type);
++       break;
++ #endif LISP_FLOAT_TYPE
++ 
+      case Lisp_Buffer:
+        if (!XMARKBIT (XBUFFER (obj)->name))
+  	mark_buffer (obj);
+***************
+*** 1193,1199 ****
+--- 1336,1372 ----
+      total_conses = num_used;
+      total_free_conses = num_free;
+    }
++ #ifdef LISP_FLOAT_TYPE
++   /* Put all unmarked floats on free list */
++   {
++     register struct float_block *fblk;
++     register int lim = float_block_index;
++     register int num_free = 0, num_used = 0;
+  
++     float_free_list = 0;
++   
++     for (fblk = float_block; fblk; fblk = fblk->next)
++       {
++ 	register int i;
++ 	for (i = 0; i < lim; i++)
++ 	  if (!XMARKBIT (fblk->floats[i].type))
++ 	    {
++ 	      XFASTINT (fblk->floats[i].type) = (int) float_free_list;
++ 	      num_free++;
++ 	      float_free_list = &fblk->floats[i];
++ 	    }
++ 	  else
++ 	    {
++ 	      num_used++;
++ 	      XUNMARK (fblk->floats[i].type);
++ 	    }
++ 	lim = FLOAT_BLOCK_SIZE;
++       }
++     total_floats = num_used;
++     total_free_floats = num_free;
++   }
++ #endif LISP_FLOAT_TYPE
++ 
+    /* Put all unmarked symbols on free list */
+    {
+      register struct symbol_block *sblk;
+***************
+*** 1484,1489 ****
+--- 1657,1665 ----
+    all_vectors = 0;
+    init_strings ();
+    init_cons ();
++ #ifdef LISP_FLOAT_TYPE
++   init_float ();
++ #endif LISP_FLOAT_TYPE
+    init_symbol ();
+    init_marker ();
+    gcprolist = 0;
+diff -rc emacs-18.57/src/callint.c emacs/src/callint.c
+*** emacs-18.57/src/callint.c	Sat Jan  5 01:13:13 1991
+--- emacs/src/callint.c	Tue Aug 13 10:51:08 1991
+***************
+*** 352,358 ****
+--- 352,363 ----
+  	case 'n':		/* Read number from minibuffer.  */
+  	  do
+  	    args[i] = Fread_minibuffer (build_string (prompt), Qnil);
++ #ifdef LISP_FLOAT_TYPE
++ 	  while ((XTYPE (args[i]) != Lisp_Int) &&
++ 		 (XTYPE (args[i]) != Lisp_Float));
++ #else
+  	  while (XTYPE (args[i]) != Lisp_Int);
++ #endif
+  	  visargs[i] = last_minibuf_string;
+  	  break;
+  
+diff -rc emacs-18.57/src/config.h-dist emacs/src/config.h-dist
+*** emacs-18.57/src/config.h-dist	Tue Jan  8 19:24:37 1991
+--- emacs/src/config.h-dist	Tue Aug 13 10:51:26 1991
+***************
+*** 17,23 ****
+--- 17,28 ----
+  along with GNU Emacs; see the file COPYING.  If not, write to
+  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.  */
+  
++ /* This is a hack feature added by me.
++  * It probably won't break anything too badly, but it may not do
++  * much for you either. -Wolfgang Rupprecht 10/25/87
++  */
+  
++ /* #define LISP_FLOAT_TYPE		/* define this for floating pt. numbers */
+  
+  /* Include here a s- file that describes the system type you are using.
+     See the file ../etc/MACHINES for a list of systems and
+diff -rc emacs-18.57/src/crt0.c emacs/src/crt0.c
+*** emacs-18.57/src/crt0.c	Tue Jan  8 18:23:04 1991
+--- emacs/src/crt0.c	Tue Aug 13 10:51:36 1991
+***************
+*** 287,292 ****
+--- 287,297 ----
+  
+  _start ()
+  {
++ #ifdef LISP_FLOAT_TYPE
++ # ifdef sun3
++   finitfp_();
++ # endif
++ #endif
+  /* On 68000, _start pushes a6 onto stack  */
+    start1 ();
+  }
+diff -rc emacs-18.57/src/data.c emacs/src/data.c
+*** emacs-18.57/src/data.c	Sat Jan  5 01:15:14 1991
+--- emacs/src/data.c	Tue Aug 13 11:15:28 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ /******************************************************************************
++ *									      *
++ *	File:     data.c						      *
++ *	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 *
++ *	Created:  Mon Nov  2 15:22:23 EST 1987				      *
++ *	Contents: GNU data.c with my float code				      *
++ *									      *
++ *	Copyright (c) 1987 Wolfgang Rupprecht.				      *
++ *	All rights reserved.						      *
++ *									      *
++ *	$Log$								      *
++ ******************************************************************************/
+  /* Primitive operations on Lisp data types for GNU Emacs Lisp interpreter.
+     Copyright (C) 1985, 1986 Free Software Foundation, Inc.
+  
+***************
+*** 27,32 ****
+--- 39,48 ----
+  #include "buffer.h"
+  #endif
+  
++ #ifdef LISP_FLOAT_TYPE
++ #include <math.h>
++ #endif LISP_FLOAT_TYPE
++ 
+  Lisp_Object Qnil, Qt, Qquote, Qlambda, Qsubr, Qunbound;
+  Lisp_Object Qerror_conditions, Qerror_message, Qtop_level;
+  Lisp_Object Qerror, Qquit, Qwrong_type_argument, Qargs_out_of_range;
+***************
+*** 40,46 ****
+--- 56,67 ----
+  Lisp_Object Qchar_or_string_p, Qmarkerp, Qinteger_or_marker_p, Qvectorp;
+  Lisp_Object Qboundp, Qfboundp;
+  Lisp_Object Qcdr;
++ #ifdef LISP_FLOAT_TYPE
++ Lisp_Object Qfloatp, Qinteger_or_floatp, Qinteger_or_float_or_marker_p;
++ #endif LISP_FLOAT_TYPE
+  
++ 
++ 
+  Lisp_Object
+  wrong_type_argument (predicate, value)
+       register Lisp_Object predicate, value;
+***************
+*** 176,181 ****
+--- 197,237 ----
+    return Qnil;
+  }
+  
++ #ifdef LISP_FLOAT_TYPE
++ DEFUN ("floatp", Ffloatp, Sfloatp, 1, 1, 0,
++        "T if OBJECT is a floating pt. number.")
++   (obj)
++      Lisp_Object obj;
++ {
++   if (XTYPE (obj) == Lisp_Float)
++     return Qt;
++   return Qnil;
++ }
++ 
++ DEFUN ("integer-or-floatp", Finteger_or_floatp, Sinteger_or_floatp,
++        1, 1, 0, "T if OBJECT is a floating pt. or normal number.")
++   (obj)
++      Lisp_Object obj;
++ {
++   if ((XTYPE (obj) == Lisp_Float) || (XTYPE (obj) == Lisp_Int))
++     return Qt;
++   return Qnil;
++ }
++ 
++ DEFUN ("integer-or-float-or-marker-p", Finteger_or_float_or_marker_p,
++        Sinteger_or_float_or_marker_p, 1, 1, 0,
++        "T if OBJECT is a floating pointt, normal number, or marker.")
++   (obj)
++      Lisp_Object obj;
++ {
++   if ((XTYPE (obj) == Lisp_Float) ||
++       (XTYPE (obj) == Lisp_Int) ||
++       (XTYPE (obj) == Lisp_Marker))
++     return Qt;
++   return Qnil;
++ }
++ #endif LISP_FLOAT_TYPE
++ 
+  DEFUN ("natnump", Fnatnump, Snatnump, 1, 1, 0, "T if OBJECT is a nonnegative number.")
+    (obj)
+       Lisp_Object obj;
+***************
+*** 971,978 ****
+--- 1027,1051 ----
+    (num1, num2)
+       register Lisp_Object num1, num2;
+  {
++ #ifdef LISP_FLOAT_TYPE
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num1, 0);
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num2, 0);
++ 
++   if ((XTYPE(num1) == Lisp_Float) || (XTYPE(num2) == Lisp_Float))
++     {
++       double f1, f2;
++ 
++       f1 = (XTYPE(num1) == Lisp_Float) ? XFLOAT(num1)->data : XINT(num1);
++       f2 = (XTYPE(num2) == Lisp_Float) ? XFLOAT(num2)->data : XINT(num2);
++       if (f1 == f2)
++ 	return Qt;
++       return Qnil;
++     }
++ 
++ #else
+    CHECK_NUMBER_COERCE_MARKER (num1, 0);
+    CHECK_NUMBER_COERCE_MARKER (num2, 0);
++ #endif LISP_FLOAT_TYPE
+  
+    if (XINT (num1) == XINT (num2))
+      return Qt;
+***************
+*** 984,991 ****
+--- 1057,1080 ----
+    (num1, num2)
+       register Lisp_Object num1, num2;
+  {
++ #ifdef LISP_FLOAT_TYPE
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num1, 0);
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num2, 0);
++ 
++   if ((XTYPE(num1) == Lisp_Float) || (XTYPE(num2) == Lisp_Float))
++     {
++       double f1, f2;
++ 
++       f1 = (XTYPE(num1) == Lisp_Float) ? XFLOAT(num1)->data : XINT(num1);
++       f2 = (XTYPE(num2) == Lisp_Float) ? XFLOAT(num2)->data : XINT(num2);
++       if (f1 < f2)
++ 	return Qt;
++       return Qnil;
++     }
++ #else
+    CHECK_NUMBER_COERCE_MARKER (num1, 0);
+    CHECK_NUMBER_COERCE_MARKER (num2, 0);
++ #endif LISP_FLOAT_TYPE
+  
+    if (XINT (num1) < XINT (num2))
+      return Qt;
+***************
+*** 997,1004 ****
+--- 1086,1109 ----
+    (num1, num2)
+       register Lisp_Object num1, num2;
+  {
++ #ifdef LISP_FLOAT_TYPE
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num1, 0);
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num2, 0);
++ 
++   if ((XTYPE(num1) == Lisp_Float) || (XTYPE(num2) == Lisp_Float))
++     {
++       double f1, f2;
++ 
++       f1 = (XTYPE(num1) == Lisp_Float) ? XFLOAT(num1)->data : XINT(num1);
++       f2 = (XTYPE(num2) == Lisp_Float) ? XFLOAT(num2)->data : XINT(num2);
++       if (f1 > f2)
++ 	return Qt;
++       return Qnil;
++     }
++ #else
+    CHECK_NUMBER_COERCE_MARKER (num1, 0);
+    CHECK_NUMBER_COERCE_MARKER (num2, 0);
++ #endif LISP_FLOAT_TYPE
+  
+    if (XINT (num1) > XINT (num2))
+      return Qt;
+***************
+*** 1010,1017 ****
+--- 1115,1138 ----
+    (num1, num2)
+       register Lisp_Object num1, num2;
+  {
++ #ifdef LISP_FLOAT_TYPE
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num1, 0);
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num2, 0);
++ 
++   if ((XTYPE(num1) == Lisp_Float) || (XTYPE(num2) == Lisp_Float))
++     {
++       double f1, f2;
++ 
++       f1 = (XTYPE(num1) == Lisp_Float) ? XFLOAT(num1)->data : XINT(num1);
++       f2 = (XTYPE(num2) == Lisp_Float) ? XFLOAT(num2)->data : XINT(num2);
++       if (f1 <= f2)
++ 	return Qt;
++       return Qnil;
++     }
++ #else
+    CHECK_NUMBER_COERCE_MARKER (num1, 0);
+    CHECK_NUMBER_COERCE_MARKER (num2, 0);
++ #endif LISP_FLOAT_TYPE
+  
+    if (XINT (num1) <= XINT (num2))
+      return Qt;
+***************
+*** 1023,1030 ****
+--- 1144,1167 ----
+    (num1, num2)
+       register Lisp_Object num1, num2;
+  {
++ #ifdef LISP_FLOAT_TYPE
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num1, 0);
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num2, 0);
++ 
++   if ((XTYPE(num1) == Lisp_Float) || (XTYPE(num2) == Lisp_Float))
++     {
++       double f1, f2;
++ 
++       f1 = (XTYPE(num1) == Lisp_Float) ? XFLOAT(num1)->data : XINT(num1);
++       f2 = (XTYPE(num2) == Lisp_Float) ? XFLOAT(num2)->data : XINT(num2);
++       if (f1 >= f2)
++ 	return Qt;
++       return Qnil;
++     }
++ #else
+    CHECK_NUMBER_COERCE_MARKER (num1, 0);
+    CHECK_NUMBER_COERCE_MARKER (num2, 0);
++ #endif LISP_FLOAT_TYPE
+  
+    if (XINT (num1) >= XINT (num2))
+      return Qt;
+***************
+*** 1036,1043 ****
+--- 1173,1196 ----
+    (num1, num2)
+       register Lisp_Object num1, num2;
+  {
++ #ifdef LISP_FLOAT_TYPE
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num1, 0);
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num2, 0);
++ 
++   if ((XTYPE(num1) == Lisp_Float) || (XTYPE(num2) == Lisp_Float))
++     {
++       double f1, f2;
++ 
++       f1 = (XTYPE(num1) == Lisp_Float) ? XFLOAT(num1)->data : XINT(num1);
++       f2 = (XTYPE(num2) == Lisp_Float) ? XFLOAT(num2)->data : XINT(num2);
++       if (f1 != f2)
++ 	return Qt;
++       return Qnil;
++     }
++ #else
+    CHECK_NUMBER_COERCE_MARKER (num1, 0);
+    CHECK_NUMBER_COERCE_MARKER (num2, 0);
++ #endif LISP_FLOAT_TYPE
+  
+    if (XINT (num1) != XINT (num2))
+      return Qt;
+***************
+*** 1048,1054 ****
+--- 1201,1218 ----
+    (num)
+       register Lisp_Object num;
+  {
++ #ifdef LISP_FLOAT_TYPE
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     {
++       if (XFLOAT(num)->data == 0.0)
++ 	return Qt;
++       return Qnil;
++     }
++ #else
+    CHECK_NUMBER (num, 0);
++ #endif LISP_FLOAT_TYPE
+  
+    if (!XINT (num))
+      return Qt;
+***************
+*** 1062,1068 ****
+--- 1226,1246 ----
+  {
+    char buffer[20];
+  
++ #ifndef LISP_FLOAT_TYPE
++ 
+    CHECK_NUMBER (num, 0);
++ #else
++ 
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     {
++       char pigbuf[350];	/* see comments in float_to_string */
++ 
++       float_to_string (pigbuf, XFLOAT(num)->data);
++       return build_string (pigbuf);      
++     }
++ #endif LISP_FLOAT_TYPE
+    sprintf (buffer, "%d", XINT (num));
+    return build_string (buffer);
+  }
+***************
+*** 1073,1078 ****
+--- 1251,1260 ----
+       register Lisp_Object str, flag;
+  {
+    CHECK_STRING (str, 0);
++ #ifdef LISP_FLOAT_TYPE
++   if (isfloat_string (XSTRING (str)->data))
++     return make_float (atof(XSTRING (str)->data));
++ #endif LISP_FLOAT_TYPE
+    return make_number (atoi (XSTRING (str)->data));
+  }
+    
+***************
+*** 1111,1117 ****
+--- 1293,1307 ----
+    for (argnum = 0; argnum < nargs; argnum++)
+      {
+        val = args[argnum];    /* using args[argnum] as argument to CHECK_NUMBER_... */
++ #ifdef LISP_FLOAT_TYPE
++       CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (val, argnum);
++ 
++       if (XTYPE(val) == Lisp_Float) /* time to do serious math */
++ 	return (float_arith_driver((double) accum, argnum, code,
++ 				   nargs, args));
++ #else
+        CHECK_NUMBER_COERCE_MARKER (val, argnum);
++ #endif LISP_FLOAT_TYPE
+        args[argnum] = val;    /* runs into a compiler bug. */
+        next = XINT (args[argnum]);
+  #ifdef SWITCH_ENUM_BUG
+***************
+*** 1143,1148 ****
+--- 1333,1418 ----
+    return val;
+  }
+  
++ #ifdef LISP_FLOAT_TYPE
++ Lisp_Object
++ float_arith_driver
++   (accum, argnum, code, nargs, args)
++      double accum;
++      register int argnum;
++      enum arithop code;
++      int nargs;
++      register Lisp_Object *args;
++ {
++   register Lisp_Object val;
++   double next;
++   
++   for (; argnum < nargs; argnum++)
++     {
++       val = args[argnum];    /* using args[argnum] as argument to CHECK_NUMBER_... */
++       CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (val, argnum);
++ 
++       if (XTYPE(val) == Lisp_Float)
++ 	{
++ 	  next = XFLOAT(val)->data;
++ 	}
++       else
++ 	{
++ 	  args[argnum] = val;    /* runs into a compiler bug. */
++ 	  next = XINT (args[argnum]);
++ 	}
++ #ifdef SWITCH_ENUM_BUG
++       switch ((int) code)
++ #else
++       switch (code)
++ #endif
++ 	{
++ 	case Aadd: accum += next; break;
++ 	case Asub:
++ 	  if (!argnum && nargs != 1)
++ 	    next = - next;
++ 	  accum -= next;
++ 	  break;
++ 	case Amult: accum *= next; break;
++ 	case Adiv:
++ 	  if (!argnum) accum = next;
++ 	  else accum /= next;
++ 	  break;
++ #ifdef pigs_had_wings
++ 	case Alogand: accum &= next; break;
++ 	case Alogior: accum |= next; break;
++ 	case Alogxor: accum ^= next; break;
++ #else
++ 	case Alogand:
++ 	case Alogior:
++ 	case Alogxor:
++ 	  return (wrong_type_argument (Qinteger_or_marker_p, val));
++ 	  break;
++ #endif
++ 	case Amax: if (!argnum || next > accum) accum = next; break;
++ 	case Amin: if (!argnum || next < accum) accum = next; break;
++ 	}
++     }
++ 
++   return make_float(accum);
++ }
++ 
++ DEFUN ("logb", Flogb, Slogb, 1, 1, 0,
++  "Returns the integer that is the base 2 log of ARG.\n\
++ This is the same as the exponent of a float.")
++      (num)
++ Lisp_Object num;
++ {
++   Lisp_Object val;
++   double f;
++ 
++   CHECK_NUMBER_OR_FLOAT(num, 0);
++   f = (XTYPE(num) == Lisp_Float) ? XFLOAT(num)->data : XINT(num);
++   val = logb(f);
++   XSET(val, Lisp_Int, val);
++   return val;
++ }
++ #endif LISP_FLOAT_TYPE
++ 
+  DEFUN ("+", Fplus, Splus, 0, MANY, 0,
+    "Return sum of any number of numbers.")
+    (nargs, args)
+***************
+*** 1187,1195 ****
+--- 1457,1478 ----
+       register Lisp_Object num1, num2;
+  {
+    Lisp_Object val;
++ #ifdef LISP_FLOAT_TYPE
++   CHECK_NUMBER_OR_FLOAT (num1, 0);
++   CHECK_NUMBER_OR_FLOAT (num2, 0);
+  
++   if ((XTYPE(num1) == Lisp_Float) || (XTYPE(num2) == Lisp_Float))
++     {
++       double f1, f2;
++ 
++       f1 = (XTYPE(num1) == Lisp_Float) ? XFLOAT(num1)->data : XINT(num1);
++       f2 = (XTYPE(num2) == Lisp_Float) ? XFLOAT(num2)->data : XINT(num2);
++       return (make_float(drem(f1,f2)));
++     }
++ #else
+    CHECK_NUMBER (num1, 0);
+    CHECK_NUMBER (num2, 1);
++ #endif LISP_FLOAT_TYPE
+  
+    XSET (val, Lisp_Int, XINT (num1) % XINT (num2));
+    return val;
+***************
+*** 1283,1289 ****
+--- 1566,1579 ----
+    (num)
+       register Lisp_Object num;
+  {
++ #ifdef LISP_FLOAT_TYPE
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float((1.0) + XFLOAT(num)->data));
++ #else
+    CHECK_NUMBER_COERCE_MARKER (num, 0);
++ #endif LISP_FLOAT_TYPE
+    XSETINT (num, XFASTINT (num) + 1);
+    return num;
+  }
+***************
+*** 1293,1299 ****
+--- 1583,1596 ----
+    (num)
+       register Lisp_Object num;
+  {
++ #ifdef LISP_FLOAT_TYPE
++   CHECK_NUMBER_OR_FLOAT_COERCE_MARKER (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float((-1.0) + XFLOAT(num)->data));
++ #else
+    CHECK_NUMBER_COERCE_MARKER (num, 0);
++ #endif LISP_FLOAT_TYPE
+    XSETINT (num, XFASTINT (num) - 1);
+    return num;
+  }
+***************
+*** 1307,1312 ****
+--- 1604,2160 ----
+    XSETINT (num, ~XFASTINT (num));
+    return num;
+  }
++ 
++ #ifdef LISP_FLOAT_TYPE
++ 
++ DEFUN ("acos", Facos, Sacos, 1, 1, 0,
++   "Return the inverse cosine of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (acos(XFLOAT(num)->data)));
++   return (make_float (acos((double) XINT(num))));
++ }
++ 
++ 
++ DEFUN ("acosh", Facosh, Sacosh, 1, 1, 0,
++   "Return the inverse hyperbolic cosine of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (acosh(XFLOAT(num)->data)));
++   return (make_float (acosh((double) XINT(num))));
++ }
++ 
++ DEFUN ("asin", Fasin, Sasin, 1, 1, 0,
++   "Return the inverse sine of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (asin(XFLOAT(num)->data)));
++   return (make_float (asin((double) XINT(num))));
++ }
++ 
++ DEFUN ("asinh", Fasinh, Sasinh, 1, 1, 0,
++   "Return the inverse hyperbolic sine of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (asinh(XFLOAT(num)->data)));
++   return (make_float (asinh((double) XINT(num))));
++ }
++ 
++ DEFUN ("atan", Fatan, Satan, 1, 1, 0,
++   "Return the inverse tangent of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (atan(XFLOAT(num)->data)));
++   return (make_float (atan((double) XINT(num))));
++ }
++ 
++ DEFUN ("atanh", Fatanh, Satanh, 1, 1, 0,
++   "Return the inverse hyperbolic tangent of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (atanh(XFLOAT(num)->data)));
++   return (make_float (atanh((double) XINT(num))));
++ }
++ 
++ 
++ DEFUN ("cube-root", Fcube_root, Scube_root, 1, 1, 0,
++   "Return the cube root of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (cbrt(XFLOAT(num)->data)));
++   return (make_float (cbrt((double) XINT(num))));
++ }
++ DEFUN ("cos", Fcos, Scos, 1, 1, 0,
++   "Return the cosine of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (cos(XFLOAT(num)->data)));
++   return (make_float (cos((double) XINT(num))));
++ }
++ 
++ DEFUN ("cosh", Fcosh, Scosh, 1, 1, 0,
++   "Return the hyperbolic cosine of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (cosh(XFLOAT(num)->data)));
++   return (make_float (cosh((double) XINT(num))));
++ }
++ 
++ DEFUN ("erf", Ferf, Serf, 1, 1, 0,
++   "Return the mathematical error function of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (erf(XFLOAT(num)->data)));
++   return (make_float (erf((double) XINT(num))));
++ }
++ 
++ DEFUN ("erfc", Ferfc, Serfc, 1, 1, 0,
++   "Return the complementary error function of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (erfc(XFLOAT(num)->data)));
++   return (make_float (erfc((double) XINT(num))));
++ }
++ 
++ DEFUN ("exp", Fexp, Sexp, 1, 1, 0,
++   "Return the exponential base e of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (exp(XFLOAT(num)->data)));
++   return (make_float (exp((double) XINT(num))));
++ }
++ 
++ DEFUN ("expm1", Fexpm1, Sexpm1, 1, 1, 0,
++   "Return the exp(x)-1 of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (expm1(XFLOAT(num)->data)));
++   return (make_float (expm1((double) XINT(num))));
++ }
++ 
++ DEFUN ("j0", Fj0, Sj0, 1, 1, 0,
++   "Return the bessel function j0 of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (j0(XFLOAT(num)->data)));
++   return (make_float (j0((double) XINT(num))));
++ }
++ 
++ DEFUN ("j1", Fj1, Sj1, 1, 1, 0,
++   "Return the bessel function j1 of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (j1(XFLOAT(num)->data)));
++   return (make_float (j1((double) XINT(num))));
++ }
++ 
++ DEFUN ("jn", Fjn, Sjn, 2, 2, 0,
++ "Return the nth ORDER bessel function output jn of ARG.  First arg is\n\
++ the ORDER of the bessel, and is truncated to an integer.")
++   (num1, num2)
++      register Lisp_Object num1, num2;
++ {
++   int i1;
++   double f2;
++ 
++   CHECK_NUMBER_OR_FLOAT (num1, 0);
++   CHECK_NUMBER_OR_FLOAT (num2, 0);
++   i1 = (XTYPE(num1) == Lisp_Float) ? XFLOAT(num1)->data : XINT(num1);
++   f2 = (XTYPE(num2) == Lisp_Float) ? XFLOAT(num2)->data : XINT(num2);
++ 
++   return (make_float (jn(i1, f2)));
++ }
++ 
++ DEFUN ("log-gamma", Flog_gamma, Slog_gamma, 1, 1, 0,
++   "Return the log gamma of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (lgamma(XFLOAT(num)->data)));
++   return (make_float (lgamma((double) XINT(num))));
++ }
++ 
++ DEFUN ("log", Flog, Slog, 1, 1, 0,
++   "Return the natural logarithm of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (log(XFLOAT(num)->data)));
++   return (make_float (log((double) XINT(num))));
++ }
++ 
++ DEFUN ("log10", Flog10, Slog10, 1, 1, 0,
++   "Return the logarithm base 10 of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (log10(XFLOAT(num)->data)));
++   return (make_float (log10((double) XINT(num))));
++ }
++ 
++ DEFUN ("log1p", Flog1p, Slog1p, 1, 1, 0,
++   "Return the log(1+x) of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (log1p(XFLOAT(num)->data)));
++   return (make_float (log1p((double) XINT(num))));
++ }
++ 
++ DEFUN ("expt", Fexpt, Sexpt, 2, 2, 0,
++   "Return the exponential x ** y.")
++   (num1, num2)
++      register Lisp_Object num1, num2;
++ {
++   double f1, f2;
++ 
++   CHECK_NUMBER_OR_FLOAT (num1, 0);
++   CHECK_NUMBER_OR_FLOAT (num2, 0);
++   if ((XTYPE(num1) == Lisp_Int) && /* common lisp spec */
++       (XTYPE(num2) == Lisp_Int)) /* don't promote, if both are ints */
++     {				/* this can be improved by pre-calculating */
++       int acc, x, y;		/* some binary powers of x then acumulating */
++ 				/* these, therby saving some time. -wsr */
++       x = XINT(num1);
++       y = XINT(num2);
++       acc = 1;
++       
++       if (y < 0)
++ 	{
++ 	  for (; y < 0; y++)
++ 	      acc /= x;
++ 	}
++       else
++ 	{
++ 	  for (; y > 0; y--)
++ 	      acc *= x;
++ 	}
++       return (XSET(x , Lisp_Int, acc));
++     }
++   f1 = (XTYPE(num1) == Lisp_Float) ? XFLOAT(num1)->data : XINT(num1);
++   f2 = (XTYPE(num2) == Lisp_Float) ? XFLOAT(num2)->data : XINT(num2);
++   return (make_float (pow(f1, f2)));
++ }
++ 
++ DEFUN ("sin", Fsin, Ssin, 1, 1, 0,
++   "Return the sine of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (sin(XFLOAT(num)->data)));
++   return (make_float (sin((double) XINT(num))));
++ }
++ 
++ DEFUN ("sinh", Fsinh, Ssinh, 1, 1, 0,
++   "Return the hyperbolic sine of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (sinh(XFLOAT(num)->data)));
++   return (make_float (sinh((double) XINT(num))));
++ }
++ 
++ DEFUN ("sqrt", Fsqrt, Ssqrt, 1, 1, 0,
++   "Return the square root of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (sqrt(XFLOAT(num)->data)));
++   return (make_float (sqrt((double) XINT(num))));
++ }
++ 
++ DEFUN ("tan", Ftan, Stan, 1, 1, 0,
++   "Return the tangent of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (tan(XFLOAT(num)->data)));
++   return (make_float (tan((double) XINT(num))));
++ }
++ 
++ DEFUN ("tanh", Ftanh, Stanh, 1, 1, 0,
++   "Return the hyperbolic tangent of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (tanh(XFLOAT(num)->data)));
++   return (make_float (tanh((double) XINT(num))));
++ }
++ 
++ DEFUN ("y0", Fy0, Sy0, 1, 1, 0,
++   "Return the bessel function y0 of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (y0(XFLOAT(num)->data)));
++   return (make_float (y0((double) XINT(num))));
++ }
++ 
++ DEFUN ("y1", Fy1, Sy1, 1, 1, 0,
++   "Return the bessel function y1 of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (y1(XFLOAT(num)->data)));
++   return (make_float (y1((double) XINT(num))));
++ }
++ 
++ DEFUN ("yn", Fyn, Syn, 2, 2, 0,
++ "Return the nth ORDER bessel function output yn of ARG.  First arg is\n\
++ the order of the bessel, and is truncated to an integer.")
++   (num1, num2)
++      register Lisp_Object num1, num2;
++ {
++   int i1;
++   double f2;
++ 
++   CHECK_NUMBER_OR_FLOAT (num1, 0);
++   CHECK_NUMBER_OR_FLOAT (num2, 0);
++   i1 = (XTYPE(num1) == Lisp_Float) ? XFLOAT(num1)->data : XINT(num1);
++   f2 = (XTYPE(num2) == Lisp_Float) ? XFLOAT(num2)->data : XINT(num2);
++ 
++   return (make_float (yn(i1, f2)));
++ }
++ /* the rounding functions  */
++ 
++ DEFUN ("ceiling", Fceiling, Sceiling, 1, 1, 0,
++   "Return the smallest integer no less than ARG. (round toward +inf)")
++   (num)
++      register Lisp_Object num;
++ {
++   Lisp_Object val = num;
++      
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++        XSET (val, Lisp_Int, ceil(XFLOAT(num)->data));
++   return (val);
++ }
++ 
++ DEFUN ("fceiling", Ffceiling, Sfceiling, 1, 1, 0,
++        "Return the smallest integral floating pt. number no less than ARG.\n\
++ (round towards +inf)")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (ceil(XFLOAT(num)->data)));
++   return (make_float ((double) XINT(num)));
++ }
++ 
++ 
++ DEFUN ("abs", Fabs, Sabs, 1, 1, 0,
++   "Return the absolute value of ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (fabs(XFLOAT(num)->data)));
++   if (XINT(num) < 0)
++     XSETINT (num, - XFASTINT (num));
++   return (num);
++ }
++ 
++ 
++ DEFUN ("ffloor", Fffloor, Sffloor, 1, 1, 0,
++        "Return the largest floating pt number no greater than ARG.\n\
++ (round towards -inf)")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (floor(XFLOAT(num)->data)));
++   return (make_float (floor((double) XINT(num))));
++ }
++ 
++ DEFUN ("floor", Ffloor, Sfloor, 1, 1, 0,
++   "Return the largest integer no greater than ARG. (round towards -inf)")
++   (num)
++      register Lisp_Object num;
++ {
++   Lisp_Object val = num; 
++ 
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     XSET (val, Lisp_Int, floor(XFLOAT(num)->data));
++   return (val);
++ }
++ 
++ DEFUN ("float", Ffloat, Sfloat, 1, 1, 0,
++   "Return the floating pt. number equal to ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   Lisp_Object val; 
++ 
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Int)
++     val = make_float ((double) XINT(num));
++   else				/* give 'em the same float back */
++     val = num;
++   
++   return (val);
++ }
++ 
++ 
++ DEFUN ("fround", Ffround, Sfround, 1, 1, 0,
++   "Return the nearest integral floating pt. number to ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   CHECK_NUMBER_OR_FLOAT(num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     return (make_float (rint(XFLOAT(num)->data)));
++   return (make_float (rint((double) XINT(num))));
++ }
++ 
++ DEFUN ("round", Fround, Sround, 1, 1, 0,
++   "Return the nearest integer to ARG.")
++   (num)
++      register Lisp_Object num;
++ {
++   Lisp_Object val = num; 
++ 
++   CHECK_NUMBER_OR_FLOAT (num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++     XSET (val, Lisp_Int, rint(XFLOAT(num)->data));
++   return (val);
++ }
++ 
++ DEFUN ("truncate", Ftruncate, Struncate, 1, 1, 0,
++        "Truncate a floating point number to an int.\n\
++ (Truncates toward zero.)")
++   (num)
++      register Lisp_Object num;
++ {
++   Lisp_Object val = num;
++ 
++   CHECK_NUMBER_OR_FLOAT(num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++       XSET (val, Lisp_Int, XFLOAT(num)->data);
++   return val;
++ }
++ 
++ DEFUN ("ftruncate", Fftruncate, Sftruncate, 1, 1, 0,
++        "Truncate a floating point number, returns a float.\n\
++ (Truncates towards zero.) Will fail for floats > max integer.")
++   (num)
++      register Lisp_Object num;
++ {
++   int val;
++ 
++   CHECK_NUMBER_OR_FLOAT(num, 0);
++ 
++   if (XTYPE(num) == Lisp_Float)
++        val = XFLOAT(num)->data;
++   else 
++        val = XINT (num);
++   return (make_float((double) val));
++ }
++ 
++ # ifdef vax
++ /*
++  * Replacement infnan for 4.3 (vax) math lib.  The original 4.3BSD
++  * infnan() causes an intentional illegal-instruction and core dump.
++  * 
++  * This one is more benign and only signals an error.
++  */
++ 
++ double 
++ infnan(iarg)
++ 	int             iarg;
++ {
++         Fsignal (Qarith_error, Qnil);
++ 	/* NOTREACHED */
++ 	return (0.0);
++ }
++ # endif vax
++ #endif LISP_FLOAT_TYPE
++ 
+  
+  void
+  syms_of_data ()
+***************
+*** 1353,1358 ****
+--- 2201,2211 ----
+    Qfboundp = intern ("fboundp");
+  
+    Qcdr = intern ("cdr");
++ #ifdef LISP_FLOAT_TYPE
++   Qfloatp = intern ("floatp");
++   Qinteger_or_floatp = intern ("integer-or-floatp");
++   Qinteger_or_float_or_marker_p = intern ("integer-or-float-or-marker-p");
++ #endif LISP_FLOAT_TYPE
+  
+    /* ERROR is used as a signaler for random errors for which nothing else is right */
+  
+***************
+*** 1476,1481 ****
+--- 2329,2339 ----
+    staticpro (&Qchar_or_string_p);
+    staticpro (&Qmarkerp);
+    staticpro (&Qinteger_or_marker_p);
++ #ifdef LISP_FLOAT_TYPE
++   staticpro (&Qfloatp);
++   staticpro (&Qinteger_or_floatp);
++   staticpro (&Qinteger_or_float_or_marker_p);
++ #endif LISP_FLOAT_TYPE
+    staticpro (&Qboundp);
+    staticpro (&Qfboundp);
+    staticpro (&Qcdr);
+***************
+*** 1547,1552 ****
+--- 2405,2455 ----
+    defsubr (&Sadd1);
+    defsubr (&Ssub1);
+    defsubr (&Slognot);
++ #ifdef LISP_FLOAT_TYPE
++   defsubr (&Sfloatp);
++   defsubr (&Sinteger_or_floatp);
++   defsubr (&Sinteger_or_float_or_marker_p);
++   defsubr (&Sacos);
++   defsubr (&Sacosh);
++   defsubr (&Sasin);
++   defsubr (&Sasinh);
++   defsubr (&Satan);
++   defsubr (&Satanh);
++   defsubr (&Scube_root);
++   defsubr (&Scos);
++   defsubr (&Scosh);
++   defsubr (&Serf);
++   defsubr (&Serfc);
++   defsubr (&Sexp);
++   defsubr (&Sexpm1);
++   defsubr (&Sj0);
++   defsubr (&Sj1);
++   defsubr (&Sjn);
++   defsubr (&Slog_gamma);
++   defsubr (&Slog);
++   defsubr (&Slog10);
++   defsubr (&Slog1p);
++   defsubr (&Sexpt);
++   defsubr (&Ssin);
++   defsubr (&Ssinh);
++   defsubr (&Ssqrt);
++   defsubr (&Stan);
++   defsubr (&Stanh);
++   defsubr (&Sy0);
++   defsubr (&Sy1);
++   defsubr (&Syn);
++   defsubr (&Sceiling);
++   defsubr (&Sabs);
++   defsubr (&Sfloor);
++   defsubr (&Sfloat);
++   defsubr (&Sround);
++   defsubr (&Struncate);
++   defsubr (&Sfceiling);
++   defsubr (&Sffloor);
++   defsubr (&Sfround);
++   defsubr (&Sftruncate);
++   defsubr (&Slogb);
++ #endif LISP_FLOAT_TYPE
+  }
+  
+  arith_error (signo)
+diff -rc emacs-18.57/src/lisp.h emacs/src/lisp.h
+*** emacs-18.57/src/lisp.h	Tue Jan  8 18:51:28 1991
+--- emacs/src/lisp.h	Tue Aug 13 10:51:53 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ /******************************************************************************
++ *									      *
++ *	File:     lisp.h						      *
++ *	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 *
++ *	Created:  Mon Nov  2 15:19:17 EST 1987				      *
++ *	Contents: gnuemacs lisp.h with float code			      *
++ *									      *
++ *	Copyright (c) 1987 Wolfgang Rupprecht.				      *
++ *	All rights reserved.						      *
++ *									      *
++ *	$Log$								      *
++ ******************************************************************************/
+  /* Fundamental definitions for GNU Emacs Lisp interpreter.
+     Copyright (C) 1985, 1986, 1987 Free Software Foundation, Inc.
+  
+***************
+*** 149,156 ****
+--- 161,174 ----
+         Data inside looks like a Lisp_Vector.  */
+      Lisp_Window,
+  
++ #ifdef LISP_FLOAT_TYPE
++     /* optional Lisp floating point data type -wolfgang 10/24/87 */
++     Lisp_Float,
++ #endif LISP_FLOAT_TYPE
++ 
+      /* Used by save,set,restore-window-configuration */
+      Lisp_Window_Configuration
++ 
+    };
+  
+  #ifndef NO_UNION_TYPE
+***************
+*** 402,407 ****
+--- 420,429 ----
+  #define XWINDOW(a) ((struct window *) XPNTR(a))
+  #define XPROCESS(a) ((struct Lisp_Process *) XPNTR(a))
+  
++ #ifdef LISP_FLOAT_TYPE
++ # define XFLOAT(a) ((struct Lisp_Float *) XPNTR(a))
++ #endif LISP_FLOAT_TYPE
++ 
+  #define XSETCONS(a, b) XSETPNTR(a, (int) (b))
+  #define XSETBUFFER(a, b) XSETPNTR(a, (int) (b))
+  #define XSETVECTOR(a, b) XSETPNTR(a, (int) (b))
+***************
+*** 414,419 ****
+--- 436,444 ----
+  #define XSETINTPTR(a, b) XSETPNTR(a, (int) (b))
+  #define XSETWINDOW(a, b) XSETPNTR(a, (int) (b))
+  #define XSETPROCESS(a, b) XSETPNTR(a, (int) (b))
++ #ifdef LISP_FLOAT_TYPE
++ # define XSETFLOAT(a, b) XSETPNTR(a, (int) (b))
++ #endif LISP_FLOAT_TYPE
+  
+  /* In a cons, the markbit of the car is the gc mark bit */
+  
+***************
+*** 475,480 ****
+--- 500,515 ----
+      Lisp_Object chain;
+      int bufpos;
+    };
++ 
++ #ifdef LISP_FLOAT_TYPE
++ /* optional Lisp floating point type */
++ struct Lisp_Float
++    {
++      Lisp_Object type;		/* essentially used for mark-bit 
++ 				   and chaining when on free-list */
++      double data;  
++    };
++ #endif LISP_FLOAT_TYPE
+  
+  /* Data type checking */
+  
+***************
+*** 520,525 ****
+--- 555,572 ----
+    { if (XTYPE ((x)) == Lisp_Marker) XFASTINT (x) = marker_position (x); \
+      else if (XTYPE ((x)) != Lisp_Int) x = wrong_type_argument (Qinteger_or_marker_p, (x)); }
+  
++ #ifdef LISP_FLOAT_TYPE
++ #define CHECK_FLOAT(x, i) \
++   { if (XTYPE ((x)) != Lisp_Float) x = wrong_type_argument (Qfloatp, (x)); }
++ #define CHECK_NUMBER_OR_FLOAT(x, i) \
++ { if ((XTYPE ((x)) != Lisp_Float) && (XTYPE ((x)) != Lisp_Int))\
++     x = wrong_type_argument (Qinteger_or_floatp, (x)); }
++ #define CHECK_NUMBER_OR_FLOAT_COERCE_MARKER(x, i) \
++   { if (XTYPE ((x)) == Lisp_Marker) XFASTINT (x) = marker_position (x); \
++   else if ((XTYPE ((x)) != Lisp_Int) && (XTYPE ((x)) != Lisp_Float)) \
++     x = wrong_type_argument (Qinteger_or_float_or_marker_p, (x)); }
++ #endif LISP_FLOAT_TYPE
++ 
+  #ifdef VIRT_ADDR_VARIES
+  
+  /* For machines like APOLLO where text and data can go anywhere
+***************
+*** 762,772 ****
+--- 809,827 ----
+  extern Lisp_Object Qinteger_or_marker_p, Qboundp, Qfboundp;
+  extern Lisp_Object Qcdr;
+  
++ #ifdef LISP_FLOAT_TYPE
++ extern Lisp_Object Qfloatp, Qinteger_or_floatp, Qinteger_or_float_or_marker_p;
++ #endif LISP_FLOAT_TYPE
++ 
+  extern Lisp_Object Feq (), Fnull (), Flistp (), Fconsp (), Fatom (), Fnlistp ();
+  extern Lisp_Object Fintegerp (), Fnatnump (), Fsymbolp ();
+  extern Lisp_Object Fvectorp (), Fstringp (), Farrayp (), Fsequencep ();
+  extern Lisp_Object Fbufferp (), Fmarkerp (), Fsubrp (), Fchar_or_string_p ();
+  extern Lisp_Object Finteger_or_marker_p ();
++ #ifdef LISP_FLOAT_TYPE
++ extern Lisp_Object Ffloatp(), Finteger_or_floatp(),
++   Finteger_or_float_or_marker_p(), Ftruncate();
++ #endif LISP_FLOAT_TYPE
+  
+  extern Lisp_Object Fcar (), Fcar_safe(), Fcdr (), Fcdr_safe();
+  extern Lisp_Object Fsetcar (), Fsetcdr ();
+***************
+*** 788,793 ****
+--- 843,852 ----
+  extern void args_out_of_range ();
+  extern void args_out_of_range_3 ();
+  extern Lisp_Object wrong_type_argument ();
++ #ifdef LISP_FLOAT_TYPE
++ extern Lisp_Object Ffloat_to_int(), Fint_to_float();
++ #endif LISP_FLOAT_TYPE
++ 
+  
+  /* Defined in fns.c */
+  extern Lisp_Object Qstring_lessp;
+diff -rc emacs-18.57/src/lread.c emacs/src/lread.c
+*** emacs-18.57/src/lread.c	Tue Jan  8 18:52:01 1991
+--- emacs/src/lread.c	Tue Aug 13 10:52:06 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ /******************************************************************************
++ *									      *
++ *	File:     lread.c						      *
++ *	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 *
++ *	Created:  Mon Nov  2 15:23:48 EST 1987				      *
++ *	Contents: GNU lread.c with my float code			      *
++ *									      *
++ *	Copyright (c) 1987 Wolfgang Rupprecht.				      *
++ *	All rights reserved.						      *
++ *									      *
++ *	$Log$								      *
++ ******************************************************************************/
+  /* Lisp parsing and input streams.
+     Copyright (C) 1985, 1986, 1987 Free Software Foundation, Inc.
+  
+***************
+*** 39,44 ****
+--- 51,60 ----
+  #define X_OK 01
+  #endif
+  
++ #ifdef LISP_FLOAT_TYPE
++ #include <math.h>
++ #endif LISP_FLOAT_TYPE
++ 
+  Lisp_Object Qread_char, Qget_file_char, Qstandard_input;
+  Lisp_Object Qvariable_documentation, Vvalues, Vstandard_input;
+  
+***************
+*** 661,670 ****
+  
+  	  while (c > 040 && 
+  		 !(c == '\"' || c == '\'' || c == ';' || c == '?'
+! 		   || c == '(' || c == ')' || c =='.'
+  		   || c == '[' || c == ']' || c == '#'
+  		   ))
+  	    {
+  	      if (p == end)
+  		{
+  		  register char *new = (char *) xrealloc (read_buffer, read_buffer_size *= 2);
+--- 677,699 ----
+  
+  	  while (c > 040 && 
+  		 !(c == '\"' || c == '\'' || c == ';' || c == '?'
+! 		   || c == '(' || c == ')'
+! #ifndef LISP_FLOAT_TYPE		/* we need to see <number><dot><number> */
+! 		   || c =='.'
+! #endif not LISP_FLOAT_TYPE
+  		   || c == '[' || c == ']' || c == '#'
+  		   ))
+  	    {
++ #ifdef LISP_FLOAT_TYPE_nuked	/* for added robustness */
++ 	      if (c == '.')
++ 		{		/* fix up dotted pair stuff */
++ 		  if (((p - 1) < read_buffer) ||
++ 		      ((*(p-1)) < '0') ||
++ 		      ((*(p-1)) > '9'))
++ 		    break;	/* wasn't <numeric-string><dot> */
++ 		}
++ #endif LISP_FLOAT_TYPE
++ 
+  	      if (p == end)
+  		{
+  		  register char *new = (char *) xrealloc (read_buffer, read_buffer_size *= 2);
+***************
+*** 705,716 ****
+  		  return val;
+  		}
+  	    }
+  	}
+- 
+  	return intern (read_buffer);
+        }
+      }
+  }
+  
+  static Lisp_Object
+  read_vector (readcharfun)
+--- 734,801 ----
+  		  return val;
+  		}
+  	    }
++ 	  if (isfloat_string (read_buffer))
++ 	    return make_float (atof(read_buffer));
+  	}
+  	return intern (read_buffer);
+        }
+      }
+  }
++ 
++ #ifdef LISP_FLOAT_TYPE
++ #include <ctype.h>
++ #define LEAD_INT 1
++ #define DOT_CHAR 2
++ #define TRAIL_INT 4
++ #define E_CHAR 8
++ #define EXP_INT 16
++ 
++ isfloat_string(cp)
++      register char *cp;
++ {
++   register state;
++   
++   state = 0;
++   if ((*cp == '+') || (*cp == '-'))
++     cp++;
++   if (isdigit(*cp))
++     {
++       state |= LEAD_INT;
++       while (isdigit (*cp))
++ 	cp ++;
++     }
++   if (*cp == '.')
++     {
++       state |= DOT_CHAR;
++       cp++;
++     }
++   if (isdigit(*cp))
++     {
++       state |= TRAIL_INT;
++       while (isdigit (*cp))
++ 	cp++;
++     }
++   if (*cp == 'e')
++     {
++       state |= E_CHAR;
++       cp++;
++     }
++   if ((*cp == '+') || (*cp == '-'))
++     {
++       cp++;
++     }
++   if (isdigit(*cp))
++     {
++       state |= EXP_INT;
++       while (isdigit (*cp))
++ 	cp++;
++     }
++   return ((*cp == 0) &&
++ 	  ((state == (LEAD_INT|DOT_CHAR|TRAIL_INT)) ||
++ 	   (state == (LEAD_INT|E_CHAR|EXP_INT)) ||
++ 	   (state == (LEAD_INT|DOT_CHAR|TRAIL_INT|E_CHAR|EXP_INT))));
++ }
++ #endif LISP_FLOAT_TYPE
+  
+  static Lisp_Object
+  read_vector (readcharfun)
+diff -rc emacs-18.57/src/m-sun3.h emacs/src/m-sun3.h
+*** emacs-18.57/src/m-sun3.h	Wed Jun 20 18:42:45 1990
+--- emacs/src/m-sun3.h	Tue Aug 13 10:52:12 1991
+***************
+*** 14,19 ****
+--- 14,22 ----
+  #define A_TEXT_OFFSET(HDR) sizeof (HDR)
+  
+  /* In case we are using floating point, work together with crt0.c.  */
++ #define C_SWITCH_MACHINE -fsoft
++ 
++ /* In case we are using floating point, work together with crt0.c.  */
+  
+  #ifndef __GNUC__
+  #define C_SWITCH_MACHINE -fsoft
+diff -rc emacs-18.57/src/print.c emacs/src/print.c
+*** emacs-18.57/src/print.c	Tue Jan  8 19:01:11 1991
+--- emacs/src/print.c	Tue Aug 13 10:52:18 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ /******************************************************************************
++ *									      *
++ *	File:     print.c						      *
++ *	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 *
++ *	Created:  Mon Nov  2 15:24:52 EST 1987				      *
++ *	Contents: GNU print.c with my float code			      *
++ *									      *
++ *	Copyright (c) 1987 Wolfgang Rupprecht.				      *
++ *	All rights reserved.						      *
++ *									      *
++ *	$Log$								      *
++ ******************************************************************************/
+  /* Lisp object printing and output streams.
+     Copyright (C) 1985, 1986, 1990 Free Software Foundation, Inc.
+  
+***************
+*** 33,38 ****
+--- 45,55 ----
+  
+  Lisp_Object Vstandard_output, Qstandard_output;
+  
++ #ifdef LISP_FLOAT_TYPE
++ Lisp_Object Vfloat_output_format,Qfloat_output_format;
++ #endif LISP_FLOAT_TYPE
++ 
++ 
+  /* Avoid actual stack overflow in print.  */
+  int print_depth;
+  
+***************
+*** 440,445 ****
+--- 457,540 ----
+    return obj;
+  }
+  
++ #ifdef LISP_FLOAT_TYPE
++ 
++ #define WFLAG 0x80
++ #define FIXBOUNDS(x,l,u) { if (x < l) {x = l;} else if (x > u) {x = u;}}
++ 
++ void
++   float_to_string (buf, data)
++ char * buf;
++ /*
++  * This buffer should be at least as large as the max string size of the
++  * largest float, printed in the biggest notation.  This is undoubtably
++  * 20d float_output_format, with the negative of the C-constant "HUGE"
++  * from <math.h>.
++  * 
++  * On the vax the worst case is -1e38 in 20d format which takes 61 bytes.
++  * 
++  * I assume that IEEE-754 format numbers can take 329 bytes for the worst
++  * case of -1e307 in 20d float_output_format. What is one to do (short of
++  * re-writing _doprnt to be more sane)?
++  * 			-wsr
++  */
++ double data;
++ {
++   register unsigned char *cp, c, *endp;
++   register int width;
++   unsigned int state;
++       
++   if (NULL (Vfloat_output_format) ||
++       (XTYPE(Vfloat_output_format) != Lisp_String))
++     sprintf (buf, "%.2e", data);
++   else			/* oink oink */
++     {
++       cp = XSTRING(Vfloat_output_format)->data;
++       endp = XSTRING(Vfloat_output_format)->size + cp;
++       state = 0;
++       
++       for (width = 0;
++ 	   ((cp < endp) && ((c = *cp) >= '0') && (c <= '9'));
++ 	   cp++)
++ 	{
++ 	  state = WFLAG;
++ 	  width *= 10;
++ 	  width += c - '0';
++ 	}
++       
++       if ((cp < endp) &&
++ 	  ((c = *cp) == 'e') || (c == 'd'))
++ 	state |= c;
++       
++       switch (state)
++ 	{
++ 	default:		/* never happen ... */
++ 	case 0:
++ 	  sprintf (buf, "%.3g", data);
++ 	  break;
++ 	case WFLAG:
++ 	  FIXBOUNDS(width, 1, 20);
++ 	  sprintf (buf, "%.*g", width, data);
++ 	  break;
++ 	case 'e':
++ 	  sprintf (buf, "%.2e", data);
++ 	  break;
++ 	case 'e'|WFLAG:
++ 	  FIXBOUNDS(width, 0, 20);
++ 	  sprintf (buf, "%.*e", width, data);
++ 	  break;
++ 	case 'd':
++ 	  sprintf (buf, "%.3f", data);
++ 	  break;
++ 	case 'd'|WFLAG:
++ 	  FIXBOUNDS(width, 1, 20);
++ 	  sprintf (buf, "%.*f", width, data);
++ 	  break;
++ 	}
++     }
++ }
++ #endif LISP_FLOAT_TYPE
++ 
+  static void
+  print (obj, printcharfun, escapeflag)
+  #ifndef RTPC_REGISTER_BUG
+***************
+*** 481,486 ****
+--- 576,592 ----
+  	      -1, printcharfun);
+        break;
+  
++ #ifdef LISP_FLOAT_TYPE
++     case Lisp_Float:
++       {
++ 	char pigbuf[350];	/* see comments in float_to_string */
++ 
++ 	float_to_string (pigbuf, XFLOAT(obj)->data);
++ 	strout (pigbuf, -1, printcharfun);
++       }
++       break;
++ #endif LISP_FLOAT_TYPE
++ 
+      case Lisp_Int:
+        sprintf (buf, "%d", XINT (obj));
+        strout (buf, -1, printcharfun);
+***************
+*** 673,678 ****
+--- 779,809 ----
+    Vstandard_output = Qt;
+    Qstandard_output = intern ("standard-output");
+    staticpro (&Qstandard_output);
++ 
++ #ifdef LISP_FLOAT_TYPE
++   DEFVAR_LISP ("float-output-format", &Vfloat_output_format,
++ "The format descriptor string (or nil) that lisp uses to print out\n\
++ floats. Nil means use built-in defaults.\n\
++ The descriptor string consists of an optional field-width spec,\n\
++ followed by an optional output-style descriptor.\n\
++ \n\
++ Valid field-widths specs are:\n\
++ The empty string for default precision.\n\
++ 0-20 for exponential notation, or 1-20 for decimal point notation. A 0\n\
++ field spec causes the printing of the decimal point to be supressed.\n\
++ Using an out of bounds specs cause the closest valid spec to be used.\n\
++ \n\
++ Valid ouput-styles may be one of the following:\n\
++ The letter 'e' for exponential notation \"<number>.<number>e<number>\"\n\
++ The letter 'd' for decimal point notation \"<number>.<number>\".\n\
++ The empty string, for the defaulted output style.  This may print in\n\
++ either format in a data-dependent manner, choosing whatever produces\n\
++ the shortest string.\n\
++ ");
++   Vfloat_output_format = Qnil;
++   Qfloat_output_format = intern ("float-output-format");
++   staticpro (&Qfloat_output_format);
++ #endif LISP_FLOAT_TYPE
+  
+    DEFVAR_LISP ("print-length", &Vprint_length,
+      "Maximum length of list to print before abbreviating.\
+diff -rc emacs-18.57/src/ymakefile emacs/src/ymakefile
+*** emacs-18.57/src/ymakefile	Tue Jan  8 19:23:01 1991
+--- emacs/src/ymakefile	Tue Aug 13 11:47:39 1991
+***************
+*** 1,3 ****
+--- 1,15 ----
++ /******************************************************************************
++ *									      *
++ *	File:     ymakefile						      *
++ *	Author:   Wolfgang S. Rupprecht <wolfgang@wsrcc.com>                 *
++ *	Created:  Mon Nov  2 15:27:47 EST 1987				      *
++ *	Contents: GNU ymakefile with my float code			      *
++ *									      *
++ *	Copyright (c) 1987 Wolfgang Rupprecht.				      *
++ *	All rights reserved.						      *
++ *									      *
++ *	$Log$								      *
++ ******************************************************************************/
+  /* Makefile for GNU Emacs.
+     Copyright (C) 1985, 1987, 1988, 1990 Free Software Foundation, Inc.
+  
+***************
+*** 62,67 ****
+--- 74,88 ----
+  #define LIBS_MACHINE
+  #endif
+  
++ 
++ #ifndef LIB_MATH
++ # ifdef LISP_FLOAT_TYPE
++ #  define LIB_MATH -lm
++ # else 
++ #  define LIB_MATH
++ # endif
++ #endif
++ 
+  /* Some s- files define this to request special switches in ld.  */
+  #ifndef LD_SWITCH_SYSTEM
+  #if defined (BSD) && !defined (COFF)
+***************
+*** 144,150 ****
+  SHORT= shortnames
+  #endif /* SHORTNAMES */
+  
+! CFLAGS= C_DEBUG_SWITCH -Demacs $(MYCPPFLAG) C_SWITCH_MACHINE C_SWITCH_SYSTEM
+  /* DO NOT use -R.  There is a special hack described in lastfile.c
+     which is used instead.  Some initialized data areas are modified
+     at initial startup, then labeled as part of the text area when
+--- 165,171 ----
+  SHORT= shortnames
+  #endif /* SHORTNAMES */
+  
+! CFLAGS= C_OPTIMIZE_SWITCH C_DEBUG_SWITCH -Demacs $(MYCPPFLAG) C_SWITCH_MACHINE C_SWITCH_SYSTEM
+  /* DO NOT use -R.  There is a special hack described in lastfile.c
+     which is used instead.  Some initialized data areas are modified
+     at initial startup, then labeled as part of the text area when
+***************
+*** 272,277 ****
+--- 293,301 ----
+  	${lispdir}text-mode.elc ${lispdir}fill.elc \
+  	${lispdir}c-mode.elc ${lispdir}isearch.elc \
+  	${lispdir}replace.elc ${lispdir}abbrev.elc \
++ #ifdef LISP_FLOAT_TYPE
++ 	${lispdir}float-sup.elc \
++ #endif LISP_FLOAT_TYPE
+  	${lispdir}buff-menu.elc ${lispdir}subr.elc
+  
+  /* just to be sure the sh is used */
+***************
+*** 278,284 ****
+  SHELL=/bin/sh
+  
+  /* Construct full set of libraries to be linked.  */
+! LIBES = LIBS_TERMCAP $(LIBX) LIBS_SYSTEM LIBS_MACHINE LIBS_DEBUG LIB_STANDARD $(GNULIB_VAR)
+  
+  /* Enable recompilation of certain other files depending on system type.  */
+  
+--- 302,308 ----
+  SHELL=/bin/sh
+  
+  /* Construct full set of libraries to be linked.  */
+! LIBES = LIBS_TERMCAP $(LIBX) LIBS_SYSTEM LIBS_MACHINE LIBS_DEBUG LIB_MATH LIB_STANDARD $(GNULIB_VAR)
+  
+  /* Enable recompilation of certain other files depending on system type.  */

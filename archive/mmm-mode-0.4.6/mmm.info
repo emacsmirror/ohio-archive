@@ -1,0 +1,1312 @@
+This is mmm.info, produced by makeinfo version 4.0 from mmm.texinfo.
+
+   This is edition 0.4.6 of the MMM Mode Manual, last updated 5
+September 2000. It documents version 0.4.6 of MMM Mode.
+
+   Copyright 2000 Michael Abraham Shulman.
+
+   Permission is granted to make and distribute verbatim copies of this
+manual provided the copyright notice and this permission notice are
+preserved on all copies.
+
+   Permission is granted to copy and distribute modified versions of
+this manual under the conditions for verbatim copying, provided also
+that the sections entitled "Copying" and "GNU General Public License"
+are included exactly as in the original, and provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+   Permission is granted to copy and distribute translations of this
+manual into another language, under the above conditions for modified
+versions, except that this permission notice may be stated in a
+translation approved by the Free Software Foundation.
+
+
+File: mmm.info,  Node: Top,  Next: Overview,  Prev: (dir),  Up: (dir)
+
+MMM Mode
+********
+
+   MMM Mode is a minor mode for Emacs which allows Multiple Major Modes
+to coexist in a single buffer.
+
+   This is edition 0.4.6 of the MMM Mode Manual, last updated 5
+September 2000, which documents version 0.4.6 of MMM Mode.
+
+* Menu:
+
+* Overview::                    What MMM Mode is and how it can be used.
+* Basic Concepts::              A simple explanation of how it works.
+* Installation::                How to install MMM Mode.
+* Quick Start::                 Getting started using MMM Mode quickly.
+
+MMM Mode Basics
+
+* MMM Minor Mode::              The Emacs minor mode that manages it all.
+* Submode Classes::             What they are and how to use them.
+* Selecting Classes::           How MMM Mode knows what classes to use.
+* Insertion::                   Inserting new submode regions automatically.
+* Re-parsing::                  Re-scanning for submode regions.
+* Interactive::                 Adding submode regions manually.
+* Global Mode::                 Turning MMM Mode on automatically.
+
+Customizing MMM Mode
+
+* Submode Faces::               How submode regions are highlighted.
+* Mode Line::                   What is displayed in the mode line.
+* Key Bindings::                Customizing the MMM Mode key bindings.
+* Local Variables::             What local variables are saved for submodes.
+* Changing Classes::            Changing the supplied submode classes.
+* Hooks::                       How to make MMM Mode run your code.
+* Writing Classes::             Writing your own submode classes.
+
+Supplied Submode Classes
+
+* Mason::                       Mason syntax for server-side Perl in HTML.
+* File Variables::              Elisp code in File Variables.
+* Here-documents::              Code in shell and Perl here-documents.
+* Javascript::                  Javascript embedded in HTML.
+* Embedded CSS::                CSS Styles embedded in HTML.
+* Embperl::                     Another syntax for Perl in HTML.
+* RPM::                         Shell scripts in RPM Spec Files.
+
+Indices
+
+* Concept Index::               Index of MMM Mode Concepts.
+* Function Index::              Index of functions and variables of MMM Mode.
+* Keystroke Index::             Index of key bindings in MMM Mode.
+
+Writing Submode Classes
+
+ --- The Detailed Node Listing ---
+
+The MMM Minor Mode
+
+* Enabling MMM Mode::           Turning MMM Mode on and off.
+* MMM Mode Keys::               Default key bindings in MMM Mode.
+
+How MMM Mode selects submode classes
+
+* File Classes::                Classes for a single file.
+* Mode-Ext Classes::            Classes for a given mode or extension.
+* Global Classes::              Classes for all MMM Mode buffers.
+
+MMM Global Mode
+
+* Major Mode Hook::             Using MMM's Major Mode Hook
+
+
+File: mmm.info,  Node: Overview,  Next: Basic Concepts,  Prev: Top,  Up: Top
+
+Overview of MMM Mode
+********************
+
+   MMM Mode is a minor mode for Emacs which allows Multiple Major Modes
+to coexist in a single buffer. The name is an abbreviation of `Multiple
+Major Modes'(1). A major mode is a customization of Emacs for editing a
+certain type of text, such as code for a specific programming language.
+*Note Major Modes: (emacs)Major Modes, for details.
+
+   MMM Mode is a general extension to Emacs which has many uses.
+Currently, its most common usage is to edit Mason components. Mason is a
+"Perl-based web site development and delivery engine" which executes
+Perl code embedded in HTML and other types of documents. For more
+information, see `http://www.masonhq.com'. MMM Mode comes with a
+submode class (*note Submode Classes::) for editing Mason components
+(*note Mason::).
+
+   More generally, however, MMM Mode is useful whenever one file
+contains text in two or more programming languages, or that should be
+in two or more different modes. For example, CGI scripts written in any
+language, such as Perl or PL/SQL, may want to output verbatim HTML, and
+the writer of such scripts may want to use Emacs' html-mode to edit
+this HTML code.  HTML itself can also contain embedded languages such
+as Javascript and CSS styles, for which Emacs has different major
+modes. Emacs also allows files of any type to contain `local
+variables', which can include Emacs Lisp code to be evaluated. *Note
+File Variables: (emacs)File Variables. It may be easier to edit this
+code in Emacs Lisp mode than in whatever mode is used for the rest of
+the file.
+
+   ---------- Footnotes ----------
+
+   (1) The name is derived from `mmm.el' for XEmacs by Gongquan Chen
+<chen@posc.org>, from which MMM Mode was adapted.
+
+
+File: mmm.info,  Node: Basic Concepts,  Next: Installation,  Prev: Overview,  Up: Top
+
+Basic Concepts
+**************
+
+   The way MMM Mode works is as follows. Each buffer has a "dominant"
+or "default" major mode, which is chosen as major modes normally are:
+the user can set it interactively, or it can be chosen automatically
+with `auto-mode-alist' (*note Choosing Modes: (emacs)Choosing Modes.).
+Within the file, MMM Mode creates "submode regions" within which other
+major modes are in effect. While the point is in a submode region, the
+following changes occur:
+
+  1. The local keymap is that of the submode. This means the key
+     bindings for the submode are available, while those of the
+     dominant mode are not.
+
+  2. The mode line (*note Mode Line: (emacs)Mode Line.) changes to show
+     which submode region is active. This can be configured; see *Note
+     Mode Line::.
+
+  3. The major mode menu, both on the menu bar and the mouse popup, are
+     that of the submode.
+
+  4. Some local variables of the submode shadow those of the default
+     mode (*note Local Variables::). For the user, this serves to help
+     make Emacs behave as if the submode were the major mode.
+
+  5. The syntax table and indentation are those of the submode.
+
+  6. Font-lock (*note Font Lock: (emacs)Font Lock.) fontifies correctly
+     for the submode.
+
+  7. The submode regions are highlighted by a background color (*note
+     Submode Faces::), by default a light gray.
+
+
+   The submode regions are represented internally by Emacs Lisp objects
+known as "overlays". Some of the above are implemented by overlay
+properties, and others are updated by an MMM Mode function in
+`post-command-hook'. You don't need to know this to use MMM Mode, but it
+may make any error messages you come across more understandable.  *Note
+Overlays: (elisp)Overlays, for more information on overlays.
+
+   Because overlays are not saved with a file, every time a file is
+opened, they must be created.  Creating submode regions is occasionally
+referred to as "mmm-ification".  (I've never had occasion to pronounce
+this, but if I did I would probably say `mummification'. Like what they
+did in ancient Egypt.)  You can mmm-ify a buffer interactively, but
+most often MMM Mode will find and create submode regions automatically
+based on a buffer's file extension, dominant mode, or local variables.
+
+
+File: mmm.info,  Node: Installation,  Next: Quick Start,  Prev: Basic Concepts,  Up: Top
+
+Installing MMM Mode
+*******************
+
+   MMM Mode has a standard installation process.  See the file INSTALL
+for generic information on this process.  To summarize, unpack the
+archive, `cd' to the created MMM Mode directory, type `./configure',
+then `make', then `make install'.  If all goes correctly, this will
+compile the MMM Mode elisp files, install them in your local site-lisp
+directory, and install the MMM Mode info file `mmm.info' in your local
+info directory.
+
+   Now you need to configure your Emacs initialization file (usually
+`~/.emacs') to use MMM Mode.  First, Emacs has to know where to find
+MMM Mode.  In other words, the MMM Mode directory has to be in
+`load-path'.  This can be done in the parent directory's `subdirs.el'
+file, or in the init file with a line such as:
+
+     (add-to-list 'load-path "/path/to/site-lisp/mmm/")
+
+   Once `load-path' is configured, MMM Mode must be loaded.  You can
+load all of MMM Mode with the line
+
+     (require 'mmm-mode)
+
+but if you use MMM Mode only rarely, it may not be desirable to load all
+of it at the beginning of every editing session.  You can load just
+enough of MMM Mode so it will turn itself on when necessary and load the
+rest of itself, by using instead the line
+
+     (require 'mmm-auto)
+
+in your initialization file.
+
+   One more thing you may want to do right now is to set the variable
+`mmm-global-mode'.  If this variable is `nil' (the default), MMM Mode
+will never turn itself on.  If it is `t', MMM Mode will turn itself on
+in every buffer.  Probably the most useful value for it, however, is
+the symbol `maybe' (actually, anything that is not `nil' and not `t'),
+which causes MMM Mode to turn itself on in precisely those buffers
+where it would be useful.  You can do this with a line such as:
+
+     (setq mmm-global-mode 'maybe)
+
+in your initialization file.  *Note Global Mode::, for more detailed
+information.
+
+
+File: mmm.info,  Node: Quick Start,  Next: MMM Minor Mode,  Prev: Installation,  Up: Top
+
+Getting Started Quickly
+***********************
+
+   Perhaps the simplest way to create submode regions is to do it
+interactively by specifying a region. First you must turn MMM Mode
+on--say, with `M-x mmm-mode'--then place point and mark around the area
+you want to make into a submode region, type `C-c % C-r', and enter the
+desired major mode. *Note Interactive::, for more details.
+
+   A better way to add submode regions is by using submode classes,
+which store a lot of useful information for MMM Mode about how to add
+and manipulate the regions created.  *Note Submode Classes::, for more
+details.  There are several sample submode classes that come with MMM
+Mode, which are documented later in this manual.  Look through these and
+determine if one of them fits your needs.  If so, I suggest reading the
+comments on that mode.  Then come back here to find out to use it.
+
+   To apply a submode class to a buffer interactively, turn MMM Mode on
+as above, then type `C-c % C-c' and enter the name of the class.
+Submode regions should be added automatically, if there are any regions
+in the buffer appropriate to the submode class.
+
+   If you want a given file to always use a given submode class, you can
+express this in a file variable: add a line containing the string `-*-
+mmm-classes: CLASS -*-' at the top of the file.  *Note File Variables:
+(emacs)File Variables, for more information and other methods. Now
+whenever MMM Mode is turned on in that file, it will be mmm-ified
+according to CLASS. If `mmm-global-mode' is non-nil, then MMM Mode will
+turn itself on whenever a file with a `mmm-classes' local variable is
+opened. *Note Global Mode::, for more information.
+
+   If you want a submode class to apply to _all_ files in a certain
+major mode or with a certain extension, add a line such as this to your
+initialization file:
+
+     (mmm-add-mode-ext-class MODE EXTENSION CLASS)
+
+After this call, any file opened whose name matches the regular
+expression EXTENSION _and_ whose default mode is MODE will be
+automatically mmm-ified according to CLASS (assuming `mmm-global-mode'
+is non-nil). If one of EXTENSION or MODE is `nil', a file need only
+satisfy the other one to be mmm-ified.
+
+   You can now read the rest of this manual to learn more about how MMM
+Mode works and how to configure it to your preferences.  If none of the
+supplied submode classes fit your needs, then you can try to write your
+own.  There will eventually be a chapter on how to do that, but for now,
+see the documentation for the variable `mmm-classes-alist'.
+
+
+File: mmm.info,  Node: MMM Minor Mode,  Next: Submode Classes,  Prev: Quick Start,  Up: Top
+
+The MMM Minor Mode
+******************
+
+   An Emacs minor mode is an optional feature which can be turned on or
+off in a given buffer, independently of the major mode. *Note Minor
+Modes: (emacs)Minor Modes. MMM Mode is implemented as a minor mode
+which manages the submode regions. This minor mode must be turned on in
+a buffer for submode regions to be effective. When activated, the MMM
+Minor mode is denoted by `MMM' in the mode line (*note Mode Line::).
+
+* Menu:
+
+* Enabling MMM Mode::           Turning MMM Mode on and off.
+* MMM Mode Keys::               Default key bindings in MMM Mode.
+
+
+File: mmm.info,  Node: Enabling MMM Mode,  Next: MMM Mode Keys,  Prev: MMM Minor Mode,  Up: MMM Minor Mode
+
+Enabling MMM Mode
+=================
+
+   If `mmm-global-mode' is non-`nil' (*note Global Mode::), then the
+MMM minor mode will be turned on automatically whenever a file with
+associated submode classes is opened (*note Selecting Classes::).  It
+is also turned on by interactive mmm-ification (*note Interactive::),
+although the interactive commands do not have key bindings when it is
+not on and must be invoked via `M-x'. You can also turn it on (or off)
+manually with `M-x mmm-mode', in which case it applies all submode
+classes associated with the buffer. Turning MMM Mode off automatically
+removes all submode regions from the buffer.
+
+ - Command: mmm-mode ARG
+     Toggle the state of MMM Mode in the current buffer. If ARG is
+     supplied, turn MMM Mode on if and only if ARG is positive.
+
+ - Function: mmm-mode-on
+     Turn MMM Mode on unconditionally in the current buffer.
+
+ - Function: mmm-mode-off
+     Turn MMM Mode off unconditionally in the current buffer.
+
+ - Variable: mmm-mode
+     This variable represents whether MMM Mode is on in the current
+     buffer.  Do not set this variable directly; use one of the above
+     functions.
+
+
+File: mmm.info,  Node: MMM Mode Keys,  Prev: Enabling MMM Mode,  Up: MMM Minor Mode
+
+Key Bindings in MMM Mode
+========================
+
+   When MMM Mode is on, it defines a number of key bindings. By default,
+these are bound after the prefix sequence `C-c %'. Minor mode keymaps
+are supposed to use `C-c PUNCTUATION' sequences, and I find this one to
+be a good mnemonic because `%' is used by Mason to denote special tags.
+This prefix key can be customized; *Note Key Bindings::.
+
+   There are two types of key bindings in MMM Mode: "commands" and
+"insertions". Command bindings run MMM Mode interactive functions to do
+things like re-parse the buffer or end the current submode region, and
+are defined statically as normal Emacs key-bindings. Insertion bindings
+insert submode region skeletons with delimiters into the buffer, and
+are defined dynamically, according to which submode classes (*note
+Submode Classes::) are in effect, via a keymap default binding.
+
+   To distinguish between the two, MMM Mode uses distinct modifier keys
+for each. By default, command bindings use the control key (e.g. `C-c %
+C-b' re-parses the buffer), and insertion bindings do not (e.g. `C-c %
+p', when the Mason class is in effect, inserts a `<%perl>...</%perl>'
+region). This makes the command bindings different from in previous
+versions, however, so the variable `mmm-use-old-bindings' is provided.
+If this variable is set to `t' before MMM Mode is loaded, the bindings
+will be reversed: insertion bindings will use the control key and
+command bindings will not.
+
+   Normally, Emacs gives help on a prefix command if you type `C-h'
+after that command (e.g. `C-x C-h' displays all key bindings starting
+with `C-x'). Because of how insertion bindings are implemented
+dynamically with a default binding, they do not show up when you hit
+`C-c % C-h'. For this reason, MMM Mode defines the command `C-c % h'
+which displays a list of all currently valid insertion key sequences.
+If you use the defaults for command and insertion bindings, the `C-h'
+and `h' should be mnemonic.
+
+   In the rest of this manual, I will assume you are using the defaults
+for the mode prefix (`C-c %') and the command and insertion modifiers.
+You can customize them, however; *Note Key Bindings::.
+
+
+File: mmm.info,  Node: Submode Classes,  Next: Selecting Classes,  Prev: MMM Minor Mode,  Up: Top
+
+Understanding Submode Classes
+*****************************
+
+   A submode class represents a "type" of submode region. It specifies
+how to find the regions, what their delimiters look like, what submode
+they should be, how to insert them, and how they behave in other ways.
+It is represented by a symbol, such as `mason' or `eval-elisp'.
+
+   For example, in the Mason set of classes, there is one class
+representing all `<%...%>' inline Perl regions, and one representing
+regions such as `<%perl>...</%perl>', `<%init>...</%init>', and so on.
+These are different to Mason, but to Emacs they are all just Perl
+sections, so they are covered by the same submode class.
+
+   But it would be tedious if whenever we wanted to use the Mason
+classes, we had to specify both of these. (Actually, this is a
+simplification: there are some half a dozen Mason submode classes.) So
+submode classes can also "group" others together, and we can refer to
+the `mason' class and mean all of them.
+
+   The way a submode class is used is to "apply" it to a buffer. This
+scans the buffer for regions which should be submode regions according
+to that class, and also remembers the class for later, so that new
+submode regions can be inserted and scanned for later.
+
+
+File: mmm.info,  Node: Selecting Classes,  Next: Insertion,  Prev: Submode Classes,  Up: Top
+
+How MMM Mode selects submode classes
+************************************
+
+   Submode classes that apply to a buffer come from three sources:
+mode/extension-associated classes, file-local classes, and interactive
+MMM-ification (*note Interactive::). Whenever MMM Mode is turned on in a
+buffer (*note MMM Minor Mode::, and *Note Global Mode::), it inspects
+the value of two variables to determine which classes to automatically
+apply to the buffer. This covers the first two sources; the latter is
+covered in a later chapter.
+
+* Menu:
+
+* File Classes::                Classes for a single file.
+* Mode-Ext Classes::            Classes for a given mode or extension.
+* Global Classes::              Classes for all MMM Mode buffers.
+
+
+File: mmm.info,  Node: File Classes,  Next: Mode-Ext Classes,  Prev: Selecting Classes,  Up: Selecting Classes
+
+File-Local Submode Classes
+==========================
+
+ - Variable: mmm-classes
+     This variable is always buffer-local when set. Its value should be
+     either a single symbol or a list of symbols. Each symbol
+     represents a submode class that is applied to the buffer.
+
+   `mmm-classes' is usually set in a file local variables list.  *Note
+File Variables: (emacs)File Variables. The easiest way to do this is
+for the first line of the file to contain the string `-*- mmm-classes:
+CLASSES -*-', where CLASSES is the desired value of `mmm-classes' for
+the file in question. It can also be done with a local variables list
+at the end of the file.
+
+
+File: mmm.info,  Node: Mode-Ext Classes,  Next: Global Classes,  Prev: File Classes,  Up: Selecting Classes
+
+Submode Classes Associated with Modes and Extensions
+====================================================
+
+ - User Option: mmm-mode-ext-classes-alist
+     This global variable associates certain submode classes with major
+     modes and/or file extensions. Its value is a list of elements of
+     the form `(MODE EXT CLASS)'. Any buffer whose major mode is MODE
+     (a symbol) _and_ whose file name matches EXT (a regular
+     expression) will automatically have the submode class CLASS
+     applied to it.
+
+     If MODE is `nil', then only EXT is considered to determine if a
+     buffer fits the criteria, and vice versa. Thus if both MODE and
+     EXT are nil, then CLASS is applied to _all_ buffers in which MMM
+     Mode is on. Note that EXT can be any regular expression, although
+     its name indicates that it most often refers to the file extension.
+
+     If CLASS is the symbol `t', then no submode class is actually
+     applied for this association. However, if `mmm-global-mode' is
+     non-`nil' and non-`t', MMM Mode will be turned on in matching
+     buffers even if there are no actual submode classes being applied.
+     *Note Global Mode::.
+
+ - Function: mmm-add-mode-ext-class MODE EXT CLASS
+     This function adds an element to `mmm-mode-ext-classes-alist',
+     associating the submode class CLASS with the major mode MODE and
+     extension EXT.
+
+     Older versions of MMM Mode required this function to be used to
+     control the value of `mmm-mode-ext-classes-alist', rather than
+     setting it directly. In this version it is provided purely for
+     convenience and backward compatibility.
+
+
+File: mmm.info,  Node: Global Classes,  Prev: Mode-Ext Classes,  Up: Selecting Classes
+
+Globally Applied Classes and the Universal Class
+================================================
+
+   In addition to file-local and mode-ext-associated submode classes,
+MMM Mode also allows you to specify that certain submode classes apply
+to _all_ buffers in which MMM Mode is enabled.
+
+ - User Option: mmm-global-classes
+     This variable's value should be a list of submode classes that
+     apply to all buffers with MMM Mode on.  It can be overriden in a
+     file local variables list, such as to disable global class for a
+     specific file.  Its default value is `(universal)'.
+
+   The default global class is the "universal class", which is defined
+in the file `mmm-univ.el' (loaded automatically), and allows the author
+of text to specify that a certain section of it be in a specific major
+mode.  Thus, for example, when writing an email message that includes
+sample code, the author can allow readers of the message (who use emacs
+and MMM) to view the code in the appropriate major mode.  The syntax
+used is `{%MODE%} ... {%/MODE%}', where MODE should be the name of the
+major mode, with or without the customary `-mode' suffix: for example,
+both `cperl' and `cperl-mode' are acceptable.
+
+   The universal class also defines an insertion key, `/', which
+prompts for the submode to use.  *Note Insertion::.  The universal class
+is most useful when `mmm-global-mode' is set to `t'; *Note Global
+Mode::.
+
+
+File: mmm.info,  Node: Insertion,  Next: Re-parsing,  Prev: Selecting Classes,  Up: Top
+
+Inserting new submode regions
+*****************************
+
+   So much for noticing submode regions already present when you open a
+file. When editing a file with MMM Mode on, you will often want to add a
+new submode region. MMM Mode provides several facilities to help you.
+The simplest is to just hit a few keys and have the region and its
+delimiters inserted for you.
+
+   Each submode class can define an association of keystrokes with
+"skeletons" to insert a submode region. If there are several submode
+classes enabled in a buffer, it is conceivable that the keys they use
+for insertion might conflict, but unlikely as most buffers will not use
+more than one or two submode classes groups.
+
+   As an example of how insertion works, consider the Mason classes. In
+a buffer with MMM Mode enabled and Mason associated, the key sequence
+`C-c % p' inserts the following perl section (the semicolon is to
+prevent CPerl Mode from getting confused--*note Mason::):
+
+     <%perl>-<-;
+     -!-
+     ->-</%perl>
+
+   In this schematic representation, the string `-!-' represents the
+position of point (the cursor), `-<-' represents the beginning of the
+submode region, and `->-' its end.
+
+   All insertion keys come after the MMM Mode prefix keys (by default
+`C-c %'; *note Key Bindings::) and are by default single characters
+such as `p', `%', and `i'. To avoid confusion, all the MMM Mode
+commands are bound by default to control characters (after the same
+prefix keys), such as `C-b', `C-%' and `C-r'. This is a change from
+earlier versions of MMM Mode, and can be customized; see *Note Key
+Bindings::.
+
+   To find out what insertion keys are available, consult the
+documentation for the submode class you are using. If it is one of the
+classes supplied with MMM Mode, you can find it in this Info file.
+
+   Because insertion keys are implemented with a "default binding" for
+flexibility, they do not show up in the output of `C-h m' and cannot be
+found with `C-h k'. For this reason, MMM Mode supplies the command `C-c
+% h' (`mmm-insertion-help' to view the available insertion keys.
+
+
+File: mmm.info,  Node: Re-parsing,  Next: Interactive,  Prev: Insertion,  Up: Top
+
+Re-Parsing Submode Regions
+**************************
+
+   Describe `mmm-parse-buffer', `mmm-parse-region', `mmm-parse-block',
+and `mmm-clear-current-region'.
+
+
+File: mmm.info,  Node: Interactive,  Next: Global Mode,  Prev: Re-parsing,  Up: Top
+
+Interactive MMM-ification Functions
+***********************************
+
+   There are several commands you can use to create submode regions
+interactively, rather than by applying a submode class to a buffer.
+These commands (in particular, `mmm-ify-region'), can be useful when
+editing a file or email message containing a snippet of code in some
+other language.  Also see *Note Global Classes::, for an alternate
+approach to the same problem.
+
+`C-c % C-r'
+     Creates a submode region between point and mark. Prompts for the
+     submode to use, which must be a valid Emacs major mode name, such
+     as `emacs-lisp-mode' or `cperl-mode'. Adds markers to the
+     interactive history. (`mmm-ify-region')
+
+`C-c % C-c'
+     Applies an already-defined submode class to the buffer, which it
+     prompts for. Adds this class to the interactive history.
+     (`mmm-ify-by-class')
+
+`C-c % C-x'
+     Scans the buffer for submode regions (prompts for the submode)
+     using front and back regular expressions that it also prompts for.
+     Briefly, it starts at the beginning of the buffer and searches for
+     the front regexp.  If it finds a match, it searches for the back
+     regexp. If it finds a match for that as well, it makes a submode
+     region between the two matches and continues searching until no
+     more matches are found. Adds the regexps to the interactive
+     history. (`mmm-ify-by-regexp')
+
+   These commands are also useful when designing a new submode class
+(*note Submode Classes::). Working with the regexps interactively can
+make it easier to debug and tune the class before starting to use it on
+automatic. All these commands also add to value of the following
+variable.
+
+ - Variable: mmm-interactive-history
+     Stores a history of all interactive mmm-ification that has been
+     performed in the current buffer. This way, for example, the
+     re-parsing functions (*note Re-parsing::) will respect
+     interactively added regions, and the insertion keys for classes
+     that were added interactively are available.
+
+   If for any reason you want to "wipe the slate clean", this command
+should help you. By default, it has no key binding, so you must invoke
+it with `M-x mmm-clear-history <RET>'.
+
+ - Command: mmm-clear-history
+     Clears all history of interactive mmm-ification in the current
+     buffer.  This command does not affect existing submode regions; to
+     remove them, you may want to re-parse the buffer with `C-c % C-b'
+     (`mmm-parse-buffer').
+
+
+File: mmm.info,  Node: Global Mode,  Next: Submode Faces,  Prev: Interactive,  Up: Top
+
+MMM Global Mode
+***************
+
+   When a file has associated submode classes (*note Selecting
+Classes::), you may want MMM Mode to turn itself on and parse that file
+for submode regions automatically whenever it is opened in an Emacs
+buffer. The value of the following variable controls when MMM Mode
+turns itself on automatically.
+
+ - User Option: mmm-global-mode
+     Do not be misled by the fact that this variable's name ends in
+     `-mode': it is not a simple on/off switch. There are three possible
+     (meanings of) values for it: `t', `nil', and anything else.
+
+     When this variable is `nil', MMM Mode is never enabled
+     automatically. If it is enabled manually, such as by typing `M-x
+     mmm-mode', any submode classes associated with the buffer will
+     still be used, however.
+
+     When this variable is `t', MMM Mode is enabled automatically in
+     _all_ buffers, including those not visiting files, except those
+     whose major mode is an element of `mmm-never-modes'. The default
+     value of this variable contains modes such as `help-mode' and
+     `dired-mode' in which most users would never want MMM Mode, and in
+     which MMM might cause problems.
+
+     When this variable is neither `nil' nor `t', MMM Mode is enabled
+     automatically in all buffers that would have associated submode
+     classes; i.e. only if there would be something for it to do. The
+     value of `mmm-never-modes' is still respected, however. Note that
+     this can include buffers not visiting files, if that buffer's
+     major mode is present in `mmm-mode-ext-classes-alist' with a `nil'
+     value for EXT (*note Mode-Ext Classes::). Submode class values of
+     `t' in `mmm-mode-ext-classes-alist' cause MMM Mode to be enabled in
+     matching buffers, but supply no submode classes to be applied.
+
+* Menu:
+
+* Major Mode Hook::             Using MMM's Major Mode Hook
+
+
+File: mmm.info,  Node: Major Mode Hook,  Prev: Global Mode,  Up: Global Mode
+
+The Major Mode Hook
+===================
+
+   This section is intended for users who understand Emacs Lisp and
+want to know how MMM Global Mode is implemented, and perhaps use the
+same technique. In fact, MMM Mode exports a hook variable that you can
+use easily, without understanding any of the details--see below.
+
+   In order to enable itself in _all_ buffers, however, MMM Mode has to
+hook itself into all major modes.  Global Font Lock Mode from the
+standard Emacs distribution (*note Font Lock: (emacs)Font Lock.) has a
+similar problem, and solves it by adding a function to
+`change-major-mode-hook', which is run by `kill-all-local-variables',
+which is run in turn by all major mode functions at the _beginning_.
+This function stores a list of which buffers need fontification.  It
+then adds a different function to `post-command-hook', which checks if
+the current buffer needs fontification, and if so performs it.  MMM
+Global Mode uses the same technique.
+
+   In the interests of generality, and for your use, the function that
+MMM Mode runs in `post-command-hook' (`mmm-run-major-mode-hook') is not
+specific to MMM Mode, but rather runs the hook variable
+`mmm-major-mode-hook', which by default contains a function
+(`mmm-mode-on-maybe') which possibly turns MMM Mode on, depending on
+the value of `mmm-global-mode'.  Thus, to run another function in all
+major modes, all you need to do is add it to this hook.  For example,
+the following line in an initialization file will turn on Auto Fill
+Mode (*note Auto Fill: (emacs)Auto Fill.) in all buffers:
+
+     (add-hook 'mmm-major-mode-hook 'turn-on-auto-fill)
+
+
+File: mmm.info,  Node: Submode Faces,  Next: Mode Line,  Prev: Global Mode,  Up: Top
+
+Customizing Submode Faces
+*************************
+
+   By default, MMM Mode highlights all submode regions with a light gray
+background color.  You can change the color of the highlight, or turn it
+off entirely.  You might want to do this if you don't like how it looks,
+or if you want to use background colors for font-lock (the submode
+highlight, if present, overrides any font-lock background coloring).
+The highlight is done with the face `mmm-default-submode-face' (*note
+emacs: (The Emacs Manual)Faces.) which can be customized, either
+through the Emacs "customize" interface or using direct Lisp commands.
+To turn the highlight off, add the following line to your `.emacs' file:
+
+     (set-face-background 'mmm-default-submode-face nil)
+
+   To set the highlight color, a similar syntax can be used:
+
+     (set-face-background 'mmm-default-submode-face "blue")
+
+   Of course, other aspects of the face can also be set, such as the
+foreground color, bold, underline, etc.  These are more likely to
+conflict with font-lock, however, so only a background color is
+recommended.
+
+
+File: mmm.info,  Node: Mode Line,  Next: Key Bindings,  Prev: Submode Faces,  Up: Top
+
+Customizing the Mode Line Display
+*********************************
+
+   By default, when in a submode region, MMM Mode changes the section of
+the mode line (*note Mode Line: (emacs)Mode Line.) that normally
+displays the major mode name--for example, `HTML'--to instead show both
+the dominant major mode and the currently active submode--for example,
+`HTML[CPerl]'.  You can change this format, however.
+
+ - User Option: mmm-submode-mode-line-format
+     The value of this variable should be a string containing one or
+     both of the escape sequences `~M' and `~m'.  The string displayed
+     in the major mode section of the mode line when in a submode is
+     obtained by replacing all occurrences of `~M' with the dominant
+     major mode name and `~m' with the currently active submode name.
+     For example, to display only the currently active submode, set
+     this variable to `~m'.  The default value is `~M[~m]'.
+
+   The MMM minor mode also normally displays the string `MMM' in the
+minor mode section of the mode line to indicate when it is active.  You
+can customize or disable this as well.
+
+ - User Option: mmm-mode-string
+     This string is displayed in the minor mode section of the mode
+     line when the MMM minor mode is active.  If nonempty, it should
+     begin with a space to separate the MMM indicator from that of
+     other minor modes.  To eliminate the indicator entirely, set this
+     variable to the empty string.
+
+
+File: mmm.info,  Node: Key Bindings,  Next: Local Variables,  Prev: Mode Line,  Up: Top
+
+Customizing the MMM Mode Key Bindings
+*************************************
+
+   The default MMM Mode key bindings are explained in *Note MMM Mode
+Keys::, and in *Note Insertion::.  There are a couple of ways to
+customize these bindings.
+
+ - User Option: mmm-mode-prefix-key
+     The value of this variable (default is `C-c %') should be a key
+     sequence to use as the prefix for the MMM Mode keymap.  Minor modes
+     typically use `C-c' followed by a punctuation character, but you
+     can change it to any user-available key sequence.  To have an
+     effect, this variable should be set before MMM Mode is loaded.
+
+ - User Option: mmm-use-old-command-keys
+     When this variable is `nil', MMM Mode commands use the control
+     modifier and insertion keys no modifier.  Any other value switches
+     the two, so that `mmm-parse-buffer', for example, is bound to `C-c
+     % b', while perl-section insertion in the Mason class is bound to
+     `C-c % C-p'.  This variable should be set before MMM Mode is loaded
+     to have an effect.
+
+   When MMM is loaded, it uses the value of `mmm-use-old-command-keys'
+to set the values of the variables `mmm-command-modifiers' and
+`mmm-insert-modifiers', so if you prefer you can set these variables
+instead.  They should each be a list of key modifiers, such as
+`(control)' or `()'.  The Meta modifier is used in some of the command
+and insertion keys, so it should not be used, and the Shift modifier is
+not particularly portable between Emacsen--if it works for you, feel
+free to use it.  Other modifiers, such as Hyper and Super, are not
+universally available, but are valid when present.
+
+
+File: mmm.info,  Node: Local Variables,  Next: Changing Classes,  Prev: Key Bindings,  Up: Top
+
+Changing Saved Local Variables
+******************************
+
+   A lot of the functionality of MMM Mode--that which makes the major
+mode appear to change--is implemented by saving and restoring the
+values of local variables, or pseudo-variables.  You can customize what
+variables are saved, and how, with the following variable.
+
+ - Variable: mmm-save-local-variables
+     At its simplest, this is a list each of whose elements is a
+     buffer-local variable whose value is saved and restored for each
+     major mode.  Each elements can also, however, be a list whose
+     first element is the variable symbol and whose subsequent elements
+     specify how and where the variable is to be saved.  The second
+     element of the list, if present, should be one of the symbols
+     `global', `buffer', or `region'.  If not present, the default
+     value is `global'.  The third element, if present, should be a
+     list of major mode symbols in which to save the variable.  In the
+     list form, the variable symbol itself can be replaced with a cons
+     cell of two functions, one to get the value and one to set the
+     value.  This is called a "pseudo-variable".
+
+   Globally saved variables are the same in all (MMM-controlled) buffers
+and submode regions of each major mode listed in the third argument, or
+all major modes if it is `t' or not present.  Buffer-saved variables
+are the same in all submode regions of a given major mode in each
+buffer, and region-saved variables can be different for each submode
+region.
+
+   Pseudo-variables are used, for example, to save and restore the
+syntax table (*note Syntax: (emacs)Syntax.) and mode keymaps (*note
+Keymaps: (emacs)Keymaps.).
+
+
+File: mmm.info,  Node: Changing Classes,  Next: Hooks,  Prev: Local Variables,  Up: Top
+
+Changing the Supplied Submode Classes
+*************************************
+
+   If you need to use MMM with a syntax for which a submode class is not
+supplied, and you have some facility with Emacs Lisp, you can write your
+own; see *Note Writing Classes::.  However, sometimes you will only want
+to make a slight change to one of the supplied submode classes.  You can
+do this, after that class is loaded, with the following functions.
+
+ - Function: mmm-set-class-parameter CLASS PARAM VALUE
+     Set the value of the keyword parameter PARAM of the submode class
+     CLASS to VALUE.  *Note Writing Classes::, for an explanation of
+     the meaning of each keyword parameter.  This creates a new
+     parameter if one is not already present in the class.
+
+ - Function: mmm-get-class-parameter CLASS PARAM
+     Get the value of the keyword parameter PARAM for the submode class
+     CLASS.  Returns `nil' if there is no such parameter.
+
+
+File: mmm.info,  Node: Hooks,  Next: Writing Classes,  Prev: Changing Classes,  Up: Top
+
+Hooks Provided by MMM Mode
+**************************
+
+   MMM Mode defines several hook variables (*note Hooks: (emacs)Hooks.)
+which are run at different times.  The most often used is
+`mmm-major-mode-hook' which is described in *Note Major Mode Hook::,
+but there are a couple others.
+
+ - Variable: mmm-mode-hook
+     This normal hook is run whenever MMM Mode is enabled in a buffer.
+
+ - Variable: mmm-MAJOR-MODE-hook
+     This is actually a whole set of hook variables, a different one for
+     every major mode.  Whenever MMM Mode is enabled in a buffer, the
+     corresponding hook variable for the dominant major mode is run.
+
+ - Variable: mmm-SUBMODE-submode-hook
+     Again, this is a set of one hook variable per major mode.  These
+     hooks are run whenever a submode region of the corresponding major
+     mode is created in any buffer, with point at the start of the new
+     submode region.
+
+ - Variable: mmm-CLASS-class-hook
+     This is a set of one hook variable per submode class.  These hooks
+     are run when a submode class is first applied to a given buffer.
+
+   Submode classes also have a `:creation-hook' parameter which should
+be a function to run whenever a submode region is created with that
+class, with point at the beginning of the submode region.  This can be
+set for supplied submode classes with `mmm-set-class-parameter'; *Note
+Changing Classes::.
+
+
+File: mmm.info,  Node: Writing Classes,  Next: Mason,  Prev: Hooks,  Up: Top
+
+Writing Your Own Submode Classes
+********************************
+
+   This is copied from the documentation of `mmm-classes-alist' and
+serves as a good summary.  An introduction/tutorial would be nice,
+however.  This should probably have a number of subsections.
+
+   Each element of `mmm-classes-alist' looks like (CLASS . ARGS) where
+CLASS is a symbol representing the submode class and ARGS is a list of
+keyword arguments, called a "class specifier". There are a large number
+of accepted keyword arguments.
+
+   The argument CLASSES, if supplied, must be a list of other submode
+classes (or class specifiers), representing other classes to call.
+FACE, if supplied, overrides FACE arguments to these classes, but all
+other arguments to this class are ignored.
+
+   The argument HANDLER, if supplied, overrides any other processing. It
+must be a function, and all the arguments are passed to it as keywords,
+and it must do everything. See `mmm-ify' for what sorts of things it
+must do. This back-door interface should be cleaned up.
+
+   The argument FACE, if supplied, overrides `mmm-default-submode-face'
+in specifying the display face of the submode regions. It must be a
+valid display face.
+
+   If neither CLASSES nor HANDLER are supplied, either SUBMODE or
+MATCH-SUBMODE must be.  SUBMODE specifies the submode to use for the
+submode regions, a symbol such as `cperl-mode' or `emacs-lisp-mode',
+while MATCH-SUBMODE must be a function to be called immediately after a
+match is found for FRONT, which is passed one argument, the form of the
+front delimiter (found from FRONT-FORM, below), and return a symbol
+such as SUBMODE would be set to.
+
+   FRONT and BACK are the means to find the submode regions, and can be
+either buffer positions (number-or-markers), regular expressions, or
+functions. If they are absolute buffer positions, only one submode
+region is created, from FRONT to BACK. This is generally not used in
+named classes. (Unnamed classes are created by interactive commands in
+`mmm-interactive-history').
+
+   If FRONT is a regexp, then that regexp is searched for, and the end
+of its match, plus FRONT-OFFSET, becomes the beginning of the submode
+region. If FRONT is a function, that function is called instead, and
+must act somewhat like a search, in that it should start at point, take
+one argument as a search bound, and set the match data. A similar
+pattern is followed for BACK, save that the end of the submode region
+becomes the beginning of its match, plus BACK-OFFSET. FRONT- and
+BACK-OFFSET default to 0 and can also be functions or lists.
+
+   INCLUDE-FRONT and INCLUDE-BACK.
+
+   FRONT-VERIFY and BACK-VERIFY, if supplied, must be functions that
+inspect the match data to see if a match found by FRONT or BACK
+respectively is valid.
+
+   If SAVE-MATCHES is supplied, it must be a number, and means to format
+BACK, if it is a regexp, by replacing strings of the form `~N' by the
+corresponding value of `(match-string n)' after matching FRONT, where N
+is between 0 and SAVE-MATCHES.
+
+   FRONT-FORM and BACK-FORM, if given, must supply a regexp used to
+match the _actual_ delimiter.  If they are strings, they are used
+as-is.  If they are functions, they are called and must inspect the
+match data.  If they are lists, their `car' is the delimiter.  The
+default for both is `(regexp-quote (match-string 0))'.
+
+   The last case--them being a list--is usually used to set the
+delimiter to a function.  Such a function must take 1-2 arguments, the
+first being the overlay in question, and the second meaning to insert
+the delimiter and adjust the overlay rather than just matching the
+delimiter.  See `mmm-match-front', `mmm-match-back', and
+`mmm-end-current-region'.
+
+   CASE-FOLD-SEARCH, if specified, controls whether the search is
+case-insensitive. See `case-fold-search'. It defaults to `t'.
+
+   CREATION-HOOK, if specified, should be a function which is run
+whenever a submode region is created, with point at the beginning of
+the new region.  One use for it is to set region-saved local variables
+(see `mmm-save-local-variables').
+
+   INSERT specifies the keypress insertion spec for such submode
+regions.  INSERT's value should be list of elements of the form (KEY
+NAME .  SPEC). Each KEY should be either a character, a function key
+symbol, or a dotted list (MOD . KEY) where MOD is a symbol for a
+modifier key. The use of any other modifier than meta is discouraged, as
+`mmm-insert-modifiers' defaults to (control), and other modifiers are
+not very portable. Each NAME should be a symbol representing the
+insertion for that key. Each SPEC can be either a skeleton, suitable for
+passing to `skeleton-insert' to create a submode region, or a dotted
+pair (OTHER-KEY . ARG) meaning to use the skeleton defined for OTHER-KEY
+but pass it the argument ARG as the `str' variable, possible replacing a
+prompt string. Skeletons for insertion should have the symbol `_' where
+point (or wrapped text) should go, and the symbol `i'n four different
+places: at the beginning of the front delimiter, the beginning of the
+submode region, the end of the submode region, and the end of the back
+delimiter.
+
+   PRIVATE
+
+
+File: mmm.info,  Node: Mason,  Next: File Variables,  Prev: Writing Classes,  Up: Top
+
+Mason: Perl in HTML
+*******************
+
+   Mason is a syntax to embed Perl code in HTML and other documents.
+See `http://www.masonhq.com' for more information.  The submode class
+for Mason components is called `mason' and is loaded on demand from
+`mmm-mason.el'.  The current Mason class is intended to correctly
+recognize all syntax valid in Mason 0.88.  There are insertion keys for
+most of the available syntax; use `mmm-insertion-help' (`C-c % h' by
+default) with Mason on to get a list.
+
+   If you want to have mason submodes automatically in all Mason files,
+you can use automatic mode and filename associations; the details
+depend on what you call your Mason components and what major mode you
+use.  *Note Mode-Ext Classes::.  If you use an extension for your Mason
+files that emacs does not automatically place in your preferred HTML
+Mode, you will probably want to associate that extension with your HTML
+Mode as well; *Note Choosing Modes: (emacs)Choosing Modes.  This also
+goes for "special" Mason files such as autohandlers and dhandlers.
+
+   There are also certain problems with CPerl mode in submode regions.
+(Not to say that the original perl-mode would do any better--it hasn't
+been much tried.)  First of all, the first line of a Perl section is
+usually indented as if it were a continuation line.  A fix for this is
+to start with a semicolon on the first line.  The insertion key commands
+do this whenever the Mason syntax allows it.
+
+     <%perl>;
+     print $var;
+     </%perl>
+
+   In addition, some users have reported that the CPerl indentation
+sometimes does not work. This problem has not yet been tracked down,
+however, and more data about when it happens would be helpful.
+
+   Michael Alan Dorman has reported problems using PSGML with Mason.  He
+suggests adding these lines to `.emacs' to turn it off.
+
+     (delete '("\\.html$" . sgml-html-mode) auto-mode-alist)
+     (delete '("\\.shtml$" . sgml-html-mode) auto-mode-alist)
+
+   Other users report using PSGML with Mason and MMM Mode without
+difficulty.  If you don't have problems and want to use PSGML, simply
+replace `html-mode' everywhere in the suggested code with
+`sgml-html-mode' or `sgml-mode'.  Similarly, if you are using XEmacs
+and want to use the alternate HTML mode `hm--html-mode', replace
+`html-mode' with that symbol.
+
+   One problem that crops up when using PSGML with Mason is that even
+ignoring the special tags and Perl code (which, as I've said, haven't
+caused me any problems), Mason components often are not a complete SGML
+document.  For instance, my autohandlers often say
+
+     <body>
+       <% $m->call_next %>
+     </body>
+
+   in which case the actual components contain no doctype declaration,
+`<html>', `<head>', or `<body>', confusing PSGML.  One solution I've
+found is to use the variable `sgml-parent-document' in such incomplete
+components; try, for example, these lines at the end of a component.
+
+     %# Local Variables:
+     %# sgml-parent-document: ("autohandler" nil ("body"))
+     %# End:
+
+   This tells PSGML that the current file is a sub-document of the file
+`autohandler' and is included inside a `<body>' tag, thus alleviating
+its confusion.
+
+
+File: mmm.info,  Node: File Variables,  Next: Here-documents,  Prev: Mason,  Up: Top
+
+Elisp in a Local Variables List
+*******************************
+
+   Emacs allows the author of a file to specify major and minor modes
+to be used while editing that file, as well as specifying values for
+other local Elisp variables, with a File Variables list.  *Note File
+Variables: (emacs)File Variables.  Since file variables values are
+Elisp objects (and with the `eval' special "variable", they are forms
+to be evaluated), one might want to edit them in `emacs-lisp-mode'.
+The submode class `file-variables' allows this, and is suitable for
+turning on in a given file with `mmm-classes', or in all files with
+`mmm-global-classes'.
+
+
+File: mmm.info,  Node: Here-documents,  Next: Javascript,  Prev: File Variables,  Up: Top
+
+Here-documents
+**************
+
+   One of the long-time standard syntaxes for outputting large amounts
+of code (or text, or HTML, or whatever) from a script (notably shell
+scripts and Perl scripts) is the here-document syntax:
+
+     print <<END_HTML;
+     <html>
+       <head>
+         <title>Test Page</title>
+       </head>
+       <body>
+     END_HTML
+
+   The `here-doc' submode class recognizes this syntax, and can even
+guess the correct submode to use in many cases.  For instance, it would
+put the above example in `html-mode', noticing the string `HTML' in the
+name of the here-document.  If you use less than evocative
+here-document names, or if the submode is recognized incorrectly for
+any other reason, you can tell it explicitly what submode to use.
+
+ - User Option: mmm-here-doc-mode-alist
+     The value of this variable should be an alist, each element a cons
+     pair associating a regular expression to a submode symbol.
+     Whenever a here-document name matches one of these regexps, the
+     corresponding submode is applied.  For example, if this variable
+     contains the element `("CODE" . cc-mode)', then any here-document
+     whose name contains the string `CODE' will be put in `cc-mode'.
+     The value of this variable overrides any guessing that the
+     `here-doc' submode class would do otherwise.
+
+
+File: mmm.info,  Node: Javascript,  Next: Embedded CSS,  Prev: Here-documents,  Up: Top
+
+Javascript in HTML
+******************
+
+
+File: mmm.info,  Node: Embedded CSS,  Next: Embperl,  Prev: Javascript,  Up: Top
+
+CSS embedded in HTML
+********************
+
+
+File: mmm.info,  Node: Embperl,  Next: RPM,  Prev: Embedded CSS,  Up: Top
+
+Embperl: More Perl in HTML
+**************************
+
+
+File: mmm.info,  Node: RPM,  Next: Concept Index,  Prev: Embperl,  Up: Top
+
+RPM Spec Files
+**************
+
+   `mmm-rpm.el' contains the definition of an MMM Mode submode class
+for editing shell script sections within RPM (Redhat Package Manager)
+spec files.  It is recommended for use in combination with
+`rpm-spec-mode.el' by Stig Bjørlykke <stigb@tihlde.hist.no> and Steve
+Sanbeg <sanbeg@dset.com>
+(`http://www.xemacs.org/~stigb/rpm-spec-mode.el').
+
+   Suggested setup code:
+
+     (add-to-list 'mmm-mode-ext-classes-alist
+                  '(rpm-spec-mode "\\.spec\\'" rpm-sh))
+
+   Thanks to Marcus Harnisch <Marcus.Harnisch@gmx.net> for contributing
+this submode class.
+
+
+File: mmm.info,  Node: Concept Index,  Next: Function Index,  Prev: RPM,  Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* class, mmm-ification by:               Interactive.
+* classes, submode:                      Submode Classes.
+* clearing submode regions:              Re-parsing.
+* customizing submode faces:             Submode Faces.
+* default major mode:                    Basic Concepts.
+* default submode face:                  Submode Faces.
+* disabling mmm mode:                    Enabling MMM Mode.
+* dominant major mode:                   Basic Concepts.
+* enabling mmm mode:                     Enabling MMM Mode.
+* faces, submode:                        Submode Faces.
+* global mmm mode:                       Global Mode.
+* history of interactive mmm-ification:  Interactive.
+* hook, major mode:                      Major Mode Hook.
+* interactive mmm-ification:             Interactive.
+* interactive mmm-ification, history of: Interactive.
+* key bindings in mmm mode:              MMM Mode Keys.
+* major mode hook:                       Major Mode Hook.
+* major mode, default:                   Basic Concepts.
+* major mode, dominant:                  Basic Concepts.
+* minor mode, mmm:                       MMM Minor Mode.
+* mmm global mode:                       Global Mode.
+* mmm minor mode:                        MMM Minor Mode.
+* mmm mode key bindings:                 MMM Mode Keys.
+* mmm mode, disabling:                   Enabling MMM Mode.
+* mmm mode, enabling:                    Enabling MMM Mode.
+* mmm mode, turning off:                 Enabling MMM Mode.
+* mmm mode, turning on:                  Enabling MMM Mode.
+* mmm-ification:                         Basic Concepts.
+* mmm-ification by class:                Interactive.
+* mmm-ification by regexp:               Interactive.
+* mmm-ification by region:               Interactive.
+* mmm-ification, interactive:            Interactive.
+* mmm-ification, interactive history:    Interactive.
+* mmm-mode, overview of:                 Overview.
+* mode, mmm global:                      Global Mode.
+* mode, mmm minor:                       MMM Minor Mode.
+* overlays, submode:                     Basic Concepts.
+* overview of mmm-mode:                  Overview.
+* parsing submode regions:               Re-parsing.
+* re-parsing submode regions:            Re-parsing.
+* regexp, mmm-ification by:              Interactive.
+* region, mmm-ification by:              Interactive.
+* regions, submode:                      Basic Concepts.
+* regions, submode, clearing:            Re-parsing.
+* regions, submode, re-parsing:          Re-parsing.
+* submode classes:                       Submode Classes.
+* submode faces:                         Submode Faces.
+* submode overlays:                      Basic Concepts.
+* submode regions:                       Basic Concepts.
+* submode regions, clearing:             Re-parsing.
+* submode regions, re-parsing:           Re-parsing.
+* turning off mmm mode:                  Enabling MMM Mode.
+* turning on mmm mode:                   Enabling MMM Mode.
+
+
+File: mmm.info,  Node: Function Index,  Next: Keystroke Index,  Prev: Concept Index,  Up: Top
+
+Function and Variable Index
+***************************
+
+* Menu:
+
+* mmm-:                                  Hooks.
+* mmm-add-mode-ext-class:                Mode-Ext Classes.
+* mmm-classes:                           File Classes.
+* mmm-clear-history:                     Interactive.
+* mmm-get-class-parameter:               Changing Classes.
+* mmm-global-classes:                    Global Classes.
+* mmm-global-mode:                       Global Mode.
+* mmm-here-doc-mode-alist:               Here-documents.
+* mmm-insertion-help:                    MMM Mode Keys.
+* mmm-interactive-history:               Interactive.
+* mmm-major-mode-hook:                   Major Mode Hook.
+* mmm-mode:                              Enabling MMM Mode.
+* mmm-mode-ext-classes-alist:            Mode-Ext Classes.
+* mmm-mode-hook:                         Hooks.
+* mmm-mode-off:                          Enabling MMM Mode.
+* mmm-mode-on:                           Enabling MMM Mode.
+* mmm-mode-prefix-key:                   Key Bindings.
+* mmm-mode-string:                       Mode Line.
+* mmm-never-modes:                       Global Mode.
+* mmm-save-local-variables:              Local Variables.
+* mmm-set-class-parameter:               Changing Classes.
+* mmm-submode-mode-line-format:          Mode Line.
+* mmm-use-old-command-keys:              Key Bindings.
+
+
+File: mmm.info,  Node: Keystroke Index,  Prev: Function Index,  Up: Top
+
+Keystroke Index
+***************
+
+* Menu:
+
+* C-c % C-%:                             Re-parsing.
+* C-c % C-5:                             Re-parsing.
+* C-c % C-b:                             Re-parsing.
+* C-c % C-c:                             Interactive.
+* C-c % C-g:                             Re-parsing.
+* C-c % C-k:                             Re-parsing.
+* C-c % C-r:                             Interactive.
+* C-c % C-x:                             Interactive.
+* C-c % h:                               MMM Mode Keys.
+
+
+
+Tag Table:
+Node: Top1038
+Node: Overview3882
+Ref: Overview-Footnote-15570
+Node: Basic Concepts5690
+Node: Installation8061
+Node: Quick Start10050
+Node: MMM Minor Mode12689
+Node: Enabling MMM Mode13379
+Node: MMM Mode Keys14638
+Node: Submode Classes16900
+Node: Selecting Classes18243
+Node: File Classes19071
+Node: Mode-Ext Classes19839
+Node: Global Classes21574
+Node: Insertion23080
+Node: Re-parsing25254
+Node: Interactive25498
+Node: Global Mode28086
+Node: Major Mode Hook30065
+Node: Submode Faces31761
+Node: Mode Line32931
+Node: Key Bindings34470
+Node: Local Variables36202
+Node: Changing Classes37994
+Node: Hooks39021
+Node: Writing Classes40495
+Node: Mason45702
+Node: File Variables48959
+Node: Here-documents49684
+Node: Javascript51109
+Node: Embedded CSS51239
+Node: Embperl51366
+Node: RPM51498
+Node: Concept Index52174
+Node: Function Index55259
+Node: Keystroke Index56706
+
+End Tag Table

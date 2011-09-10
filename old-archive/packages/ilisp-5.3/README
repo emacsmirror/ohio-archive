@@ -1,0 +1,124 @@
+-*- Mode: Text -*-
+
+This is version 5.3 of ILISP.  
+
+	The fixes since 5.2 are:
+
+-- Fixes some problems in clisp.lisp
+
+-- Makefile-ilisp now valid for Sun's distributed `make'.
+
+-- Did the right thing regarding autoloads (yes you have to define them
+in your .emacs, and make them autoload "ilisp".)  See ilisp.emacs
+
+-- Put the run-hooks calls at the end of ilisp.el where they should be.
+
+	"Fixes" in version 5.2 of ILISP.  
+
+Cause more problems with autoloads and fixes a missing definition in the
+Makefile-ilisp in 5.1
+
+	"Fixes" in version 5.1:
+
+It removes some correct information concerning autoloads in ilisp.texi
+and ilisp.emacs that was released in 5.0
+
+----------------------------------------------------------------------
+ 
+The major changes from 4.12:
+
+--Now works with emacs-18, fsf emacs-19, and Lucid emacs-19.
+
+--Major file splitting done in an attempt to modularize ILISP.
+
+--Added 'message feature for lisp-no-popper, allows output from ILISP
+to be sent to the message window (instead of via the popper or the
+inferior lisp buffer) if it is one line long.  Useful for small
+arg-lists, etc. Now the default.  
+
+--Made the popper be off by default.  To have the popper on, set
+popper-pop-buffers and popper-buffers-to-skip to t in a
+popper-load-hook. See the sample in popper.el
+
+FEATURES:
+
++Support for multiple LISP dialects including Lucid, Allegro, KCL,
+AKCL, IBCL and CMU on multiple machines even at the same time.
+
++Dynamically sized pop-up windows that can be buried and scrolled from
+any window.
+
++Packages are properly handled including the distinction between
+exported and internal symbols.
+
++Synchronous, asynchronous or batch eval and compile of files,
+regions, definitions and sexps with optional switching and automatic
+calling.
+
++Arglist, documentation, describe, and macroexpand.
+
++Completion of filename components and LISP symbols including partial
+matches.
+
++Find source both with and without help from the inferior LISP.
+Including CLOS methods, multiple definitions and multiple files.  Also
+works for automatically generated functions like defstruct.
+
++Edit the callers of a function with and without help from the
+inferior LISP.
+
++Trace/untrace a function.
+
++Esc-q works properly on paragraphs in comments, strings and code.
+
++Find unbalanced parentheses.
+
++Super brackets.
+
++Handles editing, entering and indenting full LISP expressions.
+
++Next/previous and similar history mechanism compatible with comint.
+
++Handles LISP errors.
+
++Result histories are maintained in the inferior LISP.
+
++Does not create spurious symbols and handles case issues.
+
++Raw keyboard mode allows interaction with interactive programs
+through Emacs.
+
++Online manuals for ILISP.
+
+HOW TO GET IT
+
+   If you do start using the package, please send mail to
+`ilisp-request@darwin.bu.edu' so that I can keep a mailing list of
+users.
+
+   Please send bugs to `ilisp-bugs@darwin.bu.edu'
+
+   Please send questions or suggestions for discussion to
+`ilisp@darwin.bu.edu'
+
+
+FTP directions
+==============
+
+You can anonymously ftp the source files from HALDANE.BU.EDU:
+
+   * Ftp to haldane.bu.edu (128.197.54.25)
+
+   * login as anonymous, with user@host as password
+
+   * `cd pub/ilisp'
+
+   * `binary'
+
+   * `get ilisp.tar.Z'
+
+Or get whatever single files you need.
+
+
+Install ilisp.info* into the appropriate emacs-info directory, or
+print out ilisp.ps to read the installation instructions.

@@ -1,0 +1,38 @@
+/* XPM */
+/*
+ * Copyright (C) 1997 Yoshiaki Kasahara <kasahara@nc.kyushu-u.ac.jp>
+ * Copyright (C) 1997 Kazuhiko Yamamoto <kazu@is.aist-nara.ac.jp>
+ */
+static char * mew_Plain_xpm[] = {
+"28 28 3 1",
+" 	s backgroundToolBarColor	c None",
+".	c black",
+"X	c lightcyan",
+"                            ",
+" ........................   ",
+" .XXXXXXXXXXXXXXXXXXXXXX.   ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .XXXXXXXXXXXXXXXXXXXXXX... ",
+" .......................... ",
+"   ........................ ",
+"   ........................ ",
+"                            "};

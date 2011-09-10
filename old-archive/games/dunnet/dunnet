@@ -1,0 +1,3 @@
+#! /bin/sh
+
+	emacs -batch -l dun-main -f batch-dungeon

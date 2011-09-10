@@ -1,0 +1,6 @@
+;;; -*- mode: lisp -*-
+
+(defsystem brkdb
+  :source-pathname "src:cvs/lisp-brkdb"
+  :initially-do #+CMU (alien:load-foreign "/usr/local/lib/brkdb.so") #-CMU t
+  :components ((:file "brkdb")))

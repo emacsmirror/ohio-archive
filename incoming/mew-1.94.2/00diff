@@ -1,0 +1,175 @@
+			    <Differences>
+			    Kazu Yamamoto
+			     Aug 30, 1999
+
+		 <Differences between 1.94 and 1.93>
+
+* "y" in Summary mode is now able to save the raw format of message
+  (i.e. header fields are not decoded). You can safely forward saved 
+  messages.
+
+* Multiple "inbox"es with IM Config are supported.
+
+* "D" in Summary mode removes all messages in the +trash folder.
+
+* Summary mode is now really multi-lingualized thanks to IM.
+
+* Aliases and Petname are integrated into Addrbook. To register expansion
+  rules and/or personal information, type [C-u]C-cC-a in Summary
+  mode.
+
+* The cache prefetch mechanism is implemented. You can read messages
+  very quickly in Summary mode.
+
+* Thanks to the cache prefetch mechanism, the non-MIME analysis sub-mode,
+  which is provided for rapid reading, becomes meaningless. So, M-a was
+  throw away. Use "," if you want to see a message in the raw format.
+
+* GNUPG support. To select PGPv2/PGPv5/GNUPG, type C-cC-v in Summary 
+  mode.
+
+* Imget's password and PGP passphrase can be cached. You can now survive
+  without impwagent.
+  Set mew-use-cached-passwd t.
+  Set mew-use-pgp-cached-passphrase to t.
+
+* C-c{C-s,C-p,C-b,C-r} can work even if draft contains attachments.
+
+* Automatic PGP protection for all drafts or drafts replying to 
+  encrypted messages is supported. 
+  See mew-protect-privacy-{always,encrypted}.
+
+* C-cC-p in Summary mode can handle old-fashioned PGP messages.
+
+* "." can decrypt messages which you failed to decrypt before.
+
+* Unknown Multipart/{Signed,Encrypted} is treated as a single part.
+
+* C-u Z saves the update folder file to ~/Mail/.folders. So, Mew can 
+  assume that this file exist by default. Concludingly the bootstrap
+  becomes faster. mew-use-folders-file-p is now default to `t'. 
+
+* You can customize Mew so that the directory previously used is 
+  preserved. See, mew-{summary,draft}-preserve-dir. See also
+  mew-summary-trace-directory.
+
+* You can display text/html by a running netscape.
+  Put the following in .emacs.
+	(setq mew-prog-text/html-arg-hack 'mew-prog-text/html-netscape-remote)
+
+* Range is asked only when you interactively execute "s".
+
+* The key binding of FIB commands were changed with the C-cC-f prefix.
+
+* Getting along with the mail-user-agent convention.
+
+* Many IMAP4-friendly hacks.
+
+* Many many bug fixes. And many many optimizations.
+
+
+
+		 <Differences between 1.93 and 1.92>
+
+* Copyright of Mew conforms ``AS IS'' instead of GPL2.
+
+* Mew now supports IMAP4 and qmail mailbox.
+
+* immv, imrm, and imclean are implemented by Elisp. So, "x" in Summary
+  mode became much faster. Other commands became faster as well.
+
+* Multipart format in Summary mode and Draft mode are integrated.
+
+* Neat support for IM Config. Please refer to info for more information.
+
+* mew-opt-highlight-* -> mew-use-highlight-*.
+
+* mew-field-{,in}visible were obsoleted. Use mew-field-spec instead.
+
+* Hankaku kana is converted into zenkaku kana if exists.
+
+* Safely ignores unknown charset in a header.
+
+* message/partial and text/html are supported.
+
+* Ad-hoc PGP 5 support.
+
+* Content-Disposition: support.
+
+* Neat reporting mechanism of PGP/MIME.
+
+* Many many bug fixes.
+
+		 <Differences between 1.93 and 1.70>
+
+* Mew uses IM Perl5 instead of MH. Mew will never support MH again.
+
+* Mew works on OS/2, Win95, and WNT as well as on UNIX.
+
+* Mew doesn't ask you to input y or n in Summary mode though it used
+  to do so. Please follow instructions which Mew displays.
+
+* Deleting messages on Summary mode(i.e. the D mark) means refiling to
+  the +trash folder. If in +trash folder, messages marked with 'D' are
+  really removed. You can customize this action. See
+  mew-msg-rm-policy for details.
+
+* "N" and "P" in Summary mode move the cursor onto only messages
+  marked with '*'. To skip parts, call "n" or "p" with "C-u".
+
+* The default folder name of draft changed from "+drafts" to "+draft"
+  so that its length became equal to "+inbox" and "+trash".
+
+* Some key-bindings in Draft mode were changed to keep C-c "key" for
+  users.
+
+	C-cM  -> C-cC-a
+	C-cu  -> C-cC-l
+	C-cy  -> C-cC-t
+
+* C-cC-u(undo) in Draft mode works for any kinds of messages. For this
+  reason, mew-mime-compose-folder-delete is set 'delete by default.
+
+* PGP/MIME became very stable. And verification message turned more
+  informational.
+
+	e.g. "No public key" -> "No his/her public key"
+
+  C-cC-u works even for PGP shortcuts.
+
+* Refile scheme was changed much.
+
+	mew-auto-folder-alist             -> mew-refile-guess-alist
+	mew-refile-folder-guess-functions -> mew-refile-guess-control
+
+* Pick interface(for "?", "/", and "V") was changed. Examples are below:
+
+	to=mew-dist
+	to=kazu & cc=kazu
+
+* Burst("B") on Summary mode is now really cool.
+
+* Subject is displayed for Message/Rfc822 if Content-Description: is empty.
+
+* "C-uZ" on Summary mode saves Mail/.folders if mew-use-folders-file-p. 
+  If mew-use-folders-file-p is t, Mew loads Mail/.folders at boot time.
+
+* Many similar codes were integrated.
+
+* Some function names were changed.
+
+	mew-mark-process-all-folders -> mew-mark-clean-up-all
+	(Remove kill-emacs-hook from .emacs if it contains
+	mew-mark-process-all-folders.)
+
+* Some variables were changed.
+
+	Each members of mew-folders-ignore must start with "+" or "=".
+	Value of mew-folders-default-folder must start with "+" or "=".
+
+* Support RFC 2047(aka MIME header encoding/decoding) precisely.
+
+* Color is now used by default. Remove configurations concerned with
+  fonts from each hooks!.
+
+--End of file

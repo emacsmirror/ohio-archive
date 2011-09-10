@@ -1,0 +1,97 @@
+This is the README file for the package SQL Mode Version 0.922.
+
+
+The package SQL Mode provides four major modes for interaction with
+Sybase SQL servers.
+
+SQL Mode was written for XEmacs (formerly Lucid Emacs) version 19.8 or
+later.  Version 19.10 or later is recommended.  Many features in SQL Mode,
+like toolbars and horizontal scrollbars, rely on later versions of XEmacs.
+
+In addition, SQL Mode now works with FSF Emacs version 19 in a slightly
+limited way.  The package easymenu is required if you are using FSF
+Emacs.  SQL Mode has been tested for FSF Emacs version 19.28.  It may
+work with some earlier versions, but has not been tested.  Toolbars are
+not supported in FSF Emacs version 19.28.
+
+
+THIS IS BETA SOFTWARE! Use at your own risk.  No, it will not drop
+tables or re-boot servers at random, but don't expect it to do
+everything without slight `undocumented features.'  We have been using
+it in production for over a year now with little to no problems, but
+YMMV.
+
+
+FILES
+-----
+
+NEWS			A brief history of SQL Mode and what has
+			changed in it.
+
+README			This file
+
+SQL-MODE-README		A help file that SQL Mode uses.  This file needs
+			to be moved to the directory specified by the
+			variable `data-directory'.
+
+Refcard.ps		A postscript reference card for SQL Mode.
+
+sql-indent.el		These files are the code for sql-mode.
+sql-icons.el
+sql-mode.el
+sql-comment.el
+sql-toolbar.el
+	
+sql_mode0.9b.xbm	An xbm file for use with the package frame-icon.
+
+
+INSTALLATION
+------------
+
+To install SQL Mode, you need to add three lines to your $HOME/.emacs
+file.  The first line tells emacs where to look for SQL Mode, the
+second line load SQL Mode, and the third line does the initialization.
+For things to work properly, you need all three things to happen in
+that order.  If you put *all* off the .el files that came with the
+distribution in a directory in your load-path, then don't bother with
+the first line.
+
+    (setq load-path (cons "<PATH-TO-SQL-MODE>/" load-path))
+    (require 'sql-mode)
+    (sql-initialize)
+
+To make full use of the help system, you will need to copy the file
+SQL-MODE-README into the directory specified by the variable
+`data-directory'.  The file should have come with the SQL Mode
+distribution.
+
+
+STARTING SQL MODE
+-----------------
+
+To automatically enter sql-mode when editing a file with a ".sql", a
+".tbl" or a ".sp" extension, add the following to your .emacs file.
+
+    (autoload 'sql-mode "sql-mode" "SQL Editing Mode" t)
+    (setq auto-mode-alist
+       (append '(("\\.sql$" . sql-mode)
+                 ("\\.tbl$" . sql-mode)
+                 ("\\.sp$"  . sql-mode))
+               auto-mode-alist))
+
+sql-batch-mode and sql-interactive-mode are invoked with
+M-x sql-batch-mode and M-x sql-interactive-mode respectively.  You will
+be prompted for the SQL server, the login id of the user, and the
+password.  Passwords are echoed with `*' characters as you are typing
+them by default.  If you would rather see the password as you are
+typing it, see the variable `sql-secure-passwords'.
+
+In order to make sql-mode easier to use, I highly suggest using
+`associations', as detailed in the comments in the file sql-mode.el.
+
+
+GETTING MORE HELP
+-----------------
+
+Use the info
+

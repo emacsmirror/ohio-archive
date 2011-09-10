@@ -1,0 +1,1016 @@
+;;; sendfax.el -- fax sending commands for GNU Emacs.
+;;; @configure_input@
+;;;
+;;; Copyright (C) 1995 Ralph Schleicher
+;;;
+;;; This program is free software; you can redistribute it and/or
+;;; modify it under the terms of the GNU General Public License as
+;;; published by the Free Software Foundation; either version 2 of
+;;; the License, or (at your option) any later version.
+;;;
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+;;;
+;;; You should have received a copy of the GNU General Public License
+;;; along with this program; if not, write to the Free Software
+;;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;;;
+;;; This file is not part of GNU Emacs.
+;;;
+;;; Author: Ralph Schleicher <rs@purple.IN-Ulm.DE>
+;;; Maintainer: see the `Author' field
+;;; Keywords: local comm fax
+;;; Comments: Put something like
+;;;
+;;;	(autoload 'sendfax-configure "sendfax"
+;;;	  "Configure a known fax package." t)
+;;;
+;;;	(autoload 'sendfax-buffer "sendfax"
+;;;	  "Pass the current buffer to the fax sub-system." t)
+;;;
+;;;	(autoload 'sendfax-region "sendfax"
+;;;	  "Pass the current region to the fax sub-system." t)
+;;;
+;;;	(autoload 'fax "sendfax"
+;;;	  "Edit a fax message to be sent." t)
+;;;
+;;;	(autoload 'fax-other-window "sendfax"
+;;;	  "Like `fax', but display the `*fax*' buffer in another window." t)
+;;;
+;;;	(autoload 'fax-other-frame "sendfax"
+;;;	  "Like `fax', but display the `*fax*' buffer in another frame." t)
+;;;
+;;; into your `site-start.el' file.  Other customizations have to be done
+;;; via `sendfax-write-region-hooks' and `sendfax-write-region-function',
+;;; e.g.,
+;;;
+;;;	(setq sendfax-write-region-hooks
+;;;	      '(lambda ()
+;;;		 (setq ps-print-header t
+;;;		       ps-print-header-frame nil
+;;;		       ps-header-lines 2
+;;;		       ps-left-header (list "(Yoyodyne Inc.)"
+;;;					    'user-full-name)
+;;;		       ps-right-header (list 'time-stamp-month-dd-yyyy)))
+;;;
+;;;	      sendfax-write-region-function 'ps-print-region-with-faces)
+;;;
+;;; Read the code of Jim Thompson's Pretty-Good PostScript Generator if you
+;;; plan to do such wild things.
+;;; Time-stamp: "Sun Dec 31 13:41:29 MET 1995 rs@purple.IN-Ulm.DE"
+;;; Code:
+
+
+(require 'faxutil)
+(require 'snail)
+
+(autoload 'mail-position-on-field "sendmail")
+(autoload 'mail-fetch-field "mail-utils")
+
+
+(defvar fakefax-program "@EMACS_LIBEXECDIR@/fakefax")
+
+(defvar sendfax-package nil
+  "*A string describing your fax sub-system.
+Here's a table of known fax packages:
+
+    Package | Description
+    --------+--------------------------------------------------------
+    mgetty  | The mgetty+sendfax package by Gert Doering
+	    | <gert@greenie.muc.de>.
+	    |
+    faxpr   | A front-end for mgetty+sendfax with networking support
+	    | by Ralph Schleicher <rs@purple.in-ulm.de>.
+	    |
+    hylafax | The HylaFAX package by Sam Leffler <sam@sgi.com>.	 This
+	    | is the right thing if you send lots of fax messages.")
+
+(defvar sendfax-program nil
+  "*Program used to send facsimile messages.
+Defaults to \"faxspool\" for the mgetty+sendfax package, \"faxpr\" for the
+FAXpr package and \"sendfax\" in any other case.")
+
+(defvar sendfax-switches nil
+  "*List of extra arguments when `sendfax-program' is invoked.")
+
+(defvar sendfax-number-switch nil
+  "*Option string specifying a phone number.
+The sendfax(1) program coming with HylaFAX, for example, uses `-d'.")
+
+(defvar sendfax-file-switch nil
+  "*Option string specifying an extra file name.
+Normally, the last arguments to `sendfax-program' are the file names to be
+sent.  Setting `sendfax-file-switch' forces file attachments to be specified
+via this option.")
+
+(defun sendfax-configure (package)
+  "Configure a known fax package."
+  (interactive
+   (list (completing-read "Fax package: "
+			  '(("hylafax") ("faxpr") ("mgetty")) nil t)))
+  (cond ((equal package "mgetty")
+	 (setq sendfax-package "mgetty"
+	       sendfax-program (cond ((file-exits-p "/usr/local/bin/faxspool")
+				      "/usr/local/bin/faxspool")
+				     ((file-exits-p "/usr/bin/faxspool")
+				      "/usr/bin/faxspool")
+				     (t "faxspool"))
+	       sendfax-switches nil
+	       sendfax-number-switch nil
+	       sendfax-file-switch nil))
+	((equal package "faxpr")
+	 (setq sendfax-package "faxpr"
+	       sendfax-program	(cond ((file-exits-p "/usr/local/bin/faxpr")
+				       "/usr/local/bin/faxpr")
+				      ((file-exits-p "/usr/bin/faxpr")
+				       "/usr/bin/faxpr")
+				      (t "faxpr"))
+	       sendfax-switches '("-x")
+	       sendfax-number-switch nil
+	       sendfax-file-switch nil))
+	((equal package "hylafax")
+	 (setq sendfax-package "hylafax"
+	       sendfax-program (cond ((file-exits-p "/usr/local/bin/sendfax")
+				      "/usr/local/bin/sendfax")
+				     ((file-exits-p "/usr/bin/sendfax")
+				      "/usr/bin/sendfax")
+				     (t "sendfax"))
+	       sendfax-switches nil
+	       sendfax-number-switch "-d"
+	       sendfax-file-switch nil))))
+
+(defvar sendfax-interactive nil
+  "*Non-`nil' means wait for and display errors when sending a fax message.")
+
+(defvar sendfax-novice-user t
+  "*Non-`nil' means that the user is a novice to the fax sub-system.
+This requires the users confirmation before doing something that couldn't
+be canceled easily.")
+
+(defvar sendfax-write-region-hooks nil
+  "*Functions to be called before the region is written to a file.
+Automatically becomes buffer-local when set in any fashion.")
+(make-variable-buffer-local 'sendfax-write-region-hooks)
+
+(defvar sendfax-write-region-function nil
+  "*The function for writing a region to a file, defaults to `write-region'.
+`sendfax-write-region-function' will be called with three arguments: START,
+END and FILE-NAME.  START and END are buffer positions.
+Automatically becomes buffer-local when set in any fashion.")
+(make-variable-buffer-local 'sendfax-write-region-function)
+
+(defvar sendfax-format nil
+  "*The text format (a string) of the fax message to be sent.
+See the `sendfax-formats' variable for a more detailed description of what
+that means.
+Automatically becomes buffer-local when set in any fashion.")
+(make-variable-buffer-local 'sendfax-format)
+
+(defvar sendfax-formats nil
+  "*Alist of text format customization routines.
+List members are cons cells of the form
+
+    (FORMAT . FUNCTIONS)
+
+which will run FUNCTIONS to customize FORMAT.  Setting the buffer-local
+variables `sendfax-write-region-hooks' and `sendfax-write-region-function'
+to new values should do it in most cases.")
+
+(defun sendfax-set-format (format function &optional append dupes)
+  "Set the customization code for FORMAT to FUNCTION.
+FUNCTION is added to the end of the current function list if the optional
+third argument APPEND is non-`nil'.  If FUNCTION is already in the list, it
+is only added if DUPES is non-`nil'."
+  (let* ((known (assoc format sendfax-formats))
+	 (value (cdr known)))
+    (if (not known)
+	(setq sendfax-formats (cons (cons format (list function))
+				    sendfax-formats))
+      (if (not append)
+	  (setcdr known (list function))
+	(or (and (not dupes)
+		 (if (consp function)
+		     (member function value)
+		   (memq function value)))
+	    (setcdr known (append value (list function))))))
+    (cdr known)))
+
+(sendfax-set-format
+ "Text" (function (lambda ()
+		    (setq sendfax-write-region-hooks nil
+			  sendfax-write-region-function nil))))
+
+(sendfax-set-format
+ "default" (function (lambda ()
+		       (setq sendfax-write-region-hooks
+			     (default-value 'sendfax-write-region-hooks)
+			     sendfax-write-region-function
+			     (default-value 'sendfax-write-region-function)))))
+
+(sendfax-set-format
+ "PostScript" (function (lambda ()
+			  (setq sendfax-write-region-hooks
+				(function (lambda ()
+					    (setq ps-print-header nil)))
+				sendfax-write-region-function
+				'ps-print-region-with-faces))))
+
+(defun sendfax-change-format (format)
+  "Set the buffer-local fax sending format to FORMAT.
+FORMAT must be a member of `sendfax-formats'."
+  (interactive
+   (let ((string (completing-read
+		  "Fax format (empty for default, ? for options): "
+		  sendfax-formats nil t)))
+     (list (if (equal string "")
+	       "default"
+	     string))))
+  (if (assoc format sendfax-formats)
+      (setq sendfax-format format)
+    (error "Unknown format `%s'" format)))
+
+(defun sendfax (start end &optional numbers files)
+  "Send the region between START and END to the fax sub-system.
+NUMBERS is something that evaluates to a list of phone numbers or `t' if
+the user should be asked for NUMBERS.  FILES is something that evaluates
+to a list of file names or `t' if the user should be asked for FILES."
+  (setq numbers (if (eq numbers t)
+		    (fax-query-phone-numbers)
+		  (fax-object-value numbers))
+	files (if (eq files t)
+		  (fax-query-file-names)
+		(fax-object-value files)))
+  (if (null numbers)
+      (error "Nothing to do"))
+  (mapcar (function
+	   (lambda (f)
+	     (if (or (not (file-readable-p f)) (file-directory-p f))
+		 (error "%s: Invalid file name" f)))) files)
+  (save-window-excursion
+    (let ((temp-buffer-show-function (function
+				      (lambda (buffer)
+					(shrink-window-if-larger-than-buffer
+					 (display-buffer buffer))))))
+      (with-output-to-temp-buffer "*Fax Options*"
+	(save-excursion
+	  (set-buffer standard-output)
+	  (and (consp sendfax-switches)
+	       (insert "Fax Options:\t"
+		       (mapconcat (function
+				   (lambda (a)
+				     (if (string-match "[ \t]" a)
+					 (prin1-to-string a) a)))
+				  sendfax-switches " ") "\n\n"))
+	  (insert "Phone Numbers:\t"
+		  (mapconcat 'identity numbers "\n\t\t") "\n")
+	  (and (consp files)
+	       (insert "\nAttach Files:\t"
+		       (mapconcat 'identity files "\n\t\t") "\n")))))
+    (if (or (null sendfax-novice-user)
+	    (y-or-n-p "Are the fax options okay? "))
+	(let ((temp-file (make-temp-name "/tmp/sendfax"))
+	      (err-buf (if sendfax-interactive
+			   (generate-new-buffer " sendfax errors")
+			 0)))
+	  (unwind-protect
+	      (progn
+		(and sendfax-format
+		     (let ((conf (cdr (assoc sendfax-format sendfax-formats))))
+		       (if conf
+			   (run-hooks 'conf)
+			 (error "Unknown fax format"))))
+		(run-hooks 'sendfax-write-region-hooks)
+		(funcall (or sendfax-write-region-function 'write-region)
+			 start end temp-file)
+		(message "Sending... ")
+		(if sendfax-interactive
+		    (save-excursion
+		      (set-buffer err-buf)
+		      (erase-buffer)))
+		(cond ((equal sendfax-package "mgetty")
+		       (while numbers
+			 (apply 'call-process
+				(nconc (list (or sendfax-program
+						 "faxspool")
+					     temp-file err-buf nil)
+				       (append '("-q") sendfax-switches
+					       (list (car numbers) "-")
+					       files)))
+			 (setq numbers (cdr numbers))))
+		      ((equal sendfax-package "faxpr")
+		       (apply 'call-process
+			      (nconc (list (or fakefax-program
+					       "fakefax")
+					   temp-file err-buf nil)
+				     (append (if sendfax-program
+						 (list sendfax-program)
+					       '("faxpr"))
+					     sendfax-switches
+					     (list "-a" (car numbers))
+					     (apply 'append
+						    (mapcar (function
+							     (lambda (n)
+							       (list "-c" n)))
+							    (cdr numbers)))
+					     '("-") files))))
+		      (t (sendfax-generic)))
+		(if sendfax-interactive
+		    (save-excursion
+		      (set-buffer err-buf)
+		      (if (not (zerop (buffer-size)))
+			  (error "Sending... failed"))))
+		(message "Sending... done"))
+	    (if (file-exists-p temp-file)
+		(delete-file temp-file))
+	    (if (bufferp err-buf)
+		(kill-buffer err-buf)))))
+    (bury-buffer "*Fax Options*")))
+
+(defun sendfax-generic ()
+  "Generic fax sending command.
+NUMBERS, FILES, TEMP-FILE and ERR-BUF are already bound."
+  (if sendfax-number-switch
+      ;; program [switches] [-n number] [-n number] [-f file] [-f file] -
+      ;; program [switches] [-n number] [-n number] - file file
+      (apply 'call-process
+	     (nconc (list (or fakefax-program
+			      "fakefax")
+			  temp-file err-buf nil)
+		    (append (if sendfax-program
+				(list sendfax-program)
+			      '("sendfax"))
+			    sendfax-switches
+			    (apply 'append
+				   (mapcar (function
+					    (lambda (n)
+					      (list sendfax-number-switch n)))
+					   numbers))
+			    (if sendfax-file-switch
+				(apply 'append
+				       (mapcar (function
+						(lambda (f)
+						  (list sendfax-file-switch f)))
+					       files)))
+			    '("-") (if (null sendfax-file-switch)
+				       files))))
+    (while numbers
+      ;; program [switches] [-f file] [-f file] number -
+      ;; program [switches] number - file file
+      (apply 'call-process
+	     (nconc (list (if fakefax-program
+			      (list fakefax-program)
+			    '("fakefax"))
+			  temp-file err-buf nil)
+		    (append (if sendfax-program
+				(list sendfax-program)
+			      '("sendfax"))
+			    sendfax-switches
+			    (if sendfax-file-switch
+				(apply 'append
+				       (mapcar (function
+						(lambda (f)
+						  (list sendfax-file-switch f)))
+					       files)))
+			    (list (car numbers) "-")
+			    (if (null sendfax-file-switch)
+				files))))
+      (setq numbers (cdr numbers)))))
+
+;;;### autoload
+(defun sendfax-buffer ()
+  "Pass the current buffer to the fax sub-system.
+Don't call this function from a program, use `sendfax' instead."
+  (interactive) (sendfax (point-min) (point-max) t t))
+
+;;;### autoload
+(defun sendfax-region (start end)
+  "Pass the current region to the fax sub-system.
+Don't call this function from a program, use `sendfax' instead."
+  (interactive "r") (sendfax start end t t))
+
+
+(defvar fax-default-headers nil
+  "*A string containing header lines, to be inserted in outgoing messages.
+It is inserted before you edit the message, so you can modify or delete
+these lines.")
+
+(defvar fax-archive-file-name nil
+  "*Name of file to write all outgoing fax messages in or `nil' for none.")
+
+(defvar fax-header-separator "-- fax follows this line --"
+  "*Line separating headers from text in a fax message being composed.")
+
+(defun fax-end-of-header ()
+  (save-excursion
+    (goto-char (point-min))
+    (if (re-search-forward
+	 (concat "^" (regexp-quote fax-header-separator) "\n") nil t)
+	(match-beginning 0)
+      (point-min))))
+
+(defun fax-beginning-of-text ()
+  (save-excursion
+    (goto-char (point-min))
+    (if (re-search-forward
+	 (concat "^" (regexp-quote fax-header-separator) "\n") nil t)
+	(match-end 0)
+      (point-min))))
+
+(defvar fax-mode-map nil
+  "Keymap used while in fax mode.")
+
+(if (null fax-mode-map)
+    (setq fax-mode-map (nconc (make-sparse-keymap) text-mode-map)))
+
+(defvar fax-font-lock-keywords
+  (list '(fax-font-lock-header . (0 font-lock-keyword-face t))
+	'(fax-font-lock-to . (0 font-lock-function-name-face t))
+	(cons (concat "^" (regexp-quote fax-header-separator) "$")
+	      (list 0 'font-lock-comment-face t)))
+  "Additional expressions to highlight in Fax mode.")
+
+(defun fax-font-lock-header (limit)
+  (setq limit (min limit (fax-end-of-header)))
+  (and (> limit (point))
+       (re-search-forward "^[a-zA-Z-]+:.*" limit t)))
+
+(defun fax-font-lock-to (limit)
+  (setq limit (min limit (fax-end-of-header)))
+  (and (> limit (point))
+       (re-search-forward "^\\(To\\|CC\\|FCC\\):.*" limit t)))
+
+(defvar fax-mode-hook nil)
+
+(defun fax-mode ()
+  "Major mode for editing fax messages to be sent.
+Like text mode but with these additional commands:
+C-c C-s	 fax-send (send message)
+C-c C-c	 fax-send-and-exit
+C-c C-f	 move to a header field (and create it if there is none):
+	 C-c C-f C-t  fax-move-to-to-field (move to `To:')
+	 C-c C-f C-c  fax-move-to-cc-field (move to `CC:')
+	 C-c C-f C-f  fax-move-to-fcc-field (move to `FCC:')
+	 C-c C-f C-a  fax-move-to-attach-field (move to `Attach:')
+C-c C-t	 fax-move-to-text (move to beginning of message text)
+C-c n	 fax-number (ask for and insert a phone number at point)
+C-c f	 fax-file-name (ask for and insert a file name at point)
+C-c a	 snail-address (ask for and insert a paper mail address at point)"
+  (interactive)
+  (kill-all-local-variables)
+  (setq local-abbrev-table text-mode-abbrev-table)
+  (set-syntax-table text-mode-syntax-table)
+  (use-local-map fax-mode-map)
+  (setq mode-name "Fax")
+  (setq major-mode 'fax-mode)
+  (setq buffer-offer-save t)
+  (make-local-variable 'paragraph-start)
+  (setq paragraph-start (concat (regexp-quote fax-header-separator)
+				"$\\|" paragraph-start))
+  (make-local-variable 'paragraph-separate)
+  (setq paragraph-separate (concat (regexp-quote fax-header-separator)
+				   "$\\|" paragraph-separate))
+  (make-local-variable 'font-lock-defaults)
+  (setq font-lock-defaults '(fax-font-lock-keywords t))
+  (run-hooks 'text-mode-hook 'fax-mode-hook))
+
+(define-key fax-mode-map "\C-c\C-f\C-t" 'fax-move-to-to-field)
+(define-key fax-mode-map "\C-c\C-f\C-c" 'fax-move-to-cc-field)
+(define-key fax-mode-map "\C-c\C-f\C-f" 'fax-move-to-fcc-field)
+(define-key fax-mode-map "\C-c\C-f\C-a" 'fax-move-to-attach-field)
+(define-key fax-mode-map "\C-c\C-t" 'fax-move-to-text)
+(define-key fax-mode-map "\C-c\C-s" 'fax-send)
+(define-key fax-mode-map "\C-c\C-c" 'fax-send-and-exit)
+(define-key fax-mode-map "\C-cn" 'fax-number)
+(define-key fax-mode-map "\C-cf" 'fax-file-name)
+(define-key fax-mode-map "\C-ca" 'snail-address)
+
+(define-key fax-mode-map [menu-bar fax]
+  (cons "Fax" (make-sparse-keymap "Fax")))
+
+(define-key fax-mode-map [menu-bar fax insert]
+  (cons "Insert" (make-sparse-keymap "Insert")))
+
+(define-key fax-mode-map [menu-bar fax insert address]
+  '("Mail Address..." . snail-address))
+
+(define-key fax-mode-map [menu-bar fax insert file-name]
+  '("File Name..." . fax-file-name))
+
+(define-key fax-mode-map [menu-bar fax insert number]
+  '("Fax Number..." . fax-number))
+
+(define-key fax-mode-map [menu-bar fax separator-insert]
+  '("--"))
+
+(define-key fax-mode-map [menu-bar fax send]
+  '("Send, Keep Editing" . fax-send))
+
+(define-key fax-mode-map [menu-bar fax send-and-exit]
+  '("Send Message" . fax-send-and-exit))
+
+(define-key fax-mode-map [menu-bar headers]
+  (cons "Headers" (make-sparse-keymap "Move to Header")))
+
+(define-key fax-mode-map [menu-bar headers text]
+  '("Text" . fax-move-to-text))
+
+(define-key fax-mode-map [menu-bar headers attach]
+  '("Attach" . fax-move-to-attach-field))
+
+(define-key fax-mode-map [menu-bar headers fcc]
+  '("FCC" . fax-move-to-fcc-field))
+
+(define-key fax-mode-map [menu-bar headers cc]
+  '("CC" . fax-move-to-cc-field))
+
+(define-key fax-mode-map [menu-bar headers to]
+  '("To" . fax-move-to-to-field))
+
+(defun fax-position-on-field (field &optional soft)
+  (let ((mail-header-separator fax-header-separator))
+    (mail-position-on-field field soft)))
+
+(defun fax-move-to-to-field ()
+  "Move point to the end of the To header field."
+  (interactive)
+  (let ((mail-header-separator fax-header-separator))
+    (mail-position-on-field "To")))
+
+(defun fax-move-to-cc-field ()
+  "Move point to the end of the CC header field.
+`fax-cc' creates a CC field if none exists."
+  (interactive)
+  (let ((mail-header-separator fax-header-separator))
+    (or (mail-position-on-field "CC" t)
+	(progn
+	  (mail-position-on-field "To")
+	  (insert "\nCC: ")))))
+
+(defun fax-move-to-fcc-field ()
+  "Move point to the end of the FCC header field.
+`fax-fcc' creates a FCC field if none exists."
+  (interactive)
+  (let ((mail-header-separator fax-header-separator))
+    (or (mail-position-on-field "FCC" t)
+	(progn
+	  (or (mail-position-on-field "CC" t)
+	      (mail-position-on-field "To"))
+	  (insert "\nFCC: ")))))
+
+(defun fax-move-to-attach-field ()
+  "Move point to the end of the Attach header field.
+`fax-attach' creates an Attach field if none exists."
+  (interactive)
+  (let ((mail-header-separator fax-header-separator))
+    (or (mail-position-on-field "Attach" t)
+	(progn
+	  (or (mail-position-on-field "FCC" t)
+	      (mail-position-on-field "CC" t)
+	      (mail-position-on-field "To"))
+	  (insert "\nAttach: ")))))
+
+(defun fax-move-to-text ()
+  "Move point to the beginning of the message text."
+  (interactive)
+  (goto-char (fax-beginning-of-text)))
+
+(defun fax-fetch-options ()
+  "Return the value of all `Options:' header fields as a list.
+The buffer is expected to be narrowed to the headers of the fax message."
+  (let ((case-fold-search t)
+	(result '()))
+    (save-excursion
+      (goto-char (point-min))
+      (while (re-search-forward "^Options:[ \t]*" nil t)
+	(while (cond ((looking-at "\\([^ \t\n\"]+\\)[ \t\n]")
+		      (goto-char (match-end 1))
+		      (setq result (cons (match-string 1) result)))
+		     ((looking-at "\"\\(\\([^\\\"\n]\\|\\\\\"\\)*\\)\"[ \t\n]")
+		      (goto-char (1+ (match-end 1)))
+		      (let* ((arg (match-string 1))
+			     (pos (and (not (equal arg "")) 0)))
+			(while (and pos (string-match "\\\\\"" arg pos))
+			  (setq arg (concat (substring arg 0 (match-beginning 0))
+					    "\"" (substring arg (match-end 0)))
+				pos (1- (match-end 0))))
+			(setq result (cons arg result))))
+		     ((looking-at "\n?[ \t]+")
+		      (goto-char (match-end 0)))
+		     ((looking-at "\n")
+		      nil)
+		     (t (error "Invalid separated or quoted argument"))))))
+    (nreverse result)))
+
+(defun fax-send ()
+  "Send the fax message in the current buffer.
+If `fax-interactive' is non-`nil', wait for success indication and inform
+the user if an error occurs."
+  (interactive)
+  (if (if (buffer-file-name)
+	  (y-or-n-p "Send buffer contents as fax message? ")
+	(or (buffer-modified-p)
+	    (y-or-n-p "Message already sent; resend? ")))
+      (let ((fax-buf (generate-new-buffer " sendfax"))
+	    (edit-buf (current-buffer))
+	    delim-line numbers files options)
+	(unwind-protect
+	    (save-excursion
+	      (set-buffer fax-buf)
+	      (erase-buffer)
+	      (insert-buffer-substring edit-buf)
+	      (goto-char (point-max))
+	      (or (= (preceding-char) ?\n)
+		  (insert ?\n))
+	      (let ((case-fold-search nil))
+		(goto-char (point-min))
+		(re-search-forward
+		 (concat "^" (regexp-quote fax-header-separator) "\n"))
+		(replace-match "\n")
+		(backward-char 1)
+		(setq delim-line (point-marker))
+		(goto-char (point-min))
+		(while (and (re-search-forward "\n\n\n*" delim-line t)
+			    (< (point) delim-line))
+		  (replace-match "\n")))
+	      (font-lock-unfontify-region (point-min) delim-line)
+	      (save-restriction
+		(narrow-to-region (point-min) delim-line)
+		(setq numbers (fax-phone-number
+			       (concat (or (mail-fetch-field "To" nil t) "") ","
+				       (or (mail-fetch-field "CC" nil t) "")) t)
+		      files (fax-split-string
+			     (or (mail-fetch-field "Attach" nil t) ""))
+		      options (fax-fetch-options))
+		(let (format)
+		  (if (setq format (mail-fetch-field "Format" t))
+		      (or (equal format sendfax-format)
+			  (sendfax-change-format format)))))
+	      (let ((case-fold-search t))
+		(goto-char (point-min))
+		(if (re-search-forward "^FCC:" delim-line t)
+		    (mail-do-fcc delim-line)))
+	      (let ((sendfax-switches (append sendfax-switches options)))
+		(sendfax (1+ delim-line) (point-max) numbers files))
+	      (save-excursion
+		(set-buffer edit-buf)
+		(set-buffer-modified-p nil)))
+	  (if delim-line
+	      (set-marker delim-line nil))
+	  (kill-buffer fax-buf)))))
+
+(defun fax-send-and-exit ()
+  "Send the fax message like `fax-send' and exit from the fax buffer."
+  (interactive)
+  (fax-send)
+  (bury-buffer))
+
+
+(defvar fax-from t
+  "*Text inserted in the upper left corner of a fax message being composed.
+`fax-from' is either a string or a list of strings and symbols or lambda
+expressions evaluating to strings.  Any other non-`nil' value means read
+the sender's address line-by-line from the mini-buffer.")
+
+(defvar fax-date t
+  "*Text inserted in the upper right corner of a fax message being composed.
+`fax-date' is either a string or a list of strings and symbols or lambda
+expressions evaluating to strings.  Any other non-`nil' value means read
+the text line-by-line from the mini-buffer.")
+
+(defvar fax-to t
+  "*Text inserted below `fax-from' of a fax message being composed.
+`fax-to' is either a string or a list of strings and symbols or lambda
+expressions evaluating to strings.  Any other non-`nil' value means read
+the addressee's address line-by-line from the mini-buffer.")
+
+(defvar fax-subject t
+  "*Subject text (a string) of a fax message being composed.
+Any other non-`nil' value means read the subject text from the mini-buffer.")
+
+(defvar fax-from-face nil
+  "*Face properties for `fax-from'.")
+
+(defvar fax-date-face nil
+  "*Face properties for `fax-date'.")
+
+(defvar fax-to-face nil
+  "*Face properties for `fax-to'.")
+
+(defvar fax-subject-face 'bold
+  "*Face properties for `fax-subject'.")
+
+(defvar fax-to-gap 2
+  "*Number of blank lines between the sender's and addressee's address.")
+
+(defvar fax-subject-gap 3
+  "*Number of blank lines before the subject.")
+
+(defvar fax-body-gap 3
+  "*Number of blank lines before the fax body.")
+
+(defvar fax-before-setup-hook nil)
+(defvar fax-after-setup-hook nil)
+
+(defun fax-setup (&optional to cc attach)
+  "Compose a fax message in the current buffer.
+The three arguments, TO, CC and ATTACH, specify the initial contents of the
+corresponding header fields.  These arguments should not have final newline
+characters.  If CC and ATTACH are `t', then ask the user for it."
+  (barf-if-buffer-read-only)
+  (fax-synchronize-resources)
+  (snail-synchronize-aliases)
+  (if (file-exists-p (expand-file-name "~/"))
+      (setq default-directory (expand-file-name "~/")))
+  (erase-buffer)
+  ;; Setup the fax header.
+  (let ((fill-prefix "\t"))
+    (insert "To: ")
+    (if to
+	(let ((mark (point)))
+	  (insert to "\n") (fill-region-as-paragraph mark (point)))
+      (insert ?\n))
+    (if (stringp cc)
+	(let ((mark (progn (insert "CC: ") (point))))
+	  (insert cc "\n") (fill-region-as-paragraph mark (point))))
+    (if fax-default-headers
+	(insert fax-default-headers))
+    (if fax-archive-file-name
+	(insert "FCC: " fax-archive-file-name "\n"))
+    (if (stringp attach)
+	(let ((mark (progn (insert "Attach: ") (point))))
+	  (insert attach "\n") (fill-region-as-paragraph mark (point))))
+    (insert fax-header-separator ?\n))
+  (run-hooks 'fax-before-setup-hook)
+  (goto-char (point-max))
+  (if (> (current-column) 0)
+      (insert ?\n))
+  (let* ((header (copy-marker (fax-end-of-header)))
+	 (text (point-marker))
+	 (mark (make-marker)))
+    ;; Insert the sender's address.
+    (set-marker mark (point))
+    (cond ((stringp fax-from)
+	   (insert fax-from))
+	  ((consp fax-from)
+	   (mapcar (function
+		    (lambda (elem)
+		      (insert (fax-object-value elem))))
+		   fax-from))
+	  ((eq fax-from t)
+	   (let* ((string (completing-read "From: " snail-aliases))
+		  (address (cdr (assoc string snail-aliases))))
+	     (cond ((not (null address))
+		    (insert address))
+		   ((not (equal string ""))
+		    (insert string ?\n)
+		    (while (progn
+			     (setq string (read-string "From: "))
+			     (not (equal string "")))
+		      (insert string ?\n)))))))
+    (if (> (current-column) 0)
+	(insert ?\n))
+    (if (and window-system fax-from-face (> (point) mark))
+	(put-text-property mark (1- (point)) 'face fax-from-face))
+    ;; Merge in the date.
+    (let* ((date (cond ((stringp fax-date)
+			(identity fax-date))
+		       ((consp fax-date)
+			(mapconcat 'fax-object-value fax-date ""))
+		       ((eq fax-date t)
+			(let (result string)
+			  (while (progn
+				   (setq string (read-string "Date: "))
+				   (not (equal string "")))
+			    (setq result (cons string result)))
+			  (if (consp result)
+			      (mapconcat 'identity (nreverse result) "\n"))))))
+	   (start (and (not (null date)) 0))
+	   (length (length date))
+	   end string column overlap)
+      (goto-char text)
+      (while start
+	(end-of-line)
+	(setq end (string-match "\n" date start)
+	      string (substring date start end)
+	      start (and end (/= (match-end 0) length) (match-end 0))
+	      column (- fill-column (length string))
+	      overlap (- (current-column) column))
+	(if (> overlap 0)
+	    (backward-delete-char overlap)
+	  (indent-to column))
+	(set-marker mark (point))
+	(insert string)
+	(if (and window-system fax-date-face)
+	    (put-text-property mark (point) 'face fax-date-face))
+	(if (eobp)
+	    (insert ?\n)
+	  (forward-char)))
+      (goto-char (point-max)))
+    ;; Insert the addressee's address.
+    (set-marker mark (point))
+    (cond ((stringp fax-to)
+	   (insert fax-to))
+	  ((consp fax-to)
+	   (mapcar (function
+		    (lambda (elem)
+		      (insert (fax-object-value elem))))
+		   fax-to))
+	  ((eq fax-to t)
+	   (let* ((string (completing-read "To: " snail-aliases))
+		  (address (cdr (assoc string snail-aliases)))
+		  (number (cdr (assoc string fax-aliases))))
+	     (cond ((not (null address))
+		    (insert address))
+		   ((not (equal string ""))
+		    (insert string ?\n)
+		    (while (progn
+			     (setq string (read-string "To: "))
+			     (not (equal string "")))
+		      (insert string ?\n))))
+	     (if (and (null to) number)
+		 (save-excursion
+		   (fax-position-on-field "To")
+		   (let* ((case-fold-search t)
+			  (fill-prefix "\t")
+			  (end (point))
+			  (begin (progn
+				   (goto-char (point-min))
+				   (re-search-forward "^To:[ \t]*" header))))
+		     (delete-region begin end) (insert number)
+		     (fill-region-as-paragraph begin (1+ (point)))))))))
+    (if (> (current-column) 0)
+	(insert ?\n))
+    (if (and window-system fax-to-face (> (point) mark))
+	(put-text-property mark (1- (point)) 'face fax-to-face))
+    (if (and (> (point) text) (> (point) mark) (> fax-to-gap 0))
+	(save-excursion
+	  (goto-char mark)
+	  (insert (make-string fax-to-gap ?\n))))
+    ;; Maybe ask for additional recipients.
+    (if (eq cc t)
+	(let (string number)
+	  (setq cc '())
+	  (while (progn
+		   (setq string (completing-read "CC: " fax-aliases))
+		   (not (string-match string "\\`[ \t,]*\\'")))
+	    (if (setq number (cdr (assoc string fax-aliases)))
+		(setq cc (cons number cc))
+	      (setq cc (cons string cc))))
+	  (if (consp cc)
+	      (save-excursion
+		(or (fax-position-on-field "CC" t)
+		    (progn (fax-position-on-field "To")
+			   (insert "\nCC: ")))
+		(let* ((case-fold-search t)
+		       (fill-prefix "\t")
+		       (end (point))
+		       (begin (progn
+				(goto-char (point-min))
+				(re-search-forward "^CC:[ \t]*" header))))
+		  (delete-region begin end)
+		  (insert (mapconcat 'identity (nreverse cc) ", "))
+		  (fill-region-as-paragraph begin (1+ (point))))))))
+    ;; Insert the subject text.
+    (set-marker mark (point))
+    (cond ((stringp fax-subject)
+	   (insert fax-subject))
+	  ((consp fax-subject)
+	   (mapcar (function
+		    (lambda (elem)
+		      (insert (fax-object-value elem))))
+		   fax-subject))
+	  ((eq fax-subject t)
+	   (insert (read-string "Subject: "))))
+    (if (> (current-column) 0)
+	(insert ?\n))
+    (fill-region-as-paragraph mark (point))
+    (if (and window-system fax-subject-face (> (point) mark))
+	(put-text-property mark (1- (point)) 'face fax-subject-face))
+    (if (and (> (point) text) (> (point) mark) (> fax-subject-gap 0))
+	(save-excursion
+	  (goto-char mark)
+	  (insert (make-string fax-subject-gap ?\n))))
+    ;; Move to the beginning of the fax body.
+    (if (and (> (point) text) (> fax-body-gap 0))
+	(insert (make-string fax-body-gap ?\n)))
+    ;; Maybe ask for file attachments.
+    (if (eq attach t)
+	(progn
+	  (setq attach (fax-query-file-names "Attach: "))
+	  (if (consp attach)
+	      (save-excursion
+		(or (fax-position-on-field "FCC" t)
+		    (fax-position-on-field "CC" t)
+		    (fax-position-on-field "To"))
+		(insert "\nAttach: ")
+		(let* ((case-fold-search t)
+		       (fill-prefix "\t")
+		       (end (point))
+		       (begin (progn
+				(goto-char (point-min))
+				(re-search-forward "^Attach:[ \t]*" header))))
+		  (delete-region begin end)
+		  (insert (mapconcat 'identity (nreverse attach) ", "))
+		  (fill-region-as-paragraph begin (1+ (point))))))))
+    ;; Speed up editing ...
+    (set-marker header nil)
+    (set-marker text nil)
+    (set-marker mark nil))
+  (run-hooks 'fax-after-setup-hook)
+  (and fax-font-lock-keywords
+       (font-lock-fontify-buffer)))
+
+;;;### autoload
+(defun fax (&optional no-erase)
+  "Edit a fax message to be sent.  Prefix argument means resume editing.
+When this function returns, the buffer `*fax*' is selected.  The value
+is `t' if the message was newly initialized, else `nil'.
+
+If `fax-archive-file-name' is non-`nil', a FCC field with that file name is
+inserted.
+
+The contents of `fax-from' is inserted in the upper left corner of the fax
+message.  If `fax-from' is `t', the sender's address will be read line-by-
+line from the mini-buffer.  The face property of the inserted text will be
+set to `fax-from-face' if `fax-from-face' is non-`nil'.
+
+`fax-date' is inserted in the upper right corner of the fax message and
+`fax-to' is inserted below `fax-from' if those variables are non-`nil'.
+If `fax-subject' is non-`nil', it is inserted below `fax-to' and filled
+as a paragraph.	 The faces of these text blocks will be set to the values
+of `fax-date-face', `fax-to-face' and `fax-subject-face'.
+
+Empty lines are inserted between `fax-from', `fax-to', `fax-subject' and the
+fax body according to `fax-to-gap', `fax-subject-gap' and `fax-body-gap'.
+
+Special commands:
+
+\\{fax-mode-map}
+The format of the fax message text can be set in a Format header field (the
+last field counts) which overrides the value of `sendfax-format'.  The field
+value must be a known text format identifier.
+
+Additional command line options for sending the fax message can be specified
+in one or more Options header fields.  They are appended to `sendfax-switches'
+without modifying the global value of `sendfax-switches'.  Please note that
+options containing spaces have to be quoted with double quotes.
+
+Destinating phone numbers can be specified in one or more To and CC header
+fields.  Multiple phone numbers in such a header field have to be separated
+by commas.  There must be at least one valid phone number before a fax can
+be sent.
+
+Files which should be attached to the fax message are specified in one or
+more Attach header fields.  Multiple file names in a header field have to
+be separated by commas."
+  (interactive "P")
+  (pop-to-buffer "*fax*")
+  (fax-mode)
+  (let (initialized)
+    (and (null no-erase)
+	 (or (not (buffer-modified-p))
+	     (y-or-n-p "Erase unsent message? "))
+	 (progn
+	   (fax-setup)
+	   (setq initialized t)))
+    initialized))
+
+;;;###autoload
+(defun fax-other-window (&optional no-erase)
+  "Like `fax', but display the `*fax*' buffer in another window."
+  (interactive "P")
+  (let ((special-display-buffer-names nil)
+	(special-display-regexps nil)
+	(same-window-buffer-names nil)
+	(same-window-regexps nil)
+	(pop-up-windows t))
+    (pop-to-buffer "*fax*"))
+  (fax no-erase))
+
+;;;###autoload
+(defun fax-other-frame (&optional no-erase)
+  "Like `fax', but display the `*fax*' buffer in another frame."
+  (interactive "P")
+  (let ((special-display-buffer-names nil)
+	(special-display-regexps nil)
+	(same-window-buffer-names nil)
+	(same-window-regexps nil)
+	(pop-up-frames t))
+    (pop-to-buffer "*fax*"))
+  (fax no-erase))
+
+(or (member "*fax*" same-window-buffer-names)
+    (setq same-window-buffer-names (cons "*fax*" same-window-buffer-names)))
+
+
+(provide 'sendfax)
+
+
+;;; local variables:
+;;; mode: emacs-lisp
+;;; truncate-lines: t
+;;; end:
+
+;;; sendfax.el ends here

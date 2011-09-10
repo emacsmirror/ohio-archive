@@ -1,0 +1,1625 @@
+This is Info file mailcrypt.info, produced by Makeinfo-1.63 from the
+input file ./mailcrypt.texi.
+
+   This documentation describes Mailcrypt version 3.3.  This
+documentation was last updated on July 27, 1995.
+
+   Copyright 1995 Patrick J. LoPresti
+
+   The Mailcrypt program and this manual are published as free software.
+You may redistribute and/or modify them under the terms of the GNU
+General Public License as published by the Free Software Foundation;
+either version 2, or (at your option) any later version.
+
+   Mailcrypt is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+along with GNU Emacs; see the file COPYING.  If not, write to the Free
+Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+File: mailcrypt.info,  Node: Top,  Next: Introduction,  Prev: (dir),  Up: (dir)
+
+Mailcrypt
+*********
+
+   Mailcrypt is an Emacs Lisp package which provides a simple but
+powerful interface to cryptographic functions for mail and news.
+
+   This documentation describes Mailcrypt version 3.3.  The
+documentation was last updated on July 27, 1995.
+
+* Menu:
+
+* Introduction::                Read this first.
+* General Use::                 Everyday cryptographic functions.
+* Remailer Support::            Interface to secure anonymous remailers.
+* Passphrase Cache::            Letting Mailcrypt remember your passphrase
+                                  for a while.
+* Key Fetching::                Automatically retrieving public keys
+                                  via finger or HTTP.
+* Miscellaneous Configuration::  Random tweakables.
+* Tips::                        Hints and tricks.
+* Limitations::                 Things Mailcrypt does not do.
+* References::                  Pointers to relevant information.
+* Credits::                     Whom to blame.
+* Index::                       Keys, variables, and functions.
+
+ -- The Detailed Node Listing --
+
+Introduction
+
+* Prerequisites::               Complicated stuff you may have to do.
+* Installation::                Simple stuff you probably have to do.
+* Command Overview::            A brief summary of the most common
+                                  commands.
+
+Installation
+
+* Hooking into Rmail::
+* Hooking into VM::
+* Hooking into MH-E::
+* Hooking into Gnus::
+
+General Use
+
+* Encrypting::                  Encrypting a message to one or more
+                                  recipients.
+* Signing::                     Clearsigning a message.
+* Inserting Keys::              Extracting a key from your public key
+                                  ring and inserting it.
+* Decrypting::                  Decrypting a message to you.
+* Verifying::                   Verifying the signature on a clearsigned
+                                  message.
+* Snarfing Keys::               Finding a key in the current message and
+                                 adding it to your keyring.
+
+Remailer Support
+
+* Remailer Introduction::       A little about remailers in general.
+* Remailer Quick Start::        Getting started quickly.
+* Remailer Chains::             Creating custom chains of your very own.
+* Response Blocks::             A way to let people reply to your
+                                  anonymous messages.
+* Pseudonyms::                  Who do you want to be today?
+* Remailing Posts::             Posting to USENET anonymously or
+                                  pseduonymously.
+* Mixmaster Support::           Remailers for the truly paranoid.
+* Remailer Security::           Caveats.
+* Verifiable Pseudonyms::       Giving expression to the voices in your
+                                  head.
+* Remailer Tips::               Free advice.
+
+Key Fetching
+
+* Keyring Fetch::               Fetching from one or more other
+                                  keyrings on the local system.
+* Finger Fetch::                Fetching a key through finger.
+* HTTP Fetch::                  Fetching a key off of the Web.
+
+Miscellaneous Configuration
+
+* Alternate Keyring::           Specifying a different file to act
+                                  like your public keyring.
+* Comment Field::               Burma
+                                  Shave
+* Mode Line::                   Changing that "MC-w" and "MC-r" stuff
+* Key Bindings::                Which keys cause which actions.
+* Nonstandard Paths::           Useful if your PGP installation is weird.
+
+References
+
+* Online Resources::            Recreational reading with a purpose.
+* Key Servers::                 Keepers of the Global Keyring.
+* Mailing List::                Staying informed while pumping the
+                                  authors' egos.
+* Politics::                    Anarcho-foobarism.
+
+
+File: mailcrypt.info,  Node: Introduction,  Next: General Use,  Prev: Top,  Up: Top
+
+Introduction
+************
+
+   Mailcrypt is an Emacs Lisp package which provides a simple but
+powerful interface to cryptographic functions for mail and news.  With
+Mailcrypt, encryption becomes a seamlessly integrated part of your mail
+and news handling environment.
+
+   This manual is long because it is complete.  All of the information
+you need to get started is contained in this Introduction alone.
+
+* Menu:
+
+* Prerequisites::               Complicated stuff you may have to do.
+* Installation::                Simple stuff you probably have to do.
+* Command Overview::            A brief summary of the most common
+                                  commands.
+
+
+File: mailcrypt.info,  Node: Prerequisites,  Next: Installation,  Prev: Introduction,  Up: Introduction
+
+Prerequisites
+=============
+
+   Mailcrypt requires version 19 of GNU Emacs.  Mailcrypt has been
+tested on a variety of systems under both FSF Emacs and XEmacs.
+
+   Mailcrypt requires Pretty Good (tm) Privacy, usually known as PGP.
+This document assumes that you have already obtained and installed PGP
+and that you are familiar with its basic functions.  The best way to
+become familiar with these functions is to read the `PGP User's Guide',
+at least Volume I.
+
+   For more information on obtaining and installing PGP, refer to the
+MIT PGP home page at `http://web.mit.edu/network/pgp.html'.
+
+   Although Mailcrypt may be used to process data in arbitrary Emacs
+buffers, it is most useful in conjunction with other Emacs packages for
+handling mail and news.  Mailcrypt has specialized support for Rmail
+(*note Rmail: (emacs)Rmail.), VM (*note VM: (vm)Top.), MH-E, and Gnus
+(*note Gnus: (gnus)Top.).  Information on the general use of these
+packages is beyond the scope of this manual.
+
+
+File: mailcrypt.info,  Node: Installation,  Next: Command Overview,  Prev: Prerequisites,  Up: Introduction
+
+Installation
+============
+
+   If Mailcrypt is not installed on your system, obtain the latest
+version from the Mailcrypt home page at
+`http://cag-www.lcs.mit.edu/mailcrypt/' and follow the instructions in
+the file `INSTALL'.
+
+   Next, teach your Emacs how and when to load the Mailcrypt functions
+and install the Mailcrypt key bindings.  Almost all Emacs major modes
+(including mail and news handling modes) have corresponding "hook"
+variables which hold functions to be run when the mode is entered.  All
+you have to do is add the Mailcrypt installer functions to the
+appropriate hooks; then the installer functions will add the Mailcrypt
+key bindings when the respective mode is entered.
+
+   Specifically, begin by placing the following lines into your
+`.emacs' file (or the system-wide `default.el' file):
+
+     (autoload 'mc-install-write-mode "mailcrypt" nil t)
+     (autoload 'mc-install-read-mode "mailcrypt" nil t)
+     (add-hook 'mail-mode-hook 'mc-install-write-mode)
+
+   Then add additional lines for your own mail and news packages as
+described below.
+
+* Menu:
+
+* Hooking into Rmail::
+* Hooking into VM::
+* Hooking into MH-E::
+* Hooking into Gnus::
+
+
+File: mailcrypt.info,  Node: Hooking into Rmail,  Next: Hooking into VM,  Prev: Installation,  Up: Installation
+
+Hooking into Rmail
+------------------
+
+   To hook Mailcrypt into Rmail, use the following lines:
+
+     (add-hook 'rmail-mode-hook 'mc-install-read-mode)
+     (add-hook 'rmail-summary-mode-hook 'mc-install-read-mode)
+
+
+File: mailcrypt.info,  Node: Hooking into VM,  Next: Hooking into MH-E,  Prev: Hooking into Rmail,  Up: Installation
+
+Hooking into VM
+---------------
+
+   To hook Mailcrypt into VM, use the following lines:
+
+     (add-hook 'vm-mode-hook 'mc-install-read-mode)
+     (add-hook 'vm-summary-mode-hook 'mc-install-read-mode)
+     (add-hook 'vm-mail-mode-hook 'mc-install-write-mode)
+
+
+File: mailcrypt.info,  Node: Hooking into MH-E,  Next: Hooking into Gnus,  Prev: Hooking into VM,  Up: Installation
+
+Hooking into MH-E
+-----------------
+
+   To hook Mailcrypt into MH-E, use the following lines:
+
+     (add-hook 'mh-folder-mode-hook 'mc-install-read-mode)
+     (add-hook 'mh-letter-mode-hook 'mc-install-write-mode)
+
+
+File: mailcrypt.info,  Node: Hooking into Gnus,  Prev: Hooking into MH-E,  Up: Installation
+
+Hooking into Gnus
+-----------------
+
+   To hook Mailcrypt into Gnus, use the following lines:
+
+     (add-hook 'gnus-summary-mode-hook 'mc-install-read-mode)
+     (add-hook 'news-reply-mode-hook 'mc-install-write-mode)
+
+
+File: mailcrypt.info,  Node: Command Overview,  Prev: Installation,  Up: Introduction
+
+Command Overview
+================
+
+   All Mailcrypt commands are (by default) activated by three-character
+key sequences which begin with `C-c /'.  The four most common operations
+are:
+
+*Encrypting a Message*
+     `C-c / e' encrypts a message using the recipient's (or recipients')
+     public key(s).  *Note Encrypting a Message: Encrypting.
+
+*Decrypting a Message*
+     `C-c / d' decrypts a message using your secret key.  *Note
+     Decrypting a Message: Decrypting.
+
+*Signing a Message*
+     `C-c / s' clearsigns a message using your secret key.  *Note
+     Signing a Message: Signing.
+
+*Verifying a Signature*
+     `C-c / v' verifies the signature on a clearsigned message using the
+     sender's public key.  *Note Verifying a Signature: Verifying.
+
+   These functions and others are documented in detail in the following
+chapters.
+
+   Any time you are composing or reading mail or news, you can get a
+summary of the available commands by typing `C-h m'.  If you are
+running Emacs under X, an even easier way to see the available commands
+is to access the `Mailcrypt' pull-down menu.
+
+
+File: mailcrypt.info,  Node: General Use,  Next: Remailer Support,  Prev: Introduction,  Up: Top
+
+General Use
+***********
+
+   Mailcrypt works by providing two minor modes for interfacing with
+cryptographic functions: `mc-read-mode' and `mc-write-mode'.
+`mc-read-mode' provides key bindings for processing messages which you
+have received; `mc-write-mode' provides key bindings for processing
+messages which you are about to send.  These minor modes will indicate
+when they are active by placing a characteristic string in the mode
+line (*note Mode Line::.).  They will also add a `Mailcrypt' pull-down
+menu to the menu bar.
+
+   The normal installation procedure (*note Installation::.) will
+arrange for the appropriate mode to be active when you read and compose
+mail and news.  But you may want to use Mailcrypt's functions at other
+times; to do so, you can call `mc-install-read-mode' or
+`mc-install-write-mode' directly.  For example, if you were editing a
+file in Text mode and wanted to digitally sign it, you would type `M-x
+mc-install-write-mode', then `C-c / s' (*note Signing::.).
+
+   Once one of the Mailcrypt modes is active, you can get a summary of
+the available functions by typing `C-h m' or by examining the
+`Mailcrypt' pull-down menu.
+
+   The description of each function below includes which of the modes
+has a binding for that function.
+
+* Menu:
+
+* Encrypting::                  Encrypting a message to one or more
+                                  recipients.
+* Signing::                     Clearsigning a message.
+* Inserting Keys::              Extracting a key from your public key
+                                  ring and inserting it.
+* Decrypting::                  Decrypting a message to you.
+* Verifying::                   Verifying the signature on a clearsigned
+                                  message.
+* Snarfing Keys::               Finding a key in the current message and
+                                 adding it to your keyring.
+
+
+File: mailcrypt.info,  Node: Encrypting,  Next: Signing,  Prev: General Use,  Up: General Use
+
+Encrypting a Message
+====================
+
+   The function `mc-encrypt' will encrypt a message in the current
+buffer.  `mc-write-mode' binds this function to `C-c / e' by default.
+
+   When this function is called, Mailcrypt will prompt you for a
+comma-separated list of recipients.  If called from a mail composition
+buffer, the recipient list will default to the Email addresses in the
+`To', `CC', and `BCC' lines of the message.
+
+   If you want to be able to decrypt the message yourself, you need to
+add yourself to the recipient list.  If you always want to do so, set
+the variable `mc-encrypt-for-me' to `t'.  (Note that Mailcrypt
+overrides the PGP "encrypttoself" flag; use this variable instead.)
+
+   Once you have edited the recipient list to your satisfaction, type
+`RET' to accept it.  You will then be asked whether you want to sign
+the message; answer `y' or `n'.  You can avoid this question by setting
+the variable `mc-pgp-always-sign':  A value of `t' means "yes", a value
+of `'never' means "no".
+
+   If you elect to sign the message, Mailcrypt will prompt you for the
+appropriate passphrase unless it is cached (*note Passphrase Cache::.).
+
+   Mailcrypt will then pass the message to PGP for processing.
+Mailcrypt will call the functions listed in `mc-pre-encryption-hook' and
+`mc-post-encryption-hook' immediately before and after processing,
+respectively.  The encrypted message will then replace the original
+message in the buffer.  You can undo the encryption with the normal
+Emacs undo command `C-x u' (*note Emacs Undo: (emacs)Undo.).
+
+   If an error occurs, Mailcrypt will display an appropriate diagnostic.
+If you do not have the public key for one of the specified recipients,
+Mailcrypt will offer to try to fetch it for you (*note Key Fetching::.).
+
+   The default key for signing is the first one on the secret key ring
+which matches the string `mc-pgp-user-id'; this defaults to
+`(user-login-name)'.  Note that this differs from PGP's normal default,
+which is to use the first of *all* of the secret keys.  To mimic PGP's
+behavior, set this variable to `""'.
+
+   If you want to use a secret key other than your default for signing
+the message, pass a prefix argument to `mc-encrypt'.  (That is, type
+`C-u C-c / e'.)  Mailcrypt will prompt for a string and will sign with
+the first key on your secret keyring which matches that string.  It will
+be assumed that you want to sign the message, so you will not be
+prompted.
+
+
+File: mailcrypt.info,  Node: Signing,  Next: Inserting Keys,  Prev: Encrypting,  Up: General Use
+
+Signing a Message
+=================
+
+   The function `mc-sign' will clearsign a message in the current
+buffer.  `mc-write-mode' binds this function to `C-c / s' by default.
+
+   When this function is called, Mailcrypt will prompt you for the
+appropriate passphrase unless it is cached (*note Passphrase Cache::.).
+
+   Mailcrypt will then pass the message to PGP for processing.
+Mailcrypt will call the functions listed in `mc-pre-signature-hook' and
+`mc-post-signature-hook' immediately before and after processing,
+respectively.  The signed message will replace the original message in
+the buffer.  *Do not* edit the message further with the signature
+attached, because the signature would then be incorrect.  If you
+discover you need to edit a message after you have signed it, remove the
+signature first with the normal Emacs undo command `C-x u' (*note Emacs
+Undo: (emacs)Undo.).
+
+   The variable `mc-pgp-user-id' controls which secret key is used for
+signing; it is described in *Note Encrypting a Message: Encrypting.  To
+use a different secret key, pass a prefix argument to `mc-sign'.  (That
+is, type `C-u C-c / s'.)  Mailcrypt will prompt for a string and will
+sign with the first key on your secret keyring which matches that
+string.
+
+
+File: mailcrypt.info,  Node: Inserting Keys,  Next: Decrypting,  Prev: Signing,  Up: General Use
+
+Inserting a Public Key Block
+============================
+
+   The function `mc-insert-public-key' will extract a key from your
+public keyring and insert it into the current buffer.  `mc-write-mode'
+binds this function to `C-c / x' by default.
+
+   This function is useful for sending your public key to someone else
+or for uploading it to the key servers (*note Key Servers::.).  The
+inserted key will be the first one on your public key ring which
+matches the string `mc-pgp-user-id' (*note Encrypting a Message:
+Encrypting.).
+
+   You may want to insert a different public key instead; for example,
+you may have signed someone's key and want to send it back to them.  To
+do so, pass a prefix argument to `mc-insert-public-key'.  (That is,
+type `C-u C-c / x'.)  You will be prompted for a string; the first key
+on your public key ring which matches that string will be inserted.
+
+
+File: mailcrypt.info,  Node: Decrypting,  Next: Verifying,  Prev: Inserting Keys,  Up: General Use
+
+Decrypting a message
+====================
+
+   The function `mc-decrypt' will decrypt a message in the current
+buffer.  `mc-read-mode' binds this function to `C-c / d' by default.
+
+   When this function is called, Mailcrypt will prompt you for the
+appropriate passphrase unless it is cached (*note Passphrase Cache::.).
+
+   The encrypted message will then be passed to PGP for processing.  If
+you are not in a mail buffer, the decrypted message will replace the
+encrypted form.  If you are in a mail buffer, you will be prompted
+whether to do the replacement.
+
+   If you answer `n', you will be placed in a new mail reading buffer
+to view the decrypted message.  This new mail reading buffer will have
+no corresponding disk file; its purpose is to provide you with all of
+your usual reply and citation functions without requiring you to save
+the message in decrypted form.  Type `q' to kill this buffer.
+
+   You can avoid the question of whether to replace the encrypted
+message by setting the variable `mc-always-replace'.  A value of `t'
+means "yes"; a value of `'never' means "no".
+
+   If the encrypted message is also signed, PGP will attempt to verify
+the signature.  If the verification fails because you lack the necessary
+public key, Mailcrypt will offer to fetch it for you (*note Key
+Fetching::.).
+
+   Look in the `*MailCrypt*' buffer to see the result of the signature
+verification.
+
+
+File: mailcrypt.info,  Node: Verifying,  Next: Snarfing Keys,  Prev: Decrypting,  Up: General Use
+
+Verifying a Signature
+=====================
+
+   The function `mc-verify' will verify the cleartext signature on a
+message in the current buffer.  `mc-read-mode' binds this function to
+`C-c / v' by default.
+
+   When this function is called, Mailcrypt will pass the message to PGP
+for processing and report whether or not the signature verified.
+
+   If the signature failed to verify because you lack the necessary
+public key, Mailcrypt will offer to fetch it for you (*note Key
+Fetching::.).
+
+
+File: mailcrypt.info,  Node: Snarfing Keys,  Prev: Verifying,  Up: General Use
+
+Snarfing a Key
+==============
+
+   The function `mc-snarf' will add to your keyring any keys in the
+current buffer.  `mc-read-mode' binds this function to `C-c / a' by
+default.
+
+   This function is useful when someone sends you a public key in an
+Email message.
+
+
+File: mailcrypt.info,  Node: Remailer Support,  Next: Passphrase Cache,  Prev: General Use,  Up: Top
+
+Remailer Support
+****************
+
+   This is a long chapter describing an advanced feature; you may want
+to skip it on first reading.
+
+* Menu:
+
+* Remailer Introduction::       A little about remailers in general.
+* Remailer Quick Start::        Getting started quickly.
+* Remailer Chains::             Creating custom chains of your very own.
+* Response Blocks::             A way to let people reply to your
+                                  anonymous messages.
+* Pseudonyms::                  Who do you want to be today?
+* Remailing Posts::             Posting to USENET anonymously or
+                                  pseduonymously.
+* Mixmaster Support::           Remailers for the truly paranoid.
+* Remailer Security::           Caveats.
+* Verifiable Pseudonyms::       Giving expression to the voices in your
+                                  head.
+* Remailer Tips::               Free advice.
+
+
+File: mailcrypt.info,  Node: Remailer Introduction,  Next: Remailer Quick Start,  Prev: Remailer Support,  Up: Remailer Support
+
+Remailer Introduction
+=====================
+
+   There are several anonymous remailer services running on the
+Internet.  These are programs that accept mail, strip off information
+that would identify the origin of the message, and forward the mail to
+the designated recipient.  This simple scheme alone, however, is
+insecure if the anonymous remailer becomes compromised (or if the
+remailer was set up by an untrustworthy party in the first place).
+Whoever controls the remailer will have access to the identities of
+senders and recipients.
+
+   One solution to this is to use *chains* of remailers that send
+encrypted messages.  For example, suppose Bill wishes to send a message
+to Louis using a chain of remailers A, B, and C.  He writes the message
+(possibly encrypting it for Louis), then encrypts the result (including
+the fact that Louis is the recipient) using a public key supplied by
+remailer C.  Then he encrypts this result using a public key supplied by
+remailer B.  Then he encrypts this result using a public key supplied by
+A and sends the message to A.
+
+   When A receives the message, it decrypts the message with its key to
+produce something encrypted for B, learns that the next remailer in the
+chain is B, strips off the information that the message came from Bill,
+and sends the message on to B.  B then decrypts, learns that the next
+remailer in the chain is C, strips off the information that the message
+came from A, and sends the result to C.  C then decrypts, learns that
+the destination is Louis, strips off the information that the message
+came from B, and sends the result to Louis.  With this arrangement, only
+A knows that the original message came from Bill, and only C knows that
+the intended recipient is Louis.  In general, the sender and recipient
+can both be known only to someone who has compromised all remailers in
+the chain.
+
+   If Bill wishes, he can include an encrypted "response block" in his
+message to Louis, which defines a remailer chain that Louis can use to
+reply to Bill.  Louis can use this chain without knowing who Bill is -
+only the last remailer in the chain need know the final recipient.  Bill
+can also establish a *pseudonym* for use in signing his anonymous
+messages.
+
+   Mailcrypt includes facilities for sending messages via remailers, for
+defining chains of remailers, for generating response blocks, and for
+using pseudonyms.
+
+
+File: mailcrypt.info,  Node: Remailer Quick Start,  Next: Remailer Chains,  Prev: Remailer Introduction,  Up: Remailer Support
+
+Remailer Quick Start
+====================
+
+   To use Mailcrypt's remailing facilities, you need to configure them
+first.  Begin with the following steps:
+
+  1. Do `finger remailer-list@kiwi.cs.berkeley.edu > ~/.remailers'.
+     This will create a Levien-format list of remailers in the file
+     `.remailers' in your home directory.  Mailcrypt will parse this the
+     first time you access a remailer function.
+
+  2. Look over the `.remailers' file and find the ones you want to use.
+
+  3. Add their PGP public keys to your keyring.  You can `finger
+     pgpkeys@kiwi.cs.berkeley.edu' for a list of remailer public keys.
+     Note that Mailcrypt *requires* that you have the public keys of
+     all the remailers you want to use, and therefore that the
+     remailers support PGP encryption.
+
+
+     *Note:* These steps need only be done once, although repeating them
+     from time to time is probably a good idea, since remailers come
+     and go.
+
+   Now test the remailer functions.  First compose an outgoing Email
+message (using `C-x m', for example) addressed to yourself.  Type `C-c
+/ r'.  Choose a remailer; use `TAB' to get completion on its name.  The
+buffer will be rewritten for anonymous mailing through that remailer.
+
+
+File: mailcrypt.info,  Node: Remailer Chains,  Next: Response Blocks,  Prev: Remailer Quick Start,  Up: Remailer Support
+
+Remailer Chains
+===============
+
+   `mc-write-mode' binds the function `mc-remailer-encrypt-for-chain'
+to the key `C-c / r'.  This function rewrites the message for a
+remailer or chain.  The resulting buffer is just a new Email message,
+so it can itself be rewritten for another remailer; this is one way to
+manually construct a remailer chain.
+
+   Mailcrypt also has powerful facilities for defining automatic chains.
+We will start with an example.  Suppose you have put the following into
+your `.emacs' file:
+
+     (setq mc-remailer-user-chains
+           '(("Foo" "alumni" "tower")
+             ("Bar" (shuffle-vector ["usura" "flame" "myriad"]))
+             ("Baz" "Foo" "Bar" "rahul" "Bar")))
+
+   This code defines three chains.  The first is named "Foo" and
+consists of "alumni" and "tower", in that order.  The second is named
+"Bar" and consists of "usura", "flame", and "myriad" in some random
+order (a different order will be chosen each time the chain is used).
+Finally, the third is named "Baz" and consists of 9 remailers: The two
+from "Foo", followed by a permutation of the three from "Bar", followed
+by "rahul", followed by another permutation of the three from "Bar".
+
+   Now whenever you are prompted for a "remailer or chain", the chains
+"Foo", "Bar", and "Baz" will be available, including `TAB' completion
+on their names.  By capitalizing their names, you guarantee they will
+show up near the top of the completion list if you type `TAB' on an
+empty input.
+
+   Now for the gritty details.  `mc-remailer-user-chains' is a list of
+chain definitions.  A chain definition is a list whose first element is
+the name (a string) and whose remaining elements form a "remailer
+list".  Each element of a remailer list is one of the following:
+
+  1. A raw remailer structure.  This is the base case, but you will
+     probably never want nor need to deal with these directly.
+
+  2. A string naming another remailer chain to be spliced in at this
+     point.
+
+  3. An arbitrary Emacs Lisp form, which should return another remailer
+     list which will be spliced in at this point and recursively
+     evaluated.  Mmmm, Lisp.
+
+        So, in the example "Bar" above, `shuffle-vector' is actually a
+Lisp primitive which returns a random permutation of the argument
+vector.  (Which brings up a side note: A remailer list can be a vector
+instead of a list if you like.)
+
+   So where do the definitions for "usura" etc. come from?
+
+   There is another variable, `mc-remailer-internal-chains', which has
+the same format as `mc-remailer-user-chains'.  In fact, the
+concatenation of the two is always used internally.  The "internal
+chains" are normally generated automatically from a Levien-format
+remailer list, which lives in `~/.remailers' by default and is parsed
+at startup time.  The parser creates several chains, each containing a
+single remailer, and names each chain after the respective remailer.
+
+   Thus "usura" (for example) is actually the name of a *chain* whose
+single element is the remailer at <usura@replay.com>.  So "usura" is a
+valid name of a chain to include in the definition of another chain, as
+was done above in the definition of "Bar".
+
+
+File: mailcrypt.info,  Node: Response Blocks,  Next: Pseudonyms,  Prev: Remailer Chains,  Up: Remailer Support
+
+Response Blocks
+===============
+
+   Mailcrypt can generate a response block for you.  Just type `C-c / b'
+in an outgoing mail buffer.  That will prompt you for a chain to use,
+and will insert the response block at point.  Note that you can use any
+chain you want for your response block; it need not be related to the
+chain you (later) use to remail the message.
+
+   If instead you type `C-u C-c / b', you will be dropped into a
+recursive edit of the innermost part of the response block.  This text
+is what you will see at the top of the message when the response block
+is used.  This text is the only way to identify the response block,
+since it will be used to mail you through *anonymous* remailers.
+
+   On the other hand, you probably won't need to use the `C-u' feature,
+since by default the response block contains the date, `To' field, and
+`From' field of the message you are composing.  Note that this also
+means you should fill in the `To' line and insert your pseudonym (*note
+Pseudonyms::.) before using `C-c / b'.
+
+   Inserting a response block also updates the `Reply-to' hashmark
+header field.  So, when your recipient replies to your message, the
+reply will automatically be addressed properly.  This only works if the
+last remailer in the chain used to encrypt the *message* supports
+hashmarks (the response block chain doesn't matter).  If the last
+remailer does not support hashmarks, Mailcrypt will generate an error
+when you try to use the chain.
+
+   Note that you should insert your response block before you encrypt
+the message for remailing.  Also, see *Note Remailer Security::.
+
+
+File: mailcrypt.info,  Node: Pseudonyms,  Next: Remailing Posts,  Prev: Response Blocks,  Up: Remailer Support
+
+Pseudonyms
+==========
+
+   Mailcrypt supports pseudonyms.  Type `C-c / p' in an outgoing message
+buffer and you will be prompted for a pseudonym to use.  Your pseudonym
+will show up in the `From' line that the recipient sees.  Your
+pseudonym may either be a complete `From' line (including an Email
+address), or just a full name (with no Email address).  In the latter
+case, the Email address will automatically be set to <x@x.x>, an invalid
+address designed to prevent sendmail from going rewrite-happy.
+
+   If you have one or more pseudonyms which you normally use, and you
+aren't afraid of revealing them if your account is compromised, you can
+set up a default list of pseudonyms with lines like the following in
+your `.emacs' file:
+
+     (setq mc-remailer-pseudonyms
+           '("Elvis Presley" "Vanna White" "Charles Manson"))
+
+   Then those names will be available for completion when you are
+prompted for your pseudonym.
+
+   You should insert your pseudonym before you insert a response block,
+so that the response block will contain the `From' line as well as the
+`To' line.  That way you can tell who you were pretending to be when
+you get a reply to your message.
+
+   Note: Many remailers do not support pseudonyms.  In addition, the
+Levien format does not (yet) indicate which do and which do not, so
+Mailcrypt can't warn you when your pseudonym isn't going to work.  The
+only way to be sure is to send yourself a test message, and to try
+different remailers until you find one or more which work.  On the
+bright side, only the last remailer in the chain needs to provide such
+support; none of the others matter.
+
+
+File: mailcrypt.info,  Node: Remailing Posts,  Next: Mixmaster Support,  Prev: Pseudonyms,  Up: Remailer Support
+
+Remailing Posts
+===============
+
+   Mailcrypt knows how to rewrite USENET posts for anonymous or
+pseudonymous remailing.  Just compose your post or followup normally,
+and use "C-c / r" to rewrite it for a remailer chain.
+
+   Mailcrypt will generate an error if the last remailer in the chain
+does not have both the `post' and `hash' (hashmarks) properties.  The
+hashmarks are used to preserve `References' and similar headers, so
+your anonymous or pseudonymous followups will thread properly.  The
+variable `mc-remailer-preserved-headers' controls which headers are
+preserved when rewriting a message, but you should not need to change
+it since the default is fairly reasonable.
+
+   Before rewriting, you can use `C-c / p' to insert your pseudonym, and
+`C-c / b' to insert your response block, just like when you are
+composing mail.  In this case, the response block will include the
+`From' line and the `Newsgroups' line (which is the news analogue to
+the `To' line).
+
+
+File: mailcrypt.info,  Node: Mixmaster Support,  Next: Remailer Security,  Prev: Remailing Posts,  Up: Remailer Support
+
+Mixmaster Support
+=================
+
+   "Mixmaster" is a new kind of remailer which provides excellent
+security against traffic analysis and replay attacks.  (For more
+information on these attacks and Mixmaster, see Lance Cottrell's home
+page at `http://www.obscura.com/~loki/'.
+
+   If you have the Mixmaster executable installed, you can tell
+Mailcrypt to use it by placing lines like the following into your
+`.emacs' file:
+
+     (setq mc-mixmaster-path "mixmaster")
+     (setq mc-mixmaster-list-path "/foo/bar/baz/type2.list")
+
+   `mc-mixmaster-path' is a string representing the Mixmaster
+executable.  `mc-mixmaster-list-path' is the complete path to the
+`type2.list' file.
+
+   Once these variables are defined, Mailcrypt will automatically try to
+use the Mixmaster executable where possible.  Specifically, when you
+rewrite a message for a chain, Mailcrypt will find maximal length
+sub-chains which have the `mix' property and will use the Mixmaster
+executable to rewrite for those sub-chains.
+
+   This allows arbitrary intermingling of Mixmaster and normal (also
+called "Type 1") remailers, but you should note that this is *not
+recommended*.  The recommended procedure is to have a single Mixmaster
+sub-chain which is most or all of the whole chain.
+
+   There are advantages and disadvantages to having the Mixmaster
+sub-chain at the end of the whole chain.  The primary advantage is that
+Mixmaster remailers support multiple recipients.  The primary
+disadvantage is that they do not support pseudonyms.
+
+   So here, as always, it is the last element of the chain which needs
+to support the special features you want.  In general, the remaining
+elements do not matter, and the superior security of Mixmaster remailers
+is a good argument for using them for the bulk of your chains.
+
+   (Note: Mixmaster remailers cannot be used for response blocks.
+Mailcrypt will ignore the `mix' property when generating a response
+block.)
+
+
+File: mailcrypt.info,  Node: Remailer Security,  Next: Verifiable Pseudonyms,  Prev: Mixmaster Support,  Up: Remailer Support
+
+Remailer Security
+=================
+
+   Keep in mind that there is only one person fully qualified to protect
+your privacy: *you*.  You are responsible for obtaining a list of
+remailers and their public keys; you are responsible for choosing which
+of them to use and in what order.  There are public lists of remailers
+and keys (the Quick Start section above relies on them), but you pay for
+the convenience by putting your trust in a single source.  This is one
+reason Mailcrypt does not access these public lists automatically; you
+need to get into the habit of watching what goes on behind the scenes.
+You should also try to learn something about the remailers themselves,
+since you are relying on them to help protect your privacy.
+
+   How many remailers should you include in your chain, and how should
+you choose them?  That depends on whom you perceive as a threat.  If
+the threat is your ex-spouse or your boss, even a single remailer is
+probably adequate (more won't hurt, but will cost in latency).  If the
+threat is the Church of Scientology, you probably want to use a fair
+number of remailers across multiple continents.  If the threat is a
+major world government, well, best of luck to you.
+
+   Also, there is a huge difference between chains suitable for regular
+messages and chains suitable for response blocks.  Some remailers don't
+even keep mail logs (at least, their operators claim they do not), so it
+may be literally impossible to trace a message back to you after the
+fact if you chain it through enough remailers.  Response blocks, on the
+other hand, have your identity buried in there *somewhere*.  In
+principle, at least, it is possible to compromise the keys of all the
+remailers in the chain and decrypt the response block.  So you should
+use longer and stronger chains for your response blocks than for your
+messages, or you should avoid using response blocks at all.
+
+
+File: mailcrypt.info,  Node: Verifiable Pseudonyms,  Next: Remailer Tips,  Prev: Remailer Security,  Up: Remailer Support
+
+Verifiable Pseudonyms
+=====================
+
+   Here is a plausible sequence of operations when using the remailer
+support in Mailcrypt:
+
+  1. You create a public/private PGP key pair.  You give it a User ID
+     which is your pseudonym.  You upload the public key to the key
+     servers or otherwise distribute it.  (Be aware that anyone who
+     compromises your account can read the IDs on your secret keyring,
+     thus discovering your verifiable pseudonyms.)
+
+  2. You compose an Email message, Email reply, news post, or news
+     followup.
+
+  3. You insert your pseudonym with `C-c / p'.
+
+  4. (Optional) You insert your response block with `C-c / b'.
+
+  5. You type `C-c / s' to sign the message.  The `mc-sign' function
+     understands pseudonyms.
+
+  6. You type `C-c / r' to rewrite the message for remailing.  (Or use
+     `C-u C-c / r' to view each step of the rewriting as it happens.)
+
+  7. You type `C-c C-c' to send the message.
+
+
+   Now the recipient(s), reading your message through mail or news, can
+verify your pseudonymous signature; thus you have started to create a
+verifiable pseudonymous identity.  If you use it consistently, it will
+develop a reputation of its own.  With Mailcrypt, using a pseudonym is
+almost as easy as using your real name (and your followups in news will
+even thread properly).  Welcome to the new age of letters...
+
+
+File: mailcrypt.info,  Node: Remailer Tips,  Prev: Verifiable Pseudonyms,  Up: Remailer Support
+
+Remailer Tips
+=============
+
+   This is a collection of tips for using Mailcrypt's remailer support.
+
+   * Read and understand the `.remailers' file.  If the service at
+     kiwi.cs.berkeley.edu is gone by the time you read this, track down
+     a comparable service elsewhere.  (Ask around in
+     `alt.privacy.anon-server' or, as a last resort,
+     `alt.security.pgp'.)  Check the documentation (`C-h v') for the
+     variable `mc-levien-file-name' for a description of Levien format.
+
+   * The relevant remailer properties are `pgp' (required), `hash'
+     (required if you use hashmark headers), and `post' (required for
+     posting to USENET).  Remailers which do not support PGP won't even
+     show up in the completion list.
+
+   * The only remailer which needs special properties (e.g., posting,
+     hashmarks, pseudonym support) is the last one in a chain.  Any
+     remailer can be used at the beginning or in the middle.  So if you
+     find a few remailers which support the feature(s) you require, and
+     you always use them at the end of your chains, then you can be
+     confident that even the longest chains will work.
+
+   * If you update your `~/.remailers' file, you can reread it with
+     `M-x mc-reread-levien-file'.
+
+   * Remember the natural order of operations.  First you compose your
+     message.  Then you insert your pseudonym with `C-c / p'.  Then you
+     insert your response block with `C-c / b'.  Then you sign (`C-c /
+     s') or sign and encrypt (`C-c / e') the message.  Then you rewrite
+     it for a remailer or chain (`C-c / r').  Then you send it.  All
+     but the first and last two of these are optional.  (Well, strictly
+     speaking, they are all optional, but you get the idea.)
+
+   * Find and read some of the excellent remailer documentation
+     available on the Internet.  For some good starting points, see
+     *Note References::.
+
+
+File: mailcrypt.info,  Node: Passphrase Cache,  Next: Key Fetching,  Prev: Remailer Support,  Up: Top
+
+Passphrase Cache
+****************
+
+   Mailcrypt can remember your passphrase so that you need not type it
+repeatedly.  It will also "forget" your passphrase if it has not been
+used in a while, thus trading some security for some convenience.  You
+can tune this tradeoff with the variable `mc-passwd-timeout', which is
+a duration in seconds from the last time the passphrase was used until
+Mailcrypt will forget it.  The default value is 60 seconds.
+
+   So, for example, to make Mailcrypt remember your passphrase for 10
+minutes after each use, you would use the following line in your
+`.emacs' file:
+
+     (setq mc-passwd-timeout 600)
+
+   A value of `nil' or 0 will disable passphrase caching completely.
+This provides some increase in security, but be aware that you are
+already playing a dangerous game by typing your passphrase at a Lisp
+interpreter.
+
+   Mailcrypt understands multiple secret keys with distinct passphrases.
+
+   To manually force Mailcrypt to forget your passphrase(s), use the
+function `mc-deactivate-passwd'.  Both `mc-read-mode' and
+`mc-write-mode' bind this function to `C-c / f' by default.
+
+     *Warning:* Although Mailcrypt takes pains to overwrite your
+     passphrase when "forgetting", it cannot prevent the Emacs garbage
+     collector from possibly leaving copies elsewhere in memory.  Also,
+     your last 100 keystrokes can always be viewed with the function
+     `view-lossage', normally bound to `C-h l'.  So be sure to type at
+     least 100 characters after typing your passphrase if you plan to
+     leave your terminal unattended.
+
+
+File: mailcrypt.info,  Node: Key Fetching,  Next: Miscellaneous Configuration,  Prev: Passphrase Cache,  Up: Top
+
+Key Fetching
+************
+
+   Mailcrypt knows how to fetch PGP public keys from the key servers
+(*note Key Servers::.).  The function `mc-pgp-fetch-key' is bound by
+default to `C-c / k' in both `mc-read-mode' and `mc-write-mode'.
+Additionally, `mc-encrypt', `mc-decrypt', and `mc-verify' will offer to
+call this function to automatically fetch a desired key.  If you call
+it manually, it will prompt you for the User ID of the key to fetch.
+
+   The variable `mc-pgp-fetch-methods' is a list of ways to attempt to
+fetch a key.  (More precisely, it is a list of functions to be called,
+each of which will attempt to fetch the key.)  The methods will be tried
+in the order listed.  The default list is:
+
+     '(mc-pgp-fetch-from-keyrings
+       mc-pgp-fetch-from-finger
+       mc-pgp-fetch-from-http)
+
+   For a description of these functions, see the following sections.
+
+   If you are not directly on the Internet, you probably want to obtain
+a copy of the global public key ring from the keyservers, install it
+somewhere under the name `public-keys.pgp', and do:
+
+     (setq mc-pgp-fetch-methods '(mc-pgp-fetch-from-keyrings))
+     (setq mc-pgp-fetch-keyring-list '("/blah/blah/blah/public-keys.pgp"))
+
+   This will allow you to fetch keys from your local copy of the global
+key ring instead of sending requests to the key servers directly (*note
+Keyring Fetch::.).  Alternately, if your organization has a proxy HTTP
+server, you can configure Mailcrypt to use that.  See *Note HTTP
+Fetch::.
+
+   If the key is found, you will be shown the result of running PGP on
+it locally.  This allows you to inspect the signatures on the key
+*relative to your own keyring* before you consent to having it added.
+*Inspect the signatures carefully!*  Key distribution is often the
+Achilles' heel of public key protocols.  If you blindly use keys
+obtained from the key servers, you are asking for trouble.
+
+   All of the methods use `mc-pgp-fetch-timeout' as a timeout in
+seconds; the default value is 30.
+
+* Menu:
+
+* Keyring Fetch::               Fetching from one or more other
+                                  keyrings on the local system.
+* Finger Fetch::                Fetching a key through finger.
+* HTTP Fetch::                  Fetching a key off of the Web.
+
+
+File: mailcrypt.info,  Node: Keyring Fetch,  Next: Finger Fetch,  Prev: Key Fetching,  Up: Key Fetching
+
+Keyring Fetch
+=============
+
+   The function `mc-pgp-fetch-from-keyrings' will attempt to fetch a
+key from a set of keyrings on the locally accessible filesystem.  This
+is useful if your organization maintains a large common public keyring
+whose entire contents you do not wish to duplicate on your own ring.  It
+is also useful if you download a copy of the global public ring from the
+key servers (*note Key Servers::.).
+
+   The variable `mc-pgp-fetch-keyring-list' controls this behavior.  It
+is a list of file names of public keyrings which this function will
+search, in order, when seeking a key.  The default value is `nil',
+meaning this search will always fail.
+
+
+File: mailcrypt.info,  Node: Finger Fetch,  Next: HTTP Fetch,  Prev: Keyring Fetch,  Up: Key Fetching
+
+Finger Fetch
+============
+
+   The function `mc-pgp-fetch-from-finger' will attempt to fetch a key
+by fingering an address and parsing the output for a PGP public key
+block.
+
+
+File: mailcrypt.info,  Node: HTTP Fetch,  Prev: Finger Fetch,  Up: Key Fetching
+
+HTTP Fetch
+==========
+
+   The function `mc-pgp-fetch-from-http' will attempt to fetch a key by
+connecting to a key server (*note Key Servers::.) which has a World
+Wide Web interface.
+
+   The variables `mc-pgp-keyserver-address', `mc-pgp-keyserver-port',
+and `mc-pgp-keyserver-url-template' control the fetching process.  The
+default is to use Brian LaMacchia's key server at MIT.  If this default
+should stop working, or if you want to help with network congestion and
+machine load, you can choose a different server.  As of this writing,
+any of the following sequences of Emacs Lisp in your `.emacs' file will
+work; choose one:
+
+     ;; Key server at MIT (Massachusetts, USA)
+     ;; This is the default; these lines are only for reference
+     ;(setq mc-pgp-keyserver-address "pgp.ai.mit.edu")
+     ;(setq mc-pgp-keyserver-port 80)
+     ;(setq mc-pgp-keyserver-url-template
+     ;      "/htbin/pks-extract-key.pl?op=get&search=%s")
+
+     ;; Key server at UPC (Barcelona, Spain)
+     (setq mc-pgp-keyserver-address "goliat.upc.es")
+     (setq mc-pgp-keyserver-port 80)
+     (setq mc-pgp-keyserver-url-template
+           "/cgi-bin/pks-extract-key.pl?op=get&search=%s")
+
+     ;; Key server at Cambridge University (Cambridge, England)
+     (setq mc-pgp-keyserver-address "www.cl.cam.ac.uk")
+     (setq mc-pgp-keyserver-port 80)
+     (setq mc-pgp-keyserver-url-template
+           "/cgi-bin/pks-extract-key.pl?op=get&search=%s")
+
+     ;; Key server at UIT (Tromso, Norway)
+     (setq mc-pgp-keyserver-address "www.service.uit.no")
+     (setq mc-pgp-keyserver-port 80)
+     (setq mc-pgp-keyserver-url-template
+           "/cgi-bin/pks-extract-key.pl?op=get&search=%s")
+
+     ;; Key server at CMU (Pennsylvania, USA)
+     (setq mc-pgp-keyserver-address "gs211.sp.cs.cmu.edu")
+     (setq mc-pgp-keyserver-port 80)
+     (setq mc-pgp-keyserver-url-template "/cgi-bin/pgp-key?pgpid=%s")
+
+   If your organization has a firewall, you might not be able to access
+the World Wide Web directly.  Your organization may have a proxy HTTP
+server set up, however.  In that case, you should place code like the
+following in your `.emacs' file.  You can use any of the above key
+servers instead of the one at MIT, of course.
+
+     ;; Mailcrypt configuration for accessing key server through HTTP proxy
+     (setq mc-pgp-keyserver-address "your.proxy.com")
+     (setq mc-pgp-keyserver-port 13013)  ; Your proxy's port
+     (setq mc-pgp-keyserver-url-template
+           "http://pgp.ai.mit.edu/htbin/pks-extract-key.pl?op=get&search=%s")
+
+   Note that fetching from a key server can be somewhat slow, so be
+patient.  (At least it beats the tar out of the Email interface.)
+
+
+File: mailcrypt.info,  Node: Miscellaneous Configuration,  Next: Tips,  Prev: Key Fetching,  Up: Top
+
+Miscellaneous Configuration
+***************************
+
+   This chapter documents some additional Mailcrypt configuration
+options which could not be naturally described elsewhere.
+
+* Menu:
+
+* Alternate Keyring::           Specifying a different file to act
+                                  like your public keyring.
+* Comment Field::               Burma
+                                  Shave
+* Mode Line::                   Changing that "MC-w" and "MC-r" stuff
+* Key Bindings::                Which keys cause which actions.
+* Nonstandard Paths::           Useful if your PGP installation is weird.
+
+
+File: mailcrypt.info,  Node: Alternate Keyring,  Next: Comment Field,  Prev: Miscellaneous Configuration,  Up: Miscellaneous Configuration
+
+Alternate Keyring
+=================
+
+   By default, Mailcrypt will use the same public keyring that PGP would
+use if executed from the shell.
+
+   You can cause Mailcrypt to use a specific public keyring by setting
+the variable `mc-pgp-alternate-keyring'.  If this variable is set,
+Mailcrypt will use that keyring for all functions which would otherwise
+have used the default.  This includes adding keys, extracting keys,
+verifying signatures, and encrypting messages.
+
+   This feature might be useful if you maintain multiple keyrings; you
+can switch between them by setting this variable.  Depending on your
+tastes, you might want to configure fetching from a keyring as well
+(*note Keyring Fetch::.).
+
+
+File: mailcrypt.info,  Node: Comment Field,  Next: Mode Line,  Prev: Alternate Keyring,  Up: Miscellaneous Configuration
+
+Comment Field
+=============
+
+   By default, Mailcrypt will supply a "comment" option to PGP,
+resulting in output which looks something like this:
+
+     ----- BEGIN PGP FOOBAR -----
+     Version: 2.6.3
+     Comment: Processed by Mailcrypt 3.3, an Emacs/PGP interface
+     
+     ...
+     ----- END PGP FOOBAR -----
+
+   To change the comment to one of your own, set the variable
+`mc-pgp-comment'.  Set it to `nil' to use PGP's default, which is
+probably either no comment or something defined in `config.txt'.
+
+
+File: mailcrypt.info,  Node: Mode Line,  Next: Key Bindings,  Prev: Comment Field,  Up: Miscellaneous Configuration
+
+Mode Line
+=========
+
+   `mc-read-mode' and `mc-write-mode' will each indicate they are
+active by placing the string `MC-r' or `MC-w' in the mode line,
+respectively.
+
+   You can change these strings by setting the variables
+`mc-read-mode-string' and `mc-write-mode-string'.  So, for example, to
+get rid of the mode indicators entirely, you might put the following
+lines into your `.emacs' file:
+
+     (setq mc-read-mode-string "")
+     (setq mc-write-mode-string "")
+
+
+File: mailcrypt.info,  Node: Key Bindings,  Next: Nonstandard Paths,  Prev: Mode Line,  Up: Miscellaneous Configuration
+
+Key Bindings
+============
+
+   The Mailcrypt key bindings are defined by the keymaps
+`mc-read-mode-map' and `mc-write-mode-map'.  To change the key
+bindings, you just need to set these variables in your `.emacs' file.
+
+   For example, if you wanted `C-c C-m' to be the Mailcrypt prefix
+(instead of `C-c /') in `mc-read-mode', you would put the following
+code in your `.emacs' file:
+
+     (setq mc-read-mode-map (make-sparse-keymap))
+     (define-key mc-read-mode-map "\C-c\C-mf" 'mc-deactivate-passwd)
+     (define-key mc-read-mode-map "\C-c\C-md" 'mc-decrypt)
+     (define-key mc-read-mode-map "\C-c\C-mv" 'mc-verify)
+     (define-key mc-read-mode-map "\C-c\C-ma" 'mc-snarf)
+     (define-key mc-read-mode-map "\C-c\C-mk" 'mc-pgp-fetch-key)
+
+   For more information on Emacs key bindings, see *Note Customizing
+Key Bindings: (emacs)Key Bindings.
+
+
+File: mailcrypt.info,  Node: Nonstandard Paths,  Prev: Key Bindings,  Up: Miscellaneous Configuration
+
+Nonstandard Paths
+=================
+
+   The information in this section should be unnecessary, but is
+provided "just in case".
+
+   Mailcrypt will look for the PGP executable in your standard search
+path under the name `pgp'.  To use a different name (or to provide a
+complete path), set the variable `mc-pgp-path'.
+
+   In order to keep your identities straight, Mailcrypt needs to know
+where your secret keyring resides.
+
+   Mailcrypt figures this out heuristically by assuming that the file
+`secring.pgp' is in the same directory as your public key ring.  It
+determines the location of the latter by doing a dry run of PGP with
+`+verbose=1' and parsing the output.
+
+   If this heuristic is failing for you, you can manually tell Mailcrypt
+where your secret key ring is by setting the variable `mc-pgp-keydir',
+like this:
+
+     (setq mc-pgp-keydir "/users/patl/.pgp/")
+
+   Note that the trailing slash is *required*.
+
+   If the heuristic fails, please report it as a bug (*note Credits::.).
+
+   Note that if you have changed the default location of your secret
+keyring, Mailcrypt will be unable to locate it.  You can work around
+this by either setting `mc-pgp-keydir', or by making a symbolic link to
+your secret keyring from `secring.pgp' in your default public keyring
+directory.
+
+
+File: mailcrypt.info,  Node: Tips,  Next: Limitations,  Prev: Miscellaneous Configuration,  Up: Top
+
+Tips
+****
+
+   Here are some random tips.
+
+   * PGP provides quite good security when used correctly.  You are far
+     more likely to use it correctly if you have read the directions.
+     Read the `PGP User's Guide'!
+
+   * 60 seconds is a relatively safe but somewhat inconvenient value for
+     `mc-passwd-timeout'.  If your paranoia permits, consider increasing
+     it to five or ten minutes (*note Passphrase Cache::.).
+
+   * If Mailcrypt ever does something you wish it had not, *DON'T
+     PANIC*.  Just use the normal Emacs undo command, `M-x undo' or
+     `C-x u', to restore your buffer (*note Emacs Undo: (emacs)Undo.).
+     Mailcrypt keeps almost no state except what you see in your
+     buffer, so any action can be undone this way.
+
+   * All Mailcrypt operations place PGP's output in the `*MailCrypt*'
+     buffer.  Check it occasionally for status and warning messages.
+
+   * Add yourself to the Mailcrypt announcements mailing list (*note
+     Mailing List::.).  That way you can find out about new versions of
+     Mailcrypt automatically, and we can enjoy the feeling that people
+     are actually using our package.
+
+
+File: mailcrypt.info,  Node: Limitations,  Next: References,  Prev: Tips,  Up: Top
+
+Limitations
+***********
+
+   Mailcrypt is a powerful program, but it is not a complete PGP
+interface.  Perhaps some future version will be; in the meantime, you
+will need to use the command-line interface for some operations.
+Things which the current version does not support include:
+
+*Complete Key Management*
+     Mailcrypt's key management support is limited to adding and
+     extracting keys from keyrings.  It does not support key
+     generation, key removal, key revocation, ID and trust parameter
+     editing, or key signing.  It also ignores PGP's warnings when you
+     use a key which is not fully certified.  (Of course, you can see
+     these warnings by viewing the `*MailCrypt*' buffer; see *Note
+     Tips::.)
+
+*Encryption with Conventional Cryptography*
+     Mailcrypt supports decryption but not encryption with
+     "conventional" (i.e., non-public key) cryptography.
+
+*Detached Signatures*
+     Mailcrypt does not support the creation nor the verification of
+     detached signatures.
+
+*ASCII-armor Only*
+     Mailcrypt does not support creation or processing of armored-only
+     files.
+
+*"For your eyes only" Decryption*
+     Mailcrypt will be unable to decrypt a file which was encrypted
+     with the "for your eyes only" (`-m') option.  This is actually a
+     bug in PGP, which provides no portable way to avoid its paging
+     behavior.
+
+
+File: mailcrypt.info,  Node: References,  Next: Credits,  Prev: Limitations,  Up: Top
+
+References
+**********
+
+   This chapter contains information and pointers to information about
+topics related to PGP and Mailcrypt.
+
+* Menu:
+
+* Online Resources::            Recreational reading with a purpose.
+* Key Servers::                 Keepers of the Global Keyring.
+* Mailing List::                Staying informed while pumping the
+                                  authors' egos.
+* Politics::                    Anarcho-foobarism.
+
+
+File: mailcrypt.info,  Node: Online Resources,  Next: Key Servers,  Prev: References,  Up: References
+
+Online Resources
+================
+
+`http://draco.centerline.com:8080/~franl/crypto.html'
+     "Cryptography, PGP, and Your Privacy", by Fran Litterio.  This
+     page is simply excellent.  It makes all the other References in
+     this chapter redundant, but we will include them anyway for
+     redundancy.
+
+`http://web.mit.edu/network/pgp.html'
+     MIT is the canonical distribution site for PGP; this is the
+     announcement page.
+
+`ftp://rtfm.mit.edu/pub/usenet/alt.security.pgp/'
+     This is an archive site for the `alt.security.pgp' FAQ lists.  The
+     newsgroup itself is a good last resort for getting answers to
+     questions.
+
+`http://pgp.ai.mit.edu/~bal/pks-toplev.html'
+     Brian LaMacchia (bal@zurich.ai.mit.edu) has put together a World
+     Wide Web interface to the public key servers (*note Key
+     Servers::.).  Mailcrypt uses this interface by default when
+     attempting to fetch keys via HTTP (*note HTTP Fetch::.); most
+     people get to his interface through this page.
+
+`ftp://ftp.csua.berkeley.edu/pub/cypherpunks/Home.html'
+     The Cypherpunks are dedicated to taking proactive measures to
+     ensure privacy in the digital age.  They wrote the software for,
+     and operate many of, the anonymous remailers currently in
+     existence.
+
+`http://www.cs.berkeley.edu/~raph/'
+     Raph Levien actively maintains a remailer list which Mailcrypt
+     knows how to parse.  If you are impressed by how easy it is to
+     configure Mailcrypt's remailer functions, Raph is the one to
+     thank.  Raph's page also has many useful links.
+
+`http://www.obscura.com/~loki/'
+     Lance Cottrell is the author of Mixmaster.  His home page is the
+     canonical source for information on Mixmaster and is a good source
+     for PGP information in general.
+
+
+File: mailcrypt.info,  Node: Key Servers,  Next: Mailing List,  Prev: Online Resources,  Up: References
+
+Key Servers
+===========
+
+   "Key servers" are machines with a publicly accessible interface to
+an enormous global public keyring.  Anyone may add keys to or query this
+keyring.  Each key server holds a complete copy of the global keyring,
+and they arrange to keep one another informed of additions they receive.
+
+   This means you can tell any key server to add your public key to the
+global keyring, and all of the other servers will know about it within a
+day or so.  Then anyone will be able to query any key server to obtain
+your public key.
+
+   To add your key to the keyservers, send an Email message to
+`pgp-public-keys@pgp.ai.mit.edu' with a subject line of `ADD' and a
+body containing your public key block.  With Mailcrypt installed, you
+can just type `C-c / x' to insert your public key block (*note
+Inserting Keys::.) into the body of the message.
+
+   For help with the Email interface to the key servers, send a message
+with a subject line of `HELP'.  For a World Wide Web interface to the
+key servers, see Brian LaMacchia's home page at
+`http://www-swiss.ai.mit.edu/~bal'.
+
+   Some other key servers include:
+
+   * pgp-public-keys@jpunix.com
+
+   * pgp-public-keys@kub.nl
+
+   * pgp-public-keys@uit.no
+
+   * pgp-public-keys@pgp.ox.ac.uk
+
+   For a complete list, consult any good online repository of PGP
+information (*note Online Resources::.).
+
+   It is strongly recommended that you submit your key to the key
+servers, since many humans and programs (including Mailcrypt) may look
+for it there.  Besides, it takes mere seconds and the pain passes
+quickly.
+
+
+File: mailcrypt.info,  Node: Mailing List,  Next: Politics,  Prev: Key Servers,  Up: References
+
+Mailing List
+============
+
+   If you would like to automatically receive information about new
+releases of Mailcrypt, send Email to
+`mc-announce-request@cag.lcs.mit.edu' asking to be placed on the
+`mc-announce' mailing list.  The mailing list is maintained manually,
+so please be patient.
+
+   The `mc-announce' list is reserved for announcements of new
+Mailcrypt versions, so it has extremely low volume.  We encourage you to
+add yourself so we can get a rough idea of how many people are using
+our package.
+
+
+File: mailcrypt.info,  Node: Politics,  Prev: Mailing List,  Up: References
+
+Politics
+========
+
+   Cryptography in general, PGP in particular, and free software are
+politically somewhat controversial topics.  Heck, in the U.S. Congress,
+freedom of speech is a controversial topic.  Anyway, here are some
+organizations you should definitely watch and preferably send lots of
+money.
+
+*The Electronic Frontier Foundation*
+     The EFF (`http://www.eff.org/') works to protect civil liberties in
+     cyberspace.  They also maintain an impressive collection of on-line
+     resources.  If you like Mailcrypt so much that you wish you had
+     paid for it, this is the number one place we would want to see
+     your money go.  The EFF newsgroups, `comp.org.eff.news' and
+     `comp.org.eff.talk', are required reading for the well-informed.
+
+*The League for Programming Freedom*
+     The LPF (`http://www.lpf.org/') works to fight software patents,
+     which threaten to make free software like Mailcrypt impossible.
+
+*The Center for Democracy and Technology*
+     The CDT (`http://www.cdt.org/') is like the EFF but smaller.
+
+   Mailcrypt's remailer support was inspired by the Communications
+Decency Act of 1995 (see `http://www.cdt.org/cda.html') and by the
+International "Church" of Scientology (see
+`http://www.mit.edu:8001/people/rnewman/scientology/').
+
+
+File: mailcrypt.info,  Node: Credits,  Next: Index,  Prev: References,  Up: Top
+
+Credits
+*******
+
+   Mailcrypt was written by Jin Choi (jin@atype.com) and Pat LoPresti
+(patl@lcs.mit.edu).  Please send us your bug reports and comments.
+Also see *Note Mailing List::.
+
+   This documentation was mostly written by Pat LoPresti, but borrows
+heavily from an earlier version by Hal Abelson (hal@mit.edu).
+
+   Mailcrypt would not be as robust nor as featureful if it were not for
+our outstanding set of Beta testers:
+
+   * Richard Stanton <stanton@haas.berkeley.edu>
+
+   * Peter Arius <arius@immd2.informatik.uni-erlangen.de>
+
+   * Tomaz Borstnar <tomaz@cmir.arnes.si>
+
+   * Barry Brumitt <belboz@frc2.frc.ri.cmu.edu>
+
+   * Steffen Zahn <Steffen.Zahn%robinie@sunserv.sie.siemens.co.at>
+
+   * Mike Campbell <mcampbel@offenbach.sbi.com>
+
+   * Mark Baushke <mdb@cisco.com>
+
+   * Mike Long <mike.long@analog.com>
+
+
+File: mailcrypt.info,  Node: Index,  Prev: Credits,  Up: Top
+
+Index
+*****
+
+   This index has an entry for every key sequence, function, and
+variable documented in this manual.
+
+* Menu:
+
+* C-c / a:                              Snarfing Keys.
+* C-c / b:                              Response Blocks.
+* C-c / d:                              Decrypting.
+* C-c / e:                              Encrypting.
+* C-c / f:                              Passphrase Cache.
+* C-c / k:                              Key Fetching.
+* C-c / p:                              Pseudonyms.
+* C-c / r:                              Remailer Chains.
+* C-c / s:                              Signing.
+* C-c / v:                              Verifying.
+* C-c / x:                              Inserting Keys.
+* mc-always-replace:                    Decrypting.
+* mc-deactivate-passwd:                 Passphrase Cache.
+* mc-decrypt:                           Decrypting.
+* mc-encrypt:                           Encrypting.
+* mc-encrypt-for-me:                    Encrypting.
+* mc-insert-public-key:                 Inserting Keys.
+* mc-install-read-mode:                 General Use.
+* mc-install-write-mode:                General Use.
+* mc-levien-file-name:                  Remailer Tips.
+* mc-mixmaster-list-path:               Mixmaster Support.
+* mc-mixmaster-path:                    Mixmaster Support.
+* mc-passwd-timeout:                    Passphrase Cache.
+* mc-pgp-alternate-keyring:             Alternate Keyring.
+* mc-pgp-always-sign:                   Encrypting.
+* mc-pgp-comment:                       Comment Field.
+* mc-pgp-fetch-from-finger:             Finger Fetch.
+* mc-pgp-fetch-from-http:               HTTP Fetch.
+* mc-pgp-fetch-from-keyrings:           Keyring Fetch.
+* mc-pgp-fetch-key:                     Key Fetching.
+* mc-pgp-fetch-keyring-list:            Keyring Fetch.
+* mc-pgp-fetch-methods:                 Key Fetching.
+* mc-pgp-keydir:                        Nonstandard Paths.
+* mc-pgp-keyserver-address:             HTTP Fetch.
+* mc-pgp-keyserver-port:                HTTP Fetch.
+* mc-pgp-keyserver-url-template:        HTTP Fetch.
+* mc-pgp-path:                          Nonstandard Paths.
+* mc-pgp-user-id:                       Encrypting.
+* mc-post-encryption-hook:              Encrypting.
+* mc-post-signature-hook:               Signing.
+* mc-pre-encryption-hook:               Encrypting.
+* mc-pre-signature-hook:                Signing.
+* mc-read-mode:                         General Use.
+* mc-read-mode-map:                     Key Bindings.
+* mc-read-mode-string:                  Mode Line.
+* mc-remailer-encrypt-for-chain:        Remailer Chains.
+* mc-remailer-internal-chains:          Remailer Chains.
+* mc-remailer-preserved-headers:        Remailing Posts.
+* mc-remailer-pseudonyms:               Pseudonyms.
+* mc-remailer-user-chains:              Remailer Chains.
+* mc-reread-levien-file:                Remailer Tips.
+* mc-sign:                              Signing.
+* mc-snarf:                             Snarfing Keys.
+* mc-verify:                            Verifying.
+* mc-write-mode:                        General Use.
+* mc-write-mode-map:                    Key Bindings.
+* mc-write-mode-string:                 Mode Line.
+
+
+
+Tag Table:
+Node: Top953
+Node: Introduction4908
+Node: Prerequisites5661
+Node: Installation6755
+Node: Hooking into Rmail8028
+Node: Hooking into VM8360
+Node: Hooking into MH-E8740
+Node: Hooking into Gnus9074
+Node: Command Overview9388
+Node: General Use10568
+Node: Encrypting12544
+Node: Signing15089
+Node: Inserting Keys16433
+Node: Decrypting17412
+Node: Verifying18908
+Node: Snarfing Keys19501
+Node: Remailer Support19845
+Node: Remailer Introduction20854
+Node: Remailer Quick Start23376
+Node: Remailer Chains24740
+Node: Response Blocks28032
+Node: Pseudonyms29751
+Node: Remailing Posts31491
+Node: Mixmaster Support32577
+Node: Remailer Security34631
+Node: Verifiable Pseudonyms36659
+Node: Remailer Tips38152
+Node: Passphrase Cache40143
+Node: Key Fetching41821
+Node: Keyring Fetch44192
+Node: Finger Fetch44968
+Node: HTTP Fetch45247
+Node: Miscellaneous Configuration47983
+Node: Alternate Keyring48692
+Node: Comment Field49538
+Node: Mode Line50170
+Node: Key Bindings50756
+Node: Nonstandard Paths51725
+Node: Tips53114
+Node: Limitations54355
+Node: References55808
+Node: Online Resources56338
+Node: Key Servers58224
+Node: Mailing List59902
+Node: Politics60510
+Node: Credits61870
+Node: Index62775
+
+End Tag Table

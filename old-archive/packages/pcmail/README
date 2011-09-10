@@ -1,0 +1,169 @@
+Installation instructions, Pcmail version 4.3
+
+Your distribution should contains the following files:
+
+Mail reader documentation:
+
+	mailhelp.PS	documentation in PostScript form
+
+Mail reader implementation:
+
+	pcmail.el 	variable declarations, mail reader entry
+			point, miscellaneous functions
+        pcmailattr.el   attribute-manipulating commands and their
+			support functions
+	pcmailbabyl.el  commands and support functions which know about
+			Babyl format.  All other routines use entry
+			points in this file and themselves know
+			nothing about Babyl format. 
+	pcmaildate.el	date handling
+	pcmaildrop.el	scanning and loading of mail drop files.
+			These functions are generic; specific mail
+			drop processing functions are all in
+			pcmailsysdep.el 
+	pcmailfolder.el	folder management
+        pcmaillist.el   folder-list management
+        pcmailmail.el   composition of new messages, replies, and
+			forwarded messages. 
+	pcmailmisc.el	miscellaneous commands: sort, edit, etc.
+        pcmailmove.el	movement within a folder
+        pcmailout.el    output of messages to files, printers, and
+			other folders
+        pcmailsub.el	message filtering and subsetting
+	pcmailsum.el	message summary management
+	pcmailsysdep.el all system-dependent routines, including
+			definition of all mail drop import and
+			message conversion routines, print functions,
+			and message transmission (VMS only).  In
+			theory, new systems can be ported to simply by
+			following the UNIX and VMS examples in this
+			file. 
+
+Mail reader support programs:
+
+       vms-movemail.com   required for VMS users only.  Provides an
+			  (admittedly crufty, although usable)
+			  interface between the VAXMAIL system and the
+			  mail reader.  Moves new mail from a MAIL.MAI
+			  newmail folder to the mail reader's primary
+			  folder.  The script works fine on our local
+			  VMS 5.1, but I would strongly suggest testing it
+			  on your system before relying on it, since it
+			  does muck with your MAIL.MAI file and I don't
+			  know VMS all that well (nor do I have a desire to).
+
+       vms-doprint.com	  required for VMS users only.  Sends messages
+			  to a named printer.
+
+       nntp_slave.c
+       nntp.c
+       nntp.h		  source code for a simple NNTP client which
+			  is driven by a Pcmail NNTP mail drop
+			  processor.  The program requires a Berkeley
+			  socket library in order to run.
+
+       mh-to-pcmail-export  a simple shell script, driven by the Pcmail
+			    MH mail drop processor, which accumulates
+			    message files from an MH folder directory
+			    into a single file to be imported into a
+			    Pcmail folder.
+
+Installation Instructions:
+
+These instructions are a subset of those in the supplied documentation.
+
+First, print the documentation file mailhelp.PS.  It is a PostScript file.
+
+Next, copy all Emacs-Lisp files (*.el) into a directory where to a directory
+where the GNU-Emacs load commands will find the files.  Those files should
+then be byte-compiled.  
+
+The Emacs-Lisp code must be either manually loaded or autoloaded before the
+mail reader can be used.  If you are using Emacs version 19, the pcmail code
+contains automatic autoload directives which you can process with the
+
+	M-x update-file-autoloads 
+
+command.  If you are using Emacs version 18, you must manually set up 
+autoloading by editing loaddefs.el or your local emacs initialization file
+with the following form:
+
+	(autoload 'pcmail "pcmail" "pcmail mail reader" t)
+
+The following installation procedures are only necessary if you are
+(1) running the mail reader on a VMS system, (2) you wish to use the
+NNTP mail-drop capability, or (3) you wish to use the MH import
+capability.  If you do not need a capability, you can ignore the
+appropriate installation information
+
+Installing VMS DCL Scripts
+
+In order to use the mail reader on VMS, you must install the scripts
+"vms-movemail.com" and "vms-movemail.com" in the GNU-Emacs "etc"
+directory.
+
+A note about the VMS mail drop importer: the vms-movemail.com DCL
+script which Pcmail calls to perform the mail transfer when new mail
+arrives works perfectly well on our local VMS 5.1.  I nonetheless
+strongly suggest testing it on your system before relying on it, since
+(1) it does muck with your MAIL.MAI file, (2) I don't know VMS all
+that well (nor do I have a desire to), and (3) I don't want to be
+responsible for people trashing their mail.
+
+
+Installing nntp_slave
+
+The nntp_slave program is a simple (very simple) NNTP client that
+takes a newsgroup name and places messages from that newsgroup into a
+file.  It uses a control file to keep track of which messages it has
+retrieved; if the control file doesn't exist, it retrieves the latest
+20 messages from the specified newsgroup.  This program requires the
+Berkeley socket library.
+
+Installation of the program is simple.  Compile nntp.c and
+nntp_slave.c, then link both together into an executable called
+"nntp_slave":
+
+	cc -o nntp_slave nntp_slave.c nntp.c
+
+Place the executable in the GNU-Emacs "etc" directory.
+
+Installing mh-to-pcmail-export
+
+The mh-to-pcmail-export program is a simple shell script which takes
+an MH folder name, goes to that directory, and accumulates all message
+files into a single file with separator text between messages.  It is
+used by the mail reader when importing an MH folder into a Pcmail
+folder. 
+
+Installation consists of moving the shell script into the GNU-Emacs
+"etc" directory and changing the file's mode so that it is executable:
+
+	chmod +x mh-to-pcmail-export
+
+At this point, you should be ready to start reading your mail.  Refer
+to the printed documentation (mailhelp) as well as the on-line
+documentation for full details on features and functionality.
+
+If you have questions or comments, mail them to:
+
+  markl@us.oracle.com
+
+I work on the mail reader in my very limited spare time, so it may
+take a while for enhancements to be incorporated.  Bug fix requests
+will be dealt with in a more timely fashion.
+
+Happy Hacking,
+markl
+
+----------
+Mark L. Lambert
+Architecture Group, Network Products Division
+Oracle Corporation
+
+Internet: markl@us.oracle.com 
+USMail:   Oracle Corporation
+ 	  500 Oracle Parkway, box 659410
+	  Redwood Shores CA 94065
+voice:    (415) 506 2912
+FAX:	  (415) 506 7226

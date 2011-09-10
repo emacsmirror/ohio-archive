@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML><HEAD><TITLE>The Ohio State Emacs Lisp Archive</TITLE></HEAD>
+<BODY bgcolor = "#FFFFFF" text = "#000000" link = "#0000FF" vlink = "#0000C8">
+<H1>The Ohio State Emacs Lisp Archive</H1>
+<HR><P>Welcome to the Ohio State Emacs Lisp Archive.</P>
+<CENTER><A href = "/archive/">Browse the archive via HTTP</A>
+</CENTER>
+<CENTER><A href = "ftp://ftp.cis.ohio-state.edu/pub/emacs-lisp/">Browse the archive via FTP</A>
+</CENTER>
+<H2>News:</H2>
+<P><FONT size = "5" color = "#000000">Lispmeralda</FONT> -
+<FONT size = "4" color = "#006400">2001/06/10</FONT>
+<BR>The most recent news is that this archive will probably merge with <a href="http://www.anc.ed.ac.uk/~stephen/emacs/ell.html">Emacs Lisp List</a> into <a href="http://www.lispmeralda.org">Lispmeralada</a>.  We hope to have something working soon.  Thanks for your patience!
+</P>
+<P><FONT size = "5" color = "#000000">Intent to close</FONT> -
+<FONT size = "4" color = "#006400">2001/05/02</FONT>
+<BR>Well, due to time constraints on my part, I currently plan to
+close the OSU Emacs Lisp archive as soon as <a
+href="http://savannah.gnu.org">Savannah</a> allows for non-GNU
+programs.  Savannah is a much more advanced technology; it will allow
+for CVS access, etc.  But the archive will remain open until that
+time, and probably some time after.  Feel free to mail your comments
+about this to <a href="mailto:walters@cis.ohio-state.edu">walters@cis.ohio-state.edu</a>.
+</P>
+<P><FONT size = "5" color = "#000000">Using the search engine</FONT> -
+<FONT size = "4" color = "#006400">2001/01/21</FONT>
+<BR>When using the search engine, please keep in mind that it by
+default only searches the main archive, which is just entries which
+have been submitted.  The "incoming" archive is a lot of Emacs Lisp
+code that has been collected from various places on the web; it is out
+of date, and not necessarily organized.</P>
+<P><FONT size = "5" color = "#000000">Search engine</FONT>
+ - <FONT size = "4" color = "#006400">2001/01/20</FONT>
+<BR>The search engine is starting to shape up.  Further improvements are planned.  If you have any suggestions, please feel free to send them to <a href="mailto:archive@cis.ohio-state.edu">archive@cis.ohio-state.edu</a>.</P>
+<P><FONT size = "5" color = "#000000">.zip submissions</FONT>
+ - <FONT size = "4" color = "#006400">2000/07/30</FONT>
+<BR>Multi-file submissions in the form of `.zip' files are now accepted, in addition to `.tar.gz' files.</P>
+<P><FONT size = "5" color = "#000000">We are reopening!</FONT>
+ - <FONT size = "4" color = "#006400">2000/07/10</FONT>
+<BR>The OSU Elisp archive is now being actively maintained again!
+For information on submitting your code to the repository, please see the section
+ <A href = "#Submissions">Submissions</A>
+ below.</P>
+<H2><A name = "Submissions">Submissions:</A></H2>
+<H4>How To Submit Emacs Lisp Code to the Archive</H4>
+<OL><LI><P>Make sure that your code has a clear copyright statement near the
+   top, with a free software license attached.</P>
+<P>We cannot accept code that does not have a copyright.  In addition,
+   please use a license that makes your code free software.  For an
+   example of acceptable terms, type 'C-h C-c' inside Emacs.  If in
+   doubt, send mail to archive@cis.ohio-state.edu.</P>
+</LI>
+<LI><P>Please read the section "Tips And Conventions" in the
+Emacs Lisp manual, and try to make your entry conform as much as
+possible to these standards.  It is not strictly required for
+submission, however.</P>
+</LI>
+<LI>Create an <A href = "/archive/ARCHIVE-ENTRY">Emacs Lisp Archive Entry</A>
+ for your code.  For details about the various fields, see <A href = "/archive/ARCHIVE-ENTRY">here</A>
+.<UL><LI>If you are submitting a single .el file, then an ELAE like:<PRE>;; Emacs Lisp Archive Entry
+;; Filename: somefile.el
+;; Author: Jane Schmoe &lt;jane@example.com&gt;
+;; Version: 1.0</PRE>
+will suffice.  Just put it somewhere in your file.</LI>
+<LI>If you are creating a multi-file entry (for example, if you
+   include Texinfo documentation, or you have multiple .el files),
+   then you should create an ELAE like:<PRE>;; Emacs Lisp Archive Entry
+;; Package: foo
+;; Author: Jane Schmoe &lt;jane@example.com&gt;
+;; Version: 1.0</PRE>
+and place the ELAE in the most important .el file in your
+   distribution.<P>After you have added the ELAE, use the `tar' utility to package your
+files.  The filename should be `&lt;package name&gt;-&lt;version&gt;.tar[.gz]'.
+Additionally, this archive should unpack into a directory with the
+same name as the tar archive, but without the 'tar[.gz]' extension
+(i.e. &lt;package name&gt;-&lt;version&gt;).</P>
+<P>For example, the above author could submit her package `foo' as
+   `foo-1.0.tar.gz', which should unpack into a directory named
+   `foo-1.0'.</P>
+<P>Alternatively, you may use the `zip'
+utility to compress your files.  The rule about unpacking into a
+directory of the same subname (i.e. `foo-1.0.zip' should unpack into a
+directory `foo-1.0') still applies.</P>
+</LI>
+</UL>
+</LI>
+<LI>Send a mail to <a href=mailto:archive@cis.ohio-state.edu>archive@cis.ohio-state.edu</a>
+containing your ELAE, with the program attached.</LI>
+</OL>
+<h3>Updating your entry</h3>
+<ul>To update your submission, just send mail to <a href=mailto:archive@cis.ohio-state.edu>archive@cis.ohio-state.edu</a>
+with the updated version and a note that this is a submission update.<br>
+Please try to keep submissions to around once every few days at most,
+unless the update fixes major bugs.
+</ul>
+<hr>
+<center><br>
+<img src="http://www.gnusoftware.com/images/head.jpg"> Emacs-Ring - Site Number 7
+<br>
+ [ <a href="http://www.gnusoftware.com/WebRing/zone.cgi?id=7&dir=next">Next Site</a> | 
+<a href="http://www.gnusoftware.com/WebRing/zone.cgi?id=7&dir=skipnext">Skip next Site</a> | 
+<a href="http://www.gnusoftware.com/WebRing/zone.cgi?id=7&dir=prev">Previous Site</a> | 
+<a href="http://www.gnusoftware.com/WebRing/zone.cgi?id=8&dir=skipprev">Skip Previous site</a> | 
+<a href="http://www.gnusoftware.com/WebRing/zone.cgi?list">List Sites</a> | 
+<a href="http://www.gnusoftware.com/WebRing/">Home</a> ]
+</center><br>
+</BODY>
+</HTML>

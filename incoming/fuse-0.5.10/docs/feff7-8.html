@@ -1,0 +1,114 @@
+<HTML>
+<HEAD>
+<TITLE>Feff : Appendix B.  Installation Instructions</TITLE>
+</HEAD>
+<BODY>
+<A HREF="feff7-7.html">Previous</A>
+<A HREF="feff7-9.html">Next</A>
+<A HREF="feff7.html#toc8">Table of Contents</A>
+<HR>
+<H2><A NAME="s8">8. Appendix B.  Installation Instructions</A></H2>
+
+
+<P>The program FEFF7 is provided as a single source file, which contains a
+main program and all necessary subroutines.  Simply compile and link on
+your system using a Fortran 77 compiler and your usual linker.  The
+executable file produced is all you will need.   The code requires
+about 3 megabytes to run on a VAX.  Since most of this memory is data
+space, we expect it to require about this amount of memory on most
+machines.  PC users, please see section below about DOS machines. </P>
+
+<H2><A NAME="ss8.1">8.1 UNIX machines</A></H2>
+
+<P>We have endeavored to make FEFF portable to most UNIX machines without any
+modification.  If your machine does not reproduce the test output files
+chi.dat and feffNNNN.dat to high accuracy, some changes may be needed.
+Please report any problems or warning messages to the authors, as this
+will help us achieve full portability.  If changes are needed, keep in
+mind the following points: </P>
+<P>Floating point calculations must be done to precision 64 bits. Thus the
+code uses double precision variables throughout, i.e., real*8 for real
+numbers and complex*16 for complex numbers.  If your machine uses 8
+bytes for single precision floating point numbers (for example, Crays
+and some CDC machines), use the compiler option to ignore double
+precision statements in the code. This option is available (in various
+forms) on all Cray and CDC machines that we have seen.  On the CRAY YMP
+at Ohio State, the compiler option to ignore double precision in the
+source code is 
+<BLOCKQUOTE><CODE>
+<PRE>
+      cf77 -c -Wf&quot;-dp&quot;
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+<P>Code is written in ANSI FORTRAN 77, except that COMPLEX*16 variables
+are required.  Since data type COMPLEX*16 is not part of the ANSI
+standard, minor compiler-dependent modification may be necessary.  We
+have used the VAX extensions to ANSI FORTRAN 77 since they seem to be
+the most portable.  The non-standard statements and intrinsic functions
+used are: COMPLEX*16 variables and arrays; DIMAG(arg) returns a double
+precision imaginary part of arg; DCMPLX(arg) returns a complex*16
+version of arg; DBLE(arg) returns a double precision real part of arg;
+SQRT, EXP, ABS and other generic math functions are assumed to accept
+complex*16 arguments and return double precision or complex*16 results. </P>
+<P>Files are opened with the OPEN statement.  As the ANSI definition gives
+some leeway in how the OPEN statement interacts with the operating
+system, we have chosen file names and conventions that work on UNIX,
+VAX/VMS, IBM PCs (and clones) with MS FORTRAN, CRAY, MAC's and and CDC
+machines.  It may be necessary to modify the open statements on other
+systems. </P>
+
+
+
+<H2><A NAME="ss8.2">8.2 PC users</A></H2>
+
+<P>Because of the awkwardness of DOS, many users do not have FORTRAN
+compilers and many of those compilers are difficult to use with large
+codes.  An executable version of FEFF for PCs is available.  It has
+been compiled using Watcom's FORTRAN77 compiler which works with a DOS
+extender (DOS4GW) to use extended memory.  You will need a PC with
+either a 386 and 387 math coprocessor or a 486 with the math
+coprocessor embedded in it (SX does not have this, DX does).  You will
+also need at least 3 Megabytes of RAM available, IN ADDITION TO whatever
+memory is used by DOS and memory-resident utilities.  Please contact us
+if you need the PC executable.  Special installation instructions for
+the PC version are in the READ.ME file on the PC distribution disk. </P>
+<P>If you prefer your own compiler, or are using an operating system other
+than DOS, simply compile the source code using your FORTRAN compiler
+and linker as you would for any other machine. </P>
+
+
+
+<H2><A NAME="ss8.3">8.3 MAC users</A></H2>
+
+<P>Diskettes with an executable version of FEFF for Macintosh computers
+are available.  Please contact us if you need a copy.</P>
+
+
+<H2><A NAME="ss8.4">8.4 NeXT users</A></H2>
+
+
+<P>
+<BLOCKQUOTE><CODE>
+<PRE>
+   F. Farges compiled FEFF with absoft's f77 for a NeXT.
+   Make sure that the following  options are on:
+   f77 -N53 -f -s -O  feff.f
+
+   -f makes f77 insensitive to upper and lower cases (triml bwords and  istln)
+   -s makes a code for units larger than 512 K
+   -N53 uses the 68030/68040 processors with 68881/2 math coproc.
+   -O is the standard optimization option for all f77
+</PRE>
+</CODE></BLOCKQUOTE>
+</P>
+
+
+
+<HR>
+<A HREF="feff7-7.html">Previous</A>
+<A HREF="feff7-9.html">Next</A>
+<A HREF="feff7.html#toc8">Table of Contents</A>
+</BODY>
+</HTML>

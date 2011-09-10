@@ -1,0 +1,31 @@
+;; Object ede-proj-project
+;; EDE project file.
+(ede-proj-project "ede-proj-project"
+  :name "eieio"
+  :version "$(shell grep \"Version: \" eieio.el | cut -d\" \" -f3)"
+  :file "Project.ede"
+  :targets (list   (ede-proj-target-elisp "eieio"
+    :name "eieio"
+    :path ""
+    :source '("eieio.el" "eieio-custom.el" "eieio-opt.el" "eieio-comp.el" "eieio-doc.el")
+    :requirements '("eieio" "eieio-comp" "eieio-custom")
+    )
+   (ede-proj-target-makefile-info "eieio.info"
+    :name "eieio.info"
+    :path ""
+    :source '("eieio.texi")
+    )
+   (ede-proj-target-aux "Misc"
+    :name "Misc"
+    :path ""
+    :source '("ChangeLog")
+    )
+   (ede-proj-target-elisp "examples"
+    :name "examples"
+    :path ""
+    :source '("tree.el" "chart.el" "eieio-speedbar.el" "eieio-tests.el")
+    :requirements '("cl" "eieio-speedbar" "tree" "chart")
+    )
+   )
+  :configuration-variables 'nil
+  )

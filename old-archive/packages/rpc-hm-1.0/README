@@ -1,0 +1,506 @@
+#Author: Eyvind Ness (eyvind) 
+#Date:   Wednesday, July 22 1992 13:42 GMT
+#File:   /usr/local/gnu/emacs/elisp/rpc-hm-1.0/README
+
+LCD Archive Entry:
+(Name|Author|Contact|Description|Date|Version|Archive)
+
+rpc-hm|Eyvind Ness|Eyvind.Ness@HRP.No
+|Networking library for interfacing GNU Emacs with remote Lisp Machines
+|92-07-20|1.0|ugle.unit.no:/pub/gnu/emacs-lisp/rpc-hm-1.0.tar.Z
+
+
+Distribution:
+To: gnu-emacs-sources@prep.ai.mit.edu, Slug@ai.sri.com, Info-TI-Explorer@SUMEX-AIM.Stanford.EDU, elisp-archive@cis.ohio-state.edu
+Cc: Christopher.McConnell@HITECH.CHESS.CS.CMU.EDU
+Subject: rpc-hm
+
+
+1) WHAT IS THIS?
+
+This is a powerful, yet easy-to-use networking library for 
+
+	Unix (GNU Emacs) <-> Lispm, and
+	Lispm <-> Lispm
+
+communication.
+
+This Emacs Lisp package provides an interface to a programmer-friendly,
+RPC-like communication protocol called rpc-hm - "Home-made Remote
+Procedure Calls" - for communicating with Lisp machines from within GNU
+Emacs. Use of this library has potential for adding extreme Lisp power
+to elisp extensions.  I have made two so far: A Lispm interaction mode
+for evaluating lisp expressions on Lispms from with Emacs, and an
+interface to a Common Lisp based grapher program that generates
+postscript output from a process listing, and displays it using GNU
+GhostScript. The former package is included with this software.
+
+A mailing list, rpc-hm@hrp.no, has been created for discussing features,
+bugs, future extensions etc. If you'd like to join, send a message to
+rpc-hm-request@hrp.no.
+
+
+2) EXAMPLE USAGE
+
+Example usage (from an elisp program):
+
+  (rpc-hm-internal "remulus.hrp.no" '(machine-instance) t ':any)
+  => "REMULUS"
+
+  (rpc-hm-internal 'remulus '(machine-type) t ':rpc-udp)
+  => "Explorer II"
+
+  (rpc-hm-internal 'alfa '(machine-instance) t ':ip-tcp)
+  => "ALFA"
+
+  (rpc-hm-internal 'remulus '(make-instance (defclass man->robot () ())) nil ':ip-tcp)
+  => "#<MAN->ROBOT 12734615>"
+
+The last example shows how you can prevent the rather primitive Emacs
+Lisp Reader to interfere with the result interpretation (3rd arg nil).
+The elisp reader is not extensible and doesn't understand #-macros, so
+you might want to have the result trasferred back as a simple,
+uninterpreted string on some occasions.
+
+The documentation for `rpc-hm-internal' reads:
+
+  Direct an RPC-HM protocol request to HOST asking it to evalute FORM.
+  HOST should be a symbol that names a computer that is hosting an RPC-HM
+  server, or it could be the keyword :any, indicating that any such host
+  will do, in which case the rpc-hm-host-db is used to pick one.
+
+  Third arg INVOKE-ELISP-READER-P if non-nil invokes the Emacs Lisp
+  reader on the returned result. Fourth arg TRANSPORT-PROTOCOL is either
+  the name of a transport medium, such as :ip-tcp or :rpc-udp, or the
+  keyword :any, indicating that any trasport medium will do.
+
+  See the documentation for `rpc-hm-over-tcp' and `rpc-hm-over-rpc-udp'
+  for a more detailed description of the underlying functions.
+
+
+3) TRANSPORTS PROVIDED
+
+Both RPC/UDP and IP/TCP based communication transports are provided for
+the Emacs client. The IP/TCP is the recommended transport.
+
+
+4) RPC HM SERVERS
+
+Preparing installation on a TI Explorer
+---------------------------------------
+
+Make sure you have loaded the logical pathname defs to fit with your own
+filesystem.
+
+On my system, remulus, I have:
+
+  (view-file "lm:site;rpc-hm.system")
+  =>
+  (net:set-logical-pathname-host
+    "rpc-hm-host"
+    :physical-host "remulus"
+    :translations
+    '(("rpc-hm-dir" "eyvind.rpc-hm;")
+      ("general-library" "eyvind.lib;")))
+
+  (sys:set-system-source-file "RPC-HM" "rpc-hm-host:rpc-hm-dir;defsystem")
+
+Substitute "remulus" with the name of your TI Explorer file-server,
+"eyvind.lib;" with the name of the directory you want to install the
+library files that goes with the system, and "eyvind.rpc-hm;" with the
+name of the directory you want to keep the other source files of this
+system.
+
+
+Preparing installation on a Symbolics
+-------------------------------------
+
+Make sure you have loaded the logical pathname defs to fit with your own
+filesystem.
+
+On my system, alfa, I have:
+
+   (SI:COM-SHOW-FILE '(#P"sys:site;rpc-hm.system"))
+   =>
+   (fs:set-logical-pathname-host
+	"rpc-hm-host"
+     :physical-host "alfa"
+     :translations
+     '(("rpc-hm-dir;**;" ">eyvind>rpc-hm>**>")
+       ("general-library;**;" ">eyvind>lib>**>")))
+
+   (sct:set-system-source-file "rpc-hm" "rpc-hm-host:rpc-hm-dir;defsystem")
+
+Substitute "alfa" with the name of your Symbolics file-server,
+">eyvind>lib>" with the name of the directory you want to install the
+library files that goes with the system, and ">eyvind>rpc-hm>" with the
+name of the directory you want to keep the other source files of this
+system.
+
+
+Lispm clients
+-------------
+
+The server part of this software has been implemented for Texas
+Instruments Explorer Lisp Machines and Symbolics 3600 Lisp Machines and
+is included with this distribution. As an add-on feature, client
+versions for the same machines are included in the distribution so you
+can actually use RPC HM to easily communicate across the Lispms
+themselves, but that's a different story.
+
+
+
+5) WHAT YOU MUST DO TO INSTALL THIS SOFTWARE
+
+A lot, I'm afraid. Below is an overview of the installation process.
+
+5.1) Overview
+-------------
+
+ a) byte-compile and install *.el files (Emacs Lisp client code)
+ b) C compile and install rpc-hm-client-program.c
+ c) optionally choose a different IP/TCP port number and an RPC UDP
+    program number by editing /etc/services and /etc/rpc
+ d) make your own Lispm host database by setting a new value for the
+    variable `rpc-hm-host-db'
+ e) compile and install the RPC HM server - you need a TI Explorer or a
+    Symbolics Lisp machine to run the server part of this software
+ f) test it
+
+5.2) The details
+----------------
+
+A) is easy. Just put *.el files in a directory where Emacs can find
+them. Check out the value of your load-path variable. Then you should
+byte-compile the *.el files to improve elisp performance.
+
+This will be particularly easy if you use the provided Makefile. Then
+you can just type `make' in a Unix shell with the same directory as the
+Makefile as the current directory.
+
+You might also want to specify autoload entries for the interactive
+functions provided in the remote-lisp-mode util. I have:
+
+;;; From rpc-hm, remote-lisp-interaction, and remote-lisp-documentation:
+(autoload 'rpc-hm-internal "rpc-hm" "" t nil)
+(autoload 'rld-describe-function "remote-lisp-documentation" "" t nil)
+(autoload 'rld-describe-variable "remote-lisp-documentation" "" t nil)
+(autoload 'remote-lisp-mode-commands "remote-lisp-interaction" "" t nil)
+(autoload 'rlm-lisp-send-defun "remote-lisp-interaction" "" t nil)
+(autoload 'rlm-eval-current-buffer "remote-lisp-interaction" "" t nil)
+(autoload 'rlm-eval-last-sexp "remote-lisp-interaction" "" t nil)
+(autoload 'lispm-mode "remote-lisp-interaction" "" t nil)
+(autoload 'rlm-run-remote-lisp "remote-lisp-interaction" "" t nil)
+
+in the site-wide $EMACS/lisp/default.el. You could also put this into
+your private ~/.emacs, if you like. Note that the autoload
+specifications above assumes that the files can be found somewhere along
+your `load-path' - if not, you must assign a new value to the load-path
+variable.  That is, put the form:
+
+	(setq load-path (cons "<SOME PATH>/rpc-hm-1.0" load-path))
+
+into your ~/.emacs or the $EMACS/lisp/default.el.
+
+
+B) Compiling rpc-hm-client-program.c
+
+Should be straight-forward. Just type:
+
+   $cc -O -o rpc-hm-client-program rpc-hm-client-program.c
+
+to a Unix shell. The RPC system library should be a part of libc.a, so
+it isn't necessary to add any hairy include- or lib-options. Then move
+the executable to a place where Emacs can find it, i.e. to a directory
+found in your PATH environment variable.
+
+
+C) /etc/services and /etc/rpc
+
+If you find out that IP/TCP port number 10801 (the default) is in use on
+your machine, you must choose another port number. In any case, you
+should advertise it in /etc/services (to prevent other people from using
+the same number). The entry should look something like this:
+
+   dole(bash)$ grep 10801 /etc/services
+   rpc-hm          10801/tcp
+
+If you don't have write access to /etc/services, you must ask your
+sysadm to edit it for you. Otherwise, just grab a free number, and
+hard-code it directly into the file rpc-hm.el at the place where it
+reads:
+
+  (setq rpc-hm-over-tcp-process 
+	(condition-case c
+	    (open-network-stream 
+	     "RPC HM Client over TCP" 
+	     nil
+	     hostname
+	     "rpc-hm")
+	  (error (signal 'rpc-hm-network-connection-error (cdr c)))))
+
+and substitute it with:
+
+  (setq rpc-hm-over-tcp-process 
+	(condition-case c
+	    (open-network-stream 
+	     "RPC HM Client over TCP" 
+	     nil
+	     hostname
+	     SOME-FREE-NUMBER)
+	  (error (signal 'rpc-hm-network-connection-error (cdr c)))))
+
+where SOME-FREE-NUMBER is the new port number.
+
+If you choose a different number than 10801, you also need to change the
+constant on the server side. See the file called
+"rpc-hm-host:rpc-hm-dir;rpc-server-and-client.lisp" in the server
+distributions.
+
+The same principle counts for /etc/rpc:
+
+   dole(bash)$ grep impatient /etc/rpc
+   impatient_lisp_service  536875006 IMPATIENT_LISP_SERVICE # hex: 0x20000ffe Eyvind Ness
+
+If you choose a different number than 0x20000ffe in /etc/rpc, you must
+make sure you change it on the server side, too. See the file
+"rpc-hm-host:rpc-hm-dir;unix-rpc-udp-server.lisp" in the Explorer server
+distribution.
+
+
+D) My Lispm host-database looks like this:
+
+   (defvar rpc-hm-host-db
+     '((remulus 
+	(type . :lispm)
+	(current-medium-ix . 0)
+	(rpc-hm-support :ip-tcp :rpc-udp))
+       (alfa
+	(type . :lispm)
+	(current-medium-ix . 0)
+	(rpc-hm-support :ip-tcp)))
+     "A database of hostnames and the protocols they support")
+
+You must edit the value of this variable by substituting "remulus" and
+"alfa" with the actual names of your own Lispms. Note that for Symbolics
+computers ("alfa" in the form above), only the :ip-tcp transport is
+available with this software. For the Explorers (in the form above,
+"remulus" is an Explorer), both :ip-tcp and :rpc-udp is available.
+
+Put the new value of the database variable into your ~/.emacs, or the
+site-wide $EMACS/lisp/default.el.
+
+
+E) SERVER INSTALLATION
+
+E.2) Symbolics
+--------------
+
+See (4) above before you start to download the system as explained in
+this section.
+
+For the Symbolics the necessary files are compiled into a System
+wrapped with the Distribute System util. You must unwrap them with
+Restore System:
+
+>Distribute System :Use Disk Yes       ..command used to wrap system
+>Restore Distribution :Use Disk Yes    ..command you need to unwrap it
+
+On my Unix fileserver I have the files:
+
+   doffen(bash)$ pwd
+   /usr/local/gnu/emacs/elisp/rpc-hm-1.0/Lispms/symbolics
+   doffen(bash)$ ls -lA
+   total 112
+   -rw-rw-rw-   1 eyvind   rootware   54809 Jul 22 15:13 imitation-tape.reel-1
+   drwxrwxr-x   2 eyvind   rootware    1024 Jul 22 15:02 lib
+   drwxrwxr-x   3 eyvind   rootware    1024 Jul 22 15:06 rpc-hm
+   doffen(bash)$ 
+
+Use the file called "imitation-tape.reel-1" as the pathname for the
+dummy tape when prompted by the Restoration util.
+
+After successfully restoring the source files, type:
+
+>Compile System rpc-hm
+
+to create the binaries. When the binaries are produced, you only need to
+type:
+
+>Load System rpc-hm
+
+the next time you want to load the RPC-HM software.
+
+
+E.1) Texas Instruments Explorer
+-------------------------------
+
+See (4) above before you start to download the system as explained in
+this section.
+
+After moving the source files found in the distribution directory
+"Lispms/explorer" to the place(s) where you want them to be on your
+local machine, according to the specification in (4) above, type:
+
+(MAKE-SYSTEM 'RPC-HM :RECOMPILE :NOCONFIRM :RECORD)
+
+to the Lisp Listener.
+
+The easiest way to get out of the debugger when it complains about
+PDL-OVERFLOW, is to press the RESUME button (to continue with a bigger
+stack, or `push-down list' in Explorer parlance).q
+
+It should be possible to avoid this error by making an incantation in
+the spirit of:
+
+(eh::sg-maybe-grow-pdls *CURRENT-STACK-GROUP* t 1024. 256. t), or maybe:
+(eh::require-pdl-room 1024. 256.)
+
+but so far, I've had no luck. Anyway, this isn't a real problem - just
+press RESUME once, and you are out of it.
+
+To have the RPC-HM system autoloaded at boot-time, add the form:
+
+	(require 'rpc-hm) 
+
+to your boot-init file (specified in the Namespace Database in the entry
+for your TI file-server host). This assumes that you have created the
+file "sys:site;rpc-hm.system" with a contents as discussed above (4).
+
+
+F) TESTING IT
+
+Load the server(s) on the Lispm(s) - on the Explorer, do:
+
+	(require 'rpc-hm)
+
+on the Symbolics, do:
+
+	Load System RPC-HM
+
+Start up Emacs. If you have set up for autoloading (see 5.2a above),
+try:
+
+	M-x rlm-run-remote-lisp
+
+type a few forms and press C-j (Control J) with the cursor right after
+the last parens, e.g.:
+
+	(machine-type) C-j
+	=> "Explorer II"
+
+If you get a response similar to the one I got above, you are all set.
+If not, you have probably made a mistake during the (admittedly
+complicated) installation procedure. Carefully redo it, if need be, and
+as a last resort, send a message to rpc-hm@hrp.no to get someone to help
+you out.
+
+
+6) DEPENDENCIES
+
+GNU Emacs version
+-----------------
+
+Older Emacs versions than 18.58 are likely to make this software crash.
+Also, I haven't got my hands on Emacs 19 yet, but I suspect there are a
+few changes that has to be done to make this software work with version
+19.
+
+The Emacs versions I use run on Sun4, HP9000 s300, s400, s700, and s800
+Unix computers.
+
+Lispm configurations
+--------------------
+
+Here is the system configuration on my Symbolics:
+(si:com-show-herald)
+=>
+Symbolics System, FEP1:>dd-from-full-genera-8-0.load.1
+3640 Processor, 2560K words Physical memory, 16250K words Swapping space.
+ Genera                                               8.0
+ IP-TCP                                               422.2
+ RPC                                                  415.0
+ RPC Development                                      410.0
+ Embedding Support                                    407.0
+ X Remote Screen                                      418.1
+ CLX                                                  419.0
+ Detailed Diagnosis                                   9.0
+ Home Made Remote Procedure Call Programmer Interface 12.0
+
+Institutt for Energiteknikk ALFA
+
+The Explorer used to develop this software looks like this:
+(print-herald)
+=>
+Explorer IFE REMULUS.
+Load band LOD6 (Release 6.0 9-8-89) loaded from disk disk0, Microcode MCR6 (EXP2-UCODE 429).
+12 MB of physical memory, 112 MB of virtual memory 
+Using primary Network Namespace AI-NETWORK
+ Explorer System Release                                6.0+     
+ SYSTEM                                                 6.28     
+ Virtual-Memory                                         6.3      
+ Error Handler                                          6.5      
+ Make-System                                            6.2      
+ LISPM Local File System                                6.1      
+ Basic Pathname                                         6.2      
+ Network-Support Cold                                   6.2      
+ Basic Namespace                                        6.7      
+ Network Namespace                                      6.1      
+ Disk-Io                                                6.2      
+ File Support                                           6.7      
+ Compiler                                               6.14     
+ Window System                                          6.23     
+ Chaosnet                                               6.5      
+ NVRAM                                                  6.2      
+ System-Log                                             6.2      
+ Streamer-Tape                                          6.5      
+ Zmacs Editor                                           6.12     
+ Debug Tools                                            6.4      
+ Network Support                                        6.1      
+ Network Service                                        6.2      
+ Printer Types                                          6.2      
+ Imagen                                                 6.1      
+ Suggestions                                            6.1      
+ Mail-Daemon                                            6.4      
+ Mail-Reader                                            6.7      
+ Telnet                                                 6.1      
+ Namespace Editor                                       6.4      
+ User Profile                                           6.2      
+ Visidoc                                                6.7      
+ ti Common Lisp Object System                           6.33     
+ IP                                                     3.47     
+ Remote Procedure Call                                  6.2      
+ Experimental CLX                                       6.8      
+ Experimental Computerized Procedure Manual            31.0      
+ X11 Monochrome Window System                           6.20     
+ Home Made Remote Procedure Call Programmer Interface  23.0      
+ Microcode                                              429
+
+There is should be nothing special about these machines - the only
+important thing is that you have the IP-TCP package loaded before you
+try to compile and load the RPC-HM system. For the TI you must also load
+the RPC system library.
+
+
+7) ILISP
+
+About Ilisp - here's an extract from the lisp-FAQ on comp.lang.lisp:
+
+   [10] Is there a GNU-Emacs interface to Lisp?
+
+   ILISP is a powerful GNU-Emacs interface to many dialects of
+   Lisp, including Lucid, Allegro, {A}KCL, IBCL, and CMU. Written by
+   Chris McConnell <ccm+@cs.cmu.edu>. It is available by anonymous
+   ftp from atmandu.mt.cs.cmu.edu [128.2.250.68] in the directory
+   pub/ilisp as the file ilisp.tar.Z. If you start using it, send
+   Chris mail, as he maintains a mailing list of users.
+
+   Franz Inc.'s GNU-Emacs/Lisp interface includes an online Common
+   Lisp manual. It is available by anonymous ftp from 
+      uunet.uu.net:/lisp/emacs-lisp-1.5.2.tar.Z
+      ucbvax.berkeley.edu:/pub/franzinc/emacs-lisp-interface/1.5.2.tar.Z
+   Send bug reports to bugs@franz.com. To be added to the mailing
+   list, send mail to lisp-emacs-forum-request@ucbarpa.berkeley.edu.
+
+   Lucid includes some other Emacs-Lisp interfaces in its goodies directory.
+   ----------------------------------------------------------------

@@ -1,0 +1,73 @@
+From rbj@dsys.icst.nbs.gov Fri May  5 13:41:24 1989
+Date: Thu, 27 Apr 89 14:19:48 EDT
+From: Root Boy Jim <rbj@dsys.icst.nbs.gov>
+Organization: National Institute of Standards and Technology
+	formerly National Bureau of Standards
+Disclaimer: Opinions expressed are those of the sender
+	and do not reflect NIST policy or agreement.
+To: eliot@phoenix.princeton.edu
+Cc: unix-emacs@bbn.com
+Subject: Blackbox
+
+? From: Eliot Handelman <phoenix!eliot@princeton.edu>
+
+? Can somebody tell me how to play blackbox.el ? It's included in the 
+? GNU distribution without rules, should I just throw it away or is it
+? worth playing, or is the idea to figure out how to play it without
+? rules? 
+
+This is a great little game! I read about it in a book called something
+like "Playboy's Guide to Games", which describes and reviews just about
+any and every game you can think of. Anyway, an example is best, so
+refer to the following diagram which is a sample game I played.
+
+The object of the game is to find four hidden balls by shooting rays
+into the black box. There are four possibilitys: 1) the ray will
+pass thru the box undisturbed, 2) it will hit a ball and be absorbed,
+3) it will be deflected and exit the box, or 4) be deflected immediately,
+not even being allowed entry into the box.
+
+The strange part is the method of deflection. It seems that rays will
+not pass next to a ball, and change direction at right angles to avoid it.
+
+		             R   3   
+		 1 - - - - - - - - 1 
+		   - - - - - - - -   
+		   - O - - - - - - 3 
+		 2 - - - - O - O -   
+		 4 - - - - - - - - 
+		 5 - - - - - - - - 5 
+		   - - - - - - - - R 
+		 H - - - - - - - O   
+		   2   H 4       H   
+
+Rays which enter and exit are numbered. You can see that rays 1 & 5 pass
+thru the box undisturbed. Ray 2 is deflected by the northwesternmost
+ball. Likewise rays 3 and 4. Rays which hit balls and are absorbed are
+marked with H. The bottom of the left and the right of the bottom hit
+the southeastern ball directly. Rays may also hit balls after being
+reflected. Consider the H on the bottom next to the 4. It bounces off
+the NW-ern most ball and hits the central ball. A ray shot from above
+the right side 5 would hit the SE-ern most ball. The R beneath the 5
+is because the ball is returned instantly. It is not allowed into
+the box if it would reflect immediately. The R on the top is a more
+leisurely return. Both central balls would tend to deflect it east
+or west, but it cannot go either way, so it just retreats.
+
+Those are the rules. The mechanics of playing are well described by
+describe-mode. Here is a brief recap. Movement is by your friends
+C-a, C-e, C-b, C-f, C-n, C-p. When outside the box, a SPC shoots a
+ray into the box, to be diagnosed. You can also move into the box
+and type SPC, which toggles whether a ball is marked there or not.
+This is only for your convenience, and does not affect where the
+balls really are. When you are satisfied you have figured things
+out, type RET to get your score. This is presumably some inverse
+function of the number of rays shot into the box.
+
+I hereby nominate this description for inclusion into the distribution,
+and waive all copyright, patent, or trade secret protection.
+
+	Root Boy Jim is what I am
+	Are you what you are or what?
+
+

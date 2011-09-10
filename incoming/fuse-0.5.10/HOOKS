@@ -1,0 +1,108 @@
+
+This file contains a collection of useful values for the various hook
+variables available in FUSE.  A hook variable contains a list of
+functions that are run in succession when the hook is called by a lisp
+program.
+
+FUSE uses various hook variables for a variety of purposes.  The
+examples shown here are appended to the hook values already set by
+FUSE.  Because of this, it is esssential that you correctly set new
+values to the hooks.  You should never, never use the (setq ) function
+to set a hook because this will erase all functions previous in the
+hook.  You should always use the (add-hook ) function as shown below.
+Should you need it, there is also a (remove-hook ) function.  See the
+emacs-lisp manual for details.
+
+It is probably easiest to put these hook assignments in the .fuse
+file.  They can be cut and pasted as written.
+
+You can also put them in your .emacs file.  Probably the best way to
+do so is like this:
+    (add-hook 'input-mode-hook
+          '(lambda ()
+		...
+             ))
+where the ellipsis is replaced by hook assignments like those below.
+
+You may also use the customize package to assign values to the
+hook variables.  I find this to be inconvenient since the hook
+functions must be entered by hand in the space provided by the
+customization package.
+
+----------------------------------------------------------------------
+
+1.  This hook assignment is used set the paths to data, feff, and
+    output files in a feffit input file.  I typically run feffit
+    from a devoted directory, with subdirectories to hold the data,
+    feff, and output files.  Since I use the same names for the
+    subdirectories for every fitting problem, this hook saves me the
+    hassle of having to set these each time I start a new feffit input
+    file.
+
+	(add-hook 'Feffit-mode-hook
+	      '(lambda ()
+		 (if input-feff-path ()
+		   (setq input-feff-path "feff/"))
+		 (if input-data-path ()
+		   (setq input-data-path "data/"))
+		 (if input-out-path ()
+		   (setq input-out-path  "fits/")) ))
+
+
+2.  Feff minor mode has the feature that, if you position the mouse
+    cursor over one of the CONTROL flags and do shift-mouse-3, that
+    control flag will be toggled.  As a visual cue that you can do
+    this, FUSE will cause the control flag to flash a pink color when
+    the cursor moves over it.  This hook assignment turns on this
+    color flashing.
+
+	(add-hook 'Feff-mode-hook
+		  '(lambda ()
+		     (Feff-set-control-properties)
+		     (add-hook 'local-write-file-hooks
+			       'Feff-set-control-properties) ))
+
+
+3.  This hook assignment cause FUSE to open the newly generated feff
+    input file once atoms finishes running.
+
+	(add-hook 'input-after-run-hook
+		  '(lambda ()
+		     (and (string= input-program-name "atoms")
+			  (input-jump-to-log-file))))
+
+
+
+4.  If you have calc installed and can use the expansion of math
+    expressions feature of Atoms mode, this hook assignment makes sure
+    that all math expressions are expanded before running Atoms.
+
+	(add-hook 'input-before-run-hook
+		  '(lambda () (and (string= "atoms" input-program-name)
+				   (Atoms-evaluate-buffer)
+				   (save-buffer))))
+
+5.  If you have Speedbar installed you can make it recognize input
+    files and use the imenu patterns included in FUSE with this.  This
+    is not really a hook assignment, but is a useful thing to put in
+    your .fuse file.
+
+	(and (featurep 'speedbar)
+             (speedbar-add-supported-extension ".inp"))
+
+
+----------------------------------------------------------------------
+Bibliography:
+  URL list for things that may not be a standard part of an Emacs
+  installation but which add value to or have been a particular
+  inspiration for FUSE
+
+  Speedbar by Eric Ludlam
+        http://www.ultranet.com/~zappo/speedbar.shtml
+  Calc by David Gillespie
+        http://www.synaptics.com/people/daveg/
+  VM by Kyle Jones
+        ftp://ftp.uu.net/networking/mail/vm/
+  AUCTeX by Kresten Krab Thorup and Per Abrahamsen
+        http://sunsite.auc.dk/auctex/
+----------------------------------------------------------------------

@@ -1,0 +1,474 @@
+From rbj@dsys.icst.nbs.gov Fri May  5 14:12:25 1989
+Date: Tue, 2 May 89 20:16:00 EDT
+From: Root Boy Jim <rbj@dsys.icst.nbs.gov>
+Organization: National Institute of Standards and Technology
+	formerly National Bureau of Standards
+Disclaimer: Opinions expressed are those of the sender
+	and do not reflect NIST policy or agreement.
+To: gatech!uflorida!novavax!weiner@bbn.com
+Cc: unix-emacs@bbn.com
+Subject: All of my recently posted code based on GNU Emacs 18.52/RBJMAIL.EL
+
+? From: Bob Weiner <gatech!uflorida!novavax!weiner@bbn.com>
+
+? I recently posted revisions to buff-menu.el, rmail.el, rmailsum.el,
+? info.el, and informat.el.  All of these are based on GNU Emacs 18.52 and
+? can probably easily be integrated with any 18.53 updates.
+
+They probably could. However, I have a slight disagreement with your
+posting methods. Trivial modifications should probably be posted as
+hooks, leaving the distributed code alone. More extensive mods should
+possibly be posted as diffs. My own method is demonstrated
+below, this seeming to be a good place to post rbj-mail. When I need to
+redefine a major function, I do so in the autoloaded elisp file. I
+solicit opinions on people's preferred methods.
+
+? Bob Weiner, Motorola, Inc.,   USENET:  ...!gatech!uflorida!novavax!weiner
+? (407) 738-2087
+
+The following is a description of my rmail enhancements:
+
+mail-mode:
+
+	yowza			replaces region with Zippy quote
+
+	mail-quote		use when responding from mail with ~e
+				deletes header, quotes body, inserts
+				~/.signature, inserts Zippy quote
+
+	mail-yank-original	quote with "? " instead of indenting
+	
+rmail-mode:
+
+	rmail-mode-map		/ -> rmail-search
+				H -> rmail-header-clean
+				I -> rmail-set-inbox-list
+				U -> undigestify-rmail-message
+
+	rmail-header-clean	Removes worthless headers.
+				Can reduce some rmail files by 25%!
+
+	rmail-summary-mode-map	^J -> rmail-summary-goto-msg (j)
+				O, A, K like o, a, k in rmail-mode.
+				C-P, C-N normal motion
+				M-p, M-n do what C-p, C-n did
+				  P,   N do what M-p, M-n did
+				S -> rmail-summary-sort
+				% -> rmail-summary-split
+
+	rmail-output-other-window	O == C-x o, o, C-x o
+	rmail-add-label-other-window	A == C-x o, a, C-x o
+	rmail-kill-label-other-window	K == C-x o, k, C-x o
+
+	rmail-summary-sort	CHECK IT OUT! sorts the rmail-summary
+				buffer by subject. Breeze thru topics!
+
+	rmail-summary-split	Another nifty one. Splits a buffer by
+				prefix-argument'th letter of subject.
+				When an rmail file gets too big,
+				split it up into little files. File
+				"foo" is split into "foo-a" thru "foo-z".
+
+	rmail-summary-column	Constant. Column subject starts in summary.
+
+	rmail-summary-goto-msg	Redefinition. Fixes a bug when summary
+				buffer is sorted. If msg 17 precedes
+				msg 1, old version would goto msg 17 in
+				the summary buffer. Added the regexp
+				"[^0-9]" to the end of concat.
+
+	rmail-summary-reuse	Variable. Its intent is to force
+				rmail-summary to recalculate summary lines.
+
+	rmail-summary		Redefinition. Force summary line to be
+				recalculated if invoked with an arg. Upon
+				retrospect, the setq should probably be a
+				let. Should probably not be a global
+				variable either. Hack, hack.
+
+	rmail-make-summary-line	Redefinition. Uses rmail-summary-reuse.
+
+	rmail-make-summary-line-1 Redefinition. PUTS MESSAGE SIZE IN SUMMARY
+				buffer but not in rmail file. Neat for
+				finding duplicate messages.
+
+Perhaps I should have made a shar file or diffs, and modified the
+describe-mode documentation. However, my point was to demonstrate
+modification with hooks and autoloading, and not modify GNU code.
+My apologys if this is slightly wrong, as it is an extract. You really
+don't want to see my entire elisp library, now do you? :-)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+.emacs: (partial)
+
+(global-set-key "\^x^y" 'yowza)
+(autoload 'yowza	"mail-hook"	"Region to Zippy quote" t) ; ^X^Y
+(autoload  'mail-mode-hook	"mail-hook" 	"Mail  Mode Hook")
+(autoload 'rmail-mode-hook	"mail-hook"	"Rmail Mode Hook")
+(autoload
+ 'rmail-summary-mode-hook	"mail-hook"	"Rmail Summary Mode Hook")
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+mail-hook.el:
+
+(require 'sendmail)			; I redefine mail-yank-original
+(require 'rmail)			; Do I need this? (probably)
+(load "rmailsum")			; rmailsum.el has no provide
+
+;;;; MAIL MODE
+
+(defun mail-mode-hook ()
+  "Redefine Quoting in Reply Mail"
+  (define-key mail-mode-map  "\e\"" 'mail-quote)
+  (setq mail-mode-hook nil))
+
+;;; From /gnu/lisp/sendmail.el
+
+(defun mail-yank-original (arg)
+  "Insert the message being replied to, if any (in rmail).
+Puts point before the text and mark after.
+Indents each nonblank line ARG spaces (default 3).
+*** RBJ indents with the string '? ' always ***.
+Just \\[universal-argument] as argument means don't indent
+and don't delete any header fields."
+  (interactive "P")
+  (if mail-reply-buffer
+      (let ((start (point)))
+	(delete-windows-on mail-reply-buffer)
+	(insert-buffer mail-reply-buffer)
+	(if (consp arg)
+	    nil
+	  (mail-yank-clear-headers start (mark))
+	  (save-excursion
+	    (save-restriction
+	      (narrow-to-region start (mark))
+	      (goto-char (point-min))
+	      (replace-regexp "^." "? \\&"))) ; RBJ
+	  )
+	(exchange-point-and-mark)
+	(if (not (eolp)) (insert ?\n)))))
+
+;;; Mail Utility Functions
+
+(defun yowza (beg end)			; ^X^Y
+  "Replace region with YOW quote."
+  (interactive "*r")
+  (call-process-region beg end "yow" t t t))
+
+(defun mail-quote ()			; \e""
+  "Rip off Mail Header and Quote Body"
+  (interactive "*")
+  (beginning-of-buffer)
+  (re-search-forward "^ *$")
+  (forward-char)
+  (delete-region (point-min) (point))
+  (while (not (eobp))
+    (if (looking-at ".")
+	(insert "? "))
+    (forward-line))
+  (insert-file "~/.signature")
+  (end-of-buffer)
+  (push-mark)
+  (yowza (point) (point)))
+
+;;; RMAIL MODE functions
+
+(defun rmail-mode-hook ()
+  "Rmail Mode Hook"
+  (define-key rmail-mode-map "/" 'rmail-search)
+  (define-key rmail-mode-map "H" 'rmail-header-clean)
+  (define-key rmail-mode-map "I" 'set-rmail-inbox-list)
+  (define-key rmail-mode-map "U" 'undigestify-rmail-message)
+  (setq rmail-mode-hook nil))
+      
+;;; Rmail header cleaning
+
+(defun rmail-header-clean-internal (l) "Clean gubbish from rmail headers."
+  (mapcar (function (lambda (r)
+		      (setq size (point-max))
+		      (message "%d/%d (%d%%); `%s'"
+			       size max (/ size (/ max 100)) r)
+		      (goto-char 1)
+		      (delete-matching-lines r)))
+	  l))
+
+(defun rmail-header-clean () "Clean gubbish from rmail headers."
+  (interactive)
+  (widen)
+  (let ((buffer-read-only nil) (case-fold-search t)
+	(size 0) (max (point-max)))
+    (rmail-header-clean-internal
+     (list "^Received: " "^Message-I[dD]: " "^References: "
+	   "^In-Reply-To: " "^\tid <?A[AB][0-9]+[@a-z0-9.>-]*;"
+	   "^Approved: " "^Newsgroups: " "^Keywords: "
+	   "^\t(?contact .* if you have questions[).]*$"
+	   "^Followup-To: " "^Mmdf-Warning: "
+	   "^\\(Nf-\\|Resent-\\)[a-z-]+: "
+	   (concat "^\tfor \\("
+		   "arpa-unix-emacs@bbn\\.com ("			"\\|"
+		   "[a-z+-]+@prep\\.ai\\.mit\\.edu ("			"\\|"
+		   "gnu-manual@a\\.cs\\.uiuc\\.edu ("			"\\|"
+		   "namedroppers@sri-nic\\.arpa ("			"\\|"
+		   "tcp-ip@sri-nic\\.arpa ("				"\\|"
+		   "xpert@[a-z.]+\\.mit\\.edu ("			"\\)")
+	   (concat "^Reply-To: \\("
+		   "INFO-UNIX@brl\\.mil"				"\\|"
+		   "UNIX-WIZARDS@brl\\.mil"				"\\|"
+		   "Sun-Spots@rice\\.edu"				"\\|"
+		   "std-unix@uunet\\.uu\\.net"				"\\|"
+		   "tcp-ip@sri-nic\\.arpa"				"\\)$")
+	   (concat "Return-Path: \\("
+		   "<[a-z+-]+-request@prep\\.ai\\.mit\\.edu>"		"\\|"
+		   "<arpa-unix-emacs-request@[a-z]+\\.bbn\\.com>"	"\\|"
+		   "<info-mach-Request@wb1\\.cs\\.cmu\\.edu>"		"\\|"
+		   "<namedroppers-RELAY@sri-nic\\.arpa>"		"\\|"
+		   "<info-unix-request@sem\\.brl\\.mil>"		"\\|"
+		   "<unix-wizards-request@sem\\.brl\\.mil>"		"\\|"
+		   "<unix-sources-request@smoke\\.brl\\.mil>"		"\\|"
+		   "<tcp-ip-RELAY@sri-nic\\.arpa>"			"\\|"
+		   "<Sun-Spots-Request@rice\\.edu>"			"\\|"
+		   "<xpert-request@[a-z.]+\\.mit\\.edu>"		"\\)$")
+	   (concat "^Sender: \\("
+		   "arpa-unix-emacs-request@bbn\\.com"			"\\|"
+		   "[a-z+-]+-request@prep\\.ai\\.mit\\.edu"		"\\|"
+		   "unix-emacs-request@BBN\\.COM"			"\\|"
+		   "namedroppers-request@sri-nic\\.arpa"		"\\|"
+		   "tcp-ip-request@sri-nic\\.arpa"			"\\|"
+		   "xpert-request@[a-z.]+\\.mit\\.edu"			"\\)$")
+	   (concat "^\\(Cc\\|To\\): \\("
+		   "tcp-ip@sri-nic\\.arpa"				"\\|"
+		   "xpert@[a-z.]+\\.mit\\.edu"				"\\)$")
+	   "^Source-Info: " "^Status: "
+	   ))
+    (setq size (point-max))
+    (message "Done, %d -> %d, %d (%d%%)"
+	     max size (- size max) (/ size (/ max 100))))
+  (rmail-show-message 1))
+
+;;; RMAIL SUMMARY MODE
+
+(defun rmail-summary-mode-hook ()
+  "Rmail Summary Mode Hook"
+  (define-key rmail-summary-mode-map "\^n" nil)
+  (define-key rmail-summary-mode-map "\^p" nil)
+  (define-key rmail-summary-mode-map "\en" 'rmail-summary-next-all)
+  (define-key rmail-summary-mode-map   "N" 'rmail-summary-next-all)
+  (define-key rmail-summary-mode-map "\ep" 'rmail-summary-previous-all)
+  (define-key rmail-summary-mode-map   "P" 'rmail-summary-previous-all)
+  (define-key rmail-summary-mode-map "\^j" 'rmail-summary-goto-msg)
+  (define-key rmail-summary-mode-map "O" 'rmail-output-other-window)
+  (define-key rmail-summary-mode-map "A" 'rmail-add-label-other-window)
+  (define-key rmail-summary-mode-map "K" 'rmail-kill-label-other-window)
+  (define-key rmail-summary-mode-map "S" 'rmail-summary-sort)
+  (define-key rmail-summary-mode-map "%" 'rmail-summary-split)
+  (setq rmail-summary-mode-hook nil))
+
+;;; Rmail {output,add/kill label} (to rmail file) other window
+
+(defun rmail-output-other-window ()
+  "Like C-x o, o, C-x o."
+  (interactive)
+  (other-window 1)
+  (call-interactively 'rmail-output-to-rmail-file)
+  (other-window 1))
+
+(defun rmail-add-label-other-window ()
+  "Like C-x o, a, C-x o."
+  (interactive)
+  (other-window 1)
+  (call-interactively 'rmail-add-label)
+  (other-window 1))
+
+(defun rmail-kill-label-other-window ()
+  "Like C-x o, k, C-x o."
+  (interactive)
+  (other-window 1)
+  (call-interactively 'rmail-kill-label)
+  (other-window 1))
+
+(defconst rmail-summary-column 50
+  "Column `Subject' field starts in summary buffer.
+Note that this is eight more than it used to be
+because of addition of message size to summary.")
+
+;;; Rmail summary sort
+
+(defun rmail-summary-sort ()
+  "Sort the Rmail Summary buffer."
+  (interactive)
+  (let ((buffer-read-only nil))
+    (mark-whole-buffer)
+    (downcase-region 1 (point-max))
+    (replace-regexp "re:[ 	]+" "" nil)
+    (goto-char (point-max))
+    (while (> (+ 4 rmail-summary-column) (current-column)) ; len(subj) > 4
+      (end-of-line 0))
+    (sort-columns nil rmail-summary-column (point))))
+
+;;; Rmail summary split
+
+(defun rmail-summary-split (col)
+  "Sort the Rmail Summary buffer."
+  (interactive "p")
+  (let ((buffer-read-only nil)
+	(sfx)
+	(file)
+	)
+    (mark-whole-buffer)
+    (downcase-region 1 (point-max))
+    (replace-regexp "re:[ 	]+" "" nil)
+    (goto-char 1)
+    (while (not (eobp))
+      (move-to-column (+ rmail-summary-column col -1))
+      (setq sfx (char-after (point)))
+      (sit-for 0)
+      (or (and (<= ?A sfx) (<= sfx ?Z))
+	  (and (<= ?a sfx) (<= sfx ?z))
+	  (setq sfx ?@))
+      (save-excursion
+	(rmail-summary-goto-msg)
+	(other-window 1)
+	(setq file (concat (buffer-name) "-"
+			   (char-to-string sfx)))
+	(rmail-output-to-rmail-file file)
+	(other-window 1)
+	(rmail-summary-delete-forward))
+      (beginning-of-line 2))))
+
+;;;; REDEFINITIONS from rmailsum.el
+
+;;;; Fix bug when summary buffer has been resorted
+
+(defun rmail-summary-goto-msg (&optional n nowarn)
+  (interactive "P")
+  (if (consp n) (setq n (prefix-numeric-value n)))
+  (if (eobp) (forward-line -1))
+  (beginning-of-line)
+  (let ((buf rmail-buffer)
+	(cur (point))
+	(curmsg (string-to-int
+		 (buffer-substring (point)
+				   (min (point-max) (+ 5 (point)))))))
+    (if (not n)
+	(setq n curmsg)
+      (if (< n 1)
+	  (progn (message "No preceding message")
+		 (setq n 1)))
+      (if (> n rmail-total-messages)
+	  (progn (message "No following message")
+		 (goto-char (point-max))
+		 (rmail-summary-goto-msg)))
+      (goto-char (point-min))
+      (if (not (re-search-forward (concat "^ *" (int-to-string n)
+					  "[^0-9]") nil t))
+	  (progn (or nowarn (message "Message %d not found" n))
+		 (setq n curmsg)
+		 (goto-char cur))))
+    (beginning-of-line)
+    (skip-chars-forward " ")
+    (skip-chars-forward "0-9")
+    (save-excursion (if (= (following-char) ?-)
+			(let ((buffer-read-only nil))
+			  (delete-char 1)
+			  (insert " "))))
+    (beginning-of-line)
+    (pop-to-buffer buf)
+    (rmail-show-message n)
+    (pop-to-buffer rmail-summary-buffer)))
+
+;; Redefine RMAIL-SUMMARY to always recompute if given ARG
+
+(defvar rmail-summary-reuse t)		;RBJ
+
+(defun rmail-summary (arg)
+  "Display a summary of all messages, one line per message."
+  (interactive "P")
+  (setq rmail-summary-reuse (not arg))	;RBJ
+  (rmail-new-summary "All" nil))
+
+(defun rmail-make-summary-line (msg)
+  (let ((line (or (and rmail-summary-reuse ;RBJ
+		       (aref rmail-summary-vector (1- msg)))
+		  (progn
+		    (setq new-summary-line-count
+			  (1+ new-summary-line-count))
+		    (if (zerop (% new-summary-line-count 10))
+			(message "Computing summary lines...%d"
+				 new-summary-line-count))
+		    (rmail-make-summary-line-1 msg)))))
+    ;; Fix up the part of the summary that says "deleted" or "unseen".
+    (aset line 4
+	  (if (rmail-message-deleted-p msg) ?\D
+	    (if (= ?0 (char-after (+ 3 (rmail-msgbeg msg))))
+		?\- ?\ )))
+    line))
+
+(defun rmail-make-summary-line-1 (msg)
+  (goto-char (rmail-msgbeg msg))
+  (let* ((lim (save-excursion (forward-line 2) (point)))
+	 pos
+	 (labels
+	  (progn
+	    (forward-char 3)
+	    (concat
+;	     (if (save-excursion (re-search-forward ",answered," lim t))
+;		 "*" "")
+;	     (if (save-excursion (re-search-forward ",filed," lim t))
+;		 "!" "")
+	     (if (progn (search-forward ",,") (eolp))
+		 ""
+	       (concat "{"
+		       (buffer-substring (point)
+					 (progn (end-of-line) (point)))
+		       "} ")))))
+	 (line
+	  (progn
+	    (forward-line 1)
+	    (if (looking-at "Summary-line: ")
+		(progn
+		  (goto-char (match-end 0))
+		  (setq line
+			(buffer-substring (point)
+					  (progn (forward-line 1) (point)))))))))
+    ;; Obsolete status lines lacking a # should be flushed.
+    (and line
+	 (not (string-match "#" line))
+	 (progn
+	   (delete-region (point)
+			  (progn (forward-line -1) (point)))
+	   (setq line nil)))
+    ;; If we didn't get a valid status line from the message,
+    ;; make a new one and put it in the message.
+    (or line
+	(let* ((case-fold-search t)
+	       (next (rmail-msgend msg))
+	       (beg (if (progn (goto-char (rmail-msgbeg msg))
+			       (search-forward "\n*** EOOH ***\n" next t))
+			(point)
+		      (forward-line 1)
+		      (point)))
+	       (end (progn (search-forward "\n\n" nil t) (point))))
+	  (save-restriction
+	    (narrow-to-region beg end)
+	    (goto-char beg)
+	    (setq line (rmail-make-basic-summary-line)))
+	  (goto-char (rmail-msgbeg msg))
+	  (forward-line 2)
+	  (insert "Summary-line: " line)))
+    (setq pos (string-match "#" line))
+    (aset rmail-summary-vector (1- msg)
+	  (concat (format "%4d%8d  " msg
+			  (- (rmail-msgend msg)	;RBJ
+			     (rmail-msgbeg msg))) ;RBJ
+		  (substring line 0 pos)
+		  labels
+		  (substring line (1+ pos))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+	Root Boy Jim is what I am
+	Are you what you are or what?
+
+

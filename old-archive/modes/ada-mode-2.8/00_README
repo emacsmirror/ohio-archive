@@ -1,0 +1,70 @@
+00_README for Ada Mode v2.8:
+----------------------------
+
+In this directory you find all the files to use Emacs for programming in
+Ada.  There is also a short manual called Ada-Mode-Manual.  Some minor
+discrepancies between the doc and the code might exist.  Please tell me
+about them.  An up to date distribution can be found on cs.nyu.edu:/pub/gnat.
+
+
+This release was built on Gnu Emacs 19.28.  The releases 19.25 upto
+19.28 are mainly bug fix releases.  This means, that the Ada Mode won't
+run on Emacsen older than 19.24.  Anyway, I recommend to use Emacs 19.27
+or 19.28.
+
+
+I'd like to get some input from people using Xemacs (formerly Lucid
+Emacs).  What are your difficulties? What files are missing?
+
+
+Installation
+------------
+
+Put all these files in your load path and copy `dot.emacs' into your
+personal emacs start up file `.emacs'.
+
+I highly recommend to byte-compile all files (e.g. with
+M-x byte-recompile-directory) 
+
+If you don't understand what I'm talking about, look into
+Ada-Mode-Manual and the Emacs online help (C-h i emacs)
+
+
+Files
+-----
+
+The main Ada Mode is in ada-mode.el.  It contains the standard setup
+with support routines for imenu, font-lock, and find-file.  Its principal
+code contains the indenting functions.
+
+As extensions to this mode you get ada-stmt.el for statement templates,
+and ada-xref.el for using your Ada sources like a hyperlinked document
+(show declarations of entities in another window)
+
+I deleted skeleton.el and imenu.el from the distribution as they are
+part of Gnu Emacs since 19.25. Find-file.el was updated to the actual
+version 2.7.  Compile.el and font-lock.el are prereleases of a future
+Emacs version. 
+
+Read the file `Changes', if you want to know, what is new in this
+version.
+
+
+Contributions
+-------------
+
+The new file ada-verdix.el contains some useful routines, if you are
+working with a VADS environment.
+
+
+If you have any problems, please mail to Rolf Ebert <ebert@inf.enst.fr>,
+Markus Heritsch <Markus.Heritsch@studbox.uni-stuttgart.de> or the Ada
+Mode mailing list <ada-mode@inf.enst.fr>.  You can also subscribe to
+this list by sending a message to listserv@inf.enst.fr with empty
+subject and the contents:
+
+sub ada-mode Your Full Name
+
+
+	Rolf Ebert
+

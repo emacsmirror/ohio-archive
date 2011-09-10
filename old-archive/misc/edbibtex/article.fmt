@@ -1,0 +1,23 @@
+******************************* ARTICLE ********************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+        Title: \title
+      Journal: \journal
+         Year: \year
+................................................................Optional
+       Volume: \volume
+       Number: \number
+        Pages: \pages
+        Month: \month
+         Note: \note
+          Key: \key
+     Crossref: \crossref
+.................................................................Ignored
+       Errata: \errata
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+******************************* ARTICLE ********************************

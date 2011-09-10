@@ -1,0 +1,106 @@
+WELCOME TO SUPERCITE VERSION 3.1  -- 1993/09/22 22:00:15
+
+README revision: 3.11
+
+What you have in your hands is the release of Supercite version 3.1, which
+represents an almost complete rewrite from version 2.3.  This README file
+contains a brief overview and a quick guide to getting connected for those
+of you who don't like to read manuals.  More detail is provided in the
+Texinfo manual, which you can format and read with:
+
+	% texi2dvi supercite.texi
+
+This produces a .dvi file which you can read with xdvi or convert to
+PostScript and printout on a compatible printer with dvi2ps.  All this
+assumes you have the latest GNU texinfo release (3.1) and TeX 3.  If you
+don't have TeX, just add the file to your info tree.  Consult the Emacs
+documentation to find out how to do this.
+
+MANIFEST
+========
+
+This package should include the following files:
+
+regi.el (1.8)         -- REGular expression Interpreting engine.
+reporter.el (1.23)    -- Bug report generator.
+supercite.el (3.54)   -- Supercite.
+sc-oloads.el (3.10)   -- Overloading for old Emacsen.
+sc-unsupp.el (3.7)    -- Some unsupported noodlings.
+supercite.texi (3.47) -- TeXinfo manual for Supercite.
+README (3.11)         -- This file.
+
+Note that regi.el and reporter.el have been released as separate packages.
+You should already have reporter.el if you have c++-mode.el 2.353 or
+later.  Check the version numbers on reporter.el and keep the newest copy.
+The interface is the same so it will work in a backwards compatible way.
+
+In addition, you may want to pickup filladapt.el or gin-mode, but I don't
+provide them here.
+
+If you want to run bare-bones, and you are using the latest versions of
+all the supported environments, you only really need regi.el, reporter.el,
+and supercite.el.
+
+
+QUICK GUIDE TO GETTING CONNECTED:
+=================================
+For all of the latest versions of supported software (GNUS, RMAIL, and
+RNEWS under FSFmacs 19.16 or later or Lemacs 19.8 or later, VM 5.34 or
+later, and MH-E 4 or later), just do the following to start using
+Supercite:
+
+1. byte compile supercite.el, regi.el, and reporter.el.  You will get some
+   warnings from the byte compiler which you can safely ignore.
+
+2. add this to your .emacs file:
+
+	(autoload 'sc-cite-original     "supercite" "Supercite 3.1" t)
+	(autoload 'sc-submit-bug-report "supercite" "Supercite 3.1" t)
+	(add-hook 'mail-citation-hook 'sc-cite-original)
+
+That's it!  If you are running any older version of Emacs or MUA, please
+consult the texinfo manual for details.  Every conceivable combination is
+covered therein, but there are too many to outline here.
+
+CHANGES SINCE VERSION 3.0
+=========================
+New variable sc-cite-blank-lines-p.
+
+Inconsistent naming of variable sc-mumble-string and sc-mail-mumble.
+All instances were changed to sc-mumble.
+
+Bug fixes, bug fixes, bug fixes!
+
+CHANGES SINCE VERSION 2.3
+=========================
+This version of Supercite is compatible with FSFmacs 19's
+transient-mark-mode and Lemacs' zmacs-active-regions.  You should no
+longer need the sc-pre-hook hack for getting Supercite 2.3 working with
+FSFmacs 19.  If you don't know what this means, ignore it.
+
+Also note that with any of the latest Emacs 19's you DO NOT NEED
+overloading anymore.  The major exception is for GNEWS.  You should
+remove any references to sc-oloads.el.  You'll still need overloading
+for most Emacs 18's and some older Emacs 19's.
+
+Finally, note that the main file has changed to supercite.el.  For
+version 2 it used to be sc.el.  You'll need to change any require's
+you might have in your .emacs file.
+
+There are lots of new options and variables; please check out the texinfo
+manual for details.
+
+CONTACTING THE AUTHOR
+=====================
+
+Questions, problems?  You can reach me at:
+
+	supercite-help@anthem.nlm.nih.gov
+
+To get on the Supercite mailing list, send an add request to:
+
+	supercite-request@anthem.nlm.nih.gov
+
+To send messages to the list:
+
+	supercite@anthem.nlm.nih.gov

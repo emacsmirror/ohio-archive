@@ -1,0 +1,42 @@
+~/snail -- paper mail address database.
+
+The records within this file are separated by a form feed on a line by
+itself.  Everything before the first record is treated as a file comment
+and will be ignored.
+
+Field values are preceded by the field name (tagged file layout).  The
+following list shows the fields defined so far.
+
+    Label:		A unique label identifying this record
+    Organization:	Name of organization
+    Department:		Name of department
+    Occupation:		A brief job description
+    Address:		Title used in speech, e.g., `Mr.'
+    Title:		Offical title, e.g., `M. Sc.'
+    First-Name:		First name
+    Family-Name:	Family name
+    Street:		Name of street or P.O. box code
+    Zip-Code:		Zip (brit. postal) code
+    Location:		Name of city or town
+    Country:		Name of country
+    Phone:		Phone number
+    Fax:		Fax number
+    E-Mail:		E-mail address
+    Birthday:		Date of birth
+    Comment:		Additional information or notes
+
+All fields of a record are optional and the order doesn't matter.  Spaces
+and tabs after the colon are ignored.  `Organization:', `Department:' and
+`Comment:' are multi-line fields (continuation lines begin with a single
+tab).
+
+Label:rs
+First-Name:Ralph
+Family-Name:Schleicher
+Street:Biberacher Straﬂe 40
+Zip-Code:88416
+Location:Ochsenhausen
+Country:Germany
+Phone:+49-7352-51322
+Fax:+49-7352-7425
+E-Mail:rs@purple.IN-Ulm.DE

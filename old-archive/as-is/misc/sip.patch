@@ -1,0 +1,189 @@
+Return-Path: <jbw%bucsf.BU.EDU@bu-cs.bu.edu>
+Date:  Fri, 21 Apr 89 20:57:06 edt
+From: Joe Wells <jbw%bucsf.BU.EDU@bu-cs.bu.edu>
+To: info-gnu-emacs@prep.ai.mit.edu
+Subject: scrolling package
+
+Here are some bug-fixes for the enhanced scrolling package I posted a
+week ago.
+
+Enjoy!
+
+--
+Joe Wells <jbw@bucsf.bu.edu>
+jbw%bucsf.bu.edu@bu-it.bu.edu
+...!harvard!bu-cs!bucsf!jbw
+----------------------------------------------------------------------
+*** scroll-fix.el.orig	Fri Apr 21 20:54:34 1989
+--- scroll-fix.el	Fri Apr 21 20:44:47 1989
+***************
+*** 20,26 ****
+  ;; and this notice must be preserved on all copies.
+  
+  ;; Author: Joe Wells
+! ;; Last changed: Sun Apr 16 12:02:20 1989 by jbw (Joseph Wells) on bucsf
+  ;; jbw%bucsf.bu.edu@bu-it.bu.edu (school year)
+  ;; joew%uswest@boulder.colorado.edu (summer)
+  
+--- 20,26 ----
+  ;; and this notice must be preserved on all copies.
+  
+  ;; Author: Joe Wells
+! ;; Last changed: Fri Apr 21 20:44:46 1989 by jbw (Joseph Wells) on bucsf
+  ;; jbw%bucsf.bu.edu@bu-it.bu.edu (school year)
+  ;; joew%uswest@boulder.colorado.edu (summer)
+  
+***************
+*** 94,99 ****
+--- 94,105 ----
+  beginning or end of the buffer, point is moved to the beginning of end
+  of buffer.  This is the location of point before the move.")
+  
++ (defconst sip:command-list
++   '(scroll-down-in-place scroll-up-in-place)
++   "DON'T USE THIS!
++ Names of commands that use the enhanced scrolling.  Used to detect
++ whether the previous command was a scrolling operation.")
++ 
+  (defun scroll-in-place (arg)
+    "Toggle the scroll-in-place enhanced scrolling feature.  With
+  argument, turn feature on if arg is positive.  The enhanced scrolling
+***************
+*** 157,164 ****
+  	 (lines (- height next-screen-context-lines))
+  	 (default-lines (if (< lines 0) 1 lines))
+  	 (n (prefix-numeric-value arg))
+! 	 (first-scroll
+! 	  (not (memq last-command '(scroll-down-in-place scroll-up-in-place))))
+  	 moved)
+      
+      ;; Barf on zero ARG argument
+--- 163,169 ----
+  	 (lines (- height next-screen-context-lines))
+  	 (default-lines (if (< lines 0) 1 lines))
+  	 (n (prefix-numeric-value arg))
+! 	 (first-scroll (not (memq last-command sip:command-list)))
+  	 moved)
+      
+      ;; Barf on zero ARG argument
+***************
+*** 168,194 ****
+      (or (= direction 1) (= direction -1)
+  	(while t (signal 'args-out-of-range (list 'direction direction))))
+      
+      ;; Figure out how much vertical motion to use.  An explicit
+!     ;; argument is always given precedence.  An explicit argument of
+!     ;; '- (the symbol) means negative default scrolling (needs work).
+!     ;; If no explicit argument is given, we decide based on several
+!     ;; factors.  First, if a immediately preceding scroll command ran into
+!     ;; a buffer boundary, and didn't go full distance, and this is a
+      ;; scroll in the opposite direction, go back the amount that last
+!     ;; command traveled.  Second, if following a prior scroll use the
+!     ;; last explicit argument.  Else, default lines are calculated to
+!     ;; leave next-screen-context-lines of scrolling context on the
+!     ;; screen.
+      (cond ((or (numberp arg) (consp arg))
+  	   (setq lines n
+  		 sip:default-motion n
+  		 sip:eob-motion nil
+  		 sip:eob-last-point nil))
+- 	  ((eq arg '-)			;needs more work
+- 	   (setq lines default-lines
+- 		 direction (- direction)
+- 		 sip:eob-motion nil
+- 		 sip:eob-last-point nil))
+  	  (first-scroll
+  	   (setq lines default-lines
+  		 sip:default-motion default-lines
+--- 173,203 ----
+      (or (= direction 1) (= direction -1)
+  	(while t (signal 'args-out-of-range (list 'direction direction))))
+      
++     ;; If we get an argument of - (the symbol named "-"), we treat it
++     ;; as though we received an argument of nil and the opposite direction.
++     (if (eq arg '-)
++ 	(setq direction (- direction)
++ 	      arg nil
++ 	      n (prefix-numeric-value nil)))
++     
+      ;; Figure out how much vertical motion to use.  An explicit
+!     ;; argument is always given precedence.  If no explicit argument
+!     ;; is given, we decide based on several factors.  First, if this
+!     ;; scrolling command does not follow another, ie. it is the first,
+!     ;; then we use the default, calculated to leave
+!     ;; next-screen-context-lines of context on the screen.  Second, we
+!     ;; check if this should reverse a scrolling command that moved
+!     ;; point to the end/beginning of the buffer.  Third, if an
+!     ;; immediately preceding scroll command couldn't scroll full
+!     ;; distance because it ran into a buffer boundary, and this is a
+      ;; scroll in the opposite direction, go back the amount that last
+!     ;; command traveled.  Fourth, if following a prior scroll use the
+!     ;; last explicit argument.
+      (cond ((or (numberp arg) (consp arg))
+  	   (setq lines n
+  		 sip:default-motion n
+  		 sip:eob-motion nil
+  		 sip:eob-last-point nil))
+  	  (first-scroll
+  	   (setq lines default-lines
+  		 sip:default-motion default-lines
+***************
+*** 196,204 ****
+  		 sip:eob-last-point nil))
+  	  (sip:eob-last-point
+  	   (or (bobp) (eobp)
+! 	       (error "sip:eob-last-point set erroneously!"))
+  	   (and (eq sip:eob-last-point (point))
+! 		(error "sip:eob-last-point set to buffer boundary!"))
+  	   ;; In this case, we're doing the actual motion right here.
+  	   (setq lines 0)
+  	   ;; Only do something if scrolling away from buffer boundary.
+--- 205,213 ----
+  		 sip:eob-last-point nil))
+  	  (sip:eob-last-point
+  	   (or (bobp) (eobp)
+! 	       (error "bad value: sip:eob-last-point: %s" sip:eob-last-point))
+  	   (and (eq sip:eob-last-point (point))
+! 		(error "bad value: sip:eob-last-point: %s" sip:eob-last-point))
+  	   ;; In this case, we're doing the actual motion right here.
+  	   (setq lines 0)
+  	   ;; Only do something if scrolling away from buffer boundary.
+***************
+*** 225,233 ****
+  	   ;; We record the number of lines of text in the window
+  	   ;; minus one.  We will use this later to make scrolling up
+  	   ;; from the end of buffer and then back down completely
+! 	   ;; reversible.  Otherwise, the feature of scrolling so
+! 	   ;; that the end of buffer is never higher than the last
+! 	   ;; line of the window would prevent reversibility.
+  	   (setq sip:eob-blank-limit
+  		 (save-excursion
+  		   (goto-char (window-start window))
+--- 234,242 ----
+  	   ;; We record the number of lines of text in the window
+  	   ;; minus one.  We will use this later to make scrolling up
+  	   ;; from the end of buffer and then back down completely
+! 	   ;; reversible.  Otherwise, the scrolling feature that
+! 	   ;; prevents the end of buffer from ever being higher than
+! 	   ;; the last line of the window would prevent reversibility.
+  	   (setq sip:eob-blank-limit
+  		 (save-excursion
+  		   (goto-char (window-start window))
+***************
+*** 267,273 ****
+  		       (ding)
+  		       (message (get 'end-of-buffer 'error-message))
+  		       (throw 'buffer-boundary t))))
+! 	       (t (error "Impossible value")))
+  	 (set-window-start window (point)))
+         (if (< (abs moved) (abs lines))
+  	   (setq sip:eob-motion moved))
+--- 276,282 ----
+  		       (ding)
+  		       (message (get 'end-of-buffer 'error-message))
+  		       (throw 'buffer-boundary t))))
+! 	       (t (error "bad value: lines: %s" lines)))
+  	 (set-window-start window (point)))
+         (if (< (abs moved) (abs lines))
+  	   (setq sip:eob-motion moved))
+

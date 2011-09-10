@@ -1,0 +1,1444 @@
+\input texinfo   @c -*-texinfo-*-
+@c Bruce's Time-stamp: <98/07/27 19:46:08 bruce>
+
+@c $Id: $
+
+@c @include{from-calc.texi}
+
+@c %**start of header
+@setfilename fuse-tutorial.info
+@settitle FUSE Tutorial
+@setchapternewpage odd
+@c %**end of header
+
+
+@macro fuse{}
+@iftex
+{@sf FUSE}
+@end iftex
+@ifnottex
+FUSE
+@end ifnottex
+@end macro
+
+
+@macro greek{x,y}
+@ifnottex
+\x\(\y\)
+@end ifnottex
+@tex
+$@\x\{(\y\)}$
+@end tex
+
+@end macro
+
+@macro greekletter{x}
+@ifnottex
+\x\
+@end ifnottex
+@tex
+$@\x\$
+@end tex
+
+@end macro
+
+@macro greeknot {x,y}
+@ifnottex
+\x\_0(\y\)
+@end ifnottex
+@tex
+$@\x\_0{(\y\)}$
+@end tex
+
+@end macro
+
+@macro ezero{}
+@ifnottex
+E_0
+@end ifnottex
+@tex
+$E_0$
+@end tex
+
+@end macro
+
+@macro thetad{}
+@ifnottex
+theta_D
+@end ifnottex
+@tex
+$\Theta_D$
+@end tex
+
+@end macro
+
+@macro sigsqr{}
+@ifnottex
+sigma^2
+@end ifnottex
+@tex
+$\sigma^2$
+@end tex
+
+@end macro
+
+@macro amp{}
+@ifnottex
+s0^2
+@end ifnottex
+@tex
+$S_0^2$
+@end tex
+
+@end macro
+
+@syncodeindex ky cp
+
+
+@set version 0.1 for {@sf FUSE 0.5.6}
+@set updatedate 27 July, 1998
+
+@direntry
+* FUSE Tutorial: (fuse-tutorial).   Tutorial for FUSE
+@end direntry
+
+@titlepage
+@title {@sf FUSE} Tutorial
+@subtitle Learning the @sc{feff}/@sc{uwxafs} System for Emacs
+@subtitle Version @value{version}
+@author Bruce Ravel
+
+
+@page
+
+@display
+The author of {@sf FUSE}, Bruce Ravel, can be reached at:@*
+Ceramics Division, Room 329
+National Institute of Standards and Technology
+Gaithersburg, MD 20899@*
+@email{<ravel@@phys.washington.edu>}@*
+The latest version of {@sf FUSE} can always be found at
+@url{http://feff.phys.washington.edu/~ravel/fuse/}
+@end display
+
+@vskip 0pt plus 1filll
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice must be stated in a translation
+approved by the author.
+
+@sp 2
+Copyright @copyright{} 1998 Bruce Ravel @email{<ravel@@phys.washington.edu>}@*
+Updated @value{updatedate}
+
+@end titlepage
+
+@ifinfo
+@node Top, Introduction, (dir), (dir)
+@top Master Menu
+@end ifinfo
+
+@ifinfo
+This document is a tutorial designed to get you started using FUSE.
+This tutorial will walk you through a simple EXAFS analysis problem,
+copper metal, using @sc{feff}, the @sc{uwxafs} programs, and FUSE.
+It is a good idea to work all the way through this tutorial the first
+time you sit down with FUSE.  FUSE adds considerable value to the
+programs and greatly facilitates their use.
+@end ifinfo
+
+
+
+
+
+
+@menu
+* Introduction::
+* Running Atoms::
+* Running Feff::
+* Running Autobk::
+* Running Feffit::
+* Plotting with Gnuplot::
+* Closing Remarks::
+* Index::
+@end menu
+
+@node Introduction, Running Atoms, Top, Top
+@comment  node-name,  next,  previous,  up
+@chapter Introduction
+
+In this tutorial, I will lead you step by step through the analysis of
+some copper data.  Along the way, we will explore many of the features
+of @fuse{}.  In this tutorial I assume that you, the reader, are
+familiar with the physics of EXAFS and the principles of EXAFS analysis.
+I also assume that you are familiar with @sc{feff} and the @sc{uwxafs}
+programs, although you certainly do not have to be an expert in their
+use.  In fact, working through this tutorial is a good way to explore
+some of the features of those programs.  I make some effort in this
+tutorial to accomodate the Emacs novice.  It is possible that a reader
+may have been drawn to @fuse{} despite not being a convert to the
+religion of Emacs.@footnote{It is not a ridiculous exageration to refer
+to Emacs as a religion.  Many of its adamant users, your humble author
+included, use it for almost everything they do on a computer.  Well, now
+the faithful can even analyze their EXAFS data.  Nirvana!}  For that
+reader, I try to offer enough guidance that she can get through the
+entire tutorial without having to know too many magic Emacs key
+sequences.
+
+@menu
+* Using Emacs::                 A few hints for the non-expert
+* Getting Started::             Preparing for an analysis problem with FUSE
+* A Few Notes::                 A few notes about this document
+@end menu
+
+@node Using Emacs, Getting Started, Introduction, Introduction
+@comment  node-name,  next,  previous,  up
+@section Using Emacs
+
+
+@cindex key sequences
+As an aid to the Emacs-non-expert, I will explain some of the notation
+that I will use in the pages to come.  Many tasks in Emacs (using
+@fuse{} or performing any other editing chore) involce the use of
+modifier keys.  When you read something like @kbd{C-c}, that means to
+hold down the @key{ctrl} key while hitting the @kbd{c} character.
+@kbd{C-c C-r r} then means to hit @key{ctrl} and @key{c} followed by
+@key{ctrl} and @key{r} followed by @key{r}.  In Emacs jargon @kbd{M-} is
+read as @code{Meta} and, on most keyboards, refers either to the
+@key{alt} or @key{esc} key.  These two can be used interchangably,
+however these two keys typically behave somewhat differently.  When you
+read @kbd{M-n} that means @emph{either} to hit the @key{alt} and @key{n}
+keys at the same time @emph{or} to hit the @key{esc} key followed by the
+@key{n} key.  @kbd{S-} is interpretted the same as @kbd{C-} except that
+it means to hold the @key{shift} while hitting the following character.
+In a few cases, a key sequence may involve more than one modifier.
+@kbd{M-C-`} means to hit @key{`} (that is the backtick or open quote
+character) while holding down both @key{alt} and @key{ctrl}.
+
+@cindex using the mouse
+I will assume that you are using a three-button mouse or a mouse capable
+of three-button emulation.  Throughout this document I will refer to the
+mouse buttons as @code{mouse-1}, @code{mouse-2}, and @code{mouse-3}.
+typically @code{mouse-1} is the left button, @code{mouse-2} is the
+middle, and @code{mouse-3} is the right.  Sometimes this arrangement is
+altered to suit the preferences of the user.
+
+@cindex echo area
+@cindex minibuffer
+@cindex mode line
+Most of the interactivity of Emacs occurs either via pop-up windows or
+through the minibuffer.  Pop-up windows usually have text, buttons, and
+menus which are fairly self-explanatory.  The minibuffer is that strip
+at the bottom of the Emacs frame below the mode line.  That space is
+reserved for displaying messages and for interaction with the user.
+Many of the functions in @fuse{} use this space for one of those
+purposes.  The phrase @emph{minibuffer} is used to refer to that space
+when Emacs is interacting with the user and the phrase @emph{echo area}
+is used to describe it when it is displaying a message
+non-interactively.  I will use both terms in this document.
+
+
+There are four ways of making Emacs execute a command or function.
+@itemize @bullet
+
+@item
+@strong{Explicit invocation}: This is done by hitting @kbd{M-x}
+then typing the entire name of the function or command at the prompt
+which appears in the minibuffer.  This method is guaranteed to work in
+all but the most perverse situations, but is not how the user typically
+interacts with Emacs.
+@cindex function invocation
+
+@item
+@strong{Key sequences}: This is the fastest way of executing commands
+while editing text because it does not require moving your hands from
+the keyboard.  Virtually every command in @fuse{} has a key sequence.
+Key sequences are the keystrokes discussed above involving the
+@key{ctrl}, @key{alt}, and normal character keys.
+@cindex key sequences
+
+@item
+@strong{Menu selection}: At the top of the Emacs frame is a menubar with
+pull down menus.  These behave in the same manner as pull down menus in
+other programs and on other systems.  Click @code{mouse-1} on the menu
+label and a menu will open.  Click on an item in the menu and that
+function will execute or click on a submenu, usually denoted by a
+right-pointing triangle, and that submenu will open.  Sometimes a menu
+item will be displayed in grey stipple.  This means that option is not
+currently selectable.  In Emacs, the key sequence bound to same function
+as a menu item is usually written in the right column of the pull down
+menu.  The menus are great for searching for a certain function and also
+serve to teach you the key sequences for the functions you use often.
+@cindex pull-down menus
+
+@item
+@strong{Toolbar selection}: One of the ways XEmacs differs from the
+Emacs written by the Free Software Foundation is that it can display
+images within the frame.  It therefor offers a iconic toolbar.  @fuse{}
+binds several of the most commonly used functions to a toolbar that
+typically is displayed on the left side of the frame.  Click
+@code{mouse-1} on a toolbar icon to execute the function bound to it.  A
+short description of the function appears in the echo area whenever the
+mouse is over the toolbar icon.
+@cindex toolbar
+
+@end itemize
+
+
+@ifinfo
+If you are reading the info version of the document, you
+should switch to the buffer containing the @sc{atoms} input file and
+click @code{mouse-1} on the @code{Input} menu.  You will see several
+submenus that will be referred to throughout this tutorial.  In the
+printed and html manuals, this pull down menu is shown in Figure 1.
+@end ifinfo
+@ifnotinfo
+
+If you have a Emacs open in front of you, click @code{mouse-1} on
+the @code{Input} menu.  The contents of this menu are shown in Figure 1.
+This menu and its submenus will be referred to throughout this tutorial.
+If you click any mouse button anywhere else on your screen, the menu
+will disappear without anything selected.
+@end ifnotinfo
+@c @tex
+@c \vfill
+@c @end tex
+
+@c @page
+
+
+@node Getting Started, A Few Notes, Using Emacs, Introduction
+@comment  node-name,  next,  previous,  up
+@section Starting an Analysis Problem with FUSE
+
+
+In the @code{example} subdirectory of the @fuse{} distribution are two
+files related to this tutorial.  (1) @file{cu10k.dat} contains copper
+@var{K} edge transmission data on a pure copper foil.  (2) @file{copper}
+contains crystallographic data for metallic copper.
+
+Both analysis of data and the use of @fuse{} are facilitated by
+practical and consistent use of th directory structure and disk space
+where you do you work.  Throughout this example I will refer to files
+foudn in certain locations.  These examples reflect my own preference
+for how to organize the many files generated by the various programs
+used to analyze the data.  Although I encourage you to come up with
+practices for managing files with which you are comfortable, I suggest
+that you follow my lead during this example and experiment once you are
+more familiar with @fuse{}.
+
+Remember that the the @code{Buffers} menu or the key sequences @kbd{C-x
+b} or @kbd{C-x C-b} can be used to switch between different buffers.  A
+file is saved by hitting @kbd{C-x C-s} or selecting the save function
+from the @code{Files} menu.  A new file is opened by hitting @kbd{C-x f}
+or selecting @code{Open...} from the @code{Files} menu.  Finally, you
+can quit Emacs by hitting @kbd{C-x C-c} or @code{Exit Emacs} from the
+@code{Files} menu.
+
+@ifnotinfo
+@sp 1
+@center @strong{Figure 1:} @sc{Input} mode pull-down menu
+@sp 1
+@center @image{menu-input, 8cm, }
+@sp 2
+@end ifnotinfo
+
+
+Before launching into using @fuse{}, let's set up some workspace.  I am
+writing this assuming you are parked at a command line in a terminal
+emulator, but these disk management chores could just as easily be done
+with a file manager such as The Midnight Commander or tkDesk or with the
+@code{dired} package in Emacs.  On my computer, I have a directory where
+I do all of my analysis which is called, appropriately enough,
+@file{analysis/}.  Find a place where you want to do the analysis chore
+in this tutorial and @kbd{cd} to that directory.  Now make a directory
+to hold your analysis of the copper data by issuing the command
+@example
+    > mkdir Cu
+@end example
+@noindent
+Now @kbd{cd} to the @file{Cu/} directory.  This will be our base of
+operations for the remainder of this tutorial.
+
+I like to be tidy and place common kinds of files in their own
+subdirectories.  in the @file{Cu/} directory, issue this command
+@example
+    > mkdir data feff fits
+@end example
+@noindent
+This will make three subdirectories for holding the differnt kinds of
+files that will be generated throughout this tutorial.
+
+Now, using the @kbd{cp} command, copy the file @file{cu10k.dat} from the
+@fuse{} distribution into the @file{data/} subdirectory and copy the
+@file{copper} file into the @file{feff/} subdirectory.
+
+Ready for some analysis?
+
+
+@node A Few Notes,  , Getting Started, Introduction
+@comment  node-name,  next,  previous,  up
+@section A Few Notes About this Document
+
+This document was prepared using the GNU Texinfo system.  This allows me
+to generate documentation in info, printed, or html format from a single
+source.  The info, postscript, and html versions of this document can be
+found in the @file{docs/} subdirectory of the @fuse{} distribution.
+
+The images in this document are screen shots of an XEmacs session on my
+computer.  I use Linux 2.0.32, XEmacs 20.4, and the FVWM2 window
+manager.  Some of the text in shots of actual input files is a bit hard
+to read in the printed manual.  This is because of the greyscale
+representation of the syntax colorization of the text.  It may be fuzzy
+in the printed manual, but it looks great on the screen!
+
+Although all of my screen shots are of an XEmacs session, @fuse{} works
+just as well with FSF Emacs as with XEmacs.  The only difference
+significant to this tutorial is the presence of the toolbar in the
+XEmacs frame.  Since all functionality bound to the XEmacs toolbar is
+also bound to pull-down menus, this tutorial proceeds identically for
+both flavors of Emacs.
+
+
+@c ------------------------------------------------------------
+
+
+@node Running Atoms, Running Feff, Introduction, Top
+@comment  node-name,  next,  previous,  up
+@chapter Running Atoms
+
+@menu
+* Starting with Atoms::
+* The Atoms Template::
+* Other Features of Atoms mode::
+@end menu
+
+@node Starting with Atoms, The Atoms Template, Running Atoms, Running Atoms
+@comment  node-name,  next,  previous,  up
+@section Starting with @sc{atoms}
+
+Ultimately we want to use @sc{feffit} analyze the fine structure
+@greek{chi,k} from the copper data.  To get ready for that we need to
+run @sc{feff} to generate a set of fitting standards and run @sc{autobk}
+to isolate @greek{chi,k} from @greek{mu,E}.  But first, we need to run
+@sc{atoms} to generate the appropriate input file for @sc{feff}.
+
+Our first chore, then, is to edit an @sc{atoms} input file.  It is most
+convenient to run @sc{atoms} in the @file{feff} subdirectory, so begin
+editing this input file by typing
+@example
+	> emacs feff/atoms.inp
+@end example
+@noindent
+at the command line.  I am assuming that you are currently in the
+@file{Cu/} directory.  Since it takes some time to start up Emacs and
+since Emacs can hold many files at the same time, @fuse{} is best used
+by firing up Emacs only once and loading successive input files as you
+want to edit them.  We will see how that is done as the tutorial
+progresses.
+
+@cindex mode line
+Once Emacs fires up, you will be presented with a blank screen.  You
+should see two important things on the mode line at the bottom of the
+Emacs window.  Near the left side of the mode line it should say
+@code{atoms.inp} to indicate that you are currently editing that file.
+Somewhere to the right of center you should see the words @code{Input}
+and @code{Atoms}.  These indicate that you are in @code{Input} major
+mode and, since you are editing an @sc{atoms} input file, in
+@code{Atoms} minor mode.  At the top of the Emacs window in the menu
+bar, you should see menus labeled @code{Input} and @code{Atoms}.
+Because the file was named @file{atoms.inp}, @fuse{} assumed that the
+file is intended to run @sc{atoms} and so placed the buffer containing
+the file into @code{Atoms} minor mode.  As the tutorial progresses and
+we edit other input files, you will see that the minor mode changes
+appropriately from buffer to buffer.
+
+@cindex major mode
+@cindex minor mode
+In Emacs, a @emph{major mode} is a state of the program which is
+customized for a particular editing chore.  A @emph{minor mode} is a
+state which modifies certain features and behaviors of Emacs.  In this
+case the major mode is a state customized for editing input files to
+@sc{feff} and the @sc{uwxafs} programs.  Then each program has a minor
+mode associated with it which modifies the behavior of input major mode
+appropriate to the program.  The modes in @fuse{} interacts well with
+most minor modes which offer specific editing features which are offered
+by emacs.
+
+
+@ifinfo
+If you are reading the info version of the document, you can should
+switch to the buffer containing the @sc{atoms} input file and click
+@code{mouse-1} on the @code{Atoms} menu.  You will see the menu items
+discussed below.  In the printed and html manuals, the pull down menu is
+shown in Figure 2.
+@end ifinfo
+@ifnotinfo
+
+Now that you have a buffer open in front of you, click @code{mouse-1} on
+the @code{Atoms} menu.  The contents of this menu are shown in
+Figure 2.  If you click any mouse button anywhere else on your screen,
+the menu will disappear without anything selected.  You can use this
+menu to perform the rest of the tasks in this section.
+@tex
+\vfill
+@end tex
+
+@page
+@sp 1
+@center @strong{Figure 2:} @sc{atoms} mode pull-down menu
+@sp 1
+@center @image{menu-atoms, 8cm, }
+@sp 2
+@end ifnotinfo
+
+@node The Atoms Template, Other Features of Atoms mode, Starting with Atoms, Running Atoms
+@comment  node-name,  next,  previous,  up
+@section Making the @sc{atoms} template
+
+@cindex template, @sc{atoms}
+@kindex C-c C-t t, @sc{atoms}
+The first thing to do is to make a template for this input file.  This
+is done by typing @kbd{C-c C-t t}, choosing @code{Make template} from
+the @code{Atoms} menu, or clicking on the top-most icon in the toolbar.
+When you do this, you will be asked a question in the minibuffer.  At
+this point, @fuse{} is asking which crystal class your material belongs
+to.  For copper, the correct answer is @kbd{c} which is short for
+@emph{cubic}.  Before answering you can hit the @key{tab} key to see a
+list of all possible answers.  This function (and many others in
+@fuse{}) operates with word completion.  Since cubic is the only crystal
+class beginning with @kbd{c}, it suffices to just enter @kbd{c} in this
+case.  After this, a template appears in the buffer.  You will notice
+that this template has a space for the @emph{a} lattice constant, but
+not for @emph{b} or @emph{c} or for any of the angles.  Had you chosen a
+crystal class of lower symmetry, appropriate keywords would have been
+placed in the template.
+
+@cindex hotspots
+@kindex M-n
+@kindex M-p
+@kindex C-t C-c c
+Notice that the template has several salmon colored markings.  These are
+immediately before hotspots in the template.  A hotspot is a place in
+the template where you are expected to insert a value.  The markings
+provide a visual cue for where to place the values.  You can move
+between the hotspots in all the standard ways of moving the screen
+cursor, but there are two special shortcut key sequences.  @kbd{M-n} and
+@kbd{M-p} jump to the next and previous hotspots.  When you are done
+filling in the keyword values, you can leave the markings as they are,
+or erase them with @kbd{C-c C-t c}.
+
+The @emph{a} lattice constant of copper is 3.61 and the space group is
+@code{F m 3 m}, although @sc{atoms} also understands @code{fcc} as a
+shorthand for this space group.  There is a copper atom at the
+coordinates (0,0,0) and a cluster radius of 6.5 Angstroms is
+appropriate.  The central atoms is, obviously, Cu.  Save this file by
+striking @kbd{C-x C-s}.  The buffer should now look like Figure 3.
+
+@cindex automatic configuration
+Notice that when you saved the file, some new lines were written to the
+end of the file.  Thie first line looks like this:
+@example
+!!&& Local Variables:
+@end example
+@noindent
+@fuse{} uses the Local Variables list as a way of configuring itself.
+It saves information about the input file in these lines so that the
+next time you edit it, you will be in the same state as the last time.
+One of the most important uses of these lines is to identify the program
+associated with the input file.  For example, you might wish to rename
+this input file @file{cu.inp}.  The next time you edit @file{cu.inp},
+@fuse{} can read from the Local Variables list that @file{cu.inp} is an
+input file for @sc{atoms}.  Thus you can name your input files anything,
+not just by the name of the program.
+
+
+@node Other Features of Atoms mode,  , The Atoms Template, Running Atoms
+@comment  node-name,  next,  previous,  u
+@section Other Features of @sc{atoms} mode
+
+@cindex run, @sc{atoms}
+@kindex C-c C-r r, @sc{atoms}
+With the input file complete and saved to disk, it is time to run
+@sc{atoms}.  Do this by hitting @kbd{C-c C-r r}, by selecting @code{Run
+atoms, this file} in the @code{Atoms} menu, or by clicking on the
+exclamation point icon in the toolbar.  If you are running under
+X-windows, @fuse{} will open a small frame in which to display the
+run-time messages from the program.  When @sc{atoms} is done, @fuse{}
+will beep and you will see a message in the echo area.
+
+@cindex keyword help
+@sc{atoms} Let's look at a few things before finishing with the
+@sc{atoms} input file.  Type @kbd{C-c C-b k}, select @code{Display atoms
+keywords} from the @code{Atoms} menu, or click on the question mark icon
+in the toolbar.  The frame will split into two windows, and a list of
+keywords recognized by the @sc{atoms} program will be displayed in the
+bottom window.  When that key sequence is hit in any of the minor modes,
+you will be presented with a list of keywords appropriate to that
+program.  Each minor mode menu has a @code{Display keywords} item and
+each minor mode toolbar has a question mark icon that is bound to this
+function.  Note that the screen cursor in positioned in the keyword
+window.  After examining the list of keywords, type @kbd{C-x 0} to close
+the keyword window and return to the input file window.  (If you get
+lost among your buffers, remember to use @kbd{C-x b} or the
+@code{Buffers} menu.)
+
+@cindex documentation
+Now hit @kbd{C-c C-b d} and then hit @key{ret} or click on the book icon
+in the toolbar.  A second frame will open displaying the info
+version of the @sc{atoms} document.  There are online documents for
+several of the programs covered by @fuse{} and for @fuse{} itself.  (The
+notable exceptions are @sc{autobk} and @sc{feffit}.)  You can peruse the
+document or hit @kbd{C-x 5 0} to make the document frame disappear.
+
+
+Now it is time to run @sc{feff}.
+
+@sp 2
+@center @strong{Figure 3:} Completed @sc{atoms} input file
+@sp 1
+@center @image{atoms-inp, 10cm, }
+
+
+@c ------------------------------------------------------------
+
+
+@node Running Feff, Running Autobk, Running Atoms, Top
+@comment  node-name,  next,  previous,  up
+@chapter Running Feff
+
+@menu
+* The Feff Input File::
+* Other Features of Feff mode::
+@end menu
+
+@node The Feff Input File, Other Features of Feff mode, Running Feff, Running Feff
+@comment  node-name,  next,  previous,  up
+@section The @sc{feff} Input File
+
+
+@cindex jump to file
+@kindex C-c C-f l, @sc{atoms}
+@fuse{} has a quick way of jumping to the @sc{feff} input file generated
+by an @sc{atoms} run.  Type @kbd{C-c C-f l}, select @code{Open
+feff.inp} from the @code{Atoms} menu, or click @code{mouse-1} on the
+third icon from the top of the toolbar.  The @file{feff.inp} file will be
+displayed in place of the @file{atoms.inp} file.  Notice that the mode
+line and the menu bar have both changed to reflect the fact that you are
+now editing a feff input file.
+
+
+@cindex run, @sc{feff}
+@kindex C-c C-r r, @sc{feff}
+For the sake of this tutorial, you will need to alter @file{feff.inp} in
+only one way.  Change the value of the @samp{PRINT} keyword to @samp{1 0
+0 0}.  This is done to be sure that the @file{misc.dat} file is written
+to disk by @sc{feff}.  Of course @sc{feff} has many more options for
+altering its behavior, but exploring them is beyond the scope of this
+tutorial.  We will now run @sc{feff}.  This is done is exactly the same
+way as we ran @sc{atoms}.  In fact, the manner in which a program can be
+run is independent of which program will be run.  The key sequence
+@kbd{C-c C-r r} always runs the appropriate program for the current
+file.  There is always an option in the program specific menu labeled
+@samp{Run program, this file}.  Also the @code{Input} menu has an option
+labeled @samp{Run this program, this file} which also works.  Finally,
+there is always a red exclamation point toolbar icon in XEmacs.
+
+
+@sp 2
+@center @strong{Figure 4:} The first few lines of the @sc{feff} input
+@center file for copper
+@sp 1
+@ifinfo
+@example
+--------------------------------------------------------------------
+
+ * This feff.inp file generated by ATOMS, version 2.46b
+ * ATOMS written by Bruce Ravel and copyright of The Univ. of Washington, 1994
+
+ * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- *
+ *       total mu =     2555.8 cm^-1, delta mu =     2210.7 cm^-1
+ *       specific gravity =  8.971, cluster contains   87 atoms.
+ * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- *
+ *       mcmaster corrections:  0.00052 ang^2 and  0.514E-06 ang^4
+ * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- * -- *
+
+ TITLE   Copper example
+
+ HOLE 1   1.0     Cu K edge  (  8.979 keV), second number is S0^2
+
+ *         mphase,mpath,mfeff,mchi
+ CONTROL   1      1     1     1
+ PRINT     1      0     0     0
+
+ RMAX      6.25271
+
+ *CRITERIA     curved   plane
+ *DEBYE        temp     debye-temp
+ *NLEG         8
+
+ POTENTIALS
+ *   ipot   z  label
+       0   29   Cu
+       1   29   Cu
+
+ ATOMS
+   0.00000     0.00000     0.00000    0   Cu               0.00000
+   0.00000    -1.80500    -1.80500    1   Cu               2.55266
+   1.80500     0.00000    -1.80500    1   Cu               2.55266
+   1.80500     1.80500     0.00000    1   Cu               2.55266
+
+--------------------------------------------------------------------
+@end example
+@end ifinfo
+@ifnotinfo
+@center @image{feff-inp, 10cm, }
+@end ifnotinfo
+
+Notice that the run-time messages from @sc{feff} are appearing in the
+run-time buffer after those from @sc{atoms}.  During your analysis
+session, this buffer serves as a log of your work.  When you are
+finished with analysis and exit Emacs, the contents of this
+buffer@footnote{Actually only the most recent 1000 lines.} will be
+automatically saved in a file called @file{~/.fuse-run.log}.
+
+Running @sc{feff} takes a few minutes, so this is a good time to stretch
+your legs.
+
+
+@node Other Features of Feff mode,  , The Feff Input File, Running Feff
+@comment  node-name,  next,  previous,  u
+@section Other Features of @sc{feff} mode
+
+
+@cindex jump to file
+@cindex @file{misc.dat}
+@cindex @file{paths.dat}
+@cindex @file{files.dat}
+@cindex @file{list.dat}
+@cindex read-only buffer
+@kindex C-c C-f m
+@kindex C-c C-f p
+@kindex C-c C-f f
+@kindex C-c C-f s
+If you do a directory listing on the @samp{feff} subdirectory, you will
+see that @sc{feff} has written out many files.  @fuse{} has several
+tools for examining the output of your @samp{feff} run.  In the
+@samp{Feff} menu is a sub-menu labeled @samp{Look at output files}.  In
+that sub-menu you can choose to examine any of @file{misc.dat},
+@file{paths.dat}, @file{files.dat}, or @file{list.dat}.  The key sequences
+for these are @kbd{C-c C-f} followed by @kbd{m}, @kbd{p}, @kbd{f}, or
+@kbd{s} respectively.  Choosing any of these will cause that file to be
+visited and displayed in a read-only buffer.  @fuse{} assumes that files
+jumped-to in this manner are are log files and thus should not be
+casually altered.  That is why they are placed in read-only buffers.  If
+you want to edit one of these jumped-to files, type @kbd{M-x
+toggle-read-only}.
+
+@cindex @sc{intrp}
+@kindex C-c C-f i
+Because these files are all rather cryptic, @fuse{} comes with a handy
+perl script called @sc{intrp}.  @sc{intrp} reads @file{feff.inp},
+@file{paths.dat}, and @file{files.dat} and writes a summary of all of
+the scattering paths from the @sc{feff} calculation.  @sc{intrp} can be
+run from the @samp{Look at output files} submenu or by hitting @kbd{C-c
+C-f i}.  The @sc{intrp} buffer is very useful for setting up a
+@sc{feffit} input file.
+
+@cindex plotting, @sc{feff}
+@kindex C-c C-p c
+@kindex C-c C-d k
+@fuse{} will display @sc{feff} results graphically by constructing
+scripts for the @sc{gnuplot} program then sending those scripts to
+@sc{gnuplot}.  These scripts are generated automatically, usually using
+information contained ni the input file itself.  We can examine the
+total @greek{chi,k} from the @sc{feff} calculation by selecting
+@samp{Plot chi} from the @samp{Feff} menu, typing @kbd{C-c C-p c}, or
+clicking on the graph icon labeled @code{chi}.  When you do this, a new
+frame will appear on the screen containing the @sc{gnuplot} script.  The
+buffer containing the script will be in a major mode specifically
+designed for @sc{gnuplot} scripts (@pxref{Plotting with Gnuplot}).  After
+a short time, a window displaying the @sc{gnuplot} plot will appear.
+This is shown in Figure 5.
+
+@cindex @sc{kw}
+@cindex @sc{gnufix}
+Notice that, in the plot, @greek{chi,k} is weighted by @math{k}.
+Examinnig the script, you see that the @file{chi.dat} file was filtered
+through two scripts.  @sc{gnufix} is a @sc{sed} script which comments
+out the header material in @file{chi.dat} so that it will plot properly
+in @sc{gnuplot}.  @sc{kw} is an @sc{awk} script that actually applies
+the @math{k}-weighting.  Both of these scripts are found in the
+@file{scripts/} subdirectory of the @fuse{} distribution and are
+available for your use outside of @fuse{}.
+
+
+@ifinfo
+In the printed and html manuals, Figure 5 goes here and shows the
+calculated @greek{chi,k} along with the GNUPLOT script buffer.
+@end ifinfo
+@ifnotinfo
+@tex
+\vfill
+@page
+@end tex
+@sp 2
+@center @strong{Figure 5:} Plotting the calculation
+@sp 1
+@center @image{feff-plot, 10cm, }
+@end ifnotinfo
+
+
+@kindex C-c C-d k
+You can change the @math{k}-weighting easily by selecting @samp{Set
+k-weight} from the @samp{Input} menu or typing @kbd{C-c C-d k}.  You
+will asked for a k-weight value in the minibuffer.  Answer with 2 or any
+other number then replot chi with the new k-weight.
+
+@kindex C-c C-d m
+The other plotting option in @sc{feff} mode is to plot
+@greek{mu,E} together with the background function.  This can only be
+done is the @code{XANES} keyword is set in the input file and a version
+of @sc{feff} is used that calculates XANES.  This was not done in this
+tutorial, but feel free to play with this later.
+
+
+@c ------------------------------------------------------------
+
+@node Running Autobk, Running Feffit, Running Feff, Top
+@comment  node-name,  next,  previous,  up
+@chapter Running Autobk
+
+@menu
+* The Autobk Input File::
+* Running and Plotting in Autobk Mode::
+* Examining the output of Autobk::
+@end menu
+
+@node The Autobk Input File, Running and Plotting in Autobk Mode, Running Autobk, Running Autobk
+@comment  node-name,  next,  previous,  up
+@section The @sc{autobk} Input File
+
+
+To begin editing an @sc{autobk} input file, type @kbd{C-x C-f} or select
+@code{Open File} from the @code{Files} menu.  You will be asked for the
+name of a file in the @file{feff} subdirectory.  Before responding with
+a name, delete the characters @file{feff/} so that you will open a file
+in the @file{Cu} subdirectory.  Then type out @file{autobk.inp}.  You
+will be presented with a blank window.  Notice that you are now in
+@code{Autobk} minor mode, the menu bar has the @code{Autobk} label, and
+there is an @code{Autobk} menu in the menu bar.
+
+@kindex C-c C-d d
+@kindex C-c C-d f
+@kindex C-c C-d o
+@cindex data path
+@cindex feff path
+@cindex output path
+Before writing a template, let's set several variables that will be
+useful in the next few steps of the tutorial.  In the @code{Input} menu
+you will notice options for @code{Set path to input data}, @code{Set
+path to feff files}, and @code{Set output path}.  The key sequences for
+these are @kbd{C-c C-d} followed by @kbd{d}, @kbd{f}, and @kbd{o}
+respectively.  These are used to tell @fuse{} where to find different
+sorts of files.  Run each of these functions using @file{data/} as the
+data path, @file{feff/} as the feff path, and @file{data/} as the output
+path.
+
+@kindex C-c C-t t, @sc{autobk}
+@cindex template, @sc{autobk}
+@cindex hotspots
+Now insert a template by typing @kbd{C-c C-t t}, selecting @samp{Autobk
+template} from the @samp{Autobk} menu, or clicking @code{mouse-1} on the
+top-most toolbar icon.  Note that the information about file paths that
+you just entered has appeared in appropriate places in the template.
+Note that, just as with the @sc{atoms} template, hotspot markings have
+been placed in the template as a visual cue for where keyword values
+must be inserted.  If you enter reasonable data at each hotspot, it is
+quite likely that your input file will run to completion.
+
+@kindex M-@key{ret}
+@kindex M-?
+@kindex C-c C-b k
+@cindex fuse-doc mode
+Now fill in appropriate values at each hotpot.  Use values of @kbd{1},
+@kbd{1}, and @kbd{4} for @code{kmin}, @code{rmin}, and @code{rmax}
+respectively.  Write @file{cu10k.dat} after @file{data/} for the
+@code{data} keyword and @file{chi.dat} after @file{feff/} for the
+@code{theory} keyword.  Pick a good basename for the output files,
+@file{cu10k} should do just fine.  You can delete the line with
+@code{e0} as we will let @sc{autobk} find it.  Now place the screen
+cursor on one of the keywords, @code{kmin} for example.  Hit @kbd{M-?}.
+This command causes @fuse{} to display a description of the keyword
+under the screen cursor in the echo area.  Now hit @kbd{M-}@key{ret}.
+If you put a number in as the value for @kbd{kmin}, you will see a
+message in the echo area saying that this value is ok.  Try changing the
+value of @code{kmin} to @kbd{q} and hitting @kbd{M-}@key{ret} again.
+Don't forget to change it back!  Now place the screen cursor on the
+@code{data} keyword and try @kbd{M-?}  and @kbd{M-}@key{ret} again.
+Notice that the keyword checking facility knows about and checks for
+readable files.  If you like the help given by @kbd{M-?}, you can have
+it happen automatically by hiting @kbd{C-c C-b t} or selecting
+@code{Fuse-doc mode} from the top of the @code{Input} menu.  With
+fuse-doc mode turned on, a keyword description will automatically be
+displayed in the echo area whenever the screen cursor comes to rest on a
+keyword.  This works in any program minor mode.  The messages displayed
+are the same as those displayed by @kbd{C-c C-b k} or the question mark
+icon in the toolbar.
+
+
+Now finish filling in the template and save it.  It should look like
+Figure 6.
+
+@cindex Local Variables
+@cindex time stamp
+@cindex jump to file
+@kindex S-mouse-3
+Several interesting things happened when you saved this file.  The Local
+Variables list was written to this files just as it was to
+@file{atoms.inp} and @file{feff.inp}.  Notice that the values for file
+paths that you entered earlier were written to the list.  The next time
+that you edit this file, it will not be necessary to re-enter that
+information.  @fuse{} will read it from the Local Variables list.  Also
+note that a time stamp was placed after the Local Variables list.  This
+is updated every time you save the file so you will always know when you
+last edited the file.  Now move the mouse cursor so it is over the line
+that specifies the data file.  See how the background flashes orange as
+soon as the cursor is over either the keyword @code{data} or the
+filename?  This orange flashing is a visual cue in @fuse{} that the
+mouse cursor is in a position where hitting @code{S-mouse-3} will do
+something.  That something depends on the kind of input file you are
+editing and on the location of the mouse cursor.  In this case, hitting
+@sc{S-mouse-3} will open and display the file under the cursor.  These
+orange areas are set when the input file is first visited and whenever it
+is saved.  You can turn off the orange flashing for a given buffer in
+the @code{Input - Miscellaneous} submenu.
+
+@sp 2
+@center @strong{Figure 6:} Completed @sc{autobk} input file
+@sp 1
+@center @image{autobk-inp, 10cm, }
+@sp 1
+
+
+@node Running and Plotting in Autobk Mode, Examining the output of Autobk, The Autobk Input File, Running Autobk
+@comment  node-name,  next,  previous,  up
+@section Running and Plotting in @sc{autobk} Mode
+
+
+@kindex C-c C-r r, @sc{autobk}
+@cindex run, @sc{autobk}
+Now run @sc{autobk}.  Note that the run-time messages from @sc{autobk}
+will be added to those already in the run-time messages buffer.  Also
+note that the elapsed time of the run is written to the buffer in the
+run-time frame.  This is printed out in the form of your computers
+@file{time} shell command.  On my Linux system using bash, it looks like
+this:
+@example
+193.560u 0.160s 0:09.25 97.2%	0+0k 0+0io 171pf+0w
+@end example
+@noindent The relevant number is the third one.  This says that that
+particular @sc{autobk} run took 0 minutes and 9.25 seconds.  Check the
+man pages for your shell for complete details about the @file{time}
+command.
+
+@kindex C-c C-p b
+@kindex C-c C-p k
+@kindex C-c C-p t
+@cindex plotting, @sc{autobk}
+Once the run is finished (it should not take long), there are several
+things that can be plotted.  In the @code{Autobk} menu there are several
+entries under the heading @code{Plotting}.  The things that can be
+displayed automatically from this input file are the @greek{mu,E} data
+along with the background (@code{C-c C-p b} and shown in Figure 7),
+@greek{chi,k} (@code{C-c C-p k}), and @greek{chi,k} along with the
+theoretical @greek{chi,k} from the @sc{feff} run (@code{C-c C-p t}).
+The @greek{mu,E} and @greek{chi,k} plots are also bound to toolbar
+icons.
+
+@cindex stanza @c
+Although we will not be using this feature of @sc{autobk} during this
+tutorial, it has the ability to batch process @greek{mu,E} data into
+@greek{chi,k}.  The instructions then look the same for each data set
+and are separated in the input file by lines of dashes.  In @fuse{}, a
+line-of-dashes separated set of instructions is called a @emph{stanza}.
+@sc{autobk} mode in @fuse{} has several functions for operating on
+stanzas.  In the @code{Autobk} menu there are options for running
+@sc{autobk} on the entire file or on the stanza currently occupied by
+the screen cursor.  The plotting functions described in the last
+paragraph all work on the current stanza.  Additionally there is a
+plotting function for displaying all @greek{chi,k} from the input file
+(@code{C-c C-p a} and bound to the toolbar).
+
+
+
+@ifinfo
+In the printed and html manuals, Figure 7 goes here and shows the
+@greek{mu,E} data overplotted with the background function.
+@end ifinfo
+@ifnotinfo
+@c @tex
+@c \vfill
+@c @page
+@c @end tex
+@sp 2
+@center @strong{Figure 7:} Plotting the data and background
+@sp 1
+@center @image{autobk-plot, 10cm, }
+@end ifnotinfo
+
+
+@node Examining the output of Autobk,  , Running and Plotting in Autobk Mode, Running Autobk
+@comment  node-name,  next,  previous,  up
+@section Examining the output of @sc{autobk}
+
+@kindex C-c C-s e
+Plotting the output files from @sc{autobk} is an important part of
+evaluating and understanding the result, but there is more to the
+interpretation of data than making pretty pictures.  For example, from
+an @sc{autobk} run, it is important to know where @ezero{} is.  Hit
+@kbd{C-c C-s e}.  A line with @code{e0f =  8976.886} is inserted in
+the stanza.  Cool!  Where did that come from?
+
+@kindex C-c C-f l, @sc{autobk}
+@kindex M-C-`
+Now hit @kbd{C-c C-f l}, select @code{Look at log file} from either the
+@code{Autobk} or @code{Input - Visit files} menu, or hit the third
+toolbar icon (the one with the thumbtack).  Doing so displays the log
+file from your autobk run.  Somewhere around line 15 in the log file is
+the final value of @ezero{} found by @sc{autobk}.  The @kbd{C-c C-f l}
+key sequence and its related menu and toolbar bindings are the common way
+of examining log files in @fuse{}.  That key sequence and the thumbtack
+icon will always display the log file appropriate to the current input
+file.@footnote{In some modes the definition of a @emph{log file} might
+be a little different.  For example, in @sc{atoms} mode, the log file is
+the @file{feff.inp} file.}  You can easily return to the input file by
+hitting @kbd{M-C-`}.
+
+@fuse{} is clever enough to search the log file for the final value of
+@ezero{} and insert it into the input file.  The @code{e0f} keyword
+tells @sc{autobk} to fix @ezero{} to that value.  If you want to play
+around with other background removal parameter while keeping @ezero{}
+fixed, @code{e0f} is the right keyword.  In the next chapter you will
+learn of other ways that @fuse{} is able to glean information from log
+and other files for use in input files.
+
+@c ------------------------------------------------------------
+
+
+@node Running Feffit, Plotting with Gnuplot, Running Autobk, Top
+@comment  node-name,  next,  previous,  up
+@chapter Running Feffit
+
+@sc{feffit} is the program covered by @fuse{} which has the most
+complicated input files.  Consequently, the most interesting and
+powerful features of @fuse{} are designed explicitly for the @sc{feffit}
+input file.
+
+Before starting in on creating the input file for @sc{feffit}, I want to
+define an important term -- the @emph{path paragraph}.  In @sc{feffit}
+each scattering path is described by one or more @emph{path
+parameters}.  The path parameters are a set of keyword that tell
+@sc{feffit} how to calculate the contribution from a given scattering
+path.  They have a common syntax.  Each path parameter must be on its
+own line and the parameter itself must be the first word on the line.
+The second word on the line is an integer index identifying the path.
+The rest of the line is devoted to the value of the parameter.  In
+@sc{feffit} there are no further syntactic requirements@footnote{Well,
+the math expressions that are the value of several of the keywords have
+certain syntactic requirements.}.  Specifically, they can appear in any
+order in the input file and @sc{feffit} will happily process them.
+
+@fuse{} adds an additional syntax requirement to the @sc{feffit} input
+file.  @fuse{} requires that all path parameters used to describe a given
+scattering path be contiguous in the file and that the @code{path} (or
+@code{feff}, they are synonyms) path parameter be the first first listed
+in the contiguous group.  These groupings of path parameetrs are
+separated by one or more lines containing only white space or comment
+characters.  White space in @sc{feffit} is defined as spaces or tabs and
+comment characters are any of @code{%}, @code{!}, @code{#}, or (at the
+beginning of a line) @code{*}.  This grouping beginning with the
+@code{path} path parameter and ending with a line of white space or
+comment characters is called a @emph{path paragraph}.  @fuse{} has
+numerous functions for operating on path paragraphs.  If you prefer to
+organize your input file by parameters rather than by paragraphs, the
+you will probably not find @fuse{} very helpful.
+
+
+@menu
+* Creating the Feffit Input File::
+* Finishing the Feffit Input File::
+* Examining the Output of Feffit::
+@end menu
+
+@node Creating the Feffit Input File, Finishing the Feffit Input File, Running Feffit, Running Feffit
+@comment  node-name,  next,  previous,  up
+@section Creating the @sc{feffit} Input File
+
+Writing a new input file for @sc{feffit} can be very tedious, time
+consuming, and error prone.  To my mind, a task that is as inherently
+repititious as constructing a brand new @sc{feffit} input file begs for
+automation.  @fuse{} to the rescue.
+
+@kindex C-c C-d a
+Start by creating a new file.  Use @code{C-x f} to tell Emacs to create
+a new file.  When it asks for the file name, answer with
+@file{feffit.inp}.  Note that the mode line now reads @code{Feffit} and
+there is a @code{Feffit} menu in the menu bar.  The first thing you need
+to do is set the paths to the data, @sc{feff}, and output files by
+hitting @kbd{C-c C-d a} or selecting @code{>> Set all three paths} from
+the @code{Input - Set variables} menu.  Set them to @file{data/},
+@file{feff/}, and @file{fits/} resprectively.
+Don't skip this step!  Correctly
+setting these file paths will save you an @emph{enormous} amount of
+typing in a few minutes.
+
+@kindex C-c C-f f
+@cindex @file{files.dat}
+Now type @kbd{C-c C-f f} or select @code{files.dat} from the
+@code{Feffit - Examine output from Feff} menu.  This will display
+@file{files.dat}, one of the output files from the @sc{feff} run.
+Notice that this file actually bears a resemblence to a
+@file{feffit.inp} file.  It contains a list of the file names that are
+needed as the values of the @code{path} path parameters and it shows
+some relevant information about each of those path files.  Now type
+@kbd{M-C-`} to return to the @file{feffit.inp} file.
+
+Now comes some wizardry.  Type @kbd{C-c C-t f} or select @code{Make
+feffit.inp from files.dat} from the @code{Feffit - Templates} menu.
+(You can also hit the templates icon in the toolbar, but the behavior of
+that button may not make sense to you yet.)  You will be asked in the
+minibuffer for the name of the @file{files.dat} file.  The initial guess
+will be correct since you set the path to the @sc{feff} files.  Just hit
+@key{ret}.  @fuse{} will display the contents of @file{files.dat} file
+and ask you a slightly cryptic question about the @code{minimum
+amplitude.}  Just hit @code{!} and @key{ret}.  After working for a few
+second, the @file{files.dat} file is transformed into a skeleton for a
+@sc{feffit} input file.  Wow!
+@kindex C-c C-t f
+
+The first several lines are title lines containing the header
+information from the @file{files.dat} file.  Then templates for global
+and local variables were inserted into the input file.  Note that the
+hotspot markers have been placed in the templates.  The remaining lines
+are path paragraphs formed from the lines in @file{files.dat}.  Note
+that the path to the @file{feffnnnn.dat} files was inserted in each path
+paragraph.  The small chore of setting that path a few minutes ago has
+saved you a huge amount of dull typing.  Yay!  You actually have some
+control over how many lines from @file{files.dat} are written out as
+path paragraphs.  The minimum amplitude question was giving you the
+option of discarding small paths by specifying an amplitude cutoff.
+Other questions would have given you options to discard paths beyond a
+certain length or containing too many legs.  By hitting @code{!}, you
+told @fuse{} to use defaults for these three cutoffs, that is not to
+discard any files.  Later on, you may want to play with this function to
+see how these filters behave.
+
+Now fill out the header templates so that they look like Figure 8.
+
+@sp 2
+@center @strong{Figure 8:} The headers of the @sc{feffit} input file
+@sp 1
+@center @image{feffit-head, 10cm, }
+@sp 1
+
+@node Finishing the Feffit Input File, Examining the Output of Feffit, Creating the Feffit Input File, Running Feffit
+@comment  node-name,  next,  previous,  up
+@section Finishing the @sc{feffit} Input File
+
+@cindex guess parameters
+Copper metal is a fairly simple fitting problem.  It is cubic, so all of
+the changes bond lengths can be parameterized in terms of a volume
+lattice expansion constant, @greekletter{alpha}.  A single Debye
+temperature, @thetad{}, will be a good enough approximation for the
+@sigsqr{} values.  We will also need an @ezero{} and @amp{}.  Delete the
+line that says @code{% insert sets and guesses here} and type in the
+following
+@example
+guess   amp     0.9
+guess   e0      0.0
+guess   thetad  300
+guess   alpha   0.0
+@end example
+
+There are two ways we could procede from here.  Using the fitting model
+I described in the last paragraph, it would suffice to set the
+@code{s02}, @code{e0}, @code{delr}, and @code{sigma2} path parameters as
+parameters in a zeroth path paragraph.  Alternatively, we could
+explicitly set each of those parameters in each paragraph. Since this is
+a tutorial, let's do two of them as zeroth path parameters and two of
+them in each paragraph.
+
+@kindex C-c C-t z
+@cindex zeroth path
+Type @kbd{C-c C-t z} or select @code{Zeroth path template} from the
+@code{Feffit - templates} menu.  Fill this template in with the
+appropriate guessed parameters.  It should look like this:
+@example
+s02     0       amp
+e0      0       e0
+@end example
+@noindent This will set make the best fit values of the variables
+@code{amp} and @code{e0} the @amp{} and @ezero{} values for each path.
+
+@kindex C-c C-v a
+Now we need to add @code{delr} and @code{sigma2} path parameters in each
+path.  @fuse{} provides an elegant shortcut for this onerous editing
+task.  Hit @kbd{C-c C-v a} or select @code{Add parameter to all
+paragraphs} from the @code{Feffit - Paragraph manipulation} menu.  When
+asked @file{Which parameter?}, answer with @file{delr}.  Then when asked
+@file{Default value for delr?}, answer with @file{alpha*reff}.  This
+information is filled into every paragraph with the correct indexing.
+Now execute that function again again, this time answering the questions
+with @file{sigma2} and @file{debye(temp, thetad)}.  Beats editing by
+hand!
+
+@kindex C-c C-s m
+@cindex McMaster correction
+We are almost done.  The @code{debye} function require the sample
+temperature.  For the data in this tutorial the temperature is 10 K, so
+put
+@example
+set	temp	10
+@end example
+@noindent after the guess parameters.  To get the correct temperature
+dependence of the @sigsqr{} terms it is necessary to consider the
+so-called McMaster correction which is necessary since @greek{chi,k} was
+normalized to the edge step in @sc{autobk}.  Hit @kbd{C-c C-s m} or
+select @code{Insert McMaster corrections} from the @code{Feffit} menu.
+Answer yes to the question about setting @code{sigmm}.  This function
+reads the value for the McMaster @sigsqr{} correction from the
+@file{feff.inp} file and inserts its value in the @file{feffit.inp}
+file.  It also adds this to the @sigsqr{} for each path.
+
+When you are finished, each path paragraph will look like rather like this
+@example
+path    1       feff/feff0001.dat
+id      1       amp=100.000, deg=12.000, nleg=2, r_eff=2.5527
+delr    1       alpha*reff
+sigma2  1       debye(temp, thetad) + sigmm
+@end example
+@noindent There should be 25 paragraphs.  Now save the input file and
+run @sc{feffit}.
+
+
+@node Examining the Output of Feffit,  , Finishing the Feffit Input File, Running Feffit
+@comment  node-name,  next,  previous,  up
+@section Examining the Output of @sc{feffit}
+
+@kindex C-c C-p k
+@kindex C-c C-p r
+@kindex C-c C-p q
+@kindex C-c C-f l, @sc{feffit}
+@kindex C-c C-f r
+You can plot the results of the fit in @math{k}-space, @math{R}-space,
+or back-transformed @math{k}-space using @kbd{C-c C-p k}, @kbd{C-c C-p
+r}, and @kbd{C-c C-p q}, respectively.  There are toolbar icons and menu
+entries for each of these plot options as well.  You can examine the log
+and prm files using @kbd{C-c C-f l} and @kbd{C-c C-f r}.
+
+@kindex C-c C-s g
+@kindex C-c C-s b
+@fuse{} has a convenient mechanism for updating the guess parameters
+with their best fit values.  Move the screen cursor to the line
+containing one of the guesses and hit @kbd{C-c C-s g}.  @fuse{} fetches
+the best fit value and the error bar from the log file and replaces the
+initial guess.  @kbd{C-c C-s b} replaces all of the initial guesses in
+the file with their best fit values from the log file.
+
+
+
+@c ------------------------------------------------------------
+
+
+@node Plotting with Gnuplot, Closing Remarks, Running Feffit, Top
+@comment  node-name,  next,  previous,  up
+@chapter Plotting with Gnuplot
+
+Several time throughout this tutorial, we plotted graphical output using
+the specialize and built-in plotting functions in @fuse{}.  In this
+chapter, I will describe how these functions work and how you can
+further interact with @sc{gnuplot} from within Emacs.
+
+One of the files that ships with @fuse{} is @file{gnuplot.el} which
+defines @samp{gnuplot mode} for Emacs.  @samp{gnuplot mode} is an emacs
+major mode for creating gnuplot scripts and sending them to gnuplot.  In
+the @file{docs} directory of the @fuse{} distribution there is a
+reference card for @samp{gnuplot mode} called @file{gpelcard.ps}.  This
+is a two page summary of the features of @samp{gnuplot mode} in
+PostScript format.  You should refer to that for complete details about
+@samp{gnuplot mode}.
+
+The basic idea behind @samp{gnuplot mode} is that you can create a
+script for @sc{gnuplot} in the @samp{gnuplot mode} buffer and use
+functions to send parts or all of the script to a @sc{gnuplot} process.
+The various plotting functions in @fuse{} work by reading the input file
+to determine the names of the files to plot@footnote{And a few other
+pieces of information, such as the title.} and writes a script in the
+@samp{gnuplot mode} buffer.  It then uses the function for sending the
+entire buffer to @sc{gnuplot} to display the plot.
+
+For many common plotting chores during your analysis of EXAFS data, it
+quite suffices to simply use the functions offered by @fuse{}.  For
+looking at such common things as fit results and background removals,
+these functions work well.  The nice feature of the manner in which
+@fuse{} creates its graphical output is that it leaves you with a script
+that you can modify.  Often it is simple and quicker to modify one of
+the scripts written by @fuse{} than to create an entire script from
+scratch.
+
+@kindex C-c C-l
+@kindex C-c C-r
+@kindex C-c C-b
+@kindex C-c C-f
+@cindex plot line
+@cindex plot region
+@cindex plot buffer
+@cindex plot file
+@samp{gnuplot mode} provides four functions for sending parts of scripts
+to @code{gnuplot}.  There are functions for sending the line currently
+occupied by the screen cursor (@kbd{C-c C-l}), a marked region (@kbd{C-c
+C-r}), or an entire buffer (@kbd{C-c C-b}).  There is also a function
+for sending an external file (@kbd{C-c C-f}) to @sc{gnuplot}.  All four
+of these can be found in the @samp{Gnuplot} menu.  The line, region, and
+buffer functions are also bound to the toolbar in XEmacs.
+
+@kindex C-c C-p
+@kindex C-c C-n
+@cindex gnuplot history
+@fuse{} maintains a history of scripts sent to @sc{gnuplot}.  If you
+want to revisit an earlier plot, either one written by @fuse{} or one
+that you wrote and sent to @sc{gnuplot}, you can navigate the script
+history.  @kbd{C-c C-p} steps backwards to previous scripts and @kbd{C-c
+C-n} steps forward to more recent scripts.  These twop commands are bound
+to the up and down arrows in the XEmacs toolbar for @samp{gnuplot mode}.
+
+@samp{gnuplot mode} also offers keyword completion, interaction with the
+@sc{gnuplot} document, syntax colorization of @sc{gnuplot} keywords, and
+direct interaction with the @sc{gnuplot} process.  See the reference
+card for more details.
+
+@c ------------------------------------------------------------
+
+
+@node Closing Remarks, Index, Plotting with Gnuplot, Top
+@comment  node-name,  next,  previous,  up
+@chapter Closing Remarks
+
+There are many features of @fuse{} that I have not covered in this
+tutorial.  This tutorial is only intended as an introduction to @fuse{}.
+Once you have worked through the tutorial, I encourage you play around
+with @fuse{}.  Try out the various functions in the @samp{Input} and
+program menus.  Click on things and see what happens.  I guarantee that
+you will find nifty little features that you will end up using on a
+regular basis.
+
+Here is an incomplete and unordered list of things to explore:
+@table @strong
+
+@kindex C-c C-b c
+@cindex customization
+@item Customization
+Versions of Emacs and XEmacs numbered in the 20's come with a
+hypertextual customization package.  With it, you can point and click to
+customize Emacs packages.  Hit @kbd{C-c C-b c} or choose @samp{Customize
+FUSE} from the @samp{Input - Miscellaneous} menu.  This will open up a
+customization buffer for variables in @fuse{}.  Customizing these
+variables will allow you to control dozens of features regarding the
+appearence and behavior of @fuse{} and it interaction with other
+packages and programs.
+
+@cindex command wrapper
+@item The FUSE command wrapper
+Although @sc{feff} and the @sc{uwxafs} programs require that input files
+be named according to their program, @fuse{} does not require this.  You
+can call you input files anything you want.  For example, you might have
+called the @sc{feffit} input file from this tutorial @file{cu.inp}.
+Before executing the program, @fuse{} will rename the input to the name
+exected by the program.  When the program is finished, @fuse{} renames
+it back.  Care is taken not to overwrite any existing files.  @fuse{}
+also renames the log files@footnote{Note that @fuse{} does @emph{not}
+currently rename the output files from @sc{feff}.} written by the
+programs.  In the case of @file{cu.inp}, @fuse{} would rename the log
+and prm files @file{cu.log} and @file{cu.prm}.
+
+@cindex include files
+@cindex master files
+@kindex C-c C-d m
+@item Include files
+@sc{feffit} and @sc{autobk} allow the use of include files.  @fuse{} has
+many features for working with include files.  Most importantly, it
+allows you to assign a master file to each include file using @kbd{C-c
+C-d m} or @samp{Set master file} from the @samp{Imput - Set variables}
+menu.  Once the master file is assigned, functions for running programs,
+looking at log files, and others do @emph{the right thing}.
+
+@cindex tag files
+@kindex C-c C-f t
+@kindex M-.
+@item Tag files
+When using include files in @sc{feffit}, it can be easy to forget in
+which file variables are defined.  In @samp{feffit mode} you can create
+a tag file which cross references variables with their location of
+definition.  Once the tag file is created with @kbd{C-c C-f t}, you can
+place the screen cursor on a variable name in a math expression and type
+@kbd{M-.}.  The display will switch to the place where that variable is
+defined.
+
+@cindex paragraph manipulation
+@item Paragraph manipulation
+In the chapter on @sc{feffit} (@pxref{Running Feffit}) we used the
+paragraph manipulation function for adding a parameter to each
+paragraph.  There are also functions for renumbering paragraphs,
+deleting parameters, and commenting out and uncommenting parameters.
+These functions work on every paragraph in the file.  If you preceed the
+key sequence or menu selection with @kbd{C-u} then the paragraph
+manipulation function will start working from the current screen
+position rather than on the entire file.
+
+@cindex cleaning
+@item Cleaning
+@fuse offers functions for standardizing the appearence of your input
+files by indenting lines and separating columns as specified by the
+appropriate variables.
+
+@cindex editing shortcuts
+@cindex snagging
+@cindex swapping
+@item Editing shortcuts
+Lots of repetitive tasks are automated by @fuse{}.  In @sc{autobk} and
+@sc{feffit} there are functions for filling in keyword values by
+snagging values from similar keywords in surrounding stanzas and
+paragraphs.  There are also functions for swapping the words @samp{set}
+and @samp{guess} in a @sc{feffit} input file, for swapping boolean
+values, and for commenting and uncommenting single lines or blocks of
+text.
+
+@end table
+
+@emph{HEY!} Have fun.
+
+@c ------------------------------------------------------------
+
+
+@node Index,  , Closing Remarks, Top
+@unnumbered Index
+
+@printindex cp
+@c @shortcontents
+@contents
+@bye
+
+@c Local Variables:
+@c mode: outline-minor
+@c End:

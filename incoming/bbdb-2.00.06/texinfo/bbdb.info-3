@@ -1,0 +1,1075 @@
+This is bbdb.info, produced by Makeinfo version 3.12h from bbdb.texinfo.
+
+   This file documents the Insidious Big Brother Database
+
+   This is edition $Revision: 1.20 $ of the BBDB User Manual for BBDB
+version 2.00.03.
+
+   Copyright (c) 1991-1994 Jamie Zawinski <jwz@netscape.com> Copyright
+(c) 1997-1998 Matt Simmons <simmonmt@acm.org>
+
+
+File: bbdb.info,  Node: bbdb-print,  Next: bbdb-snarf,  Prev: bbdb-ftp,  Up: Utilities
+
+`bbdb-print'
+------------
+
+   `bbdb-print' is a utility for pretty-printing entries from the BBDB
+using TeX.  It is invoked by pressing `P' in the `*BBDB*' buffer - this
+will cause all records in the BBDB to be printed as governed by the
+variables described below.  If `P' is prefixed by a `*', only the
+currently-displayed records will be printed.  Once invoked, `bbdb-print'
+will generate the TeX output in a buffer named `~/bbdb.tex' (controlled
+by `bbdb-print-file-name').  The generated output will be shown, and
+must be manually saved.
+
+   For each record printed, `bbdb-print' will look for the presence of
+the `tex-name' field.  If this field is found, its value will be
+printied instead of the `name' field for the record in question.  This
+field is intended to allow the storage of names with accents or other
+characters that would be illegal in the address portion of a message.
+While other fields have special characters quoted by `bbdb-print' as
+described below, the contents of the `tex-name' field (if present) are
+used verbatim.
+
+   The following variables govern the printing of records (and of the
+printing of the fields therein):
+
+`bbdb-print-elide'
+     This variable should be set to a list of the fields that are not
+     to be printed by `bbdb-print'.  It defaults to:
+                        `(tex-name aka mail-alias)'
+
+`bbdb-print-file-name'
+     The name of the file where generated TeX output is to be stored.
+     The default is `~/bbdb.tex'.
+
+`bbdb-print-require'
+     The fields required for printing a record.  This allows, for
+     example, only records with phone numbers to be printed.  The value
+     of the value of the variable will be evaluated once for each
+     record, and the record will be printed only if the evaluation
+     returns a non-nil value.  The symbols `name', `company', `net',
+     `phone', `address', and `notes' will be set to the appropriate
+     values during evaluation; they will be nil if the field does not
+     exist or is elided.
+
+     The value of this variable can be any lisp expression, but
+     typically it will be used for a boolean combination of the field
+     variables, as in the following simple examples:
+
+        * Print only people whose phone numbers are known:
+                       `(setq bbdb-print-require 'phone)'
+
+        * Print people whose names AND companies are known:
+                 `(setq bbdb-print-require '(and name company))'
+
+        * Print people whose names, and either addresses OR phone
+          numbers are known:
+           `(setq bbdb-print-require '(and name (or address phone))).'
+
+          The default value is:
+                              `(or address phone)'
+
+
+`bbdb-print-alist'
+     Formatting options for all formats of `bbdb-print'.  The value is
+     an alist of the form
+                 `((OPTION . VALUE) (OPTION . VALUE) ...)'
+
+     Separate settings can be configured using `bbdb-print-brief-alist'
+     and `bbdb-print-full-alist'.  Settings in these variables will
+     override the ones in `bbdb-print-alist'.
+
+     The possible options and legal settings are:
+    `columns'
+          `1', `2', `3', `4', `quad' (4 little 2-column pages per
+          sheet) or `grid' (12 credit-card-sized pages per sheet).
+
+    `separator'
+          `0'-`7', the style of heading for each letter.  `0'=none,
+          `1'=line, `2'=boxed letters, `3'=large boxed letters,
+          `4'=large letters, `5'=letters with lines, `6'=letters with
+          suits, `7'=boxed letters with suits.
+
+    `omit-area-code'
+          A regular expression matching area codes to omit.
+
+    `phone-on-first-line'
+          If `t', the first phone number will be put on the same line
+          as the name.  If `nil', the name will be the only text on the
+          line.  If set to a string, the field of type `phone' whose
+          name matches the string will be used.  The string should be a
+          valid regular expression.
+
+    `n-phones'
+          Maximum number of phone numbers to include.
+
+    `n-addresses'
+          Maximum number of addresses to include.
+
+    `include-files'
+          List of TeX files to `\input'.  If the filenames are not
+          absolute, the files must be located somewhere in the TeX
+          input path.
+
+    `ps-fonts'
+          Postscript fonts will be used if the value is non-`nil'.
+          Standard TeX fonts will be used otherwise.
+
+    `font-size'
+          The integer point size of the font to be used.
+
+    `hsize'
+          The horizontal dimension of the pages.  The value must be a
+          string, and must be a valid TeX dimension.  Alternatively,
+          the TeX default will be used if the value is `nil'.
+
+    `vsize'
+          The vertical dimension of the pages.  The value must be a
+          string, and must be a valid TeX dimension.  Alternatively,
+          the TeX default will be used if the value is `nil'.
+
+    `hoffset'
+          The TeX output will be offset to the right by the value of
+          this option.  The value must be either a string containing a
+          valid TeX dimension or `nil' or `0' to use the default TeX
+          horizontal offset.
+
+    `voffset'
+          The TeX output will be offset downward by the value of this
+          option.  The value must be either a string containing a valid
+          TeX dimension or `nil' or `0' to use the default TeX vertical
+          offset.
+
+    `quad-hsize'
+          Horizontal size to be used for the individual pages in the
+          quad format.  The value must be a string containing a valid
+          TeX dimension.
+
+    `quad-vsize'
+          Vertical size to be used for the individual pages in the quad
+          format.  The value must be a string containing a valid TeX
+          dimension.
+
+     The default value is
+          ((omit-area-code . "(AREA-CODE)")
+           (phone-on-first-line . "^[ \t]*$")
+           (ps-fonts . nil)
+           (font-size . 6)
+           (quad-hsize . "3.15in")
+           (quad-vsize . "4.5in"))
+
+     Where AREA-CODE is the value of `bbdb-default-area-code' or `000'
+     if there is no default area code.
+
+`bbdb-print-brief-alist'
+     Extra options for the `bbdb-print' brief format.  The value(s) of
+     this variable can either supplement or override the values in
+     `bbdb-print-alist'.  The format and possible values of this
+     variable are as in `bbdb-print-alist', described above.
+
+     The default value is
+          ((columns . 1)
+           (separator . 1)
+           (n-phones . 2)
+           (n-addresses . 1)
+           (include-files "bbdb-print-brief" "bbdb-cols"))
+
+`bbdb-print-full-alist'
+     Extra options for the `bbdb-print' non-brief format.  The value(s)
+     of this variable can either supplement or override the values in
+     `bbdb-print-alist'.  The format and possible values of this
+     variable are as in `bbdb-print-alist', described above.
+
+     The default value is
+          ((columns . 3)
+           (separator . 2)
+           (include-files "bbdb-print" "bbdb-cols"))
+
+`bbdb-print-prolog'
+     TeX statements to include at the beginning of the `bbdb-print'
+     output file.
+
+`bbdb-print-epilog'
+     TeX statements to include at the end of the `bbdb-print' output
+     file.
+
+
+File: bbdb.info,  Node: bbdb-snarf,  Next: bbdb-srv,  Prev: bbdb-print,  Up: Utilities
+
+`bbdb-snarf'
+------------
+
+   `bbdb-snarf' provides the ability to generate BBDB records from raw
+text.  If invoked as `bbdb-snarf', it attempts to generate the record
+from the information around point (the cursor).  If invoked as
+`bbdb-snarf-region'(1), the active region is used to generate the
+record.
+
+Restrictions:
+
+  1. `bbdb-snarf' currently recognizes only US-style phone numbers.
+
+  2. `bbdb-snarf' works best with things that look like mailing
+     addresses.
+
+Example of an address that `bbdb-snarf' will recognize:
+
+     another test person
+     1234 Gridley St.
+     Los Angeles, CA 91342
+     555-1212
+     test@person.net
+     http://www.foo.bar/
+     other stuff about this person
+
+   ---------- Footnotes ----------
+
+   (1) `bbdb-snarf' is actually a wrapper for `bbdb-snarf-region' that
+determines the relevant region and passes it on.
+
+
+File: bbdb.info,  Node: bbdb-srv,  Prev: bbdb-snarf,  Up: Utilities
+
+`bbdb-srv'
+----------
+
+   `bbdb-srv' provides the ability to initiate the display of BBDB
+records from outside of Emacs.  This allows external programs to cause
+the BBDB record for a given person to appear in the running Emacs when,
+for example, mail is recieved from that person.  One specific
+application, described below, is the integration of Netscape and the
+BBDB, allowing the display of BBDB records corresponding to Mail and/or
+News messages displayed in Netscape.
+
+   `bbdb-srv' is composed of two parts - an external Perl script
+(`utils/bbdb-srv.pl'), and an Emacs Lisp file (`lisp/bbdb-srv.el').
+The external portion is used to send commands to the internal portion.
+
+   NOTE: `bbdb-srv' requires `gnuserv' and `itimer', both included with
+XEmacs. `gnuserv' must be started with the `gnuserv-start' command
+before `bbdb-srv' can be used.
+
+   In it's most basic form, mail or news headers are passed to the Perl
+script.  The Perl script then causes the BBDB record (if any)
+corresponding to the passed headers to be displayed in the running
+Emacs.  While `bbdb-srv' will operate with just a `From:' field, it
+works better when passed both `From:' and `To:' headers.  When
+`bbdb-srv' notices that the logged-in user is named in the `From:'
+header, it will attempt to display the record (if any) for the person
+named in the `To:' header.  If no `To:' header is passed, it falls back
+on the record (if any) for the logged-in user (the person named in the
+`From:' header).
+
+   An example manual invocation of `bbdb-srv' is as follows:
+
+     % cat |bbdb-srv.pl
+     From: Jamie Zawinski <jwz@netscape.com>
+     To: Matt Simmons <simmonmt@acm.org>
+     <CTRL-D>
+
+   If the invoking user is Jamie Zawinski, the record for Matt Simmons
+(if any) will be displayed.  If the invoking user is not Jamie
+Zawinski, the record for Jamie Zawinski (if any) will be displayed.
+
+   As mentioned above `bbdb-srv' can be used with Netscape Mail and
+Netscape News.  Please note that it can only be used with the UNIX
+versions 3.0b2 and greater of these applications.  To allow Netscape to
+use `bbdb-srv', set the `NS_MSG_DISPLAY_HOOK' variable to
+`bbdb-srv.pl'(1) as follows:
+
+Bourne Shell (`/bin/sh') and variants:
+     # NS_MSG_DISPLAY_HOOK bbdb-srv.pl
+     # export NS_MSG_DISPLAY_HOOK
+
+C-Shell (`/bin/csh') and variants:
+     % setenv NS_MSG_DISPLAY_HOOK bbdb-srv.pl
+
+   The following variables can be used to customize the behavior of
+`bbdb-srv':
+
+`bbdb/srv-auto-create-p'
+     This variable is similar to `bbdb/news-auto-create-p' and
+     `bbdb/mail-auto-create-p'.  That is, when headers are passed in to
+     `bbdb-srv', a new BBDB record can be created if none exists,
+     depending on the value of this variable.  Possible values are:
+    `t'
+          Automatically create new BBDB records if the headers passed
+          in do not correspond to an already-existing record.
+
+    `nil'
+          Do not automatically create new BBDB records.
+
+    FUNCTION
+          FUNCTION is called.  If it returns `t', a record will be
+          created for the person named in the `From:' header.  If it
+          returns `nil', no record will be created.
+
+          A suggested function for use is
+          `bbdb/srv-auto-create-mail-news-dispatcher'.  This function
+          will attempt to determine the source of the passed headers -
+          whether they were part of a mail message or of a news
+          article.  The action (if any) dictated by the value of either
+          `bbdb/mail-auto-create-p' or `bbdb/news-auto-create-p', based
+          on the determined source of the passed headers.
+
+`bbdb/srv/display-delay'
+     `bbdb-srv' pauses between displaying the records corresponding to
+     each passed set of headers.  This variable controls the length of
+     time (in seconds) of the delay between the display of different
+     records.  Note when setting this variable that only one set of
+     headers can be queued at a time.  If three sets of headers are
+     passed to `bbdb-srv' in less than the delay time, only the first
+     and last will be displayed.
+
+   ---------- Footnotes ----------
+
+   (1) Use the full path to `bbdb-srv.pl' if it is not in the default
+path.
+
+
+File: bbdb.info,  Node: Internals,  Next: Mailing Lists,  Prev: Utilities,  Up: Top
+
+Internals
+=========
+
+   This section is currently a dumping ground for things that should
+eventually go here, but were found elsewhere in the file.
+
+   INFORMATION IN THIS SECTION IS FOR INFORMATIONAL PURPOSES ONLY.  IT
+SHOULD NOT BE TAKEN AS DOCUMENTATION OF AN EXTERNAL API.  EVERYTHING
+LISTED BELOW IS SUBJECT TO CHANGE WITHOUT NOTICE
+
+   The first time you use one of the BBDB commands, this file is read
+into an emacs buffer, and remains there.  As you make changes to the
+database, this buffer is changed as well, ensuring that if it is
+auto-saved, it will be saved in its most current state.
+
+BBDB data file format
+---------------------
+
+   The data file is arranged in a hierarchical fashion.  At the top
+level are vectors, with one vector per database record.  It is very
+important that each vector be on its own line, as the BBDB builds and
+stores markers based on this layout.  The markers are then used to
+increase the speed of database modifications (more on this later).  The
+record vectors contain the individual fields of the record.  These
+fields can be of any type, but are currently integers, strings, lists of
+strings, alists, vectors, or lists of vectors.  In the case of fields
+that contain one or more vectors, they can be further broken down in
+terms of the fields of their component vectors.
+
+   In an effort to provide a more concrete example to illustrate the
+above, and to provide a reference for database accessor and modifier
+functions, we describe the database format below.  This description
+starts with the fields of the individual record vectors, and drills
+down through the vectors used by some of the fields.
+
+Record Vectors
+..............
+
+Name      Type           Accessor and Modifier      Description
+First     String         `bbdb-record-firstname'    Entity's first name
+name                     `bbdb-record-set-firstname'
+Last name String         `bbdb-record-lastname'     Entity's last name
+                         `bbdb-record-set-lastname' 
+AKAs      List of        `bbdb-record-aka'          Alternate names for
+          Strings        `bbdb-record-set-aka'      entity
+Company   String         `bbdb-record-company'      Company with which
+                         `bbdb-record-set-company'  entity is associated
+Phones    List of        `bbdb-record-phones'       List of phone number
+          Vectors        `bbdb-record-set-phones'   vectors
+Addresses List of        `bbdb-record-addresses'    List of address vectors
+          Vectors        `bbdb-record-set-addresses'
+Net       List of        `bbdb-record-net'          List of network
+address   Strings        `bbdb-record-set-net'      addresses
+Notes     String or      `bbdb-record-raw-notes'    String or Association
+          Alist          `bbdb-record-set-raw-notes'list of note fields
+                                                    (strings)
+Cache     Vector         `bbdb-record-cache'        Record cache.
+                         `bbdb-record-set-cache'    Internal version only.
+
+   The phone, address and cache vector fields are described below.
+Please note that, as indicated in the table above, the cache is present
+only in the internal version of the database - it is not written out as
+part of the `.bbdb' file.
+
+   In addition, the accessor and modifier functions for the notes alist
+are described.
+
+Phone Vectors
+.............
+
+   To access the fields in the below table, you must first get the list
+of phone vectors using the `bbdb-record-phones' function.  Note that if
+you alter the phones field with the `bbdb-record-set-phones' function,
+you are altering the entire phones list for the given record.  Use the
+modifier functions below for modifications to individual phone vectors.
+
+Name      Type           Accessor and Modifier      Description
+Location  String         `bbdb-phone-location'      Phone number identifier
+                         `bbdb-phone-set-location'  
+Area      Integer        `bbdb-phone-area'          Area code for phone
+                         `bbdb-phone-set-area'      number
+Exchange  Integer        `bbdb-phone-exchange'      Exchange (aka prefix)
+                         `bbdb-phone-set-exchange'  for phone number
+Suffix    Integer        `bbdb-phone-suffix'        Suffix for phone number
+                         `bbdb-phone-set-suffix'    
+Extension Integer        `bbdb-phone-extension'     Phone number extension
+                         `bbdb-phone-set-extension' (`0' if none)
+
+Address Vectors
+...............
+
+   To access the fields in the below table, you must first get the list
+of address vectors using the `bbdb-record-addresses' function.  Note
+that if you alter the addresses field with the
+`bbdb-record-set-addresses' function, you are altering the entire
+addresses list for the given record.  Use the modifier functions below
+for modifications to individual address vectors.
+
+Name      Type           Accessor and Modifier      Description
+Location  String         `bbdb-address-location'    Address identifier
+                         `bbdb-address-set-location'
+Street1   String         `bbdb-address-street1'     First line of street
+                         `bbdb-address-set-street1' address.  "" if none.
+Street2   String         `bbdb-address-street2'     Second line of street
+                         `bbdb-address-set-street2' address.  "" if none.
+Street3   String         `bbdb-address-street3'     Third line of street
+                         `bbdb-address-set-street3' address.  "" if none.
+City      String         `bbdb-address-city'        City name
+                         `bbdb-address-set-city'    
+State     String         `bbdb-address-state'       State abbreviation
+                         `bbdb-address-set-state'   
+Zip       Integer        `bbdb-address-zip'         Zip code
+                         `bbdb-address-set-zip'     
+
+Cache Vector
+............
+
+   This vector is present only in the internal database representation.
+It is not written out to the database file because it contains
+information aggregated from the rest of the record that is
+reconstructed when the database is read.  To write the cache
+information to the database file would increase the risk of database
+inconsistency, and would violate the principles of normalization.
+
+   To access the cache fields using the functions listed below that
+begin with `bbdb-cache-', you must first get the cache vector using the
+`bbdb-record-cache' function.  The functions that begin with
+`bbdb-record-' get the cache vector internally.  Note that if you alter
+the cache field in the high-level record with the
+`bbdb-record-set-cache' function, you are altering the entire cache
+vector for the given record.  Use the modifier functions below for
+modifications to individual cache fields.
+
+Name        Type         Accessor and Modifier      Description
+Name Cache  String       `bbdb-cache-namecache'     Preconcatenated name
+                         `bbdb-cache-set-namecache' of entity
+Sort Key    String       `bbdb-cache-sortkey'       Preconcatenated sort
+                         `bbdb-cache-set-sortkey'   key for record
+Marker      Marker       `bbdb-cache-marker'        Marker in `.bbdb' for
+                         `bbdb-record-marker'       start of record
+                         `bbdb-cache-set-marker'    
+                         `bbdb-record-set-marker'   
+Deleted     Boolean      `bbdb-cache-deleted-p'     Set to `t' if record
+                         `bbdb-record-deleted-p'    has been deleted,
+                         `bbdb-cache-set-deleted-p' `nil' if not
+                         `bbdb-record-set-deleted-p'
+
+   The functions listed above will return `nil' if their respective
+cache fields are not set.  The functions listed below will return the
+value of their cache fields if set, but will also build (and set) the
+correct field values if the fields are unset:
+
+`bbdb-record-name'
+     Return the name in the Name Cache field of the cache (if set).  If
+     the name has not been built yet (if the field is `nil'), the name
+     is built, stored in the Name Cache field, and returned.
+
+`bbdb-record-sortkey'
+     Return the name it the Sort Key field of the cache (if set).  If
+     the Sort Key field has not yet been set (if the field is `nil'),
+     the Sort Key is built, stored in the Sort Key field, and returned.
+
+Notes String or Alist
+.....................
+
+   If there is only a single note for a given record, the notes field
+for that record will be a string.  If there is more than one note, the
+notes field will be an association list (alist) with elements of the
+form
+
+                           ( NAME . VALUE )
+
+where NAME is the symbol for the name of the note, and VALUE is the
+value of the note.
+
+Example BBDB record
+...................
+
+
+File: bbdb.info,  Node: Mailing Lists,  Next: Changes,  Prev: Internals,  Up: Top
+
+Mailing Lists
+=============
+
+   There are two mailing lists for the BBDB.  The first is
+`bbdb-announce@xemacs.org', and is used for new release announcements,
+and as a result has very low traffic.  To subscribe to
+`bbdb-announce@xemacs.org', send mail to
+`bbdb-announce-request@xemacs.org' with `subscribe' as the subject.
+
+   The second mailing list, `bbdb-info@xemacs.org', is gets moderate
+traffic, and is intended for the discussion and distribution of
+development versions of the BBDB.  Users of development versions of the
+BBDB should be subscribed to this list.  It is to this list that bugs
+should be reported.  *Note Known Bugs:: for instructions on submitting
+bug reports.
+
+
+File: bbdb.info,  Node: Changes,  Next: The Latest Version,  Prev: Mailing Lists,  Up: Top
+
+Changes in this Version
+=======================
+
+* Menu:
+
+* Major Changes::                Major changes in this version
+* Other Changes::                Not-so-major changes
+
+
+File: bbdb.info,  Node: Major Changes,  Next: Other Changes,  Prev: Changes,  Up: Changes
+
+Major Changes
+-------------
+
+Database File Version Change
+............................
+
+   (the following version-migration text will move in a future version.
+It is in this section currently because new users will likely not
+experience it)
+
+   There has been a version change in the BBDB database file.  The date
+format was changed to make the BBDB Y2K-compliant, and to allow for easy
+sorting of database records based on dates.
+
+   An automatic version-migration mechanism has been implemented that
+allows older version `.bbdb' files to either be migrated to the new
+version, or used as-is without migrating.  When the BBDB detects a
+database file with an old version, it will display the features that
+have been introduced in the database file from the time of the older
+version's implementation.  It will offer the choice of migration or use
+of the BBDB with the older-version file.
+
+   If migration is chosen, the database file will be automatically
+changed to the new format.  If migration is declined, the file will
+kept in the older format in the `.bbdb' buffer, but will be stored
+internally in the new format.  When changes need to be made to the
+`.bbdb' buffer, changed records will be reverse-migrated from their
+internal version to that of the disk file.
+
+Initialization Sequence Change
+..............................
+
+   The initialization sequence has changed.  Many of the forms that
+were required in 1.51 for initialization are no longer necessary.
+*Note Initial Configuration::.
+
+
+File: bbdb.info,  Node: Other Changes,  Prev: Major Changes,  Up: Changes
+
+Other Changes
+-------------
+
+   * XEmacs packaging has been partially implemented.
+
+   * bbdb-gnus (support for Gnus scoring and Summary buffer rewriting)
+     has been integrated
+
+   * Time-based functions have been introduced
+
+   * Web-browser functions (bbdb-w3) have been integrated.
+
+   * mail-abbrevs and mail-extr have been removed
+
+   * Supercite support (bbdb-sc) has been integrated
+
+   * And lots more...
+
+
+File: bbdb.info,  Node: The Latest Version,  Next: The Future,  Prev: Changes,  Up: Top
+
+The Latest Version
+==================
+
+Released versions of the BBDB can be found at the following sites:
+
+   * WWW: `http://www.netcom.com/~simmonmt'
+
+   * WWW: `http://people.netscape.com/jwz/bbdb'
+
+   * FTP: `ftp.xemacs.org:/pub/bbdb/bbdb.tar.gz'
+
+Development versions of the BBDB can be found at the following sites:
+
+   * WWW: `http://www.netcom.com/~simmonmt'
+
+   Users of development versions of the BBDB should subscribe to the
+`info-bbdb' mailing list.  *Note Mailing Lists::.
+
+
+File: bbdb.info,  Node: The Future,  Prev: The Latest Version,  Up: Top
+
+The Future
+==========
+
+   The future consists of Bugs and Features.
+
+* Menu:
+
+* Known Bugs::          Known Bugs, and how to submit new ones
+* TODO List::           The TODO List
+* EOL Statements::      EOL (End Of Life) Statements
+
+
+File: bbdb.info,  Node: Known Bugs,  Next: TODO List,  Prev: The Future,  Up: The Future
+
+Known Bugs
+----------
+
+  1. `M-TAB' conflicts with ispell.  Workaround: The binding installed
+     by the BBDB for address completion/expansion conflicts with that
+     used by ispell.  The suggested workarounds are to rebind the ispell
+     key (the BBDB binding is not configurable at this time), to
+     manually invoke ispell via `M-x', or to not use ispell completion
+     functionality in BBDB-enabled message composition buffers.
+
+  2. BBDB and abbrev expansion is inconsistent.  Workaround: Currently,
+     `M-TAB' must be used to expand/complete against BBDB names and net
+     addresses, and `TAB' must be used to expand abbrevs (the values in
+     the `mail-alias' field).  Unification is planned for a future
+     version.
+
+  3. The `*BBDB*' buffer does not always come up when the first article
+     in a Gnus Summary Buffer is selected.  Workaround:  Pressing `g'
+     to reload the article.  This will cause the `*BBDB*' buffer to be
+     displayed.
+
+  4. Expansion will fail when the name to be expanded is a subset of
+     the name for another record.  For example, if you have entries for
+     `John' and `Johnathan', you will not be able to expand the name
+     for `John'.  Workaround:  Use the net address for the subset name
+     (`John' in this example).
+
+
+   It is commonly known that there are no bugs in the BBDB.  Bugs found
+in defiance of this rule should be submitted to the `info-bbdb' mailing
+list.  To assist the developers, please include the version numbers of
+the various programs used when the bug occurred.  An example report
+follows.
+
+     BBDB Version:
+     Emacs/XEmacs Version:
+     Mail/News reader (Gnus, VM, etc) used:
+     Bug Description:
+
+
+File: bbdb.info,  Node: TODO List,  Next: EOL Statements,  Prev: Known Bugs,  Up: The Future
+
+TODO List
+---------
+
+The Near Future
+...............
+
+   * Add bbdb/MUA-delete-sender-record
+
+   * Make completion more consistent so completing an email address
+     gives both the name and the net address, as opposed to just
+     completing the net address.  See thread starting with
+     `<ilulnwci761.fsf@squid.pdc.kth.se>' in `info-bbdb'.
+
+   * Configurable completion.  Should allow user to specify "complete on
+     names first, then nets", etc.
+
+   * More variables for upgrading.  Specifically a variable that lets
+     users specify extra fields for upgrading (an alist `(a . b)' that
+     says field `a' should be upgraded the same way as field `b'.
+
+   * Change all functions that switch on MUAs to use compose-mail (ex:
+     `bbdb-send-mail-internal').
+
+   * Soren Dayton's method for generically extending the BBDB with
+     special-purpose fields
+
+   * Sorting records on alternate keys.  `bbdb-sort-by' from Boris
+     Goldowsky.
+
+   * Sorting individual types of fields - Sam Steingold's method.
+
+   * Button 3 menus (Mark Moll and Soren Dayton)
+
+   * BBDB-controlled mail splitting in Gnus.  Add hook for Soren to make
+     splitting better.  Routine from Brian Edmonds.
+
+   * Conditionalized erasure of properties when text is pasted into the
+     BBDB.
+
+   * Should notice when there are `Reply-To:' addresses.
+
+   * Should have a command for merging together two divergent copies of
+     a `.bbdb' file (in case you read mail on one machine and news on
+     another, for instance.)
+
+   * The `*BBDB*' buffer should be resized to exactly fit what it's
+     displaying, even when not in "electric" mode.
+
+   * It should be possible to do completion on last names as well as
+     first names.
+
+   * The BBDB buffer is left at the top of the stack when GNUS is exited
+     because GNUS runs its exit-hooks too early.  This should be fixed.
+
+   * String area codes (German area codes can begin with zeroes) patch
+     from `Michael Sperber <sperber@informatik.uni-tuebingen.de>'
+
+   * Internationalization of addresses.  Country code to control
+     formats for printing, etc.  Country->Format mapping.
+
+   * Default country variable, similar to `bbdb-default-area-code'.
+
+   * Make format self-describing in comment
+
+   * ISO-8859-x characters in records for printing.
+
+   * Prefix for `W' (`bbdb-www') command to allow selection of
+     different addresses.
+
+   * Generalized buttons (via extents) for fields.  Example: `(a . b)'
+     means create button that calls `b' for each entry in the `a' field.
+
+   * Remove support for GNUS.  Start with lisp Makefile (remove nntp
+     and gnus loads).
+
+   * More flexible auto-addition.  Conditionalizing of addition
+     (conditions or supplied function).  Prompt if multiple records
+     that meet criteria exist.
+
+   * Different output formats.  See Toby Speight's
+     `<s8iurdodvm.fsf@plato.ansa.co.uk>' and Bin Mu's
+     `<199801221605.KAA23663@DerivaTech.Com>'.
+
+   * Generalized area-code-split program that could split, for example,
+     based on input copied (or straight fetch of page) from the
+     Bellcore NANP page.
+
+   * Print multivalue (comma-separated) fields with one value per line
+
+   * Easier BBDB extension.  See `<xcdyb30f3hb.fsf@ra.cs.uchicago.edu>'
+     from Soren Dayton.
+
+   * Take birthdays from the BBDB, add them to calendar.  From Boris
+     Goldowsky.
+
+   * Make mail aliases file for other mailers.  From Boris Goldowsky.
+
+   * Various patches from Boris Goldowsky in `bbdb-ext'.
+
+   * Various other patches:
+        - `bbdb-filters-0.2'
+
+        - `bbdb-frame.el'
+
+        - `bbdb-letter-1.0'
+
+        - `bbdb-plz'
+
+        - `bbdb-query'
+
+        - `country'
+
+        - `country-info'
+      Note that these files have not been investigated.  They may or
+     may not be incorporated.
+
+   * Ability to remove all properties from copied strings.
+
+
+Not-So-Near Future
+..................
+
+   * Fix Gnus scoring so it rebuilds when gnus-score disappears
+
+   * Multiline note fields
+
+   * Change key to be some kind of unique number
+
+   * There should be better support for non-American addresses and phone
+     numbers.  This might be Near Future if somebody volunteers to send
+     me patches.
+
+   * Should reimplement "electric" mode to not be so broken.
+
+   * The `*C-o' keystroke should add a field to all displayed records.
+     Perhaps `*;' should append some text to an arbitrary field of all
+     displayed records.
+
+   * Multiple `.bbdb' files with precedence relationships.  See Wes
+     Hardaker's
+     `<sdu3awz75a.fsf@oakdale.ucdavis.edu>'
+
+   * Automatically grab information about a person from their sig.  See
+     Graham Clark's `info-bbdb' post
+     `<6282.199706161624@havra.dcs.ed.ac.uk>' and Adrian Aichner's
+     `info-bbdb' post `<rxsiuzebpgp.fsf@midnight.ecf.teradyne.com>'.
+     Would like to have `bbdb-snarf' attack the sig then compare the
+     snarfed data with the header data.
+
+
+Thoughts
+........
+
+   * Are there enough hooks?
+
+   * The interfaces should share more code.
+
+   * The `bbdb-create-internal' function should be more forgiving.
+
+   * More `*' commands in general, including `*d'.
+
+
+File: bbdb.info,  Node: EOL Statements,  Prev: TODO List,  Up: The Future
+
+End of Life (EOL) Statements
+----------------------------
+
+   The items in the following list describe items for which support
+will be removed in coming versions of the BBDB.  The items listed are
+guaranteed to be supported and present only until the EOL date.  They
+may be removed without warning at any time thereafter.
+
+  1. `advertized-bbdb-delete-current-field-or-record'
+     Support for this function will be removed for version 2.2.  It is
+     recommended that all code depending on this variable be switched
+     to use `bbdb-delete-current-field-or-record'.  The two functions
+     have the same calling conventions and effects.  This EOL statement
+     was added for version 2.1.
+
+  2. Support for the GNUS (not Gnus) newsreader
+     The GNUS-specific parts of the BBDB will be actively removed for
+     the 2.2 release.  No further maintenance and/or bugfixes are
+     planned for GNUS code at this time.  This EOL statement was added
+     for version 2.1.
+
+
+File: bbdb.info,  Node: Thanks,  Up: Top
+
+Thanks
+======
+
+   Thanks to everyone on the info-bbdb mailing list for many useful
+suggestions.  This hack would be far less insidious without their input!
+
+Thanks list for versions after 1.51
+-----------------------------------
+
+   Thanks to Adrian Aichner, Kees de Bruin, David Carlton, Soren Dayton,
+Brian Edmonds, Boris Goldowsky, Seth Golub, John Heidemann, Christopher
+Kline, Carsten Leonhardt, Hrvoje Niksic, Jens-Ulrik Hoger Petersen,
+Colin Rafferty, Sam Steingold, Marco Walther, Christoph Wedler
+
+   Last, but not least, thanks to Jamie Zawinski for writing BBDB in the
+first place.
+
+Thanks list for versions prior to and including 1.51.
+-----------------------------------------------------
+
+   And special thanks to Sebastian Kremer, Joe Wells, Todd Kaufmann,
+Andy Norman, Ivan Vazquez, Stewart Clamen, Roland McGrath, Dave Brennan,
+Kimball Collins, Dirk Grunwald, Philippe Queinnec, Boris Putanec, Dave
+Disser, Francois Felix Ingrand, Sean Owens, Guido Bosch, Lance Brown,
+Tom Emerson, George Hartzell, Luis Miguel Silveira, Kimmo Suominen,
+Derek Upham, David Zuhn, Rod Whitby, Richard Mlynarik.
+
+
+File: bbdb.info,  Node: _,  Up: (dir)
+
+_
+*
+
+     in.sid.i.ous aj   \in-'sid-e-*s\
+        [L insidiosus, fr. insidiae ambush, fr. insidere to sit in, sit on,
+           fr. in- + sedere to sit -- more at SIT]
+          1  a : awaiting a chance to entrap  TREACHEROUS
+             b : harmful but enticing  SEDUCTIVE
+          2  a : having a gradual and cumulative effect  SUBTLE
+             b of a disease
+               : developing so gradually as to be well established before
+                 becoming apparent
+       in.sid.i.ous.ly av
+       in.sid.i.ous.ness n
+
+* Menu:
+
+* Top::
+
+
+File: bbdb.info,  Node: Concept Index,  Next: Variable Index,  Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* %F:                                    VM Message Summary.
+* %UB:                                   VM Message Summary.
+* *BBDB* buffer:                         BBDB Mode.
+* AKA:                                   Customization Parameters.
+* Adding new fields:                     BBDB Mode.
+* Adding new records:                    Manual Record Addition.
+* Address completion <1>:                Customization Parameters.
+* Address completion:                    Mail Sending Interfaces.
+* Alternate names:                       Customization Parameters.
+* Annotating the sender of the current message: Interfaces.
+* Auto-save files:                       Customization Parameters.
+* Automatic display of the corresponding record: Customization Parameters.
+* Automatically adding text to records:  Predefined Hooks.
+* Automatically creating records <1>:    Predefined Hooks.
+* Automatically creating records:        Customization Parameters.
+* BBDB Mode:                             BBDB Mode.
+* Browsing the Web page for the current record: BBDB Mode.
+* Builtin field types:                   Database Fields.
+* Changing fields:                       BBDB Mode.
+* Changing windows:                      BBDB Mode.
+* Completion:                            Customization Parameters.
+* Creating new records <1>:              BBDB Mode.
+* Creating new records:                  Manual Record Addition.
+* Deleting fields:                       BBDB Mode.
+* Dialing phone numbers:                 BBDB Mode.
+* Displaying changed records:            BBDB Mode.
+* Editing fields:                        BBDB Mode.
+* Electric display:                      Customization Parameters.
+* Elided display:                        Basic Searching.
+* European phone numbers <1>:            Customization Parameters.
+* European phone numbers:                BBDB Mode.
+* Finger interface:                      BBDB Mode.
+* Fixing mistakes:                       BBDB Mode.
+* GNUS Subject-buffer:                   GNUS Subject List.
+* Initial Configuration:                 Initial Configuration.
+* Inserting new fields:                  BBDB Mode.
+* Installation:                          Installation.
+* Mail Aliases:                          Mail Sending Interfaces.
+* Mail address completion <1>:           Customization Parameters.
+* Mail address completion:               Mail Sending Interfaces.
+* Mailing lists:                         Mail Sending Interfaces.
+* Makefile:                              Installation.
+* Merging records:                       BBDB Mode.
+* Name completion <1>:                   Customization Parameters.
+* Name completion:                       Mail Sending Interfaces.
+* Normal User Installation:              Normal User.
+* North American phone numbers <1>:      Customization Parameters.
+* North American phone numbers:          BBDB Mode.
+* One-line display:                      Basic Searching.
+* Phone numbers <1>:                     Customization Parameters.
+* Phone numbers:                         BBDB Mode.
+* Printing records in the database <1>:  bbdb-print.
+* Printing records in the database <2>:  BBDB Mode.
+* Printing records in the database:      Database Fields.
+* Removing fields:                       BBDB Mode.
+* Reordering fields:                     BBDB Mode.
+* Saving your changes:                   BBDB Mode.
+* Searching the database <1>:            BBDB Mode.
+* Searching the database:                Basic Searching.
+* Sending mail <1>:                      Mail Sending Interfaces.
+* Sending mail:                          BBDB Mode.
+* Showing the sender of the current message: Interfaces.
+* Sound support:                         BBDB Mode.
+* Special Field Names:                   Database Fields.
+* Storing FTP sites in the BBDB:         bbdb-ftp.
+* Timestamping records:                  Predefined Hooks.
+* Transposing fields:                    BBDB Mode.
+* User-defined fields <1>:               BBDB Mode.
+* User-defined fields:                   Basic Searching.
+* XEmacs Package Installation:           XEmacs Package.
+* mark-char:                             GNUS Subject List.
+
+
+File: bbdb.info,  Node: Variable Index,  Prev: Concept Index,  Up: Top
+
+Variable Index
+**************
+
+* Menu:
+
+* bbd-print-file-name:                   bbdb-print.
+* bbdb-after-read-db-hook:               Customization Hooks.
+* bbdb-always-add-addresses:             Customization Parameters.
+* bbdb-auto-notes-alist:                 Predefined Hooks.
+* bbdb-auto-notes-ignore:                Predefined Hooks.
+* bbdb-auto-notes-ignore-all:            Predefined Hooks.
+* bbdb-auto-revert-p:                    Customization Parameters.
+* bbdb-canonicalize-net-hook:            Customization Hooks.
+* bbdb-canonicalize-redundant-nets-p:    Customization Parameters.
+* bbdb-case-fold-search:                 Customization Parameters.
+* bbdb-change-hook:                      Customization Hooks.
+* bbdb-completion-display-record:        Mail Sending Interfaces.
+* bbdb-completion-type:                  Customization Parameters.
+* bbdb-create-hook:                      Customization Hooks.
+* bbdb-default-area-code:                Customization Parameters.
+* bbdb-dial-local-prefix:                BBDB Mode.
+* bbdb-dial-long-distance-prefix:        BBDB Mode.
+* bbdb-electric-p:                       Customization Parameters.
+* bbdb-elided-display:                   Customization Parameters.
+* bbdb-file:                             Customization Parameters.
+* bbdb-finger-host-field <1>:            BBDB Mode.
+* bbdb-finger-host-field:                Database Fields.
+* bbdb-ignore-most-messages-alist:       Predefined Hooks.
+* bbdb-ignore-some-messages-alist:       Predefined Hooks.
+* bbdb-info-file:                        BBDB Mode.
+* bbdb-initialize-hook:                  Customization Hooks.
+* bbdb-list-hook:                        Customization Hooks.
+* bbdb-load-hook:                        Customization Hooks.
+* bbdb-message-caching-enabled:          Customization Parameters.
+* bbdb-mode-hook:                        Customization Hooks.
+* bbdb-new-nets-always-primary:          Customization Parameters.
+* bbdb-north-american-phone-numbers-p:   Customization Parameters.
+* bbdb-notice-auto-save-file:            Customization Parameters.
+* bbdb-notice-hook <1>:                  Predefined Hooks.
+* bbdb-notice-hook:                      Customization Hooks.
+* bbdb-offer-save:                       Customization Parameters.
+* bbdb-pop-up-elided-display:            Customization Parameters.
+* bbdb-pop-up-target-lines:              Customization Parameters.
+* bbdb-print-alist:                      bbdb-print.
+* bbdb-print-brief-alist:                bbdb-print.
+* bbdb-print-elide:                      bbdb-print.
+* bbdb-print-epilog:                     bbdb-print.
+* bbdb-print-full-alist:                 bbdb-print.
+* bbdb-print-prolog:                     bbdb-print.
+* bbdb-print-require:                    bbdb-print.
+* bbdb-quiet-about-name-mismatches:      Customization Parameters.
+* bbdb-readonly-p:                       Customization Parameters.
+* bbdb-send-mail-style:                  BBDB Mode.
+* bbdb-use-alternate-names:              Customization Parameters.
+* bbdb-use-pop-up:                       Customization Parameters.
+* bbdb-user-mail-names:                  Customization Parameters.
+* bbdb/gnus-header-prefer-real-names:    GNUS Subject List.
+* bbdb/gnus-header-show-bbdb-names:      GNUS Subject List.
+* bbdb/gnus-lines-and-from-length:       GNUS Subject List.
+* bbdb/gnus-mark-known-posters:          GNUS Subject List.
+* bbdb/gnus-score-default:               Gnus Scoring.
+* bbdb/gnus-score-field <1>:             Gnus Scoring.
+* bbdb/gnus-score-field:                 Database Fields.
+* bbdb/mail-auto-create-p <1>:           Predefined Hooks.
+* bbdb/mail-auto-create-p:               Customization Parameters.
+* bbdb/news-auto-create-p <1>:           Predefined Hooks.
+* bbdb/news-auto-create-p:               Customization Parameters.
+* bbdb/sc-attribution-field:             Database Fields.
+* bbdb/srv-auto-create-p:                bbdb-srv.
+* bbdb/srv-display-delay:                bbdb-srv.
+* gnus-score-find-score-files-function:  Gnus Scoring.
+* vm-summary-format:                     VM Message Summary.
+
+

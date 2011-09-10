@@ -1,0 +1,21 @@
+User visible changes from version 1.0 to 1.1:
+
+* Added support for Font-Lock mode.  Please note that there is a clear
+race condition between Font-Lock mode and WYSIWYG fashioned text editing.
+
+* TeXfax now works `out of the box'.
+
+* New minor mode for Dired called `Faxed'.  Allows to view fax messages
+by simply pressing `v', try `M-x faxed <fax-incoming-directory> RET'.
+
+* Extra command line switches, e.g., fax transmit time, can be specified
+with one or more `Options:' header fields in the `*fax*' buffer.
+
+* If the buffer-local variable `sendfax-format' is non-`nil', run the
+corresponding functions saved in `sendfax-formats'.  `sendfax-format'
+can be set with `sendfax-change-format' or with the `Format:' header
+field in the `*fax*' buffer.
+
+* `sendfax-write-region-hooks' and `sendfax-write-region-function'
+are now buffer-local variables.  The default value have to be set with
+`setq-default' while `setq' only modifies the buffer-local value.

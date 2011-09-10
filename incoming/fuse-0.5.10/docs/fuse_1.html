@@ -1,0 +1,173 @@
+<HTML>
+<HEAD>
+<!-- This HTML file has been created by texi2html 1.51
+     from fuse.texi on 24 August 1998 -->
+
+<TITLE>FUSE User's Guide - Introduction to FUSE</TITLE>
+</HEAD>
+<BODY>
+Go to the first, previous, <A HREF="fuse_2.html">next</A>, <A HREF="fuse_7.html">last</A> section, <A HREF="fuse_toc.html">table of contents</A>.
+<P><HR><P>
+
+<P>
+@macro fuse{}
+{@sf FUSE}
+@ifnottex
+FUSE
+
+</P>
+
+<P>
+@direntry
+* FUSE: (fuse).             Feff/UWXAFS System for Emacs
+
+</P>
+
+
+<PRE>
+The author of {@sf FUSE}, Bruce Ravel, can be reached at:<BR>
+Ceramics Division, Room 215
+National Institute of Standards and Technology
+Gaithersburg, MD 20899<BR>
+<a href="mailto:&#60;ravel@phys.washington.edu&#62;">&#60;ravel@phys.washington.edu&#62;</a><BR>
+The latest version of {@sf FUSE} can always be found at
+@url{http://feff.phys.washington.edu/~ravel/fuse/}
+</PRE>
+
+<P>
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+</P>
+<P>
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+</P>
+<P>
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that this permission notice must be stated in a translation
+approved by the author.
+
+</P>
+<P>
+Copyright (C) 1998 Bruce Ravel <a href="mailto:&#60;ravel@phys.washington.edu&#62;">&#60;ravel@phys.washington.edu&#62;</a><BR>
+Updated 27 July 1998 
+
+</P>
+
+
+
+<H1><A NAME="SEC1" HREF="fuse_toc.html#TOC1">Introduction to FUSE</A></H1>
+
+<P>
+This document describes the installation and use of
+@fuse{}.  @fuse{} is the FEFF/UWXAFS System for
+Emacs.  It is a user interface for FEFF, ATOMS, AUTOBK,
+FEFFIT and a few other programs developed by the members and
+former members of the x-ray absorption spectroscopy group at the
+University of Washington.
+
+</P>
+<P>
+This document is written with the assumption that the reader is familiar
+with EXAFS analysis, the use of FEFF and the UWXAFS programs,
+and the use of Emacs.  It is not expected that the reader is a guru in
+any of these topics, but a certain knowlege of each is necessary as
+their basic concepts will not be explained here.
+
+</P>
+<P>
+There are two companion documents to this one.  One of these is a
+tutorial, see section `Introduction' in <CITE>The Fuse Tutorial</CITE>, and
+demonstrates the use of @fuse{} by walking you through an analysis of
+copper metal using @fuse{} along with FEFF and the UWXAFS
+programs.  The other is a quick reference card, <TT>`quickref.ps'</TT>,
+which describes the key sequences and user configurable variables in
+@fuse{}.  These three documents together provide a complete reference to
+@fuse{}.
+
+</P>
+
+<P>
+The general purpose of a user interface to these (or any) programs is to
+to add value to the programs by making their use easier and more
+efficient.  To this end, I have broken down the interface to FEFF
+and the UWXAFS programs into five conceptual areas of
+functionality.  These are
+
+</P>
+<DL COMPACT>
+
+<DT><STRONG>Generation of input files</STRONG>
+<DD>
+  The input structures to these programs are rather complicated and
+offer many options for the user.  This is particularly true for
+FEFFIT, which uses a highly abstracted metalanguage for
+constraining parameters in a fitting model.  Much of the functionality
+of @fuse{} is dedicated to the generation and manipulation of the
+constituent text of these input files.  The creation of input files is
+the most difficult part of using these programs even though the input
+files are composed entirely of ASCII text.  Thus I was motivated to use
+Emacs as the application/program interface.  Along with good integration
+of system level features such as file handling and process handling,
+Emacs possesses extremely powerful text manipulation capabilities and a
+flexible keyboard and mouse based user model.
+
+<DT><STRONG>Program execution</STRONG>
+<DD>
+ @fuse{} uses the Emacs system interface to execute the programs and to
+display their run-time messages.  Although each of the programs requires
+that input files have filenames specific to the program (i.e. FEFF
+requires that its input file be called <TT>`feff.inp'</TT>), @fuse{} allows
+you to use input files with arbitrary names.  It uses a command wrapper
+to temporarily rename files to the name expected by the executed
+program.
+
+<DT><STRONG>Organization of graphical output</STRONG>
+<DD>
+ @fuse{} uses GNUPLOT to display data.  Scripts for running
+GNUPLOT are generated automatically from the contents of the input
+files and may be saved for future use.  Many display options exist for
+FEFFIT for plotting results in different spaces and for plotting
+the contributions from individual scattering paths.
+
+<DT><STRONG>Organization of textual output</STRONG>
+<DD>
+ Analysis of data is performed to obtain answers to physical questions.
+Pretty pictures are very important, but often a number is the bottom
+line.  @fuse{} has several features for organizing the textual output of
+the programs into useful formats.
+
+<DT><STRONG>Error handling and recovery from mistakes</STRONG>
+<DD>
+ Any program that can be used can be misused.  @fuse{} has features for
+examining the contents of input files for errors or inconsistencies.  It
+also allows the user to examine the run-time and saved-file output of
+the programs.
+
+</DL>
+
+<P>
+
+<P>
+@fuse{} is an ongoing project.  I hope that, in its present form, it
+will help you analyze your data.  For some hints of what @fuse{} might do
+in the future, take a peek at section <A HREF="fuse_6.html#SEC24">Future work</A>.  If you have any questions,
+comments, complaints, or suggestions, please contact me.  There is a bug
+report function built into @fuse{} which sends me email using the Emacs
+mailer.  It is invoked by <KBD>C-c C-b b</KBD> of from the <CODE>Input -
+miscellaneous</CODE> menu.  Use that function or any of my contact information
+shown on the second page of this document.
+<A NAME="IDX1"></A>
+
+</P>
+
+<P><HR><P>
+Go to the first, previous, <A HREF="fuse_2.html">next</A>, <A HREF="fuse_7.html">last</A> section, <A HREF="fuse_toc.html">table of contents</A>.
+</BODY>
+</HTML>

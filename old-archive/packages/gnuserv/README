@@ -1,0 +1,36 @@
+This file is not meant to be proper documentation. See the file gnuserv.1 for
+more information.
+
+To install, copy gnuserv.el into a directory on your GNU Emacs loadpath, copy
+*.[ch1] into the GNU Emacs etc directory, patch etc/Makefile with
+etc.Makefile.diff, then change directory to etc and type:
+
+  make gnuserv gnuclient gnudoit
+
+This should compile the server and the two clients. You may now want to put
+gnuserv, gnuclient and gnudoit in the directory where you put etags and emacs.
+
+File                    : Description
+----------------------------------------------------------------
+etc.Makefile.diff	: diffs to etc/Makefile to make gnuserv 
+LICENSE			: GNU General License
+README			: this file
+gnuclient.c		: editor client C code
+gnudoit.c		: eval client C code
+gnuserv.1		: gnuserv man page
+gnuserv.c		: server C code
+gnuserv.el		: server LISP code
+gnuserv.el.epoch        : server LISP support for Epoch 2.2
+gnuserv.h		: server/client C header file
+gnuslib.c		: server/client C common code
+src.x11fns.diff		: diffs to src/x11fns to raise window.
+
+If you find *any* problems at all with gnuserv, or you can think of better
+ways of doing things (especially remote file access), please e-mail me at one
+of the addresses below.
+
+ange@hplb.hpl.hp.com
+ange@hpl.hp.co.uk
+...!hplabs!hplb!ange
+...!ukc!hplb!ange
+

@@ -1,0 +1,53 @@
+To: unix-emacs@bbn.com
+Date: 22 Feb 89 21:43:19 GMT
+From: Michael McNamara <ubvax!ardent!mac@ames.ARPA>
+Subject: Re: dbx.el
+
+
+>  Path: ardent!ubvax!vsi1!apple!bloom-beacon!mit-eddie!ll-xn!rkc
+>  From: rkc@XN.LL.MIT.EDU (rkc)
+>  Newsgroups: comp.emacs
+>  Date: 22 Feb 89 14:25:21 GMT
+>  Organization: MIT Lincoln Laboratory, Lexington, MA
+>  Lines: 13
+>  
+>  I am having trouble with dbx.el.  In short, my problems are:
+>  	1. run-dbx doesn't correctly change to the directory I want to work
+>  in.  Althouth the run-dbx routine does 
+>  	(setq default-directory (file-name-directory path))
+>  	dbx comes up in my home directory.
+>  	2. Dbx-where fails saying:
+>  	Search failed: "stopped in .* at line \\([0-9]*\\) in file
+>  \"\\([^\"]*\\)\""
+>  
+>  Any suggestions?
+>  	Thanks,
+>  	-Rob
+>  	
+
+	Run the following patch:
+
+*** /grgr/emacs/lisp/dbx.el~	Thu Feb 11 23:14:30 1988
+--- /grgr/emacs/lisp/dbx.el	Wed Feb 22 13:36:20 1989
+***************
+*** 92,98 ****
+    (interactive "fProgram to debug: ")
+    (let ((file (file-name-nondirectory path)))
+      (switch-to-buffer (concat "*dbx-" file "*"))
+!     (setq default-directory (file-name-directory path))
+      (switch-to-buffer (make-shell (concat "dbx-" file) "dbx" nil file)))
+    (set-process-filter (get-buffer-process (current-buffer)) 'dbx-filter)
+    (inferior-dbx-mode))
+--- 92,99 ----
+    (interactive "fProgram to debug: ")
+    (let ((file (file-name-nondirectory path)))
+      (switch-to-buffer (concat "*dbx-" file "*"))
+! ;;  (setq default-directory (file-name-directory path))  ;; deleted mac@ardent
+!     (setq default-directory (expand-file-name (file-name-directory path))) ;; added mac@ardent
+      (switch-to-buffer (make-shell (concat "dbx-" file) "dbx" nil file)))
+    (set-process-filter (get-buffer-process (current-buffer)) 'dbx-filter)
+    (inferior-dbx-mode))
+--
+Michael McNamara 
+  mac@ardent.com
+

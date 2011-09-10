@@ -1,0 +1,822 @@
+indices, for more information about sorting indices.) \back refill
+\end{example}
+
+\noindent
+This produced the following output, after which \LaTeX\ stopped:
+
+\begin{example}
+Runaway argument?
+\{sorting indices, for more information about sorting indices.) \back refill \back ETC.
+! Paragraph ended before \back xref was complete.
+<to be read again> 
+                   \back par 
+l.27 
+     
+? 
+\end{example}
+
+In this case, \LaTeX\ produced an accurate and understandable error message:
+\samp{Paragraph ended before \back xref was complete.}   Also,
+\samp{\back par} is an internal \LaTeX\ command meaning new--paragraph.
+Unfortunately, \LaTeX\ is not always so helpful, and sometimes you have
+to be truly a Sherlock Holmes to discover what went wrong.  If you run
+into a problem like this, you can do one of two things.
+
+\begin{enumerate}
+\item
+You can tell \LaTeX\ to continue running and to ignore errors 
+as best it can by typing \kbd{r \key{RET}} at the 
+\samp{?} prompt.\refill
+
+This is often the best thing to do.  However, beware: the one error may
+produce a cascade of additional error messages as it consequences are felt
+through the rest of the file.\refill
+
+\item
+You can tell \LaTeX\ to stop this run by typing \kbd{x \key{RET}} 
+at the \samp{?} prompt. 
+\end{enumerate}
+
+Sometimes \LaTeX\ will format a file without producing error messages even
+though there is a problem.  This usually occurs if a command is not ended
+but \LaTeX\ is able to continue processing anyhow.  For example, if you
+fail to end an itemized list with the \code{\back end\{itemize\}} command,
+\LaTeX\ will write a DVI file that you can print out.  The only error
+message that
+\LaTeX\ will give you is the somewhat mysterious comment that
+
+\begin{example}
+(\back end occurred inside a group at level 1)
+\end{example}
+
+\noindent
+However, if you print the DVI file, you will find that the text of the file
+that follows the itemized list is entirely indented as if it were part of
+the last item in the itemized list.  The error message is the way 
+\LaTeX\ says that it expected to find a \code{\back end} command somewhere
+in the file; but that it could not locate where it was needed. \refill
+
+Another source of notoriously hard to find errors is a missing
+\code{\back end\{same\}} command.  If you ever are stumped by
+incomprehensible errors, look for a missing \code{\back end\{same\}}
+command first.\refill
+
+If you do not have the header lines in the file, \LaTeX\ may stop in the
+beginning of its run and display output that looks like the following.
+The \samp{*} indicates that \LaTeX\ is waiting for input.\refill
+
+\begin{example}
+This is TeX, Version 2.0 for Berkeley UNIX (preloaded format=plain-cm 
+87.10.25) (#tz-bar-a02987.tex [1])
+*
+\end{example}
+
+\noindent
+In this case, simply type \kbd{\back end \key{RET}} after the asterisk.  Then
+put the header lines into the \LaTeX info file and run the \LaTeX\ command
+again.\refill
+
+
+\node Using latexinfo-show-structure, Using Occur, Catching Errors with LaTeX Formatting, Catching Mistakes
+\section{Using latexinfo-show-structure}
+\cindex{Using latexinfo-show-structure}
+\cindex{Showing the structure of a file}
+\cindex{Using latexinfo-show-structure to catch mistakes}
+\cindex{latexinfo-show-structure for catching mistakes}
+\findex{latexinfo-show-structure}
+
+It is not always easy to keep track of the nodes, chapters, sections and
+subsections of a \LaTeX info file.  This is especially true if you are revising
+or adding to a \LaTeX info file that someone else has written.
+
+In GNU Emacs, in LaTeXinfo Mode, there is a command that will list all the
+lines that begin with the commands that specify the structure: 
+\code{\back node}, \code{\back chapter}, \code{\back section},
+\code{\back appendix} and so on.  This is the\*
+\code{latexinfo-show-structure} command.  It is bound to the keyboard command
+\ctrl{c} \ctrl{s}. \code{latexinfo-show-structure} displays the lines that
+begin with the node and chapter structuring commands in another window
+called the \samp{*Occur*} buffer.  For example, when it is run on the
+first part of this chapter, it produces the following:\refill
+
+\begin{example}
+Lines matching
+"^\back \back \back (chapter\back \back |sect\back \back |sub\back \back |heading\back \back |major
+\back \back |node\back \back )" in buffer new-texinfo-manual.texinfo.
+  2:\back node     catching mistakes, command Syntax, running info, top
+  4:\back chapter\{Catching Mistakes\}
+ 41:\back node debugging with info, debugging with tex, , catching mistakes
+ 43:\back section\{Catching errors with Info Formatting\}
+\end{example}
+
+This means that lines 2, 4, 41 and 43 began with \code{\back node},
+\code{\back chapter}, \code{\back node}, and \code{\back section}
+respectively.  If you move your cursor into the \samp{*Occur*} window, you
+can position the cursor over one of the lines and use the \ctrl{c} \ctrl{c}
+command (\code{occur-mode-goto-occurrence}), to jump to the corresponding
+spot in the \LaTeX info file. \xref{Other Repeating Search, , Using Occur,
+emacs, The GNU Emacs Manual}, for more information about
+\code{occur-mode-goto-occurrence}.\refill
+
+The first line in the \samp{*Occur*} window describes the \dfn{regular
+expression} specified by \var{latexinfo-heading-pattern}.  This regular
+expression is the pattern that \code{latexinfo-show-structure} looks for.
+\xref{Regexps, , Using Regular Expressions, emacs, The GNU Emacs Manual},
+for more information.\refill
+
+When you give the \code{latexinfo-show-structure} command, it will show
+the structure of the whole buffer.  If you want to see the structure of
+just a part of the buffer, of one chapter, for example, use the \kbd{C-x
+n} (\code{narrow-to-region}) command to mark the region.
+(\xref{Narrowing, , , emacs, The GNU Emacs Manual
+\cite{GNUEmacsManual}}.)  This is how the example used above was
+generated.  (To see the whole buffer again, use \kbd{C-x w}
+(\code{widen}).)\refill
+
+You can remind yourself of the structure of a \LaTeX info file by looking at
+the list in the \samp{*Occur*} window; and if you have mis-named a node
+or left out a section, you can correct the mistake.
+
+\begin{menu}
+* Using Occur::
+\end{menu}
+
+\node Using Occur, Finding Badly Referenced Nodes, Using latexinfo-show-structure, Using latexinfo-show-structure
+\subsection{Using Occur}
+\cindex{Using occur}
+\cindex{Occur, using the command}
+
+Sometimes the \code{latexinfo-show-structure} command produces too much
+information.  Perhaps you want to remind yourself of the overall structure
+of a \LaTeX info file, and are overwhelmed by the detailed list produced by
+\code{latexinfo-show-structure}.  In this case, you can use the \code{occur}
+command itself.  To do this, type
+
+\begin{example}
+\kbd{M-x occur}
+\end{example}
+
+\noindent 
+and then, when prompted, type a \dfn{regexp}, a regular expression for the
+pattern you want to match.  
+(\xref{Regexps, , Regular Expressions, emacs, The GNU Emacs Manual}.)
+\code{occur} works from the current location of
+the cursor in the buffer to the end of the buffer.  If you want to run
+\code{occur} on the whole buffer, place the cursor at the beginning of the
+buffer.  For example, to see all the lines that contain the word
+\samp{\back chapter} in them, just type \samp{\back \back chapter}.
+This will produce a list of the chapters.  It will also list all the
+sentences with \samp{\back \back chapter} in the middle of the line.  If
+you want to see only those lines that start with the word 
+\samp{\back back chapter}, type \samp{^\back chapter} when prompted by
+\code{occur}.  If you want to see all the lines that end with a word or
+phrase, end the last word with a \samp{$}; for example, \samp{catching
+mistakes$}.  This can be helpful when you want to see all the nodes that
+are part of the same chapter or section and therefore have the same `Up'
+pointer.\refill
+
+\xref{Other Repeating Search, , Using Occur, emacs , The GNU Emacs Manual},
+for more information.\refill
+
+\node Finding Badly Referenced Nodes, Info-Validating a Large File, Using Occur, Catching Mistakes
+\section{Finding Badly Referenced Nodes}
+\cindex{Finding Badly Referenced Nodes}
+\cindex{Running Info-validate}
+\cindex{Info-validate,  running the command}
+\cindex{Nodes, checking for badly referenced nodes}
+\cindex{Checking for badly referenced nodes}
+\cindex{Looking for badly referenced nodes}
+\cindex{Finding badly referenced nodes}
+\cindex{Badly referenced nodes }
+
+You can check whether any of the `Next', `Previous', `Up' or other node
+pointers fail to point to a node with the \code{Info-validate} command.
+This command checks that every node pointer points to an existing node.
+
+To use this command, you first need to load the \code{info} library and then do
+\kbd{M-x Info-validate}.
+
+\begin{example}
+\kbd{M-x load-library \key{RET} informat \key{RET}} 
+\kbd{M-x Info-validate}
+\end{example}
+
+\noindent
+(Note that all the \code{Info} commands require an uppercase `I'.)
+
+If your file is ok, you will receive a message that says ``File appears
+valid''.  However, if you have a pointer that does not point to a node,
+error messages will be displayed in a buffer called \samp{*problems in
+info file*}.
+
+For example, \code{Info-validate} was run on a test file that contained
+only the first node of this manual.  One of the messages said:
+
+\begin{example}
+In node "Overview", invalid Next: LaTeXinfo Mode
+\end{example}
+
+\noindent
+This meant that the node called \samp{Overview} had a `Next' pointer that
+did not point to anything (which was true in this case, since the test file
+had only one node in it).
+
+Now suppose we add a node named \samp{LaTeXinfo Mode} to our test case
+but we don't specify a `Previous' for this node.  Then we will get
+the following error message:
+
+\begin{example}
+In node "LaTeXinfo Mode", should have Previous: Overview
+\end{example}
+
+\noindent
+This is because every `Next' pointer should be matched by a
+`Previous' (in the node where the `Next' points) which points back.
+
+\code{Info-validate} also checks that all menu items and cross-references
+point to actual nodes.
+
+\code{Info-validate} does not work with large files that have been
+split.  (Info thinks of a large file as being over 100,000 bytes,
+approximately.)  In order to use \code{Info-validate} on a large file,
+you must run \code{latexinfo-format-buffer} with an argument so that it
+does not split the Info file, and then create a tag table.
+
+\begin{menu}
+* Info-Validating a Large File::
+* Splitting a File Manually::
+\end{menu}
+
+\node Info-Validating a Large File, Splitting a File Manually, Finding Badly Referenced Nodes, Finding Badly Referenced Nodes
+\subsection{Info-Validating a Large File}
+\cindex{Running Info-validate on a large file}
+\cindex{Info validating a large file}
+\cindex{Validating a large file}
+
+You can run \code{Info-validate} only on a single Info file.  The command
+will not work on indirect subfiles that are generated when the master file
+is split.  If you have a large file (longer than 100,000 bytes), you need
+to run the \code{latexinfo-format-buffer} command in such a way that it
+does not create indirect subfiles.  You will also need to create a tag
+table.  When you have done this, you can run \code{Info-validate} and look
+for badly referenced nodes.\refill
+
+After you have validated the node structure, you can rerun\*
+\code{latexinfo-format-buffer} in the normal way so it will construct
+the tag table and split the file automatically or, you can make the tag
+table and split the file manually.  To prevent the
+\code{latexinfo-format-buffer} command from splitting a
+\LaTeX info file into smaller Info files, give a prefix to the \kbd{M-x
+latexinfo-format-buffer} command:
+
+\begin{example}
+C-u  M-x latexinfo-format-buffer
+\end{example}
+
+\noindent
+When you do this, \LaTeX info will not split the file and will not create a tag
+table for it. \refill
+\cindex{Making a tag table manually}
+\cindex{Tag table, making manually}
+
+Before you can run \kbd{M-x Info-validate} on the Info file, you need to
+create a tag table for it.  In order to do this, you first need to load the
+\code{info} library into Emacs with the following command:\refill
+
+\begin{example}
+M-x load-library \key{RET} informat \key{RET}
+\end{example}
+
+\noindent
+Then you can give the command:
+
+\begin{example}
+M-x Info-tagify
+\end{example}
+
+This creates a file which you can validate.\refill
+
+\begin{example}
+M-x Info-validate
+\end{example}
+
+After you have checked the validity of the nodes, you can either run\*
+\kbd{M-x latexinfo-format-buffer} as you would normally, or else tagify and
+split the file manually with the two commands \code{Info-tagify} and
+\code{Info-split}.\refill
+
+\node Splitting a File Manually, LaTeXinfo Mode, Info-Validating a Large File, Finding Badly Referenced Nodes
+\subsection{Splitting a File Manually}
+\cindex{Splitting an Info file manually}
+\cindex{Info file, splitting manually}
+
+If the file has more than 100,000 or so bytes in it, you should split it or
+else let the \code{latexinfo-format-buffer} command do it for you
+automatically.  (Generally you will let \code{latexinfo-format-buffer} do
+this job for you.  \xref{Creating an On-line Info File}.)
+The split off files are called the indirect subfiles.\refill
+
+Info files are split to save memory.  With smaller files, Emacs does not
+have make such a large buffer to hold the information.  This way, Emacs
+can save memory.
+
+If the Info file has more than 30 nodes, you should also make a tag table for
+it. \xref{Info-Validating a Large File}, for information about creating a
+tag table.
+
+Before running \code{Info-split}, you need to load the \code{info} library
+into Emacs by giving the command \kbd{M-x load-library \key{RET} informat
+\key{RET}}.  After you have done this, you can give the two commands:\refill
+
+\begin{example}
+M-x Info-tagify
+M-x Info-split
+\end{example}
+
+\noindent
+(Note that the \samp{I} in \samp{Info} is uppercase.)
+
+When you use the \code{Info-split} command, the buffer is modified into a
+(small) Info file which lists the indirect subfiles.  This file should be
+saved in place of the original visited file.  The indirect subfiles are
+written in the same directory the original file is in, with names generated
+by appending \samp{-} and a number to the original file name.
+
+The primary file still functions as an Info file, but it contains just
+the tag table and a directory of subfiles.
+
+\node LaTeXinfo Mode, Formatting a Region for Info, Splitting a File Manually, Top
+\chapter{LaTeXinfo Mode}
+\cindex{LaTeXinfo Mode}
+\cindex{Mode, using LaTeXinfo}
+\cindex{GNU Emacs}
+\cindex{Emacs}
+
+In GNU Emacs, LaTeXinfo Mode is a major mode for editing LaTeXinfo files.
+This means that Emacs has commands and features especially designed for
+working with \LaTeX info files.  Like all other Emacs features, you can
+customize or enhance these as you wish.  In particular, the keybindings are
+very easy to change.  The keybindings described here are the default or
+standard ones.
+
+The major features of LaTeXinfo Mode are:
+
+\begin{itemize}
+\item
+Paragraph filling control.
+
+\item
+A command to show the structure of the file.
+
+\item
+Pre-defined keystroke commands to insert commonly used strings of text.
+
+\item
+Formatting a part of a file for Info, rather than the whole file.
+\end{itemize}
+
+In general, in LaTeXinfo Mode, the GNU Emacs editing commands are like those
+in text-mode.  The major difference is that the paragraph separation
+variable and syntax table are set up so expression commands skip \LaTeX info
+bracket groups.  This means, for example, that the\*
+\kbd{M-q} (\code{fill-paragraph}) command will refill a paragraph but
+not the command on a line adjacent to it.\refill
+
+
+\begin{menu}
+* Formatting a Region for Info::
+* Showing the Structure of a File::
+* Inserting Frequently Used Commands::
+\end{menu}
+
+\node Formatting a Region for Info, Showing the Structure of a File, LaTeXinfo Mode, LaTeXinfo Mode
+\section{Formatting a Region for Info}
+\cindex{Formatting a Region for Info}
+\cindex{Running Info on a region}
+\cindex{Info, formatting on a region}
+\findex{latexinfo-format-region}
+
+To see what part of a \LaTeX info file will look like after it has been
+transformed into an Info file, use the command \ctrl{c} \ctrl{f}
+(\code{latexinfo-format-region}).  This command formats the current region of
+the \LaTeX info file for Info and writes it to a temporary buffer called
+\samp{*Info Region*}.\refill
+
+For \code{latexinfo-format-region} to work, the file \strong{must} include a
+line that has\*
+\code{\back setfilename} in its header.\refill
+
+\comment  node-name,  next,  previous,  up
+\node Showing the Structure of a File, Inserting Frequently Used Commands, Formatting a Region for Info, LaTeXinfo Mode
+\section{Showing the Structure of a File}
+\cindex{Showing the structure of a file}
+\cindex{Structure of a file, showing it}
+\cindex{File structure, showing it}
+\cindex{LaTeXinfo file structure, showing it}
+
+You can show the structure of a \LaTeX info file by using the \ctrl{c}
+\ctrl{s} command\*
+(\code{latexinfo-show-structure}).  This command shows the structure of
+a \LaTeX info file by listing the lines with the commands for
+\code{\back{}node}, \code{\back{}chapter}, \code{\back{}section} and the
+like.  These lines are displayed in another window called the
+\samp{*Occur*} window.  In that window, you can position the cursor over
+one of the lines and use the \ctrl{c} \ctrl{c} command 
+(\code{occur-mode-goto-occurrence}), to jump to the
+corresponding spot in the \LaTeX info file.\refill
+
+The two commands are:
+
+\begin{description}
+\item[C-c C-s ]
+latexinfo-show-structure
+
+\item[C-c C-c]
+occur-mode-goto-occurrence
+\end{description}
+
+Often, when you are working on a manual, you will be interested only in the
+structure of the current chapter.  In this case, you can mark off the
+region of the buffer that you are interested in with the \kbd{C-x n}
+(\code{narrow-to-region}) command and \code{latexinfo-show-structure} will
+work on only that region.  (To see the whole buffer again, use \kbd{C-x w}
+(\code{widen}).)\refill
+
+\comment  node-name,  next,  previous,  up
+\node Inserting Frequently Used Commands, LaTeX Input Initialization, Showing the Structure of a File, LaTeXinfo Mode
+\section{Inserting Frequently Used Commands}
+\cindex{Inserting frequently used commands}
+\cindex{Frequently used commands, inserting them}
+\cindex{Commands, inserting them}
+
+\LaTeX info Mode provides commands that insert various frequently used
+commands into the buffer.  You can use these commands to save
+keystrokes.  And you can insert balanced curly braces with the\*
+ \kbd{M-\{} command, (\code{latexinfo-insert-braces}) and later use the 
+\kbd{M-\}} command (\code{up-list}) to move forward past the closing brace.
+\refill
+
+The special commands are invoked by typing \kbd{C-c} twice and then the
+first letter of the command.
+
+\begin{description}
+\item[C-c C-c c]
+latexinfo-insert-code
+
+\item[C-c C-c d ]
+latexinfo-insert-dfn
+
+\item[C-c C-c e ]
+latexinfo-insert-end
+
+\item[C-c C-c i ]
+latexinfo-insert-item
+
+\item[C-c C-c n ]
+latexinfo-insert-node
+
+\item[C-c C-c s]
+latexinfo-insert-samp
+
+\item[C-c C-c v]
+latexinfo-insert-var
+
+\item[M-\{ ]
+latexinfo-insert-braces
+
+\item[M-\} ]
+up-list
+\end{description}
+
+This list was generated by analyzing the frequency with which commands were
+used in the GNU Emacs Manual (\cite{GNUEmacsManual}) and the GDB Manual
+(\cite{GDBManual}).  If you wish to add your own insert commands, you can
+bind a keyboard macro to a key, use abbreviations or extend the code in
+\file{latexinfo-mode.el}.
+
+\c ;;;;;;;;;;;;;;;; Appendix starts here ;;;;;;;;;;;;;;;;
+\appendix
+
+\node LaTeX Input Initialization, Standard text for Copying Permissions, Inserting Frequently Used Commands, Top
+\chapter{LaTeX Input Initialization}
+\cindex{LaTeX Input Initialization }
+\cindex{TEXINPUTS environment variable}
+\cindex{profile initialization file}
+\cindex{cshrc initialization file}
+
+You must put \code{latexinfo} as an option to the \code{documentstyle}
+of every \LaTeX info file to tell \LaTeX\ to use the
+\file{latexinfo.sty} file when it is processing the \LaTeX info source
+file.  Otherwise \LaTeX\ will not know what to do with the commands.
+\xref{The First Line of a LaTeXinfo File}.\refill
+
+\LaTeX\ needs to be told where to find the \file{latexinfo.sty} file
+that you have told it to input.  One way to do this is to put
+\file{latexinfo.sty} in the default inputs directory, which is the
+\file{/usr/lib/tex/macros} directory.  \LaTeX\ will find the file and
+you don't have to do anything.  Alternatively, you can put
+\file{latexinfo.sty} in the directory in which the \LaTeX info source
+file is located.\refill
+
+However, you may want to specify the location of the file yourself.  One
+way is to set the \samp{TEXINPUTS} environment variable in your
+\file{.cshrc} or \file{.profile} file.  The \samp{TEXINPUTS} environment
+variable will tell \LaTeX\ where to find the \file{latexinfo.sty} file
+and any other file that you might want \LaTeX\ to use.  Whether you use
+a \file{.cshrc} or \file{.profile} file depends on whether you use
+\samp{csh} or \samp{sh} for your shell command interpreter.  When you
+use \samp{csh}, it looks to the \file{.cshrc} file for initialization
+information, and when you use \samp{sh}, it looks to the \file{.profile}
+file.\refill
+
+In a \file{.cshrc} file, you could use the following \code{csh} command
+sequence:\refill
+
+\begin{verbatim}
+setenv LATEXINFO /usr/me/mylib
+# Add the format files to the list of directories that LaTeX searches.
+if ( $?TEXINPUTS ) then
+	setenv TEXINPUTS "$TEXINPUTS"':'"$LATEXINFO"
+  else
+	setenv TEXINPUTS "$LATEXINFO"
+endif
+\end{verbatim}
+
+\clearpage
+In a \file{.profile} file, you could use the following \code{sh} command
+sequence:
+
+\begin{example}
+TEXINPUTS=.:/usr/me/mylib:/usr/lib/tex/macros
+export TEXINPUTS
+\end{example}
+
+\noindent
+This would cause \LaTeX\ to look for style file first in the current
+directory, indicated by the \samp{.}, then in a hypothetical user's
+\file{/usr/me/mylib} directory, and finally in the system library.\refill
+
+\node Standard text for Copying Permissions, Ifinfo Copying Permissions, LaTeX Input Initialization, Top
+\chapter{Standard Text for Copying Permissions}
+\cindex{Permissions}
+\cindex{Copying permissions}
+
+\LaTeX info files should contain sections that tell the readers that they have
+the right to copy and distribute the Info file, the printed manual and any
+accompanying software.  This appendix contains the standard text of the
+Free Software Foundation copying permission notice.  For an example of the
+text that could be used for the Distribution, General Public License and NO
+WARRANTY sections of a document, see the latest version of the
+GNU Emacs Manual \cite{GNUEmacsManual}.
+
+The texts of the Free Software Foundation copying permission notice in the
+\code{\back begin\{ifinfo\}} section and in the Titlepage section
+are slightly different.
+
+The \code{\back begin\{ifinfo\}} section usually begins with a line that says
+what the file documents.  This is what a person looking at the file will
+first read if he or she reads the unprocessed \LaTeX info file or if he or she
+uses the advanced Info command \kbd{g *}.  \inforef{Expert, info, info},
+for more information. (If the reader uses the regular Info commands, he or
+she will usually start reading at the first node and skip this first
+section, which is not in a node.)
+
+In the \code{\back begin\{ifinfo\}} section, the summary sentence should
+be followed by a copyright notice and then by the copying permission
+notice.  One of the copying permission paragraphs is enclosed in
+\code{\back begin\{ignore\}} and \code{\back end\{ignore\}} commands.
+This paragraph states that the \LaTeX info file can be processed through
+\LaTeX\ and printed, provided the printed manual carries the proper
+copying permission notice.  This paragraph is not made part of the Info
+file since it is not relevant to the Info file; but it is a mandatory
+part of the \LaTeX info file since it permits people to process the
+\LaTeX info file in \LaTeX.\refill
+
+In the printed manual, the Free Software Foundation copying permission
+notice follows the copyright notice and publishing information and is
+located before the \code{\back setfilename}.  The copying permission
+notice is exactly the same as the notice in the 
+\code{\back begin\{ifinfo\}} section except that the paragraph enclosed in
+\code{\back begin\{ignore\}} and \code{\back end\{ignore\}} commands is
+not part of the notice.\refill
+
+To make it simpler to copy the permission notice into each section of the
+\LaTeX info file, the complete permission notices for each section are
+reproduced in full below even though most of the information is
+redundant.\refill
+
+Note that you my have to specify the correct name of a section mentioned in
+the permission notice.  For example, in the GDB Manual (\cite{GDBManual}),
+the name of the section referring to the General Public License is called
+the ``GDB General Public License'', but in the sample shown below, that
+section is referred to generically as the ``General Public License''.
+
+
+\begin{menu}
+* Ifinfo Copying Permissions::
+* Titlepage Copying Permissions::
+\end{menu}
+
+\node Ifinfo Copying Permissions, Titlepage Copying Permissions, Standard text for Copying Permissions, Standard text for Copying Permissions
+\section{Ifinfo Copying Permissions}
+\cindex{Ifinfo permissions}
+
+In the \code{\back begin\{ifinfo\}} section of the \LaTeX info file, the
+standard Free Software Foundation permission notices reads as follows:
+
+\begin{verbatim}
+This file documents...
+
+Copyright 1988 Free Software Foundation, Inc.
+
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+\begin{ignore}
+Permission is granted to process this file through TeX and print the
+results, provided the printed document carries a copying permission
+notice identical to this one except for the removal of this paragraph
+(this paragraph not being relevant to the printed manual).
+
+\end{ignore}
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+sections entitled ``Distribution'' and ``General Public License'' are
+included exactly as in the original, and provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the sections entitled ``Distribution'' and ``General Public
+License'' may be included in a translation approved by the author instead
+of in the original English.
+\end{verbatim}
+
+\node Titlepage Copying Permissions, LateXinfo and TeXinfo, Ifinfo Copying Permissions, Standard text for Copying Permissions
+\section{Titlepage Copying Permissions}
+\cindex{Titlepage permissions}
+
+In the  Titlepage section of the \LaTeX info file, the standard
+Free Software Foundation copying permission notices follows the copyright
+notice and publishing information.  The standard phrasing is:
+
+\begin{verbatim}
+Permission is granted to make and distribute verbatim copies of
+this manual provided the copyright notice and this permission notice
+are preserved on all copies.
+
+Permission is granted to copy and distribute modified versions of this
+manual under the conditions for verbatim copying, provided also that the
+sections entitled ``Distribution'' and ``General Public License'' are
+included exactly as in the original, and provided that the entire
+resulting derived work is distributed under the terms of a permission
+notice identical to this one.
+
+Permission is granted to copy and distribute translations of this manual
+into another language, under the above conditions for modified versions,
+except that the sections entitled ``Distribution'' and ``General Public
+License'' may be included in a translation approved by the author instead
+of in the original English.
+\end{verbatim}
+
+\node LateXinfo and TeXinfo, Differences from LaTeX, Titlepage Copying Permissions, Top
+\chapter{LaTeXinfo and TeXinfo}
+\cindex{LaTeXinfo and TeXinfo}
+
+Documentation for GNU utilities and libraries is usually written in a
+format called \dfn{\TeX info}.  Prehaps the most significant difference
+of \LaTeX info from \TeX info is that if a \LaTeX\ command is found that
+the Info formatter does not know about, a error is not signalled, and
+processing simply continues.  This means that as long as you don't mind
+having the commands ignored in the Info file, you can use any \LaTeX
+command.
+
+\node Differences from TeXinfo, Differences from LaTeX, LateXinfo and TeXinfo, LateXinfo and TeXinfo
+\section{Differences from TeXinfo}
+\cindex{Differences from TeXinfo}
+
+The following \TeX info commands have been deleted:
+
+\begin{verbatim}
+\asis
+\itemx
+\setchapternewpage
+\summarycontents
+\end{verbatim}
+
+The following commands have been replaced by their \LaTeX\ equivalents:
+
+\begin{verbatim}
+\bye                    replaced by \end{document}
+\center                 replaced by \begin{center} .. \end{center}
+\contents               replaced by \tableofcontents
+\group                  replaced by \begin{same}
+\headings               replaced by \pagestyle
+\page                   replaced by \clearpage
+\settitle               replaced by \title
+\table                  replaced by \begin{description}
+\titlepage              replaced by \maketitle
+\unnumbered             replaced by \chapter*
+\unnumberedsec          replaced by \section*
+\unnumberedsubsec       replaced by \subsection*
+\unnumberedsubsubsec    replaced by \subsubsection*
+\end{verbatim}
+
+The following commands have been added and are supported by the Info
+formatter.
+
+\begin{verbatim}
+\LaTeX
+\S
+\input
+\label
+\markboth
+\pagestyle
+\pagenumbering
+\protect
+\vspace
+\end{verbatim}
+
+The following commands have been changed to their \LaTeX\ definitions:
+
+\begin{verbatim}
+\appendix
+\chapter
+\section
+\subsection
+\subsection
+\subsubsection
+\begin{enumerate}
+\begin{flushleft}
+\end{verbatim}
+
+
+\node Differences from LaTeX, Converting TeXinfo Files into LaTeXinfo Files, Differences from TeXinfo, LateXinfo and TeXinfo
+\section{Differences from LaTeX}
+\cindex{Differences from LaTeX}
+
+There is no support for any kind of math modes, pictures, tables, figures,
+If you want to use them in a \LaTeX info document, then use the following
+idiom to have them appear in the \LaTeX\ file, but not in the Info file.
+
+\begin{verbatim}
+\begin{tex}
+\begin{figure}
+...
+\end{figure}
+\end{tex}
+\end{verbatim}
+
+This ensures that this part will be ignored by the Info processor, and
+that all special characters will be processed according to the normal
+\LaTeX\ definitions.
+
+\node Converting TeXinfo Files into LaTeXinfo Files, Command Index, Differences from LaTeX, LateXinfo and TeXinfo
+\section{Converting TeXinfo Files into LaTeXinfo Files}
+\cindex{Converting TeXinfo Files into LaTeXinfo Files}
+
+With the \LaTeX info distribution is a file called
+\file{tex-to-latexinfo.el}, which helps convert a \TeX info file
+to a \LaTeX info file.  Although it is not a perfectly automatic
+conversion, it will convert most of a file  to \LaTeX info.  The 
+only command not known to be supported in \code{@itemx}.
+
+To convert a \TeX info File into an \LaTeX Info file, just visit a \TeX info
+file in GNU Emacs and invoke
+
+\begin{example}
+\kbd{Meta-x tex-to-latexinfo}
+\end{example}
+
+\noindent
+to convert it to a \LaTeX Info file.  Then search through the buffer to
+see if there are any command that were not converted.  These start with
+the symbol \samp{@}.
+
+
+\begin{tex}
+\bibliography{latexinfo}
+\end{tex}
+
+\twocolumn
+\node Command Index, Concept Index, Converting TeXinfo Files into LaTeXinfo Files, Top
+\chapter*{Command Index}
+\cindex{Command Index}
+\cindex{Command Index}
+
+(When used in a \LaTeX info file, commands are preceded by an
+\samp{\back }.)\refill
+
+\printindex{fn}
+
+\onecolumn
+\node Concept Index, Top, Command Index, Top
+\chapter*{Concept Index}
+\cindex{Concept Index}
+\cindex{Concept Index}
+
+\printindex{cp}
+
+\end{document}

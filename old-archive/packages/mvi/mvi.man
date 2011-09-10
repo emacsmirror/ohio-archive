@@ -1,0 +1,453 @@
+
+
+			      MVI Manual
+			     Version 1.0
+			    March 26, 1990
+			 Author: Doug Scofea
+			Phone: +1 614 459 1889
+		      Email: osu-cis!nimbus3!djs
+			      
+			      
+1. Introduction
+
+This is not a vi clone.  Vi has enough brain damage floating around
+in its code that I felt no need to carry forward.  In this manual,
+I'll try to explain the differences between mvi and real vi.  Mvi
+supports none of the ex commands.  It seemed pointless, since emacs
+has far more powerful versions of everything I ever did with ex.
+Thus, you can't escape learning some emacs if you want to use this
+package.  DON'T PANIC, in most respects, emacs is far more consistent
+and powerful than vi, I just couldn't deal with all the keystrokes it
+took to do trivial editing chores.
+
+2. Keys in Mvi Mode
+
+From emacs mode ^Z will enter you into mvi mode and while in mvi mode
+^Z will take you back to emacs mode.  While in mvi mode all of emacs
+commands are still available.  All commands that are in emacs global
+map are bound to ^A.  All commands that were bound to escape in emacs
+mode are now bound to ^_.  The ^X, and ^C commands remain the same
+since these keys are not used for vi editing.
+
+While in insert mode, all commands that were bound to escape in emacs
+mode are now bound to ^_.  The ^X, and ^C commands remain the same
+since these keys are not used for vi editing.
+
+3. Fold Mode
+
+Mvi has a crude form of folding.  It uses the control characters ^M to
+^Z embedded in the text to indicate fold depth.  To use folding, one
+must first use the fold-mode command.  When executed, folding is
+turned on in the given buffer, with numeric argument, folding is
+turned off.  If folding is enabled, characters in the ^M to ^Z range
+will automatically be written out as ^J characters when the file is
+written.  To save the fold information between edit sessions, one can
+turn off fold mode before the file is written.  This will preserve the
+fold information.  However, it will mess up about any other command
+that might want to use the file.  On re-entry, you will be warned that
+the file contains characters in the range ^M to ^Z.  Hopefully, they
+were put there from previous folding operations.  Otherwise, they will
+cause problems when the file is written out.
+
+4. Editing in Mvi
+
+Mvi, like real vi supports two basic kinds of actions.  Those that are
+motions that accept optional commands (like c for change, d for
+delete), and all the rest.  Mvi tries to make logical use of all
+motion modifiers.  If a motion modifier makes no sense it is generally
+ignored.  If an action does not allow a modifier, it is generally
+flagged as an error.  All motions that accept commands have the
+following format:
+
+"[a-zA-Z] g number command motion
+
+The " modifier is a register where the text between the beginning and
+ending point is stored.  If the letter is capital [A-Z], any
+pre-existing text in the register is appended to, otherwise it is
+overwritten.  In the case of a put command, this can indicate the
+source of the text.
+
+The g modifier means to take the point back to the place where the
+command started after it is done.
+
+The number is used for such things as 5G would take you to line 5.
+Numeric arguments can also be negative by preceding them with a minus
+sign, the special case of a minus by itself results in a numeric
+argument of -1.  Some motions do not need a numeric argument.  If one
+is entered for it, it may be ignored or used for some other purpose.
+
+The command part allows you to do something to or with the text
+between the starting and ending point.  These would include the
+standard c for change, y for yank, etc.
+
+The order shown above for the motion modifiers is arbitrary and they
+may be entered in any order desired.  The following key sequences will
+all accomplish the same thing:
+
+	"a5dw
+	5"adw
+	"ad5w
+
+The motion part is the actual movement such as 'a, j, etc.  If there
+is no command, the motion will mearly move the point.
+
+Since mvi has many more commands/motions than standard vi, I had to
+find some place to bind them.  In mvi q is a prefix for many of the
+commands/motions that could not be fit on the standard keys.  They are
+used just like the ordinary ones, they just require more key strokes.
+Upper case region is bound to qU.  So to uppercase 3 words you would
+type 3qU.
+
+One hybrid form of command/motion is the dd, cc and likewise commands.
+These work in mvi as expected.  However, commands entered from using
+the q prefix would be entered like:
+	
+	3qUqU would uppercase three lines.
+
+5. Commands
+
+Below is a list of commands.  In general, any command can be used with
+any motion.  A letter preceded by ^ means it is a control character:
+
+c   - Change. Delete text and insert new.
+d   - Delete.
+K   - Like d, except successive K commands without an intervening motion
+      concatenates the text together into one chunk on the kill stack.
+y   - Yank.
+^K  - Like y, except successive ^K commands without an intervening motion
+      concatenates the text together into one chunk on the kill stack.
+>   - Hard tab in region.
+<   - Hard tab out region.
+q^I - Tabify region according to mode.
+!   - Send region of text through shell command, replacing it in buffer.
+|   - Send region of text through shell command, don't replace it in buffer.
+qU  - Uppercase region.
+ql  - Lowercase region.
+qC  - Capitalize region.
+q5  - Center each line in region.
+q_  - Underline region.
+q+  - Un-underline region.
+qF  - Fill region, see fill column in emacs manual.
+qw  - Write region to a file.
+qa  - Append region, to a file.
+qn  - Narrow region.  Make text outside the region invisible.  Very useful for
+      query replace type commands.
+qf  - Fold region.  Make portions of the buffer invisible.
+qu  - Unfold region.
+qG  - Execute the last keyboard macro on each line in the region.
+qr  - Make region be the mark and point.
+qR  - Make region be the mark and point, but expand it to full lines.
+
+6. Motions
+
+Most of the motions are essentially the same as in vi.  Any of these motions
+can be used with any of the commands.
+
+h   -  Move cursor left.
+j   -  Move cursor down.
+k   -  Move cursor up.
+l   -  Move cursor right.
+^?  -  Same as h.
+^J  -  Same as j.
+sp  -  Same as l.
+
+w   -  Forward word.
+b   -  Backward word.
+e   -  End of word.
+v   -  End of previous word.
+W   -  Move forward, stopping after whitespace.
+B   -  Move backward, stopping before whitespace.
+E   -  Move to end of word, whitespace delimited.
+V   -  Move to end of word, whitespace delimited, backwards.
+
+f   -  Move to character.
+t   -  Move to character, stopping before it.
+F   -  Move to character backwards.
+T   -  Move to character backwards, stopping before it.
+;   -  Repeat last f,t,F, or T command.
+,   -  Repeat last f,t,F, or T command in the opposite direction.
+
+^   -  Move to beginning of line.
+0   -  Move to the first non-whitespace character.
+#   -  Move to column given by numeric argument.  Columns start with 0.
+$   -  End of line.
+
+'   -  Move to line saved in register.
+`   -  Move to point saved in register.
+
+H   -  Goto top of window.
+L   -  Move to bottom of window.
+M   -  Move to middle of window.
+
+)   -  Forward sentence.  This is controlled by the sentence-end variable.
+(   -  Backward sentence.
+]   -  Forward paragraph.  This is controlled by the paragraph-start and
+       paragraph-separate variable.
+[   -  Backward paragraph.
+}   -  Forward page.  This is controlled by the page-delimiter variable.
+{   -  Backward page.
+
+%   -  Move to matching parenthetical character in the set "{[(0]}".
++   -  Forward list, like % but more powerful.
+_   -  Backward list.
+q)  -  Forward sub-expression.  Refer to the emacs manual for a description
+       of sub-expressions.
+q(  -  Backward sub-expression.
+q]  -  Forward text sub-expression.  Refer to the function forward-text-sexp
+       for a description of how this works.
+q[  -  Backward text sub-expression.
+
+/   -  Search forward, stopping at the beginning of the match.
+?   -  Search backward, stopping at the beginning of the match.
+q/  -  Search forward, stopping at the end of the match.
+q?  -  Search backward, stopping at the end of the match.
+
+G   -  Goto line; without numeric argument, goto last.
+^@  -  Set mark - with command, perform command on area between mark and point.
+       Without command, without numeric argument, set mark; with numeric
+       argument, jump to mark.
+&   -  Move to the end of the last text that was put.  With numeric argument,
+       move to the beginning of the last text that was put.
+\   -  Move to the place where the last command began.
+       
+7. Shorthand Commands
+
+C   -  Change to end of line.
+D   -  Delete to end of line.
+Y   -  Yank to end of line.
+
+r   -  Replace number (default 1) character.
+s   -  Substitute number (default 1) characters
+x   -  Delete number (default 1) character at cursor.
+X   -  Delete number (default 1) character before cursor.
+~   -  Toggle case of number (default 1) character.
+
+
+8. Insert Commands
+
+A   -  Append to the end of a line.
+I   -  Insert at beginning of line.
+a   -  Append text after point.
+i   -  Insert text before point.
+o   -  Open a line below point.
+O   -  Open a line above point.
+^O  -  Open a line at point.
+R   -  Overwrite text.
+
+9. Scrolling Commands
+
+^F  -  Scroll number (default 1) pages forward.
+^B  -  Scroll number (default 1) pages backward.
+^U  -  Scroll number (default 1) half pages up.
+^D  -  Scroll number (default 1) half pages down.
+^E  -  Scroll number (default 1) lines up.
+^E  -  Scroll number (default 1) lines down.
+^L  -  Redraw the screen.
+
+10. Miscellaneous
+
+ESC -  Cancel any partially formed command.
+qESC - Cancel any partially formed command.
+^G  -  Signal an interrupt.
+u   -  Undo. Repeating undo, undoes more.  As a special case, the sequence
+       .u. steps back through the old mvi commands for re-execution. 
+U   -  Step back through previous marks.  Certain commands save the position
+       they were at in the mark ring.  Repeated Us allow you to retrace
+       your steps. -U reverses this direction.
+       
+Q   -  Emacs query replace.
+qQ  -  Emacs query replace with regular expressions.
+
+p   -  Put text after/below cursor.
+P   -  Put text before/above cursor.
+^P  -  Put text before cursor no matter how it was saved.
+qp  -  Undo last put command; if a different put command (i.e. a qp
+       following a P command) do that instead; with register argument, put 
+       contents of register instead; with numeric argument different from the
+       original put, put that many instead; otherwise, rotate kill ring
+       and put that instead; with negative numeric argument, rotate kill 
+       ring in opposite direction and put that instead.
+qP  -  Similar to above put do a P.
+q^P -  Similar to above put do a ^P.
+
+=   -  Exchange point and mark.  Similar to vi `` command.
+S   -  Suspend emacs, bring up interactive shell.
+
+z   -  Fold line.
+Z   -  Unfold line.
+
+n   -  Repeat last search.
+N   -  Repeat last search in opposite direction.
+
+m   -  Save cursor position in register, allows more than just a to z.
+
+^A  -  Prefix for emacs global key map.  ^A^E would take you to the end of
+       the line. 
+^X  -  Prefix for emacs ^X key map.
+^C  -  Prefix for emacs ^C key map.
+^_  -  Prefix for emacs ESC key map.
+
+J   -  Join lines together; with numeric argument, join that many line 
+       together.
+       
+^I  -  Indent line according to mode.
+
+q^S -  Incremental search regular expression forward.
+q^R -  Incremental search regular expression backward.
+
+q!  -  Execute a shell command.  With numeric argument, insert output in
+       buffer.
+
+:   -  Emacs execute extended command.
+q.  -  Edit previous mvi commands.
+q;  -  Edit previous complex commands.
+q:  -  Edit previous complex commands by searching.
+
+q-  -  Move backward out of one level of parentheses.  With argument, do 
+       this that many times.  A negative argument means move forward but 
+       still to a less deep spot.
+       
+qt  -  Move the point to number (default 1) lines from the top of the window.
+qb  -  Move the point to number (default 1) lines from the bottom of 
+       the window.
+qm  -  Move the point to number (default 1) lines from the middle of 
+       the window.
+qT  -  After a search, move the point to number (default 1) lines from the
+       top of the window.
+qB  -  After a search, move the point to number (default 1) lines from the
+       bottom of the window.
+qM  -  After a search, move the point to number (default 1) lines from the
+       middle of the window.
+q<sp> - Cancel placement after searching.
+
+q@  -  Bind the last keyboard macro to a subcommand of @.
+qi  -  Insert a macro into the current buffer as text.  This allows one
+       to save and restore previously defined keyboard macros.  See the
+       end of mvi.el for an example of how to have them loaded back in
+       when a file is read.
+qI  -  Insert all existing keyboard macros into the current buffer.
+
+qg  -  Display current line.
+q#  -  Display current column number.
+
+^H  -  Access online help.
+^T  -  Universal argument.  Useful for emacs some emacs commands.
+^Z  -  Return to emacs mode.
+
+qv  -  Set variable.
+qx  -  Execute a saved mvi command.
+
+q^T -  Toggle debug.
+q^V -  Print mvi version number.
+q^Z -  Dump an executable form of the running emacs.
+
+11. Keystrokes While Inserting
+
+While in insert mode, most keys are bound to what they would be if you
+were in emacs mode.  This has many advantages.  Emacs binds certain
+keys depending on what mode the buffer is in to do special things.  For
+instance, in C mode, things like brace and tab are set up to
+automatically indent in a proper mode for C programming.  A few keys
+are overridden to accommodate vi style features.  ^H deletes the
+previous word, ^Z inserts what was inserted in the last mvi insert
+command, tab just inserts a tab, escape returns you to command
+mode, and ^_ gives you access to emacs escape key commands.  All the 
+rest of the keys are bound to what they would be in emacs mode.
+
+12. Minibuffer Operation
+
+Many commands in emacs prompt you on the last line of the screen for
+additional information.  This is known as the mini-buffer.  It is a
+true buffer and thus can be edited in.  By default, you are in insert
+mode when in this buffer.  To enter vi mode, simply press the escape
+key.  You should now have full vi editing including the registers,
+repeat, and kill ring.  Generally, undo information is not kept for
+this buffer.  You can even do things like this: You need to search
+for some long identifier.  Instead of retyping the stupid thing, just
+do a yank on it, press the / for search, press escape then p.  At this
+point, you can edit it further or just submit it.  This works for file
+names and most other operations.  Also, it is very worthwhile
+learning emacs command, file name, and variable name completion.
+
+13. Command History
+
+Emacs saves a command history of what it calls complex commands.
+These are commands that require prompting.  Emacs allows you to recall
+these, edit them and re-execute them.  For convenience, q; is bound to
+repeat-complex-command.  This will display the last complex command.
+You can edit it and resubmit it.  If it is not the correct one ^P and
+^N take you to the previous and next commands respectively.  Full vi
+editing is available with a press of the escape key.  You can also
+search for a command by name by pressing q:.
+
+Mvi also maintains a command history.  It is most commonly used by
+pressing the . key.  This will re-execute the last mvi command.  Not
+all commands can be repeated, only those that get saved in the command
+history.  Unlike real vi, mvi allows you to alter any of the motion
+modifiers for the previous command.  For instance, if the last
+command executed was 3dw (delete 3 words), if one typed ., 3 more
+words would be deleted.  However, if one typed 2.  2 words would be
+deleted.  If one typed "a. 3 words would be deleted and saved in
+register a.  Any motion modifiers given to . override the ones that
+were saved when the command was executed.
+
+The mvi history can also be displayed, edited, resubmitted, and saved.
+To edit old commands q. is used, ^P and ^N take you to the previous
+and next command respectively while in insert mode.  qk and qj do the
+same in command mode.  q\ allows you to search for an old command, qN
+repeats the same search, and qV allows you to save the command as a
+named variable for execution at any time with the qx command.
+
+14. Mvi Variables
+
+Mvi uses some variables that can be set by the user to control its
+action.  These are set to defaults at startup.  Changing one will only
+change it in that buffer.  The value seen by the other buffers will
+remain unchanged.
+
+The variables and what they affect are given below:
+
+mvi-ai      - when set to t, auto indent is performed by the o, O, and ^O
+              commands.  Default t.
+	      
+mvi-magic   - when t, searches are regular expression.  Default t.
+
+mvi-wrap    - when t, if a search hits the end of the buffer before
+              completing, it is continued from the other end of the buffer.
+	      Default t.
+	      
+search-skip-fold  - when t, folded text is skipped during searches.
+                    Default nil.
+
+15. Emacs Commands for Ex Users
+
+Since mvi makes no attempt to duplicate the ex functionality, I thought
+I would at least list some commands that might be used in there place:
+
+query-replace
+query-replace-regexp
+delete-matching-lines
+delete-non-matching-lines
+list-matching-lines
+
+There are many more functions that are really powerful.  The emacs tags
+facility is very nice.  You should spend some time perusing an emacs
+manual to discover all these things.
+
+16. Emacs Crutch
+
+Here is just enough for a vi user to get started without opening the
+emacs manual:
+
+^X^F  -  Read in a file.
+^X^C  -  Quit emacs, offer to save buffers associated with files.
+^X^S  -  Save the current buffer.
+^X^W  -  Save the current buffer under a new file name.
+^Xi   -  Insert a file before the cursor.
+^X2   -  Split the screen horizontally.
+^X0   -  Kill the current window.
+^X1   -  Make the current window the whole screen.
+^Xk   -  kill buffer.
+^Xb   -  select buffer.
+^X^B  -  list buffers.
+

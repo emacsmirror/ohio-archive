@@ -1,0 +1,66 @@
+From ark1!uakari.primate.wisc.edu!samsung!cs.utexas.edu!uunet!crdgw1!montnaro Sat Dec  9 23:45:04 EST 1989
+Article 1002 of comp.emacs:
+Xref: ark1 comp.emacs:1002 comp.editors:343
+Path: ark1!uakari.primate.wisc.edu!samsung!cs.utexas.edu!uunet!crdgw1!montnaro
+>From: montnaro@sprite.crd.ge.com (Skip Montanaro)
+Newsgroups: comp.emacs,comp.editors
+Subject: Re: un-BABYL-ify mail files
+Message-ID: <MONTNARO.89Dec6235250@sprite.crd.ge.com>
+Date: 7 Dec 89 04:52:50 GMT
+References: <2771@mtuno.ATT.COM>
+Sender: news@crdgw1.crd.ge.com
+Reply-To: <montanaro@crdgw1.ge.com> (Skip Montanaro)
+Followup-To: comp.emacs
+Organization: GE Corporate Research & Development, Schenectady, NY
+Lines: 47
+In-reply-to: luke@mtuno.ATT.COM's message of 6 Dec 89 19:59:30 GMT
+
+In article <2771@mtuno.ATT.COM> luke@mtuno.ATT.COM (s.l.jones) writes:
+
+   Does anyone have a program to un-BABYL-format about three years
+   worth of mail?
+
+I modified Nate Hess's script/ELisp files awhile ago. The result:
+
+#!/bin/sh
+#
+# usage:	rmail-to-mail file1 file2 ...
+#
+# result:	file1~     is the original Babyl file
+#		file1      is an empty Babyl file
+#		file1.mail is a UNIX mail file with the messages from file1
+
+cat > /tmp/$$.el << EOF
+;;;
+;;; Author:  Nathan Hess  (woodstock@hobbes.intel.com)
+;;;
+;;
+
+(let ((file-to-be-converted (buffer-file-name))
+      (message-count 0)
+      (rmail-delete-after-output t)
+      (unix-style-file-name (concat (buffer-file-name) ".mail")))
+  (kill-buffer (current-buffer))
+  (rmail file-to-be-converted)
+  (rmail-show-message 1)
+  (while (not (rmail-output unix-style-file-name))
+    (setq message-count (1+ message-count)))
+  (rmail-quit))
+EOF
+
+for f in "$@" ; do
+    echo ">>> Doing $f"
+    emacs -batch $f -l /tmp/$$.el -kill
+    echo ">>> Done"
+done
+
+rm -f /tmp/$$.el
+
+exit 0
+
+
+
+--
+Skip (montanaro@crdgw1.ge.com)
+
+

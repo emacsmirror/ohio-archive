@@ -1,0 +1,322 @@
+#!/bin/sh
+
+
+#---------------------------------------------------------------
+getedit () {
+
+clear
+cat <<EOF
+
+
+To use FUSE, the following lines must be in your .emacs file:
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq load-path (append (list "$instdir" ) load-path))
+(setq auto-mode-alist
+      (append (list (cons "\\.inp$"  'input-mode))
+	      auto-mode-alist))
+(autoload 'input-mode "input" "Input major mode" t)
+(autoload 'fuse-mode  "fuse"  "FUSE" t)
+(add-hook 'dired-load-hook '(lambda () (load-library "fuse-dired")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+You may edit your .emacs file by hand or allow this script to add the
+necessary lines.  If you have previously installed FUSE, you probably
+do not need to have this customization performed.
+
+ (y) Yes, append these lines to my .emacs file.
+ (n) No, do not alter my .emacs.
+ (r) Return to the main menu.
+
+EOF
+
+if [ $edit_emacs = "yes" ]; then
+    echo "Currently your .emacs file -- WILL -- be edited."
+else
+    echo "Currently your .emacs file -- WILL NOT -- be edited."
+fi
+
+echo " "
+echo -n "Choose whether to edit .emacs or return to the main menu > "
+read answer
+case $answer in
+        y*|Y*) edit_emacs=yes; getedit ;;
+        n*|N*) edit_emacs=no;  getedit ;;
+  q*|Q*|r*|R*) main ;;
+            *) getedit ;;
+esac
+
+
+}
+
+#---------------------------------------------------------------
+getemacs () {
+
+clear
+cat <<EOF
+
+
+FUSE works equally well with the normal version of Emacs from the FSF
+or with XEmacs.  If you use XEmacs, FUSE provides colorful toolbars
+for each of the minor modes with commonly used function bound to each
+toolbar icon.
+
+The currently selected flavor of emacs is "$emacs".
+
+  (e) Choose FSF Emacs
+  (x) Choose XEmacs
+  (r) Return to the main menu
+
+EOF
+
+echo -n "Choose a version or return to the main menu > "
+read answer
+case $answer in
+        e*|E*) emacs=Emacs;  getemacs ;;
+        x*|X*) emacs=XEmacs; getemacs ;;
+  q*|Q*|r*|R*) main ;;
+            *) getemacs ;;
+esac
+
+}
+
+#---------------------------------------------------------------
+getid () {
+
+clear
+cat <<EOF
+
+
+By default, FUSE will be installed in the current directory.  You may
+specify a different directory here, or hit return to leave this
+unchanged.
+
+It is convenient to let FUSE install in its own subdirectory.  For
+example, if you keep your person lisp code in "~/lisp/", then you might
+answer "~/lisp/fuse" to this question.
+
+The current value of the installation directory is:
+        $instdir
+
+EOF
+echo -n "Enter installation directory > "
+read id
+if [ -z $id ]; then
+  main
+else
+  instdir=$id
+  main
+fi
+
+}
+
+
+#---------------------------------------------------------------
+getperl () {
+
+clear
+cat <<EOF
+
+
+
+Distributed with the FUSE are a number of scripts used for plotting
+and for other purposes.  These scripts are mostly perl, awk, and
+Bourne shell scripts.  To completely install FUSE, I need to run a
+perl script which edits each of the scripts in the scripts/
+subdirectory such that they will run correctly.  To be sure that the
+perl utility that does this runs correctly, I will invoke perl
+explicitly.
+
+I determined the location of perl on your system using the "type -path"
+command.  You can specify an alternate location for perl below or you
+can hit return leave it unchanged.  If you enter the word "no",then
+the scripts will not be edited.  Note that, in this happens, several
+features of FUSE may not work correctly.
+
+The current value of the location of perl is $perl
+
+EOF
+
+echo -n "Enter new location of perl > "
+read pl
+if [ -z $pl ]; then
+  main
+elif [ $pl = "no" ]; then
+  perl=""
+  main
+elif [ $pl = "NO" ]; then
+  perl=""
+  main
+else
+  perl=$pl
+  main
+fi
+
+}
+
+
+#---------------------------------------------------------------
+configure () {
+
+clear
+
+#  write .config.fuse file
+echo " Emacs flavor : $emacs"               > $dotconfig
+echo " Installation directory : $instdir"  >> $dotconfig
+echo " Edit .emacs : $edit_emacs"          >> $dotconfig
+echo " Location of perl : $perl"           >> $dotconfig
+
+#  write message to the screen
+cat <<EOF
+
+Here is your configuration:
+
+    Emacs flavor:            [$emacs]
+    Installation directory:  [$instdir]
+    Editing .emacs:          [$edit_emacs]
+    Location of perl:        [$perl]
+
+
+EOF
+
+##  This preserves a pristine copy of input.el so that the
+##  configuration can be done a second time from the same source tree.
+if [ ! -f input.el.in ]; then
+    cp input.el input.el.in
+fi
+echo " -1- Fixing fuse-base-directory in input.el..."
+sed "s&~/xlisp/fuse/&$instdir/&" input.el.in > foo
+differ=`diff foo input.el`
+if [ "x$differ" = "x" ]; then
+    rm -f foo
+else
+    mv -f foo input.el
+fi
+
+##  grab the correct makefile and use sed to insert the proper values
+##  of PERL and INSTALL
+if [ $emacs = "XEmacs" ]; then
+    makefile=Makefile.xemacs
+else
+    makefile=Makefile.emacs
+fi
+
+echo " -2- Fixing PERL and INSTALL in $makefile and writing it to Makefile..."
+sed "s&perl&$perl&" $makefile > Makefile
+sed "s&INSTALL =&INSTALL = $instdir&" Makefile > foo
+mv -f foo Makefile
+
+##  append stuff to .emacs or write a message to the screen
+if [ $edit_emacs = "yes" ]; then
+    echo " -3- Appending FUSE instructions to .emacs..."
+    echo "
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; The following lines were added by the FUSE Configuration utility:
+
+(setq load-path (append (list \"$instdir\" ) load-path))
+(setq auto-mode-alist
+      (append (list (cons \"\\\\.inp\$\"  'input-mode))
+	      auto-mode-alist))
+(autoload 'input-mode \"input\" \"Input major mode\" t)
+(autoload 'fuse-mode  \"fuse\"  \"FUSE\" t)
+(add-hook 'dired-load-hook '(lambda () (load-library \"fuse-dired\")))
+
+;; End of FUSE configuration
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+" >> $HOME/.emacs
+else
+    cat <<EOF
+ -3- Not editing .emacs...
+     Make sure that you have lines like the following in your
+     .emacs file:
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq load-path (append (list "$instdir" ) load-path))
+(setq auto-mode-alist
+      (append (list (cons "\\\\.inp\$"  'input-mode))
+	      auto-mode-alist))
+(autoload 'input-mode "input" "Input major mode" t)
+(autoload 'fuse-mode  "fuse"  "FUSE" t)
+(add-hook 'dired-load-hook '(lambda () (load-library "fuse-dired")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+EOF
+fi
+
+cat <<EOF
+
+FUSE configuration is complete.  Now type "make" to compile FUSE and
+then "make install" to install it.
+
+EOF
+
+exit
+
+}
+
+
+#---------------------------------------------------------------
+# Main Menu
+main () {
+
+clear
+cat <<EOF
+
+
+FUSE Configuration Utility      for FUSE $version
+                                updated $date
+                                Bruce Ravel
+			        ravel@phys.washington.edu
+
+This is an interactive script for initially configuring FUSE.  Check
+each of the values below and change them if they are incorrect.  For
+information about these configuration options, choose the appropriate
+number for information and the option of changing it.
+
+
+(1)  Emacs flavor:            [$emacs]
+(2)  Installation directory:  [$instdir]
+(3)  Edit .emacs:             [$edit_emacs]
+(4)  Location of perl:        [$perl]
+
+(x)  exit and configure FUSE
+(q)  quit without configuring FUSE
+
+
+
+If any of these are incorrect, enter that number to change it, or
+EOF
+
+echo -n "enter x to create the makefiles.  > "
+read choice
+
+case $choice in
+           1*) getemacs  ;;
+           2*) getid     ;;
+           3*) getedit   ;;
+           4*) getperl   ;;
+  x*|e*|X*|E*) configure ;;
+        q*|Q*) exit 0    ;;
+            *) main      ;;
+esac
+
+}
+
+
+
+#-------------------------------------------------------
+# main program
+
+## set some variables then call the main menu
+version="0.5.7"
+date="10 June 1998"
+dotconfig=./.config.fuse
+emacs=XEmacs
+instdir=`echo $PWD`
+edit_emacs=no
+perl=`type perl | awk '{print $NF}' | tr -d \.`
+main

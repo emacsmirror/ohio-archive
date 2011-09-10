@@ -1,0 +1,152 @@
+* New packages
+
+** ebnf2ps
+
+This package translates an EBNF to a syntatic chart on PostScript.
+
+Currently accepts ad-hoc EBNF, ISO EBNF and Yacc/Bison.
+
+The ad-hoc default EBNF syntax has the following elements:
+
+    ;		comment (until end of line)
+    A		non-terminal
+    "C"		terminal
+    ?C?		special
+    $A		default non-terminal
+    $"C"	default terminal
+    $?C?	default special
+    A = B.	production (A is the header and B the body)
+    C D		sequence (C occurs before D)
+    C | D	alternative (C or D occurs)
+    A - B	exception (A excluding B, B without any non-terminal)
+    n * A	repetition (A repeats n (integer) times)
+    (C)		group (expression C is grouped together)
+    [C]		optional (C may or not occurs)
+    C+		one or more occurrences of C
+    {C}+	one or more occurrences of C
+    {C}*	zero or more occurrences of C
+    {C}		zero or more occurrences of C
+    C / D	equivalent to: C {D C}*
+    {C || D}+	equivalent to: C {D C}*
+    {C || D}*	equivalent to: [C {D C}*]
+    {C || D}	equivalent to: [C {D C}*]
+
+Please, see ebnf2ps documentation for EBNF syntax and how to use it.
+
+
+*** Special customization (subgroup)
+
+The special element customization is determined by the variables
+`ebnf-special-font', `ebnf-special-shape', `ebnf-special-shadow',
+`ebnf-special-border-width' and `ebnf-special-border-color'.
+
+
+*** Except customization (subgroup)
+
+The except element customization is determined by the variables
+`ebnf-except-font', `ebnf-except-shape', `ebnf-except-shadow',
+`ebnf-except-border-width' and `ebnf-except-border-color'.
+
+
+*** Repeat customization (subgroup)
+
+The repeat element customization is determined by the variables
+`ebnf-repeat-font', `ebnf-repeat-shape', `ebnf-repeat-shadow',
+`ebnf-repeat-border-width' and `ebnf-repeat-border-color'.
+
+
+*** Terminal customization (subgroup)
+
+The terminal element customization is determined by the variables
+`ebnf-terminal-font', `ebnf-terminal-shape', `ebnf-terminal-shadow',
+`ebnf-terminal-border-width' and `ebnf-terminal-border-color'.
+
+
+*** Non-Terminal customization (subgroup)
+
+The non-terminal element customization is determined by the variables
+`ebnf-non-terminal-font', `ebnf-non-terminal-shape',
+`ebnf-non-terminal-shadow', `ebnf-non-terminal-border-width' and
+`ebnf-non-terminal-border-color'.
+
+
+*** Production customization (subgroup)
+
+The production name sort is specified by `ebnf-sort-production'.
+
+The production font is specified by `ebnf-production-font'.
+
+
+*** Shapes customization (subgroup)
+
+The element chart shape is determined by variables `ebnf-arrow-shape',
+`ebnf-chart-shape' and `ebnf-user-arrow'.
+
+
+*** Displacement customization (subgroup)
+
+If `ebnf-horizontal-orientation' is non-nil, productions are drawn
+horizontally.
+
+If `ebnf-horizontal-max-height' is non-nil, it's used maximum production
+height in horizontal orientation.
+
+The space between productions is determined by
+`ebnf-production-horizontal-space' and `ebnf-production-vertical-space'.
+
+The variable `ebnf-justify-sequence' specifies the alternative sequence
+justification.
+
+
+*** Syntatic customization (subgroup)
+
+The variable `ebnf-syntax' specifies the syntax recognized by ebnf2ps.
+
+The variables `ebnf-lex-comment-char', `ebnf-lex-eop-char',
+`ebnf-terminal-regexp' and `ebnf-case-fold-search' are only used when
+`ebnf-syntax' is `ebnf'.
+
+The variables `ebnf-iso-alternative-p' and `ebnf-iso-normalize-p' are only
+used when `ebnf-syntax' is `iso-ebnf'.
+
+The variable `ebnf-yac-ignore-error-recovery' is only used when
+`ebnf-syntax' is `yacc'.
+
+
+*** Optimization customization (subgroup)
+
+If `ebnf-ignore-empty-rule' is non-nil, ebnf2ps ignores empty rules.  It's
+interesting to set this variable if your Yacc/Bison grammar has a lot of
+middle action rule.
+
+If `ebnf-optimize' is non-nil, ebnf2ps optimizes syntatic chart of rules.
+
+
+*** Miscellaneous
+
+The variable `ebnf-eps-prefix' specifies EPS prefix file name.
+
+The variable `ebnf-entry-percentage' specifies entry height on
+alternatives.  It must be a float between 0.0 (top) and 1.0 (bottom).
+
+The variable `ebnf-default-width' specifies additional border width over
+"default" terminal, non-terminal or special.
+
+If `ebnf-color-p' is non-nil, it's used color.
+
+The variable `ebnf-line-width' specifies flow line width.
+
+The variable `ebnf-line-color' specifies flow line color.
+
+If `ebnf-debug-ps' is non-nil, it's generated PostScript debug procedures.
+It is intended to help PostScript programmers in debugging.
+
+If `ebnf-use-float-format' is non-nil, it's used `%f' float format.  The
+advantage of using float format is that ebnf2ps generates a little short
+PostScript file.
+
+
+Local variables:
+mode: outline
+paragraph-separate: "[ 	]*$"
+end:

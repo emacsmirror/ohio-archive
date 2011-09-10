@@ -1,0 +1,29 @@
+File            Archive         Description
+----            -------         -----------
+
+INSTALL            1            How to get started
+MANIFEST           1            This shipping list
+README             1            Description of files
+awk.el             5            Major mode for awk
+awk.tpl            6            Templates for awk
+bib.el             5            Major mode for bibliographies
+bib.tpl            6            Templates for bibliographies
+c.tpl              6            Templates for C
+dir                1            New entry for Info menu
+elisp.tpl          6            Templates for Emacs Lisp
+generic.tpl        6            Generic templates (always available)
+latex.tpl          6            Templates for LaTeX
+manual.texinfo     1            TeX wrapper for user manual
+menu.el            5            Template-mode -- selection of entries
+pascal.el          5            Major mode for Pascal
+pascal.tpl         6            Templates for Pascal
+scribe.tpl         6            Templates for Scribe
+symbol.el          5            Template-mode -- insertion-in-place
+template.el        2            Root of template-mode
+template.texinfo   1            User manual
+texinfo.tpl        6            Templates for Texinfo
+tplhelper.el       3            Template-mode -- non-interactive functions
+tplparse.el        4            Template-mode -- parser
+tplreplace.el      5            Template-mode -- replacement functions
+tplscan.el         4            Template-mode -- scanner and unscanner
+tplvars.el         2            Template-mode -- global variables

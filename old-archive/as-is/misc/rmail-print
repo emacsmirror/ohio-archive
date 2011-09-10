@@ -1,0 +1,99 @@
+From rsalz@bbn.com Fri May  5 14:03:31 1989
+Return-Path: <rsalz@bbn.com>
+From: Rich Salz <rsalz@bbn.com>
+Date: Mon, 1 May 89 12:57:29 EDT
+To: bug-gnu-emacs@prep.ai.mit.edu
+Subject: RMAIL enhancement; send message to printer (really, process)
+Cc: jr@pineapple.bbn.com
+
+
+This is a gross hack, borne of desperation (aren't they all?).  It adds
+a new command the RMAIL-MODE.  The | key sends the current message to
+as to a process as stdin.  The command is in rmail-print-command.
+We use the "mp" command to print mail messages.
+
+Please, please, someone take this and do it the right way -- it's got
+duplicate code, it should be in rmailout.el, etc.
+
+Hope someone fixes it and finds it useful.
+	/r$
+
+*** /nfs/pebbles/u1/local/emacs/lisp/rmail.el	Fri Feb 24 15:44:04 1989
+--- /usr/rsalz/P/rmail.el	Mon May  1 12:39:01 1989
+***************
+*** 24,29 ****
+--- 24,33 ----
+  ;;   selection by dispatch table, summary by attributes and keywords,
+  ;;   expunging by dispatch table, sticky options for file commands.
+  
++ ;;  Added the | command to print a message (really send to process).
++ ;;  Hacked in by rsalz@bbn.com, but what I didn't steal from the
++ ;;  rmail-out function, jr@bbn.com told me how to do; thanks John!
++ 
+  (require 'mail-utils)
+  (provide 'rmail)
+  
+***************
+*** 214,219 ****
+--- 218,224 ----
+    (define-key rmail-mode-map ">" 'rmail-last-message)
+    (define-key rmail-mode-map "?" 'describe-mode)
+    (define-key rmail-mode-map "w" 'rmail-edit-current-message)
++   (define-key rmail-mode-map "|" 'rmail-print)		;;; rsalz
+    (define-key rmail-mode-map "\C-d" 'rmail-delete-backward))
+  
+  ;; Rmail mode is suitable only for specially formatted data.
+***************
+*** 227,232 ****
+--- 232,238 ----
+  .	Move point to front of this message (same as \\[beginning-of-buffer]).
+  SPC	Scroll to next screen of this message.
+  DEL	Scroll to previous screen of this message.
++ |	Send message to the printer.
+  n	Move to Next non-deleted message.
+  p	Move to Previous non-deleted message.
+  M-n	Move to Next message whether deleted or not.
+***************
+*** 1352,1354 ****
+--- 1358,1396 ----
+    "Break up a digest message into its constituent messages.
+  Leaves original message, deleted, before the undigestified messages."
+    t)
++ 
++ ;;;; PRINTING
++ 
++ (defvar rmail-print-command "lpr"
++   "Send the standard input to the printer")
++ 
++ (defun rmail-print ()
++   "Send the current message to the printer.  The variable rmail-print-command
++ is used to specify how to print the message"
++   (interactive)
++   (let ((rmailbuf (current-buffer))
++ 	(tembuf (get-buffer-create " rmail-output"))
++ 	(case-fold-search t))
++     (save-excursion
++       (set-buffer tembuf)
++       (erase-buffer)
++       (insert-buffer-substring rmailbuf)
++       (insert "\n")
++       (goto-char (point-min))
++       (insert "From "
++ 	      (or (mail-strip-quoted-names (mail-fetch-field "from"))
++ 		  "unknown")
++ 	      " " (current-time-string) "\n")
++       ;; ``Quote'' "\nFrom " as "\n>From "
++       ;;  (note that this isn't really quoting, as there is no requirement
++       ;;   that "\n[>]+From " be quoted in the same transparent way.)
++       (while (search-forward "\nFrom " nil t)
++ 	(forward-char -5)
++ 	(insert ?>))
++       (shell-command-on-region (point-min) (point-max)
++         rmail-print-command))
++     (kill-buffer tembuf))
++   (if (equal major-mode 'rmail-mode)
++       (progn
++ 	(rmail-set-attribute "printed" t)
++ 	)))
+
+

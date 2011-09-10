@@ -1,0 +1,70 @@
+<HTML>
+<HEAD>
+<TITLE>Feff : Appendix G. Trouble-shooting FEFF problems</TITLE>
+</HEAD>
+<BODY>
+<A HREF="feff7-12.html">Previous</A>
+Next
+<A HREF="feff7.html#toc13">Table of Contents</A>
+<HR>
+<H2><A NAME="s13">13. Appendix G. Trouble-shooting FEFF problems</A></H2>
+
+
+
+<P>FEFF 7 has been extensively tested but occasionally new bugs show up.
+In an effort to maintain trouble-free codes we take all bug reports
+seriously.  Often we receive reports by users of older versions of FEFF of
+bugs that are fixed in the latest releases. Other code failures can often be
+traced to input file errors, sometimes quite subtle.</P>
+<P>An example would be:
+<UL>
+<LI>Non-physical widely spaced distributions of atoms. Symptoms of this common
+problem are very large muffin-tin radii (see the header of any .dat file)
+and possibly a failure of the phase-shift program to converge.  This gives
+error message "hard test fails in fovrg".
+</LI>
+<LI> An error in assigning potential indices; the first atom with
+a given potential index must have the geometry representative of this
+potential type. This is sometimes fixed by using a somewhat larger 
+cluster; in fact it is usually desirable to have a larger cluster for 
+potential construction than that used in the XAFS calculation due to 
+errors in the potentials at surfaces.  Unless the atom distribution is
+physically possible, you can expect the code to have problems. 
+</LI>
+<LI> Hash collision in pathfinder. This is rare, but can be
+corrected simply by changing distances in the fourth decimal place.
+</LI>
+<LI> For the M4 and higher edges you may receive the error
+message like: "Lambda array overfilled". The calculations should
+be repeated with IORDER -70202   card.</LI>
+</UL>
+</P>
+
+<H2><A NAME="ss13.1">13.1 FEFF Bug and Error  Report</A></H2>
+
+
+<P>If, after
+you have verified that your input file is not the problem, the problem
+persists, please contact us at the e-mail addresses listed in Sec. 1.
+To
+address your problem, we need the following information: </P>
+
+<P>
+<OL>
+<LI> Brief description of problem.</LI>
+<LI> Code, Version number, type of computer and compiler
+(e.g., FEFF5 version 5.03, IBM PC, F77) </LI>
+<LI> Unedited input file causing problem  <CODE>feff.inp</CODE></LI>
+<LI> Sample output (e.g. <CODE>chi.dat</CODE>) or log file illustrating problem.</LI>
+<LI> Send e-mail to one of the authors
+(i.e. <EM> alex</EM> or <I> jjr@phys.washington.edu</I>).</LI>
+</OL>
+</P>
+
+
+<HR>
+<A HREF="feff7-12.html">Previous</A>
+Next
+<A HREF="feff7.html#toc13">Table of Contents</A>
+</BODY>
+</HTML>

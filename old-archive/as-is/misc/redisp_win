@@ -1,0 +1,57 @@
+Date: 15 Feb 89 02:11:03 GMT
+From: fxgrp!ljz@ames.arc.nasa.gov  (Lloyd Zusman)
+Subject: A suggested change for GNU Emacs.
+To: info-gnu-emacs@prep.ai.mit.edu
+
+
+There is one place inside of GNU Emacs where the variable
+'scroll-step' is ignored: when an insert is done that causes the point
+to move off the screen, the screen always gets recentered irrespective
+of the setting of 'scroll-step'.  This occurs in several different
+places: in the 'insert' function; when process output goes into a
+buffer; and probably elsewhere.  I find this to be rather annoying.
+So, I dug through the source code for version 18.52 and found where
+the "problem" occurs (if it indeed is a problem).  It's in the file
+xdisp.c in the function redisplay_window().  Here is the short set of
+context diffs for a proposed "fix" of this "problem":
+
+---------------- diffs start here ----------------
+*** xdisp.c.old	Tue Feb 14 14:17:43 1989
+--- xdisp.c	Tue Feb 14 17:50:30 1989
+***************
+*** 748,754 ****
+    /* Finally, just choose place to start which centers point */
+  
+  recenter:
+!   pos = *vmotion (point, - height / 2, width, hscroll, window);
+    try_window (window, pos.bufpos);
+  
+    startp = marker_position (w->start);
+--- 748,756 ----
+    /* Finally, just choose place to start which centers point */
+  
+  recenter:
+!   pos = *vmotion (point,
+! 		  scroll_step > 0 ? scroll_step - height : - height / 2,
+! 		  width, hscroll, window);
+    try_window (window, pos.bufpos);
+  
+    startp = marker_position (w->start);
+----------------- diffs end here -----------------
+
+This change causes the window to scroll to the center if scroll-step is <= 0;
+otherwise, it scrolls by the number of lines in scroll-step.
+
+This "fix" is just a suggestion ... it may be that such a thing is
+undesirable or else that I didn't properly "fix" the problem at all.
+Please take these diffs only as a suggestion for a future change
+rather than the final word on the subject.
+
+What do some of you think about this?
+
+--
+  Lloyd Zusman, Master Byte Software, Los Gatos, California
+		   "We take things well in hand."
+  Net access courtesy of FX Development Group, Inc., Mountain View, California
+  Internet:  ljz@fxgrp.fx.com		uucp:  ...!ames!fxgrp!ljz
+

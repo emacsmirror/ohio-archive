@@ -1,0 +1,34 @@
+
+Extracting emacs lisp function and variable documentation.
+
+There are two files included here gendoc.el, the lisp to extract the
+documentation strings and Makeindex a shell script which uses perl 1.0
+(patch level 29) to sort the index.
+
+To extract the basic emacs lisp documentation run emacs in batch mode
+thus:
+
+42% emacs -batch -l gendoc.el -f make-documentation -kill
+
+(this will take about 15 minutes)
+
+If you run make-documentation interactively you may get extra
+functions loaded by your .emacs or by any commands you have run before
+make-documentation, which you may want. The above command will give
+the documentation for the basic set of lisp functions in your emacs.
+This will produce two files 'doc-info.tex' and 'doc-info.sty'.
+'doc-info.tex' is about 340K with emacs 17.49.
+
+Next, latex the file 'doc-info.tex' _TWICE_ so that the size of the
+table of contents is taken into account in the index and in the table
+of contents. (I suppose I could number the table of contents i, ii,
+etc.) The latex will produce LOTS of underfull hbox messages, nothing
+to worry about! Then run makeindex to produce doc-info.ind from
+doc-info.idx and run latex on doc-info.tex one more time!
+
+You will now have a dvi file suitable for printing on A4 paper (about
+40 sheets double sided). You will have to adjust the lisp that
+generates doc-info.sty for other paper sizes.
+
+Written by Jon Wells originally, index added and latex format changed
+by B.Wallis.

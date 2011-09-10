@@ -1,0 +1,99 @@
+This file documents a scheme whereby GNUS can become one's universal
+news and mail interface.  Use of this scheme depends on the following:
+	[a] News-reading using a local news spool; NNTP is not possible.
+	[b] Availability of Berkeley symbolic links, to fool GNUS into
+	    reading news in two places at once.
+	[c] Support of .forward files for mail delivery, and in
+	    particular piped aliases in .forward files.
+	[d] GNUS 3.12.
+
+Please read this entire description (several times) before putting any
+of it to use, to be sure you understand what it is that you are
+accomplishing along the way.
+
+PROCEDURE:
+
+[1] Build a newsgroup symlink tree.
+	mkdir ~/Memos
+	cd ~/Memos
+	foreach i (/usr/spool/news/*)
+		ln -s $i
+	end
+Now the variable nnspool-spool-directory can be set to the value
+"~/Memos/" and things would work just like they always have.  But of
+course we're nowhere near done yet.
+
+[2] Decide on a news directory hierarchy to be placed in parallel with
+normal news.  I use "personal.*" (for personal mail), "list.*" (for
+mailing-list-related things), and "mailer-daemon" (so that bounces
+from mailer daemons around the world don't clutter up your Real Mail
+that you really want to read).  Make news-like directories for these.
+	mkdir personal list mailer-daemon
+	mkdir personal/general personal/special-person-1 personal/s-p-2
+	mkdir list/general list/listname-1 list/listname-2 list/listname-3
+
+[3] Initialize a pair of counter files for each newsgroup.  These will
+be used for the max and min fields in the fake active file.  Also
+create "KEY" files, used in mailbox delivery locking.
+	foreach i (personal/* list/* mailer-daemon)
+		echo 0 > $i/.first
+		echo 0 > $i/.last
+		touch $i/KEY
+	end
+
+[4] Copy the "make-active" script into your private bin directory.
+(_Everyone_ has a private bin directory, right?)  Also copy the "pmd"
+script (personal mail deliverer) to the same place, and edit it for
+whatever personalizations you wish to give it.  I detect my usual
+pseudonewsgroup pattern of personal.*, list.*, and mailer-daemon.
+This script can be arbitrarily complex; have a blast.  BEWARE of the
+fact that certain incarnations of csh are [cough] deficient and cannot
+cope successfully with the long "mailer-daemon" regexp; case in point,
+HP-UX 6.2's csh.
+	cp make-active pmd ~/bin
+	emacs ~/bin/pmd
+
+[5] Edit the sample .emacs stuff into your own .emacs.  Note that a
+number of items in there are peculiar to myself.  (I never said that
+setting this up was going to be easy.  But neither is it exceptionally
+painful, just somewhat tedious.)  Change function names and variable
+values as appropriate to be useful to yourself.
+	emacs ~/.emacs
+
+[6] Apply the enclosed patch to nnspool.el, and recompile it.
+	patch -d /usr/local/lib/emacs/lisp < nnspool-diff
+This makes the functions and other stuff you've done to your .emacs
+useful.  The patch causes nnspool to look for a user-defined function
+which supplies the name of the active file to the nnspool functions.
+The nnspool-personal-active-file function builds a new active file
+every time called, and then returns the name of that file to the
+calling function.  (People within Ohio State Computer Science can skip
+this patch-&-recompile step, since it's already done.)
+
+[7] SAVE COPIES OF YOUR .newsrc AND RELATED FILES.  One never knows
+just how far one might screw oneself up, and it would be nice to be
+able to recover from disaster, don't you agree?
+
+[8] Install a .forward like the one supplied.  Make it look right for
+your home directory and login name, of course.  Send yourself some
+test mail, and check to see that it gets delivered appropriately in
+your new pseudonewsgroup hierarchy.
+
+[9] Fire up a fresh Emacs and invoke GNUS.  You will observe that
+getting new news (at the stage "Reading active file...") takes a bit
+longer, because nnspool-personal-active-file spawns make-active, which
+is hacking up a fresh active file for you.  You will also observe that
+you are magically subscribed to a whole slew of new "newsgroups" which
+don't really exist.
+
+[10] You know that weird guy that's been writing you mail every other
+day for the last month?  The one you never want to hear from again?
+Now you don't have to hear from him - ever.  The first time you see
+mail from him (probably in personal.general), do this:
+	M-k
+	C-c C-k C-a
+	C-c C-c
+He's history as far as mail from him is concerned.
+
+Bug reports, improvements, suggestions
+to the scheme => karl@cis.ohio-state.edu.

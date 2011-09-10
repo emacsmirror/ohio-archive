@@ -1,0 +1,85 @@
+Release announcement for cc-mode 4.282
+Barry A. Warsaw <cc-mode-help@merlin.cnri.reston.va.us>
+1996/02/21 23:35:18
+
+This message announces the availability of cc-mode version 4.282.
+cc-mode is a GNU Emacs mode for editing C (ANSI and K&R), C++,
+Objective-C, and Java code.  The last full release was of version
+4.241.  Java support is new in this version; a list of user visible
+changes is outlined below.  See the MANIFEST file for a description of
+other files included in this release.
+
+Since the distribution is fairly large and since it is readily
+available both via anonymous ftp and email, the source code is not
+being posted here.  Downloading instructions are provided further down
+in this message.
+
+NOTE: XEmacs 19.14 and Emacs 19.31 will both contain, and be
+configured to use, the latest version of cc-mode.  Both editors are in
+beta testing, and nope! I don't know when they will be released.
+
+If you want to become a beta tester send subscribe requests to
+cc-mode-victims-request@merlin.cnri.reston.va.us.  If you just want
+announcements of new versions, send subscribe requests to
+cc-mode-announce-request@merlin.cnri.reston.va.us.  These mailing
+lists are maintained by the Majordomo automated mailing list software.
+
+NOTE: Since I discovered Python, I have severely curtailed my (ab)use
+of C (and derivative) languages, and since I use Grail, I haven't
+started hacking Java yet! :-) So my motivation for maintaining this
+mode is waning, and I'm looking for volunteers to either take over or
+help out with bits and pieces.  If you're interested and have a solid
+Emacs Lisp programming background, send me email at the cc-mode-help
+address above.
+
+Oh and a few shameless plugs.  For more information on Python see
+<http://www.python.org/>, and for more information on Grail, see
+<http://monty.cnri.reston.va.us/>.
+
+
+User visible changes since 4.282
+================================
+
+* Java mode added.  Initial impetus thanks to Eduardo Pelegri-Llopart.
+
+* New command c-electric-lt-gt, bound to `<' and `>' in C++ mode.
+
+* imenu support added for Emacs 19.
+
+* Style names are now case insensitive, but default to lower case.
+
+* GNU style nested functions are now (semi-)supported.
+
+* New variable c-site-default-style.
+
+* Bug fixes!
+
+Getting cc-mode.el
+===================
+
+The canonical ftp site for the full cc-mode tar distribution is:
+
+	ftp://ftp.python.org/pub/emacs/cc-mode.tar.gz
+
+This is a gzip'd tar file containing the .el source code and
+documentation, along with sundry other useful files.  See the MANIFEST
+a complete list of the contained files.  You can get individual files
+from the directory:
+
+	ftp://ftp.python.org/pub/emacs/cc-mode-4.282/
+
+The Emacs Lisp Archive should also contain the full distribution.
+
+For those of you without anon-ftp access, you can use the DEC
+ftpmail'er at the address ftpmail@decwrl.dec.com.  Send the following
+message in the body of your mail to that address to get cc-mode:
+
+reply <a valid net address back to you>
+connect ftp.python.org
+binary
+uuencode
+chdir pub/emacs
+get cc-mode.tar.gz
+
+or just send the message "help" for more information on ftpmail.
+Response times will vary with the number of requests in the queue.

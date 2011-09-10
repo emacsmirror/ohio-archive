@@ -1,0 +1,42 @@
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+GENERAL INSTALLATION INSTRUCTIONS
+
+Note: if you would like to change the directory that js.elc is
+installed to you must either edit the Makefile or append the following
+to each 'make' command : 'SITE-LISP=/path/to/site-lisp'
+(e.g. 'make install SITE-LISP=/usr/share/emacs/site-lisp')
+
+1) type 'make' in this directory
+2) type 'make install' in this directory
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+OTHER 'make' OPTIONS
+
+clean: will clean up all compiled elisp files and backup files
+
+dist: will create a .tar file containing this package. This option is
+      not recommended for general use. Use bzdist or zdist instead.
+
+bzdist: will create a bzipped tarball for distribution.
+zdist: will create a gzipped tarball for distribution.
+
+js-mode: will byte-compile the js.el file and produce js.elc
+
+uninstall: will remove js.elc from your SITE-LISP directory
+
+-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*-*
+CONFIGURATION
+
+To automagically invoke js-mode when editing *.js files insert the
+following lines in your .emacs file :
+
+(require 'js)
+
+(setq auto-mode-alist
+      (append '(("\\.js\\'" . js-mode))
+              auto-mode-alist))
+
+In order to allow fontification of *.js files without enabling
+global-font-lock-mode insert the following lines in your .emacs file :
+
+(setq js-mode-hook (cons '(global-font-lock-mode t) js-mode-hook))

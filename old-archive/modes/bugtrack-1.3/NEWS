@@ -1,0 +1,82 @@
+New features in bugtrack 1.3 (1994-01-06)
+-----------------------------------------
+
++ You can set ``bugtrack-auto-mail-file-list'' to a list of RMAIL file
+  names.  All commands which searches for messages by Message-id will
+  search in them, as well as in all RMAIL buffers currently present in
+  your emacs, before prompting you for the file to search in.
+
++ A number of bugs, most of them having to do with missing or
+  unnecessary autoloads, were fixed.
+
++ ``bugtrack-other-frame'' is to ``bugtrack'' what
+  ``find-file-other-frame'' is to ``find-file''.
+
++ The variable ``bugtrack-rmail-create-bug-where'' lets you decide if
+  the Bugtrack buffer should overlay the RMAIL buffer or be displayed
+  in another window or frame when ``bugtrack-rmail-create-bug'' is
+  used.
+
+
+New features in bugtrack 1.2 (1994-01-01)
+-----------------------------------------
+
++ You can now teach Bugtrack where bug reports should be stored.  The
+  variable ``bugtrack-rmail-rules'' holds rules such as "if the regexp
+  [bB]ugtrack appears in a mail, the bug should go to
+  ~/bugtrack/BUGS".  The result of applying the rules in
+  ``bugtrack-rmail-rules'' becomes the default filename when you use
+  ``bugtrack-rmail-create-bug''; you can always override it.
+
++ Bugtrack can optionally insert a magic cookie (such as
+  ##Bugtrack-bug-67##) into the Subject field of the mail you create a
+  bug report from.  If you reply to the bug report, and get a reply to
+  your reply, and it still contains the magic cookie, Bugtrack can use
+  it to quickly locate the corresponding entry in a Bugtrack file.
+  The variable ``bugtrack-rmail-subject-cookie-map'' determines how
+  this works.
+
++ ``bugtrack-submit-bug-report'' can be used to submit a bug report
+  about Bugtrack.
+
++ Pressing ``a'' in a Bugtrack buffer prompts for a ChangeLog, and
+  adds a header such as ``* Id 51: Generate ChangeLog headings.'' in
+  it.
+
++ The variable ``bugtrack-default-dir'' can be useful if you tend to
+  store several Bugtrack files in a single directory.
+
++ Some minor bugs were fixed.
+
+New features in bugtrack 1.1 (1993-12-25)
+-----------------------------------------
+
+This is mainly a bug-fix release.
+
++ Two new commands: pressing SPC and DEL in the summary buffer scrolls
+  the corresponding bug buffer. 
+
++ bugtrack-rmail-search-msg-id now searches closed as well as active
+  bugs for the email.
+
++ Five minor bugs fixed (see the ChangeLog).
+
+New features in bugtrack 1.0 (1993-12-13)
+-----------------------------------------
+
+This is the first release made to a wider audience, and also the first
+release that gets a release number.
+
++ Tighter coupling to RMAIL: hit "F" in RMAIL mode to search for bug
+  reports that refer to the current mail.
+
++ The new file bugtrack-init.el should be loaded from your .emacs (or,
+  possibly, from default.el).  It is no longer necessary to load
+  bugtrack.el before rmail.el to get the RMAIL coupling to work.
+
++ As a bonus, added bugtrack-rmail-view-commented (bound to "^" in
+  RMAIL mode).
+
+- Emacs 18 is no longer supported.
+
+;;; NEWS ends here.

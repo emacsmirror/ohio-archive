@@ -1,0 +1,295 @@
+                                                             3/21/97
+                     Tom's Emacs Toolkit
+                     -------------------
+
+Title:          Tom's Emacs Toolkit & Template
+
+Version:        1.3
+
+Entered-date:   March 21, 1997
+
+Description:    Emacs init file for 101-key keyboards (and X Windows).
+                This toolkit can be used as a default keyboard configuration
+                for Emacs running under X-Windows.  It binds keypad and
+                function keys to Emacs editting commands.
+                Copy the sample.emacs file to your home directory as .emacs
+                customize it, smile.
+
+Keywords:       Tom Emacs Toolkit Template .emacs init setup
+                keypad keyboard binding X-Windows
+
+Author:         mail11325@pop.net
+
+Maintained-by:  Internet: mail11325@pop.net
+                Packet:   N4OOJ @ WR4AGC.#DUR.NC.USA.NA
+
+Primary-site:   sunsite.unc.edu /pub/Linux/apps/editors/emacs
+
+Alternate-site: cc.gatech.edu /pub/Linux/apps/editors/emacs
+
+Original-site:
+
+Platform:       Linux 2.0.29, Solaris & Intergraph (with modifications).
+
+Copying-policy: GPL
+
+Purpose:  Enable the keypad and functions keys for selected
+          editing commands.  Emacs is a very powerful, configurable
+          editor.  But I found it hard for new users to use because
+          it has so many commands and features.
+
+          This toolkit will hopefully allow new users to rapidly become
+          more familar and comfortable with Emacs running under
+          X-windows.
+
+          It can also become a starting point for a user to configure
+          an initial editing environment as one sees fit.
+
+          To Unzip: gzip -d tet-1.3.tar.gz
+                    tar xvf tet-1.3.tar
+                            OR
+                    tar zxvf tet-1.3.tar.gz
+
+
+To Use:
+    o  Copy the 'sample.emacs' file to '.emacs' in your home directory.
+         eg. cp sample.emacs $HOME/.emacs
+
+    o  Start emacs.  I use emacs in an xterm X-windows environment.
+         eg. emacs a &
+
+    o  The 'sample.env' file can be inserted in your .env file.  It will
+       let you iconify an Emacs window to the standard GNU Emacs icon.
+         eg. emacs .env &
+             Control-x i
+             sample.env
+             Control-x Control-s
+             Control-x Control-c
+             emacs a &
+             iconify
+
+    o  The 'sample.Xresources' file can be inserted in your
+       .Xresourcesenv file.  It will set some default color and
+       fonts for Emacs.
+         eg. emacs .Xresources &
+             Control-x i
+             sample.Xresources
+             Control-x Control-s
+             Control-x Control-c
+             emacs a &
+
+       You can probably also put this in your .Xdefaults file as an
+       alternative.  It doesn't need to be in both files, only one
+       file is OK.  The .Xresources could probably be made a link
+       to your .Xdefaults file.
+
+       Shutdown X-Windows and restart it to get the new resources.
+       Alternately type: xrdb -load .Xresources
+
+
+             Other Hints and Tricks
+             ----------------------
+
+    o  BUFFER KILL
+       Kill a buffer with Control-x k.
+         You can have multiple buffers open to multiple files
+         and directories at one time.
+
+    o  COMMAND STOP
+       Quit a command with Control-g.
+
+    o  DIRECTORY LIST
+       F2 is the directory editor, dired.
+       -  Press F2,
+       -  press 'Enter',
+       -  select a file or directory with the mouse, and
+       -  press 'f'.
+
+    o  FILENAME COMPLETION
+       File name completion in Bash is the 'Tab'.
+         eg. ls -l sample.X[Tab]
+
+    o  FTP
+       You can use FTP to access other nodes in your LAN or even
+       use anonymous FTP to download software from the Net.
+       Ange-FTP and Emacs is often faster for browsing anon-ftp sites
+       than using a browser.
+
+       Copy the sample.netrc file to your home directory.
+        eg. cp sample.netrc $HOME/.netrc
+            chmod 600 .netrc
+
+       Note: .netrc files pose potential security problems
+             if not properly protected.
+
+       Now use the F4 function key binding to 'fire up' FTP:
+       - Bring your Internet link up (if not already up).
+           eg. linkup
+       - emacs &
+       - F4
+       - Backspace  Backspace     (in the bottom minibuffer)
+       - / Tab Tab                (in the bottom minibuffer)
+       - left paddle-right paddle mouse click on a anonymous ftp site
+       - (middle paddle mouse click if using a 3-button mouse)
+       - left paddle-right paddle mouse click on a directory, like 'pub'
+       - left paddle-right paddle mouse click on a file, like 'README'
+       - Control-x Control-w
+       - Backspace in the mini-buffer to the leading slash, /
+       - Type a path and filename, like '/tmp/README'
+       - Control-x Control-c
+       - linkdown
+       - The README file is now in /tmp/README !
+
+       Ange-FTP also works real well when ftp-ing to other nodes
+       on your LAN.  Just modify the .netrc file with your remote
+       login and password.
+
+    o  KEYBINDINGS
+       To rebind some other keys, first find out what key codes
+       those keys emit.
+         Control-h l                     (l=letter L)
+         Control-x 1                     (1=letter one)
+         Edit your .emacs file accordingly.
+         Quit emacs and reenter to reread the .emacs file.
+         Hint: When you start changing your .emacs file, backup it up
+               frequently in order to get back where you started from,
+               just in case.
+               eg. cp .emacs .emacs.GUD
+
+    o  MARK
+       Mark set with the keyboard:
+         Control-spacebar.
+                OR
+       Mark set with the mouse:
+         Two button mouse: left-paddle right-paddle together
+         Three button mouse: middle-paddle
+
+    o  MACROS
+       Simple keyboard macros are defines as follows:
+         Control-x (                   beginning of macro
+         some commands
+         Control-x )                   end of macro
+
+         Control-x e                   to execute the macro 1 time
+         Control-u 99 Control-x e      to execute the macro 99 times
+
+    o  META
+       Esc x  or Alt-x is the Meta key for x, M-x.
+       Press 'Esc', let up, and then press 'x'.
+       Press 'Alt', keep down, and then press 'x'.
+
+    o  REPLACE
+       M-% or Esc % or Alt-% is Query Replace.
+       Press 'Esc', let up, and then press Shift-5 to get '%'.
+       Query replace: oldstring 'Enter' with: newstring 'Enter'
+       'y' or '!' to do remainder of file.
+
+    o  SAVE
+       Save often with Control-x Control-s.
+
+    o  SPLIT WINDOWS VERTICALLY/HORIZONTALLY
+       You can split the main Emacs window vertically.
+       - Cursor on the bottom blue status bar.
+       - Control-left paddle-right paddle mouse all together.
+       - Cursor in the left-hand main Emacs window.
+       - Control-Shift-left paddle-right paddle mouse all together.
+
+       You can split the main Emacs window horizontally.
+       - Cursor on the right-hand scroll bar.
+       - Control-left paddle-right paddle mouse all together.
+       - Cursor in the upper main Emacs window.
+       - Control-Shift-left paddle-right paddle mouse all together.
+
+       Note: Substitute middle mouse paddle for 3-button mouse.
+
+
+                 SEE-CHARS
+                 ---------
+
+The 'Control-h l' is the BEST way to determine codes your keyboard emits.
+But there are other ways to find this out also.
+
+The see-chars program can be useful for displaying codes.
+see-chars works better on my emacs and keyboard combination at work
+than it does at home.  I was not able to make it work for my keypad
+at home.  Maybe your luck is better.
+
+
+         eg. emacs a &
+             Esc x  or  Alt-x load-file
+             see-chars
+             Esc x  or Alt-x
+             see-chars
+             Type any char & wait 3 secs
+             Read character at bottom of display.
+
+
+                 TPU
+                 ---
+
+The tpu-mapper program can be useful for configuring your keypad
+as a DEC EDT editor keypad.  It's use of a GOLD key can double
+the number of commands attached to the keypad.
+
+I was not able to make it work for my keypad.  Maybe your luck is better.
+
+
+         eg. cd /usr/lib/emacs/19.28/lisp
+             emacs a &
+             Esc x  or  Alt-x load-file
+             tpu-mapper
+               ...
+             Control-x Control-s
+             Control-x Control-c
+
+
+                                                                 3/21/97
+
+      Not GNU Emacs for DOS and Windows
+
+As of 5/8/96 you can find a decent emacs for DOS and Windows
+at the following site.  I personally use this when I'm away
+from a Unix machine.  There are other fine PC emacs as well, I'm sure.
+
+ftp://ftp.netcom.com/pub/no/notgnu
+
+    o  dnot17.exe
+    o  ntnot17.exe
+    o  wnot17.exe
+
+
+
+
+
+tet-1.3/
+
+total 40
+-rw-rw-rw-   1 herman   users         458 Mar 20 14:25 CHANGES
+-rw-rw-rw-   1 herman   users        9964 Mar 20 18:28 HOWTO
+-rw-rw-rw-   1 herman   users         235 Mar 20 18:28 TODO
+-rw-rw-rw-   1 herman   users        4210 Mar 20 18:17 keyboard.tmpl
+-rw-rw-rw-   1 herman   users         681 Mar 20 13:52 sample.Xresources
+-rw-rw-rw-   1 herman   users       13466 Mar 20 18:08 sample.emacs
+-rw-rw-rw-   1 herman   users          65 Mar 20 13:53 sample.env
+-rw-rw-rw-   1 herman   users        1529 Mar 20 13:57 sample.netrc
+-rw-rw-rw-   1 herman   users         884 Mar 20 18:28 see-chars.el
+-rw-rw-rw-   1 herman   users         344 Mar 20 19:51 tet-1.3.lcd
+-rw-rw-rw-   1 herman   users        1665 Mar 20 14:44 tet-1.3.lsm
+
+
+                  CREDITS
+
+Most of the ideas in this toolkit has been shamelessly stolen
+from sources too numerous to mention.
+
+Special thanks to:
+
+    Michael Carpenter and the gang at the Space Center for the
+    netrc file and how to use Emacs anonymous ftp.  Also the
+    split window feature and the mouse cut and paste instructions.
+
+
+
+
+
+HOWTO

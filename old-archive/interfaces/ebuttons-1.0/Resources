@@ -1,0 +1,62 @@
+ebuttons*Command.borderWidth:    0
+ebuttons*Box.orientation:        vertical
+ebuttons*Box.hSpace:             0
+ebuttons*Box.vSpace:             0
+ebuttons*geometry:               +161+266
+ebuttons*background:		 CornflowerBlue
+ebuttons*font:			 6x10
+ebuttons.label0:                 Bottom
+ebuttons.command0:               (goto-char (dot-max))
+ebuttons.label1:                 Buffer List
+ebuttons.command1:               (electric-buffer-list t)
+ebuttons.label2:                 Compile
+ebuttons.command2:               (compile "make -k")
+ebuttons.label3:                 C-x 0
+ebuttons.command3:               (delete-window)
+ebuttons.label4:                 C-x 1
+ebuttons.command4:               (delete-other-windows)
+ebuttons.label5:                 C-x 2
+ebuttons.command5:               (split-window-vertically)
+ebuttons.label6:                 Down
+ebuttons.command6:               (scroll-up nil)
+ebuttons.label7:                 Eval Buffer
+ebuttons.command7:               (eval-current-buffer)
+ebuttons.label8:                 Eval Region
+ebuttons.command8:               (eval-region (region-beginning) (region-end))
+ebuttons.label9:                 Exit Emacs
+ebuttons.command9:               (my-exit-from-emacs)
+ebuttons.label10:                GNUS
+ebuttons.command10:              (gnus nil)
+ebuttons.label11:                Hide Me
+ebuttons.command11:              (ebuttons-toggle-screen)
+ebuttons.label12:                Info
+ebuttons.command12:              (info)
+ebuttons.label13:                Kill Buffer
+ebuttons.command13:              (kill-buffer (buffer-name))
+ebuttons.label14:                Lpr Buffer
+ebuttons.command14:              (lpr-buffer)
+ebuttons.label15:                Lpr Region
+ebuttons.command15:              (lpr-region (region-beginning) (region-end))
+ebuttons.label16:                Next Error
+ebuttons.command16:              (next-error)
+ebuttons.label17:                Next Win
+ebuttons.command17:              (other-window)
+ebuttons.label18:                Prev Buffer
+ebuttons.command18:              (switch-to-buffer (other-buffer))
+ebuttons.label19:                Save Buffer
+ebuttons.command19:              (save-buffer)
+ebuttons.label20:                SC Fill Para
+ebuttons.command20:              (sc-fill-paragraph-manually)
+ebuttons.label21:                Scroll Other
+ebuttons.command21:              (scroll-other-window)
+ebuttons.label22:                Send Mail
+ebuttons.command22:              (mail)
+ebuttons.label23:                Set Mark
+ebuttons.command23:              (set-mark-command nil)
+ebuttons.label24:                Top
+ebuttons.command24:              (goto-char 0)
+ebuttons.label25:                Up
+ebuttons.command25:              (scroll-down nil)
+ebuttons.label26:                VM
+ebuttons.command26:              (vm)
+ebuttons*Quit.label:             ZAP

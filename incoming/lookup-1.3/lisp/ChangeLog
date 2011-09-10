@@ -1,0 +1,1577 @@
+2000-02-12  Keisuke Nishida  <kxn30@po.cwru.edu>
+
+	* Release 1.2.
+
+2000-02-09  Keisuke Nishida  <kxn30@po.cwru.edu>
+
+	* Release 1.1.1.
+
+	* ndeb.el (ndeb-process-open): Error if the directory is invalid.
+
+2000-01-05  TSUCHIYA Masatoshi  <tsuchiya@pine.kuee.kyoto-u.ac.jp>
+
+	* lookup-entry.el (lookup-insert-entry, lookup-insert-entry-format):
+	New variable to control entry buffer style is defined.
+
+1999-12-24  Keisuke Nishida  <kxn30@po.cwru.edu>
+
+	* lookup-content.el (lookup-content-cite-region): Call
+	zmacs-deactivate-region on XEmacs.
+
+1999-12-14  Keisuke Nishida  <kxn30@po.cwru.edu>
+
+	* Makefile.am (MAINTAINERCLEANFILES): Remove generated files.
+
+1999-11-30  Kazuhiro Ito <m1877334@msic.med.osaka-cu.ac.jp>
+
+	* ndeb.el: Remove changes on 1999-11-25
+
+	* ndtp.el: Remove changes on 1999-11-25
+	contents. 
+
+1999-11-25  Kazuhiro Ito <m1877334@msic.med.osaka-cu.ac.jp>
+
+	* ndeb.el (ndeb-dictionary-search): Don't suppress duplicated hit
+	contents. 
+
+	* ndtp.el (ndtp-dictionary-search): Don't suppress duplicated hit
+	contents. 
+
+1999-10-20  Keisuke Nishida  <kxn30@po.cwru.edu>
+
+	* lookup-utils.el (lookup-process-kill): Set process-filter to nil
+	before deleting the process.
+
+1999-09-20  Masatoshi Tsuchiya  <tsuchiya@olive>
+
+	* ndnmz.el (ndnmz-generate-temp-buffer): Small fix.
+
+1999-09-10  Masatoshi Tsuchiya  <tsuchiya@pine.kuee.kyoto-u.ac.jp>
+
+	* evi.el (string-to-char-list): Small modification for Mule-2.3
+	  based on Emacs-19.28.
+
+1999-09-09  Yoshimi Kuruma <yoshimik@iris.dti.ne.jp>
+
+	* ndsrd.el: Bug Fixed.
+
+1999-09-07  Masatoshi Tsuchiya  <tsuchiya@pine.kuee.kyoto-u.ac.jp>
+
+	* sdicf.el: Substituent `sdicf-buffer-live-p' for `buffer-live-p'.
+
+1999-09-02  Keisuke Nishida  <kxn30@po.cwru.edu>
+
+	* ndtp.el (ndtp-dictionary-search, ndtp-require-select): Fixed for
+	the output "$<".
+
+1999-08-17  Masatoshi Tsuchiya  <tsuchiya@pine.kuee.kyoto-u.ac.jp>
+
+	* evi.el (string-to-char-list): Add definition for Emacs20.
+
+1999-08-09  Masatoshi Tsuchiya  <tsuchiya@pine.kuee.kyoto-u.ac.jp>
+
+	* lookup.el (lookup-setup, lookup-start-session, lookup-dictinoary-alist):
+	Modify to update the value of `lookup-dictionary-alist' everywhen
+	`lookup-module-setup' is called.
+
+1999-07-28 Masatoshi Tsuchiya <tsuchiya@pine.kuee.kyoto-u.ac.jp>
+
+	* lookup-kanji.el: Some fixes to kill buffer and process when
+	  calling `lookup-exit'.
+
+1999-07-28 Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* Makefile.am: Add lookup-kanji.el to SOURCES.
+	* ndsrd.el: Change a default dictionary name.
+
+1999-07-28 Masatoshi Tsuchiya <tsuchiya@pine.kuee.kyoto-u.ac.jp>
+
+	* ndnmz.el: New implementation.
+
+	* lookup-utils.el (lookup-with-coding-system): Fix for XEmacs.
+
+1999-07-27 Masatoshi Tsuchiya <tsuchiya@pine.kuee.kyoto-u.ac.jp>
+
+	* ndspell.el: Delete definition of `lookup-split-string'.
+
+	* lookup-utils.el: Add definition of `lookup-split-string'.
+
+	* lookup-kanji.el: Substituent `lookup-split-string' for `split-string'.
+	
+1999-07-27  Masatoshi Tsuchiya  <tsuchiya@pine.kuee.kyoto-u.ac.jp>
+
+	* lookup.el,lookup-vse.el,lookup-types.el: New options of
+ 	  dictionary, `:expander', `:expand-filter', and `:hiragana' are
+ 	  defined.
+
+	* lookup-kanji.el: New File.
+
+	* stem-english.el: Some fixes.
+
+1999-06-29  Kazuyoshi KOREEDA  <k_koreed@d2.dion.ne.jp>
+
+	* lookup-compile.el Fix a problem on XEmacs 21.2.
+
+1999-06-02  Keisuke Nishida  <kei@psn.net>
+
+	* lookup-entry.el (lookup-entry-show-menu): New command.
+	(lookup-entry-mode-map): New keybind `M' for the above.
+
+1999-05-24 Yoshimi KURUMA <yoshimik@iris.dti.ne.jp>
+	
+	* evi.el (split-string): Moved to ndspell.el with renaming.
+	* ndspell.el (lookup-split-string): Moved from evi.el with renaming.
+
+1999-05-20  Keisuke Nishida  <kei@psn.net>
+
+	* lookup-select.el (lookup-select-mode-map): Add key binding `o'.
+	* lookup-content.el (lookup-content-mode-map): Add key binding `f'.
+
+	* lookup-entry.el (lookup-entry-display): Set line-pattern properly.
+	(lookup-entry-previous-entry): Do properly even if ARG is nil.
+	(lookup-entry-previous-page): Go last entry from the end of a buffer.
+
+1999-05-13 Kazuhiro Ito <m1877334@msic.med.osaka-cu.ac.jp>
+
+	* lookup-types.el (lookup-dictionary-default-method):
+	Never returns nil.
+
+	* lookup.el (lookup-search-query):Don't check
+	lookup-dictionary-default-method's return value.
+
+1999-05-12 Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* sdicf.el: Fix some bugs and speed up
+	(commit by proxy for <tsuchiya@pine.kuee.kyoto-u.ac.jp>)
+
+1999-05-02 Satoru Takabayashi <satoru-t@is.aist-nara.ac.jp>
+
+	* lookup-vse.el (lookup-arrange-squeezed-references): modify 
+	search-forward-regexp to remove a garbage string "<gaiji:z0001>"
+
+
+1999-05-02 KURUMA Yoshimi  <yoshimik@iris.dti.ne.jp>
+
+	* lookup.el (lookup-search-pattern): The length of PATTERN is
+	changed to 80 (befere 40).
+
+	* ndict.el (ndict-dictionary-search): Neglect Non Ascii Character
+	in searching.
+
+1999-04-25 Kazuhiro Ito <m1877334@msic.med.osaka-cu.ac.jp>
+
+	* lookup-vse.el (lookup-arrange-squeezed-references): New function.
+
+	* ndeb.el: Add lookup-arrange-squeezed-references in default arranges.
+	Enable new dictionary option `:squeezed'.
+
+	* ndtp.el: Add lookup-arrange-squeezed-references in default arranges.
+	Enable new dictionary option `:squeezed'.
+
+1999-04-08 Kazuhiro Ito <m1877334@msic.med.osaka-cu.ac.jp>
+
+	* lookup-entry.el (lookup-entry-excursion):
+	Call lookup-entry-current-line-entry from entry buffer.
+
+1999-03-13  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup.el (lookup-module-forward): Set default-module always.
+
+	* lookup-types.el (lookup-gaiji-glyph-possible-p): Check window-system.
+
+	* ndnmz.el: Removed.
+
+1999-03-05  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-entry.el (lookup-entry-line-method): Removed.
+	(lookup-entry-display): Remove setting of `lookup-entry-line-method'.
+	Set `lookup-entry-line-pattern' to `lookup-search-pattern'.
+	(lookup-entry-mode): Remove `lookup-entry-line-method'.
+
+1999-03-02  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndtp.el (ndtp-with-dictionary): Fixed.
+	(Thanks to Takeshi Hagiwara!)
+
+1999-02-20  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-types.el (lookup-glyph-compose, lookup-glyph-paste,
+	lookup-bitmap-compose, lookup-bitmap-paste): Moved from lookup-defs.el.
+	* lookup-defs.el: Removed.
+
+	* lookup.el (lookup-module-forward, lookup-module-backward): Rewriten.
+	Take an optional argument.
+	(lookup-search-query): Fixed around stemming.
+
+	* lookup-vars.el.in (lookup-heading-low-face): Change foreground
+	"Grey".  Previous "SlateGrey" isn't defined in Mule for Win.
+	(lookup-init-gaiji-functions): Set paste-function by default.
+
+1999-02-18  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-types.el (lookup-history-ref): Return a symbol not error.
+	Ding instead of occuring an error.
+
+	* lookup-select.el: Renamed from `lookup-misc.el'.
+
+	* ndeb.el (ndeb-process-open): Set buffer name with directory.
+	* ndtp.el (ndtp-process-open): Set buffer name with server name.
+
+	* lookup.el (lookup-initialize): Just only loading init file.
+	(lookup-agent-list, lookup-agent-alist, lookup-module-list,
+	lookup-module-alist, lookup-dictionary-alist, lookup-default-module):
+	New functions.
+	(lookup-input-module, lookup-module-forward, lookup-module-backward,
+	lookup-get-module, lookup-get-agent, lookup-get-dictionary,
+	lookup, lookup-setup): Updated.
+	(lookup-exit): Set variables nil.
+	* lookup-types.el (lookup-new-module): Updated.
+
+	* lookup-content.el (lookup-content-cite-region): Deactivate mark
+	in Transient Mark mode.  Show message like `kill-ring-save'.
+	* lookup-entry.el (lookup-entry-cite-content): Call
+	`lookup-content-cite-region' internally.
+
+1999-02-17  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vars.el.in (lookup-process-coding-system,
+	lookup-kakasi-coding-system): New variables.
+	* lookup-utils.el (lookup-with-coding-system): New macro.
+	(lookup-current-word-japanese): Set coding system for KAKASI.
+
+	* ndic.el: Set options directly.
+	(ndic-reference-pattern, ndic-default-arrange-functions,
+	ndic-default-adjust-functions): Removed.
+
+	* ndeb.el: Set options directly.
+	(ndeb-search-methods, ndeb-gaiji-regexp, ndeb-reference-pattern,
+	ndeb-default-heading-functions, ndeb-default-arrange-functions,
+	ndeb-default-adjust-functions): Removed.
+	(ndeb-process-coding-system): New variable.
+	(ndeb-agent-coding): Updated.
+	(ndeb-dictionary-coding): New function.
+	(ndeb-with-dictionary): Set dictionary coding-system.
+
+	* ndtp.el: Set options directly.
+	(ndtp-search-methods, ndtp-gaiji-regexp, ndtp-reference-pattern,
+	ndtp-default-heading-functions, ndtp-default-arrange-functions,
+	ndtp-default-adjust-functions): Removed.
+	(ndtp-service-name, ndtp-account-name): Removed.
+	(ndtp-agent-service, ndtp-agent-account): Set default directly.
+	(ndtp-process-coding-system): Set a symbol not cons.
+	(ndtp-agent-coding): Updated.
+	(ndtp-dictionary-coding): New function.
+	(ndtp-with-dictionary): Set dictionary coding-system.
+	(ndtp-require-select): Always enable gaijis if possible.
+
+	* ndict.el: Set options directly.
+	(ndict-reference-pattern, ndict-default-arrange-functions,
+	ndict-default-adjust-functions): Removed.
+	(ndict-service-name): Removed.
+	(ndict-agent-service): Set default directly.
+	(ndict-process-coding-system): Set a symbol not cons.
+	(ndict-agent-process): Updated.
+
+	* ndnmz.el: Set options directly.
+	(ndnmz-search-methods, ndnmz-default-arrange-functions,
+	ndnmz-default-adjust-functions): Removed.
+	(ndnmz-process-coding-system): New vairable.
+	(ndnmz-dictionary-search): Set coding-system.
+
+	* ndkks.el: Set options directly.
+	(ndkks-search-methods, ndkks-default-arrange-functions,
+	ndkks-default-adjust-functions): Removed.
+	(ndkks-process-coding-system): New vairable.
+	(ndkks-get-process): Set coding-system.
+
+	* ndspell.el: Set options directly.
+	(ndspell-search-methods): Removed.
+	(ndspell-process-coding-system): New variable.
+	(ndspell-get-process): Set coding-system.
+
+	* ndcookie.el (ndcookie-setup): Don't initialize.
+
+	* ndmisc.el: Set options directly.
+	(ndmisc-default-arrange-functions, ndmisc-default-adjust-functions):
+	Removed.
+
+1999-02-16  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-defs.el (lookup-glyph-insert): Removed.
+	(lookup-glyph-paste, lookup-bitmap-paste): New functions.
+	(lookup-bitmap-compose): Require bitmap.
+	* lookup-vars.el.in (lookup-gaiji-insert-function): Removed.
+	(lookup-gaiji-paste-function): New variable.
+	(lookup-init-gaiji-functions): Updated.
+	(lookup-cite-style, lookup-gaiji-style): Removed.
+	(lookup-gaiji-alternate): New variable.
+	* lookup-types.el (lookup-gaiji-glyph-insert): Removed.
+	(lookup-gaiji-glyph-paste): New function.
+	(lookup-gaiji-insert): Updated.
+	(lookup-new-gaiji-table): Set alternate to glyph by default.
+	* lookup-vse.el (lookup-vse-get-gaiji): Rewriten.  Remove 3rd arg
+	HEIGHT of gaiji command.
+	(lookup-adjust-show-gaijis): New function.
+	* ndeb.el (ndeb-dictionary-gaiji): Updated.
+	(ndeb-default-adjust-functions): Add `lookup-adjust-show-gaijis'.
+	* ndtp.el (ndtp-dictionary-gaiji): Updated.
+	(ndtp-default-adjust-functions): Add `lookup-adjust-show-gaijis'.
+
+	* lookup-types.el (lookup-word-search-methods): New method `stemming'.
+	(lookup-method-key-alist): Add key for `stemming'.
+	(lookup-dictionary-stemmer): New function.
+	(lookup-dictionary-init): Add `stemming' to dictionary-methods.
+	* lookup-vse.el (lookup-vse-search-query-internal): Rewriten.
+	* lookup-types.el (lookup-copy-entry): `lookup-entry-copy'.
+	* lookup.el (lookup-search-query): Updated.
+
+	* lookup-types.el (dictionary): Take new argument `title'.
+	(lookup-new-dictionary): New function.  Updated all agent files.
+
+	* lookup-types.el (lookup-agent-set-default): Use `plist-put'.
+	(lookup-agent-option): Use `plist-get' for defaults.
+	(lookup-dictionary-set-default): Use `plist-put'.
+	(lookup-dictionary-option): Use `plist-get' for defaults.
+
+	* lookup-types.el (dictionary): Remove the property `default-method'.
+	(lookup-dictionary-init): Remove setting of `default-method'.
+	(lookup-dictionary-default-method): New function.
+
+	* lookup-utils.el (lookup-multi-put, lookup-multi-get): Set symbol
+	by value not by plist.
+	* lookup-vse.el (lookup-entries-cache): New variable.
+	(lookup-entries-cache-clear): New function.
+	(lookup-contents-cache): New variable.
+	(lookup-contents-cache-clear): New function.
+	* lookup.el (lookup-exit): Clear caches.
+
+	* lookup-vse.el (lookup-fix-current-column): Removed.
+	(lookup-current-column): Removed
+	(lookup-arrange-fill-lines): Remove the incomplete fix for Mule bug.
+
+1999-02-15  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Rewrite the definition of modules.
+
+	* lookup-vars.el.in (lookup-agent-list, lookup-agent-alist,
+	lookup-module-list, lookup-module-alist, lookup-dictionary-alist,
+	lookup-search-modules): New variable.
+	* lookup.el (lookup-initialize): Set aboves.
+	(lookup-get-module, lookup-get-agent, lookup-get-dictionary):
+	New functions.
+	* lookup-types.el (lookup-module-get-agent): Removed.
+	(lookup-module-get-dictionary): Removed.
+
+	* lookup-types.el (lookup-agent-init): Just only set properties.
+	(lookup-agent-setup): New function devided from `lookup-agent-init'.
+
+	* lookup-types.el (lookup-agent-clear): Change the clear command
+	name to `clear'.  All agents files are updated.
+	* ndic.el (ndic-clear): Renemed from `ndic-exit'.
+	* ndeb.el (ndeb-clear): Renamed from `ndeb-exit'.
+	* ndtp.el (ndtp-clear): Renemed from `ndtp-exit'.
+	* ndict.el (ndict-clear): Renemed from `ndict-exit'.
+	* ndnmz.el (ndnmz-clear): Renemed from `ndnmz-exit'.
+	* ndkks.el (ndkks-clear): Renemed from `ndkks-exit'.
+	* ndspell.el (ndspell-clear): Renemed from `ndspell-exit'.
+	* ndcookie.el (ndcookie-clear): Renamed from `ndcookie-exit'.
+
+	* lookup-types.el (module): Redefine.
+	(lookup-new-module, lookup-module-init): Rewriten.
+	(lookup-module-setup): New function.
+	(lookup-module-initialized-p): Removed.
+	* lookup.el (lookup-exit, lookup-start-session): Updated.
+
+1999-02-13  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-types.el (lookup-dictionary-init): Fixed to set
+	gaiji-table by default.
+
+1999-02-13  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* evi.el (char-charset): Removed.  This may be defined in APEL.
+	* lookup-utils.el (lookup-current-word): Redefine.
+
+1999-02-11  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vars.el.in (lookup-byte-compile): New variable.
+	* lookup-compile.el: Set `lookup-byte-compile' t before compiling.
+	* lookup.el: Initialize at the end of file exept in time of compiling.
+
+1999-02-10  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* evi.el (char-charset): Define using `char-leading-char' on Mule.
+	* lookup-utils.el (lookup-current-word): Updated.
+	(lookup-current-word-japanese): Updated.
+
+	* lookup.el (lookup-exit): Take a prefix argument.
+
+	* sdicf.el: New file.
+
+1999-02-08  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup.el (lookup-exit): Not set `lookup-module-alist' nil.
+
+	* ndeb.el (ndeb-agent-directory, ndeb-agent-appendix): Expand filename.
+
+1999-02-06  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-entry.el (lookup-entry-update): Fixed to set session module.
+
+1999-02-05  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vse.el (lookup-arrange-references, lookup-vse-get-menu):
+	Fixed to arrange heading.
+	(lookup-vse-search-query-internal): Fixed duplication of stemming.
+
+	* lookup.el (lookup-module-forward): New command.
+	* lookup-entry.el (lookup-entry-mode-map): Bind aboves.
+
+1999-02-04  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndeb.el (ndeb-process-coding-system): Removed.
+
+	* ndspell.el (ndspell-dynamic-search): Use `lookup-current-session'.
+
+	* lookup-vse.el (lookup-vse-search-query-internal): Abolish filtering.
+	(lookup-vse-get-gaiji): Fixed not to error for invalid gaiji code.
+
+	* Change the style of `lookup-search-agents' and options' key.
+	Many files ware updated.
+	* lookup-types.el (agent): Don't take ARGS.
+	(lookup-new-agent, lookup-agent-option): Updated.
+
+	* Abolish suspending agent.
+	* lookup-types.el (lookup-agent-suspend): Removed.
+	* lookup.el (lookup-suspend): Updated.
+	* ndtp.el (ndtp-suspend, ndtp-agent-suspend-p): Removed.
+
+	* lookup-misc.el (lookup-select-goto-first): New function.
+	(lookup-select-display, lookup-select-do-select-all,
+	lookup-select-do-select-only, lookup-select-do-execute): Use above.
+
+1999-02-03  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Rewrite around the concept `session'.
+
+	* lookup-vars.el.in (lookup-current-module): Removed.
+	(lookup-current-session, lookup-last-session): New variables.
+	* lookup-types.el (lookup-with-module): Removed.
+	* lookup.el (lookup, lookup-suspend, lookup-exit): Updated.
+	(lookup-search-pattern): Take two argument.
+	(lookup-pattern): Updated.
+	(lookup-start-session): New macro.
+	(lookup-open-session): New function.
+
+	* lookup-types.el (lookup-session-append-entries): Removed.
+	(lookup-session-ref, lookup-session-display,
+	lookup-session-save-excursion): New functions.
+	* lookup-entry.el (lookup-entry-append): Take two arguments.
+
+	* lookup.el: New session `lookup-select-session'.
+	(lookup-select-dictionary): New function.
+	* lookup-misc.el (lookup-select-display): Renamed from
+	`lookup-select-dictionary' and update for select session.
+	(lookup-select-do-execute, lookup-select-update,
+	lookup-select-point-dictionary): Updated.
+	(lookup-select-point-dictionary): Renamed from
+	`lookup-select-current-line-dictionary'.  Many functions ware updated.
+
+	* lookup.el: New session `lookup-search-session'.
+	(lookup-search-query): Rewriten.
+	(lookup-display-entries): New function replacing `lookup-open-session'.
+	* lookup-content.el (lookup-content-follow-link): Use above.
+	* lookup-entry.el (lookup-entry-list-references): Ditto.
+	* lookup-misc.el (lookup-select-menu,lookup-select-text-search): Ditto.
+	(lookup-select-search-pattern): Updated.
+
+	* lookup-entry.el (lookup-entry-current-session): Removed.
+	(lookup-entry-display): Updated.
+	* lookup-entry.el (lookup-entry-search-pattern, lookup-entry-update,
+	lookup-entry-expand-reference): Updated.
+	(lookup-entry-select-dictionary): New command.
+
+	* lookup-types.el (lookup-history-ref): Make second argument `n'
+	optional.  Error directly for an invalid move.
+	(lookup-history-clear): New function.
+	(lookup-new-module): Make history this time.
+	(lookup-module-clear): Clear history.
+	* lookup.el (lookup): Display session in the history.
+	(lookup-history-next, lookup-history-previous): New commands.
+	* lookup-entry.el (lookup-entry-history-next,
+	lookup-entry-history-previous): Removed.
+	(lookup-entry-mode-map): Bind aboves.
+	* lookup-misc.el (lookup-select-mode-map): Bind aboves.
+
+	* lookup-vars.el.in (lookup-window-buffers): Removed.
+	* lookup.el (lookup-quit): Removed.  Use `lookup-suspend' instead.
+	(lookup-suspend, lookup-pop-to-buffer): Updated.
+
+1999-01-29  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-types.el (lookup-new-agent): Don't take title and init.
+	* lookup-vars.el.in (lookup-search-module): Delete variable.
+	(lookup-module-alist, lookup-default-module): New variables.
+	* lookup.el (lookup-initialize): Set aboves.
+	(lookup-input-module-history): New variable.
+	(lookup-input-module, lookup-input-module-arg): New functions.
+	(lookup): Take new arg `module'.
+	(lookup-pattern-input, lookup-word-input, lookup-region-input):
+	New functions.
+	(lookup-pattern, lookup-pattern-full-screen, lookup-pattern-other-frame,
+	lookup-word, lookup-word-full-screen, lookup-word-other-frame,
+	lookup-region, lookup-region-full-screen, lookup-region-other-frame):
+	Take new arg `module'.
+	(lookup-setup, lookup-exit): Use `lookup-module-alist'.
+
+	* lookup.el (lookup-entry-buffer, lookup-content-buffer,
+	lookup-select-buffer): Add a space(` ') beginning of the buffer name.
+	* lookup-entry.el (lookup-entry-mode): Remove a space before "%b"
+	of the mode line string.
+	* lookup-content.el (lookup-content-mode): Ditto.
+	* lookup-select.el (lookup-select-mode): Ditto.
+
+	* ndcookie.el (ndcookie-setup, ndcookie-dictionary-search):
+	Return a cookie at random.
+
+1999-01-28  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre9 released.
+
+1999-01-27  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup.el (lookup-set-agent-option, lookup-set-dictionary-option): 
+	Moved from lookup-packages.el.
+
+	* lookup-vars.el.in (lookup-search-method): Set `nil'.
+	* lookup.el (lookup-search-pattern): Use `lookup-search-method'.
+
+	* lookup-types.el (lookup-parse-pattern): Updated.
+
+	* lookup.el (lookup-search-query): Errer with the input method.
+	(lookup-search-pattern): Check the search pattern first.
+	* lookup-types.el (lookup-parse-pattern): Don't make one-line.
+
+	* lookup-vars.el.in (lookup-reading-face): Removed.
+	(lookup-open-function): Make variable non-customizable.
+	(lookup-cite-style, lookup-cite-header, lookup-cite-prefix,
+	lookup-window-height): Fixed customization group.
+
+1999-01-25  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndcookie.el (ndcookie-setup): Not use the agent title.
+
+	* ndtp.el (ndtp-process-coding-system, ndtp-service-name,
+	ndtp-account-name): Make constant.
+	* ndict.el (ndict-service-name, ndict-process-coding-system):
+	Make constant.
+	* ndnmz.el (ndnmz-process-coding-system): Removed.
+	* ndkks.el: Remove the setting of process coding system.
+	* ndspell.el (ndspell-process-coding-system): Removed.
+
+	* lookup.el (lookup-initialize): Not set coding system for KAKASI.
+	* ndkks.el: Not set coding system for KAKASI.
+	(ndkks-valid-charsets): Make constant.
+
+1999-01-24  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-entry.el (lookup-entry-search-selection): Removed.
+	* lookup.el (lookup-secondary): Renamed from `lookup-selection'.
+	(lookup-secondary-full-screen): Renamed from `lookup-selection-full-screen'.
+	(lookup-secondary-other-frame): Renamed from `lookup-selection-other-frame'.
+	(lookup-selection): New command replaced with `lookup-entry-search-selection'.
+	(lookup-selection-full-screen, lookup-selection-other-frame):
+	New commands.
+
+	* lookup.el (lookup-full-screen): Renamed from `lookup-full-window'.
+	(lookup-pattern-full-screen): Replaced with `lookup-pattern-full-window'.
+	(lookup-word-full-screen): Replaced with `lookup-word-full-window'.
+	(lookup-region-full-screen): Replaced with `lookup-region-full-window'.
+	(lookup-selection-full-screen): Replaced with `lookup-selection-full-window'.
+
+	* lookup-misc.el (lookup-select-next-line): Ding if end of buffer.
+	(lookup-select-previous-line): Ding if beginning of buffer.
+	(lookup-select-info): Remove command.
+
+	* evi-mule.el (evi-coding-system): Don't use `lookup-assq-ref'.
+
+1999-01-21  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup.el (lookup-vse-get-menu): Set autoload.
+
+	* lookup-vars.el.in (lookup-gaiji-style): Renamed from
+	`lookup-gaiji-policy'.
+	(lookup-cite-style): Renamed from `lookup-cite-policy'.
+	* lookup-types.el (lookup-gaiji-insert): Updated.
+	* lookup-entry.el (lookup-entry-cite-content): Updated.
+
+	* evi.el (defface): Rewrite to be worked on Mule.
+
+1999-01-19  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vars.el.in (lookup-default-method): Set the value to `exact'.
+	* ndeb.el (ndeb-search-methods): 
+
+	* lookup-types.el (lookup-search-methods, lookup-method-key-alist):
+	Add new search method `default'.
+	(lookup-parse-pattern): Use `default'.
+	(dictionary): Add new property `default-method'.
+	(lookup-dictionary-init): Save the value of option `default-method'.
+	* lookup.el (lookup-search-query): Use `default'.
+
+	* ndtp.el (ndtp-gaiji-regexp): Simplify a little.
+	(ndtp-reference-pattern): Rewrite the pattern.
+	* ndeb.el (ndeb-gaiji-regexp, ndeb-reference-pattern): Simplify.
+
+1999-01-18  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* evi-mule.el (evi-coding-system-table): Fixed the code name for
+	euc-jp-dos.
+
+	* lookup-content.el (lookup-content-cite-region): New command.
+	* lookup-entry.el (lookup-entry-cite-content): Renamed from
+	`lookup-entry-kill-ring-save-content'.  Enable new dictionary
+	option `cite-policy'.
+
+	* ndtp.el (ndtp-require-select): Fixed the separate pattern for `XI'.
+	(ndtp-dictionary-search): Fixed the separate pattern for `P'.
+
+1999-01-17  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre8 released.
+
+	* lookup-vars.el.in (lookup-mouse-search-command): Delete variable.
+	* lookup.el (lookup-selection): Call `lookup-word' directly.
+
+	* lookup.el (lookup-pattern, lookup-pattern-other-frame, lookup-word,
+	lookup-word-other-frame, lookup-region, lookup-region-other-frame,
+	lookup-selection, ookup-selection-other-frame): Remove prefix argument.
+	(lookup-pattern-other-window, lookup-word-other-window,
+	lookup-region-other-window, lookup-selection-other-window): Delete
+	commands.
+	(lookup-pattern-full-window, lookup-word-full-window,
+	lookup-region-full-window, lookup-selection-full-window): New commands.
+
+	* lookup-vars.el.in (lookup-faces): New customization group.
+
+	* lookup.el (lookup-pop-to-buffer): Check `frame-visible-p' boundary.
+
+	* stem-english.el: Update again to v.1.8.
+
+1999-01-15  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vse.el (lookup-fix-current-column): New constants.
+	(lookup-current-column): New function.
+	(lookup-arrange-fill-lines): Rebind `current-column' temporary.
+
+1999-01-14  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup.el (lookup-initialize): Run `lookup-load-hook' just after
+	loading ~/.lookup.
+
+	* ndspell.el (ndspell-dictionary-search): Do search when
+	`lookup-force-update' is non-nil.
+
+	* lookup-types.el (lookup-new-agent): Take options as conses directly.
+
+	* stem-english.el: Update again to v.1.6.
+
+1999-01-12  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vars.el.in (lookup-cite-policy): New customizable valiable.
+	(lookup-gaiji-policy): New variable.
+	* lookup-types.el (lookup-gaiji-insert): Use `lookup-gaiji-policy'.
+	* lookup-entry.el (lookup-entry-default-policies): New constant.
+	(lookup-entry-kill-ring-save-content): Use `lookup-cite-policy'.
+
+	* lookup.el (lookup-debug): New command.
+
+	* stem-english.el: New file replaced with stem.el.
+	* Makefile.am (SOURCES): Include stem-english.el.
+
+1999-01-11  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndtp.el (ndtp-reference-pattern): More practically.
+
+	* ndic.el (ndic-reference-pattern, ndic-default-arrange-functions,
+	ndic-default-adjust-functions): Make variables not customizable.
+	* ndeb.el (ndeb-reference-pattern, ndeb-default-heading-functions,
+	ndeb-default-arrange-functions, ndeb-default-adjust-functions): Ditto.
+	* ndtp.el (ndtp-reference-pattern, ndtp-default-heading-functions,
+	ndtp-default-adjust-functions, ndtp-default-arrange-functions): Ditto.
+	* ndict.el (ndict-reference-pattern, ndict-default-arrange-functions,
+	ndict-default-adjust-functions): Ditto.
+	* ndnmz.el (ndnmz-default-arrange-functions,
+	ndnmz-default-adjust-functions): Ditto.
+	* ndkks.el (ndkks-default-arrange-functions,
+	ndkks-default-adjust-functions): Ditto.
+	* ndmisc.el (ndmisc-default-arrange-functions,
+	ndmisc-default-adjust-functions): Ditto.
+
+1999-01-10  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-package.el (lookup-use-package): Use `PACKAGE.el' as a
+	master file instead of `main.el'.  Package format 1.1.
+
+1998-12-27  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-entry.el (lookup-entry-open): Just only fill display.
+	(lookup-entry-open-other): New command using open command.
+	(lookup-entry-list-history): Remove command.
+
+	* ndic.el: Remove `text' from valid methods.
+
+	* ndic.el (ndic-default-arrange-functions): Don't fill paragraph.
+	* ndict.el (ndict-default-arrange-functions): Ditto.
+
+	* lookup-entry.el (lookup-entry-mode-map): Bind
+	`lookup-entry-content-window' to `h'.
+	* lookup-content.el (lookup-content-entry-window): New command.
+	(lookup-content-leave): Call `lookup-entry-display-content'.
+
+1998-12-26  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vars.el.in (lookup-enable-gaiji): Set `t' by default.
+
+	* ndkks.el (ndkks-dictionary-search): Do search even when some
+	entries were already found.
+
+1998-12-25  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vse.el (lookup-arrange-gaijis): New function.
+	* ndtp.el (ndtp-arrange-gaijis): Remove function.  Use above instead.
+	(ndtp-gaiji-regexp): New variable.
+	* ndeb.el (ndeb-arrange-gaijis): Remove function.  Use above instead.
+	(ndeb-gaiji-regexp): New variable.
+
+	* lookup-types.el (dictionary): Add new property `heading'.
+	(lookup-dictionary-init): Reserve the option `headings'.
+	* lookup-vse.el (lookup-vse-search-query-internal): Arrange headings.
+	(lookup-arrange-heading): New function.
+	(lookup-format): Call `widen' before `funcall'.
+	* ndtp.el (ndtp-default-heading-functions): New variable.
+	(ndtp-make-entry): Not replace gaijis.  Now use heading functions.
+	(ndtp-replace-gaijis): Remove function.
+	(ndtp-arrange-gaijis): Merged with old `ndtp-replace-gaijis'.
+	* ndeb.el (ndeb-default-heading-functions): New variable.
+	(ndeb-make-entry): Not replace gaijis.  Now use heading functions.
+	(ndeb-replace-gaijis): Remove function.
+	(ndeb-arrange-gaijis): Merged with old `ndeb-replace-gaijis'.
+
+	* lookup-vse.el (lookup-arrange-references,
+	lookup-dynamic-code-search): New functions.
+	* ndtp.el (ndtp-arrange-references, ndtp-dictionary-reference-pattern):
+	Remove functions.  Use `lookup-arrange-references' instead.
+	* ndeb.el (ndeb-arrange-references, ndeb-dictionary-reference-pattern):
+	Remove functions.  Use `lookup-arrange-references' instead.
+	* ndic.el (ndic-reference-pattern): New variable.
+	(ndic-arrange-references, ndic-dynamic-search) Delete functions. Use
+	`lookup-arrange-references' and `lookup-dynamic-code-search' instead.
+	* ndict.el (ndict-reference-pattern): New variable.
+	(ndict-arrange-references, ndict-dynamic-search) Delete functions. Use
+	`lookup-arrange-references' and `lookup-dynamic-code-search' instead.
+
+	* lookup-utils.el (lookup-oneline-string): New function.
+
+1998-12-14  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndtp.el (ndtp-with-dictionary): Check the last used dictionary.
+	(ndtp-agent-process): Init ndtp-dict.
+	* ndeb.el (ndeb-with-dictionary): Check the last used dictionary.
+	(ndeb-dictionary-content): Fix the setting property of ndeb-stop.
+	(ndeb-agent-process): Init ndeb-dict.  Set coding system if it is set.
+
+1998-12-12  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre7 released.
+
+	* lookup.el (lookup-initialize): Set program coding system for KAKASI.
+
+1998-12-10  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup.el (lookup-suspend): Use `delete-frame' instead of
+	`make-frame-invisible'.
+	(lookup-pop-to-buffer): Use `raise-frame' instead of
+	`make-frame-visible'.
+	(Thanks to Masatoshi Tsuchiya!)
+
+	* ndeb.el (ndeb-agent-appendix): Expand file name first.
+
+	* lookup-compile.el: Set `byte-compile-warnings' to ignore warnings.
+
+	* lookup-content.el (lookup-content-mode): Delete setting of
+	`line-move-ignore-invisible'.
+
+1998-12-04  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre6 released.
+
+	* lookup-defs.el: Not define `lookup-bitmap-compose' on XEmacs.
+
+	* lookup-entry.el (lookup-entry-insert): newline first.
+
+	* lookup.el (lookup): Suspend Lookup when the Entry buffer is visible.
+
+	* ndspell.el (ndspell-dictionary-search): Search only when the
+	string has only ascii characters.
+
+	* ndeb.el (ndeb-reference-pattern): Fixed pattern.
+	* lookup-defs.el (lookup-glyph-insert): Kluge around.
+	(Thanks to Takeshi Hagiwara!)
+
+1998-11-30  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndspell.el (ndspell-dictionary-search, ndspell-dynamic-search):
+	Change the format of the heading of candidates.
+
+1998-11-28  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vse.el (lookup-adjust-check-references): Set face even if
+	a reference is not refered.
+
+1998-11-12  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre5 released.
+
+	* ndeb.el (ndeb-reference-pattern): Fixed.
+	(ndeb-default-arrange-functions): Arrange references first.
+	(ndeb-arrange-references): Make entry with gaiji replacement.
+
+	* ndtp.el (ndtp-default-arrange-functions): Arrange references first.
+	(ndtp-arrange-references): Make entry with gaiji replacement.
+	(ndtp-dictionary-gaiji, ndtp-require-select): Get gaiji informations
+	by the previous methods.
+
+	* lookup-vars.el.in: Add new variable `lookup-search-found'.
+	* lookup.el (lookup-search-query): Set `lookup-search-found'.
+	* ndkks.el (ndkks-dictionary-search): Use `lookup-search-found'.
+	* ndspell.el (ndspell-dictionary-search): Use `lookup-search-found'.
+
+1998-10-31  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre4 released.
+
+	* ndeb.el: Add new variable `ndeb-reference-pattern'.
+	(ndeb-arrange-references): Modify to use `ndeb-reference-pattern'.
+	Delete variable `ndeb-default-filter-functions'.
+	(ndeb-dictionary-search): Remove duplicate by hard coding.
+
+	* ndtp.el: Add new variable `ndtp-reference-pattern'.
+	(ndtp-arrange-references): Modify to use `ndtp-reference-pattern'.
+	Delete variable `ndtp-default-filter-functions'.
+	(ndtp-dictionary-search): Remove duplicate by hard coding.
+
+1998-10-30  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vars.el.in: Add hook `lookup-load-hook'.
+	* lookup.el (lookup-initialize): Run `lookup-load-hook'.
+
+1998-10-29  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-types.el: Sort dictionaries as listed in the option `enable'.
+
+	* ndkks.el (ndkks-dictionary-search): Search even when any entry
+	was found in other dictionary.  Add pattern for Zenkaku alphabet.
+
+1998-10-26  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup.el (lookup-word, lookup-word-other-window,
+	lookup-word-other-frame): New commands.
+	* lookup-vars.el (lookup-mouse-search-command): Set the value to
+	`lookup-word' by default.
+
+	* lookup-vse.el (lookup-vse-search-query-internal): Add a prefix
+	with the stemming result.
+
+1998-10-23  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre3 released.
+
+	* Unify the file coding system by junet.
+
+	* ndtp.el: Fixed gaiji routine.
+
+1998-10-22  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre2 released.
+
+	* ndtp.el: Rewrite gaiji routine.
+
+1998-10-20  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndic.el (ndic-setup): Get the dictionary title.
+
+	* ndcookie.el (ndcookie-setup): Fixed.
+
+1998-10-19  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndspell.el (ndspell-get-process): Add options "-m".
+
+1998-10-17  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndtp.el (ndtp-dictionary-regexp): Fixed for output of dserver.
+	(Thanks to Uichi Katsuta!)
+
+1998-10-14  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndkks.el (ndkks-dictionary-search): Search only when no entry
+	found by other dictionaries.
+	(ndkks-get-process): Wait just a little.
+
+	* lookup.el (lookup-hide-buffer): Fixed to switch buffer only when
+	the buffer has a window.
+
+1998-10-14  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0pre1 released.
+
+	* Many Many Many files were modified and sophisticated.
+	Most of files were rewriten now.
+
+	* lookup.el: Add several useful functions and commands.  Delete
+	some disuse functions.  Many functions were rewriten.
+	Lookup now has new search routine, new buffer management system,
+	new reference control functions, and so on.
+
+	* lookup-vars.el.in: Renamed from `lookup-vars.el'.
+	* lookup-defs.el: Renamed from `lookup-defs.el.in'.
+	* lookup-xemacs.el, lookup-mule.el: Deleted.  Merged into
+	`lookup-defs.el'.
+	* lookup-setup.el: Deleted.  Merged into `lookup-types.el'.
+	* lookup-search.el: Deleted.  Merged into several files.
+	* lookup-format.el: Deleted.  Merged into `lookup-vse.el'.
+	* lookup-vse.el: New file based on late `lookup-search.el' and
+	`lookup-format.el'.
+	* lookup-mouse.el: Deleted.  Now we have a new command
+	`lookup-selection' defined in `lookup.el'.
+
+	* lookup-vars.el.in: Use `Custom' package to define variables.
+	Add several useful variables.  Delete some disuse varialbes.
+
+	* lookup-utils.el (lookup-foreach, lookup-map-until): New functions.
+	(lookup-grep):  Renamed from `lookup-filter'.
+	(lookup-current-word-ascii): Check the word break.
+
+	* lookup-types.el: Rewriten all over data types.  Many files were
+	updated.
+
+	* lookup-package.el: Rewriten as package version 1.0.
+	Some new variables and functions are available.
+
+	* lookup-entry.el, lookup-content.el: Sophisticated.
+
+	* ndic.el, ndeb.el, ndtp.el, ndict.el, ndnmz.el, ndkks.el,
+	ndspell.el, ndcookie.el: Rewriten.
+	* ndmisc.el: New file.
+
+	* README: Renemed from FILES.
+
+1998-08-26  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0b2 released.
+
+	* lookup-utils.el (lookup-current-word): Fixed.
+	(Thanks to yamagata@nwgpc.kek.jp!)
+
+	* lookup-compile.el: Set language environment.
+
+1998-08-08  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0b1 released.
+
+	* ndict.el: Fixed the search routine.
+
+	* lookup-vars.el (lookup-gaiji-compose-function): Fixed.
+
+1998-08-01  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 1.0b0 released.
+
+	* lookup-vars.el (lookup-init-file): Use `init-file-user'.
+
+1998-07-25  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.11b3 released.
+
+	* lookup-package.el (lookup-set-agent-option,
+	lookup-set-dictionary-option): New functions.
+	(lookup-use-package): Use aboves.
+
+1998-07-23  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.11b2 released.
+
+	* ndict.el: Some fixes.
+	(Thanks to ISHIKAWA Masahiro!)
+
+1998-07-20  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndnmz.el (ndnmz-dictionary-search): Update for Namazu 1.2.x.
+
+	* lookup.el (lookup-temp-buffer): New function.
+	(lookup-intern-string): Moved from `lookup-utils.el'.
+
+	* lookup-utils.el: Delete function `lookup-duplicate-buffer'.
+
+1998-07-15  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndkks.el: Recover file.
+
+	* lookup-defs.el.in: Renamed from `lookup-defs.el' with
+	definitions of `lookup-version' and `lookup-data-directory'.
+	* Makefile.am: Modified to generate lookup-defs.el.
+
+	* lookup-search.el (lookup-set-session): Close content buffer
+	before display the search result.
+
+	* lookup-entry.el: Delete variable `lookup-entry-sub-method'.
+	(lookup-entry-mode): Modify the buffer identification.
+	* lookup-search.el (lookup-set-session): Updated.
+
+	* lookup-types.el (lookup-new-gaiji-table): Renamed from
+	`lookup-make-gaiji-table'.
+	(lookup-make-gaiji-table, lookup-gaiji-table-set): New functions.
+	* lookup-search.el (lookup-gaijis-cache-put): Updated.
+
+	* lookup-entry.el (lookup-entry-kill-ring-save-content): Fixed.
+
+1998-07-12  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.11a2 released.
+
+	* lookup-vars.el: Add new variables `lookup-default-agent-options'
+	and `lookup-default-dictionary-options'.
+	* lookup-types.el (lookup-agent-get-option,
+	lookup-dictionary-get-option): Use aboves.
+
+	* lookup-search.el (lookup-search-string-1): Rename the option
+	name `stem' to `stemmer'.  Change the stemming procedure.
+
+	* stem.el: New file this time....
+
+1998-07-12  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.11a1 released.
+
+	* lookup-search.el (lookup-search-string-1): New function.
+	(lookup-search-string): Use `lookup-search-string-1'.
+
+	* lookup-search.el (lookup-entry-search): Show message while looking.
+	(lookup-search-string): Show message what dictionary is used.
+
+	* stem.el: New file by Tsuchiya Masatoshi.
+
+1998-07-10  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vars.el: Add new variable `lookup-use-kakasi'.
+	* lookup-utils.el (lookup-current-word): Moded from `lookup.el'.
+	(lookup-current-word-general, lookup-current-word-ascii,
+	lookup-current-word-japanese): New functions.
+
+1998-06-25  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.6 released.
+
+	* lookup-utils.el: Fixed not to kill buffer when the process has
+	no buffer.  (Thanks to Mito!)
+
+1998-06-20  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.5 released.
+
+	* lookup-search.el (lookup-open-entry): Make the content window
+	full by default.
+
+	* lookup.el (lookup-close-buffer): More strictly.
+
+	* lookup-types.el (lookup-dictionary-command-possiblep): New function.
+
+	* lookup-content.el (lookup-content-leave): Goto the beginning of
+	buffer and select the Entry window.
+
+	* lookup-misc.el: Fixed a problem.
+	(Thanks to KORIYAMA Naohiro!)
+
+1998-06-18  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.4 released.
+
+	* lookup-entry.el (lookup-entry-isearch-content): New command.
+
+	* lookup-misc.el: Make select-mode practicable.
+
+	* lookup.el (lookup-current-module): New function.
+
+	* lookup-entry.el (lookup-entry-research-pattern,
+	lookup-entry-update): Use selected dictionaries.
+	(lookup-entry-mode): Set current-module as buffer local variable.
+
+	* lookup-content.el: Delete variable `lookup-content-history'.
+
+1998-06-17  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.3 released.
+
+1998-06-16  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndspell.el: Move the definition of target-reference from
+	`lookup-format.el'.
+
+	* ndeb.el, ndtp.el: Initialize in any time starting a process.
+
+	* ndspell.el (ndspell-get-process): Set process-coding-system.
+	(Thanks to ISHIKAWA Masahiro!)
+
+	* ndeb.el (ndeb-arrange-references): Fixed a missing.
+	(Thanks to Keisuke Mori!)
+
+1998-06-15  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.2 released.
+
+	* ndeb.el (ndeb-setup): Check eblook version and started before all.
+
+	* lookup-entry.el (lookup-entry-mode): Modify the value of variable
+	`mode-line-buffer-identification'.
+	* lookup-search.el (lookup-set-session): Updated.
+
+	* lookup-search.el (lookup-set-session): Get optional secondary
+	argument DISPLAY and redisplay iff it is non-nil.  Fixed some bugs.
+
+	* lookup-search.el (lookup-show-entries): New function replaced
+	with `lookup-entry-insert'.
+	* lookup-entry.el (lookup-entry-list-links): Updated.
+	* lookup-format.el (lookup-link-follow): Updated.
+
+	* lookup-search.el: Rename several functions:
+	(lookup-set-session): Renamed from `lookup-entry-set-session'.
+	(lookup-append-entries): Renamed from `lookup-entry-append-entries'.
+	(lookup-current-excursion): Renamed from `lookup-entry-current-excursion'.
+	(lookup-set-excursion): Renamed from `lookup-entry-set-excursion'.
+	Many files are updated.
+
+	* Delete file `lookup-access.el'.
+
+	* lookup-search.el: New file with search related functions
+	collected from `lookup-access.el', `lookup-entry.el' and
+	`lookup-content.el'.
+
+	* lookup-setup.el: New file with setup related functions collected
+	from `lookup-access.el' and `lookup-types.el'.
+
+1998-06-14  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9.1 released.
+
+	* lookup-types.el (lookup-entry-name): Modified to use the
+	dictionary ID for entry name.
+
+	* lookup-entry.el (lookup-entry-current-excursion,
+	lookup-entry-set-excursion): Fixed to set the window position
+	correctly.
+
+	* lookup-content.el (lookup-content-next-reference): Fixed to show
+	the reference name correctly.
+
+	* lookup-entry.el (lookup-entry-info): New commmand.
+	(lookup-entry-list-links): New command replaced with
+	`lookup-entry-list-references'.
+
+	* lookup-format.el: Add new reference type `link' replaced with
+	`lookup-determinant-reference' and `lookup-definitive-reference'
+	* ndic.el, ndeb.el, ndtp.el: Updated.
+
+	* lookup-misc.el: New file replaced with `lookup-select.el'.
+	This file provide `lookup-info-mode' and `lookup-select-mode'.
+
+	* lookup-utils.el (lookup-nunique): Add secondary argument PREDICATE.
+	* lookup-types.el (lookup-entry-compare, lookup-unique-entries):
+	New functions.
+	* ndtp.el, ndeb.el: Use `lookup-unique-entries' as filter function.
+
+1998-06-13  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9 released.
+
+	* ndeb.el: Make variable `ndeb-process-prompt' user customizable.
+
+	* ndtp.el (ndtp-dictionary-gaiji): Fixed an error.
+	(Thanks to yamagata@nwgpc.kek.jp!)
+
+1998-06-12  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-types.el: Modify the mechanism of plist of each data
+	types for debugging.
+	(lookup-new-plist): New function.
+
+	* ndeb.el (ndeb-require-set): Unset variable if secondary argument
+	VALUE is `nil'.
+	(ndeb-dictionary-stopcode): New function.
+	(ndeb-with-dictionary): Set `stop-code' when a dictionary is selected.
+
+1998-06-10  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9b14 released.
+
+	* lookup-mule.el, lookup-xemacs.el (lookup-gaiji-insert): Moved
+	from `lookup-types.el'.
+
+	* lookup-utils.el (lookup-process-require): Fixed a misfeature on
+	recursive call.
+
+	* lookup-access.el (lookup-search-string): Fixed a cache missing.
+
+1998-06-09  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-access.el (lookup-get-gaiji): Changed the alternate
+	string to "_" by default.
+
+	* lookup-types.el (lookup-gaiji-insert): Modified to insert gaijis
+	correctly.
+	* ndtp.el (ndtp-replace-gaijis): Modified.
+	* ndeb.el (ndeb-replace-gaijis): Modified.
+
+	* lookup-entry.el (lookup-entry-insert-entry): Fixed an error in
+	the case of gaiji-ended headword.
+
+	(Thanks to Yoshishige Arai and Takeshi Hagiwara!)
+
+1998-06-05  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* Version 0.9b13 released.
+
+	* lookup-entry.el (lookup-entry-kill-ring-save-content): Modified
+	to use `cite-header' and `cite-prefix' as dicitonary options.
+
+	* lookup-types.el: Rename the functions `lookup-agent-name' and
+	`lookup-agent-title' to `lookup-agent-id' and `lookup-agent-name'.
+
+	* lookup-types.el: Delete the function `lookup-dictionary-ref'.
+	(lookup-dictionary-get-option): Modified to refer to agent options
+	by default.
+
+1998-06-04  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndeb.el (ndeb-require-set): Modified to use `format' instead of
+	`concat'.
+
+	* lookup.el (lookup-mouse-follow-reference): Modified to use
+	`mouse-set-point'.
+
+	* lookup-entry.el, lookup-content.el (lookup-*-map): Fixed for XEmacs.
+
+	(Thanks to IKEYAMA Tomonori!)
+
+1998-06-02  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndtp.el (ndtp-require-search): Fixed to check the result strictly.
+	(Thanks to yamagata@nwgpc.kek.jp!)
+
+1998-05-31  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-types.el: Renamed the entry "heading" to "headword".
+	Many files are updated.
+
+	* lookup-types.el: Rename variable `lookup-string-search-methods'
+	to `lookup-word-search-methods'.
+
+	* lookup.el (lookup-initial-setup): Modified to set default value
+	of varables `lookup-enable-buffer-cache' and
+	`lookup-enable-process-buffer'.
+
+1998-05-30  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-package.el (lookup-use-package): Modified to use
+	"main.el" as the main file of packages.
+
+	* lookup-types.el (lookup-parse-pattern): Modified to check
+	pattern of `match exact'.
+
+	* lookup-entry.el (lookup-entry-kill-ring-save-content): Modified
+	to use agent options `cite-header' and `cite-prefix'.
+
+1998-05-29  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndtp.el (ndtp-agent-account): New function.
+	(ndtp-setup): Modified to use ndtp-agent-account.
+
+1998-05-27  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-types.el: Modify the mechanism of initializing module.
+	(lookup-new-module): New function.
+	* lookup-access.el (lookup-new-agent): New function.
+	* lookup.el (lookup-initial-setup): Updated.
+
+	* lookup-access.el (lookup-agent-select-dictionaries): Modified to
+	select dictionaries according to agent options `select' and `unselect'.
+	(lookup-agent-init): Fixted to get options correctly.
+
+1998-05-25  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup.el (lookup-input-dictionary, lookup-current-prefix):
+	Delete functions.
+
+	* lookup-compile.el: Renamed from lookup-compile.el.in.
+
+1998-05-23  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-entry.el (lookup-entry-search): Fixed to show error
+	message with original input pattern.
+
+1998-05-22  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* ndic.el: New agent.
+	* ndkks.el: Delete file.
+
+1998-05-18  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vars.el: Add new variables `lookup-save-configuration',
+	`lookup-window-configuration'.
+	* lookup.el (lookup-entry-pop-up): Modified to save window
+	configuration.
+	* lookup-entry.el (lookup-entry-quit): Modified to restore window
+	configuration.
+
+1998-05-17  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-types.el (lookup-make-gaiji-table,
+	lookup-gaiji-table-ref): New functions.
+
+	* lookup-entry.el (lookup-entry-next-entry,
+	lookup-entry-previous-entry): Fixed an problem.
+
+1998-05-16  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vars.el: Add new variables `lookup-debug-mode',
+	`lookup-enable-buffer-cache' and `lookup-enable-process-buffer'.
+	* lookup-access.el (lookup-contents-cache-put): Updated.
+	* ndtp.el, ndict.el, ndeb.el, ndkks.el, ndspell.el: Updated.
+
+	* lookup-utils.el (lookup-process-require): Modified to generate
+	temporary buffer when process has no buffer, and to set process
+	filter directory.
+	* ndtp.el, ndict.el, ndeb.el, ndkks.el, ndspell.el: Updated.
+
+	* lookup-utils.el: Rename variable `lookup-process-output-finish'
+	to `lookup-process-output-finished'.
+	(lookup-process-require, lookup-process-accept): Updated.
+
+	* ndtp.el (ndtp-with-agent): Renamed from `ndtp-with-agent-process'.
+	* ndeb.el (ndeb-with-agent): Renamed from `ndeb-with-agent-process'.
+
+1998-05-14  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup-vars.el: Delete variable
+	`lookup-initial-selected-dictionaries'.
+	* lookup-access.el (lookup-agent-select-dictionaries): Updated.
+
+1998-05-12  NISHIDA Keisuke  <knishida@nn.iij4u.or.jp>
+
+	* lookup.el (lookup-input-pattern): Modified not to get secondary arg.
+
+1998-05-01  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* ndtp.el: Modified to insert gaiji with NDTPD-2.x.
+	(ndtp-dictionary-gaiji): New function.
+
+	* ndeb.el (ndeb-require-font): Fixed to get a font correctly.
+
+1998-04-30  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup-utils.el (lookup-process-wait): Delete function.
+
+	* lookup-entry.el (lookup-entry-open): New command.
+
+	* lookup.el (lookup-follow-reference): Fixed a bug setting refered
+	face even when a reference has no face.
+
+1998-04-29  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* ndict.el, ndnmz.el: New agents.
+	* ndinfo.el: Delete file.
+
+1998-04-27  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup-access.el (lookup-get-gaiji): Renamed from
+	lookup-insert-gaiji.
+	* lookup-types.el (lookup-gaiji-insert): New function.
+
+1998-04-26  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* ndbook-common.el: Delete file.
+	* ndtp.el, ndeb.el: Rewriten.
+
+	* lookup-entry.el: Modified some keybindings for entry mode.
+	(lookup-entry-research-pattern): Ranamed from
+	`lookup-entry-lookup-pattern'.
+	(lookup-entry-list-references): New command.
+
+	* lookup-types.el: Rewriten all over the data types.
+	(lookup-check-type): New function.
+
+1998-04-09  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup-vars.el: Add new variable `lookup-proceeding-message'.
+	* lookup.el (lookup-proceeding-message): New function.
+	* lookup-access.el (lookup-search-string, lookup-agent-setup,
+	lookup-insert-content): Modified to use lookup-proceeding-message.
+	* lookup-format.el (lookup-arrange-content, lookup-adjust-content,
+	lookup-format): Updated.
+	* ndtp.el, ndeb.el, ndinfo.el, ndcookie.el, ndkks.el, ndspell.el:
+	Updated.
+
+1998-04-05  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup.el (lookup-goto-next-reference): Modified not to show message.
+	(lookup-goto-previous-reference): New function.
+	* lookup-content.el (lookup-content-next-reference): Updated.
+	* lookup-entry.el (lookup-entry-next-entry,
+	lookup-entry-previous-entry): Updated.
+
+	* lookup.el (lookup-process-require, lookup-process-accept,
+	lookup-process-wait, lookup-process-kill): Moved to lookup-utils.el.
+
+1998-04-04  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup-types.el (lookup-canonicate-pattern): Merged to
+	`lookup-parse-pattern'.
+
+	* lookup-entry.el (lookup-entry-search, lookup-entry-set-session,
+	lookup-entry-append-entries): Modified to show entries dynamically.
+
+1998-04-03  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup-vars.el: Add new variable `lookup-enable-cache'.
+	* lookup-access.el: (lookup-search-string, lookup-insert-content,
+	lookup-insert-gaiji): Modified to use `lookup-enable-cache' to
+	force update.
+	* lookup-content.el, lookup-entry.el: Updated.
+
+1998-04-02  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup-vars.el: Add new variables `lookup-entry-cite-header' and
+	`lookup-entry-cite-prefix'.
+	* lookup-entry.el (lookup-entry-kill-ring-save-content): Modified
+	to save content with the cite header and prefix if necessary.
+
+1998-03-20  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup-vars.el: New variable `lookup-enable-description'.
+	* lookup-types.el (lookup-entry-description,
+	lookup-entry-set-description): New functions.
+	* lookup-entry.el (lookup-entry-insert-entry): Modified to insert
+	the short description of entry.
+
+	* lookup-types.el: (lookup-entry-refered-p): Fixed to check
+	refered correctly.
+
+1998-03-16  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup-vars.el (lookup-max-text): New varialbe.
+	(lookup-max-hits): Renamed from `lookup-entry-max-hits'.
+	* ndeb.el (ndeb-setup): Updated.
+
+	* lookup-vars.el: Delete variable `lookup-enable-gaiji'.
+	* lookup-access.el (lookup-insert-gaiji): Updated.
+
+1998-03-16  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* Version 0.8.5 released.
+
+1998-03-15  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* Makefile.am: Modified to make tags file.
+
+	* lookup-compile.el.in: Modified to load optional packages before
+	compile.
+
+	* lookup.el (lookup-initial-setup): New function.
+	* lookup-vars.el: Modified to initialize variable
+	`lookup-gaiji-insert-function' in lookup-initial-setup.
+	* lookup-vars.el: Make variable `lookup-gaiji-insert-function'
+	internal.
+
+	* lookup-types.el: Renamed the search words of `forward' or
+	`backward' to `prefix' or `suffix'.
+	* ndspell.el, ndtp.el, ndeb.el: Updated.
+
+	* lookup-entry.el
+	(lookup-entry-set-session): Modified to save excursion.
+	(lookup-entry-current-excursion, lookup-entry-set-excursion):
+	New functions.
+
+	* lookup-types.el: Modified the structure of `session' type.
+	* lookup-entry.el, lookup-format.el: Updated.
+
+	* lookup-types.el (lookup-parse-pattern): Modified to canonicate
+	pattern before parsing.
+	* lookup.el (lookup-pattern): Updated.
+
+1998-03-14  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup-mule.el: Define autoload for bitmap package.
+
+	* lookup-entry.el (lookup-entry-next-entry):
+	Recenter on the top or bottom line of entry window.
+
+	* lookup-types.el: Modified the structure of `dictionary' type.
+	* ndtp.el, ndeb.el, ndebook-common.el, ndcookie.el, ndspell.el,
+	ndkks.el: Updated.
+
+	* lookup-entry.el (lookup-entry-search):
+	* lookup-types.el (lookup-parse-pattern):
+	Modified not to search when input string is empty.
+
+	* lookup-vars.el (lookup-gaiji-compose-function): Modified to
+	check the features of `lookup-xemacs' or `lookup-mule'.
+
+1998-03-13  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* lookup-mule.el, lookup-xemacs.el, lookup-vars.el: Set variables
+	`lookup-gaiji-compose-function' and `lookup-gaiji-insert-function'
+	only in lookup-vars.el and fixed loading of bitmap.
+
+1998-03-09  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* Version 0.8.4 released.
+
+	* lookup-access.el (lookup-insert-gaiji): Fixed again....
+
+1998-03-08  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* Version 0.8.3 released.
+
+	* lookup-access.el, ndebook-common.el: Fixed an error when no
+	gaiji replacement object exists.
+
+	* lookup-compile.el.in: Integrate `command-line-args-left' within
+	lookup-compile.el.in instead of in evi.el.
+
+1998-03-08  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* Version 0.8.2 released.
+
+1998-03-07  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* evi.el, evi-mule.el, evi-xemacs.el: New files.
+	* lookup-defs.el, lookup-mule.el: Modified to use `evi'.
+	* ndeb.el, ndtp.el, ndkks.el (*-process-coding-system):
+	Modified to use `lookup-get-coding-system'.
+
+	* lookup.el (lookup-exit): Fixed to clear module
+	`lookup-search-module' instead of `lookup-current-module'.
+
+	* lookup-compile.el is replaced with lookup-compile.el.in.
+	* Makefile.am: Updated.
+
+1998-03-06  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* Version 0.8.1 released.
+
+	* Makefile.am: Removed the definition of lispdir since it will be
+	set suitably by configure program.
+
+1998-03-05  NISHIDA Keisuke  <knishida@osk.3web.ne.jp>
+
+	* Version 0.8 released.
+

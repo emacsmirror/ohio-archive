@@ -1,0 +1,170 @@
+<HTML>
+<HEAD>
+<TITLE>Phit: Available functions</TITLE>
+</HEAD>
+<BODY>
+<A HREF="phit-3.html">Previous</A>
+<A HREF="phit-5.html">Next</A>
+<A HREF="phit.html#toc4">Table of Contents</A>
+<HR>
+<H2><A NAME="s4">4. Available functions</A></H2>
+
+<P><SF>Phit</SF> recognizes many arithmetic operations, trigonometric
+functions, and other special line shapes and functions.  See the next
+chapter for hints on how to use these forms in constructing math
+expressions.  </P>
+
+<H2><A NAME="ss4.1">4.1 List of Functions</A></H2>
+
+<P>
+<UL>
+<LI> Unary arithmetic operators + and - </LI>
+<LI> Binary arithmetic operators +, -, *, /, **, and  &circ;.  ** and
+&circ; are equivalent and indicate exponentiation.  </LI>
+<LI> Functions of a single argument:
+<OL>
+<LI> <B>abs(x)</B> -- absolute value of x</LI>
+<LI> <B>neg(x)</B> -- negation (parity change) of x</LI>
+<LI> <B>sqrt(x)</B> -- square root of x</LI>
+<LI> <B>exp(x)</B> -- natural exponent of x, e&circ;x where e = 2.71828182845904523536... </LI>
+<LI> <B>ln(x)</B> -- natural log (log base e) of x</LI>
+<LI> <B>log10(x)</B> -- log base 10 of x</LI>
+<LI> <B>sin(x)</B> -- sine of x, argument in radians</LI>
+<LI> <B>cos(x)</B> -- cosine of x, argument in radians</LI>
+<LI> <B>tan(x)</B> -- tangent of x, argument in radians</LI>
+<LI> <B>cot(x)</B> -- cotangent of x, argument in radians</LI>
+<LI> <B>sec(x)</B> -- secant of x, argument in radians</LI>
+<LI> <B>csc(x)</B> -- cosecant of x, argument in radians</LI>
+<LI> <B>asin(x)</B> -- arcsine (inverse sine) of x in radians</LI>
+<LI> <B>acos(x)</B> -- arccosine (inverse cosine) of x in radians</LI>
+<LI> <B>atan(x)</B> -- arctangent (inverse tangent) of x
+in radians </LI>
+<LI> <B>sinh(x)</B> -- hyperbolic sine of x</LI>
+<LI> <B>cosh(x)</B> -- hyperbolic cosine of x</LI>
+<LI> <B>tanh(x)</B> -- hyperbolic tangent of x</LI>
+<LI> <B>coth(x)</B> -- hyperbolic cotangent of x</LI>
+<LI> <B>sech(x)</B> -- hyperbolic secant of x</LI>
+<LI> <B>csch(x)</B> -- hyperbolic cosecant of x</LI>
+<LI> <B>int(x)</B> -- integer part of a floating point number</LI>
+<LI> <B>nint(x)</B> -- nearest integer to a floating point number</LI>
+</OL>
+ </LI>
+<LI> Special functions of multiple arguments
+<OL>
+<LI> <B>step(x, x0)</B> -- returns 0 if x&lt;x0, 1 if x&gt;x0</LI>
+<LI> <B>gauss(x, x0, w)</B> -- Gaussian function = 
+exp( -((x-x0)/w)&circ;2 ) / sqrt(pi), x0 is
+the peak position of the Gaussian, w is the width.  This
+Gaussian is normalized to unit area.</LI>
+<LI> <B>lor(x, x0, w)</B> -- Lorentzian function = 
+0.5 / ( ((x-x0)/w)&circ;2 + 1 ), x0 is
+the peak position of the Lorentzian, w is the width.  This
+Lorentzian is normalized to unit area.</LI>
+<LI> <B>eins(t, theta, rmass)</B> -- Einstein formula 
+for mean square
+displacement of a bond, t is the temperature, theta is the Einstein
+temperature, and rmass is the reduced mass of the atom pair in
+atomic units. </LI>
+<LI> <B>min(x1,x2)</B> -- returns the smaller of x1 and x2</LI>
+<LI> <B>max(x1,x2)</B> -- returns the larger of x1 and x2</LI>
+<LI> <B>peak(lambda,h,k,l,a,b,c,alpha,beta,gamma)</B> --
+returns the position of a diffraction peak in degrees.</LI>
+</OL>
+ </LI>
+<LI> Special constants
+<OL>
+<LI> <B>pi</B> -- 3.14159265358979323844...</LI>
+</OL>
+</LI>
+</UL>
+</P>
+
+
+<H2><A NAME="ss4.2">4.2 Rules for Using Functions</A></H2>
+
+<P>Arguments to functions must be enclosed by parentheses.  For instance
+<CODE>cos(pi)</CODE> evaluates to <CODE>1</CODE>. </P>
+<P>Arguments to trigonometric functions must be in radians.  Use set
+values to convert between degrees and radian, if desired.  Here is an
+example of varying an angle in degrees and calculating the function
+in radians: 
+<BLOCKQUOTE><CODE>
+<PRE>
+        guess           alphad  0
+        set             alpha   alphad * pi / 180
+        function        1       tan(alpha)
+</PRE>
+</CODE></BLOCKQUOTE>
+ </P>
+<P>Some of these function have singular values. Be <B>very careful</B>
+when using singular functions in a fit.  There is no problem using
+these functions in your fitting model so long as the singular point is
+not included in your fit.  The residual at this point will be so much
+larger than any other in the fit, that the minimization will be
+ill-posed.  If the singular point is excluded either by judicious
+choice of input grid or by excluding data from the fit by using the
+<CODE>x1 - x10</CODE> keywords, then the fit should be well behaved. </P>
+<P>Functions with singular or undefined values for certain values of the
+argument are error checked before evaluating to avoid run-time errors.
+For example, <CODE>ln(-1)</CODE> will return 0, <CODE>atan(0)</CODE> will
+return 10&circ;40, and so on.  The program will therefore not crash if a
+function is poorly used in a fitting model.  The quality of the fit,
+however, should be quite poor. </P>
+<P>Int and nint might be troublesome functions in the fit, since changes
+in the argument can produce absolutely no change in the evaluation of
+the function.  They are included for completeness -- use them with
+caution.  Note that <CODE>int(3.7) = 3</CODE> and <CODE>nint(3.7) = 4</CODE>.  
+Also, <CODE>int(2)</CODE> might return 1 if your computer
+represents the floating point value of 2 as, for instance, 1.99999837,
+which is a valid representation. </P>
+<P>The commas in the argument lists to the special functions of multiple
+arguments are necessary.  In my experience, a reasonably good first
+guess for the peak positions of the Gaussian and Lorentzian functions
+is necessary for a well-posed fitting problem. </P>
+<P>The temperatures in the Einstein function are in Kelvin and the
+reduced mass is in atomic units.  Here is a good way to specify the
+reduced mass:
+<BLOCKQUOTE><CODE>
+<PRE>
+        set     r_cu    63.546
+        set     r_ba    137.33
+        set     rmass   1 / ( 1/r_cu + 1/r_ba )
+</PRE>
+</CODE></BLOCKQUOTE>
+ </P>
+<P>At present, <CODE>pi</CODE> is the only recognized special constant. </P>
+
+
+
+<H2><A NAME="ss4.3">4.3 The Peak Function.</A></H2>
+
+<P>This is a function of ten arguments (!) that returns the position of a
+diffraction peak in two-theta and in degrees.  The arguments are the
+x-ray wavelength, the Miller indices, the cell axis lengths, and the
+cell angles.  The wavelength and axis lengths must be in consistent
+units.  That is, all four must be in angstroms or in nanometers or
+whatever.  The function will behave identically for different units,
+so long as they are consistent.  The cell angles are in degrees.
+Fractions of degrees should be specified as decimals rather than
+minutes and seconds of arc.  All ten arguments must be specified.  The
+value for the angle that is returned is the angle of the two-theta
+circle.   </P>
+<P>This function only is used for peak position, which is dependent only
+on the geometry of the unit cell of a crystal.  It is derived from
+Bragg's law and uses the formulas for interplanar spacing and cell
+volume in a triclinic cell.  This should be well described in any
+introductory crystallography text book.  <SF>Phit</SF> presently has
+no specific capability for computing crystallographic amplitude and
+width.  A Gaussian or a Lorentzian (or some linear combination of the
+two) centered at the position found by the peak function is a
+reasonable approximation of the shape of a diffraction peak. </P>
+
+
+
+
+<HR>
+<A HREF="phit-3.html">Previous</A>
+<A HREF="phit-5.html">Next</A>
+<A HREF="phit.html#toc4">Table of Contents</A>
+</BODY>
+</HTML>

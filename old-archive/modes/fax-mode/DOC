@@ -1,0 +1,622 @@
+Variable: phone-number-international-prefix
+*Phone number prefix for placing an international call.
+This is "00" for many countries but there are exceptions of the rule.
+See the documentation of the `phone-number-dial-string' function for a
+list of known prefixes.
+
+
+Variable: phone-number-international-wait
+*A character sequence waiting for the dial tone, "W" for most modems.
+See the documentation of the `phone-number-dial-string' function for a
+list of countries where this have to be set.
+
+
+Variable: phone-number-long-distance-prefix
+*Phone number prefix for placing a long distance call.
+Many countries are using "0" for this purpose.
+
+
+Variable: phone-number-line-prefix
+*Phone number prefix for getting the line.
+Set this to a character sequence like ">W", "0W" or "0," if your
+modem is not connected to a direct telephone line.  Check your modem
+manual for the correct command for getting the line.
+
+
+Variable: phone-number-country-code
+*Phone number country code of your state.
+Neither put the international phone number prefix nor any extra plus
+sign characters in front of the country code!
+
+
+Variable: phone-number-area-code
+*Phone number area prefix of your site.
+Omit the long distance prefix from this variable -- set it with the
+`phone-number-long-distance-prefix'.
+
+
+Function: phone-number-dial-string
+Translate STRING to a phone number suitable for the modem.
+Inserts the translated phone number at point if called interactively.
+The following table lists the codes known so far:
+
+     Country       | Country |  Intern.  | Long dist.
+                   |  code   |  prefix   |   prefix
+     --------------+---------+-----------+-----------
+     Austria       | AT   43 |  00       |     ?
+     Belgium       | BE   32 |  00  wait |     ?
+     Switzerland   | CH   41 |  00       |     0
+     Germany       | DE   49 |  00       |     0
+     Denmark       | DK   45 | 009       |     ?
+     Spain         | ES   34 |  07  wait |     ?
+     France        | FR   33 |  19  wait |     ?
+     Great Britain | GB   44 | 010       |     ?
+     Italy         | IT   39 |  00       |     ?
+     Luxembourg    | LU  352 |  00       |     ?
+     Netherlands   | NL   31 |  09  wait |     ?
+     Norway        | NO   47 | 095       |     ?
+     Sweden        | SE   46 | 009       |     ?
+     USA           | US    1 | 011       |     ?
+
+     ?  Value is unknown.
+
+
+Variable: fax-resource-file-name
+*Name of file for setting resources like fax aliases.
+See the documentation of the `fax-read-resource-file' function for a
+description of the file format.
+
+
+Function: fax-read-resource-file
+Read a fax resource file.
+FILE-NAME defaults to `fax-resource-file-name' (which points normally to
+`~/.faxrc').  Only fax aliases of the form
+
+    alias NAME VALUE
+
+will be evaluated -- the other file contents is ignored.  The alias keyword
+defines NAME as an alias for VALUE.  VALUE can be either the final phone
+number or another alias.  Multiple numbers have to be separated by commas.
+VALUE will be treated as a shell command if the first character of VALUE is
+a vertical bar.  Newlines in the shell command output will be substituted
+with commas.
+
+
+Variable: fax-aliases
+*Alist of phone number aliases,
+List members are cons cells of the form
+
+    (NAME . VALUE)
+
+where NAME is the fax alias for VALUE.
+
+
+Function: fax-define-fax-alias
+Define NAME as a fax alias for VALUE.
+VALUE can be either the final phone number or another alias.  Multiple
+numbers have to be separated by commas.  VALUE will be executed in an
+inferior shell if the first character of VALUE is a vertical bar.  The
+output of the shell command replaces the old contents of VALUE (newline
+characters are substituted by commas).
+
+
+Function: fax-number
+Insert the fully resolved fax phone number of ALIAS at point.
+Multiple numbers will be separated by ", ".  Prefix argument means
+do not recursively resolve phone number aliases.
+
+
+Function: fax-simple-number
+Insert the fax phone number of ALIAS at point.
+Multiple numbers will be separated by ", ".  Prefix argument means
+recursively expand phone number aliases.
+
+
+Function: fax-file-name
+Read a file name from the mini-buffer and insert it at point.
+
+
+Variable: fax-view-program
+*Program used to view facsimile messages; defaults to "viewfax".
+
+
+Variable: fax-view-switches
+*List of extra arguments when `fax-view-program' is invoked.
+
+
+Function: fax-view-file
+View FILES by calling `fax-view-program'.
+FILES is either a single file name (a string) or a list of file names.
+
+
+Variable: fax-print-program
+*Program used to print facsimile messages; defaults to "printfax".
+
+
+Variable: fax-print-switches
+*List of extra arguments when `fax-print-program' is invoked.
+
+
+Function: fax-print-file
+Print FILES by calling `fax-print-program'.
+FILES is either a single file name (a string) or a list of file names.
+
+
+Variable: sendfax-package
+*A string describing your fax sub-system.
+Here's a table of known fax packages:
+
+    Package | Description
+    --------+--------------------------------------------------------
+    mgetty  | The mgetty+sendfax package by Gert Doering
+            | <gert@greenie.muc.de>.
+            |
+    faxpr   | A front-end for mgetty+sendfax with networking support
+            | by Ralph Schleicher <rs@purple.in-ulm.de>.
+            |
+    hylafax | The HylaFAX package by Sam Leffler <sam@sgi.com>.  This
+            | is the right thing if you send lots of fax messages.
+
+
+Variable: sendfax-program
+*Program used to send facsimile messages.
+Defaults to "faxspool" for the mgetty+sendfax package, "faxpr" for the
+FAXpr package and "sendfax" in any other case.
+
+
+Variable: sendfax-switches
+*List of extra arguments when `sendfax-program' is invoked.
+
+
+Variable: sendfax-number-switch
+*Option string specifying a phone number.
+The sendfax(1) program coming with HylaFAX, for example, uses `-d'.
+
+
+Variable: sendfax-file-switch
+*Option string specifying an extra file name.
+Normally, the last arguments to `sendfax-program' are the file names to be
+sent.  Setting `sendfax-file-switch' forces file attachments to be specified
+via this option.
+
+
+Function: sendfax-configure
+Configure a known fax package.
+
+
+Variable: sendfax-interactive
+*Non-`nil' means wait for and display errors when sending a fax message.
+
+
+Variable: sendfax-novice-user
+*Non-`nil' means that the user is a novice to the fax sub-system.
+This requires the users confirmation before doing something that couldn't
+be canceled easily.
+
+
+Variable: sendfax-write-region-hooks
+*Functions to be called before the region is written to a file.
+Automatically becomes buffer-local when set in any fashion.
+
+
+Variable: sendfax-write-region-function
+*The function for writing a region to a file, defaults to `write-region'.
+`sendfax-write-region-function' will be called with three arguments: START,
+END and FILE-NAME.  START and END are buffer positions.
+Automatically becomes buffer-local when set in any fashion.
+
+
+Variable: sendfax-format
+*The text format (a string) of the fax message to be sent.
+See the `sendfax-formats' variable for a more detailed description of what
+that means.
+Automatically becomes buffer-local when set in any fashion.
+
+
+Variable: sendfax-formats
+*Alist of text format customization routines.
+List members are cons cells of the form
+
+    (FORMAT . FUNCTIONS)
+
+which will run FUNCTIONS to customize FORMAT.  Setting the buffer-local
+variables `sendfax-write-region-hooks' and `sendfax-write-region-function'
+to new values should do it in most cases.
+
+
+Function: sendfax-change-format
+Set the buffer-local fax sending format to FORMAT.
+FORMAT must be a member of `sendfax-formats'.
+
+
+Function: sendfax-buffer
+Pass the current buffer to the fax sub-system.
+Don't call this function from a program, use `sendfax' instead.
+
+
+Function: sendfax-region
+Pass the current region to the fax sub-system.
+Don't call this function from a program, use `sendfax' instead.
+
+
+Variable: fax-default-headers
+*A string containing header lines, to be inserted in outgoing messages.
+It is inserted before you edit the message, so you can modify or delete
+these lines.
+
+
+Variable: fax-archive-file-name
+*Name of file to write all outgoing fax messages in or `nil' for none.
+
+
+Variable: fax-header-separator
+*Line separating headers from text in a fax message being composed.
+
+
+Function: fax-mode
+Major mode for editing fax messages to be sent.
+Like text mode but with these additional commands:
+C-c C-s  fax-send (send message)
+C-c C-c  fax-send-and-exit
+C-c C-f  move to a header field (and create it if there is none):
+         C-c C-f C-t  fax-move-to-to-field (move to `To:')
+         C-c C-f C-c  fax-move-to-cc-field (move to `CC:')
+         C-c C-f C-f  fax-move-to-fcc-field (move to `FCC:')
+         C-c C-f C-a  fax-move-to-attach-field (move to `Attach:')
+C-c C-t  fax-move-to-text (move to beginning of message text)
+C-c n    fax-number (ask for and insert a phone number at point)
+C-c f    fax-file-name (ask for and insert a file name at point)
+C-c a    snail-address (ask for and insert a paper mail address at point)
+
+
+Function: fax-move-to-to-field
+Move point to the end of the To header field.
+
+
+Function: fax-move-to-cc-field
+Move point to the end of the CC header field.
+`fax-cc' creates a CC field if none exists.
+
+
+Function: fax-move-to-fcc-field
+Move point to the end of the FCC header field.
+`fax-fcc' creates a FCC field if none exists.
+
+
+Function: fax-move-to-attach-field
+Move point to the end of the Attach header field.
+`fax-attach' creates an Attach field if none exists.
+
+
+Function: fax-move-to-text
+Move point to the beginning of the message text.
+
+
+Function: fax-send
+Send the fax message in the current buffer.
+If `fax-interactive' is non-`nil', wait for success indication and inform
+the user if an error occurs.
+
+
+Function: fax-send-and-exit
+Send the fax message like `fax-send' and exit from the fax buffer.
+
+
+Variable: fax-from
+*Text inserted in the upper left corner of a fax message being composed.
+`fax-from' is either a string or a list of strings and symbols or lambda
+expressions evaluating to strings.  Any other non-`nil' value means read
+the sender's address line-by-line from the mini-buffer.
+
+
+Variable: fax-date
+*Text inserted in the upper right corner of a fax message being composed.
+`fax-date' is either a string or a list of strings and symbols or lambda
+expressions evaluating to strings.  Any other non-`nil' value means read
+the text line-by-line from the mini-buffer.
+
+
+Variable: fax-to
+*Text inserted below `fax-from' of a fax message being composed.
+`fax-to' is either a string or a list of strings and symbols or lambda
+expressions evaluating to strings.  Any other non-`nil' value means read
+the addressee's address line-by-line from the mini-buffer.
+
+
+Variable: fax-subject
+*Subject text (a string) of a fax message being composed.
+Any other non-`nil' value means read the subject text from the mini-buffer.
+
+
+Variable: fax-from-face
+*Face properties for `fax-from'.
+
+
+Variable: fax-date-face
+*Face properties for `fax-date'.
+
+
+Variable: fax-to-face
+*Face properties for `fax-to'.
+
+
+Variable: fax-subject-face
+*Face properties for `fax-subject'.
+
+
+Variable: fax-to-gap
+*Number of blank lines between the sender's and addressee's address.
+
+
+Variable: fax-subject-gap
+*Number of blank lines before the subject.
+
+
+Variable: fax-body-gap
+*Number of blank lines before the fax body.
+
+
+Function: fax
+Edit a fax message to be sent.  Prefix argument means resume editing.
+When this function returns, the buffer `*fax*' is selected.  The value
+is `t' if the message was newly initialized, else `nil'.
+
+If `fax-archive-file-name' is non-`nil', a FCC field with that file name is
+inserted.
+
+The contents of `fax-from' is inserted in the upper left corner of the fax
+message.  If `fax-from' is `t', the sender's address will be read line-by-
+line from the mini-buffer.  The face property of the inserted text will be
+set to `fax-from-face' if `fax-from-face' is non-`nil'.
+
+`fax-date' is inserted in the upper right corner of the fax message and
+`fax-to' is inserted below `fax-from' if those variables are non-`nil'.
+If `fax-subject' is non-`nil', it is inserted below `fax-to' and filled
+as a paragraph.  The faces of these text blocks will be set to the values
+of `fax-date-face', `fax-to-face' and `fax-subject-face'.
+
+Empty lines are inserted between `fax-from', `fax-to', `fax-subject' and the
+fax body according to `fax-to-gap', `fax-subject-gap' and `fax-body-gap'.
+
+Special commands:
+
+key             binding
+---             -------
+
+menu-bar        Prefix Command
+C-c             Prefix Command
+TAB             tab-to-tab-stop
+ESC             Prefix Command
+
+C-c a           snail-address
+C-c f           fax-file-name
+C-c n           fax-number
+C-c C-c         fax-send-and-exit
+C-c C-s         fax-send
+C-c C-t         fax-move-to-text
+C-c C-f         Prefix Command
+
+C-c C-f         Prefix Command
+
+ESC S           center-paragraph
+ESC s           center-line
+ESC TAB         ispell-complete-word
+
+C-c C-f C-a     fax-move-to-attach-field
+C-c C-f C-f     fax-move-to-fcc-field
+C-c C-f C-c     fax-move-to-cc-field
+C-c C-f C-t     fax-move-to-to-field
+
+
+The format of the fax message text can be set in a Format header field (the
+last field counts) which overrides the value of `sendfax-format'.  The field
+value must be a known text format identifier.
+
+Additional command line options for sending the fax message can be specified
+in one or more Options header fields.  They are appended to `sendfax-switches'
+without modifying the global value of `sendfax-switches'.  Please note that
+options containing spaces have to be quoted with double quotes.
+
+Destinating phone numbers can be specified in one or more To and CC header
+fields.  Multiple phone numbers in such a header field have to be separated
+by commas.  There must be at least one valid phone number before a fax can
+be sent.
+
+Files which should be attached to the fax message are specified in one or
+more Attach header fields.  Multiple file names in a header field have to
+be separated by commas.
+
+
+Function: fax-other-window
+Like `fax', but display the `*fax*' buffer in another window.
+
+
+Function: fax-other-frame
+Like `fax', but display the `*fax*' buffer in another frame.
+
+
+Variable: texfax-preamble
+*Text inserted at the beginning of the TeX buffer.
+`texfax-preamble' should end in a newline.
+
+
+Variable: texfax-postamble
+*Text inserted at the end of the TeX buffer.
+`texfax-postamble' should end in a newline.
+
+
+Variable: texfax-prefix
+*Text inserted before a piece of literal text.
+`texfax-prefix' should end in a newline.
+
+
+Variable: texfax-postfix
+*Text inserted after a piece of literal text.
+`texfax-postfix' should end in a newline.
+
+
+Variable: texfax-table
+*List of cons cells of the form
+
+    (SEARCH-STRING . REPLACEMENT-TEXT)
+
+which will be applied to each piece of literal text.
+
+
+Variable: texfax-tex-program
+*TeX program name, defaults to "tex".
+
+
+Variable: texfax-tex-switches
+*Extra arguments when `texfax-tex-program' is invoked.
+
+
+Variable: texfax-dvips-program
+*DVIPS program name, defaults to "dvips".
+
+
+Variable: texfax-dvips-switches
+*Extra arguments when `texfax-dvips-program' is invoked.
+
+
+Function: texfax-write-region
+Generate a TeX input file from the region between START and END,
+process it with TeX and DVIPS and leave the PostScript output in FILE-NAME.
+Intangible text will be treated as literal TeX input while the rest of the
+text will be grouped between `texfax-prefix' and `texfax-postfix'.
+
+
+Variable: texfax-tex-face
+*Face to use for literal TeX input.
+
+
+Function: texfax-add-tex-properties
+Mark the region as TeX input by adding the appropriate text properties.
+
+
+Function: texfax-remove-tex-properties
+Remove those text properties from the region which mark it as TeX input.
+
+
+Function: faxed-mode
+Faxed mode is a minor mode for Dired.
+It redefines some keys so that the user can, for example, view a fax message
+by simply pressing `v'.
+Optional prefix argument unconditionally turns on Faxed mode if the argument
+is greater than zero, otherwise turn Faxed mode off.  No prefix argument at
+all toggles Faxed mode.
+
+
+Variable: faxed-page-extension-regexp
+*Regular expression matching the file name extension of a fax page.
+Some fax receiving programs save each fax page in a single file.  This
+regular expression will be added to the basename of a file name to find
+all pages of a fax message.
+
+
+Function: faxed-view-file
+View the current file.
+
+
+Function: faxed-view-marked-files
+View the marked files.
+
+
+Function: faxed-view-pages
+View all files with the same basename as the current file.
+
+
+Function: faxed-print-file
+Print the current file.
+
+
+Function: faxed-print-marked-files
+Print the marked files.
+
+
+Function: faxed-print-pages
+Print all files with the same basename as the current file.
+
+
+Variable: faxed-default-directory
+*The default directory to be inserted when calling `faxed'.
+`faxed-default-directory' should point to the user's fax incoming directory.
+
+
+Variable: faxed-listing-switches
+*Switches passed to `ls' for Dired.
+
+
+Function: faxed
+Run Dired on directory DIRECTORY with turned on Faxed mode.
+
+
+Variable: snail-database-file-name
+*Name of the default address database file.
+
+
+Variable: snail-define-mail-alias
+*Automatically define a mail alias if there is an e-mail address
+in the record.
+
+
+Variable: snail-define-fax-alias
+*Automatically define a fax alias if there is a fax phone number
+in the record.
+
+
+Variable: snail-read-database-file-function
+*Function for reading an address database file;
+defaults to `snail-default-read-database-file-function'.
+`snail-read-database-file-function' takes one argument -- the file name
+of the database file to be read.
+
+
+Variable: snail-read-database-file-function-record-hooks
+*List of actions which may be run by `snail-read-database-file-function'
+after a record had been parsed.  The symbols `label', `organization',
+`department', `occupation', `address', `title', `first-name', `family-name',
+`street', `zip-code', `location', `country', `phone', `fax', `e-mail',
+`birthday' and `comment' are bound to the corresponding field values.
+
+
+Function: snail-read-database-file
+Read an address database.
+FILE-NAME defaults to `snail-database-file-name'.  The actual work is done
+by a function saved in the `snail-read-database-file-function' variable.
+
+
+Variable: snail-aliases
+*Alist of snail (AKA paper mail) addresses,
+or `t' if it should be initialized from the `snail-database-file-name' file.
+List members are cons cells of the form
+
+    (LABEL . ADDRESS)
+
+where LABEL is an alias for ADDRESS.
+
+
+Function: snail-address
+Return the value of the address alias LABEL.
+If called interactively, read LABEL from the mini-buffer and insert the
+address (if any) at point.
+
+
+Variable: snail-country-regexp
+*Country fields matching `snail-country-regexp' are allowed to be
+ignored in paper mail addresses.  The country field is usually only
+required for international mail addresses.
+
+
+Variable: snail-db-aux-directory
+*Directory name where the default auxiliary file can be found.
+
+
+Variable: snail-db-format-directory
+*Directory name where the default format file can be found.
+
+
+Function: snail-db-find-file
+Read an EDB database from file FILE-NAME.
+
+

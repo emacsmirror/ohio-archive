@@ -1,0 +1,128 @@
+Date: Tue, 10 Jan 89 18:38:48 EST
+From: think!compass!worley@eddie.mit.edu (Dale Worley)
+To: info-gnu-emacs@eddie.mit.edu
+Subject: load-hooks, a new feature
+
+People who do extensive customizations in their .emacs files have
+noticed that if a function is defined in an autoload file it is
+necessary to first load the file before overriding the definition.  A
+new "load-hooks" feature is now available that avoids this.  The
+program can declare an operation (e.g., a defun) to be done
+immediately after a particular file is loaded.  The way this is done
+is through a variable, load-hooks:
+
+Documentation:
+A list of hooks to be run after files are loaded.
+It has the form ((filename form form ...) (filename form form ...) ...).
+After one of the files is loaded, its forms are executed.
+An error in the hooks does not undo the load.
+Each filename is a string which must be exactly the same as the first
+argument to load.  This is not a problem in practice, since
+(require 'foo) calls (load "foo" ...) and (autoload 'foo-fun "foo" ...)
+calls (load "foo" ...).
+
+To use the load-hooks feature, include the following two functions in
+your .emacs:
+
+(defun add-load-hook (file form)
+  "Add a load hook for FILE which is FORM.  FORM is added to load-hooks after
+all load-hooks for FILE which are presently there."
+  (let ((a (assoc file load-hooks)))
+    (if (null a)
+	(setq load-hooks (cons (list file form) load-hooks))
+      (nconc a (cons form nil)))))
+
+(defun read-load-hook (file)
+  "Read the next input form and add it as a load hook for FILE.
+If a call to  read-load-hook  is in a file that is being loaded, the next lisp
+expression after it will be read as the load hook."
+  (add-load-hook file (read)))
+
+One can now say (add-load-hook "fff" 'xxx) to cause the code xxx to be
+executed immediately after the file fff is loaded.  Don't forget the '
+before the code -- otherwise it will be executed when your .emacs file
+is read!  Usually, this code is a defun that overides some defun in
+the file.  For example,
+
+(add-load-hook "lpr"
+	       '(defun print-region-1 ...))
+
+will override the definition of print-region-1 in the file lpr.
+
+The one problem with this form is that it plays hob with the
+indentation.  To avoid this in your .emacs file, you can use the
+alternate form
+
+(read-load-hook "lpr")
+(defun print-region-1 ...)
+
+The code of read-load-hook reads the lisp expression that follows it
+(without executing it) and saves it as a load hook for the given file.
+
+The changes to Emacs (18.52) are simple:
+
+*** lread.c.old	Tue Jan 10 13:34:34 1989
+--- lread.c	Tue Jan 10 14:42:53 1989
+***************
+*** 166,171 ****
+--- 166,172 ----
+  
+  void readevalloop ();
+  static Lisp_Object load_unwind ();
++ Lisp_Object Vload_hooks;
+  
+  DEFUN ("load", Fload, Sload, 1, 4, 0,
+    "Execute a file of Lisp code named FILE.\n\
+***************
+*** 186,191 ****
+--- 187,193 ----
+    register Lisp_Object lispstream;
+    register FILE **ptr;
+    int count = specpdl_ptr - specpdl;
++   Lisp_Object temp;
+    struct gcpro gcpro1;
+  
+    CHECK_STRING (str, 0);
+***************
+*** 223,228 ****
+--- 225,237 ----
+    load_in_progress++;
+    readevalloop (Qget_file_char, stream, Feval, 0);
+    unbind_to (count);
++   /* added code to implement load-hooks */
++   temp = Fassoc (str, Vload_hooks);
++   if (!NULL (temp))
++     {
++       Fprogn (Fcdr (temp));
++     }
++   /* end of added code */
+    UNGCPRO;
+  
+    if (!noninteractive && NULL (nomessage))
+***************
+*** 1296,1301 ****
+--- 1305,1321 ----
+  
+    DEFVAR_BOOL ("load-in-progress", &load_in_progress,
+      "Non-nil iff inside of  load.");
++ 
++   DEFVAR_LISP ("load-hooks", &Vload_hooks,
++     "A list of hooks to be run after files are loaded.\n\
++ It has the form ((filename form form ...) (filename form form ...) ...).\n\
++ After one of the files is loaded, its forms are executed.\n\
++ An error in the hooks does not undo the load.\n\
++ Each filename is a string which must be exactly the same as the first\n\
++ argument to load.  This is not a problem in practice, since\n\
++ (require 'foo) calls (load \"foo\" ...) and (autoload 'foo-fun \"foo\" ...)\n\
++ calls (load \"foo\" ...).");
++   Vload_hooks = Qnil;
+  
+    Qstandard_input = intern ("standard-input");
+    staticpro (&Qstandard_input);
+
+Dale
+--
+Dale Worley, Compass, Inc.                      compass!worley@think.com
+Seen in a technical journal:  "You'll always offend someone when you deal with
+a large group of people.  There's always someone that can't stand Bambi."
+

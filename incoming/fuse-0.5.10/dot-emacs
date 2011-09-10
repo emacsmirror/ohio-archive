@@ -1,0 +1,54 @@
+;;-*-emacs-lisp-*-
+;;;------------------------------------------------------------------
+;;; input mode additions to the .emacs file
+;;;
+;;; Insert the following lines somewhere in your .emacs file to enable
+;;; input mode and the various program minor modes.
+;;;
+;;; If you have been using the old feffit-mode or prior versions of
+;;; FUSE, be sure to comment out or delete the appropriate lines lines
+;;; from your .emacs file
+
+;;  change this directory to whatever |
+;;  is appropriate for you           / \
+;;                             vvvvvvvvvvvvvvvvv
+(setq load-path (append (list "~/lisp/fuse-0.5.5" ) load-path))
+(setq auto-mode-alist
+      (append (list (cons "\\.inp$"  'input-mode))
+	      auto-mode-alist))
+(autoload 'input-mode "input" "Input major mode" t)
+(autoload 'fuse-mode  "fuse"  "FUSE" t)
+(add-hook 'dired-load-hook '(lambda () (load-library "fuse-dired")))
+
+;; to enable syntax colorization using the font-lock package, you
+;; should have either
+;;     (font-lock-mode)
+;; or
+;;     (global-font-lock-mode t)
+;; in your .emacs file.
+
+;; --- input mode customization ------------------------------------
+;; To customize the behavior of FUSE, do one of the following:
+;;  1) Use an "input-mode-hook", an example of which is given below,
+;;     defined in your .emacs file.
+;;  2) Use a .fuse file in which the variables are setq-ed without a hook.
+;;     See the example .fuse file called dot-fuse that comes with the
+;;     FUSE distribution
+;;  3) If you are using an Emacs with the customization package, type
+;;     `M-x customize-group' and respond with `fuse', then set the variables
+;;     to appropriate values
+
+;; This example is trivial in that it sets a few variables to their
+;; default values.  See the documentation for an explanation of the
+;; meanings of these variables.
+
+;; (add-hook 'input-mode-hook
+;; 	  '(lambda ()
+;; 	     (setq fuse-base-directory              "/home/bruce/xlisp/fuse/")
+;; 	     (setq input-stanza-indent              0)
+;; 	     (setq input-intrp-buffer-name          "intrp.dat")
+;; 	     (setq input-gnuplot-r-column           4)
+;; 	     ))
+
+;;;; end of input mode additions to the .emacs file
+;;;------------------------------------------------------------------

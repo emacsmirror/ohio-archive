@@ -1,0 +1,15 @@
+/* Emacs X default database entries: Thu Apr 26 15:59:22 1990 */
+/* emacs*MenuMode:			invert */
+emacs*MenuInactivePattern:	dimple1
+emacs*MenuMouse:		Blue Violet
+emacs*MenuBackground:		Light Cyan
+emacs*PaneBorderWidth:		1
+emacs*PaneForeground:		Midnight Blue
+emacs*PaneFont:			*helvetica-bold-o-normal-*-140-*-iso8859-1
+emacs*SelectionFont:		*helvetica-medium-o-normal-*-120-*-iso8859-1
+emacs*SelectionForeground:	Dark Violet
+emacs*SelectionBorderWidth:	1
+xemacs*font:			9x15
+emacs*font:			9x15
+
+

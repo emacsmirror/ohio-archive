@@ -1,0 +1,140 @@
+TEX NAME COMPLETION:
+
+    This package adds Emacs minibuffer name completion to cmutex.el
+    or the standard tex-mode.el.
+
+    As a complement to the hairy key bindings for hairy LaTeX commands
+    in cmutex.el, here is a package that does not require you to learn
+    the key strokes for each command, but lets you enter the name of
+    the [La]TeX macro/environment with completion, avoiding dumb typos
+    that cost you a wasted TeX run.  This is very handy if you don't
+    remember the exact form of a command, font name, name for a
+    special symbol, and you don't have the manual or list of symbols
+    with you.
+
+    A disadvantage is that is does not know anything about each
+    individual command (e.g., number of arguments).  But for these, we
+    have the specialized key bindings like 'C-c T' in cmutex.el.  They
+    are fine - if you can remember them... 
+
+
+CONTENTS: 
+
+    There are 4 files:
+
+	README			- this file
+
+	tex-complete.el		- completion functions
+
+	latex-names.el		- list of LaTeX macro names
+
+	tex-names.el		- list of plain TeX macro names
+
+
+INSTALLATION: 
+
+    Put all lisp files in a directory where Emacs can find them.  The
+    *-names files are loaded on the first use of the completion
+    commands.
+
+    IF YOU USE THE STANDARD TEX MODE:
+
+    Put the following lines into your ~/.emacs (note TeX-mode vs.
+    comint's tex-mode and the single key map for both modes): 
+
+	(setq TeX-mode-hook 
+	      '(lambda ()
+		 (define-key TeX-mode-map
+		   "\C-c\\" 'tex-insert-plain-command)))
+
+	(setq LaTeX-mode-hook
+	      '(lambda ()
+		 (define-key TeX-mode-map
+		   "\C-c\C-m" 'latex-make-environment)
+		 (define-key TeX-mode-map
+		   "\C-ci" 'latex-insert-begin)
+		 (define-key TeX-mode-map
+		   "\C-c\\" 'tex-insert-latex-command)))
+
+	(load "tex-complete")
+
+    IF YOU USE CMUTEX:
+
+    Either arrange to load tex-complete *after* cmutex or put
+    cmutex-complete into cmutex.el, replacing the definitions of
+    latex-make-environment and latex-insert-begin.  Olin Shivers plans
+    to add a load hook to cmutex version 2.01, which makes this easy.
+
+    If your version does not have this load hook already, simply add
+    the line
+
+	(run-hooks 'cmutex-load-hook)
+
+    at the very end of cmutex.el
+
+    Then you can put the following in your ~/.emacs:
+
+	(setq cmutex-load-hook '(lambda () (load "tex-complete")))
+
+	;; Bind the completion functions to appropriate keys 
+	;; '\' may be even better than 'C-c \'
+
+	(setq tex-mode-hook
+	      '(lambda ()
+		 (define-key tex-mode-map "\C-c\\"
+		   'tex-insert-plain-command)))
+
+	(setq latex-mode-hook
+	      '(lambda ()
+		 (define-key latex-mode-map "\C-c\\"
+		   'tex-insert-latex-command)))
+
+
+
+EXAMPLE
+
+    Usage of name completion in an Emacs TeX/LaTeX buffer: 
+
+    TeX:	Type 'C-\' and 'c e TAB RET' to insert '\centerline'
+		Type 'C-\' and 'h e TAB RET' to insert '\heartsuit'
+
+    LaTeX:	Type 'C-\' and 'c e TAB RET' to insert '\centering'
+
+		Type 'C-c C-m' and 'a b TAB RET' to make an
+		`abstract' environment
+
+		Type 'C-c i' and 'a b TAB RET' to insert the beginning
+		of an `abstract' environment
+
+
+REMARKS:
+
+    The macro names have been taken from the TeX sources of plain TeX
+    and LaTeX.  Macros defined in additional style files may be
+    missing.  In fact, I only added some letter commands.  If you
+    enlarge the list, please send me your version or the diffs.
+
+    Even more useful would be a parser for .sty files to extract macro
+    and environment names intended to be visible outside.  This seems
+    impossible to me unless a standard syntax for declaring public
+    macros is used, e.g.
+
+       %%!publiccommand{foo} % goes into list latex-<style>-commands
+       %%!publicenvironment{bar} % goes into list latex-<style>-environments
+
+    Each .sty file would have an associated Emacs lisp variable
+    containing the public names, and by parsing the \documenstyle
+    options just these names would be loaded.  Comments about such a
+    declaration syntax (which could be useful for other [documentation]
+    purposes as well) are welcome.
+
+
+- Sebastian 20-Jun-1990 10:55
+
+---------------------------------------------------------------------
+	Sebastian Kremer,
+	Institute of Theoretical Physics, University of Cologne
+	F. R. of Germany
+	Internet: sk@thp.Uni-Koeln.DE
+	BITNET: AB027 at DK0RRZK0
+

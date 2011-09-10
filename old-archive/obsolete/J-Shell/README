@@ -1,0 +1,52 @@
+This is Jim's Pretty-Good Shell Mode (J-Shell), a shell-mode for GNU Emacs.
+
+Written and maintained by: Jim Thompson
+			   jimt@sugar.neosoft.com
+
+$Id: README,v 1.2 1993/04/03 23:49:55 jct Exp $
+
+J-Shell is a shell mode derived from Emacs's shell mode (although it has
+been changed so much that it bears little resemblance to the original).
+J-Shell fixes most of the major problems in shell-mode and adds many new
+features.
+
+See the file DOC for instructions on using J-Shell.
+
+
+CHANGES for version 1.1
+
+* Corrected a bug in jsh-hide-lossage that prevented password detection
+  from working for users of Emacs versions 18.57 and earlier.  For these
+  Emacs versions, J-Shell no longer opens dribble-file nil to close the
+  dribble file; instead, it opens dribble-file /dev/null.
+
+* Changed jsh-start-program to use the env program in (exec-directory)/etc,
+  rather than assuming it is in /bin/env.
+
+* Fixed a bug in the startup script for ksh.
+
+* Moved the contents of README into DOC.
+
+* Corrected some misinformation in DOC and added some caveats.
+
+
+Several people have written to suggest that completion needs to be beefed
+up to include completion for usernames, environment variables, and command
+names.  The latter two present a special problem in that they are likely to
+change dynamically, depending in what shell you're running, and on how your
+PATH and environment change.  Devising a system for allowing J-Shell to
+keep track of the shell's environmental and PATH changes seems (unless I'm
+overlooking something simple) too complex a task to make it worthwhile.
+
+An acceptable compromise might be to approximate the environment of the
+shell by completing based on Emacs's set of environment variables.
+Similarly, J-Shell could scan Emacs's PATH for executable files, thus
+building a basis for command completion.  This scheme would work for me
+because I seldom change either my PATH or my environment from the shell;
+what about other J-Shell users?  Would this scheme work for you?
+
+I've been told that the packages fnexpand and filename-complete provide
+much of what is missing from J-Shell's completion; I'll be taking a close
+look at these packages with an eye towards integrating one or the other
+into J-Shell.  In the mean time, I'd welcome feedback on the completion
+issue (and thanks to those who have already written to offer suggestions).

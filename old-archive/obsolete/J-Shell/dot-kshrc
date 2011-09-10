@@ -1,0 +1,60 @@
+# $Id: dot-kshrc,v 1.1 1993/04/03 22:14:37 jct Exp $
+
+## This file contains a sample script showing how to set up ksh to
+## work properly with j-shell.  Before examining this script, please
+## read the comments in the file dot-tcsh; the comments in that script
+## describe steps common to the scripts for all shells.
+
+# Comments delimited by a single # are specific to ksh.
+
+if [ "$TERM" = "emacs" ]
+then
+	stty nl -echo		# Keeps ^M from echoing
+
+	## Step A.
+	emacscd="\033EmAcScd"
+	emacshost="\033EmAcShost"
+
+	## Step B.
+	# Note that we have to use a function instead of an alias in
+	# ksh; an alias doesn't seem to work.
+	cwdcmd() { echo $emacscd $PWD ; }
+	hostcmd() { echo $emacshost `hostname` ; }
+	reorient() { cwdcmd ; hostcmd ; }
+
+	## Step C.
+	# In ksh, it seems that an alias can't reference the command
+	# that it is replacing, as it can in csh.  Thus, we need two
+	# steps to redefine cd and the like.  Also note that ksh has
+	# no pushd and popd to redefine.
+	fake_cd() { cd $* ; cwdcmd ; }
+	alias cd=fake_cd
+
+	## Step D.
+	fake_rlogin() { rlogin $*; reorient ; }
+	alias rlogin='fake_rlogin '
+
+	fake_sh() { sh $*; reorient ; }
+	alias sh=fake_sh
+
+	fake_ksh() { ksh $*; reorient ; }
+	alias ksh=fake_ksh
+
+	fake_csh() { csh $*; reorient ; }
+	alias csh=fake_csh
+
+	fake_tcsh() { tcsh $*; reorient ; }
+	alias tcsh=fake_tcsh
+
+	fake_zsh() { zsh $*; reorient ; }
+	alias zsh=fake_zsh
+
+	fake_bash() { bash $*; reorient ; }
+	alias bash=fake_bash
+
+	fake_tcl() { tcl $*; reorient ; }
+	alias tcl=fake_tcl
+
+	## Step E.
+	reorient
+fi

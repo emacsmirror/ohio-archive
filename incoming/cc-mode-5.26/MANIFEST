@@ -1,0 +1,41 @@
+Manifest for CC Mode 5.26
+Barry A. Warsaw and Martin Stjernholm
+<mailto:bug-cc-mode@gnu.org>
+
+You should have received the following files in this distribution:
+
+    MANIFEST: This file.
+
+    README: Quick intro into how to get CC Mode up and running.
+
+    NEWS: A list of the user visible changes in each version.
+
+    cc-align.el, cc-cmds.el, cc-defs.el, cc-engine.el, cc-langs.el,
+    cc-menus.el, cc-mode.el, cc-styles.el, cc-vars.el: The source code.
+
+    cc-compat.el: Helps ease the transition from c-mode.el (BOCM) to
+    the new indentation engine.  This is provided for your convenience
+    only, and is unguaranteed and unsupported.
+
+    cc-guess.el: Experiments in style guessing.  This is provided for
+    your convenience only, and is unguaranteed and unsupported.
+
+    cc-lobotomy.el: Performance vs. accuracy trade-offs.  May not
+    work, yadda, yadda.
+
+    cc-mode-19.el: Compatibility for Emacs 19.34.  Do not use with
+    Emacs 20, XEmacs 19, or XEmacs 20.
+
+    cc-make.el: Helps with byte-compiling the CC Mode distribution.
+
+    cc-mode.texi: The latest CC Mode Texinfo manual.
+
+    ANNOUNCEMENT: Release announcement as it appeared on various
+    forums.
+
+Note that of the above files, the following are distributed with Emacs
+20 and XEmacs 20:
+
+    cc-align.el, cc-cmds.el, cc-compat.el, cc-defs.el, cc-engine.el,
+    cc-langs.el, cc-menus.el, cc-mode.el, cc-styles.el, cc-vars.el,
+    cc-mode.texi

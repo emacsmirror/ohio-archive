@@ -1,0 +1,36 @@
+From mcvax!ukc!harrier.ukc.ac.uk!arc1@uunet.uu.net Tue Jun 20 10:07:24 1989
+To: unix-emacs@bbn.com
+Date: 13 May 89 17:52:15 GMT
+From: "A.R.Curtis" <mcvax!ukc!harrier.ukc.ac.uk!arc1@uunet.uu.net>
+Sender: arpa-unix-emacs-request@bbn.com
+Subject: Re: OCCAM-mode
+Reply-To: "A.R.Curtis" <arc1@ukc.ac.uk>
+References: <5619@lifia.imag.fr>
+Organization: Computing Lab, University of Kent at Canterbury, UK.
+Source-Info:  From (or Sender) name not authenticated.
+
+In article <5619@lifia.imag.fr> phs@lifia.imag.fr (Philippe Schnoebelen) writes:
+>
+>   Anybody has an occam-mode for GNU Emacs ? I have looked in the directory
+>of available Emacs code but found no mention of such a beast. Even a
+>partial and unpolished package would be useful.
+>
+>   Much thanks in advance.
+>
+>--Philippe
+
+
+Sure do. I wrote a couple of years ago while doing a project with
+occam. The mode does partial folding and knows about indentation from
+constructors (SEQ, PAR etc). The code has been altered and probably
+improved since then (I don't work where I wrote it any more) by the
+person who followed on from me.
+
+The way to get the code is to ask Martin Ferrier at Exeter
+University (England). His email address is mfe@cs.exeter.ac.uk
+
+If you can't get to him, I can if you mail me.
+
+Tony Curtis
+
+

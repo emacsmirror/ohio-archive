@@ -1,0 +1,257 @@
+<HTML>
+<HEAD>
+<TITLE>Phit: Writing Sensible Input Files</TITLE>
+</HEAD>
+<BODY>
+<A HREF="phit-4.html">Previous</A>
+<A HREF="phit-6.html">Next</A>
+<A HREF="phit.html#toc5">Table of Contents</A>
+<HR>
+<H2><A NAME="s5">5. Writing Sensible Input Files</A></H2>
+
+
+<H2><A NAME="ss5.1">5.1 Specifying Keywords</A></H2>
+
+<P><SF>Phit</SF> reads the input file by reading in a single line
+at a time and parsing the words on that line.  Words in the line are
+separated by white space, where the white space can be zero or one comma
+or equals sign along with any number of spaces and tabs.  Each word
+is compared to a list of recognized keywords.  If it is found, the
+appropriate number of words following the recognized keyword are
+interpreted as the values associated with that keyword.  For
+instance, if the following words are found in a line:
+<BLOCKQUOTE><CODE>
+<PRE>
+        xaxis  =  e
+</PRE>
+</CODE></BLOCKQUOTE>
+
+the word <CODE>xaxis</CODE> will be recognized as a keyword and the word
+<CODE>e</CODE> will be interpreted as the character string labeling the
+xaxis.  If this is found:
+<BLOCKQUOTE><CODE>
+<PRE>
+        sigdat     =3.0956
+</PRE>
+</CODE></BLOCKQUOTE>
+
+then <CODE>sigdat</CODE> will be recognized as a keyword and the character string
+<CODE>3.0956</CODE> will be internally read as a floating point number.
+In this case:
+<BLOCKQUOTE><CODE>
+<PRE>
+        function        1       m*x + b
+</PRE>
+</CODE></BLOCKQUOTE>
+
+<CODE>function</CODE> will be recognized, <CODE>1</CODE> will be
+read as an integer, and the remainder of the line will be recognized
+as the math expression associated with function #1. </P>
+<P>This parsing scheme allows the input file to read more like common
+English and is intended to facilitate use of a rather complicated
+program.  The parsing scheme is insensitive to case, so <CODE>GUESS</CODE>
+is equivalent to <CODE>guess</CODE>, <CODE>Guess</CODE>, and <CODE>gUEsS</CODE>.
+Blank lines and lines beginning with the comment characters <CODE>!</CODE>,
+<CODE>%</CODE>, or <CODE>#</CODE> will be ignored, as will <CODE>id</CODE> lines
+that correspond to no function and <CODE>title</CODE> lines in excess of
+9.  Recall that the white space between words can be any number of
+tabs or blanks and no more than one comma or equals sign. </P>
+<P>There is little established order in which the keywords must be found
+in the input file.  The only structure imposed on the input file is
+that everything on a line after the keyword <CODE>title</CODE> will be
+included in the title and that the keywords <CODE>guess</CODE>,
+<CODE>set</CODE>, <CODE>function</CODE>, and <CODE>id</CODE> must be on
+their own lines. </P>
+
+
+
+
+<H2><A NAME="ss5.2">5.2 Guess and Set Values</A></H2>
+
+<P>The guess values are the parameters that will actually be varied to
+produce the best fit.  The labels for the guess values are used to
+identify these parameters in the set value and function math
+expressions.  The initial guess must be a number.  It cannot be a math
+expression.   </P>
+<P>All guess values must be used in math expression.  Any unused guess
+value will cause an error message to be written to the screen and the
+program to stop.  The minimization algorithm is ill-posed if a
+variable has no effect on the function being minimized.  There is
+still a pitfall of unused guess values.  If the guess value is used
+to evaluate a set value and the set value is not used in any function,
+then the minimization will be ill-posed. </P>
+<P>The set values are stated in the input file as math expressions, where
+the math expression can be simply a number or some valid combination
+of numbers, special functions, other set and guess values, and
+operators.  If a set value is unused in other math expressions, a
+warning will be written to the screen, but the program will continue.
+Set values can depend on other set values, but they cannot be
+self-referencing.  That is, a set value may not depend on itself, as in:
+<BLOCKQUOTE><CODE>
+<PRE>
+        a = a+1
+</PRE>
+</CODE></BLOCKQUOTE>
+
+If a self-referencing set value is found, an error message will be
+written to the screen and the program will stop. </P>
+
+
+
+
+<H2><A NAME="ss5.3">5.3 Writing Math Expressions</A></H2>
+
+<P>The algorithm for encoding the math expressions found in the input
+file follows the Fortran standard for operator precedence.  Quantities
+in parentheses and special functions will be evaluated first, followed
+in order by exponentiation, multiplication/division, and
+addition/subtraction. </P>
+<P>Blanks and tabs are removed from math expressions before encoding.
+Using blanks to make math expressions more easily understood to the
+human reader of the input file in encouraged. </P>
+<P>The arguments to special functions must be enclosed in parentheses and
+must be separated by commas.  Functions of a single argument need no
+commas.  Functions of more than one argument make no assumptions about
+the value of the arguments, so all arguments must be specified. </P>
+<P>There is a known bug in the encoding algorithm.  If a function of more
+than one argument is passed as the argument of a function of more than
+one argument, there will be an error counting the commas.  The
+following will trip this bug:
+<BLOCKQUOTE><CODE>
+<PRE>
+        set     a       gauss( e,  min(1, center), width)
+</PRE>
+</CODE></BLOCKQUOTE>
+
+This would constrain the center point of the Gaussian to be no larger
+than 1.  If this is what you want, you should do this instead:
+<BLOCKQUOTE><CODE>
+<PRE>
+        set     b       min(1,center)
+        set     a       gauss( e, b, width)
+</PRE>
+</CODE></BLOCKQUOTE>
+ 
+Because all math expressions must be contained on a single line,
+writing math expressions in terms of set values is often necessary.</P>
+
+<P>The great value of this scheme of guess values and math expressions is
+that arbitrarily robust and complex fitting models can be introduced.
+For example, more than one function can depend on one variable
+parameter.  Thus the set of variables can be small and robust.  The
+set of functions actually summed and used in the fit is easily created
+and changed by the user, allowing many different fitting models to be
+tested.  </P>
+<P>If any mistakes are found in any math expression, a warning message
+containing the nature of the problem will be written to the screen and
+the program will stop. </P>
+
+
+
+<H2><A NAME="ss5.4">5.4 Choosing Variable Labels</A></H2>
+
+<P>The labels associated with the set and guess values and with the
+xaxis are completely arbitrary and subject to the preferences of the
+user.  Choosing variable names that are mnemonic is a good idea.  If
+the data that you are fitting is measured in energy, then <CODE>e</CODE>
+might be chosen as the xaxis label for use in the math expressions.
+The variable associated with the width of a Lorentzian function might
+be <CODE>width</CODE>.  It might also be called <CODE>chthon</CODE> or
+anything else that has meaning to you. </P>
+<P>The labels for the set and guess values and the xaxis must be less
+than 20 characters.  They must be composed of keyboard characters that
+are unambiguous in the context of math expressions.  This means that
+<CODE>+</CODE>, <CODE>-</CODE>, <CODE>*</CODE>, <CODE>/</CODE>, <CODE>&circ;</CODE>,
+<CODE>(</CODE>, and <CODE>)</CODE> cannot be part of a label.  For example,
+the expression <CODE>h-bar</CODE> will be interpreted as the value of
+<CODE>bar</CODE> subtracted from the value of <CODE>h</CODE>.  The names of
+functions understood by <SF>Phit</SF> can, in fact, be variable names.
+<SF>Phit</SF> recognizes function names as functions when followed
+immediately by an open parenthesis (<CODE>(</CODE>).  This math
+expression:
+<BLOCKQUOTE><CODE>
+<PRE>
+        sinh * sinh(3)
+</PRE>
+</CODE></BLOCKQUOTE>
+
+will thus be interpreted as the variable <CODE>sinh</CODE> multiplied by
+the hyperbolic sine of 3. </P>
+
+
+
+<H2><A NAME="ss5.5">5.5 Functions Other Than Those Found in Phit</A></H2>
+
+
+<P>If you need a function that is not recognized by the math expression
+encoder, there is a solution that does not involve modifying the
+Fortran source code.  If your function is representable in a
+reasonable number of terms, then the new function can be expressed as
+a sum of set values in the input file.  Here, for instance, is the
+math expression for a fifth order Legendre polynomial as a function of
+the xaxis label <CODE>x</CODE>:
+<BLOCKQUOTE><CODE>
+<PRE>
+        set     leg5    (63*x**5 + 70*x**3 + 15*x) / 8
+</PRE>
+</CODE></BLOCKQUOTE>
+
+You could define some number of Legendre polynomials in this fashion
+and fit data as a weighted expansion in Legendre polynomials.  If your
+function is described by a series expansion that is convergent in a
+small number of terms, this technique of using set values will work
+well. </P>
+<P>A function commonly used to analyze XANES is the pseudo-Voight
+function.  This is a linear combination of a Lorentzian and a
+Gaussian.  This could be constructed as follows: 
+<BLOCKQUOTE><CODE>
+<PRE>
+        guess   x0        0             ! center of function
+        guess   g_width   1             ! gaussian width
+        guess   l_width   1             ! lorentzian width
+        guess   nu        0.5           ! relative weight lineshapes
+        set     g         gauss(x, x0, g_width)
+        set     l         lor(x, x0, l_width)
+        set     voight    nu * g + (1-nu) * l
+</PRE>
+</CODE></BLOCKQUOTE>
+
+In this example, a pseudo-Voight is constructed and four variables
+describing the function are allowed to float.</P>
+
+
+<H2><A NAME="ss5.6">5.6 Using Phit without Fitting</A></H2>
+
+<P>Occasionally <SF>Phit</SF> is run without performing a fit.  One might
+use <SF>Phit</SF> to construct some complicated line shape or to
+evaluate a fitting function at its initial guess values.  There are
+three ways make <SF>Phit</SF> run to completion without performing a
+fit:
+<OL>
+<LI> Use the <CODE>nofit</CODE> keyword.</LI>
+<LI> Specify no guess values.</LI>
+<LI> Specify no input data set.</LI>
+</OL>
+ </P>
+<P>If the <CODE>nofit</CODE> keyword is specified then the set and function
+math expressions will be evaluated using the initial values of the
+guess parameters.  The sum of functions and, if requested, the
+individual functions will be written to disk.  The functions will be
+evaluated on the x-axis grid of the input data file. </P>
+<P>If no guess parameters are specifies, then the functions will be
+evaluated using the set values on the data grid of the input data
+file.  </P>
+<P>If no input data is specified, the sets and functions will be
+evaluated using the initial values for any guess functions.  The
+functions will be evaluated on an evenly spaced data grid determined
+by the values of the keywords <CODE>xmin</CODE>, <CODE>xmax</CODE>, and
+<CODE>npoints</CODE>. </P>
+
+
+
+<HR>
+<A HREF="phit-4.html">Previous</A>
+<A HREF="phit-6.html">Next</A>
+<A HREF="phit.html#toc5">Table of Contents</A>
+</BODY>
+</HTML>

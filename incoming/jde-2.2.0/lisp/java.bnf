@@ -1,0 +1,374 @@
+# BNF grammar for Java
+#
+# Copyright (C) 2000 Paul F. Kinnucan, Jr.
+#
+# Author: Paul F. Kinnucan, Jr. <paulk@mathworks.com>
+#         Augmented by David Ponce <david@dponce.com>
+# $Id: java.bnf,v 1.11 2000/07/08 07:09:31 paulk Exp $
+#
+# java.bnf is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This software is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with GNU Emacs; see the file COPYING.  If not, write to the
+# Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+# Boston, MA 02111-1307, USA.
+
+# TABLE: jde-parse.el:jde-parse-bovine-java-grammar
+# MODE: jde-mode
+
+bovine-toplevel : package_declaration
+                | import_declaration
+                | type_declaration
+                ;
+  
+FLOAT: symbol "[0-9]" punctuation "\\." symbol "[0-9Ee]" punctuation "[-+]" symbol "[0-9fFdD]"
+     | symbol "[0-9]" punctuation "\\." symbol "[0-9EefFdD]"
+     | symbol "[0-9fFdD]"
+     ;
+  
+literal : FLOAT
+        | qualified_name
+        | string
+        ;
+
+type: reference_type
+      (,$1)
+    | primitive_type
+      (,$1)
+    ;
+  
+primitive_type : symbol "\\(boolean\\|byte\\|short\\|int\\|long\\|char\\|float\\|double\\)"
+                 ($1)
+               ;
+
+reference_type : array_type
+                 (,$1)
+               | qualified_name
+                 (,$1)
+               ;
+  
+array_type : primitive_type dims
+             ((concat (car $1) (car $2)))
+           | qualified_name dims
+             ((concat (car $1) (car $2)))
+           ;
+
+qualified_name : symbol punctuation "\\." qualified_name
+                 ((concat $1 $2 (car $3)))
+               | symbol
+                 ($1)
+               ;
+
+package_declaration : symbol "package" qualified_name punctuation ";"
+                      (,$2 package nil)
+                    ;
+  
+import_declaration : symbol "import" qualified_name punctuation ";"
+                     (,$2 include nil)
+                   | symbol "import" qualified_name punctuation "\\." punctuation "*" punctuation ";"
+                     ((concat (car $2) $3 $4) include nil)
+                   ;
+  
+type_declaration : symbol ";"
+                 | class_declaration
+                 | interface_declaration
+                 ;
+
+modifiers_opt : modifiers
+                (,$1)
+              | EMPTY
+              #(nil)
+              ;
+  
+modifiers : modifier modifiers
+            (,(cons (car $1) ,$2))
+          | modifier
+            (,$1)
+          ;
+  
+modifier : symbol "\\(public\\|protected\\|private\\|static\\|abstract\\|final\\|native\\|synchronized\\|transient\\|volatile\\|strictfp\\)"
+         ;
+
+class_declaration : modifiers_opt symbol "class" qualified_name class_parents class_body
+                    (,$3 type "class" $5 $4 $1 nil) # semantic 1.2
+                  #                            ^^^ empty comment spot
+                  ;
+
+#
+# `semantic-token-type-parent' returns
+#
+#  nil | ( ["extends_this" | nil] ["implements_this1" ... "implements_thisN"] )
+#  
+class_parents: super interfaces
+               (,(append $1 $2))
+             | interfaces super
+               (,(append $2 $1))
+             | super
+               (,$1)
+             | interfaces
+               (,(cons nil $1))
+             | EMPTY
+             ;
+  
+super : symbol "extends" qualified_name
+        (,$2)
+      ;
+  
+interfaces : symbol "implements" qualified_name_list
+             (,$2)
+           ;
+  
+qualified_name_list : qualified_name punctuation "," qualified_name_list
+                      (,(cons (car $1) ,$3))
+                    | qualified_name
+                      (,$1)
+                    ;
+  
+class_body : semantic-list # ::= {class_body_declarations}
+             (EXPANDFULL $1 class_body_declarations)
+           ;
+  
+class_body_declarations : class_declaration
+                           (,$1)
+                         | interface_declaration
+                           (,$1)
+                         | field_declaration
+                           (,$1)
+                         | method_declaration
+                           (,$1)
+                         #| static_initializer
+                         | constructor_declaration
+                           (,$1)
+                         #| block
+                         ;
+  
+field_declaration : modifiers_opt type variable_declarators punctuation ";"
+                    (,$3 variable ,$2 nil nil $1 nil) # semantic 1.2
+                  #                              ^^^ empty comment spot
+                  ;
+  
+variable_declarators : variable_declarator variable_declarators_opt
+                       (,$1)
+                     ;
+
+variable_declarators_opt: punctuation "," variable_declarators
+                        | EMPTY
+                        ;
+
+variable_declarator : variable_declarator_id variable_assign_opt
+                      (,$1)
+                    ;
+
+variable_assign_opt: punctuation "=" expression # ::= variable_initializer
+                   | EMPTY
+                   ;
+
+variable_declarator_id : symbol dims
+                         ((concat $1 (car $2)))
+                       | symbol
+                         ($1)
+                       ;
+  
+method_declaration : method_header method_body
+                     (,$1)
+                   ;
+  
+method_header : modifiers_opt method_type symbol formal_parameter_list_opt throws_opt
+                ($3 function ,$2 $4 $1 $5 nil) # semantic 1.2
+              #                           ^^^ empty comment spot
+              ;
+
+method_type: symbol "void"
+             ($1)
+           | type
+             (,$1)
+           ;
+  
+formal_parameter_list_opt : semantic-list # ::= (formal_parameter_list)
+                            (EXPAND $1 formal_parameter_list)
+                          ;
+  
+formal_parameter_list : open-paren "(" close-paren ")"
+                        (nil)
+                      | open-paren "(" formal_parameter_list
+                        (,$2)
+                      | formal_parameter punctuation "," formal_parameter_list
+                        (,(cons ,$1 ,$3))
+                      | formal_parameter close-paren ")"
+                        ($1)
+                      ;
+
+formal_parameter-modifier : symbol "final"
+                          | EMPTY
+                          ;
+
+formal_parameter : formal_parameter-modifier type variable_declarator_id
+                   ((car $3) variable (car $2) nil nil $1 nil) # semantic 1.2
+                 #                                        ^^^ empty comment spot
+                 ;
+  
+throws_opt : throws
+             (,$1)
+           | EMPTY
+           ;
+  
+throws : symbol "throws" qualified_name_list
+         (,$2)
+       ;
+  
+method_body : punctuation ";"
+              (nil)
+            | block
+              (nil)
+            ;
+
+#static_initializer : symbol "static" block
+#                   ;
+
+constructor_declaration : modifiers_opt symbol formal_parameter_list_opt throws_opt constructor_body
+                          ($2 function nil $3 $1 $4 nil) # semantic 1.2
+                        #                           ^^^ empty comment spot
+                        ;
+  
+constructor_body : semantic-list # ::= {statements}
+                   (nil)
+                 ;
+
+interface_declaration : modifiers_opt symbol "interface" symbol interface_parents interface_body
+                        ($3 type "interface" $5 $4 $1 nil) # semantic 1.2
+                      #                               ^^^ empty comment spot
+                      ;
+
+#
+# `semantic-token-type-parent' returns:
+#
+#  nil | ( "extends_this1" ... "extends_thisN" )
+#
+interface_parents : symbol "extends" qualified_name_list
+                    (,$2)
+                  | EMPTY
+                  ;
+  
+interface_body : semantic-list # ::= { interface_body_declarations }
+                 (EXPANDFULL $1 interface_body_declarations)
+               ;
+  
+interface_body_declarations : class_declaration
+                              (,$1)
+                            | interface_declaration
+                              (,$1)
+                            | method_header punctuation ";"
+                              (,$1)
+                            | field_declaration
+                              (,$1)
+                            ;
+  
+array_initializer : semantic-list # ::= {expression, expression, ...}
+                  ;
+  
+block : semantic-list # ::= {statements}
+      ;
+  
+primary : array_creation_expression
+        | primary_no_new_array primary_dim_opt
+        ;
+
+primary_dim_opt : semantic-list "\\[.*]"
+                | EMPTY
+                ;
+  
+primary_no_new_array : qualified_name semantic-list "\\(.*\\)" # method_invocation
+                     | class_instance_creation_expression
+                     | semantic-list "\\(.*\\)" # (expression)
+                     | array_type punctuation "\\." symbol "class"
+                     | literal
+                     ;
+
+class_instance_creation_expression : symbol "new" qualified_name semantic-list "\\(.*\\)" semantic-list # ::= { class_body_declarations }
+                                   | symbol "new" qualified_name semantic-list "\\(.*\\)"
+                                   ;
+  
+array_creation_expression : symbol "new" qualified_name dims array_initializer
+                          | symbol "new" qualified_name dims #dim_exprs dims_opt
+                          ;
+  
+dims_opt : dims
+           (,$1)
+         | EMPTY
+           (nil)
+         ;
+
+dims: semantic-list "\\[.*]" dims_opt
+      ((concat "[]" (car ,$2)))
+    ;
+  
+field_access : primary punctuation "\\." symbol
+             | qualified_name
+             ;
+  
+postfix_expression : primary postfix_operator_opt
+                   ;
+
+postfix_operator_opt: punctuation "[-+]" punctuation "[-+]"
+                    | EMPTY
+                    ;
+
+unary_expression : punctuation "[-+^!]" unary_expression
+                 | punctuation "[-+]" punctuation "[-+]" unary_expression
+                 | semantic-list  "\\(.*\\)" unary_expression # cast
+                 | postfix_expression
+                 ;
+
+operator: punctuation "[-+*/%=<>^~&|!?:.]" # added DOT as field/method access operator
+        | symbol "instanceof" 
+        ;
+
+operators: operator operators
+         | operator
+         ;
+
+operators_expression_opt: operators expression
+                        | EMPTY
+                        ;
+
+expression: unary_expression operators_expression_opt
+          ;
+
+# $Log: java.bnf,v $
+# Revision 1.11  2000/07/08 07:09:31  paulk
+# Latest updates from David Ponce.
+#
+# Revision 1.8  2000/06/21 06:57:23  paulk
+# Added rules for arithmetic and string expressions.
+#
+# Revision 1.7  2000/06/16 06:48:40  paulk
+# Now handles arrays in field declarations.
+#
+# Revision 1.6  2000/06/09 04:08:43  paulk
+# Added volatile to list of variable modifiers. Thanks to David Ponce and Mike Bowler.
+#
+# Revision 1.5  2000/05/26 09:14:10  paulk
+# Updated grammar to handle argument variables with modifiers and array arguments.
+#
+# Revision 1.4  2000/05/16 04:41:28  paulk
+# *** empty log message ***
+#
+# Revision 1.3  2000/05/11 04:41:05  paulk
+# Now handles native method declarations.
+#
+# Revision 1.2  2000/05/11 02:49:41  paulk
+# Now parses constructors.
+#
+# Revision 1.1  2000/05/02 04:10:23  paulk
+# Initial revision.
+#
+
+# End of java.bnf

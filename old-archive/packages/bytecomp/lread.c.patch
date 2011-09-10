@@ -1,0 +1,75 @@
+*** old-lread.c	Sat Oct 12 14:45:59 1991
+--- lread.c	Tue Oct 29 10:45:42 1991
+***************
+*** 792,797 ****
+--- 792,815 ----
+        }
+  
+      case '#':
++       c = READCHAR;
++       if (c == '[') {
++ 	/* accept compiled functions at read-time so that we don't have to
++ 	   build them at load-time. */
++ 	Lisp_Object vec = read_vector (readcharfun);
++ 	XSETTYPE (vec, Lisp_Compiled);
++ 	if (XVECTOR (vec)->size < 4 || XVECTOR (vec)->size > 6)
++ 	  return Fsignal (Qinvalid_read_syntax,
++ 			  Fcons (build_string
++ 				 ("#[...] used with wrong number of elements"),
++ 				 Qnil));
++ # if 0
++ 	return (NULL (Vpurify_flag) ? vec : Fpurecopy (vec));
++ # else
++ 	return vec;
++ # endif
++       }
++       UNREAD (c);
+        return Fsignal (Qinvalid_read_syntax, Fcons (make_string ("#", 1), Qnil));
+  
+      case ';':
+***************
+*** 916,928 ****
+  		{
+  		  int number = 0;
+  
+  		  if (read_buffer[0] == '0')
+  		    {
+  		      p = read_buffer;
+! 		      while (p1 != p)
+! 			number = number << 3 + *p++ - '0';
+  		    }
+  		  else
+  		    number = atoi (read_buffer);
+  
+  		  XSET (val, Lisp_Int, number);
+--- 934,963 ----
+  		{
+  		  int number = 0;
+  
++ 		  /* First of all, the code that was here to parse octal
++ 		     digits was *broken*.  The code below is fixed.  But
++ 		     second, and more importantly, making 010 read as an
++ 		     octal digit breaks a *lot* of existing elisp files,
++ 		     and is therefore not worth it.  so this code is
++ 		     commented out.
++ 		   */
++ #if 0
+  		  if (read_buffer[0] == '0')
+  		    {
+  		      p = read_buffer;
+! 		      while (p1 != p) {
+! 			
+! 		      if (*p < '0' || *p > '7')
+! 			  return Fsignal
+! 			    (Qinvalid_read_syntax,
+! 			     Fcons (make_string ("non-octal digit", 15),
+! 				    Qnil));
+! 			
+! 			number = (number << 3) + *p++ - '0';
+! 		      }
+  		    }
+  		  else
++ #endif
+  		    number = atoi (read_buffer);
+  
+  		  XSET (val, Lisp_Int, number);

@@ -1,0 +1,33 @@
+
+Python version 1.0, VM version Intel x86 on 02 FEB 01 02:33:05 pm.
+Compiling: /usr/src/cvs/elispdb/elispdb-araneida.lisp 23 JAN 01 02:47:23 pm
+
+Compiling Load Time Value of (PCL::GET-MAKE-INSTANCE-FUNCTION-SYMBOL
+                    '(ARANEIDA:HTTP-URL # NIL)): 
+Compiling Load Time Value of (PCL::GET-MAKE-INSTANCE-FUNCTION-SYMBOL
+                    '(ARANEIDA:SERVER # NIL)): 
+Converted INSTALL-HANDLERS.
+Compiling DEFUN INSTALL-HANDLERS: 
+
+File: /usr/src/cvs/elispdb/elispdb-araneida.lisp
+
+In: DEFUN INSTALL-HANDLERS
+  (LAMBDA (R REST)
+    (ARANEIDA:REQUEST-REDIRECT R
+                               (ARANEIDA:PARSE-URLSTRING
+                                "http://www.cis.ohio-state.edu/emacs-lisp/")))
+==>
+  #'(LAMBDA (R REST)
+      (ARANEIDA:REQUEST-REDIRECT R
+                                 (ARANEIDA:PARSE-URLSTRING
+                                  "http://www.cis.ohio-state.edu/emacs-lisp/")))
+Note: Variable REST defined but never used.
+
+Byte Compiling Top-Level Form: 
+
+Compilation unit finished.
+  1 note
+
+
+src:cvs/elispdb/elispdb-araneida.x86f written.
+Compilation finished in 0:00:00.

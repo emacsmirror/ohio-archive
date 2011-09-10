@@ -1,0 +1,21 @@
+;;; LOGO-MODE CHANGES *BEGIN*
+;;;
+;;; Do *NOT* insert your own forms between lines "LOGO-MODE CHANGES *BEGIN*" 
+;;; and "LOGO-MODE CHANGES *END*" . Everything between these two lines 
+;;; can/will be deleted during subsequent installation of logo-mode!
+;;
+;; This is a must!
+(setq auto-mode-alist
+      (cons '("\\.lgo?\\'" . logo-mode)
+	    auto-mode-alist))
+(autoload 'logo-mode "logo")
+;;
+;; If you don't want syntax highlighting uncomment next line.
+;(setq logo-syntax-highlight nil)
+;;
+;; If you are not a novice (meaning emacs - mostly), uncomment next line
+;(setq logo-novice-management nil) 
+;;
+;; Next 5 are automatically inserted by MAKE - in case you used
+;; make LIBLOC=some-unusual-place, or changed $(prefix) in toplevel
+;; ucblogo makefile

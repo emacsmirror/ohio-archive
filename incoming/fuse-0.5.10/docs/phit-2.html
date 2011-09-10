@@ -1,0 +1,110 @@
+<HTML>
+<HEAD>
+<TITLE>Phit: Input and Output Files</TITLE>
+</HEAD>
+<BODY>
+<A HREF="phit-1.html">Previous</A>
+<A HREF="phit-3.html">Next</A>
+<A HREF="phit.html#toc2">Table of Contents</A>
+<HR>
+<H2><A NAME="s2">2. Input and Output Files</A></H2>
+
+
+<P>Please read the UWXAFS Data File Document for information about the
+data file formats accepted by <SF>Phit</SF> and the other UWXAFS
+programs.   </P>
+
+<H2><A NAME="ss2.1">2.1 Input Files</A></H2>
+
+
+<P><SF>Phit</SF> uses the input file <CODE>phit.inp</CODE> to control the
+running of the program.  If this file cannot be found in either lower
+case or upper case characters, <SF>Phit</SF> will stop and complain.
+The form and contents of <CODE>phit.inp</CODE> will be discussed further
+in Chapter 3.  <SF>Phit</SF> usually needs an input data file.  The
+file contains real valued data.  Complex valued data is not handled by
+<SF>Phit</SF>.  There are no constraints on the input data grid,
+<SF>Phit</SF> will use whatever abscissa values it finds.  The data
+file name can be up to 72 characters long and can contain a directory
+path.  The file name and path must be allowed by your operating
+system. </P>
+<P>Since <SF>Phit</SF> is written in Fortran, the file reading
+conventions of Fortran are observed.  The input file and the data file
+are read using the <CODE>end</CODE> qualifier for the
+<CODE>read</CODE> statement.  This means that the reading of the file
+will end when the end-of-file marker is found.  If the end-of-file
+marker does not follow a carriage return, then the line containing the
+end-of-file marker will not be read as input instructions in the input
+file or as data in the data file.  If you are always careful to end an
+input file or a data file with a carriage return, then the last line
+of instructions or data will always be read properly. </P>
+
+
+
+<H2><A NAME="ss2.2">2.2 Running Phit, Output Messages, Warnings, and Errors</A></H2>
+
+
+<P><SF>Phit</SF> is a compiled program, so should be executable from the
+command interface on your computer.  <SF>Phit</SF> writes several messages
+as it runs.  Mostly these messages communicate which task the program
+is performing at the time of writing the message.  If <SF>Phit</SF>
+encounters a problem, the run-time messages will describe it.  If the
+problem is serious, <SF>Phit</SF> will complain and stop running.  The
+error messages that <SF>Phit</SF> writes should supply enough information
+to correct the problems encountered.  If this is not true, contact
+<A HREF="http://krazy.phys.washington.edu/~bruce/bruce.html">the author</A>.</P>
+
+
+
+
+<H2><A NAME="ss2.3">2.3 Output Files</A></H2>
+
+
+<P>As soon as the fitting and error analysis are finished, a log file,
+usually called <CODE>phit.log</CODE>, will be written.  This file will
+contain all of the input information, the fitting results, and the
+results of the error analysis.  Most of this information is not
+contained in any other output file, so this is file is quite
+important.  After the log file is written, the best fit function will
+be written to an output data file.  If requested, files containing
+each individual line shape will also be written. </P>
+
+<P>This is the naming convention for the output files:
+<OL>
+<LI> If an output file name is specified in the input file, that name will
+be used verbatim for the result of the fit.   
+</LI>
+<LI> If no output file name is specified, the extension will be
+removed from the input file name and replaced with <CODE>fit</CODE> if the
+output file format is ASCII and with <CODE>xmu</CODE> if the output format
+is UWXAFS.  The extension is defined as all characters after the final
+dot (.) in the file name.  This definition of extension is unambiguous 
+on all operating systems.  
+</LI>
+<LI> If no output file name is specified and no fit is performed, the
+calculation of the line shape will be written to a file named by
+replacing the extension of the input file name with <CODE>out</CODE> if
+the output file format is ASCII, and with <CODE>xmu</CODE> if the output
+format is uwxafs. 
+</LI>
+<LI> If no input data is supplied and no output file name is
+specified, the results of the calculation of the line shape will be
+written to <CODE>phit.out</CODE>. 
+</LI>
+<LI> If output files containing each individual function are
+requested, these will be written to files named by replacing the
+extension of the file containing the sum of functions with the
+function number as specified in the input file. 
+</LI>
+</OL>
+</P>
+
+
+
+
+<HR>
+<A HREF="phit-1.html">Previous</A>
+<A HREF="phit-3.html">Next</A>
+<A HREF="phit.html#toc2">Table of Contents</A>
+</BODY>
+</HTML>

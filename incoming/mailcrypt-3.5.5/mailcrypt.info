@@ -1,0 +1,78 @@
+This is mailcrypt.info, produced by Makeinfo version 3.12f from
+./mailcrypt.texi.
+
+   This documentation describes Mailcrypt version 3.5.5.  This
+documentation was last updated on August 29, 1998.
+
+   Copyright 1995 Patrick J. LoPresti Copyright 1998 Leonard R. Budney
+
+   The Mailcrypt program and this manual are published as free software.
+You may redistribute and/or modify them under the terms of the GNU
+General Public License as published by the Free Software Foundation;
+either version 2, or (at your option) any later version.
+
+   Mailcrypt is distributed in the hope that it will be useful, but
+WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+along with GNU Emacs; see the file COPYING.  If not, write to the Free
+Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
+
+
+Indirect:
+mailcrypt.info-1: 974
+mailcrypt.info-2: 50684
+
+Tag Table:
+(Indirect)
+Node: Top974
+Node: Introduction4935
+Node: Prerequisites5688
+Node: Installation6792
+Node: Hooking into Rmail8416
+Node: Hooking into VM8959
+Node: Hooking into MH-E9399
+Node: Hooking into Gnus9733
+Node: Command Overview10105
+Node: General Use11280
+Node: Encrypting13710
+Node: Signing16498
+Node: Inserting Keys17842
+Node: Decrypting18821
+Node: Verifying20317
+Node: Snarfing Keys20910
+Node: Remailer Support21254
+Node: Remailer Introduction22263
+Node: Remailer Quick Start24785
+Node: Remailer Chains26134
+Node: Response Blocks29815
+Node: Pseudonyms31591
+Node: Remailing Posts33331
+Node: Mixmaster Support34589
+Node: Remailer Security37267
+Node: Verifiable Pseudonyms39344
+Node: Remailer Tips40837
+Node: Passphrase Cache42844
+Node: Key Fetching44522
+Node: Keyring Fetch46893
+Node: Finger Fetch47669
+Node: HTTP Fetch47948
+Node: Miscellaneous Configuration50684
+Node: Alternate Keyring51393
+Node: Comment Field52239
+Node: Mode Line52968
+Node: Key Bindings53554
+Node: Nonstandard Paths54523
+Node: Tips56321
+Node: Limitations57563
+Node: References58913
+Node: Online Resources59443
+Node: Key Servers61847
+Node: Mailing List63527
+Node: Politics64135
+Node: Credits65547
+Node: Index66492
+
+End Tag Table

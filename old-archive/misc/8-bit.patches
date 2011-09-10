@@ -1,0 +1,374 @@
+From utkcs2!emory!swrinde!cs.utexas.edu!milano!cadillac!harp Thu Jun 28 11:41:12 EDT 1990
+Article 4521 of comp.emacs:
+Path: utkcs2!emory!swrinde!cs.utexas.edu!milano!cadillac!harp
+>From: harp@cadillac.CAD.MCC.COM (Christopher North-Keys)
+Newsgroups: comp.emacs
+Subject: Re: how to display 8 bits chars in GNU emacs ?
+Summary: PATCH to EMACS 18.55 (unofficial)
+Keywords: emacs, 8
+Message-ID: <9271@cadillac.CAD.MCC.COM>
+Date: 28 Jun 90 08:26:51 GMT
+References: <MATTHIEU.90Jun24172649@vega.laas.fr>
+Reply-To: harp@MCC.COM (Christopher North-Keys)
+Organization: Packaging/Interconnect, M.C.C.
+Lines: 357
+
+Christopher Alexander North-Keys
+Group Talisman, Austin Tx.
+Fri May 11 07:34:22 CDT 1990
+
+                 @@@ Talisman-8bit GNU Emacs patches @@@
+
+This set of patches brings Emacs 18.55 up to 8-bit capability.
+
+CAVEAT:  This patches are *not* official.  No support is offered.
+
+Application:
+	GNU Emacs original distribution 18.55
+
+Compatibility:
+	The two format selectors default to the older behavior.
+
+Files affected:
+	buffer.c
+	buffer.h
+	indent.c
+	xdisp.c
+
+Thanks to Kenneth Cline (cs.cmu.edu) for his work in this area.
+
+Bugs:
+	anomalies may result when a line partially in view changes display
+	format.
+
+	no provision has been made for displaying *all* characters in
+	/000 form.
+
+Projects:
+	Proportional spacing, used with an intercombinant font, should allow
+	true diacritics over just about anything (unlike the current approach
+	being used by certain font companies).  The precombined tack is not
+	suitable for efficient ASCII-type data storage, due to its bias towards
+	unnecessary graphic information.  For example:  the a-umlaut is a single
+	character in a precombined font.  However, in an intercombinant font,
+	the umlaut is a second character, only combined with the "a" at the
+	time of display.  True proportional spacing enables a diacritic glyph
+	to take a negative x-offset, so as to appear over the preceding char.
+
+	There is currently no accepted standard for an intercombinant font.
+
+	Emacs also needs true per-character display attributes.  Currently it
+	is only capable of inversion/highlighting on a per-line basis.  This
+	is what prevents region-select highlighting, etc.
+
+Send comments to:
+	north-keys@mcc.com
+
+Suggested use in ~/.emacs or equivalent:
+	(setq-default ctl-arrow t)        ;; The default.
+	(setq-default meta-display t)     ;; For use with 8-bit fonts.
+
+Test file ---------------------------------------------------------
+
+;; judicious usage of eval-last-sexp on these expressions will demonstrate
+;; what the enhancements do.  Note that this has only been tested with
+;; the 256-char font -Talisman-Smooth-Bold-R-Normal--12-120-80-80-C-76-None-1
+
+;; This expression, evaluated, generates a char 0-255 character insertion.
+(progn
+  (setq i 0)
+  (while (<= i 255)
+	(insert-char i 1)
+	(setq i (+ 1 i))
+	))
+
+	
+
+
+
+;;   sequential evaluation of these tests all combinations    8bit   ctrl
+;;                                                            ----   ----
+(progn (setq meta-display t) (setq ctl-arrow "special"))   ;; true , true
+(progn (setq meta-display t) (setq ctl-arrow t))           ;; true , ^C
+(progn (setq meta-display t) (setq ctl-arrow nil))         ;; true , \000
+
+(progn (setq meta-display nil) (setq ctl-arrow "special")) ;; \255 , true
+(progn (setq meta-display nil) (setq ctl-arrow t))         ;; \255 , ^C
+(progn (setq meta-display nil) (setq ctl-arrow nil))       ;; \255 , \000
+
+End of test file --------------------------------------------------
+Patches------------
+
+*** buffer.c	Thu Jul 20 17:36:02 1989
+--- ../buffer.c	Fri May 11 06:42:27 1990
+***************
+*** 1100,1105 ****
+--- 1100,1106 ----
+    XFASTINT (buffer_defaults.tab_width) = 8;
+    buffer_defaults.truncate_lines = Qnil;
+    buffer_defaults.ctl_arrow = Qt;
++   buffer_defaults.meta_display = Qnil;
+  
+    XFASTINT (buffer_defaults.fill_column) = 70;
+    XFASTINT (buffer_defaults.left_margin) = 0;
+***************
+*** 1136,1141 ****
+--- 1137,1143 ----
+    XFASTINT (buffer_local_flags.fill_column) = 0x400;
+    XFASTINT (buffer_local_flags.left_margin) = 0x800;
+    XFASTINT (buffer_local_flags.abbrev_table) = 0x1000;
++   XFASTINT (buffer_local_flags.meta_display) = 0x2000;
+  
+    Vbuffer_alist = Qnil;
+    bf_cur = 0;
+***************
+*** 1276,1281 ****
+--- 1278,1289 ----
+      "Non-nil turns on automatic expansion of abbrevs when inserted.\n\
+  Automatically becomes local when set in any fashion.");
+  
++ /* North-Keys, Fri May 11 03:43:54 CDT 1990 */
++   DEFVAR_LISP_NOPRO ("default-meta-display",
++ 	      &buffer_defaults.meta_display,
++     "Default meta-display for buffers that do not override it.\n\
++ This is the same as (default-value 'meta-display).");
++ 
+    DEFVAR_PER_BUFFER ("case-fold-search", &bf_cur->case_fold_search,
+      "*Non-nil if searches should ignore case.\n\
+  Automatically becomes local when set in any fashion.");
+***************
+*** 1297,1306 ****
+  Automatically becomes local when set in any fashion.");
+  
+    DEFVAR_PER_BUFFER ("ctl-arrow", &bf_cur->ctl_arrow,
+!     "*Non-nil means display control chars with uparrow.\n\
+  Nil means use backslash and octal digits.\n\
+! Automatically becomes local when set in any fashion.");
+  
+    DEFVAR_PER_BUFFER ("truncate-lines", &bf_cur->truncate_lines,
+      "*Non-nil means do not display continuation lines;\n\
+  give each line of text one screen line.\n\
+--- 1305,1318 ----
+  Automatically becomes local when set in any fashion.");
+  
+      DEFVAR_PER_BUFFER ("ctl-arrow", &bf_cur->ctl_arrow,
+!       "*T means display control chars with uparrow.\n\
+    Nil means use backslash and octal digits.\n\
+!   Other non-Nil means assume displayable controls in the font.\n\
+!   Automatically becomes local when set in any fashion.\n\
+!   \n\
+!   This is a non-standard feature from Ergo and Group Talisman.");
+  
++ 
+    DEFVAR_PER_BUFFER ("truncate-lines", &bf_cur->truncate_lines,
+      "*Non-nil means do not display continuation lines;\n\
+  give each line of text one screen line.\n\
+***************
+*** 1351,1356 ****
+--- 1363,1377 ----
+    DEFVAR_PER_BUFFER ("overwrite-mode", &bf_cur->overwrite_mode,
+      "Non-nil if self-insertion should replace existing text.\n\
+  Automatically becomes local when set in any fashion.");
++ 
++ /* North-Keys Fri May 11 03:45:44 CDT 1990 */
++   DEFVAR_PER_BUFFER ("meta-display", &bf_cur->meta_display,
++     "*t means display high-bit (meta) chars in the 128-255\n\
++ range, and assumes that high-bit characters are displayable.\n\
++ Nil means use backslash and octal digits.\n\
++ Automatically becomes local when set in any fashion.\n\
++ \n\
++ This is a non-standard feature from group Talisman.");
+  
+  /*DEFVAR_LISP ("debug-check-symbol", &Vcheck_symbol,
+      "Don't ask.");
+*** buffer.h	Fri May 11 05:05:14 1990
+--- ../buffer.h	Fri May 11 05:08:04 1990
+***************
+*** 153,158 ****
+--- 153,160 ----
+      Lisp_Object overwrite_mode;
+      /* non-nil means abbrev mode is on.  Expand abbrevs automatically. */
+      Lisp_Object abbrev_mode;
++     /* Non-nil means display meta chars with font, rather than octal */
++     Lisp_Object meta_display;
+  };
+  
+  extern struct buffer *bf_cur;		/* points to the current buffer */
+*** indent.c	Mon Aug 15 21:51:14 1988
+--- ../indent.c	Fri May 11 06:33:25 1990
+***************
+*** 67,73 ****
+    register int tab_seen;
+    register int post_tab;
+    register int tab_width = XINT (bf_cur->tab_width);
+!   int ctl_arrow = !NULL (bf_cur->ctl_arrow);
+  
+    if (point == last_known_column_point
+        && bf_modified == last_known_column_modified)
+--- 67,74 ----
+    register int tab_seen;
+    register int post_tab;
+    register int tab_width = XINT (bf_cur->tab_width);
+!   int ctl_arrow = !NULL (bf_cur->ctl_arrow) + (EQ (bf_cur->ctl_arrow, Qt));
+!   int meta_display = !NULL (bf_cur->meta_display);
+  
+    if (point == last_known_column_point
+        && bf_modified == last_known_column_modified)
+***************
+*** 109,115 ****
+  	  tab_seen = 1;
+  	}
+        else
+! 	col += (ctl_arrow && c < 0200) ? 2 : 4;
+      }
+  
+    if (tab_seen)
+--- 110,117 ----
+  	  tab_seen = 1;
+  	}
+        else
+! 	col += (c < 0200) ? (ctl_arrow == 1 ? 1 : (ctl_arrow ? 2 : 4))
+!                       : (meta_display ? 1 : 4);
+      }
+  
+    if (tab_seen)
+***************
+*** 231,237 ****
+    register int goal;
+    register int end = NumCharacters;
+    register int tab_width = XINT (bf_cur->tab_width);
+!   register int ctl_arrow = !NULL (bf_cur->ctl_arrow);
+  
+    Lisp_Object val;
+  
+--- 233,241 ----
+    register int goal;
+    register int end = NumCharacters;
+    register int tab_width = XINT (bf_cur->tab_width);
+!   register int ctl_arrow = !NULL (bf_cur->ctl_arrow)
+! 	                        + EQ (bf_cur->ctl_arrow, Qt);
+!   register int meta_display = !NULL (bf_cur->meta_display);
+  
+    Lisp_Object val;
+  
+***************
+*** 258,266 ****
+  	  col += tab_width - 1;
+  	  col = col / tab_width * tab_width;
+  	}
+        else if (ctl_arrow && (c < 040 || c == 0177))
+          col++;
+!       else if (c < 040 || c >= 0177)
+          col += 3;
+      }
+  
+--- 262,273 ----
+  	  col += tab_width - 1;
+  	  col = col / tab_width * tab_width;
+  	}
++ 	  else if ((ctl_arrow == 1 && (c < 040 || c == 0177)) ||
++ 			   (meta_display && (c >= 0200)))
++ 		continue;
+        else if (ctl_arrow && (c < 040 || c == 0177))
+          col++;
+! 	  else if (c < 040 || c == 0177)
+          col += 3;
+      }
+  
+***************
+*** 306,312 ****
+    register int pos;
+    register int c;
+    register int tab_width = XFASTINT (bf_cur->tab_width);
+!   register int ctl_arrow = !NULL (bf_cur->ctl_arrow);
+    int selective
+      = XTYPE (bf_cur->selective_display) == Lisp_Int
+        ? XINT (bf_cur->selective_display)
+--- 313,321 ----
+    register int pos;
+    register int c;
+    register int tab_width = XFASTINT (bf_cur->tab_width);
+!   register int ctl_arrow = !NULL (bf_cur->ctl_arrow)
+!               			   + (EQ (bf_cur->ctl_arrow, Qt));
+!   register int meta_display = !NULL (bf_cur->meta_display);
+    int selective
+      = XTYPE (bf_cur->selective_display) == Lisp_Int
+        ? XINT (bf_cur->selective_display)
+***************
+*** 370,376 ****
+  	    }
+  	}
+        else
+! 	cpos += (ctl_arrow && c < 0200) ? 2 : 4;
+  
+        if (HPOS (cpos) >= width
+  	  && (HPOS (cpos) > width
+--- 379,387 ----
+  	    }
+  	}
+        else
+! 
+! 	cpos += (c < 0200) ? (ctl_arrow == 1 ? 1 : (ctl_arrow ? 2 : 4))
+!                        : (meta_display ? 1 : 4);
+  
+        if (HPOS (cpos) >= width
+  	  && (HPOS (cpos) > width
+*** xdisp.c	Wed Apr 26 15:13:59 1989
+--- ../xdisp.c	Fri May 11 06:23:28 1990
+***************
+*** 1203,1209 ****
+    register char *p1prev;
+    register struct display_line *line;
+    int tab_width = XINT (bf_cur->tab_width);
+!   int ctl_arrow = !NULL (bf_cur->ctl_arrow);
+    int width = XFASTINT (w->width) - 1
+      - (XFASTINT (w->width) + XFASTINT (w->left) != screen_width);
+    struct position val;
+--- 1203,1210 ----
+    register char *p1prev;
+    register struct display_line *line;
+    int tab_width = XINT (bf_cur->tab_width);
+!   int ctl_arrow = !NULL (bf_cur->ctl_arrow) + (EQ (bf_cur->ctl_arrow, Qt));
+!   int meta_display = !NULL (bf_cur->meta_display);
+    int width = XFASTINT (w->width) - 1
+      - (XFASTINT (w->width) + XFASTINT (w->left) != screen_width);
+    struct position val;
+***************
+*** 1319,1324 ****
+--- 1320,1332 ----
+  	    }
+  	  break;
+  	}
++ 	  else if (((ctl_arrow == 1) && (c < 0200)) ||
++ 			   (meta_display && (c >= 0200)))
++ 	  {
++ 		  if (p1 >= startp)
++ 			  *p1 = c;
++ 		  p1++;
++ 	  }
+        else if (c < 0200 && ctl_arrow)
+  	{
+  	  if (p1 >= startp)
+***************
+*** 1917,1922 ****
+--- 1925,1937 ----
+  	      p1++;
+  	    }
+  	  while ((p1 - start + hscroll - (hscroll > 0)) % tab_width);
++ 	}
++ 	  else if (((c <  0200) && (buffer_defaults.ctl_arrow == 1)) ||
++ 			   ((c >= 0200) && buffer_defaults.meta_display))
++ 	  {
++ 		  if (p1 >= start)
++ 			  *p1 = c;
++ 		  p1++;
+  	  }
+        else if (c < 0200 && buffer_defaults.ctl_arrow)
+  	{
+-- 
+--Christopher Alexander North-Keys----/\--------------------------------------
+  Co-founder Group Talisman          /  \/\ ^*^               Harp[@Mcc.Com]
+  [*my* opinions]                   /    \ \       Associate Systems Analyst
+--------------------------Microelectronics & Computer Technology Corporation--
+
+

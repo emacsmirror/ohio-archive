@@ -1,0 +1,38 @@
+This directory contains files for the GNU Emacs interface to
+Mathematica.  
+
+math-mode.el and mathtalk.el run in Emacs and should
+be moved into a directory that is in your Emacs load-path and
+byte-compiled.  The binaries emacsfrontend and macnb2nbl should
+be moved to a directory on your Unix shell path.  (If macnb2nbl is
+not included, just make it with "make macnb2nbl".)  Various versions
+may be included in this tar file for sun3 and sun4, and mathematica 1.1
+and 1.2.  Move the appropriate files to the right places.
+
+Print the math-mode.texinfo manual by running TeX on it (first
+make a link to the texinfo.tex macros: 
+ln -s <emacsdir>/man/texinfo.tex texinfo.tex) 
+Copy the math-mode info file to your local info directory and add
+an entry like the following to the info/dir file:
+
+* Math-mode: (math-mode).       Mathematica interface.
+
+Read the first couple sections of the manual, particularly
+"Setting up math-mode".
+
+If there are problems with math-mode, first try outputting
+some debugging info with (setq debug-on-error t) and
+(setq math-show-debug t).  Send me the output if
+you cant figure it out.
+
+Good luck, and enjoy.
+
+Daniel LaLiberte   217-333-2518
+University of Illinois, Urbana-Champaign
+Department of Computer Science
+1304 W Springfield
+Urbana, IL  61801
+
+uiucdcs!liberte
+liberte@cs.uiuc.edu
+liberte%a.cs.uiuc.edu@uiucvmd.bitnet

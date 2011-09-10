@@ -1,0 +1,112 @@
+$Id: TO-DO,v 2.0 1994/02/26 20:40:24 jimt Exp $
+
+Some things to do or consider doing for J-Shell:
+
+Key:
+    *  completed
+    +  in progress or partial fix in place
+    -  back-burner
+    x  rejected
+
+2.0
+
+    Write a texinfo file documenting J-Shell.
+
+    Add userame and hostname completion.
+
+    Add buffer highlighting for Lucid Emacs and FSF Emacs 19.
+
+    Change completion to do a more rigorous analysis of context, and to
+    have a more formal way of dealing with context.  Look at how cc-mode
+    does its context analysis and see if it makes sense for J-Shell to
+    imitate it.
+
+    Steal the directory-tracking from FSF Emacs 19's shell mode and put it
+    in J-Shell as a fall-back for those times when you have to su to an
+    account that doesn't use J-Shell, and for users who don't want to
+    modify their shell startup script.
+
+1.0/1.1
+
++   Add comments liberally throughout.
+
+*   Define a naming scheme for functions and variables, and use it.
+    Change the name of the file to j-shell.el
+
+*   Change the send-input function so that lines that end in "\" don't get
+    sent. (That is, the linefeed gets inserted, but the beginning-of-input
+    marker stays where it is, and nothing gets sent to the shell.)
+
+*   Change the send-input function to send user input in chunks of 256
+    characters, to keep from overrunning the pty's input buffer and so
+    prevent the ^G^G^G^G^G^G^G^G problem.
+
+*   Change the filter function to grab echos from the shell of commands
+    containing !, and substitute them into the history.
+
+X   Change the send-input function to detect whether input is being sent
+    to a shell, or to a foreground process (probably by looking to see
+    whether the prompt preceeds the user input).  Shell commands in the
+    history stack should be specially marked as such.
+
+X   Only commands marked as shell commands in the history stack should
+    be bang-substituted.
+
+X   Change the next- and prev- commands to have a "shell-only" mode in
+    which they substitute *only* commands marked in the history stack as
+    being shell commands.  Define some standard key sequence to toggle the
+    mode.
+
+*   Consider adding a password-detect function that looks for strings of
+    the form "^[Pp]assword:$" and, upon seeing them, keeps any keystrokes
+    up to end-of-line from echoing.  See function substitute-key-definition.
+
+*   Find a way of dealing with ! lines that have bad event-selectors
+    in them, so that the original line isn't replaced in the history
+    with and error message.  (The two lines should match up through
+    the character before the !; for lines whose original first char is
+    !, we can grep the regurgitation for some known csh error
+    messages.)
+
++   Add a cwd-history, a list of directories that have been reported
+    by the shell, and some easy ways to browse and cd to them.
+
+*   Add a tcsh-delete-backward-char to fix mistakes in parsing a
+    password;  Don't bother emulating other emacs editing commands
+    (C-d, for example); this is an acceptable limitation.
+
+*   Add lots of defvars to allow users to turn on and off
+    password-checking, directory-tracking, motd, and other features,
+    especially those that might hurt performance and/or annoy users.
+
+*   Change the update-dir function so that it substitutes ~ for $HOME
+    in the mode line.
+
+*   Add host-handling logic so that the shell can tell tcsh-mode what
+    host it's logged into.
+
++   Think of some way to deal with shells that rlogin to another host,
+    when the directory in that shell doesn't exist in the host that
+    emacs is running on. (Interface to ange-ftp.)
+
+*   Make the functionality identical (where possible) to that
+    exhibited by shell.el, so that jshell will better function as a
+    drop-in replacement for shell.  To start with: the order of
+    evaluation in attempting to determine which shell to exec; the
+    sourcing of emacs-specific files; the commands such as copy-last-
+    shell-input, show-output-from-shell, kill-output-from-shell, etc.
+
+*   Make jshell parametric, so that simple encapsulators can be
+    written for tcsh, csh, and ksh.
+
+Dir-Hist:
+    Add an alist of regexes and the things that they should be
+    substituted with ("/home/jimt" -> "~", "/tmp_mnt" -> "",
+    "/sexx/home/bab" -> "~bab").
+
+    Add a "q" command to quit and bury the buffer.
+
+    Change keymap so that SPC / DEL page forward/backward.
+
+    Consider making it more like dired mode in whatever ways make
+    sense.

@@ -1,0 +1,29 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+
+
+Author Name: Jack Repenning
+Author Organization: Silicon Graphics, Inc.
+Hash function: MD5
+Date of certificate creation: 08/09/95
+
+e28e58a5751d4bb88da2bc1737619929  ./pgp.el
+69506d8621d4d2ec57159165f55dd5b5  ./authors.key
+d3c7c1f03c154bb62b27d59dfc25065b  ./CHANGES.pgp.el
+34eaf6d2cdf9b47ddec53cae77584fd8  ./README
+edbb0111a59a14469deed84fcd4fd005  ./pgp-bbdb.el
+fef16954e74a2197b1b9f256122b0323  ./CHANGES.pgp-bbdb.el
+8ff0f6ea6a86d6ba5ec67cd966e746e1  ./ancillary/advice.el
+5bc940c5b7431ff3cba5e32ac6fd21ab  ./ancillary/passwd.el
+d18ecdfee74a1ebe491624d0ed1914c4  ./ancillary/README
+722ebaa77773e290bbd0d6238d46f713  ./ancillary/reporter.el
+c10d7817f9eb524837fe95aa72140b01  ./ReleaseNotes
+
+-----BEGIN PGP SIGNATURE-----
+Version: 2.6.2
+
+iQCVAgUBMCldl/ZcZabmffV9AQH/rwQApEaLziSXW9qp3PXoKabt6fmUD3e0jqiK
+x884r2tZQ6h1fsjx6aG/Kvx6q1TR7ResJ1kdLNJbsZEVO9GYY4lB7PjuqBm2ZnWe
+/AMLlf/UnC7otywFTpQ2tfrWRykJwHzUNB2LEc3oCf+YsOcwEs0gmk538P5VwgIQ
+m1Opqdtmgx4=
+=M4He
+-----END PGP SIGNATURE-----

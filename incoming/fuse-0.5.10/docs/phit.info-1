@@ -1,0 +1,1143 @@
+This is Info file phit.info, produced by Makeinfo version 1.67 from the
+input file /tmp/sgml2info30752tmp2.
+
+   \input texinfo
+
+
+File: phit.info,  Node: Top,  Next: Introduction,  Up: (dir)
+
+Phit
+****
+
+     Bruce Ravel, `ravel@u.washington.edu'
+     version 0.13, 14 December, 1995
+
+   Fit an arbitrary lineshape to real data.
+
+* Menu:
+
+* Introduction::
+* Input and Output Files::
+* Keywords::
+* Available functions::
+* Writing Sensible Input Files::
+* Goodness of Fit and Uncertainty in Variables::
+* Acknowledgments References and Program Notes::
+* Appendix: Some Worked Examples::
+
+
+File: phit.info,  Node: Introduction,  Next: Input and Output Files,  Prev: Top,  Up: Top
+
+Introduction
+************
+
+   Phit will fit a sum of line shapes to a real data set.  The line
+shapes and variable parameters used in the fit are specified by the
+user.  The parameters are varied using a Levenberg-Marquardt non-linear
+least-squares minimization to best fit the input data.  All information
+needed by Phit, including the data file name, the line shapes, and the
+parameter list, are supplied in a plain text input file called
+`phit.inp'.
+
+   Phit performs extensive error analysis including measuring the
+goodness of fit and estimating error bars on the variable parameters.
+This is intended to help the user interpret the fit and extract
+physically significant results from the data.
+
+   Many portions of this document are copied or modified from the
+document for Feffit, the XAFS fitting program written by Matt Newville
+for the UWXAFS package.  Phit borrows several concepts and algorithms
+from that program.  Chapter 5 in the Feffit document is about goodness
+of fit and error analysis and serves well as a description of those
+concepts for this program.
+
+   Phit, as well as this document, is intended to meet the needs of a
+sophisticated user as well as a first time user.  Much of this document
+is a reference manual covering all of the features and functionality of
+the program.  Also included are several worked examples.  The first
+time user should read these carefully and work through them at the
+computer.  Sample data files and input files are distributed with the
+program.
+
+
+File: phit.info,  Node: Input and Output Files,  Next: Keywords,  Prev: Introduction,  Up: Top
+
+Input and Output Files
+**********************
+
+   Please read the UWXAFS Data File Document for information about the
+data file formats accepted by Phit and the other UWXAFS programs.
+
+* Menu:
+
+* Input Files::
+* Running Phit Output Messages Warnings and Errors::
+* Output Files::
+
+
+File: phit.info,  Node: Input Files,  Next: Running Phit Output Messages Warnings and Errors,  Up: Input and Output Files
+
+Input Files
+===========
+
+   Phit uses the input file `phit.inp' to control the running of the
+program.  If this file cannot be found in either lower case or upper
+case characters, Phit will stop and complain.  The form and contents of
+`phit.inp' will be discussed further in Chapter 3.  Phit usually needs
+an input data file.  The file contains real valued data.  Complex
+valued data is not handled by Phit.  There are no constraints on the
+input data grid, Phit will use whatever abscissa values it finds.  The
+data file name can be up to 72 characters long and can contain a
+directory path.  The file name and path must be allowed by your
+operating system.
+
+   Since Phit is written in Fortran, the file reading conventions of
+Fortran are observed.  The input file and the data file are read using
+the `end' qualifier for the `read' statement.  This means that the
+reading of the file will end when the end-of-file marker is found.  If
+the end-of-file marker does not follow a carriage return, then the line
+containing the end-of-file marker will not be read as input
+instructions in the input file or as data in the data file.  If you are
+always careful to end an input file or a data file with a carriage
+return, then the last line of instructions or data will always be read
+properly.
+
+
+File: phit.info,  Node: Running Phit Output Messages Warnings and Errors,  Next: Output Files,  Prev: Input Files,  Up: Input and Output Files
+
+Running Phit Output Messages Warnings and Errors
+================================================
+
+   Phit is a compiled program, so should be executable from the command
+interface on your computer.  Phit writes several messages as it runs.
+Mostly these messages communicate which task the program is performing
+at the time of writing the message.  If Phit encounters a problem, the
+run-time messages will describe it.  If the problem is serious, Phit
+will complain and stop running.  The error messages that Phit writes
+should supply enough information to correct the problems encountered.
+If this is not true, contact .
+
+
+File: phit.info,  Node: Output Files,  Prev: Running Phit Output Messages Warnings and Errors,  Up: Input and Output Files
+
+Output Files
+============
+
+   As soon as the fitting and error analysis are finished, a log file,
+usually called `phit.log', will be written.  This file will contain all
+of the input information, the fitting results, and the results of the
+error analysis.  Most of this information is not contained in any other
+output file, so this is file is quite important.  After the log file is
+written, the best fit function will be written to an output data file.
+If requested, files containing each individual line shape will also be
+written.
+
+   This is the naming convention for the output files:
+  1.  If an output file name is specified in the input file, that name
+     will be used verbatim for the result of the fit.
+
+  2.  If no output file name is specified, the extension will be
+     removed from the input file name and replaced with `fit' if the
+     output file format is ASCII and with `xmu' if the output format is
+     UWXAFS.  The extension is defined as all characters after the final
+     dot (.) in the file name.  This definition of extension is
+     unambiguous on all operating systems.
+
+  3.  If no output file name is specified and no fit is performed, the
+     calculation of the line shape will be written to a file named by
+     replacing the extension of the input file name with `out' if the
+     output file format is ASCII, and with `xmu' if the output format
+     is uwxafs.
+
+  4.  If no input data is supplied and no output file name is
+     specified, the results of the calculation of the line shape will be
+     written to `phit.out'.
+
+  5.  If output files containing each individual function are
+     requested, these will be written to files named by replacing the
+     extension of the file containing the sum of functions with the
+     function number as specified in the input file.
+
+
+File: phit.info,  Node: Keywords,  Next: Available functions,  Prev: Input and Output Files,  Up: Top
+
+Keywords
+********
+
+   Take a peek at the Appendix.  Included there are a few examples of
+input files for Phit.  This chapter explains the meanings of all the
+keywords recognized by Phit.
+
+   `Phit.inp' uses keywords to describe the input parameters. With only
+a few exceptions, the keywords are allowed to occur in any order in the
+file, and usually have transparent meanings.  This structure allows the
+input file to be easily read and modified.  All keywords use the syntax:
+             keyword delimiter value(s) delimiter ...
+
+   The delimiter can be:
+  1. one or more white spaces (blanks and/or TABs)
+
+  2. one equal sign and any number of white spaces
+
+  3. one comma and any number of white spaces
+
+   Most keywords take only one value. Many keywords can be put on one
+line (though some keywords require their own line).  Internal comments
+can be written anywhere in `phit.inp', which help remind you what the
+keywords mean, or how you chose the input values. Keywords can be in
+upper, lower, or mixed case. Phit is not sensitive to the case of
+keywords or their values.
+
+* Menu:
+
+* A Brief List of the Keywords::
+* Full Explanation of Keywords::
+
+
+File: phit.info,  Node: A Brief List of the Keywords,  Next: Full Explanation of Keywords,  Up: Keywords
+
+A Brief List of the Keywords
+============================
+
+  1.   `!, %, # ' -  characters denoting comments
+
+  2.   `title' -  user supplied title line
+
+  3.   `comment' -  synonymous with title
+
+  4.   `include' - name of an include file
+
+  5.   `data' -  name of input data file
+
+  6.   `read' -  synonymous with data
+
+  7.   `infile' -  synonymous with data
+
+  8.   `nkey' -  numeric key of input UWXAFS data record
+
+  9.   `skey' -  symbolic key of input UWXAFS data record
+
+ 10.   `outfile' -  name of output file
+
+ 11.   `logfile' -  name of log file
+
+ 12.   `format' -  i/o file format
+
+ 13.   `formin' -  input file format
+
+ 14.   `formout' -  output file format
+
+ 15.   `write' -  output data range
+
+ 16.   `xaxis' -  abscissa label in math expressions
+
+ 17.   `sigma' -  logical flag for input measurement uncertainty
+
+ 18.   `sigdat' -  constant input measurement uncertainty
+
+ 19.   `cormin' -  minimum correlation reported in log file
+
+ 20.   `x1 - x10' -  fitting range values
+
+ 21.   `xmin' -  minimum fitting range
+
+ 22.   `xmax' -  maximum fitting range
+
+ 23.   `npoints' -  number of points in nofit output
+
+ 24.   `end' -  flag marking end of input file
+
+ 25.   `all' -  logical flag for writing out individual functions
+
+ 26.   `residual' -  logical flag for writing out array of residuals
+
+ 27.   `nosum' -  logical flag for not writing sum of functions
+
+ 28.   `noout' -  logical flag for writing no output files
+
+ 29.   `norun' -  logical flag for stopping after reading input file
+     and data file
+
+ 30.   `dryrun' -  synonymous with norun
+
+ 31.   `nofit' -  logical flag for only summing functions
+
+ 32.   `noerr' -  logical flag for skipping error analysis
+
+ 33.   `guess' -  parameter to vary in fit
+
+ 34.   `set' -  parameter set by a math expression
+
+ 35.   `function' -  math expression, part of sum in fit
+
+ 36.   `id' -  description line for corresponding function
+
+
+File: phit.info,  Node: Full Explanation of Keywords,  Prev: A Brief List of the Keywords,  Up: Keywords
+
+Full Explanation of Keywords
+============================
+
+``!', `%', and `#''
+     These characters denote comments in the input file.  Anything on a
+     line following any one of these characters will be ignored unless
+     they follow the keywords `title', `comment', or `id' in which case
+     they will be part of the title or id line.
+
+``Title' or `Comment''
+     This is a title line that will be written to the log file and to
+     each output data file.  It can be used to describe and document a
+     run of the program.  Up to 9 title lines of 72 characters each are
+     allowed.
+
+``Include''
+     This is the name of a file that contains additional keywords to be
+     parsed when the input file is read.  The include file name can be
+     up to 72 characters long and may contain a directory path.  The
+     include file is read according to the same syntax as `phit.inp'.
+     All keywords read in the include file are handled equivalently to
+     those in `phit.inp'.  The line containing the keyword `include' is
+     entirely parsed before the include file is opened and read.  When
+     the include file is finished, parsing of the input file will
+     continue.  Nested include files are allowed although there is a
+     limit to how deeply they may be nested.  Include files are never
+     necessary but are allowed as an organizational convenience for
+     complicated input files.
+
+``Data', `Read', or `Infile''
+     This is the name of the input data file.  It may be up to 72
+     characters long and may contain a directory path.  The filename
+     should not contain spaces, tabs, commas (,), or equal signs (=).
+     These characters will confuse the parsing algorithm.  The abscissa
+     grid provided in the input file is used for writing out the output
+     data.  See the full description of the `x1 - x10' keywords for a
+     discussion of how a limited fitting range can be chosen. Not
+     providing an input file name is equivalent to setting the `nofit'
+     flag or to providing no guess values.  In this case, Phit will
+     evaluate and sum the functions using the guess and set values as
+     stated in the input file.  See the full description of the
+     `npoints' keyword for a discussion of how the output abscissa grid
+     is chosen if no input data file is provided.
+
+``Nkey' and `Skey''
+     These are the numeric and symbolic keys that identify a record in
+     a UWXAFS data file.  See the data format document in the UWXAFS
+     package for more details on this file format.  At least one of
+     these two must be specified if the UWXAFS file format is used.
+
+``Outfile''
+     This is the name for the file containing the sum of functions.
+     The file names for the individual functions will be the same with
+     the extension replaced with the function number from the input
+     file.  If no output file name is specified, the input file name
+     will be used with the extension changed to `fit', `out', or the
+     function number, as appropriate.  The file extension is defined as
+     all characters after the final dot (.) in the file name.  This
+     definition meets the definition of an extension in DOS and VMS,
+     and is well defined in a Unix environment.
+
+``Logfile''
+     This is the name of the log file.  The input parameters, set math
+     expressions, functions and ids, results of the fit, and results of
+     the error analysis will be written to this file.  Much of this
+     information will not be written anywhere else, so this is an
+     important file!  The default name for this file is `phit.log'.
+
+``Format', `Formin', and `Formout''
+     These specify the formats for the input and output data files.  By
+     default, files are read in the ASCII format.  The other option is
+     the UWXAFS format.  The `format' keyword specifies both input and
+     output format.  Note that the input and output formats do not need
+     to be the same.
+
+``Write''
+     This determines how the output data will be written to the output
+     data files.  If this keyword is set to `full', the sum of
+     functions and individual functions will be evaluated at each input
+     abscissa value in the input file.  If it is set to `fit', the
+     functions will only be evaluated at abscissa values within the
+     fitting ranges.  This is set to `full' by default.
+
+``Xaxis''
+     This is a character string that will be used to denote the
+     abscissa in all math expressions.  By default this is `x', but
+     something else might be more appropriate for a specific problem.
+     For instance if the input data is an XAFS spectrum in energy, this
+     might be set to `e'.  If the input data is in temperature, it might
+     be `T'.
+
+``Sigma''
+     If a third column containing measurement uncertainties at each
+     abscissa value is provided in the input file, Phit will use those
+     in calculating chi-square and in the error analysis if this
+     keyword is found in the input file.  This keyword does not take any
+     value.  Simply placing it somewhere in the input file will toggle
+     this logical flag.  If no information about measurement
+     uncertainties is provided in the input file, a single number which
+     is the standard deviation of the residuals of the fit will be used.
+
+``Sigdat''
+     To evaluate chi-square using a single, user-chosen number, specify
+     it with this keyword.  It will be used to evaluate chi-square and
+     to perform the error analysis.  If no information about
+     measurement uncertainties is provided in the input file, a single
+     number which is the standard deviation of the residuals of the fit
+     will be used.  This value of sigma will be used to normalize
+     chi-square and the error bars.
+
+``Cormin''
+     Part of the error analysis is the computation of correlations
+     between variables.  By default, only those variables with more
+     than 15% correlation will be written to the log file.  This limit
+     can be changed with this keyword.  It takes a value between 0 and
+     1.
+
+``X1' through `X10''
+     These values can be used to limit the range of the fit to some
+     subset of the input data range.  They take values within the range
+     of the abscissas of the input data and are specified in pairs.
+     Only the input data between `x1' and `x2' and between `x3' and
+     `x4' and so on will be included in the fit.  The data between `x2'
+     and `x3' and so on will be excluded from the fit.  Chi-square and
+     the error analysis will be computed using only the data contained
+     within these abscissa ranges.  By default `x1' is the first data
+     point, `x2' is the last data point, and the other eight are
+     unused.  The values of these keywords will be sorted on input and
+     if an odd number of values are found, the last data point will be
+     inserted into the list.  When functions are evaluated with the
+     fitting results and written to the output data files, they can
+     either be evaluated in the fitting range as specified by these
+     keywords or in the range of the input data.  This is determined by
+     the keyword `write'.
+
+``Xmin' and `Xmax''
+     These are synonymous with `X1' and `X10'.  When only the ends of
+     the input data range are being excluded, these keywords are
+     perhaps more mnemonic.
+
+``Npoints''
+     This keyword is only used in the situation where functions are
+     evaluated without performing any fit.  If no input data is
+     specified, then Phit needs some way to determine an abscissa grid
+     over which to evaluate the functions.  In this situation, Phit
+     will make an even grid containing `npoints' points between `xmin'
+     and `xmax' and evaluate the function on that grid.  If an input
+     data file is specified and no fit is called for, the Phit will use
+     the abscissa grid between `xmin' and `xmax' from that data file
+     and ignore the value of `npoints'.  By default, `npoints' is 100.
+
+``End''
+     When this keyword is encountered in the input file, Phit will stop
+     reading the input file and begin the fit.  Everything after this
+     keyword in the input file will be ignored.  This keyword takes no
+     value.
+
+``All''
+     This is a logical flag telling Phit to write out each individual
+     function.  This keyword takes no value, simply writing it to the
+     input file will toggle this logical flag.
+
+``Residuals''
+     This is a logical flag telling Phit to write out an array
+     containing the residual at each data point written to the output
+     file.  If the value of the keyword `write' is `fit' and the output
+     files only contain the function evaluations at the data points
+     used in the fit, then the residual file will contain the residual
+     used in evaluating chi-square.  If `write' is set to `full', then
+     the residual file will contain the difference between the function
+     evaluations and the data at every data point in the input data
+     file and is not the residual array used to evaluate chi-square.
+     This keyword takes no value, simply writing it to the input file
+     will toggle this logical flag.
+
+``Nosum''
+     This is a logical flag telling Phit not to write out the sum of
+     functions.  This keyword takes no value, simply writing it to the
+     input file will toggle this logical flag.
+
+``Noerr''
+     This is a logical flag telling Phit not to perform any error
+     analysis.  This keyword takes no value, simply writing it to the
+     input file will toggle this logical flag.
+
+``Noout''
+     This is a logical flag telling Phit to write out neither the sum
+     of functions nor the individual functions.  This keyword  takes no
+     value, simply writing it to the input file will toggle this
+     logical flag.
+
+``Norun' or `Dryrun''
+     This is a logical flag telling Phit to stop after reading the
+     input data file.  The input file and the data file will be read
+     and all math expressions will be interpreted before stopping.
+     This option is useful for "spell checking" your input file.  This
+     keyword takes no value, simply writing it to the input file will
+     toggle this logical flag.
+
+``Nofit''
+     This is a logical flag telling Phit to not perform a fit.  Instead
+     the functions and set values will be evaluated at the initial
+     guess values specified in the input file and will be written to
+     output files.  This keyword takes no value, simply writing it to
+     the input file will toggle this logical flag.
+
+``Guess''
+     This keyword takes two values and must be placed on its own line.
+     The first value is the label that will be used in your math
+     expressions and the second value is the initial guess of this
+     parameter.  The label is a character string of up to 20 characters
+     and the initial guess is a number.  Up to 50 guess values can be
+     specified.  It is prudent to choose an initial guess that is
+     somewhat close to what you expect for the best fit value.  For
+     some line shapes, a poor initial guess can confound the
+     minimization algorithm resulting either in an inability to minimize
+     chi square or in the location of a false minimum of the parameter
+     set.  See chapter 5 for more discussion of appropriate initial
+     guesses.  Setting no guess values is equivalent to setting the
+     `nofit' flag.
+
+``Set''
+     This keyword takes two values and must be placed on its own line.
+     The first value is a label that will be used to identify this
+     value in other math expressions.  The second value is a math
+     expression which will be evaluated and whose value will be
+     assigned to its label for use in evaluating other math
+     expressions.  The label is a character string of up to 20
+     characters.  The math expression is a character string of up to 74
+     characters.  Up to 300 set values can be specified.  The set value
+     must be contained on one line.  Phit will not read a math
+     expression that stretches over more than one line.  If a math
+     expression is very long, it would be prudent to break it up into
+     smaller ones.  See Chapter 5 for more discussion of writing good
+     math expressions.
+
+``Function''
+     This keyword takes two values and must be placed on its own line.
+     The first value is an integer which is the index identifying the
+     function.  The second is a math expression which will be evaluated
+     as part of the sum of functions to fit to the data.  This is a
+     character string of up to 74 characters.  Up to 20 functions can
+     be specified.  The function must be contained on one line - Phit
+     will not read a math expression that stretches over more than one
+     line.  If the math expression is very long, it would be prudent to
+     write it in terms of several set values.  See chapter 5 for more
+     discussion of writing good math expressions.
+
+``Id''
+     This keyword takes two values and must be placed on its own line.
+     The first values is an integer which is the index of the function
+     associated with this id line.  The second value is a character
+     string of up to 74 characters.  This is a comment line specifically
+     associated with a particular function.  It will be written to
+     individual function data file, if that output is requested, and it
+     will be written along with its function in the log file.  Id lines
+     with an integer index shared by no functions will be ignored.
+
+
+File: phit.info,  Node: Available functions,  Next: Writing Sensible Input Files,  Prev: Keywords,  Up: Top
+
+Available functions
+*******************
+
+   Phit recognizes many arithmetic operations, trigonometric functions,
+and other special line shapes and functions.  See the next chapter for
+hints on how to use these forms in constructing math expressions.
+
+* Menu:
+
+* List of Functions::
+* Rules for Using Functions::
+* The Peak Function-::
+
+
+File: phit.info,  Node: List of Functions,  Next: Rules for Using Functions,  Up: Available functions
+
+List of Functions
+=================
+
+   *  Unary arithmetic operators + and -
+
+   *  Binary arithmetic operators +, -, *, /, **, and  ^.  ** and ^ are
+     equivalent and indicate exponentiation.
+
+   *  Functions of a single argument:
+       1.  `abs(x)' - absolute value of x
+
+       2.  `neg(x)' - negation (parity change) of x
+
+       3.  `sqrt(x)' - square root of x
+
+       4.  `exp(x)' - natural exponent of x, e^x where e =
+          2.71828182845904523536...
+
+       5.  `ln(x)' - natural log (log base e) of x
+
+       6.  `log10(x)' - log base 10 of x
+
+       7.  `sin(x)' - sine of x, argument in radians
+
+       8.  `cos(x)' - cosine of x, argument in radians
+
+       9.  `tan(x)' - tangent of x, argument in radians
+
+      10.  `cot(x)' - cotangent of x, argument in radians
+
+      11.  `sec(x)' - secant of x, argument in radians
+
+      12.  `csc(x)' - cosecant of x, argument in radians
+
+      13.  `asin(x)' - arcsine (inverse sine) of x in radians
+
+      14.  `acos(x)' - arccosine (inverse cosine) of x in radians
+
+      15.  `atan(x)' - arctangent (inverse tangent) of x in radians
+
+      16.  `sinh(x)' - hyperbolic sine of x
+
+      17.  `cosh(x)' - hyperbolic cosine of x
+
+      18.  `tanh(x)' - hyperbolic tangent of x
+
+      19.  `coth(x)' - hyperbolic cotangent of x
+
+      20.  `sech(x)' - hyperbolic secant of x
+
+      21.  `csch(x)' - hyperbolic cosecant of x
+
+      22.  `int(x)' - integer part of a floating point number
+
+      23.  `nint(x)' - nearest integer to a floating point number
+
+   *  Special functions of multiple arguments
+       1.  `step(x, x0)' - returns 0 if x<x0, 1 if x>x0
+
+       2.  `gauss(x, x0, w)' - Gaussian function = exp( -((x-x0)/w)^2 )
+          / sqrt(pi), x0 is the peak position of the Gaussian, w is the
+          width.  This Gaussian is normalized to unit area.
+
+       3.  `lor(x, x0, w)' - Lorentzian function = 0.5 / ( ((x-x0)/w)^2
+          + 1 ), x0 is the peak position of the Lorentzian, w is the
+          width.  This Lorentzian is normalized to unit area.
+
+       4.  `eins(t, theta, rmass)' - Einstein formula for mean square
+          displacement of a bond, t is the temperature, theta is the
+          Einstein temperature, and rmass is the reduced mass of the
+          atom pair in atomic units.
+
+       5.  `min(x1,x2)' - returns the smaller of x1 and x2
+
+       6.  `max(x1,x2)' - returns the larger of x1 and x2
+
+       7.  `peak(lambda,h,k,l,a,b,c,alpha,beta,gamma)' - returns the
+          position of a diffraction peak in degrees.
+
+   *  Special constants
+       1.  `pi' - 3.14159265358979323844...
+
+
+File: phit.info,  Node: Rules for Using Functions,  Next: The Peak Function-,  Prev: List of Functions,  Up: Available functions
+
+Rules for Using Functions
+=========================
+
+   Arguments to functions must be enclosed by parentheses.  For instance
+`cos(pi)' evaluates to `1'.
+
+   Arguments to trigonometric functions must be in radians.  Use set
+values to convert between degrees and radian, if desired.  Here is an
+example of varying an angle in degrees and calculating the function in
+radians:
+             guess           alphad  0
+             set             alpha   alphad * pi / 180
+             function        1       tan(alpha)
+
+   Some of these function have singular values. Be `very careful' when
+using singular functions in a fit.  There is no problem using these
+functions in your fitting model so long as the singular point is not
+included in your fit.  The residual at this point will be so much
+larger than any other in the fit, that the minimization will be
+ill-posed.  If the singular point is excluded either by judicious
+choice of input grid or by excluding data from the fit by using the `x1
+- x10' keywords, then the fit should be well behaved.
+
+   Functions with singular or undefined values for certain values of the
+argument are error checked before evaluating to avoid run-time errors.
+For example, `ln(-1)' will return 0, `atan(0)' will return 10^40, and
+so on.  The program will therefore not crash if a function is poorly
+used in a fitting model.  The quality of the fit, however, should be
+quite poor.
+
+   Int and nint might be troublesome functions in the fit, since changes
+in the argument can produce absolutely no change in the evaluation of
+the function.  They are included for completeness - use them with
+caution.  Note that `int(3.7) = 3' and `nint(3.7) = 4'.  Also, `int(2)'
+might return 1 if your computer represents the floating point value of
+2 as, for instance, 1.99999837, which is a valid representation.
+
+   The commas in the argument lists to the special functions of multiple
+arguments are necessary.  In my experience, a reasonably good first
+guess for the peak positions of the Gaussian and Lorentzian functions
+is necessary for a well-posed fitting problem.
+
+   The temperatures in the Einstein function are in Kelvin and the
+reduced mass is in atomic units.  Here is a good way to specify the
+reduced mass:
+             set     r_cu    63.546
+             set     r_ba    137.33
+             set     rmass   1 / ( 1/r_cu + 1/r_ba )
+
+   At present, `pi' is the only recognized special constant.
+
+
+File: phit.info,  Node: The Peak Function-,  Prev: Rules for Using Functions,  Up: Available functions
+
+The Peak Function-
+==================
+
+   This is a function of ten arguments (!) that returns the position of
+a diffraction peak in two-theta and in degrees.  The arguments are the
+x-ray wavelength, the Miller indices, the cell axis lengths, and the
+cell angles.  The wavelength and axis lengths must be in consistent
+units.  That is, all four must be in angstroms or in nanometers or
+whatever.  The function will behave identically for different units, so
+long as they are consistent.  The cell angles are in degrees.
+Fractions of degrees should be specified as decimals rather than
+minutes and seconds of arc.  All ten arguments must be specified.  The
+value for the angle that is returned is the angle of the two-theta
+circle.
+
+   This function only is used for peak position, which is dependent only
+on the geometry of the unit cell of a crystal.  It is derived from
+Bragg's law and uses the formulas for interplanar spacing and cell
+volume in a triclinic cell.  This should be well described in any
+introductory crystallography text book.  Phit presently has no specific
+capability for computing crystallographic amplitude and width.  A
+Gaussian or a Lorentzian (or some linear combination of the two)
+centered at the position found by the peak function is a reasonable
+approximation of the shape of a diffraction peak.
+
+
+File: phit.info,  Node: Writing Sensible Input Files,  Next: Goodness of Fit and Uncertainty in Variables,  Prev: Available functions,  Up: Top
+
+Writing Sensible Input Files
+****************************
+
+* Menu:
+
+* Specifying Keywords::
+* Guess and Set Values::
+* Writing Math Expressions::
+* Choosing Variable Labels::
+* Functions Other Than Those Found in Phit::
+* Using Phit without Fitting::
+
+
+File: phit.info,  Node: Specifying Keywords,  Next: Guess and Set Values,  Up: Writing Sensible Input Files
+
+Specifying Keywords
+===================
+
+   Phit reads the input file by reading in a single line at a time and
+parsing the words on that line.  Words in the line are separated by
+white space, where the white space can be zero or one comma or equals
+sign along with any number of spaces and tabs.  Each word is compared
+to a list of recognized keywords.  If it is found, the appropriate
+number of words following the recognized keyword are interpreted as the
+values associated with that keyword.  For instance, if the following
+words are found in a line:
+             xaxis  =  e
+
+   the word `xaxis' will be recognized as a keyword and the word `e'
+will be interpreted as the character string labeling the xaxis.  If
+this is found:
+             sigdat     =3.0956
+
+   then `sigdat' will be recognized as a keyword and the character
+string `3.0956' will be internally read as a floating point number.  In
+this case:
+             function        1       m*x + b
+
+   `function' will be recognized, `1' will be read as an integer, and
+the remainder of the line will be recognized as the math expression
+associated with function #1.
+
+   This parsing scheme allows the input file to read more like common
+English and is intended to facilitate use of a rather complicated
+program.  The parsing scheme is insensitive to case, so `GUESS' is
+equivalent to `guess', `Guess', and `gUEsS'.  Blank lines and lines
+beginning with the comment characters `!', `%', or `#' will be ignored,
+as will `id' lines that correspond to no function and `title' lines in
+excess of 9.  Recall that the white space between words can be any
+number of tabs or blanks and no more than one comma or equals sign.
+
+   There is little established order in which the keywords must be found
+in the input file.  The only structure imposed on the input file is
+that everything on a line after the keyword `title' will be included in
+the title and that the keywords `guess', `set', `function', and `id'
+must be on their own lines.
+
+
+File: phit.info,  Node: Guess and Set Values,  Next: Writing Math Expressions,  Prev: Specifying Keywords,  Up: Writing Sensible Input Files
+
+Guess and Set Values
+====================
+
+   The guess values are the parameters that will actually be varied to
+produce the best fit.  The labels for the guess values are used to
+identify these parameters in the set value and function math
+expressions.  The initial guess must be a number.  It cannot be a math
+expression.
+
+   All guess values must be used in math expression.  Any unused guess
+value will cause an error message to be written to the screen and the
+program to stop.  The minimization algorithm is ill-posed if a variable
+has no effect on the function being minimized.  There is still a
+pitfall of unused guess values.  If the guess value is used to evaluate
+a set value and the set value is not used in any function, then the
+minimization will be ill-posed.
+
+   The set values are stated in the input file as math expressions,
+where the math expression can be simply a number or some valid
+combination of numbers, special functions, other set and guess values,
+and operators.  If a set value is unused in other math expressions, a
+warning will be written to the screen, but the program will continue.
+Set values can depend on other set values, but they cannot be
+self-referencing.  That is, a set value may not depend on itself, as in:
+             a = a+1
+
+   If a self-referencing set value is found, an error message will be
+written to the screen and the program will stop.
+
+
+File: phit.info,  Node: Writing Math Expressions,  Next: Choosing Variable Labels,  Prev: Guess and Set Values,  Up: Writing Sensible Input Files
+
+Writing Math Expressions
+========================
+
+   The algorithm for encoding the math expressions found in the input
+file follows the Fortran standard for operator precedence.  Quantities
+in parentheses and special functions will be evaluated first, followed
+in order by exponentiation, multiplication/division, and
+addition/subtraction.
+
+   Blanks and tabs are removed from math expressions before encoding.
+Using blanks to make math expressions more easily understood to the
+human reader of the input file in encouraged.
+
+   The arguments to special functions must be enclosed in parentheses
+and must be separated by commas.  Functions of a single argument need no
+commas.  Functions of more than one argument make no assumptions about
+the value of the arguments, so all arguments must be specified.
+
+   There is a known bug in the encoding algorithm.  If a function of
+more than one argument is passed as the argument of a function of more
+than one argument, there will be an error counting the commas.  The
+following will trip this bug:
+             set     a       gauss( e,  min(1, center), width)
+
+   This would constrain the center point of the Gaussian to be no larger
+than 1.  If this is what you want, you should do this instead:
+             set     b       min(1,center)
+             set     a       gauss( e, b, width)
+
+   Because all math expressions must be contained on a single line,
+writing math expressions in terms of set values is often necessary.
+
+   The great value of this scheme of guess values and math expressions
+is that arbitrarily robust and complex fitting models can be introduced.
+For example, more than one function can depend on one variable
+parameter.  Thus the set of variables can be small and robust.  The set
+of functions actually summed and used in the fit is easily created and
+changed by the user, allowing many different fitting models to be
+tested.
+
+   If any mistakes are found in any math expression, a warning message
+containing the nature of the problem will be written to the screen and
+the program will stop.
+
+
+File: phit.info,  Node: Choosing Variable Labels,  Next: Functions Other Than Those Found in Phit,  Prev: Writing Math Expressions,  Up: Writing Sensible Input Files
+
+Choosing Variable Labels
+========================
+
+   The labels associated with the set and guess values and with the
+xaxis are completely arbitrary and subject to the preferences of the
+user.  Choosing variable names that are mnemonic is a good idea.  If
+the data that you are fitting is measured in energy, then `e' might be
+chosen as the xaxis label for use in the math expressions.  The
+variable associated with the width of a Lorentzian function might be
+`width'.  It might also be called `chthon' or anything else that has
+meaning to you.
+
+   The labels for the set and guess values and the xaxis must be less
+than 20 characters.  They must be composed of keyboard characters that
+are unambiguous in the context of math expressions.  This means that
+`+', `-', `*', `/', `^', `(', and `)' cannot be part of a label.  For
+example, the expression `h-bar' will be interpreted as the value of
+`bar' subtracted from the value of `h'.  The names of functions
+understood by Phit can, in fact, be variable names.  Phit recognizes
+function names as functions when followed immediately by an open
+parenthesis (`(').  This math expression:
+             sinh * sinh(3)
+
+   will thus be interpreted as the variable `sinh' multiplied by the
+hyperbolic sine of 3.
+
+
+File: phit.info,  Node: Functions Other Than Those Found in Phit,  Next: Using Phit without Fitting,  Prev: Choosing Variable Labels,  Up: Writing Sensible Input Files
+
+Functions Other Than Those Found in Phit
+========================================
+
+   If you need a function that is not recognized by the math expression
+encoder, there is a solution that does not involve modifying the
+Fortran source code.  If your function is representable in a reasonable
+number of terms, then the new function can be expressed as a sum of set
+values in the input file.  Here, for instance, is the math expression
+for a fifth order Legendre polynomial as a function of the xaxis label
+`x':
+             set     leg5    (63*x**5 + 70*x**3 + 15*x) / 8
+
+   You could define some number of Legendre polynomials in this fashion
+and fit data as a weighted expansion in Legendre polynomials.  If your
+function is described by a series expansion that is convergent in a
+small number of terms, this technique of using set values will work
+well.
+
+   A function commonly used to analyze XANES is the pseudo-Voight
+function.  This is a linear combination of a Lorentzian and a Gaussian.
+This could be constructed as follows:
+             guess   x0        0             ! center of function
+             guess   g_width   1             ! gaussian width
+             guess   l_width   1             ! lorentzian width
+             guess   nu        0.5           ! relative weight lineshapes
+             set     g         gauss(x, x0, g_width)
+             set     l         lor(x, x0, l_width)
+             set     voight    nu * g + (1-nu) * l
+
+   In this example, a pseudo-Voight is constructed and four variables
+describing the function are allowed to float.
+
+
+File: phit.info,  Node: Using Phit without Fitting,  Prev: Functions Other Than Those Found in Phit,  Up: Writing Sensible Input Files
+
+Using Phit without Fitting
+==========================
+
+   Occasionally Phit is run without performing a fit.  One might use
+Phit to construct some complicated line shape or to evaluate a fitting
+function at its initial guess values.  There are three ways make Phit
+run to completion without performing a fit:
+  1.  Use the `nofit' keyword.
+
+  2.  Specify no guess values.
+
+  3.  Specify no input data set.
+
+   If the `nofit' keyword is specified then the set and function math
+expressions will be evaluated using the initial values of the guess
+parameters.  The sum of functions and, if requested, the individual
+functions will be written to disk.  The functions will be evaluated on
+the x-axis grid of the input data file.
+
+   If no guess parameters are specifies, then the functions will be
+evaluated using the set values on the data grid of the input data file.
+
+   If no input data is specified, the sets and functions will be
+evaluated using the initial values for any guess functions.  The
+functions will be evaluated on an evenly spaced data grid determined by
+the values of the keywords `xmin', `xmax', and `npoints'.
+
+
+File: phit.info,  Node: Goodness of Fit and Uncertainty in Variables,  Next: Acknowledgments References and Program Notes,  Prev: Writing Sensible Input Files,  Up: Top
+
+Goodness of Fit and Uncertainty in Variables
+********************************************
+
+   This topic is discussed in detail in Chapter 5 of Matt Newville's
+Feffit document.  For good literature references see `Data Reduction
+and Error Analysis for the Physical Sciences' by Philip R. Bevington
+and `Numerical Recipes' by Press, `et al.'  Rather than rehashing what
+is said in those places, I will only point out differences between the
+error analysis in Feffit and Phit.
+
+   The most important difference is that the summations for chi-square
+and the R-factor are over both the real and imaginary parts in Feffit.
+Since Phit deals strictly with real valued data, these summations are
+only over real values.  Thus, the R-factor is defined as the sum of the
+squares of the residuals divided by the sum of squares of the data.
+(See Eq. 5.7 in the Feffit document.)
+
+   In the Feffit document, the measurement uncertainty is referred to
+as epsilon.  Here I have been calling it sigma.  Ok.  In Feffit the
+uncertainty is estimated from a part of the Fourier transformed signal
+that is spectrally distinct from the analyzed part of the data.  Phit
+cannot use any such tricks.  If the measurement uncertainty at each
+point is somehow already known, then it can be input into the program
+as part of the data file.  This requires using the keyword `sigma'.
+Alternatively, a single value for sigma can be entered in the input
+file with the keyword `sigdat'.  If no information about sigma is
+provided by the user, then Phit will use the standard deviation of the
+residuals as the value of sigma.  The residuals are the differences at
+each point between the data and the sum of functions evaluated at the
+best fit values of the parameters.
+
+   Using the standard deviation of the residuals as the value of sigma
+assures that the value of chi-square for any fit will be nearly 1.
+This is true even in the case of a fit that is obviously poor by visual
+inspection.  If this option for evaluating sigma is used, chi-square is
+not a valid criteria for ascertaining the quality of the fit.  The R
+factor, however, is independent of the choice of sigma and should be a
+good criteria for judging a fit.
+
+   The merit of using a value of sigma that assures unit chi-square is
+that the error bars on the variables will be correctly normalized.  If
+the fit is of acceptable quality, than the error bars reported in the
+log file will be those for a variable that is normally distributed
+about its best-fit value.
+
+   Since there is no signal processing involved in Phit, there is no
+way to evaluate the number of independent measurements in the data.
+The standard assumption in this situation is that each input data point
+is an independent measurement.  Chi-square is normalized under this
+assumption.  Phit assumes the number of independent points is the
+number of data points falling within the fitting ranges minus the
+number of guess values.
+
+   Whatever evaluation of sigma is used, chi-square is calculated from
+the residual at each point weighted by the appropriate value of sigma,
+as in Eq. 5.2 of the Feffit document.  This value of chi-square is then
+used in calculating error bars and correlations between variables.  The
+normalized chi-square reported in `phit.log' is this chi-square divided
+by the number of independent points.
+
+   The error bars on the guess values are calculated assuming the
+fitting function is normally distributed about the best-fit values.
+With this assumption, the error bars reported are one-sigma values for
+the variation in the guessed variables.  Error bars for the evaluation
+of set expressions are also reported in `phit.log'.  These are
+propagated numerically from the error bars in the guessed variables and
+include the correlation terms.  See page ?? in Bevington's book for the
+details of this calculation.  Error bars are reported neither for set
+expressions that are independent of guessed variables nor for set
+expressions that depend on the x-axis.
+
+   Please read Chapter 5 of the Feffit document carefully.  It is a
+good discussion of the issues of non-linear minimization and provides
+information on interpreting the results of the error analysis performed
+by Phit.
+
+
+File: phit.info,  Node: Acknowledgments References and Program Notes,  Next: Some Worked Examples:,  Prev: Goodness of Fit and Uncertainty in Variables,  Up: Top
+
+Acknowledgments References and Program Notes
+********************************************
+
+* Menu:
+
+* Acknowledgments::
+* Bibliography::
+* Copyright Issues::
+* Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs::
+* To Do::
+* Source Code Parameters::
+* Code Portability and Code Compilation::
+* Adding More Data Formats to Phit::
+* About this document-::
+
+
+File: phit.info,  Node: Acknowledgments,  Next: Bibliography,  Up: Acknowledgments References and Program Notes
+
+Acknowledgments
+===============
+
+   I mostly want to thank Matt Newville.  He suggested writing the
+program in this manner and offered me several subroutines from Feffit
+for my use here.  Matt and Daniel Haskel helped me test the code from
+its earliest incarnations.
+
+
+File: phit.info,  Node: Bibliography,  Next: Copyright Issues,  Prev: Acknowledgments,  Up: Acknowledgments References and Program Notes
+
+Bibliography
+============
+
+  1.  Bevington, Philip R., `Data Reduction and Error Analysis for the
+     Physical Sciences', McGraw-Hill, New York, (1969)
+
+  2.   software archive, AT&T
+
+  3.  Newville, M, Documentation for Feffit, , UWXAFS Project.
+
+  4.  Press, W.H., S.A. Teukolsky, W.T. Vettering, B.P. Flannery
+     `Numerical Recipes in Fortran, The Art of Scientific Programming',
+     Cambridge University Press, (1992)
+
+
+File: phit.info,  Node: Copyright Issues,  Next: Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs,  Prev: Bibliography,  Up: Acknowledgments References and Program Notes
+
+Copyright Issues
+================
+
+   Phit uses the `MINPACK' package of subroutines from AT&T's Netlib
+repository.  This is freely available software.  Several other
+algorithms are taken from `Numerical Recipes' by Press, `et al.'  By
+the terms stated in that book, the algorithms contained therein are
+freely available to anyone who transcribes them.  The rest of routines
+in Phit are copyright of the University of Washington.  Version numbers
+below 1.0 are not licensed software, but are only released to holders
+of the UWXAFS3.0 software license.  The terms of that agreement apply.
+
+
+File: phit.info,  Node: Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs,  Next: To Do,  Prev: Copyright Issues,  Up: Acknowledgments References and Program Notes
+
+Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs
+===============================================================
+
+   If you do not have a license to use FEFF or the UWXAFS analysis
+programs and are interested in obtaining one contact:
+
+   Ed Stern c/o UWXAFS Project University of Washington Department of
+Physics, FM-15 Seattle WA, 98195, USA phone: (206) 543-2023 fax: (206)
+543-0635 electronic mail: stern@phys.washington.edu URL:
+http://krazy.phys.washington.edu/people/ed.html
+
+   or
+
+   John Rehr c/o FEFF Project University of Washington Department of
+Physics, FM-15 Seattle WA, 98195, USA phone: (206) 543-8593 fax: (206)
+543-0635 electronic mail: jjr@phys.washington.edu URL:
+http://pauli.phys.washington.edu/~jjr/
+
+   You should request copies of the licensing agreements for FEFF and
+the UWXAFS programs.  These are licensed separately.  ATOMS is
+distributed with both packages.
+
+
+File: phit.info,  Node: To Do,  Next: Source Code Parameters,  Prev: Obtaining New Copies of FEFF or of the UWXAFS Analysis Programs,  Up: Acknowledgments References and Program Notes
+
+To Do
+=====
+
+   *  Zeros of functions.
+
+   *  Check that guess values are used (explicitly or implicitly) in
+     functions.
+
+   *  Add more line shapes, possibly integer factorial, Bessel's
+     functions, Legendre polynomial, Hermite polynomials, Gamma
+     function, Airy integrals, erf and erfc, Sine and Cosine Integrals,
+     etc., etc, etc.  minimized using named columns.
+
+   *  Complex valued data and line shapes (ugh!)
+
+   *  Crystallography applications.
+
+   *  Improve quality of log file.
+
+   *  Update appendix of this document.
+
+   If you have any good suggestions for expanding the functionality of
+Phit, please contact .
+

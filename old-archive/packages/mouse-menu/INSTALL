@@ -1,0 +1,101 @@
+Installation, problem and troubleshooting guide for Emacs mouse/menu package.
+
+If you're not going to be using this software under the X window
+system you can ignore step 1. You will unfortunately be missing out on
+a lot of the functionality by not using X...
+
+1: Patch the file "x11fns.c" using "x11fns-patch": this will make
+   x-get-mouse-event behave like x-proc-mouse-event as far as meta-key
+   reporting is concerned, and add the "x-set-baud" function recently
+   posted to the net (typically called with an argument of 1000000).
+
+2: Rebuild Emacs with HAVE_X_WINDOWS and HAVE_X_MENU or
+   HAVE_SUNWINDOWS defined, depending on your desired window system.
+
+   NB. at our local site we preload the menu software in 2 seperate X
+   and SunView versions: if you wish to do this then byte-compile all
+   the supplied "*.el" files with your existing 18.55 Emacs before
+   rebuilding for speed and compactness. For SunView you'll probably
+   have to increase the amount of pure lisp storage available,
+   PURESIZE (we set it to 2000000 here: that may be over the top),
+   remember that most m-<arch>.h files will override the default
+   (especially "m-sparc.h", "m-sun2.h" and "m-sun3.h").
+
+3: Save your existing "default.el" and "default.elc", if any, and
+   install the supplied version, byte-compiled to taste.
+
+4: Under Sunview, just restart your emacstool. The title bar should
+   display a message telling you how to get menus (by default, it will
+   be via the right mouse button in the text region). 
+
+   Under X, add the contents of ".Xdefaults" to your resource database
+   (this file can be merged with your personal X defaults if desired),
+   and enable bug compatibilty mode (on an X11R4 server) using "xset
+   bc". You may wish to try the supplied ".twmrc" in conjuction as
+   well, but don't expect many of the menu options to work: they're
+   fairly site-specific. An example ".xinitrc" is also supplied. Now
+   restart Emacs, a message in the modeline should tell you how to get
+   menus, by default it will be via the right mouse button in the text
+   region.  
+
+5: Have fun.
+
+Known bugs and problems.
+
+Most of the code assumes you've got 3 buttons on your mouse. On SUNs
+this is not usually a great problem :-). It has only been tested on
+SUN 2/3/4 and SPARC machines because that's all we have here. 
+
+The menu definitions special-case on X. This is because the SunView
+and terminal menus (which were done first) assume a ``pull-right menu
+or command item'' implementation which doesn't map easily to the
+``deck of cards'' implementation provided by X. The X menus are
+probably marginally better organised though, since that's the
+environment I spend my time in nowadays. It would be nice if a
+well-integrated ``pull-right'' X menu package for Emacs appeared in my
+mail box one day...
+
+The mouse-help facility under X produces an Emacs buffer listing the
+local and global commands for the region the mouse was in when help
+was requested (or the region was chosen from the mouse menu):
+unfortunately it blithely assumes that Emacs will get the events
+listed -- which it may not if your window manager grabs them. With the
+supplied ".twmrc" only "meta-{left,middle,right}" are grabbed by twm,
+so the only functions which cannot be used are x-mouse-line-to-top,
+x-mouse-line-to-middle, x-mouse-top-to-line in the scrollbar region.
+
+X-mouse-yes-or-no-p shouldn't be used (via fset) as a replacement for
+yes-or-no-p (however attractive this may seem), because it's too fast
+in many typical cases, such as dired: Emacs doesn't have time to
+create and display the *Deletions* buffer before the yes/no menu pops
+up and anyway it will probably obscure some of the listing and you
+have no way of moving it...
+
+There are no C-mode specific menus or mouse bindings. I don't program
+in C, so I have little or no idea what would useful (apart from the
+obvious "make" entry) for C programmers. Perhaps some educated soul
+would like to conjure up a reasonable default menu for C.
+
+Troubleshooting:
+
+Problem: You get an "unknown XMenu error" when you press the right
+	 mouse button (and Emacs appears to hang). 
+
+Solution: You have forgotten to enable bug compatibility (check with
+	  "xset q", fix with "xset bc"). OpenLook devotees please
+	  check that you use the MIT xset, *not* the SUN one which 
+	  silently ignores the "bc" option, and will not report the
+	  compatibility status of the server.
+
+Problem: You get an message saying "#<EMACS BUG: ILLEGAL DATATYPE
+	 #<NATNUMP 10912092109>, save your buffers immediately and
+	 please report this bug" (the number may vary) when you try to
+	 press a mouse button with one or more of the shift, control
+	 or meta keys held down.
+
+Solution: You have not patched "x11fns.c" (see above), to have
+	  x-get-mouse-event report the meta bit correctly. Do it as
+	  above and rebuild.
+
+Good Luck,
+     		Russell Ritchie, Fri Jun  1 15:09:51 1990.

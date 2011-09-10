@@ -1,0 +1,37 @@
+; From: montnaro@sprite.crd.ge.com (Skip Montanaro)
+; Newsgroups: gnu.emacs.gnus
+; Subject: Going back to the front of the group after C-k
+; Date: 17 Oct 89 13:10:52 GMT
+; 
+; 
+; I recently wrote asking why 'k' in the Subject buffer set the cursor to the
+; first unread message in the newsgroup, but 'C-k' just set the cursor to the
+; next unread message. I didn't get any good answers, so in typical GNU-ist
+; fashion decided to hack the sources a bit. Below are the trivial diffs to
+; get the behavior I desired. As you can see, I added a new variable, which
+; defaults to nil (preserving the old behavior).
+; 
+; *** gnus.el~	Tue Jun 27 14:01:42 1989
+; --- gnus.el	Mon Oct 16 21:43:03 1989
+; ***************
+; *** 468,471 ****
+; --- 468,474 ----
+;     "*A directory placing an Info file of GNUS.")
+;   
+; + (defvar gnus-Subject-rewind-group-after-kill nil
+; +   "*If t, go to beginning of group before searching for next unread article.")
+; + 
+;   
+  ;; Internal variables.
+***************
+*** 2666,2669 ****
+--- 2669,2674 ----
+  	 (gnus-Subject-mark-same-subject
+  	  (gnus-Subject-subject-string) unmark)))
++     (if gnus-Subject-rewind-group-after-kill
++ 	(goto-char (point-min)))
+      (gnus-Subject-next-subject 1 (not unmark))
+      (message "%d articles are marked as %s"
+--
+Skip Montanaro (montanaro@crdgw1.ge.com)
+

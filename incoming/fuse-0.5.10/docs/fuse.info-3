@@ -1,0 +1,405 @@
+This is Info file fuse.info, produced by Makeinfo version 1.68 from the
+input file fuse.texi.
+
+START-INFO-DIR-ENTRY
+* FUSE: (fuse).             Feff/UWXAFS System for Emacs
+END-INFO-DIR-ENTRY
+
+
+File: fuse.info,  Node: Function Index,  Next: Variable Index,  Prev: Future,  Up: Top
+
+Function Index
+**************
+
+* Menu:
+
+* Atoms-jump-to-geom:                    atoms mode.
+* Atoms-jump-to-p1:                      atoms mode.
+* Atoms-jump-to-unit:                    atoms mode.
+* Atoms-make-template:                   atoms mode.
+* Autobk-insert-ezero:                   autobk mode.
+* Autobk-make-template:                  autobk mode.
+* Autobk-plot-all-chi:                   autobk mode.
+* Autobk-plot-bkg:                       autobk mode.
+* Autobk-plot-ksp:                       autobk mode.
+* Autobk-plot-thy:                       autobk mode.
+* autobk-run-stanza:                     Basic run commands.
+* Autobk-run-stanza:                     autobk mode.
+* Feff-8-jump-to-convergence:            feff mode.
+* Feff-8-plot-convergence:               feff mode.
+* Feff-8-plot-rho:                       feff mode.
+* Feff-8-plot-xmu:                       feff mode.
+* Feff-8-write-convergence-data:         feff mode.
+* Feff-comment-out-region:               feff mode.
+* Feff-display-intrp:                    feff mode.
+* Feff-jump-to-files:                    feff mode.
+* Feff-jump-to-list:                     feff mode.
+* Feff-jump-to-misc:                     feff mode.
+* Feff-jump-to-paths:                    feff mode.
+* Feff-make-template:                    feff mode.
+* Feff-plot-chi:                         feff mode.
+* Feff-plot-xmu:                         feff mode.
+* Feffit-add-path-param:                 feffit mode.
+* Feffit-clean-data-set:                 feffit mode.
+* Feffit-clean-path-paragraph:           feffit mode.
+* Feffit-comment-path-param:             feffit mode.
+* Feffit-display-intrp:                  feffit mode.
+* Feffit-from-files:                     feffit mode.
+* Feffit-insert-best-fit:                feffit mode.
+* Feffit-insert-mcmaster:                feffit mode.
+* Feffit-insert-this-best-fit:           feffit mode.
+* Feffit-jump-to-files:                  feffit mode.
+* Feffit-jump-to-list:                   feffit mode.
+* Feffit-jump-to-misc:                   feffit mode.
+* Feffit-jump-to-paths:                  feffit mode.
+* Feffit-jump-to-prm-file:               feffit mode.
+* Feffit-make-bkg-template:              feffit mode.
+* Feffit-make-ghead-template:            feffit mode.
+* Feffit-make-lhead-template:            feffit mode.
+* Feffit-make-path-paragraph:            feffit mode.
+* Feffit-make-tags-file:                 feffit mode.
+* Feffit-plot-k:                         feffit mode.
+* Feffit-plot-q:                         feffit mode.
+* Feffit-plot-r:                         feffit mode.
+* Feffit-remove-path-param:              feffit mode.
+* Feffit-renumber-data-set:              feffit mode.
+* Feffit-renumber-from-point:            feffit mode.
+* Feffit-renumber-paragraph:             feffit mode.
+* Feffit-set-path-index:                 feffit mode.
+* Feffit-set-plot-column:                feffit mode.
+* Feffit-swap-bkg-template:              feffit mode.
+* Feffit-uncomment-path-param:           feffit mode.
+* Feffit-zeroth-path-paragraph:          feffit mode.
+* fuse-dired-run-marked:                 Batch processing.
+* fuse-gnuplot-next:                     Using.
+* fuse-gnuplot-previous:                 Using.
+* fuse-kill-gnuplot:                     Using.
+* input-arg-for-this-keyword:            input mode.
+* input-back-to-original:                input mode.
+* input-backward-paragraph:              input mode.
+* input-check-this-keyword-arg:          input mode.
+* input-clean-file:                      input mode.
+* input-clean-line:                      input mode.
+* input-clean-region:                    input mode.
+* input-complete-keyword:                input mode.
+* input-determine-program:               input mode.
+* input-display-keywords:                input mode.
+* input-document:                        input mode.
+* input-forward-paragraph:               input mode.
+* input-guess-to-set:                    input mode.
+* input-insert-filename:                 input mode.
+* input-jump-to-data-file:               input mode.
+* input-jump-to-gnuplot-buffer <1>:      Limitations.
+* input-jump-to-gnuplot-buffer:          input mode.
+* input-jump-to-log-file:                input mode.
+* input-jump-to-master-file:             input mode.
+* input-kill-paragraph:                  input mode.
+* input-kill-program:                    Basic run commands.
+* input-kill-stanza:                     input mode.
+* input-mark-paragraph:                  input mode.
+* input-mark-stanza:                     input mode.
+* input-newline:                         input mode.
+* input-next-stanza:                     input mode.
+* input-previous-stanza:                 input mode.
+* input-repaint-command:                 input mode.
+* input-run-any-program-any-file <1>:    Basic run commands.
+* input-run-any-program-any-file:        input mode.
+* input-run-this-program-any-file:       Basic run commands.
+* input-run-this-program-this-file:      input mode.
+* input-save-run-log <1>:                Run.
+* input-save-run-log:                    input mode.
+* input-set-all-paths:                   input mode.
+* input-set-and-jump:                    input mode.
+* input-set-configuration:               input mode.
+* input-set-data-path:                   input mode.
+* input-set-eshift:                      input mode.
+* input-set-feff-path:                   input mode.
+* input-set-k-weight:                    input mode.
+* input-set-master:                      input mode.
+* input-set-out-path:                    input mode.
+* input-set-version:                     input mode.
+* input-show-version:                    input mode.
+* input-snag-from-next-paragraph:        input mode.
+* input-snag-from-next-stanza:           input mode.
+* input-snag-from-previous-paragraph:    input mode.
+* input-snag-from-previous-stanza:       input mode.
+* input-submit-feedback:                 input mode.
+* input-submit-program-bug-report:       input mode.
+* input-swap-comment:                    input mode.
+* input-toggle-gnuplot-terminal:         input mode.
+* input-true-false:                      input mode.
+* input-visit-previous-run-log:          input mode.
+* send-buffer-to-gnuplot:                Using.
+* send-line-to-gnuplot:                  Using.
+* send-region-to-gnuplot:                Using.
+
+
+File: fuse.info,  Node: Variable Index,  Next: Key Index,  Prev: Function Index,  Up: Top
+
+Variable Index
+**************
+
+* Menu:
+
+* Atoms-auto-jump-flag:                  Variables.
+* Atoms-load-hook:                       Variables.
+* Atoms-mode-hook:                       Variables.
+* Autobk-load-hook:                      Variables.
+* Autobk-mode-hook:                      Variables.
+* Feff-load-hook:                        Variables.
+* Feff-mode-hook:                        Variables.
+* Feffit-load-hook:                      Variables.
+* Feffit-mode-hook:                      Variables.
+* fuse-base-directory:                   Variables.
+* fuse-bin-location:                     Using.
+* fuse-glyph-directory:                  Variables.
+* fuse-gnuplot-history-length:           Variables.
+* fuse-use-toolbar:                      Variables.
+* gnuplot-script-buffer-name:            Variables.
+* input-after-run-hook:                  Variables.
+* input-always-raise-flag:               Variables.
+* input-arg-for-this-keyword:            Keywords.
+* input-atoms-separate:                  Variables.
+* input-beep-flag:                       Variables.
+* input-best-fit-set-flag:               Variables.
+* input-bin-location:                    Variables.
+* input-check-for-this-keyword:          Keywords.
+* input-comment-delimiter:               Variables.
+* input-comment-indent:                  Variables.
+* input-comment-list:                    Variables.
+* input-complete-keyword:                Keywords.
+* input-describe-keywords:               Toolbars.
+* input-display-keywords:                Keywords.
+* input-document-location:               Variables.
+* input-document-type:                   Variables.
+* input-emulation:                       Variables.
+* input-feff-indent:                     Variables.
+* input-gnuplot-data-style:              Variables.
+* input-gnuplot-default-ps-file:         Variables.
+* input-gnuplot-default-terminal:        Variables.
+* input-gnuplot-ezero-flag:              Variables.
+* input-gnuplot-q-column:                Variables.
+* input-gnuplot-r-column:                Variables.
+* input-init-file:                       Variables.
+* input-intrp-args:                      Variables.
+* input-intrp-buffer-name:               Variables.
+* input-list-indent:                     Variables.
+* input-list-separate:                   Variables.
+* input-load-hook:                       Variables.
+* input-mcmaster-ampfac:                 Variables.
+* input-mcmaster-fourth:                 Variables.
+* input-mcmaster-sigma:                  Variables.
+* input-mode-hook <1>:                   Variables.
+* input-mode-hook:                       Customizing.
+* input-mode-variable-comment:           Variables.
+* input-path-paragraph-indent:           Variables.
+* input-path-paragraph-separate:         Variables.
+* input-plot-flag:                       Variables.
+* input-potentials-indent:               Variables.
+* input-potentials-separate:             Variables.
+* input-program-document-location:       Variables.
+* input-prohibit-autoconfig-flag <1>:    Variables.
+* input-prohibit-autoconfig-flag:        Autoconfiguration.
+* input-run-log:                         Variables.
+* input-run-log-interactive:             Variables.
+* input-run-log-max-lines:               Variables.
+* input-set-guess-indent:                Variables.
+* input-set-guess-separate:              Variables.
+* input-stanza-delimiter:                Variables.
+* input-stanza-indent:                   Variables.
+* input-stanza-name:                     Variables.
+* input-time-stamp-begin:                Variables.
+* input-time-stamp-flag:                 Variables.
+* input-time-stamp-line-limit:           Variables.
+* input-upcase-keywords-flag:            Variables.
+* input-use-frames:                      Variables.
+* input-use-frames-flag <1>:             Using.
+* input-use-frames-flag:                 Run.
+
+
+File: fuse.info,  Node: Key Index,  Next: Concept Index,  Prev: Variable Index,  Up: Top
+
+Key Index
+*********
+
+* Menu:
+
+* <RET>:                                 input mode.
+* C-c ;:                                 feff mode.
+* C-c C-b:                               Using.
+* C-c C-b a:                             input mode.
+* C-c C-b b:                             input mode.
+* C-c C-b d:                             input mode.
+* C-c C-b k:                             input mode.
+* C-c C-b l <1>:                         Run.
+* C-c C-b l:                             input mode.
+* C-c C-b o:                             input mode.
+* C-c C-b p:                             input mode.
+* C-c C-b s:                             input mode.
+* C-c C-b v:                             input mode.
+* C-c C-c f:                             input mode.
+* C-c C-c p:                             feffit mode.
+* C-c C-c r:                             input mode.
+* C-c C-c s:                             feffit mode.
+* C-c C-d a:                             input mode.
+* C-c C-d d:                             input mode.
+* C-c C-d e:                             input mode.
+* C-c C-d f:                             input mode.
+* C-c C-d i:                             input mode.
+* C-c C-d k:                             input mode.
+* C-c C-d m:                             input mode.
+* C-c C-d o:                             input mode.
+* C-c C-d v:                             input mode.
+* C-c C-e:                               input mode.
+* C-c C-e c:                             feff mode.
+* C-c C-e d:                             feff mode.
+* C-c C-e p:                             feff mode.
+* C-c C-e w:                             feff mode.
+* C-c C-e x:                             feff mode.
+* C-c C-f a:                             input mode.
+* C-c C-f d:                             input mode.
+* C-c C-f f <1>:                         feffit mode.
+* C-c C-f f:                             feff mode.
+* C-c C-f g <1>:                         Limitations.
+* C-c C-f g:                             atoms mode.
+* C-c C-f i <1>:                         feffit mode.
+* C-c C-f i:                             feff mode.
+* C-c C-f k:                             Using.
+* C-c C-f l:                             input mode.
+* C-c C-f m <1>:                         feffit mode.
+* C-c C-f m:                             feff mode.
+* C-c C-f p <1>:                         feffit mode.
+* C-c C-f p <2>:                         feff mode.
+* C-c C-f p:                             atoms mode.
+* C-c C-f r:                             feffit mode.
+* C-c C-f s <1>:                         feffit mode.
+* C-c C-f s:                             feff mode.
+* C-c C-f t:                             feffit mode.
+* C-c C-f u:                             atoms mode.
+* C-c C-i:                               input mode.
+* C-c C-l:                               Using.
+* C-c C-n:                               Using.
+* C-c C-o b:                             input mode.
+* C-c C-o f:                             input mode.
+* C-c C-o k:                             input mode.
+* C-c C-o m:                             input mode.
+* C-c C-o n:                             input mode.
+* C-c C-o p:                             input mode.
+* C-c C-p:                               Using.
+* C-c C-p a:                             autobk mode.
+* C-c C-p b:                             autobk mode.
+* C-c C-p c:                             feff mode.
+* C-c C-p k <1>:                         feffit mode.
+* C-c C-p k:                             autobk mode.
+* C-c C-p q:                             feffit mode.
+* C-c C-p r:                             feffit mode.
+* C-c C-p s <1>:                         feffit mode.
+* C-c C-p s:                             input mode.
+* C-c C-p t:                             autobk mode.
+* C-c C-p x:                             feff mode.
+* C-c C-r:                               Using.
+* C-c C-r a <1>:                         Basic run commands.
+* C-c C-r a:                             input mode.
+* C-c C-r k:                             Basic run commands.
+* C-c C-r r <1>:                         Basic run commands.
+* C-c C-r r:                             input mode.
+* C-c C-r s <1>:                         Basic run commands.
+* C-c C-r s:                             autobk mode.
+* C-c C-s a:                             input mode.
+* C-c C-s b:                             feffit mode.
+* C-c C-s c:                             input mode.
+* C-c C-s e:                             autobk mode.
+* C-c C-s g:                             feffit mode.
+* C-c C-s m:                             feffit mode.
+* C-c C-s n:                             input mode.
+* C-c C-s p:                             input mode.
+* C-c C-s s:                             input mode.
+* C-c C-t b:                             feffit mode.
+* C-c C-t f:                             feffit mode.
+* C-c C-t g:                             feffit mode.
+* C-c C-t l:                             feffit mode.
+* C-c C-t s:                             feffit mode.
+* C-c C-t t <1>:                         feffit mode.
+* C-c C-t t <2>:                         autobk mode.
+* C-c C-t t <3>:                         feff mode.
+* C-c C-t t:                             atoms mode.
+* C-c C-t z:                             feffit mode.
+* C-c C-v a:                             feffit mode.
+* C-c C-v c:                             feffit mode.
+* C-c C-v d:                             feffit mode.
+* C-c C-v i:                             feffit mode.
+* C-c C-v p:                             feffit mode.
+* C-c C-v r:                             feffit mode.
+* C-c C-v s:                             feffit mode.
+* C-c C-v u:                             feffit mode.
+* C-c r:                                 Batch processing.
+* C-S-l:                                 input mode.
+* M-<RET>:                               input mode.
+* M-<TAB>:                               input mode.
+* M-?:                                   input mode.
+* M-C-`:                                 input mode.
+* S-mouse3:                              input mode.
+
+
+File: fuse.info,  Node: Concept Index,  Prev: Key Index,  Up: Top
+
+Concept Index
+*************
+
+* Menu:
+
+* .emacs:                                Variables.
+* .fuse <1>:                             Variables.
+* .fuse:                                 Customizing.
+* automatic configuration:               Autoconfiguration.
+* batch jobs:                            Batch processing.
+* chi.dat:                               Using.
+* cleaning <1>:                          Glossary.
+* cleaning:                              Indentation.
+* comment characters:                    Program syntax.
+* completion:                            Keywords.
+* custom <1>:                            Variables.
+* custom:                                Customizing.
+* data set:                              Glossary.
+* easymenu:                              Pull-down Menus.
+* ESHIFT:                                Using.
+* font-lock <1>:                         Colorization.
+* font-lock:                             Making.
+* GNUFIX:                                Using.
+* GNUPLOT:                               Using.
+* hilit19 <1>:                           Colorization.
+* hilit19:                               Making.
+* include file:                          Master files.
+* indentation <1>:                       Glossary.
+* indentation:                           Indentation.
+* jump:                                  Glossary.
+* keyword <1>:                           Glossary.
+* keyword:                               Keywords.
+* keywords:                              Program syntax.
+* KW:                                    Using.
+* list:                                  Glossary.
+* master file:                           Master files.
+* menus:                                 Pull-down Menus.
+* MR:                                    Using.
+* path paragraph:                        Glossary.
+* path parameters:                       Additional syntax.
+* plot:                                  Using.
+* run:                                   Run.
+* separation <1>:                        Glossary.
+* separation:                            Indentation.
+* snag:                                  Glossary.
+* stanza <1>:                            Glossary.
+* stanza:                                Basic run commands.
+* swap:                                  Glossary.
+* template:                              Glossary.
+* templates <1>:                         Keywords.
+* templates:                             Indentation.
+* tempo:                                 Keywords.
+* time:                                  Run.
+* toolbar:                               Toolbars.
+* verification:                          Keywords.
+* visit:                                 Glossary.
+* wrapper:                               Basic run commands.
+* xmu.dat:                               Using.
+
+

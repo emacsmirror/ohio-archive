@@ -1,0 +1,143 @@
+              Ebuttons - an X interface to emacs.
+
+         Terry Jones (terry@santafe.edu), November 18, 1992.
+                      Santa Fe Institute
+
+
+
+INTRODUCTION
+------------ 
+
+This program provides an X interface to issue commands to an emacs
+session.  It allows you to specify (in an X resource file) labels for
+a set of buttons and a command for each that will be executed when the
+corresponding button is clicked on with the mouse. For instance you
+can define buttons to compile, to find the next error, to save
+buffers, to move to the top/bottom of the buffer, to exit emacs etc.
+etc.
+
+The idea is that this should be a thin vertical window that sits just
+to the side of an emacs session and allows for fast execution of some
+things. It is not intended to replace the keyboard! It just gives
+another option - if your hand is already on the mouse, use ebuttons.
+If not, use the keyboard. Or as you like it. The window can also be
+made horizontal (see below) but then not as many buttons will fit on
+the screen.
+
+Ebuttons is intended to run as a subprocess to an emacs session.  It is
+controlled by the elisp code in ebuttons.el.  After loading ebuttons.el,
+executing the "ebuttons" function from within emacs will start the program.
+Since the program uses X, you have to be running X.  See the installation
+notes later in this document for more detail.  Note that this program does
+NOT require you to use the X version of emacs.  You must be running X, but
+you can use the non-X version of emacs.
+
+Ebuttons was implemented under GNU emacs version 18.58. It should run
+on earlier versions of GNU emacs.
+
+This program is adapted from the taglist facility written by Brad
+Mears (bmears@deltahp.jsc.nasa.gov). In fact, he should get almost all
+the credit. I have never written a line of elisp code, what you see in
+ebuttons.el is the result of deleting about 80% of his taglist.el.
+The X code looks somewhat different, but, again, is a result of
+editing a copy of taglist.c (as is this README).
+
+I decided that this would be a nice thing to have after using taglist
+for a time and realizing that I liked the command buttons better than
+the tags. Plus, the tags list kept (necessarily) resizing and
+obscuring my emacs window. A further step would be to rewrite taglist
+so that it didn't have a set of buttons - it could be controlled from
+a button in an ebuttons window.
+
+COMPONENTS
+----------
+README          - this file.
+Makefile        - that file.
+Resources       - a sample set of resources for this program.
+ebuttons.c      - source code.
+ebuttons.el     - run-time elisp program.
+ebuttons.1      - a man page.
+make_ebuttons   - a shell script that generates some code for ebuttons.c.
+
+INSTALLATION
+------------
+1 - Edit Makefile and run make. This will make you an executable 
+    and also format the manpage (putting the result in ebuttons.cat)
+
+2 - Copy the resulting executable (ebuttons) to some directory that is
+    in your path.
+
+3 - Copy the elisp program ebuttons.el to wherever you keep your
+    elisp code.
+
+4 - Customize the labels and commands used by the buttons. See the
+    file "Resources" for examples. Add the resources you want to
+    your .Xdefaults or .Xresources (or wherever) file.
+
+5 - (Optional)  Modify your .emacs file to load and run ebuttons at startup.
+    I do this via:
+  
+    (if (equal window-system 'x)
+        (progn
+	  (load "ebuttons")
+	  (ebuttons)))
+
+6 - (Optional) Modify your .emacs file so that ebuttons-toggle-screen
+    is bound to some key.
+
+    (define-key global-map "\^Xt" 'ebuttons)
+    
+    Note that this is the key that was suggested for taglist, so if
+    you want to use both and have taglist on C-x t, come up with your
+    own arrangement.
+
+
+RUNNING ebuttons
+----------------
+
+The simplest method is to, as described above, have ebuttons start
+automatically when your emacs starts. Otherwise you can invoke it
+manually with M-x ebuttons (or C-x t if you have it bound there).
+
+The (ebuttons) function has two purposes.  It either starts the ebuttons
+program or, if the program is already running, sends a signal to it that
+causes the program to hide/expose the ebuttons window.
+
+To use the program, simply click on the button that represents the
+command you want executed.
+
+ 
+RESOURCES
+---------
+
+Your resource file should have pairs of lines like
+
+    ebuttons.labelX:                 label
+    ebuttons.commandX:               (emacs-command)
+
+where X is any number from 0 to the number of possible buttons minus
+one. The upper limit is set in the Makefile and is 50 in the
+distribution. Label numbers may be omitted (i.e. you can define labels
+1, 2 and 5, omitting 3 and 4) - if you only define 3 buttons, only 3
+will appear. Actually this is not entirely true, an extra button (the
+last button in the window) is added. It causes the ebuttons program to
+exit and is (usually) labelled Quit.  You can change the name that
+appears on this button (if you wish) with:
+
+    ebuttons*Quit.label: your-label
+
+in your resource file. Other resources that will have useful effects
+are
+
+    ebuttons*Command.borderWidth
+    ebuttons*Box.orientation
+    ebuttons*Box.hSpace
+    ebuttons*Box.vSpace
+    ebuttons.geometry
+    ebuttons*background
+    ebuttons*font
+
+Look in the Resources file for an example of settings for these. My
+preference is to have the ebuttons window take up as little space as
+possible, so I use a small font and leave no vertical or horizontal
+space between the command buttons.

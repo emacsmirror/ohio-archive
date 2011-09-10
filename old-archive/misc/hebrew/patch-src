@@ -1,0 +1,442 @@
+*** buffer.c.orig	Thu Jun  4 15:19:29 1992
+--- buffer.c	Thu Jun  4 16:01:40 1992
+***************
+*** 1069,1074 ****
+--- 1069,1076 ----
+    XFASTINT (buffer_defaults.tab_width) = 8;
+    buffer_defaults.truncate_lines = Qnil;
+    buffer_defaults.ctl_arrow = Qt;
++   buffer_defaults.display_literal = Qnil;	/* yossi */
++   buffer_defaults.display_reversed = Qnil;	/* yossi */
+  
+    XFASTINT (buffer_defaults.fill_column) = 70;
+    XFASTINT (buffer_defaults.left_margin) = 0;
+***************
+*** 1107,1112 ****
+--- 1109,1116 ----
+    XFASTINT (buffer_local_flags.left_margin) = 0x800;
+    XFASTINT (buffer_local_flags.abbrev_table) = 0x1000;
+    XFASTINT (buffer_local_flags.syntax_table) = 0x2000;
++   XFASTINT (buffer_local_flags.display_literal) = 0x4000;	/* yossi */
++   XFASTINT (buffer_local_flags.display_reversed) = 0x8000;	/* yossi */
+  
+    Vbuffer_alist = Qnil;
+    current_buffer = 0;
+***************
+*** 1178,1183 ****
+--- 1182,1197 ----
+      "Default ctl-arrow for buffers that do not override it.\n\
+  This is the same as (default-value 'ctl-arrow).");
+  
++   DEFVAR_LISP_NOPRO ("default-display-literal",		/* yossi */
++ 	      &buffer_defaults.display_literal,
++     "Default display-literal for buffers that do not override it.\n\
++ This is the same as (default-value 'display-literal).");
++ 
++   DEFVAR_LISP_NOPRO ("default-display-reversed",	/* yossi */
++ 	      &buffer_defaults.display_reversed,
++     "Default display-reversed for buffers that do not override it.\n\
++ This is the same as (default-value 'display-reversed).");
++ 
+    DEFVAR_LISP_NOPRO ("default-truncate-lines",
+  	      &buffer_defaults.truncate_lines,
+      "Default truncate-lines for buffers that do not override it.\n\
+***************
+*** 1269,1274 ****
+--- 1283,1299 ----
+      "*Non-nil means display control chars with uparrow.\n\
+  Nil means use backslash and octal digits.\n\
+  Automatically becomes local when set in any fashion.");
++ 
++   DEFVAR_PER_BUFFER ("display-literal", &current_buffer->display_literal,   /* yossi */
++     "*Non-nil means display the characters in the buffer as they are,\n\
++ even when ther are \"nonprintable\" ascii.\n\
++ Nil means display using ctl-arrow for the low nonprintables, and use\n\
++ backslash and octal digits for the high nonprintables.\n\
++ Automatically becomes local when set in any fashion.");
++ 
++   DEFVAR_PER_BUFFER ("display-reversed", &current_buffer->display_reversed, /* yossi */
++     "*Non-nil means display each line of the buffer in reversed order,\n\
++ useful for editing texts in Semitic languages which write right-to-left.");
+  
+    DEFVAR_PER_BUFFER ("truncate-lines", &current_buffer->truncate_lines,
+      "*Non-nil means do not display continuation lines;\n\
+*** buffer.h.orig	Fri Jan  4 19:12:49 1991
+--- buffer.h	Thu Jun  4 16:01:41 1992
+***************
+*** 208,213 ****
+--- 208,219 ----
+      Lisp_Object truncate_lines;
+      /* Non-nil means display ctl chars with uparrow */
+      Lisp_Object ctl_arrow;
++     /* yossi-- Non-nil means display the characters in the buffer as they are,
++        even when they are "nonprintable" ascii.  This is particularly useful
++        for fonts which have more than 128 characters */
++     Lisp_Object display_literal;
++     /* yossi-- Non-nil means reverse each line of the buffer, for Semitics */
++     Lisp_Object display_reversed;
+      /* Non-nil means do selective display;
+         See doc string in syms_of_buffer (buffer.c) for details.  */
+      Lisp_Object selective_display;
+*** dispnew.c.orig	Thu Jun  4 15:19:39 1992
+--- dispnew.c	Thu Jun  4 16:01:42 1992
+***************
+*** 614,624 ****
+    reassert_line_highlight (0, cursor_vpos);
+    output_chars (&current_screen->contents[vpos][hpos], 1);
+    fflush (stdout);
+!   ++cursor_hpos;
+    if (hpos == current_screen->used[vpos])
+      {
+!       current_screen->used[vpos] = hpos + 1;
+!       current_screen->contents[vpos][hpos + 1] = 0;
+      }
+    return 1;
+  }
+--- 614,624 ----
+    reassert_line_highlight (0, cursor_vpos);
+    output_chars (&current_screen->contents[vpos][hpos], 1);
+    fflush (stdout);
+!   cursor_hpos += (NULL(XBUFFER(w->buffer)->display_reversed))? 1: -1;	/* yossi */
+    if (hpos == current_screen->used[vpos])
+      {
+!       current_screen->used[vpos] = cursor_hpos;
+!       current_screen->contents[vpos][cursor_hpos] = 0;
+      }
+    return 1;
+  }
+***************
+*** 633,639 ****
+    if (XINT (w->hscroll) && cursor_hpos == XFASTINT (w->left))
+      return 0;
+  
+!   cursor_hpos += n;
+    XFASTINT (w->last_point_x) = cursor_hpos;
+    XFASTINT (w->last_point) = point;
+    move_cursor (cursor_vpos, cursor_hpos);
+--- 633,639 ----
+    if (XINT (w->hscroll) && cursor_hpos == XFASTINT (w->left))
+      return 0;
+  
+!   cursor_hpos += (NULL(XBUFFER(w->buffer)->display_reversed))? n: -n;	/* yossi */
+    XFASTINT (w->last_point_x) = cursor_hpos;
+    XFASTINT (w->last_point) = point;
+    move_cursor (cursor_vpos, cursor_hpos);
+*** indent.c.orig	Thu Jun  4 15:19:50 1992
+--- indent.c	Thu Jun  4 16:07:53 1992
+***************
+*** 79,84 ****
+--- 79,85 ----
+    register int post_tab;
+    register int tab_width = XINT (current_buffer->tab_width);
+    int ctl_arrow = !NULL (current_buffer->ctl_arrow);
++   int display_literal = !NULL (current_buffer->display_literal);	/* yossi */
+  
+    if (point == last_known_column_point
+        && MODIFF == last_known_column_modified)
+***************
+*** 132,137 ****
+--- 133,142 ----
+  	  col = 0;
+  	  tab_seen = 1;
+  	}
++       else if (display_literal)			/* yossi */
++ 	{
++ 	  col++;
++ 	}
+        else
+  	col += (ctl_arrow && c < 0200) ? 2 : 4;
+      }
+***************
+*** 298,303 ****
+--- 303,309 ----
+    register int end = ZV;
+    register int tab_width = XINT (current_buffer->tab_width);
+    register int ctl_arrow = !NULL (current_buffer->ctl_arrow);
++   register int display_literal = !NULL (current_buffer->display_literal);	/* yossi */
+  
+    Lisp_Object val;
+  
+***************
+*** 324,332 ****
+  	  col += tab_width - 1;
+  	  col = col / tab_width * tab_width;
+  	}
+!       else if (ctl_arrow && (c < 040 || c == 0177))
+          col++;
+!       else if (c < 040 || c >= 0177)
+          col += 3;
+      }
+  
+--- 330,338 ----
+  	  col += tab_width - 1;
+  	  col = col / tab_width * tab_width;
+  	}
+!       else if ((!display_literal) && ctl_arrow && (c < 040 || c == 0177))  /* yossi */
+          col++;
+!       else if ((!display_literal) && (c < 040 || c >= 0177))	/* yossi */
+          col += 3;
+      }
+  
+***************
+*** 355,360 ****
+--- 361,367 ----
+    register int c;
+    register int tab_width = XFASTINT (current_buffer->tab_width);
+    register int ctl_arrow = !NULL (current_buffer->ctl_arrow);
++   register int display_literal = !NULL (current_buffer->display_literal);	/* yossi */
+    int selective
+      = XTYPE (current_buffer->selective_display) == Lisp_Int
+        ? XINT (current_buffer->selective_display)
+***************
+*** 428,433 ****
+--- 435,442 ----
+  		hpos = width;
+  	    }
+  	}
++       else if (display_literal)			/* yossi */
++ 	hpos++;
+        else
+  	hpos += (ctl_arrow && c < 0200) ? 2 : 4;
+  
+*** keyboard.c.orig	Thu Jun  4 15:19:53 1992
+--- keyboard.c	Thu Jun  4 16:01:44 1992
+***************
+*** 705,711 ****
+  		{
+  		  lose = FETCH_CHAR (point);
+  		  SET_PT (point + 1);
+! 		  if (lose >= ' ' && lose < 0177
+  		      && (XFASTINT (XWINDOW (selected_window)->last_modified)
+  			  >= MODIFF)
+  		      && (XFASTINT (XWINDOW (selected_window)->last_point)
+--- 705,712 ----
+  		{
+  		  lose = FETCH_CHAR (point);
+  		  SET_PT (point + 1);
+! 		  if (((lose >= ' ' && lose < 0177) ||
+! 		       !NULL(current_buffer->display_literal))		/* yossi */
+  		      && (XFASTINT (XWINDOW (selected_window)->last_modified)
+  			  >= MODIFF)
+  		      && (XFASTINT (XWINDOW (selected_window)->last_point)
+***************
+*** 721,727 ****
+  		{
+  		  SET_PT (point - 1);
+  		  lose = FETCH_CHAR (point);
+! 		  if (lose >= ' ' && lose < 0177
+  		      && (XFASTINT (XWINDOW (selected_window)->last_modified)
+  			  >= MODIFF)
+  		      && (XFASTINT (XWINDOW (selected_window)->last_point)
+--- 722,729 ----
+  		{
+  		  SET_PT (point - 1);
+  		  lose = FETCH_CHAR (point);
+! 		  if (((lose >= ' ' && lose < 0177) ||
+! 		       !NULL(current_buffer->display_literal))		/* yossi */
+  		      && (XFASTINT (XWINDOW (selected_window)->last_modified)
+  			  >= MODIFF)
+  		      && (XFASTINT (XWINDOW (selected_window)->last_point)
+***************
+*** 761,768 ****
+  		    }
+  		  if (!lose
+  		      && (point == ZV || FETCH_CHAR (point) == '\n')
+! 		      && last_command_char >= ' '
+! 		      && last_command_char < 0177)
+  		    no_redisplay
+  		      = direct_output_for_insert (last_command_char);
+  		  goto directly_done;
+--- 763,770 ----
+  		    }
+  		  if (!lose
+  		      && (point == ZV || FETCH_CHAR (point) == '\n')
+! 		      && ((last_command_char >= ' ' && last_command_char < 0177) ||
+! 			  !NULL(current_buffer->display_literal)))	/* yossi */
+  		    no_redisplay
+  		      = direct_output_for_insert (last_command_char);
+  		  goto directly_done;
+*** xdisp.c.orig	Thu Jun  4 15:20:53 1992
+--- xdisp.c	Thu Jun  4 16:01:45 1992
+***************
+*** 405,410 ****
+--- 405,417 ----
+  	  if (pos.vpos < 1)
+  	    {
+  	      cursor_hpos = max (XFASTINT (w->left), pos.hpos);
++ 	      if (!NULL(XBUFFER(w->buffer)->display_reversed)) {	/* yossi */
++ 		  register int width = XFASTINT (w->width) - 1
++ 		      - (XFASTINT(w->width) + XFASTINT(w->left) != screen_width);
++ 		  
++ 		  cursor_hpos = XFASTINT(w->left) + width -
++ 		      (cursor_hpos - XFASTINT(w->left));
++ 	      }
+  	      cursor_vpos = this_line_vpos;
+  	      goto update;
+  	    }
+***************
+*** 551,556 ****
+--- 558,589 ----
+        last_arrow_string = Qt;
+      }
+  }
++ 
++ /*
++  * yossi-- the following function is a simplified version of Denys Duchier's
++  *         epoch::redisplay-screen, stolen from Epoch 3.1.
++  */
++ DEFUN ("x-smart-redisplay",Fx_smart_redisplay,Sx_smart_redisplay,0,0,"",
++        "Perform a smart redisplay of the screen.")
++      ()
++     {
++     Lisp_Object root_window = XWINDOW (minibuf_window)->prev;
++     int modified = BUF_MODIFF(current_buffer)++;
++ 
++     windows_or_buffers_changed++;
++ 
++     do_pending_window_change();
++     if (interrupt_input) unrequest_sigio();
++ 
++     redisplay_window(root_window,0);
++     update_screen(1,1);
++ 
++     BUF_MODIFF(current_buffer) = modified;
++     do_pending_window_change();
++     if (interrupt_input) request_sigio();
++ 
++     return Qnil;
++     }
+  
+  int do_id = 1;
+  
+***************
+*** 672,677 ****
+--- 705,717 ----
+  	  if (EQ (window, selected_window))
+  	    {
+  	      cursor_hpos = max (0, pos.hpos) + XFASTINT (w->left);
++ 	      if (!NULL(XBUFFER(w->buffer)->display_reversed)) {	/* yossi */
++ 		  register int width = XFASTINT (w->width) - 1
++ 		      - (XFASTINT(w->width) + XFASTINT(w->left) != screen_width);
++ 		  
++ 		  cursor_hpos = XFASTINT(w->left) + width -
++ 		      (cursor_hpos - XFASTINT(w->left));
++ 	      }
+  	      cursor_vpos = pos.vpos + XFASTINT (w->top);
+  	    }
+  	}
+***************
+*** 704,709 ****
+--- 744,756 ----
+  	    {
+  	      /* These variables are supposed to be origin 1 */
+  	      cursor_hpos = max (0, pos.hpos) + XFASTINT (w->left);
++ 	      if (!NULL(XBUFFER(w->buffer)->display_reversed)) {	/* yossi */
++ 		  register int width = XFASTINT (w->width) - 1
++ 		      - (XFASTINT(w->width) + XFASTINT(w->left) != screen_width);
++ 		  
++ 		  cursor_hpos = XFASTINT(w->left) + width -
++ 		      (cursor_hpos - XFASTINT(w->left));
++ 	      }
+  	      cursor_vpos = pos.vpos + XFASTINT (w->top);
+  	    }
+  /* This doesn't do the trick, because if a window to the right of
+***************
+*** 1213,1218 ****
+--- 1260,1272 ----
+      }
+  
+    cursor_hpos = max (0, point_hpos);
++   if (!NULL(XBUFFER(w->buffer)->display_reversed)) {	/* yossi */
++       register int width = XFASTINT (w->width) - 1
++ 	  - (XFASTINT(w->width) + XFASTINT(w->left) != screen_width);
++       
++       cursor_hpos = XFASTINT(w->left) + width -
++ 	  (cursor_hpos - XFASTINT(w->left));
++   }
+    cursor_vpos = point_vpos;
+  
+    if (debug_end_pos)
+***************
+*** 1265,1270 ****
+--- 1319,1325 ----
+    register unsigned char *p1prev;
+    int tab_width = XINT (current_buffer->tab_width);
+    int ctl_arrow = !NULL (current_buffer->ctl_arrow);
++   int display_literal = !NULL (current_buffer->display_literal);	/* yossi */
+    int width = XFASTINT (w->width) - 1
+      - (XFASTINT (w->width) + XFASTINT (w->left) != screen_width);
+    struct position val;
+***************
+*** 1382,1387 ****
+--- 1437,1448 ----
+  	    }
+  	  break;
+  	}
++       else if (display_literal)		/* yossi */
++ 	{
++ 	  if (p1 >= startp)
++ 	    *p1 = c;
++ 	  p1++;
++ 	}
+        else if (c < 0200 && ctl_arrow)
+  	{
+  	  if (p1 >= startp)
+***************
+*** 1534,1539 ****
+--- 1595,1624 ----
+  
+    val.bufpos = pos;
+    val_display_text_line = val;
++   
++   /* yossi-- reverse the line if necessary */
++   if (!NULL(current_buffer->display_reversed)) {
++       unsigned char *p2, t;
++ 
++       if (p1 < endp + 1) {
++ 	  while (p1 <= endp) *p1++ = ' ';
++ 	  new_screen->used[vpos] = max(new_screen->used[vpos], p1 - new_screen->contents[vpos]);
++ 	  new_screen->contents[vpos][new_screen->used[vpos]] = 0;
++       }
++ 
++       /* reverse the line */
++       for (p1 = startp, p2 = startp + width; p1 < p2; p1++, --p2) {
++ 	  t = *p1;
++ 	  *p1 = *p2;
++ 	  *p2 = t;
++       }
++ 
++       /* reverse the position of point if necessary */
++       if ((point_vpos == vpos) && (w == XWINDOW (selected_window)))
++ 	  cursor_hpos = XFASTINT(w->left) + width -
++ 	      (cursor_hpos - XFASTINT(w->left));
++   }
++ 
+    return &val_display_text_line;
+  }
+  
+***************
+*** 1976,1981 ****
+--- 2061,2072 ----
+  	    }
+  	  while ((p1 - start + hscroll - (hscroll > 0)) % tab_width);
+  	}
++       else if (buffer_defaults.display_literal)		/* yossi */
++ 	{
++ 	  if (p1 >= start)
++ 	    *p1 = c;
++ 	  p1++;
++ 	}
+        else if (c < 0200 && buffer_defaults.ctl_arrow)
+  	{
+  	  if (p1 >= start)
+***************
+*** 2065,2070 ****
+--- 2156,2162 ----
+    mode_line_inverse_video = 1;
+  
+    defsubr (&Sredraw_display);
++   defsubr (&Sx_smart_redisplay);		/* yossi */
+  }
+  
+  /* initialize the window system */

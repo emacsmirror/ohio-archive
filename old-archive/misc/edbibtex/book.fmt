@@ -1,0 +1,27 @@
+********************************* BOOK *********************************
+         Code: \BibTeX-tag
+................................................................Required
+       Author: \author
+       Editor: \editor
+        Title: \title
+    Publisher: \publisher
+         Year: \year
+................................................................Optional
+       Volume: \volume
+       Number: \number
+       Series: \series
+      Address: \address
+      Edition: \edition
+        Month: \month
+         Note: \note
+          Key: \key
+     Crossref: \crossref
+.................................................................Ignored
+         ISBN: \isbn
+     LCNumber: \lcnum
+     Keywords: \keywords
+     Language: \language
+      Remarks: \annote
+      Updated: \updated
+     Warnings: \warnings
+********************************* BOOK *********************************

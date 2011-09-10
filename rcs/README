@@ -1,0 +1,74 @@
+rcs.el defines an RCS mode and allows you to perform an RCS check-in
+(ci) from gnuemacs.  rcs.el was written under version 17.64 of GNU Emacs
+and has been used extensively under version 18.50.
+
+To install rcs.el:
+
+	Edit the makefile by setting LISPDIR to the directory in which
+	you want rcs.el to reside.
+	Then run   make rcs
+
+	Edit your .emacs file by putting the following line in it:
+
+		(autoload 'rcs "rcs" "" t)
+
+	If you did not put rcs.el in the default gnuemacs lisp directory
+	then make the autoload line reflect this, e.g. if you put rcs.el
+	in ~/gnuemacs/lisp then put the following line in .emacs instead:
+
+		(autoload 'rcs "~/gnuemacs/lisp/rcs" "" t)
+
+To use rcs:
+
+	Select the buffer containing the file you want to check in, then type:
+
+		M-x rcs
+
+	rcs will figure out which revision level you have locked and set
+	the next revision level appropriately.  It will then pop up a
+	buffer for you to edit the log message.  Check the mini-buffer
+	for help.  You will be in a recursive edit, so if you leave the
+	RCS buffer be sure to return to it so you can exit the recursive edit.
+
+What does rcs do?
+
+	It performs check-ins (ci) optionally using the -l, -u, and -f
+	switches.  rcs allows you to edit the log message using the full
+	powers of gnuemacs.  When a check-in is attempted the log
+	messages is saved in a log-ring (similar to the kill-ring).  The
+	log-ring allows you to insert previous log messages into the
+	current log message.  This can be useful when you have several
+	files to check in for which you want to enter the same or nearly
+	the same log message.  rcs also checks various error conditions,
+	e.g. you don't have a lock on this file or a failed attempt at a
+	check-in.  At the end of a succesful check-in rcs will ask you
+	to revert the buffer if you checked out the version you just
+	checked in - this keeps the emacs buffer consistent with the
+	file on disk, something that can be a bit of a problem when
+	using RCS with emacs.
+
+Customization:
+
+	Check the help message for details on customization.  For
+	example you can customize the rcs-mode by setting rcs-mode-hook.
+	I use the following:
+
+	(setq rcs-mode-hook '(lambda ()
+		       (setq fill-column 76)
+		       (setq fill-prefix "\t")))
+
+		where auto-fill-mode is set by text-mode-hook.
+
+If you have any problems or suggestions for improving rcs.el send me mail.
+
+Ed Simpson
+P. O. Box 3140                        
+Duke University Medical Center        
+Durham, NC, USA  27710   
+Tel: (919) 684-6807             
+UUCP: {decvax, seismo}!mcnc!duke!evs
+ARPA: evs@cs.duke.edu
+CSNET: evs@duke
+
+P. S.  Mark Yoder's function for doing an RCS co from emacs is included
+	in this distribution in the file rcsco.

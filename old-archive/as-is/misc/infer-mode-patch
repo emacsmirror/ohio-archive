@@ -1,0 +1,19 @@
+To: unix-emacs@bbn.com
+Date: 26 Jan 89 02:57:13 GMT
+From: Gilbert Harman <phoenix!ghh@princeton.edu>
+Subject: infer-mode.el
+
+In article <48686@yale-celray.yale.UUCP>
+Ram-Ashwin@cs.yale.edu (Ashwin Ram) presents code for
+infer-mode.el.  This is just what I wanted, but I did have
+to define caar and cdar to make it work, i.e.
+(defun caar (x) (car (car x)))
+(defun cdar (x) (cdr (car x)))
+--
+		       Gilbert Harman
+                       Princeton University Cognitive Science Laboratory
+	               221 Nassau Street, Princeton, NJ 08542
+			      
+		       ghh@princeton.edu
+		       HARMAN@PUCC.BITNET
+

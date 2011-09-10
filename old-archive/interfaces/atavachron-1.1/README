@@ -1,0 +1,75 @@
+README:    The Atavachron for Pre-Prints  v1.1
+-------  
+
+INDEX:
+------
+ README                    this file
+ atavachron.el             elisp source for the Atavachron
+ atavachron.info           online info file for the Atavachron
+ atavachron.texi           texinfo source for the Atavachron docs
+ texinfo.tex               texinfo macro package
+ zcat.el                   elisp source for zcat (by Graham Gough)
+
+INSTALL:
+--------
+
+@ Compile Documentation:
+
+If you have difficulty producing the documentation, you can
+download atavachron.ps.Z from the same directory in which you got
+atavachron.tar.Z (this package). The source code "atavachron.el" also
+has minimal documentation in its header.
+
+1. Put texinfo.tex in your TEXINPUTS path (or current directory) if
+   not it's already there.
+2. Hardcopy--
+   * In Emacs, while viewing atavachron.texi:
+         (M-x) texinfo-tex-buffer
+         (M-x) texinfo-texindex
+         (M-x) texinfo-tex-buffer 
+         print atavachron.dvi by the usual route.
+
+   * Alternatively, outside Emacs:
+         tex atavachron.texi, twice; print atavachron.dvi
+         or use texi2dvi if available.
+
+3. Info file--
+      Load the included atavachron.info into your Emacs info directory
+      and edit your "top" node listing. 
+
+      To view the uninstalled atavachron info file from inside info,
+      type:
+         g (~/path/atavachron.info)
+      This will load the info file by hand. 
+
+
+
+@ Read the Documentation...
+
+
+
+@ Configure and Load:
+
+1. edit .emacs as per documentation (see Configuration section).
+2. edit (or create) .netrc (see Batteries not Included).
+3. edit (or create) .dvipsrc (see Batteries not Included).
+
+ * Note: the example code segments for .emacs, etc. given in the doc
+   can be cut and pasted from the header of atavachron.el
+   Search for: "---.emacs", "---.netrc", and "---.dvipsrc"
+
+4. update TEXINPUTS environment variable if need be.
+5. byte-compile the elisp source files and put them in your
+   Emacs lisp directory.
+   Note: With the new byte-compiler (and optimizer), certain
+         warnings about free variables are issued when byte-compiling.
+ 	 You can ignore these, and the compiled .elc files
+	 will work fine. Hopefully the source of these warnings
+	 will be remedied in the next release.
+6. restart Emacs. All Atavachron functions should be at your disposal.
+
+
+Should you meet difficulty, contact me at: hetrick@phys.uva.nl
+
+Jim Hetrick
+

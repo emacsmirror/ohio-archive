@@ -1,0 +1,68 @@
+This file was taken from a news posting on 10 Jan 87 in comp.emacs.
+Original author is:
+Mark A. Yoder <yoder@pur-ee.UUCP>
+seismo!gatech!cuae2!ihnp4!inuxc!pur-ee!yoder
+ 
+[ I replaced (my-string-match) with calls to (file-name-directory)
+  and (file-name-nondirectory).  Added a (cd dir) before attempting
+  the co. - Ed Simpson ]
+  
+Ed Simpson's emacs/RCS provides a nice method for checking files into RCS
+from emacs.  The following function complements his routines
+nicely in that it provides a nice way to automatically checkout files.
+
+This function uses the find-file-not-found-hooks in version 18
+(or find-file-not-found-hook in version 17).  When (find-file) cannot
+find a given file the (my-RCS-file) function will look to see if there is
+an RCS version of the file.  If so, it will ask if it should be checked
+and if it should be locked.  If is is not locked, the file will be checked
+out and read into a buffer and then deleted.  
+
+This works nicely with TAGS if you run etags on all your files before checking
+them in.
+
+Put the following in your .emacs file:
+
+(setq find-file-not-found-hooks 'my-RCS-file) ; version 18 emacs
+
+or:
+
+(setq find-file-not-found-hook 'my-RCS-file) ; version 17 emacs
+
+The load the following into emacs:
+
+;;;
+;;; The following uses the find-file-not-found-hook to look for a file
+;;; in the RCS directory.  If a file isn't found, RCS/filename,v is
+;;; first checked, and then filename,v is checked to see if the file
+;;; checked into RCS.  If it is not found, my-RCS-file does nothing.
+;;; If it is found, the user is asked if they want to check the file out,
+;;; and if they want it locked.
+
+(defun my-RCS-file ()
+        ;; Set dir to the directory the file is to be in.
+  (let ((dir (file-name-directory buffer-file-name))
+	;; Set file to the name of the file excluding the path.
+	(file (file-name-nondirectory buffer-file-name)))
+    ;; Look for the RCS file
+    (if (or
+	 (file-exists-p (concat dir "RCS/" file ",v"))
+	 (file-exists-p (concat buffer-file-name ",v")))
+	;; if found, ask the user if they want it checked out.
+      (if (y-or-n-p (message "Can't find \"%s\", shall I check it out? "
+			     file))
+	  ;; If it is to be check out, ask about locking it.
+	  (progn
+	    (cd dir)
+	    (if (y-or-n-p "Shall I lock it? ")
+		;; Check the file out, but don't send input to "co", or
+		;; read the output from co.  This could cause problems
+		;; if "co" couldn't check the file out.
+		(call-process "co" nil nil nil "-l" filename)
+	      (call-process "co" nil nil nil filename))
+	    ;; If the file is now there, read it in
+	    (if (file-exists-p filename)
+		(progn
+		  (insert-file-contents filename t)
+		  (setq error nil))
+	      (error "Couldn't check out \"%s\"!" file)))))))

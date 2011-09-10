@@ -1,0 +1,42 @@
+The new texinfo release uses a font "lcircle10" that's sometimes
+called "circle10" in older TeX distributions.  If your system has
+trouble using the new texinfo, giving the error message
+
+! Font \circle=lcircle10 not loadable: Metric (TFM) file not found.
+
+you can probably get around the problem if you have the older version
+of the font, "circle10".  Since the emerging convention is to use the
+new name, we don't recommend you change texinfo.tex; instead, look for 
+files like these on your system:
+
+    circle10.mf
+         This is the Metafont souce for the font; sometimes used
+         automatically by dvi output programs to generate pixel files.
+
+    circle10.tfm
+         This is the file actually used by TeX; it describes the
+         measurements of the characters in the font.
+
+    circle10.300pk
+    circle10.96pk
+        "pk" files contain the actual pixels for the character images;
+        used by your dvi output program.
+
+Establish links to each of these files so they're available with both
+the "circle10" and the "lcircle10" prefix (if possible, using the ln
+`-s' option so you can more easily keep track of what happened), for
+example (in the directory where you found circle10.tfm on your
+system):
+
+   ln -s circle10.tfm lcircle10.tfm
+
+The files whose names end in "pk" may have other numbers where our
+example shows "300" and "96".  You may also have more, or fewer, pk
+files than in our example.  Don't worry about this; just link each
+of the circle10 pk files you do have to the corresponding lcircle10 pk
+file.  For example (usually all the pk files are in a single
+directory, though it's not always the same as the directory for mf or
+tfm files):
+
+  for pk in circle10.*pk; do ln -s $pk l$pk; done
+

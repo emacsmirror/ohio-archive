@@ -1,0 +1,127 @@
+# What the Emacs 19 binary is called on your system
+EMACS = @EMACS19@
+
+# Prefix for constructing installation directory paths
+prefix = @prefix@
+exec_prefix = $(prefix)
+
+# Shared directory for read-only data files
+datadir = $(prefix)/share
+
+# Where to put the .el and .elc files
+lispdir=$(datadir)/emacs/site-lisp
+
+# Where to put the Info file
+infodir=$(prefix)/info
+
+# Installation command
+INSTALL = @INSTALL@
+INSTALL_DATA = @INSTALL_DATA@
+
+# Various auxiliary programs
+MAKEINFO=makeinfo
+DVIPS=dvips
+TEXI2DVI=texi2dvi
+TEXI2HTML=texi2html
+TAR=tar
+
+srcdir = @srcdir@
+VPATH = @srcdir@
+
+SOURCES = mailcrypt.el mc-toplev.el mc-pgp.el mc-remail.el
+OBJECTS = mailcrypt.elc mc-toplev.elc mc-pgp.elc mc-remail.elc
+
+DISTFILES = $(SOURCES) ANNOUNCE ChangeLog INSTALL LCD-entry Makefile.in \
+	NEWS ONEWS README configure configure.in install-sh load-path.hack \
+	mailcrypt.info mailcrypt.dvi mailcrypt.texi mkinstalldirs \
+	texi2html.ext
+
+SHELL = /bin/sh
+#.PHONY: all clean dist distclean dvi html info install \
+#	installdirs ps uninstall
+.SUFFIXES:
+.SUFFIXES: .elc .el
+
+.el.elc:
+	$(EMACS) -batch -l $(srcdir)/load-path.hack \
+	  -f batch-byte-compile $<
+
+all: $(OBJECTS)
+
+install: all installdirs $(infodir)/mailcrypt
+	for f in $(SOURCES); do \
+	  $(INSTALL_DATA) $(srcdir)/$$f $(lispdir); \
+	done;
+	$(INSTALL_DATA) $(OBJECTS) $(lispdir)
+
+# Make sure all installation directories actually exist
+# by making them if necessary.
+installdirs: mkinstalldirs
+	$(srcdir)/mkinstalldirs $(lispdir) $(infodir)
+
+$(infodir)/mailcrypt: mailcrypt.info
+	# There may be a newer info file in . than in srcdir.
+	-if test -f mailcrypt.info; then d=.; \
+	 else d=$(srcdir); fi; \
+	$(INSTALL_DATA) $$d/mailcrypt.info $@; \
+	if $(SHELL) -c 'install-info --version'	>/dev/null 2>&1; then \
+	  install-info --infodir=$(infodir) $$d/mailcrypt.info; \
+	else true; fi
+
+uninstall:
+	cd $(lispdir) && rm -f $(SOURCES) $(OBJECTS)
+	rm -f $(infodir)/mailcrypt
+
+info: mailcrypt.info
+
+mailcrypt.info: mailcrypt.texi
+	$(MAKEINFO) $(srcdir)/mailcrypt.texi
+
+dvi: mailcrypt.dvi
+
+mailcrypt.dvi: mailcrypt.texi
+	$(TEXI2DVI) $(srcdir)/mailcrypt.texi
+
+ps: mailcrypt.ps
+
+mailcrypt.ps: mailcrypt.dvi
+	$(DVIPS) $(srcdir)/mailcrypt.dvi
+
+html: mailcrypt_toc.html
+
+mailcrypt_toc.html: mailcrypt.texi
+	$(TEXI2HTML) -split_chapter $(srcdir)/mailcrypt.texi
+
+TAGS: $(SOURCES)
+	cd $(srcdir) && etags $(SOURCES)
+
+clean:
+	rm -f $(OBJECTS)
+	-rm -f *.aux *.cp *.cps *.fn *.ky *.log *.pg *.toc *.tp *.vr
+	-rm -f *.html
+	rm -f TAGS
+
+distclean: clean
+	-rm -f *~ *.tar.gz
+	rm -f Makefile config.status config.cache config.log
+
+${srcdir}/configure: configure.in
+	cd ${srcdir} && autoconf
+     
+Makefile: Makefile.in config.status
+	./config.status
+     
+config.status: ${srcdir}/configure
+	./config.status --recheck
+
+dist: $(DISTFILES)
+	version=`perl -ne 'print $$1 if /defconst mc-version \"(.*)\"/' \
+		 mailcrypt.el`; \
+	distname=mailcrypt-$$version; \
+	rm -rf $$distname; \
+	mkdir $$distname; \
+	for file in $(DISTFILES); do \
+	  ln $$file $$distname/$$file; \
+	done; \
+	$(TAR) -chz -f $$distname.tar.gz $$distname; \
+	rm -rf $$distname

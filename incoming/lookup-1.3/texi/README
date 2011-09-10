@@ -1,0 +1,10 @@
+マニュアルを印刷する場合は、Texinfo と日本語の通る TeX をインストールし、
+例えば次のように実行して下さい。文字コードは JIS になっています。
+
+  % ptex lookup.texi		# TeX で処理
+  % texindex lookup.??		# index を生成
+  % ptex lookup.texi		# 最後の仕上げ
+  % dvi2ps lookup.dvi		# PostScript に変換
+  % lpr lookup.ps		# 印刷実行
+
+全部で 50 ページ程度になります。

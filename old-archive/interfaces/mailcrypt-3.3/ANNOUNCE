@@ -1,0 +1,30 @@
+Mailcrypt version 3.3 is now available.
+
+Mailcrypt is an Emacs Lisp package which provides a simple interface
+to message encryption with PGP.  (You do use Emacs to handle your mail
+and news, right?)
+
+Features: Encryption, decryption, signing, adding keys, extracting
+keys, passphrase caching with timeout, multiple secret key (identity)
+support, a simple but flexible interface to Cypherpunk remailers
+(including chaining, response blocks, pseudonyms, and Mixmaster
+support), and an automatic keyserver interface via HTTP.
+
+*We* think it's the best interface to these functions anywhere, but
+then again, we're biased.
+
+The NEWS file is appended to this message.
+
+Obtain it through the Mailcrypt home page at
+
+	http://cag-www.lcs.mit.edu/mailcrypt/
+
+or from the FTP mirror at
+
+	ftp://cag.lcs.mit.edu/pub/patl/
+
+and enjoy!
+
+ - Patrick J. LoPresti (patl@lcs.mit.edu)
+ - Jin S. Choi (jin@atype.com)
+   Tue Aug  1 15:00:27 1995 -0500

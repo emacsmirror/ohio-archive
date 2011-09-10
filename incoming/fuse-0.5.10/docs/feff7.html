@@ -1,0 +1,155 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<HTML>
+<HEAD>
+<TITLE>Feff </TITLE>
+</HEAD>
+<BODY>
+Previous
+<A HREF="feff7-1.html">Next</A>
+Table of Contents
+<HR>
+<H1>Feff </H1>
+
+<H2>John Rehr, <CODE>jjr@phys.washington.edu</CODE></H2>version 7.00, 15 August, 1996
+<P><HR><EM> Ab initio Multiple-Scattering X-ray Absorption Fine Structure and X-ray Absorption Near Edge Structure Code
+Copyright 1992,1993,1994,1996, FEFF Project, Department of Physics,
+BOX 351560, University of Washington, Seattle, WA 98195-1560</EM><HR></P>
+<P>
+<H2><A NAME="toc1">1.</A> <A HREF="feff7-1.html">Synopsis -- PLEASE READ THIS ENTIRE SECTION</A></H2>
+
+<P>
+<H2><A NAME="toc2">2.</A> <A HREF="feff7-2.html">Conceptual description</A></H2>
+<UL>
+<LI><A HREF="feff7-2.html#ss2.1">2.1 Scattering potential and phase shift code, POTPH </A>
+<LI><A HREF="feff7-2.html#ss2.2">2.2 Path enumeration, PATHS</A>
+<LI><A HREF="feff7-2.html#ss2.3">2.3 Scattering amplitude and other XAFS parameter calculation, GENFMT</A>
+<LI><A HREF="feff7-2.html#ss2.4">2.4 XAFS spectrum calculation, FF2CHI</A>
+<LI><A HREF="feff7-2.html#ss2.5">2.5 Calculation Strategy</A>
+</UL>
+
+<P>
+<H2><A NAME="toc3">3.</A> <A HREF="feff7-3.html">Program and file structure</A></H2>
+<UL>
+<LI><A HREF="feff7-3.html#ss3.1">3.1 Table 3.1</A>
+<LI><A HREF="feff7-3.html#ss3.2">3.2 Scattering potential and phase shift code, POTPH</A>
+<LI><A HREF="feff7-3.html#ss3.3">3.3 Path enumeration, PATHS</A>
+<LI><A HREF="feff7-3.html#ss3.4">3.4 Scattering amplitude and other XAFS parameter calculation, GENFMT</A>
+<LI><A HREF="feff7-3.html#ss3.5">3.5 XAFS spectrum calculation, FF2CHI</A>
+</UL>
+
+<P>
+<H2><A NAME="toc4">4.</A> <A HREF="feff7-4.html">Input file and FEFF commands</A></H2>
+<UL>
+<LI><A HREF="feff7-4.html#ss4.1">4.1 File format</A>
+<LI><A HREF="feff7-4.html#ss4.2">4.2 Complete list of feff.inp keywords</A>
+</UL>
+
+<P>
+<H2><A NAME="toc5">5.</A> <A HREF="feff7-5.html">Run Control Options</A></H2>
+<UL>
+<LI><A HREF="feff7-5.html#ss5.1">5.1 Paths.dat</A>
+<LI><A HREF="feff7-5.html#ss5.2">5.2 list.dat</A>
+</UL>
+
+<P>
+<H2><A NAME="toc6">6.</A> <A HREF="feff7-6.html">Output files</A></H2>
+<UL>
+<LI><A HREF="feff7-6.html#ss6.1">6.1 phase.bin</A>
+<LI><A HREF="feff7-6.html#ss6.2">6.2 paths.dat</A>
+<LI><A HREF="feff7-6.html#ss6.3">6.3 crit.dat</A>
+<LI><A HREF="feff7-6.html#ss6.4">6.4 geom.dat</A>
+<LI><A HREF="feff7-6.html#ss6.5">6.5 list.dat</A>
+<LI><A HREF="feff7-6.html#ss6.6">6.6 chi.dat</A>
+<LI><A HREF="feff7-6.html#ss6.7">6.7 feff.bin</A>
+<LI><A HREF="feff7-6.html#ss6.8">6.8 feffNNNN.dat</A>
+<LI><A HREF="feff7-6.html#ss6.9">6.9 Diagnostic files from POTPH</A>
+<LI><A HREF="feff7-6.html#ss6.10">6.10 xsect.bin, rkk.bin and xmu.dat files</A>
+<LI><A HREF="feff7-6.html#ss6.11">6.11 Variables in output files and in calculation of XAFS</A>
+</UL>
+
+<P>
+<H2><A NAME="toc7">7.</A> <A HREF="feff7-7.html">Appendix A.  Copyright Information,  Restrictions and License</A></H2>
+<UL>
+<LI><A HREF="feff7-7.html#ss7.1">7.1 Restrictions and License Information</A>
+<LI><A HREF="feff7-7.html#ss7.2">7.2 ADDENDUM: Government Copyrights (DO NOT DELETE)</A>
+</UL>
+
+<P>
+<H2><A NAME="toc8">8.</A> <A HREF="feff7-8.html">Appendix B.  Installation Instructions</A></H2>
+<UL>
+<LI><A HREF="feff7-8.html#ss8.1">8.1 UNIX machines</A>
+<LI><A HREF="feff7-8.html#ss8.2">8.2 PC users</A>
+<LI><A HREF="feff7-8.html#ss8.3">8.3 MAC users</A>
+<LI><A HREF="feff7-8.html#ss8.4">8.4 NeXT users</A>
+</UL>
+
+<P>
+<H2><A NAME="toc9">9.</A> <A HREF="feff7-9.html">Appendix C.  References</A></H2>
+
+<P>
+<H2><A NAME="toc10">10.</A> <A HREF="feff7-10.html">Appendix D.  Sample input files</A></H2>
+<UL>
+<LI><A HREF="feff7-10.html#ss10.1">10.1 SF6 Molecule</A>
+<LI><A HREF="feff7-10.html#ss10.2">10.2 Cu fcc metal, 4 shells</A>
+<LI><A HREF="feff7-10.html#ss10.3">10.3 YBCO High-Tc superconductor</A>
+</UL>
+
+<P>
+<H2><A NAME="toc11">11.</A> <A HREF="feff7-11.html">Appendix E.  Code Variables, Dimensions and Descriptions</A></H2>
+
+<P>
+<H2><A NAME="toc12">12.</A> <A HREF="feff7-12.html">Appendix F.   Changes from previous versions</A></H2>
+<UL>
+<LI><A HREF="feff7-12.html#ss12.1">12.1 Changes from FEFF 6</A>
+<LI><A HREF="feff7-12.html#ss12.2">12.2 Changes from FEFF 5.04</A>
+</UL>
+
+<P>
+<H2><A NAME="toc13">13.</A> <A HREF="feff7-13.html">Appendix G. Trouble-shooting FEFF problems</A></H2>
+<UL>
+<LI><A HREF="feff7-13.html#ss13.1">13.1 FEFF Bug and Error  Report</A>
+</UL>
+
+
+<HR>
+Previous
+<A HREF="feff7-1.html">Next</A>
+Table of Contents
+</BODY>
+</HTML>
